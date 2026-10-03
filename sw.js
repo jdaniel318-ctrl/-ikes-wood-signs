@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.20.0';
-const RELEASE_SEAL='househull-forge-88200';
+const RELEASE_BUILD='8.8.20.1';
+const RELEASE_SEAL='forgemind-88201';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.

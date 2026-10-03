@@ -1,9 +1,9 @@
 {
-  "schema": "dark-sky-release-gate-househull-forge-v1",
-  "build": "8.8.20.0",
-  "release": "HouseHull Forge",
+  "schema": "dark-sky-release-gate-forgemind-v1",
+  "build": "8.8.20.1",
+  "release": "ForgeMind",
   "pass": true,
-  "evidence_scope": "Static/source/package checks for HouseHull Sea Trial and Vessel Forge; not native field measurement accuracy, automatic scale certification, production takeoff, live customer contact, billing, or server authority certification.",
+  "evidence_scope": "Static/source/package checks for deterministic Vessel Forge brief-to-blueprint propagation and commissioning UI; not live server authority, production publication, or proof that arbitrary businesses can be fully generated without human review.",
   "native_field_acceptance": "pending",
   "prior_release_evidence": {
     "schema": "dark-sky-release-gate-bloompick-v1",

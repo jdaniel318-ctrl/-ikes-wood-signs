@@ -1,5 +1,5 @@
 
-## 8.8.20.0 HouseHull Forge
+## 8.8.20.1 ForgeMind
 - Tightened Fleet Mission vessel cards without changing canonical logos.
 - Renamed recovery presentation to State Protected / Recovery evidence on record.
 - Added compact owner/Captain evidence-state dots and stronger Next Required Proof contrast.
@@ -80,7 +80,7 @@ Do not clear website data or run either bundled SQL file. Keep private JSON/HTML
 Do not clear website data or run either bundled SQL file.
 
 
-## 8.8.20.0 — HouseHull Forge
+## 8.8.20.1 — ForgeMind
 - Commissioned HouseHull as a new Black Flag-created exterior intelligence vessel.
 - Added HouseHull customer quote workflow: four primary elevations + misc/detail photos.
 - Added PlumbLine field takeoff station with per-elevation field measurements and truth states.
@@ -91,3 +91,10 @@ Do not clear website data or run either bundled SQL file.
 - Added Vessel Forge local brief-to-model generation plus portable blueprint export/import so future vessels can be started without ChatGPT.
 - Blueprint boundary excludes business records, credentials, owner identity, immutable IDs and branding.
 - No SQL migration, owner/Captain assignment, billing activation or live publication.
+
+## 8.8.20.1 — ForgeMind
+- Vessel Forge now converts a business brief into a reviewable operating plan rather than only a broad business-type classification.
+- Forge derives and carries forward the proposed offer, quote/pricing posture, customer entry, field fulfillment, scheduling need, workflow, evidence/inputs, outputs, and truth guards.
+- Offer and Experience steps now show the Forge recommendation in context; irrelevant service character-limit clutter is hidden.
+- Vessel Blueprint v2 preserves the reusable Forge plan while remaining compatible with v1 imports and excluding vessel identity, owners, credentials, customers, orders, ledgers, and branding.
+- No live Supabase mutation, owner assignment, Captain appointment, billing activation, or production publication is performed by this static release.

@@ -1,7 +1,7 @@
 {
   "release": "8.8.17",
-  "build": "8.8.20.0",
-  "name": "HouseHull Forge",
+  "build": "8.8.20.1",
+  "name": "ForgeMind",
   "purpose": "Give every Fleet feature an independent Off, Free or Paid state for every vessel.",
   "owner_state_precedence": [
     "enabled",

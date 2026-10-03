@@ -1,10 +1,10 @@
-# Dark Sky 8.8.20.0 — HouseHull Forge acceptance
+# Dark Sky 8.8.20.1 — ForgeMind acceptance
 
 ## Decision
 Sea Trial candidate. This release adds one new private vessel and strengthens the built-in vessel factory. It does not certify automatic exterior scale, production takeoff accuracy, live customer contact, billing, owner/Captain assignment, or public launch.
 
 ## First field checkpoints
-1. Confirm `8.8.20.0 · HOUSEHULL FORGE`.
+1. Confirm `8.8.20.1 · FORGEMIND`.
 2. Fleet Mission Control should show HouseHull as an additional staging vessel without changing the protected six.
 3. Open HouseHull Customer Experience in Private Preview. Confirm four primary elevation photo slots plus misc/detail photos.
 4. Return without submitting and confirm photos are not carried into a new request.

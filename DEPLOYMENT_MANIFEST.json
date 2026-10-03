@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.20.0",
-  "version": "8.8.20.0",
-  "release_name": "HouseHull Forge",
-  "releaseName": "HouseHull Forge",
-  "release_seal": "househull-forge-88200",
+  "build": "8.8.20.1",
+  "version": "8.8.20.1",
+  "release_name": "ForgeMind",
+  "releaseName": "ForgeMind",
+  "release_seal": "forgemind-88201",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -91,8 +91,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "HouseHull Sea Trial vessel plus Black Flag Vessel Forge self-service commissioning; protected six and authority boundaries retained.",
-  "release_note": "HouseHull adds four-elevation quote intake, PlumbLine field takeoff, masonry/opening/trim modeling, and explicit measurement truth states. Vessel Forge adds local brief-to-model generation and portable business-model blueprints so future vessels can be started without ChatGPT.",
+  "release_focus": "Vessel Forge brief-to-blueprint propagation and commissioning navigation clarity",
+  "release_note": "ForgeMind carries deterministic business-brief recommendations into Offer and Experience while preserving vessel isolation and explicit human review.",
   "tax_ledger_upgrade": {
     "schema": "dark-sky-fleet-tax-ledger-v1",
     "model": "TAX_LEDGER_MODEL.json",
@@ -214,8 +214,8 @@
     "algorithm": "SHA-256",
     "files": {
       "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": {
-        "sha256": "ac95641aaec08cfed8476d9c9ead2dee0225ecad72b294324a2734238f23bffb",
-        "build": "8.8.20.0",
+        "sha256": "888f38931c52195c8e81d03a5b6c47da809acfb5e702d77d2f0ca1ffa0946013",
+        "build": "8.8.20.1",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -262,14 +262,14 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_COMMAND_MODEL.json": {
-        "sha256": "8c61735f6b2d696e669c180a91c1543359f870871ae61e42292fcac96e7bff4a",
-        "build": "8.8.20.0",
+        "sha256": "596477b557900aa5b91ae2fa7fc6ae7647df93c45f49cd1cb7b926d6906f5dcc",
+        "build": "8.8.20.1",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
       "FLEET_DOCTRINE_REGISTRY.json": {
-        "sha256": "94aefd7ac3bdad4772ae59a039effea6c90155babe9904d36c87985b9edcae94",
-        "build": "8.8.20.0",
+        "sha256": "8cfa02aa0ca17ea767e8869283df20ee20c76cf1d9a2510ac9bf9269f3e461ac",
+        "build": "8.8.20.1",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -328,8 +328,8 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "GOLDEN_VOYAGES.json": {
-        "sha256": "1adea64e4724ed3e44ae82806c066bb302c2448c1d377c4b0338c950d77b7aa2",
-        "build": "8.8.20.0",
+        "sha256": "8dcbaeccf700fc1e04a99a7bab63d8de77841ab94ab2f75192c44e9ba4d6090b",
+        "build": "8.8.20.1",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -478,24 +478,24 @@
     "algorithm": "SHA-256",
     "serialization": "UTF-8 response body, same text executed by atomic loader",
     "files": {
-      "styles.css": "98ded9119a69b2062b26ce4274e6b289d697f18675a2d05cbbe08e1a2548336c",
+      "styles.css": "80d41c824fb05882ed33905a639a1c655973e6a8c828e025178d1e84f466c63f",
       "simple_books.css": "5939590021ef2d3738d5f5f7249d72f8da64cc274bf287ef8183958517b0ba46",
       "platform_core.js": "7f797bc382a73eb9ec4365a7458e8329da60c50561e3ac751ca3fb9d7cd5ec49",
       "platform_v4.js": "21daf7777150d654467042893298147374318fdfc7ac38faf9260f874522019b",
-      "platform_identity.js": "feec44e02ffd80b305c69ccc8403d5648b9f41963ef7387d1eeefea4bdfac323",
-      "fleet_supabase.js": "8d071d30f8c8ce088231da77adf6d2b7c78050c8faf097415e651e2c592adb98",
+      "platform_identity.js": "b34a2bc8cb8272380066d56a9fdda8debc6c0aa74041951509dbc29e728f2aa3",
+      "fleet_supabase.js": "40f9297c781e9a80eb3be9cd348306bf4ba169d4d814add05090add6866c0c40",
       "ike_style_registry.js": "6b348ebceb47e172e6676f46252b19c1c6bb7532baf76febfa8dd81760a76ab7",
-      "app.js": "0558fa7fb79208671675a5e291cd4f3dc53b05327ff9b16e5593b3d7df03bfc2",
-      "captain.js": "a1d8f879f6aa8318357a7bbbd5163ab1f7b1893c7f1509ea46af4f6803422d30",
-      "simple_books.js": "8ee411524b85e65ca9a01aa3fb1adc7fbf1dd9106645dc15167e555809c6ed32",
-      "owner.html": "af63a25761c667d5b316d773ec84f09680a9b14a209e6021a572171714aa035e",
-      "manifest.webmanifest": "813232135518942e16aebd5509e8753eb748d9964d87e47f2f5867bfea104f92",
+      "app.js": "6f2d05acf70e377e7c46adc6e12b74ee1cf98f1cbaa3be4ac978b1ee3f8ec818",
+      "captain.js": "1843979b76a8b0b8446090e272737faca598ae698466d921195d32adbf3535ff",
+      "simple_books.js": "b67b8a2703a6ccd99a12512f1f8c2fec60838dcce1cd09fa982954895151929b",
+      "owner.html": "fb45aff38040a43d157aef0e8dadf61f21f8b9d3be824ffa858df4351a9ff25f",
+      "manifest.webmanifest": "f1803a395d8ad86fdf40d8ed226ee0f11954ae647a5245babb6318efc44f9670",
       "IKE_STYLE_FOUNDRY.json": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
-      "sw.js": "de5187d43539d12b8809dfe3a610d45501db6798550afe3bc8b9e0e72c3ab88f",
-      "FLEET_DOCTRINE_REGISTRY.json": "94aefd7ac3bdad4772ae59a039effea6c90155babe9904d36c87985b9edcae94",
-      "GOLDEN_VOYAGES.json": "1adea64e4724ed3e44ae82806c066bb302c2448c1d377c4b0338c950d77b7aa2",
-      "FLEET_COMMAND_MODEL.json": "8c61735f6b2d696e669c180a91c1543359f870871ae61e42292fcac96e7bff4a",
-      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "ac95641aaec08cfed8476d9c9ead2dee0225ecad72b294324a2734238f23bffb"
+      "sw.js": "250cfcff75aa7570b4b290d38aa5a102d362e7efa89b9ec27ba6b432fc54b4ce",
+      "FLEET_DOCTRINE_REGISTRY.json": "8cfa02aa0ca17ea767e8869283df20ee20c76cf1d9a2510ac9bf9269f3e461ac",
+      "GOLDEN_VOYAGES.json": "8dcbaeccf700fc1e04a99a7bab63d8de77841ab94ab2f75192c44e9ba4d6090b",
+      "FLEET_COMMAND_MODEL.json": "596477b557900aa5b91ae2fa7fc6ae7647df93c45f49cd1cb7b926d6906f5dcc",
+      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "888f38931c52195c8e81d03a5b6c47da809acfb5e702d77d2f0ca1ffa0946013"
     }
   },
   "watchbeacon_upgrade": {
@@ -779,12 +779,12 @@
     ]
   },
   "fleetidentity_upgrade": {
-    "build": "8.8.20.0",
+    "build": "8.8.20.1",
     "baseline": "8.8.19.0",
     "scope": "project-owned canonical logo routing and Fleet Mission presentation",
     "logo_source": "existing projectGraphics/projectLogo exact-vessel store",
     "fleet_mission_display": true,
-    "quick_route": "Fleet Mission LOGO → exact vessel Project Control → Marketing → Project Logo / Mark",
+    "quick_route": "Fleet Mission LOGO \u2192 exact vessel Project Control \u2192 Marketing \u2192 Project Logo / Mark",
     "cross_vessel_copy": false,
     "authority_changes": false,
     "business_record_changes": false,
@@ -809,7 +809,7 @@
     "sql": "not-run"
   },
   "househull_forge_upgrade": {
-    "build": "8.8.20.0",
+    "build": "8.8.20.1",
     "scope": "new private vessel + commissioning factory",
     "househull": {
       "state": "sea_trial",
@@ -846,5 +846,14 @@
       ]
     },
     "server_mutation": "none by static release"
+  },
+  "forgemind_upgrade": {
+    "version": "1.0.0",
+    "brief_to_blueprint": true,
+    "offer_propagation": true,
+    "experience_propagation": true,
+    "blueprint_schema": "black-flag-vessel-blueprint-v2",
+    "external_ai_required": false,
+    "live_mutations": false
   }
 }

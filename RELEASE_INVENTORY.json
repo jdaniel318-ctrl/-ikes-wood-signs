@@ -1,8 +1,8 @@
 {
-  "release": "HouseHull Forge",
-  "name": "HouseHull Forge",
-  "build": "8.8.20.0",
-  "seal": "househull-forge-88200",
+  "release": "ForgeMind",
+  "name": "ForgeMind",
+  "build": "8.8.20.1",
+  "seal": "forgemind-88201",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
@@ -91,5 +91,5 @@
     "styles.css",
     "sw.js"
   ],
-  "releaseName": "HouseHull Forge"
+  "releaseName": "ForgeMind"
 }
