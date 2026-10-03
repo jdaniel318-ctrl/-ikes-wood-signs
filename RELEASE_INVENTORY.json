@@ -1,8 +1,8 @@
 {
-  "release": "VoyageGuard",
-  "name": "VoyageGuard",
-  "build": "8.8.20.4",
-  "seal": "voyageguard-88204",
+  "release": "ServerSafe",
+  "name": "ServerSafe",
+  "build": "8.8.20.5",
+  "seal": "serversafe-88205",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
@@ -91,5 +91,5 @@
     "styles.css",
     "sw.js"
   ],
-  "releaseName": "VoyageGuard"
+  "releaseName": "ServerSafe"
 }

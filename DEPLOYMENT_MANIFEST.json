@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.20.4",
-  "version": "8.8.20.4",
-  "release_name": "VoyageGuard",
-  "releaseName": "VoyageGuard",
-  "release_seal": "voyageguard-88204",
+  "build": "8.8.20.5",
+  "version": "8.8.20.5",
+  "release_name": "ServerSafe",
+  "releaseName": "ServerSafe",
+  "release_seal": "serversafe-88205",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -92,7 +92,7 @@
     "project_data_boundary": "exact-project-id"
   },
   "release_focus": "Mandatory 07 PROVE commissioning readiness, quota-safe recovery journal, and exact command-outcome reconciliation.",
-  "release_note": "VoyageGuard makes unfinished commissioning voyages durable and recoverable across refreshes/releases, with server receipts and no blind retry.",
+  "release_note": "ServerSafe makes unfinished commissioning voyages durable and recoverable across refreshes/releases, with server receipts and no blind retry.",
   "tax_ledger_upgrade": {
     "schema": "dark-sky-fleet-tax-ledger-v1",
     "model": "TAX_LEDGER_MODEL.json",
@@ -215,7 +215,7 @@
     "files": {
       "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": {
         "sha256": "3b5149f0e9abcb62b56cdfdd331630b5ff1572e4f4746b3d7f50fed8818beb85",
-        "build": "8.8.20.4",
+        "build": "8.8.20.5",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -263,13 +263,13 @@
       },
       "FLEET_COMMAND_MODEL.json": {
         "sha256": "f740cbca81c725b4255bcf80b81e7735ab96b0d15e193381a54e65c7b02f98a3",
-        "build": "8.8.20.4",
+        "build": "8.8.20.5",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
       "FLEET_DOCTRINE_REGISTRY.json": {
         "sha256": "dfd9a8119e84745015bb24051e15cafb60d21142a1bdbd220baf2287153abac3",
-        "build": "8.8.20.4",
+        "build": "8.8.20.5",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -329,7 +329,7 @@
       },
       "GOLDEN_VOYAGES.json": {
         "sha256": "e1f5c566fbad6b9484a8238606ce800c6188cbf9dd9fd8ea1dd9e360f8f18a7a",
-        "build": "8.8.20.4",
+        "build": "8.8.20.5",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -779,7 +779,7 @@
     ]
   },
   "fleetidentity_upgrade": {
-    "build": "8.8.20.4",
+    "build": "8.8.20.5",
     "baseline": "8.8.19.0",
     "scope": "project-owned canonical logo routing and Fleet Mission presentation",
     "logo_source": "existing projectGraphics/projectLogo exact-vessel store",
@@ -809,7 +809,7 @@
     "sql": "not-run"
   },
   "househull_forge_upgrade": {
-    "build": "8.8.20.4",
+    "build": "8.8.20.5",
     "scope": "new private vessel + commissioning factory",
     "househull": {
       "state": "sea_trial",
@@ -865,7 +865,7 @@
     "authority": "unchanged"
   },
   "voyageguard_upgrade": {
-    "build": "8.8.20.4",
+    "build": "8.8.20.5",
     "durable_voyage": "Fleet Core RPC when authenticated",
     "browser_role": "cache/fallback",
     "recovery_actions": [

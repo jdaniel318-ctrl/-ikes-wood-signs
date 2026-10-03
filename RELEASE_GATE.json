@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-release-gate-proofkeel-v1",
-  "build": "8.8.20.4",
-  "release": "VoyageGuard",
+  "build": "8.8.20.5",
+  "release": "ServerSafe",
   "pass": true,
   "evidence_scope": "Static/source/package checks for guided Vessel Forge propagation and cross-step truth reconciliation; native iPad and live commissioning remain field tests.",
   "native_field_acceptance": "pending",

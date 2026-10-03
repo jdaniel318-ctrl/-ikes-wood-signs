@@ -919,7 +919,7 @@ grant execute on function public.admiral_preview_vessel_activation(text,text) to
 grant execute on function public.admiral_depart_vessel(text,text,text,text) to authenticated;
 
 -- ============================================================
--- 8.8.20.4 VOYAGEGUARD — durable commissioning voyage recovery
+-- 8.8.20.5 SERVERSAFE — durable commissioning voyage recovery
 -- Apply as a controlled Supabase migration before enabling server recovery UI.
 -- Additive only: does not replace the existing vessel commissioning RPC.
 -- ============================================================
@@ -946,3 +946,15 @@ create or replace function public.read_active_commissioning_voyage() returns jso
 create or replace function public.discard_active_commissioning_voyage(p_voyage_id uuid) returns jsonb language plpgsql security definer set search_path='' as $$ declare v_actor uuid:=auth.uid();v_role text;begin v_role:=public.fleet_commissioning_authority_role();if v_actor is null or v_role is null then raise exception 'commissioning_authority_required';end if;update public.fleet_commissioning_voyages set status='discarded',updated_at=now() where voyage_id=p_voyage_id and actor_user_id=v_actor and status='active';if not found then raise exception 'active_voyage_not_found';end if;return jsonb_build_object('discarded',true,'voyage_id',p_voyage_id);end $$;
 create or replace function public.record_commissioning_receipt(p_voyage_id uuid,p_operation_id uuid,p_intended_project_id text,p_preview_fingerprint text,p_command_state text,p_detail jsonb default '{}'::jsonb) returns jsonb language plpgsql security definer set search_path='' as $$ declare v_actor uuid:=auth.uid();v_role text;begin v_role:=public.fleet_commissioning_authority_role();if v_actor is null or v_role is null then raise exception 'commissioning_authority_required';end if;if p_command_state not in ('prepared','submitted','verified_created','verified_not_created','outcome_uncertain','cancelled') then raise exception 'command_state_invalid';end if;if not exists(select 1 from public.fleet_commissioning_voyages where voyage_id=p_voyage_id and actor_user_id=v_actor) then raise exception 'voyage_not_found';end if;insert into public.fleet_commissioning_receipts(operation_id,voyage_id,actor_user_id,intended_project_id,preview_fingerprint,command_state,detail) values(p_operation_id,p_voyage_id,v_actor,lower(trim(coalesce(p_intended_project_id,''))),trim(coalesce(p_preview_fingerprint,'')),p_command_state,coalesce(p_detail,'{}'::jsonb)) on conflict(operation_id) do update set command_state=excluded.command_state,detail=excluded.detail,updated_at=now() where public.fleet_commissioning_receipts.actor_user_id=v_actor;update public.fleet_commissioning_voyages set last_operation_id=p_operation_id,updated_at=now() where voyage_id=p_voyage_id and actor_user_id=v_actor;return jsonb_build_object('recorded',true,'operation_id',p_operation_id,'command_state',p_command_state);end $$;
 revoke all on public.fleet_commissioning_voyages from anon,authenticated;revoke all on public.fleet_commissioning_receipts from anon,authenticated;grant execute on function public.fleet_commissioning_authority_role() to authenticated;grant execute on function public.save_commissioning_voyage(text,text,text,integer,jsonb,jsonb) to authenticated;grant execute on function public.read_active_commissioning_voyage() to authenticated;grant execute on function public.discard_active_commissioning_voyage(uuid) to authenticated;grant execute on function public.record_commissioning_receipt(uuid,uuid,text,text,text,jsonb) to authenticated;
+
+-- ServerSafe 8.8.20.5: SECURITY DEFINER RPCs are authenticated-only.
+revoke execute on function public.fleet_commissioning_authority_role() from public, anon;
+revoke execute on function public.save_commissioning_voyage(text,text,text,integer,jsonb,jsonb) from public, anon;
+revoke execute on function public.read_active_commissioning_voyage() from public, anon;
+revoke execute on function public.discard_active_commissioning_voyage(uuid) from public, anon;
+revoke execute on function public.record_commissioning_receipt(uuid,uuid,text,text,text,jsonb) from public, anon;
+grant execute on function public.fleet_commissioning_authority_role() to authenticated;
+grant execute on function public.save_commissioning_voyage(text,text,text,integer,jsonb,jsonb) to authenticated;
+grant execute on function public.read_active_commissioning_voyage() to authenticated;
+grant execute on function public.discard_active_commissioning_voyage(uuid) to authenticated;
+grant execute on function public.record_commissioning_receipt(uuid,uuid,text,text,text,jsonb) to authenticated;
