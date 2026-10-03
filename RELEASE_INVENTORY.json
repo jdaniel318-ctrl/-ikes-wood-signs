@@ -1,8 +1,8 @@
 {
-  "release": "ForgePilot",
-  "name": "ForgePilot",
-  "build": "8.8.20.2",
-  "seal": "forgepilot-88202",
+  "release": "ProofKeel",
+  "name": "ProofKeel",
+  "build": "8.8.20.3",
+  "seal": "proofkeel-88203",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
@@ -91,5 +91,5 @@
     "styles.css",
     "sw.js"
   ],
-  "releaseName": "ForgePilot"
+  "releaseName": "ProofKeel"
 }

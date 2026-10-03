@@ -1,4 +1,12 @@
-# Dark Sky 8.8.20.2 — ForgePilot
+# Dark Sky 8.8.20.3 — ProofKeel
+
+- Adds mandatory 07 · PROVE commissioning readiness stage.
+- Uses session recovery journal as active commissioning anchor; full legacy localStorage no longer blocks commissioning.
+- Checks canonical registry readability before mutation.
+- Classifies interrupted commands as VERIFIED CREATED, VERIFIED NOT CREATED, or OUTCOME UNCERTAIN — RECONCILE.
+- Automatic retry remains forbidden.
+
+# Dark Sky 8.8.20.3 — ProofKeel
 
 - Guided Vessel Forge path: Describe → Build My Vessel → Review Plan → Continue.
 - Blueprint import/export moved behind secondary Blueprint tools.

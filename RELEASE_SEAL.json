@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.2",
-  "release": "ForgePilot",
-  "seal": "forgepilot-88202",
+  "build": "8.8.20.3",
+  "release": "ProofKeel",
+  "seal": "proofkeel-88203",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "ForgePilot",
-  "name": "ForgePilot",
-  "releaseName": "ForgePilot"
+  "release_name": "ProofKeel",
+  "name": "ProofKeel",
+  "releaseName": "ProofKeel"
 }

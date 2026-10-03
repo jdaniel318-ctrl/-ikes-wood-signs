@@ -1,7 +1,7 @@
 {
-  "schema": "dark-sky-release-gate-forgepilot-v1",
-  "build": "8.8.20.2",
-  "release": "ForgePilot",
+  "schema": "dark-sky-release-gate-proofkeel-v1",
+  "build": "8.8.20.3",
+  "release": "ProofKeel",
   "pass": true,
   "evidence_scope": "Static/source/package checks for guided Vessel Forge propagation and cross-step truth reconciliation; native iPad and live commissioning remain field tests.",
   "native_field_acceptance": "pending",
@@ -3428,7 +3428,7 @@
     ],
     "production_takeoff_certified": false
   },
-  "forgepilot_scope": {
+  "proofkeel_scope": {
     "guided_path": true,
     "cross_step_truth": true,
     "commission_hold_on_conflict": true,

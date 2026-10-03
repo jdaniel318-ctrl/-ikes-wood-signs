@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.20.2';
+  const BUILD_VERSION='8.8.20.3';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -203,7 +203,7 @@
         {id:'openings-takeoff',name:'Windows / Doors / Trim Takeoff',published:true,active:true,customerReady:true}
       ],
       houseHull:{engine:'PlumbLine',scaleStatus:'experimental',truthLevels:['AI ESTIMATE','FIELD MEASURED','SALESPERSON VERIFIED'],requiredElevations:['Front','Rear','Left','Right'],miscPhotos:true,materials:['vinyl siding','fiber cement','engineered wood','brick veneer','CMU/block','exposed foundation'],openingTrimOptions:['J-channel only','standard casing','wide picture-frame trim','PVC/composite trim','aluminum-wrapped trim','brickmould','manufacturer-specific trim','custom / no trim']},
-      deployments:[],orders:[],customers:[],ledger:[],commissionedAt:new Date().toISOString(),commissioningVersion:'8.8.20.2',
+      deployments:[],orders:[],customers:[],ledger:[],commissionedAt:new Date().toISOString(),commissioningVersion:'8.8.20.3',
       lifecycle:{state:'draft',version:3},registry:{version:1,source:'release-bundled',displayNameUnique:false},
       governance:{platformStatus:'approved',history:[]},audit:{enabled:true,policyVersion:'4.0'}
     },
@@ -3287,34 +3287,62 @@
   }
 
   function readCommissionJournal(){
+    // ProofKeel: sessionStorage is the commissioning recovery anchor for the active
+    // browser session. localStorage is only a best-effort mirror; a full legacy
+    // localStorage bucket must never block a safe commissioning transaction.
+    for(const store of [sessionStorage,localStorage]){
+      try{
+        const row=JSON.parse(store.getItem(COMMISSION_JOURNAL_KEY)||'null');
+        if(row?.project?.id)return row;
+      }catch(_){}
+    }
+    return window.__blackFlagCommissionJournal88203||null;
+  }
+
+  function commissionRecoveryStorageProbe(){
+    const key=`${COMMISSION_JOURNAL_KEY}:probe`;
+    const value=`proof-${Date.now()}`;
     try{
-      const row=JSON.parse(localStorage.getItem(COMMISSION_JOURNAL_KEY)||'null');
-      if(!row || !row.project || !row.project.id)return null;
-      return row;
-    }catch(_){return null;}
+      sessionStorage.setItem(key,value);
+      const ok=sessionStorage.getItem(key)===value;
+      sessionStorage.removeItem(key);
+      return {ok,channel:'session'};
+    }catch(err){
+      try{sessionStorage.removeItem(key);}catch(_){}
+      return {ok:false,channel:'session',error:String(err?.message||err)};
+    }
   }
 
   function writeCommissionJournal(project,stage='candidate_captured',detail=''){
     if(!project?.id)return null;
     const existing=readCommissionJournal();
     const row={
-      version:1,
+      version:2,
       build:BUILD_VERSION,
+      operationId:existing?.project?.id===project.id&&existing?.operationId?existing.operationId:`commission:${project.id}:${Date.now().toString(36)}`,
       stage,
       detail:String(detail||''),
       createdAt:existing?.project?.id===project.id ? existing.createdAt : new Date().toISOString(),
       updatedAt:new Date().toISOString(),
       project:structuredClone(project)
     };
-    localStorage.setItem(COMMISSION_JOURNAL_KEY,JSON.stringify(row));
+    const payload=JSON.stringify(row);
+    window.__blackFlagCommissionJournal88203=row;
+    try{sessionStorage.setItem(COMMISSION_JOURNAL_KEY,payload);}catch(err){
+      throw new Error(`Commissioning recovery storage is unavailable. No vessel was created. ${String(err?.message||err)}`);
+    }
+    try{localStorage.setItem(COMMISSION_JOURNAL_KEY,payload);}catch(err){
+      console.warn('Legacy commissioning journal mirror unavailable; session recovery remains authoritative for this attempt.',err);
+    }
     return row;
   }
 
   function clearCommissionJournal(projectId=''){
     const row=readCommissionJournal();
-    if(!row)return;
-    if(projectId && String(row.project?.id||'')!==String(projectId))return;
-    localStorage.removeItem(COMMISSION_JOURNAL_KEY);
+    if(row && projectId && String(row.project?.id||'')!==String(projectId))return;
+    try{sessionStorage.removeItem(COMMISSION_JOURNAL_KEY);}catch(_){}
+    try{localStorage.removeItem(COMMISSION_JOURNAL_KEY);}catch(_){}
+    window.__blackFlagCommissionJournal88203=null;
   }
 
   function commissioningRecoveryCandidate(){
@@ -5622,7 +5650,7 @@
 
     const admiralWindowPolicy=window.DarkSkyAdmiralSession?.status?.();
     const boundedAdmiralWindow=admiralWindowPolicy?.idleLimitMinutes===15 && admiralWindowPolicy?.maximumLimitMinutes===60 && admiralWindowPolicy?.enforcement==='browser-workspace-only';
-    add('admiral-session-window','Admiral session lifetime enforcement',boundedAdmiralWindow?'warn':'fail',boundedAdmiralWindow?'ForgePilot limits this browser workspace to 15 minutes of trusted-user inactivity and 60 minutes from full sign-in. Re-entry rechecks account and active Admiral authority. Server-wide timeout and immediate token revocation are NOT verified; backend enforcement remains required before outside handoff.':'The bounded Admiral workspace guard could not be verified. Keep Admiral access locked until the complete release is available.');
+    add('admiral-session-window','Admiral session lifetime enforcement',boundedAdmiralWindow?'warn':'fail',boundedAdmiralWindow?'ProofKeel limits this browser workspace to 15 minutes of trusted-user inactivity and 60 minutes from full sign-in. Re-entry rechecks account and active Admiral authority. Server-wide timeout and immediate token revocation are NOT verified; backend enforcement remains required before outside handoff.':'The bounded Admiral workspace guard could not be verified. Keep Admiral access locked until the complete release is available.');
 
     add('fleet-command-operating-backend','Fleet Captain operating service','warn','TrueBearing names the vessel entrance and preserves Admiral observation. The separate Fleet Command operating service is not activated: its live update was blocked. No Captain appointment or owner permission is bypassed.');
 
@@ -8879,9 +8907,9 @@
         </div>
         <div class="commission-callout warning"><b>DEFAULT DENY</b><span>Capabilities not selected remain unavailable. Owner access is project-scoped only; commissioning never grants Engine or Captain authority to an outside owner.</span></div>
       </div>`;
-    return `
+    if(commissionStep===6)return `
       <div class="commission-panel sea-trial-review">
-        <div class="eyebrow">06 • PRIVATE SEA TRIAL</div><h2>Ready to lay the keel</h2>
+        <div class="eyebrow">06 • REVIEW</div><h2>Review before proof</h2>
         <p>Review the project before Black Flag creates it. Commissioned projects begin private and unpublished.</p>
         <div class="commission-review-grid">
           <div><small>PROJECT</small><b>${escapeHtml(d.name||'Not named')}</b></div>
@@ -8910,6 +8938,36 @@
         </div>
         <div class="commission-callout success"><b>CAPTAIN APPROVAL REQUIRED FOR PUBLISHING</b><span>Commissioning creates the project structure only. It does not publish the business.</span></div>
       </div>`;
+    return `
+      <div class="commission-panel sea-trial-review">
+        <div class="eyebrow">07 • PROVE — COMMISSIONING & RECOVERY</div><h2>Prove the command can land safely</h2>
+        <p>Black Flag checks recovery storage and the canonical vessel registry before enabling commissioning. A failed or uncertain command is never retried automatically.</p>
+        <div class="commission-review-grid prove-grid">
+          <div><small>FORGE TRUTH</small><b>${forgeReviewConflicts(d).length?'HOLD':'CLEAR'}</b></div>
+          <div><small>RECOVERY JOURNAL</small><b id="commissionProofRecovery">CHECKING…</b></div>
+          <div><small>CANONICAL REGISTRY</small><b id="commissionProofRegistry">CHECKING…</b></div>
+          <div><small>COMMAND OUTCOME</small><b>RECEIPT REQUIRED</b></div>
+          <div><small>AUTO RETRY</small><b>FORBIDDEN</b></div>
+          <div><small>PUBLICATION</small><b>STILL BLOCKED</b></div>
+        </div>
+        <div id="commissionProofMessage" class="commission-callout warning"><b>PROVE CHECK RUNNING</b><span>Commission Project remains held until the local recovery channel and canonical registry read both pass.</span></div>
+        <div class="commission-callout"><b>THREE VALID OUTCOMES</b><span>VERIFIED CREATED • VERIFIED NOT CREATED • OUTCOME UNCERTAIN — RECONCILE. Uncertain means stop and reconcile; never press Commission again blindly.</span></div>
+      </div>`;
+  }
+
+  async function refreshCommissionProofStatus(){
+    if(commissionStep!==7)return;
+    const button=$('commissionNext');
+    const recovery=$('commissionProofRecovery'),registry=$('commissionProofRegistry'),message=$('commissionProofMessage');
+    const conflicts=forgeReviewConflicts(commissionDraft);
+    const probe=commissionRecoveryStorageProbe();
+    if(recovery)recovery.textContent=probe.ok?'READY':'HOLD';
+    let registryOk=false,registryError='';
+    try{await readCanonicalProjectRegistryStrict();registryOk=true;}catch(err){registryError=String(err?.message||err);}
+    if(registry)registry.textContent=registryOk?'READABLE':'HOLD';
+    const ready=!conflicts.length&&probe.ok&&registryOk;
+    if(button){button.disabled=!ready;button.title=ready?'':'Resolve PROVE holds before commissioning.';}
+    if(message){message.className=`commission-callout ${ready?'success':'warning'}`;message.innerHTML=ready?'<b>PROVE READINESS • CLEAR</b><span>Recovery journal is writable and the canonical vessel registry is readable. Commissioning may proceed; server read-back will still decide the final outcome.</span>':`<b>PROVE HOLD</b><span>${escapeHtml(conflicts[0]||probe.error||registryError||'Commissioning readiness is incomplete.')}</span>`;}
   }
 
   function renderCommissioning(){
@@ -8923,12 +8981,13 @@
       b.setAttribute('aria-current',step===commissionStep?'step':'false');
     });
     $('commissionPrev').disabled=commissionStep===1;
-    $('commissionNext').textContent=commissionStep===6?'COMMISSION PROJECT':'CONTINUE'; if(commissionStep===6){const conflicts=forgeReviewConflicts(commissionDraft);$('commissionNext').disabled=conflicts.length>0;$('commissionNext').title=conflicts.length?'Resolve Forge conflicts before commissioning.':'';}
+    $('commissionNext').textContent=commissionStep===7?'COMMISSION PROJECT':'CONTINUE'; if(commissionStep===7){$('commissionNext').disabled=true;$('commissionNext').title='Running PROVE readiness checks…';} else {$('commissionNext').disabled=false;$('commissionNext').title='';}
     const recovered=commissionDraft._recovered?' • RECOVERED DRAFT':'';
     const storage=commissionDraftStorageState.degraded?' • SESSION SAFE':'';
-    $('commissionDraftStatus').textContent=`DRAFT • STEP ${commissionStep}/6${recovered}${storage} • NOT PUBLISHED`;
+    $('commissionDraftStatus').textContent=`DRAFT • STEP ${commissionStep}/7${recovered}${storage} • NOT PUBLISHED`;
     clearCommissionValidation();
     bindCommissioningControls();
+    if(commissionStep===7)setTimeout(()=>refreshCommissionProofStatus(),0);
   }
 
   async function saveCommissionDraft(){
@@ -9019,7 +9078,7 @@
       }
       if(action==='continue'){
         if(!validateCommissionStep())return;
-        if(commissionStep<6){
+        if(commissionStep<7){
           commissionStep++;
           commissionDraft._step=commissionStep;
           commissionDraft._maxStepReached=Math.max(Number(commissionDraft._maxStepReached||1),commissionStep);
@@ -9151,6 +9210,12 @@
   async function commissionProject(){
     captureCommissionFields();
     if(!validateCommissionDraftFinal())return;
+    // 07 · PROVE — fail before mutation when the recovery channel or canonical
+    // registry cannot be read. Commissioning never uses blind retry semantics.
+    const recoveryProbe=commissionRecoveryStorageProbe();
+    if(!recoveryProbe.ok)return commissionError(`PROVE HOLD — commissioning recovery storage is unavailable on this device. No vessel was created. ${recoveryProbe.error||''}`.trim());
+    try{ await readCanonicalProjectRegistryStrict(); }
+    catch(err){ return commissionError(`PROVE HOLD — Black Flag cannot read the canonical vessel registry. No vessel was created. ${String(err?.message||err)}`); }
     const commissionerRole=String(commissionDraft.commissionerRole||'engine_admin');
     const commissionAuthority=window.BlackFlagV3Identity?.commissioningAuthority;
     if(commissionAuthority && !commissionAuthority.canCommission(commissionerRole))return commissionError('Commissioning authority is no longer valid. Captain, Admiral, or Engine Admin authority is required.');
@@ -9242,12 +9307,19 @@
     }catch(err){
       companies=beforeCommission;
       commissionDraft._lastError=String(err?.message||err);
-      commissionDraft._step=6;
-      commissionDraft._maxStepReached=6;
+      commissionDraft._step=7;
+      commissionDraft._maxStepReached=7;
       commissionDraft.updatedAt=new Date().toISOString();
       writeCommissionDraftSafe(commissionDraft);
-      writeCommissionJournal(p,'registry_failed',String(err?.message||err));
-      throw err;
+      let outcome='OUTCOME UNCERTAIN — RECONCILE';
+      try{
+        const verify=await readCanonicalProjectRegistryStrict();
+        outcome=registryContainsProject(verify,id)?'VERIFIED CREATED':'VERIFIED NOT CREATED';
+      }catch(_){ }
+      writeCommissionJournal(p,outcome==='VERIFIED CREATED'?'registry_verified_after_error':outcome==='VERIFIED NOT CREATED'?'registry_failed_verified_absent':'registry_failed_uncertain',`${outcome} • ${String(err?.message||err)}`);
+      if(outcome==='VERIFIED CREATED')throw new Error(`${p.name} was verified in the fleet registry after an interrupted response. Do not retry. Reload the Engine to reconcile the vessel.`);
+      if(outcome==='VERIFIED NOT CREATED')throw new Error(`${p.name} was verified NOT created. The commissioning attempt stopped safely. ${String(err?.message||err)}`);
+      throw new Error(`${p.name} commissioning outcome is uncertain. Do not retry. Reload the Engine so Black Flag can reconcile the preserved operation before another command.`);
     }
 
     window.BlackFlagV3Core?.audit?.({actorRole:commissionerRole,projectId:id,category:'project',action:'project.commissioned',detail:`${p.name} • ${p.namespace} • canonical registry verified`});

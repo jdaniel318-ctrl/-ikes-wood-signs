@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-doctrine-registry-v1",
-  "build": "8.8.20.2",
-  "release": "ForgePilot",
+  "build": "8.8.20.3",
+  "release": "ProofKeel",
   "status": "active",
   "principles": [
     {
