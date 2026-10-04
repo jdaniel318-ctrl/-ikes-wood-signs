@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.17",
-  "release": "BlackWake",
-  "seal": "blackwake-882017",
+  "build": "8.8.20.18",
+  "release": "KeelLock",
+  "seal": "keellock-882018",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "BlackWake",
-  "name": "BlackWake",
-  "releaseName": "BlackWake"
+  "release_name": "KeelLock",
+  "name": "KeelLock",
+  "releaseName": "KeelLock"
 }

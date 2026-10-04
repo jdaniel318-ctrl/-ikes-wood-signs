@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.8.20.17",
-  "release": "BlackWake",
+  "build": "8.8.20.18",
+  "release": "KeelLock",
   "excluded_sources": [
     "The situation"
   ],

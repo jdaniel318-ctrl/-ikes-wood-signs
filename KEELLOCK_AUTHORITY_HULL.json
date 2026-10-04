@@ -1,0 +1,30 @@
+{
+  "schema": "dark-sky-blackwake-authority-hull-v1",
+  "build": "8.8.20.18",
+  "release": "KeelLock",
+  "doctrine": "Inspect live truth first, then build. Browser state never manufactures authority.",
+  "live_truth_anchor": {
+    "supabase_project_state": "ACTIVE_HEALTHY",
+    "inspection_date": "2026-10-04",
+    "sensitive_rpc_posture": {
+      "anonymous_execute": "blocked",
+      "authenticated_execute": "allowed only behind server-side scope checks",
+      "security_definer": "requires explicit allow-list review"
+    },
+    "rls_posture": "RLS-enabled/no-policy tables are deny-by-default unless deliberately exposed through scoped RPCs; each exception requires documented proof.",
+    "performance_findings": [
+      "fleet_captain_appointments.appointed_by",
+      "fleet_captain_appointments.membership_id",
+      "fleet_commissioning_receipts.actor_user_id"
+    ]
+  },
+  "release_blockers": [
+    "no anonymous EXECUTE on authority-bearing RPCs",
+    "Admiral RPCs prove active server Admiral authority",
+    "Captain RPCs prove exact active vessel-Captain scope",
+    "Owner RPCs prove exact active project_owner scope",
+    "commissioning recovery binds durable voyage to authenticated actor",
+    "browser/session cache cannot promote server-safe state without Fleet Core read-back"
+  ],
+  "change_policy": "This package does not silently widen RLS or apply destructive database changes. Supporting-index migration is explicit and idempotent."
+}

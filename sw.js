@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.20.17';
-const RELEASE_SEAL='blackwake-882017';
+const RELEASE_BUILD='8.8.20.18';
+const RELEASE_SEAL='keellock-882018';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.

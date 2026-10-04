@@ -16147,7 +16147,7 @@ dialog.cg-workspace::backdrop{background:#061c24;}
 .commissioning-workspace .commission-validation.visible b{display:block;color:var(--bf-text);margin-bottom:5px}.commissioning-workspace .commission-validation.visible span,.commissioning-workspace .commission-validation.visible small{display:block;color:var(--bf-copy);line-height:1.45}.commissioning-workspace .commission-validation.visible .primary-btn{margin-top:12px;min-height:48px}
 .forge-primary-path .is-complete{border-color:rgba(92,205,180,.5)!important;color:#9ce0cf!important}.forge-primary-path .is-current{border-color:var(--bf-blue)!important;background:rgba(53,140,174,.18)!important;color:var(--bf-text)!important;font-weight:800}
 
-/* 8.8.20.17 BlackWake — recovery is a command surface, never a browser alert. */
+/* 8.8.20.18 KeelLock — recovery is a command surface, never a browser alert. */
 .commission-voyage-recovery{align-items:flex-start}
 .voyage-recovery-copy{min-width:0;flex:1 1 58%}
 .voyage-recovery-next{margin-top:12px!important;padding:10px 12px;border-left:3px solid rgba(225,188,92,.78);background:rgba(225,188,92,.07);color:#dce8e8!important}

@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-golden-voyages-v1",
-  "build": "8.8.20.17",
+  "build": "8.8.20.18",
   "policy": "real-ui-path-release-assurance-with-admiral-course-authority",
   "voyages": [
     {
       "id": "blackwake-authority-hull",
-      "label": "BlackWake Authority Hull Voyage",
+      "label": "KeelLock Authority Hull Voyage",
       "class": "required",
       "release_blocker": true,
       "proof": [

@@ -1,8 +1,8 @@
-# 8.8.20.17 BlackWake acceptance focus
+# 8.8.20.18 KeelLock acceptance focus
 
 Native iPad acceptance requires the recovered-voyage button to visibly enter Admiral verification, return to the same commissioning voyage, re-read Fleet Core, and only then enable server-safe continuation. A visible button with no transition is a release failure.
 
-# 8.8.20.17 BlackWake — Release Acceptance
+# 8.8.20.18 KeelLock — Release Acceptance
 
 Package-level acceptance: PASS. Native iPad field acceptance: PENDING. This release changes recovery presentation/navigation only and preserves server authority boundaries. Final-byte hashes are regenerated after all edits.
 
@@ -24,3 +24,7 @@ Package-level acceptance: PASS. Native iPad field acceptance: PENDING. This rele
 - Step 2 cannot advance without a Forge Plan.
 - Commissioning stage transitions checkpoint the latest stage and mark server state syncing until read-back completes.
 - Recovery and authorization use command-surface styling; red is reserved for actual failure.
+
+
+## 8.8.20.18 KeelLock — release integrity repair
+BlackWake field proof isolated a packaging-order defect: final runtime bytes and DEPLOYMENT_MANIFEST runtime hashes diverged. KeelLock regenerates integrity hashes from the final immutable bytes and validates the package before ZIP handoff. Runtime integrity remains fail-closed; no checksum bypass was added. Field deployment proof remains required.

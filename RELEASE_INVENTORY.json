@@ -1,9 +1,9 @@
 {
-  "release": "8.8.20.17",
-  "name": "BlackWake",
-  "build": "8.8.20.17",
-  "seal": "blackwake-882017",
-  "file_count": 85,
+  "release": "8.8.20.18",
+  "name": "KeelLock",
+  "build": "8.8.20.18",
+  "seal": "keellock-882018",
+  "file_count": 90,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
     "ADMIRAL_RELEASE_DOCTRINE.json",
@@ -32,6 +32,7 @@
     "IDENTITY_KEEL_MODEL.json",
     "IGNITION_WITNESS_MODEL.json",
     "IKE_STYLE_FOUNDRY.json",
+    "KEELLOCK_AUTHORITY_HULL.json",
     "MEMORY_COMMIT_WATCHDOG_MODEL.json",
     "MEMORY_MUSTER_MODEL.json",
     "MUSTER_TRACE_MODEL.json",
@@ -48,14 +49,18 @@
     "README.md",
     "REGISTRY_LEDGER_MODEL.json",
     "RELEASE_ACCEPTANCE.md",
+    "RELEASE_CHECKSUMS.sha256",
     "RELEASE_GATE.json",
+    "RELEASE_INTEGRITY_ROOT_CAUSE_882018.json",
     "RELEASE_INVENTORY.json",
     "RELEASE_SEAL.json",
     "RESOLVER_LIFELINE_MODEL.json",
     "RLS_READ_BOUNDARY_MODEL.json",
     "RUNTIME_ENTRY_TRACE_MODEL.json",
+    "SHA256SUMS.txt",
     "STORAGE_SAFE_PROOF_BUS_MODEL.json",
     "SUPABASE_ADMIRAL_COMMISSIONING_886.sql",
+    "SUPABASE_KEELLOCK_SUPPORTING_INDEXES_882018.sql",
     "SUPABASE_LEDGER_INTEGRITY_88171.sql",
     "TAX_LEDGER_MODEL.json",
     "WITNESS_TRUTH_MODEL.json",
@@ -91,5 +96,5 @@
     "styles.css",
     "sw.js"
   ],
-  "releaseName": "BlackWake"
+  "releaseName": "KeelLock"
 }

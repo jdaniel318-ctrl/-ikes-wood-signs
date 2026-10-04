@@ -1,0 +1,33 @@
+{
+  "schema": "dark-sky-release-integrity-root-cause-v1",
+  "build": "8.8.20.18",
+  "release": "KeelLock",
+  "seal": "keellock-882018",
+  "parent": "8.8.20.17 BlackWake",
+  "field_evidence": {
+    "blackwake_clean_retry": "worker registrations removed; application caches cleared; runtime verification still held",
+    "reported_first_failure": "styles.css checksum mismatch",
+    "deployment_manifest_ui": "unknown because the thrown hash error did not carry manifest/runtime detail"
+  },
+  "package_audit": {
+    "finding": "BlackWake package itself contained stale DEPLOYMENT_MANIFEST runtime_integrity hashes",
+    "mismatched_files": [
+      "styles.css",
+      "app.js",
+      "sw.js",
+      "FLEET_DOCTRINE_REGISTRY.json",
+      "GOLDEN_VOYAGES.json",
+      "FLEET_COMMAND_MODEL.json",
+      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json"
+    ],
+    "conclusion": "packaging-order defect, not Safari cache"
+  },
+  "repair_contract": [
+    "finalize all release bytes first",
+    "compute model/runtime hashes only after final byte mutations",
+    "verify every manifest hash against final packaged bytes",
+    "fail packaging if any mismatch",
+    "never bypass runtime integrity gate"
+  ],
+  "status": "packaging root cause repaired; field deployment proof still required"
+}

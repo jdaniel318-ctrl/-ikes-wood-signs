@@ -1,4 +1,4 @@
-# 8.8.20.17 — BlackWake
+# 8.8.20.18 — KeelLock
 
 - Anchors release work to live Fleet Core truth before build changes.
 - Adds Authority Hull contract and release-blocking scope checks.
@@ -6,14 +6,14 @@
 - Adds three idempotent foreign-key supporting indexes as an explicit migration.
 - Makes no destructive cleanup, RLS widening, or browser-only authority change.
 
-# 8.8.20.17 — BlackWake
+# 8.8.20.18 — KeelLock
 
 - Bind the recovery checkpoint `VERIFY ADMIRAL & RESUME` control to the same scoped Admiral authorization path used by server-save authorization.
 - Preserve fail-closed recovery: normal Continue stays disabled until Admiral verification and Fleet Core exact-voyage read-back succeed.
 - Add this field failure to release evidence: a rendered recovery button must execute the authority handoff; rendering alone is not a pass.
 - Preserve ClearBearing recovery detection, project isolation, durable voyage pointers, and server-truth boundaries.
 
-# 8.8.20.17 — BlackWake
+# 8.8.20.18 — KeelLock
 
 - Refit commissioning recovery as an inline command surface; no browser alert for Recovery Details.
 - Hold forward commissioning navigation until Admiral/Fleet Core recovery verification completes.
@@ -53,3 +53,7 @@
 - Step 2 cannot advance without a Forge Plan.
 - Commissioning stage transitions checkpoint the latest stage and mark server state syncing until read-back completes.
 - Recovery and authorization use command-surface styling; red is reserved for actual failure.
+
+
+## 8.8.20.18 KeelLock — release integrity repair
+BlackWake field proof isolated a packaging-order defect: final runtime bytes and DEPLOYMENT_MANIFEST runtime hashes diverged. KeelLock regenerates integrity hashes from the final immutable bytes and validates the package before ZIP handoff. Runtime integrity remains fail-closed; no checksum bypass was added. Field deployment proof remains required.
