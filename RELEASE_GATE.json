@@ -1,9 +1,9 @@
 {
   "schema": "dark-sky-release-gate-forgeseal-v1",
-  "build": "8.8.20.14",
-  "release": "HashLock",
+  "build": "8.8.20.15",
+  "release": "ClearBearing",
   "pass": true,
-  "evidence_scope": "Final-byte release integrity closure: runtime/model hashes regenerated only after release freeze, whole-package checksums regenerated after manifest, and finished ZIP independently reverified. Native iPad boot remains field acceptance.",
+  "evidence_scope": "Commissioning recovery command-surface hardening, pending-recovery navigation gate, and final-byte package integrity. Native iPad field acceptance remains pending.",
   "native_field_acceptance": "pending",
   "prior_release_evidence": {
     "schema": "dark-sky-release-gate-bloompick-v1",

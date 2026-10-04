@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.14",
-  "release": "HashLock",
-  "seal": "hashlock-88214",
+  "build": "8.8.20.15",
+  "release": "ClearBearing",
+  "seal": "clearbearing-882015",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "HashLock",
-  "name": "HashLock",
-  "releaseName": "HashLock"
+  "release_name": "ClearBearing",
+  "name": "ClearBearing",
+  "releaseName": "ClearBearing"
 }

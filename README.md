@@ -1,3 +1,17 @@
+# Dark Sky 8.8.20.15 — ClearBearing
+
+ClearBearing hardens VoyageKeeper recovery into a native Black Flag command surface. Recovered voyages now show one explicit next action, block forward navigation until Fleet Core is re-read, and expose recovery evidence inline instead of through browser alerts.
+
+Browser/session storage remains a cache. Fleet Core remains the durable commissioning authority.
+
+## 8.8.20.15 ClearBearing
+- Replaces the commissioning Recovery Inspector browser alert with an inline Black Flag evidence panel.
+- Makes the pending recovery state explicit: one security step remains, then the voyage resumes.
+- Disables ordinary Continue while a recovered voyage still requires Admiral/Fleet Core re-verification.
+- Treats a missing prior command receipt as informational when authoritative Fleet Core read-back is already verified.
+- Preserves HashLock final-byte runtime verification, strict project isolation, and fail-closed release behavior.
+- No vessel data, authority assignments, production status, or project boundaries are manufactured by this release.
+
 # Dark Sky 8.8.20.14 — HashLock
 
 VoyageKeeper preserves PassageLine's focused Admiral authorization and adds server-authoritative commissioning recovery after the required Engine PIN. If Fleet Core holds an unfinished voyage, successful Engine re-entry resumes that exact voyage and displays its recovery banner instead of silently landing at generic Engine home.

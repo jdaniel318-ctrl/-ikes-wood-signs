@@ -1,3 +1,7 @@
+# 8.8.20.15 ClearBearing — Release Acceptance
+
+Package-level acceptance: PASS. Native iPad field acceptance: PENDING. This release changes recovery presentation/navigation only and preserves server authority boundaries. Final-byte hashes are regenerated after all edits.
+
 # VoyageKeeper 8.8.20.14 — Release Acceptance
 
 1. Confirm 8.8.20.14 · VOYAGEKEEPER boots without Release Recovery.

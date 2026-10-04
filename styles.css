@@ -16146,3 +16146,20 @@ dialog.cg-workspace::backdrop{background:#061c24;}
 .commissioning-workspace .commission-validation.visible{color:var(--bf-copy)!important;background:linear-gradient(135deg,rgba(22,65,74,.96),rgba(13,35,42,.98))!important;border:1px solid rgba(91,190,216,.42)!important;border-left:4px solid var(--bf-blue)!important;border-radius:14px!important;padding:16px 18px!important;box-shadow:0 12px 28px rgba(0,0,0,.18)}
 .commissioning-workspace .commission-validation.visible b{display:block;color:var(--bf-text);margin-bottom:5px}.commissioning-workspace .commission-validation.visible span,.commissioning-workspace .commission-validation.visible small{display:block;color:var(--bf-copy);line-height:1.45}.commissioning-workspace .commission-validation.visible .primary-btn{margin-top:12px;min-height:48px}
 .forge-primary-path .is-complete{border-color:rgba(92,205,180,.5)!important;color:#9ce0cf!important}.forge-primary-path .is-current{border-color:var(--bf-blue)!important;background:rgba(53,140,174,.18)!important;color:var(--bf-text)!important;font-weight:800}
+
+/* 8.8.20.15 ClearBearing — recovery is a command surface, never a browser alert. */
+.commission-voyage-recovery{align-items:flex-start}
+.voyage-recovery-copy{min-width:0;flex:1 1 58%}
+.voyage-recovery-next{margin-top:12px!important;padding:10px 12px;border-left:3px solid rgba(225,188,92,.78);background:rgba(225,188,92,.07);color:#dce8e8!important}
+.voyage-inspector{margin:-10px 0 22px;padding:18px 20px;border:1px solid rgba(99,190,214,.34);border-radius:14px;background:rgba(4,22,28,.96);box-shadow:0 14px 34px rgba(0,0,0,.2)}
+.voyage-inspector.hidden{display:none!important}
+.voyage-inspector-head{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:14px}
+.voyage-inspector-head small{display:block;color:#83cfe0;letter-spacing:.13em;font-weight:800}
+.voyage-inspector-head strong{display:block;margin-top:4px;font-size:1.12rem}
+.voyage-inspector-close{min-height:40px;padding:0 16px;border:1px solid rgba(151,190,199,.38);border-radius:10px;background:#0d2931;color:#eef6f6;font-weight:800;letter-spacing:.08em}
+.voyage-inspector-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.voyage-inspector-grid>div{padding:12px;border:1px solid rgba(116,167,178,.22);border-radius:10px;background:rgba(7,31,38,.7)}
+.voyage-inspector-grid small{display:block;color:#91aeb5;font-size:.72rem;letter-spacing:.11em}
+.voyage-inspector-grid b{display:block;margin-top:5px;overflow-wrap:anywhere}
+.voyage-inspector p{margin:14px 0 0;color:#b8c9cd;line-height:1.5}
+@media(max-width:820px){.voyage-inspector-grid{grid-template-columns:1fr}.voyage-inspector-head{align-items:flex-start}.voyage-inspector-close{flex:0 0 auto}}

@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.20.14';
+  const BUILD_VERSION='8.8.20.15';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -203,7 +203,7 @@
         {id:'openings-takeoff',name:'Windows / Doors / Trim Takeoff',published:true,active:true,customerReady:true}
       ],
       houseHull:{engine:'PlumbLine',scaleStatus:'experimental',truthLevels:['AI ESTIMATE','FIELD MEASURED','SALESPERSON VERIFIED'],requiredElevations:['Front','Rear','Left','Right'],miscPhotos:true,materials:['vinyl siding','fiber cement','engineered wood','brick veneer','CMU/block','exposed foundation'],openingTrimOptions:['J-channel only','standard casing','wide picture-frame trim','PVC/composite trim','aluminum-wrapped trim','brickmould','manufacturer-specific trim','custom / no trim']},
-      deployments:[],orders:[],customers:[],ledger:[],commissionedAt:new Date().toISOString(),commissioningVersion:'8.8.20.14',
+      deployments:[],orders:[],customers:[],ledger:[],commissionedAt:new Date().toISOString(),commissioningVersion:'8.8.20.15',
       lifecycle:{state:'draft',version:3},registry:{version:1,source:'release-bundled',displayNameUnique:false},
       governance:{platformStatus:'approved',history:[]},audit:{enabled:true,policyVersion:'4.0'}
     },
@@ -8524,12 +8524,26 @@
     if(!id||!client||!operationId)return null;
     try{return await client.rpc('record_commissioning_receipt',{p_voyage_id:id,p_operation_id:operationId,p_intended_project_id:String(projectId||''),p_preview_fingerprint:String(commissionDraft?._forgeFingerprint||''),p_command_state:state,p_detail:detail},'Fleet Core could not record the commissioning receipt.');}catch(err){window.__voyageGuardReceiptError=String(err?.message||err);return null;}
   }
+  function commissionRecoveryInspectorMarkup(){
+    if(!commissionDraft?._serverRecovered&&!commissionDraft?._serverRecoveryPending)return '';
+    const r=commissionDraft?._serverReceipt;
+    const verified=!!commissionDraft?._serverRecovered&&!commissionDraft?._serverRecoveryPending&&commissionServerSyncState.state==='safe';
+    const title=r?'Command receipt':verified?'Fleet Core read-back':'Recovery checkpoint';
+    const status=r?String(r.command_state||'unknown').replaceAll('_',' ').toUpperCase():verified?'SERVER VERIFIED':'SERVER RECHECK REQUIRED';
+    const rows=r
+      ?[['Status',status],['Operation',r.operation_id||'Not recorded'],['Updated',r.updated_at||'Not recorded']]
+      :verified
+        ?[['Status',status],['Voyage',commissionDraft?._serverVoyageId||'Not recorded'],['Server revision',commissionDraft?._serverRevisionAt||commissionServerSyncState.at||'Not recorded']]
+        :[['Status',status],['Browser checkpoint','FOUND'],['Fleet Core read-back','NOT YET PERFORMED']];
+    const note=r?'This receipt records the last server command attached to this voyage.':verified?'Fleet Core verified this voyage. No prior commissioning command receipt is attached; that is informational, not a failure.':'The browser has preserved the voyage pointer only. No server-safe claim is made until Admiral verification completes.';
+    return `<div class="voyage-inspector hidden" data-voyage-inspector role="region" aria-live="polite"><div class="voyage-inspector-head"><div><small>RECOVERY DETAILS</small><strong>${escapeHtml(title)}</strong></div><button type="button" class="voyage-inspector-close" data-voyage-inspect-close aria-label="Close recovery details">CLOSE</button></div><div class="voyage-inspector-grid">${rows.map(([k,v])=>`<div><small>${escapeHtml(k)}</small><b>${escapeHtml(v)}</b></div>`).join('')}</div><p>${escapeHtml(note)}</p></div>`;
+  }
   function commissionRecoveryBannerMarkup(){
     if(!commissionDraft?._serverRecovered&&!commissionDraft?._serverRecoveryPending)return '';
     const pending=!!commissionDraft._serverRecoveryPending;
     const receipt=commissionDraft._serverReceipt; const state=pending?'SERVER RECHECK REQUIRED':String(receipt?.command_state||'draft_preserved').replaceAll('_',' ').toUpperCase();
-    const truth=pending?'This secure browser recovered the exact voyage. Fleet Core has not been re-read yet; verify Admiral authority before server-safe work continues.':'Fleet Core read-back recovered this exact voyage. You may continue from the verified stage.';
-    return `<section class="commission-voyage-recovery ${pending?'is-pending':''}"><div><small>VOYAGEKEEPER • ${pending?'SECURE VOYAGE · RECOVERY CHECKPOINT':'SECURE VOYAGE · SERVER VERIFIED'}</small><h3>${escapeHtml(commissionDraft.name||'Unnamed vessel')}</h3><p>Stage: <b>${String(Number(commissionDraft._step||1)).padStart(2,'0')} / 07</b> • <b>${escapeHtml(state)}</b></p><p class="voyage-recovery-truth">${escapeHtml(truth)}</p></div><div class="commission-voyage-actions">${pending?'<button type="button" class="primary-btn" data-authorize-voyage>VERIFY ADMIRAL & RESTORE VOYAGE</button>':'<button type="button" class="primary-btn" data-voyage-resume>CONTINUE VOYAGE</button>'}<button type="button" class="secondary-btn" data-voyage-inspect>INSPECT RECOVERY</button></div></section>`;
+    const truth=pending?'Your voyage is preserved in this browser. One security check remains before server-safe work can continue.':'Fleet Core read-back recovered this exact voyage. You may continue from the verified stage.';
+    return `<section class="commission-voyage-recovery ${pending?'is-pending':''}"><div class="voyage-recovery-copy"><small>${pending?'RECOVERY CHECKPOINT • 1 STEP REMAINS':'RECOVERY CHECKPOINT • VERIFIED'}</small><h3>${escapeHtml(commissionDraft.name||'Unnamed vessel')}</h3><p>Stage <b>${String(Number(commissionDraft._step||1)).padStart(2,'0')} of 07</b> • <b>${escapeHtml(state)}</b></p><p class="voyage-recovery-truth">${escapeHtml(truth)}</p>${pending?'<p class="voyage-recovery-next"><b>NEXT:</b> Verify Admiral. Black Flag will re-read Fleet Core, confirm this exact voyage, and return you here.</p>':''}</div><div class="commission-voyage-actions">${pending?'<button type="button" class="primary-btn" data-authorize-voyage>VERIFY ADMIRAL & RESUME</button>':'<button type="button" class="primary-btn" data-voyage-resume>CONTINUE VOYAGE</button>'}<button type="button" class="secondary-btn" data-voyage-inspect>VIEW RECOVERY DETAILS</button></div></section>${commissionRecoveryInspectorMarkup()}`;
   }
 
   function openProjectCommissioning(actorRole='engine_admin'){
@@ -9132,7 +9146,11 @@
       b.setAttribute('aria-current',step===commissionStep?'step':'false');
     });
     $('commissionPrev').disabled=commissionStep===1;
-    $('commissionNext').textContent=commissionStep===7?'COMMISSION PROJECT':'CONTINUE'; if(commissionStep===7){$('commissionNext').disabled=true;$('commissionNext').title='Running PROVE readiness checks…';} else {$('commissionNext').disabled=false;$('commissionNext').title='';}
+    $('commissionNext').textContent=commissionStep===7?'COMMISSION PROJECT':'CONTINUE';
+    const recoveryHeld=!!commissionDraft?._serverRecoveryPending;
+    if(commissionStep===7){$('commissionNext').disabled=true;$('commissionNext').title='Running PROVE readiness checks…';}
+    else if(recoveryHeld){$('commissionNext').disabled=true;$('commissionNext').title='Verify Admiral & Resume before continuing this recovered voyage.';}
+    else {$('commissionNext').disabled=false;$('commissionNext').title='';}
     const recovered=commissionDraft._recovered?' • RECOVERED DRAFT':'';
     const storage=commissionDraftStorageState.degraded?' • SESSION SAFE':'';
     $('commissionDraftStatus').textContent=`DRAFT • STEP ${commissionStep}/7${recovered}${storage} • ${commissionServerSyncLabel()} • NOT PUBLISHED`;
@@ -9375,7 +9393,8 @@
     bindBusinessIntakeControls();
     bindVesselForgeControls();
     workspace.querySelector('[data-voyage-resume]')?.addEventListener('click',e=>{e.preventDefault();document.querySelector('.commission-panel')?.scrollIntoView({block:'start',behavior:'smooth'});});
-    workspace.querySelector('[data-voyage-inspect]')?.addEventListener('click',e=>{e.preventDefault();const r=commissionDraft?._serverReceipt,verified=!!commissionDraft?._serverRecovered&&!commissionDraft?._serverRecoveryPending&&commissionServerSyncState.state==='safe';if(r){alert(`Recovery receipt: ${String(r.command_state||'unknown').replaceAll('_',' ').toUpperCase()}\nOperation: ${r.operation_id||'—'}\nUpdated: ${r.updated_at||'—'}`);return;}if(verified){alert(`Fleet Core read-back verified this voyage.\nVoyage: ${commissionDraft?._serverVoyageId||'—'}\nServer revision: ${commissionDraft?._serverRevisionAt||commissionServerSyncState.at||'—'}\nNo prior commissioning command receipt is attached.`);return;}alert('Browser recovery checkpoint found. Fleet Core has not yet been re-read and no server preservation claim is being made. Verify Admiral & Restore Voyage to perform authoritative read-back.');});
+    workspace.querySelector('[data-voyage-inspect]')?.addEventListener('click',e=>{e.preventDefault();const panel=workspace.querySelector('[data-voyage-inspector]');if(!panel)return;panel.classList.toggle('hidden');if(!panel.classList.contains('hidden'))panel.scrollIntoView({block:'nearest',behavior:'smooth'});});
+    workspace.querySelector('[data-voyage-inspect-close]')?.addEventListener('click',e=>{e.preventDefault();workspace.querySelector('[data-voyage-inspector]')?.classList.add('hidden');workspace.querySelector('[data-voyage-inspect]')?.focus({preventScroll:true});});
     workspace.querySelector('[data-voyage-discard]')?.addEventListener('click',async e=>{e.preventDefault();if(!confirm('Discard this unfinished commissioning voyage? This does not delete or change any commissioned vessel.'))return;try{await discardCommissionVoyageServer();clearCommissionDraft();commissionDraft=freshCommissionDraft();commissionStep=1;renderCommissioning();}catch(err){alert(String(err?.message||err));}});
     workspace.querySelectorAll('[data-commission-toggle]').forEach(btn=>{
       btn.onclick=(event)=>{

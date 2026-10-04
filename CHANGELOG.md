@@ -1,3 +1,10 @@
+# 8.8.20.15 — ClearBearing
+
+- Refit commissioning recovery as an inline command surface; no browser alert for Recovery Details.
+- Hold forward commissioning navigation until Admiral/Fleet Core recovery verification completes.
+- Clarify recovery truth: browser checkpoint, server recheck, server verified, and optional command receipt are distinct states.
+- Preserve HashLock atomic loader and final-byte integrity discipline.
+
 ## 8.8.20.14 — HashLock
 - Fixed finalization order so DEPLOYMENT_MANIFEST runtime hashes are generated from the exact bytes shipped.
 - Added fleet regression gates for final-byte integrity and fail-closed mismatch handling.
