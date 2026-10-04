@@ -1,8 +1,8 @@
 {
-  "release": "8.8.20.10",
-  "name": "HomeWake",
-  "build": "8.8.20.10",
-  "seal": "homewake-88210",
+  "release": "8.8.20.11",
+  "name": "VoyageKeeper",
+  "build": "8.8.20.11",
+  "seal": "voyagekeeper-88211",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
@@ -91,5 +91,5 @@
     "styles.css",
     "sw.js"
   ],
-  "releaseName": "HomeWake"
+  "releaseName": "VoyageKeeper"
 }

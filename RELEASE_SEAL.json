@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.10",
-  "release": "HomeWake",
-  "seal": "homewake-88210",
+  "build": "8.8.20.11",
+  "release": "VoyageKeeper",
+  "seal": "voyagekeeper-88211",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "HomeWake",
-  "name": "HomeWake",
-  "releaseName": "HomeWake"
+  "release_name": "VoyageKeeper",
+  "name": "VoyageKeeper",
+  "releaseName": "VoyageKeeper"
 }

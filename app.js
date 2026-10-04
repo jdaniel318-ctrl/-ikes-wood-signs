@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.20.10';
+  const BUILD_VERSION='8.8.20.11';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -203,7 +203,7 @@
         {id:'openings-takeoff',name:'Windows / Doors / Trim Takeoff',published:true,active:true,customerReady:true}
       ],
       houseHull:{engine:'PlumbLine',scaleStatus:'experimental',truthLevels:['AI ESTIMATE','FIELD MEASURED','SALESPERSON VERIFIED'],requiredElevations:['Front','Rear','Left','Right'],miscPhotos:true,materials:['vinyl siding','fiber cement','engineered wood','brick veneer','CMU/block','exposed foundation'],openingTrimOptions:['J-channel only','standard casing','wide picture-frame trim','PVC/composite trim','aluminum-wrapped trim','brickmould','manufacturer-specific trim','custom / no trim']},
-      deployments:[],orders:[],customers:[],ledger:[],commissionedAt:new Date().toISOString(),commissioningVersion:'8.8.20.10',
+      deployments:[],orders:[],customers:[],ledger:[],commissionedAt:new Date().toISOString(),commissioningVersion:'8.8.20.11',
       lifecycle:{state:'draft',version:3},registry:{version:1,source:'release-bundled',displayNameUnique:false},
       governance:{platformStatus:'approved',history:[]},audit:{enabled:true,policyVersion:'4.0'}
     },
@@ -8306,6 +8306,18 @@
   const COMMISSION_DRAFT_KEY='blackFlagCommissionDraftV2';
   const COMMISSION_DRAFT_SESSION_KEY='darkSkyCommissionDraftSessionV3';
   const COMMISSION_DRAFT_DURABLE_KEY='commissioningDraftActiveV3';
+  const COMMISSION_RECOVERY_COOKIE='blackFlagCommissionRecoveryV1';
+  function writeCommissionRecoveryHint(d=commissionDraft){
+    if(!d?.draftId)return;
+    const hint={draftId:String(d.draftId),name:String(d.name||'Unfinished vessel'),step:Math.max(1,Math.min(7,Number(d._step||commissionStep||1))),at:new Date().toISOString()};
+    try{document.cookie=`${COMMISSION_RECOVERY_COOKIE}=${encodeURIComponent(JSON.stringify(hint))}; Path=/; SameSite=Strict; Max-Age=604800`;}catch(_){}
+  }
+  function readCommissionRecoveryHint(){
+    try{const part=document.cookie.split('; ').find(x=>x.startsWith(COMMISSION_RECOVERY_COOKIE+'='));if(!part)return null;const h=JSON.parse(decodeURIComponent(part.slice(part.indexOf('=')+1)));return h?.draftId?h:null;}catch(_){return null;}
+  }
+  function clearCommissionRecoveryHint(){try{document.cookie=`${COMMISSION_RECOVERY_COOKIE}=; Path=/; SameSite=Strict; Max-Age=0`;}catch(_){}}
+  function recoveryHintDraft(){const h=readCommissionRecoveryHint();if(!h)return null;return {...freshCommissionDraft(),draftId:h.draftId,name:h.name||'Unfinished vessel',_step:Number(h.step||1),_maxStepReached:Number(h.step||1),_recovered:true,_serverRecoveryPending:true,_recoveryHintOnly:true};}
+
   let commissionDraftStorageState={channel:'memory',degraded:false,error:''};
   const FLEET_LAUNCH_SERVICE_ID='fleet.business-launch';
   const FLEET_LAUNCH_SERVICE_VERSION='1.0.0';
@@ -8337,6 +8349,7 @@
     const snapshot=commissionDraftClone(value);
     if(!snapshot)return {ok:false,channel:'memory',degraded:true,error:'No draft was available to save.'};
     window.__darkSkyCommissionDraftV3=snapshot;
+    writeCommissionRecoveryHint(snapshot);
     let channel='memory',error='';
     try{sessionStorage.setItem(COMMISSION_DRAFT_SESSION_KEY,JSON.stringify(snapshot));channel='session';}
     catch(err){error=commissionStorageError(err);}
@@ -8377,12 +8390,13 @@
   }
   function clearCommissionDraft(){
     window.__darkSkyCommissionDraftV3=null;
+    clearCommissionRecoveryHint();
     try{sessionStorage.removeItem(COMMISSION_DRAFT_SESSION_KEY);}catch(_){}
     try{localStorage.removeItem(COMMISSION_DRAFT_KEY);}catch(_){}
     try{localStorage.removeItem('blackFlagCommissionDraft');}catch(_){}
   }
 
-  // HomeWake 8.8.20.10 — Fleet Core is the durable recovery authority when an
+  // VoyageKeeper 8.8.20.11 — Fleet Core is the durable recovery authority when an
   // authenticated commissioning officer is available. Browser stores remain caches.
   const COMMISSION_VOYAGE_SESSION_KEY='darkSkySupabaseAdmiralSessionV1';
   let commissionServerVoyage=null,commissionServerSaveTimer=null;
@@ -8441,13 +8455,13 @@
   async function resumeActiveCommissionVoyageAfterEngineUnlock(){
     const row=await detectActiveCommissionVoyageForResume();
     if(!row){
-      // HomeWake 8.8.20.10: an Engine refresh must never strand a voyage merely
+      // VoyageKeeper 8.8.20.11: an Engine refresh must never strand a voyage merely
       // because the Fleet Core read requires renewed Admiral account authority.
       // Session/browser state is only a recovery hint — never server truth — but it
       // is enough to restore the exact commissioning workspace and ask for a
       // deliberate server recheck instead of dumping the officer at Engine home.
-      const local=readCommissionDraft();
-      if(!local?.name)return false;
+      const local=readCommissionDraft()||recoveryHintDraft();
+      if(!local?.draftId)return false;
       commissionDraft={...freshCommissionDraft(),...local,_recovered:true,_serverRecoveryPending:true};
       commissionStep=Math.max(1,Math.min(7,Number(commissionDraft._step||1)));
       commissionDraft._step=commissionStep;
@@ -8488,7 +8502,7 @@
     const pending=!!commissionDraft._serverRecoveryPending;
     const receipt=commissionDraft._serverReceipt; const state=pending?'SERVER RECHECK REQUIRED':String(receipt?.command_state||'draft_preserved').replaceAll('_',' ').toUpperCase();
     const truth=pending?'This secure browser recovered the exact voyage. Fleet Core has not been re-read yet; verify Admiral authority before server-safe work continues.':'Fleet Core read-back recovered this exact voyage. You may continue from the verified stage.';
-    return `<section class="commission-voyage-recovery ${pending?'is-pending':''}"><div><small>HOMEWAKE • ${pending?'VOYAGE FOUND · SERVER RECHECK':'SERVER VOYAGE RECOVERED'}</small><h3>${escapeHtml(commissionDraft.name||'Unnamed vessel')}</h3><p>Stage: <b>${String(Number(commissionDraft._step||1)).padStart(2,'0')} / 07</b> • <b>${escapeHtml(state)}</b></p><p class="voyage-recovery-truth">${escapeHtml(truth)}</p></div><div class="commission-voyage-actions">${pending?'<button type="button" class="primary-btn" data-authorize-voyage>VERIFY ADMIRAL & RECOVER SERVER COPY</button>':'<button type="button" class="primary-btn" data-voyage-resume>CONTINUE VOYAGE</button>'}<button type="button" class="secondary-btn" data-voyage-inspect>INSPECT RECOVERY</button></div></section>`;
+    return `<section class="commission-voyage-recovery ${pending?'is-pending':''}"><div><small>VOYAGEKEEPER • ${pending?'SECURE VOYAGE · RECOVERY CHECKPOINT':'SECURE VOYAGE · SERVER VERIFIED'}</small><h3>${escapeHtml(commissionDraft.name||'Unnamed vessel')}</h3><p>Stage: <b>${String(Number(commissionDraft._step||1)).padStart(2,'0')} / 07</b> • <b>${escapeHtml(state)}</b></p><p class="voyage-recovery-truth">${escapeHtml(truth)}</p></div><div class="commission-voyage-actions">${pending?'<button type="button" class="primary-btn" data-authorize-voyage>VERIFY ADMIRAL & RESTORE VOYAGE</button>':'<button type="button" class="primary-btn" data-voyage-resume>CONTINUE VOYAGE</button>'}<button type="button" class="secondary-btn" data-voyage-inspect>INSPECT RECOVERY</button></div></section>`;
   }
 
   function openProjectCommissioning(actorRole='engine_admin'){
@@ -8499,7 +8513,7 @@
       alert('This authority cannot commission a fleet vessel. Captain, Admiral, or Engine Admin authority is required.');
       return;
     }
-    const recovered=readCommissionDraft();
+    const recovered=readCommissionDraft()||recoveryHintDraft();
     commissionDraft=recovered||freshCommissionDraft();
     if(!recovered)commissionDraft.commissionerRole=requestedRole;
     commissionStep=Math.max(1,Math.min(7,Number(commissionDraft._step||1)));
@@ -8936,7 +8950,7 @@
       <div class="commission-panel">
         <div class="eyebrow">02 • BUSINESS INTAKE & BRIEF</div><h2>Start with what already exists</h2><p class="commission-step-lede">Give Black Flag one good source and it will do the first pass. You stay in control of every recommendation.</p>
         ${businessIntakeMarkup(d)}
-        <section class="vessel-forge-block"><div><small>BLACK FLAG • VESSEL FORGE</small><h3>Describe it once. Forge carries the plan forward.</h3><p>Black Flag turns the brief into a reviewable operating blueprint and carries it through Offer, Experience, Access and final truth review.</p></div><div class="forge-primary-path"><span>1 • DESCRIBE BUSINESS</span><b>2 • BUILD MY VESSEL</b><span>3 • REVIEW BLACK FLAG'S PLAN</span><span>4 • CONTINUE</span></div><div class="vessel-forge-actions"><button type="button" id="forgeBuildFromBrief" class="forge-primary-action">BUILD MY VESSEL FROM THIS BRIEF</button><details class="forge-blueprint-tools"><summary>Blueprint tools</summary><div><button type="button" id="forgeExportBlueprint">EXPORT BLUEPRINT</button><label class="forge-import">IMPORT BLUEPRINT<input type="file" id="forgeImportBlueprint" accept="application/json,.json"></label></div></details></div><div id="forgeStatus" class="vessel-forge-status">No external AI is required for this deterministic starting-model pass.</div>${forgePlanMarkup(d)}</section>
+        <section class="vessel-forge-block"><div><small>BLACK FLAG • VESSEL FORGE</small><h3>Describe it once. Forge carries the plan forward.</h3><p>Black Flag turns the brief into a reviewable operating blueprint and carries it through Offer, Experience, Access and final truth review.</p></div><div class="forge-primary-path"><span class="${d.businessBrief?'is-complete':''}">1 • DESCRIBE BUSINESS</span><span class="${d.forgePlan?'is-complete':'is-current'}">2 • BUILD MY VESSEL</span><span class="${d.forgePlan?'is-current':''}">3 • REVIEW BLACK FLAG'S PLAN</span><span>4 • CONTINUE</span></div><div class="vessel-forge-actions"><button type="button" id="forgeBuildFromBrief" class="forge-primary-action">BUILD MY VESSEL FROM THIS BRIEF</button><details class="forge-blueprint-tools"><summary>Blueprint tools</summary><div><button type="button" id="forgeExportBlueprint">EXPORT BLUEPRINT</button><label class="forge-import">IMPORT BLUEPRINT<input type="file" id="forgeImportBlueprint" accept="application/json,.json"></label></div></details></div><div id="forgeStatus" class="vessel-forge-status">No external AI is required for this deterministic starting-model pass.</div>${forgePlanMarkup(d)}</section>
         <div class="commission-section-divider"><span>REVIEW / COMPLETE THE MODEL</span><small>Black Flag can suggest these fields; you can change them now or later.</small></div>
         <div class="commission-grid">
           <label>Starting model<select data-cfield="businessType">
@@ -9135,8 +9149,13 @@
     let marker=null;try{marker=JSON.parse(sessionStorage.getItem('darkSkyCommissionAuthorizeReturnV1')||'null');}catch(_){}
     if(!marker||!window.DarkSkyAdmiralSession?.status?.().reusable)return false;
     try{sessionStorage.removeItem('darkSkyCommissionAuthorizeReturnV1');}catch(_){}
-    setCommissionServerSyncState('syncing','Admiral verified. Securing this commissioning voyage in Fleet Core…');
+    setCommissionServerSyncState('syncing','Admiral verified. Re-reading the authoritative voyage from Fleet Core…');
     renderCommissioning();
+    if(commissionDraft?._serverRecoveryPending){
+      const recovered=await hydrateCommissionVoyageFromServer();
+      if(recovered){commissionDraft._serverRecoveryPending=false;commissionDraft._recoveryHintOnly=false;writeCommissionDraftSafe(commissionDraft,{durable:false});renderCommissioning();return true;}
+      setCommissionServerSyncState('error','Fleet Core did not return the unfinished voyage. Nothing was overwritten.');renderCommissioning();return false;
+    }
     await saveCommissionDraft();
     return true;
   }
@@ -9178,6 +9197,9 @@
       if(!String(commissionDraft.name||'').trim())return commissionError('Enter a business or project name before continuing.','name');
       if(String(commissionDraft.name||'').trim().length<2)return commissionError('Use at least two characters for the business name.','name');
       if(commissionDraft.ownerEmail && !validEmail(commissionDraft.ownerEmail))return commissionError('Enter a valid owner email address or leave it blank for later.','ownerEmail');
+    }
+    if(commissionStep===2 && !commissionDraft.forgePlan){
+      return commissionError('Build and review the Forge Plan before continuing to Offer. Your brief is preserved.');
     }
     if(commissionStep===5 && commissionDraft.ownerPortal){
       if(!String(commissionDraft.ownerName||'').trim())return commissionError('Owner Portal is set to Prepare Now. Add the confirmed owner in Step 1, or choose Prepare Later below.','ownerPortal');
@@ -9228,6 +9250,8 @@
           commissionStep++;
           commissionDraft._step=commissionStep;
           commissionDraft._maxStepReached=Math.max(Number(commissionDraft._maxStepReached||1),commissionStep);
+          commissionDraft.updatedAt=new Date().toISOString();
+          if(commissionServerSyncState.state==='safe')setCommissionServerSyncState('syncing','Checkpointing this voyage stage in Fleet Core…');
           writeCommissionDraftSafe(commissionDraft);
           renderCommissioning();
           document.querySelector('.commissioning-shell')?.scrollIntoView({block:'start'});
@@ -17098,7 +17122,7 @@ document.addEventListener('click', (event) => {
       try{ await window.igniteProofBootstrap8617?.('engine-entry'); }catch(err){ console.warn('Bootstrap Ignition engine-entry warning',err); }
       if(typeof window.renderBlackFlagHome==='function') await window.renderBlackFlagHome();
       try{window.__darkSkyPostLoginHoldRelay8631?.('engine-home-rendered');}catch(_){ }
-      // HomeWake 8.8.20.10: after the required Engine re-authentication, Fleet Core
+      // VoyageKeeper 8.8.20.11: after the required Engine re-authentication, Fleet Core
       // gets first say on unfinished commissioning. Resume the exact server-safe
       // voyage instead of silently dropping the officer at generic Engine home.
       const resumedVoyage=await resumeActiveCommissionVoyageAfterEngineUnlock();
