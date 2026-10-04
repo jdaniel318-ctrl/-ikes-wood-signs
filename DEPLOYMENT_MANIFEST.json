@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.20.26",
-  "version": "8.8.20.26",
-  "release_name": "ForgeSeal",
-  "releaseName": "ForgeSeal",
-  "release_seal": "forgeseal-882026",
+  "build": "8.8.20.27",
+  "version": "8.8.20.27",
+  "release_name": "Blackwake",
+  "releaseName": "Blackwake",
+  "release_seal": "blackwake-882027",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -91,8 +91,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "Deterministic Admiral recovery handoff: every rendered recovery authorization control is bound to the secure gate and returns to exact-voyage Fleet Core re-read.",
-  "release_note": "ForgeSeal makes recovery fail-closed and actionable: every recovered voyage that is not currently server-verified exposes Verify Admiral & Resume, then requires an exact Fleet Core voyage read-back before the recovery hold can clear. No publication, ownership, Captain grant, or new commissioning command is performed by the verification step.",
+  "release_focus": "Sealed recovered-voyage passage: exact Fleet Core recovery verification followed by deterministic navigation-only entry to Step 6 Review.",
+  "release_note": "Blackwake preserves the field-proven recovery gate and HarborGlass Step-6 transition while repairing release identity consensus and sealing hashes only after final runtime/model bytes are frozen.",
   "tax_ledger_upgrade": {
     "schema": "dark-sky-fleet-tax-ledger-v1",
     "model": "TAX_LEDGER_MODEL.json",
@@ -214,8 +214,8 @@
     "algorithm": "SHA-256",
     "files": {
       "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": {
-        "sha256": "828a5192e18f26dd60b4cc90a72c325b4c0c3235b67e0d5dfc9a5053f622c59e",
-        "build": "8.8.20.26",
+        "sha256": "823ea440261cc5cb772d71c00a1c7eec42d07604dd075a2a6b62e075a3e15a65",
+        "build": "8.8.20.27",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -262,14 +262,14 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_COMMAND_MODEL.json": {
-        "sha256": "1708975d313d2cdbf9e6af7ad76c716a7c8b25939bfa94744a5f4a4c8ac364a6",
-        "build": "8.8.20.26",
+        "sha256": "cf6396cd400526f35bcd93534367c607012f4f976354fda2fb1c21d4262293c9",
+        "build": "8.8.20.27",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
       "FLEET_DOCTRINE_REGISTRY.json": {
-        "sha256": "20e541b660e7ea921123ca90583fed670f72bf537da7d2b0ca89dbf4e9639202",
-        "build": "8.8.20.26",
+        "sha256": "ad523666c72a21778215588156f77120b05ef15059e7c0fa4f460578acebe9a6",
+        "build": "8.8.20.27",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -298,7 +298,7 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_REGRESSION_GATES.json": {
-        "sha256": "6c4be53970fff35d5e0f750c69ee4a1a64ee5c372a72f696bf0f584ed7e11b1a",
+        "sha256": "6e132444e6da230ece0a6e0f6b55da8bba14cf63a0e8a4fcbb5302a43cda87d1",
         "build": "8.8.20.22",
         "policy": "retained-versioned-reference",
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
@@ -328,8 +328,8 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "GOLDEN_VOYAGES.json": {
-        "sha256": "21bc7dd09a21cd03788192d19ff9afce93637fa15cbf56fe11f12831964767b7",
-        "build": "8.8.20.26",
+        "sha256": "ead84dff5b70ffa8bdb7bd778d054a9b8e88e9617560a6d86b0b501e4aebe52c",
+        "build": "8.8.20.27",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -485,17 +485,17 @@
       "platform_identity.js": "aa855c8de0b69cc89e36d4ad9dfff32012551c297147830fd2e84256e3bfcbd1",
       "fleet_supabase.js": "a8675fb446d0587e61bdb31701f089d77e3b0cef521218b0df317c60cd679c64",
       "ike_style_registry.js": "6b348ebceb47e172e6676f46252b19c1c6bb7532baf76febfa8dd81760a76ab7",
-      "app.js": "63e73da66f61a20eac0a2610309544edf2b89db3708b610c20db9ce88f5fc67b",
+      "app.js": "98ab095c3aeda87fdec09b3fcc1fe91edded8eb78c76251a2d9e50d1e6612f7b",
       "captain.js": "47f7afcbabcce44cf5b84f4936842bdce20aed1bbec8e78a6d94e18ab235a0b4",
       "simple_books.js": "cd9f4691324c7c5361160a63a820416ab328806509f9f7fbce38a013667fe862",
       "owner.html": "a823e8ba92fe927d6c7a01dbef5f23f454b51a0c871a4931d7d6a2221895ae59",
-      "manifest.webmanifest": "8768b55dface401e9e28a8240b0fed70d45ef6c1dff26227b26fb79a4d9b098d",
+      "manifest.webmanifest": "edeab31b87f13b2e2b41ba6f39830ee8fd0dfa9078400729eb96f797d5244aa8",
       "IKE_STYLE_FOUNDRY.json": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
-      "sw.js": "a960c7faeec61a887e374107ad8094840cc1ad94d1910999c17521082ade857a",
-      "FLEET_DOCTRINE_REGISTRY.json": "57d8fbd475d100386f25a1776c6188188ee9ac7f14547c8d6e4d588e8c97607a",
-      "GOLDEN_VOYAGES.json": "cac184ef1cc261c3c36810f3420841d39bba7dfa65e7e8b114ac6063a5f993fe",
-      "FLEET_COMMAND_MODEL.json": "7882eb7a35c365d455846f3dd0e2717d9562bbfdc0f39a3a5925e712d9d6d3d4",
-      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "066f763d0e56a03a9484afbf44247de9e02facc3ce8da50b82e2b50dc7c7d906"
+      "sw.js": "cf79fd6dd0528265dee42335b23b8401197bcaf40e43662bb1117445aa8b85d5",
+      "FLEET_DOCTRINE_REGISTRY.json": "ad523666c72a21778215588156f77120b05ef15059e7c0fa4f460578acebe9a6",
+      "GOLDEN_VOYAGES.json": "ead84dff5b70ffa8bdb7bd778d054a9b8e88e9617560a6d86b0b501e4aebe52c",
+      "FLEET_COMMAND_MODEL.json": "cf6396cd400526f35bcd93534367c607012f4f976354fda2fb1c21d4262293c9",
+      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "823ea440261cc5cb772d71c00a1c7eec42d07604dd075a2a6b62e075a3e15a65"
     }
   },
   "watchbeacon_upgrade": {
@@ -784,7 +784,7 @@
     "scope": "project-owned canonical logo routing and Fleet Mission presentation",
     "logo_source": "existing projectGraphics/projectLogo exact-vessel store",
     "fleet_mission_display": true,
-    "quick_route": "Fleet Mission LOGO \u2192 exact vessel Project Control \u2192 Marketing \u2192 Project Logo / Mark",
+    "quick_route": "Fleet Mission LOGO → exact vessel Project Control → Marketing → Project Logo / Mark",
     "cross_vessel_copy": false,
     "authority_changes": false,
     "business_record_changes": false,
@@ -930,7 +930,7 @@
     "project_data_mutation": false,
     "field_failure_proof": "8.8.20.13 held on styles.css because packaged DEPLOYMENT_MANIFEST runtime hash did not match packaged styles.css bytes"
   },
-  "release": "ForgeSeal",
+  "release": "Blackwake",
   "clearbearing_upgrade": {
     "build": "8.8.20.22",
     "baseline": "8.8.20.14 HashLock",
@@ -948,7 +948,7 @@
     "evidence": "RELEASE_INTEGRITY_ROOT_CAUSE_882018.json"
   },
   "ironlatch_repair": {
-    "build": "8.8.20.26",
+    "build": "8.8.20.23",
     "baseline": "8.8.20.22 Dead Man's Chest",
     "scope": "Recovery button binding and read-only recovery status presentation only; release identity and final-byte packaging metadata refreshed.",
     "one_action_per_tap": true,
@@ -968,6 +968,14 @@
     "seal": "forgeseal-882026",
     "root_cause": "HarborGlass packaged stale runtime_integrity hashes after final release bytes changed; field boot correctly held on styles.css.",
     "repair": "Recompute runtime_integrity from final packaged bytes, then freeze runtime files; independently verify every manifest hash before ZIP creation.",
+    "field_boundary": "No claim of live iPad acceptance until deployed and observed."
+  },
+  "blackwake_upgrade": {
+    "build": "8.8.20.27",
+    "release": "Blackwake",
+    "seal": "blackwake-882027",
+    "baseline": "8.8.20.26 ForgeSeal field package",
+    "repair": "Advance all boot-enforced current governance models together; preserve historical versioned references; regenerate final runtime/model hashes and checksum ledgers after final bytes; verify fresh ZIP extraction.",
     "field_boundary": "No claim of live iPad acceptance until deployed and observed."
   }
 }

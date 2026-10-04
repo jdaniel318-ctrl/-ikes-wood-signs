@@ -1,4 +1,4 @@
-# Dark Sky 8.8.20.26 — ForgeSeal
+# Dark Sky 8.8.20.27 — Blackwake
 
 Client test candidate for the recovery-details button failure in Dead Man's Chest.
 

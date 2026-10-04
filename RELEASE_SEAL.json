@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.26",
-  "release": "ForgeSeal",
-  "seal": "forgeseal-882026",
+  "build": "8.8.20.27",
+  "release": "Blackwake",
+  "seal": "blackwake-882027",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "ForgeSeal",
-  "name": "ForgeSeal",
-  "releaseName": "ForgeSeal"
+  "release_name": "Blackwake",
+  "name": "Blackwake",
+  "releaseName": "Blackwake"
 }

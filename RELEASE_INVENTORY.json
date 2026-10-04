@@ -1,8 +1,8 @@
 {
-  "release": "ForgeSeal",
-  "name": "ForgeSeal",
-  "build": "8.8.20.26",
-  "seal": "forgeseal-882026",
+  "release": "Blackwake",
+  "name": "Blackwake",
+  "build": "8.8.20.27",
+  "seal": "blackwake-882027",
   "file_count": 94,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
@@ -100,5 +100,5 @@
     "styles.css",
     "sw.js"
   ],
-  "releaseName": "ForgeSeal"
+  "releaseName": "Blackwake"
 }
