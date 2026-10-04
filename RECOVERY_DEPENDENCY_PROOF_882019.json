@@ -1,0 +1,17 @@
+{
+  "schema": "dark-sky-recovery-dependency-proof-v1",
+  "build": "8.8.20.19",
+  "release": "HoldFast",
+  "parent": "8.8.20.18 KeelLock",
+  "field_evidence": {
+    "release_integrity_first_paint": "PASS",
+    "voyage_identity_and_stage_recovery": "PASS",
+    "stage3_forge_plan_payload_recovery": "FAIL in parent"
+  },
+  "repair": [
+    "Recover forgePlan from Fleet Core forge_truth when older draft payload lacks embedded forgePlan.",
+    "Rehydrate primary offer and pricing from recovered Forge Plan when absent.",
+    "Never render Stage 3 without its Forge Plan dependency; reconcile safely to Stage 2 instead."
+  ],
+  "safety": "No authority widening, RLS bypass, checksum exception, or project-data deletion."
+}

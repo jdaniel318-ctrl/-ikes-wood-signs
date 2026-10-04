@@ -1,8 +1,8 @@
 {
-  "release": "8.8.20.18",
+  "release": "8.8.20.19",
   "name": "KeelLock",
-  "build": "8.8.20.18",
-  "seal": "keellock-882018",
+  "build": "8.8.20.19",
+  "seal": "holdfast-882019",
   "file_count": 90,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

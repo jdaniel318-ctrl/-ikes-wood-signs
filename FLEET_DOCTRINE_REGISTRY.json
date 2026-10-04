@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-fleet-doctrine-registry-v1",
-  "build": "8.8.20.18",
+  "build": "8.8.20.19",
   "release": "KeelLock",
   "status": "active",
   "principles": [
