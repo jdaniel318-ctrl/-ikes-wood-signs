@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.8.20.13",
-  "release": "TruthBridge",
+  "build": "8.8.20.14",
+  "release": "HashLock",
   "excluded_sources": [
     "The situation"
   ],
@@ -249,5 +249,12 @@
     "inspect_recovery_never_claims_server_preservation_before_readback",
     "server_verified_requires_actual_server_recovered_payload",
     "failed_readback_keeps_recovery_locked_and_preserves_browser_evidence"
+  ],
+  "hashlock_88214": [
+    "deployment_manifest_runtime_hashes_are_generated_from_final_packaged_bytes",
+    "every_runtime_integrity_hash_matches_the_file_shipped_in_the_same_release",
+    "checksum_ledger_is_generated_only_after_manifest_finalization",
+    "clean_release_retry_never_repeats_when_packaged_manifest_and_runtime_disagree",
+    "runtime_integrity_failure_names_exact_file_and_holds_before_engine_paint"
   ]
 }

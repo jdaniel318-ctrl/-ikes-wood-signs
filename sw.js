@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.20.13';
-const RELEASE_SEAL='truthbridge-88213';
+const RELEASE_BUILD='8.8.20.14';
+const RELEASE_SEAL='hashlock-88214';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.

@@ -1,8 +1,8 @@
 {
-  "release": "8.8.20.13",
-  "name": "TruthBridge",
-  "build": "8.8.20.13",
-  "seal": "truthbridge-88213",
+  "release": "8.8.20.14",
+  "name": "HashLock",
+  "build": "8.8.20.14",
+  "seal": "hashlock-88214",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
@@ -91,5 +91,5 @@
     "styles.css",
     "sw.js"
   ],
-  "releaseName": "TruthBridge"
+  "releaseName": "HashLock"
 }

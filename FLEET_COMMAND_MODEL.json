@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-command-model-v1",
-  "build": "8.8.20.13",
+  "build": "8.8.20.14",
   "views": {
     "operational": "professional-default",
     "presentation": "cinematic-secondary"
@@ -31,7 +31,7 @@
     "Proven Capability",
     "Fleet Standard / Shared Service / New Vessel"
   ],
-  "release": "TruthBridge",
+  "release": "HashLock",
   "dualOfficeCommission": {
     "samePersonMayHoldCaptainAndAdmiral": true,
     "officesRemainDistinct": true,

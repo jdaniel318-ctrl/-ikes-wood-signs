@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.20.13';
+  const BUILD_VERSION='8.8.20.14';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -203,7 +203,7 @@
         {id:'openings-takeoff',name:'Windows / Doors / Trim Takeoff',published:true,active:true,customerReady:true}
       ],
       houseHull:{engine:'PlumbLine',scaleStatus:'experimental',truthLevels:['AI ESTIMATE','FIELD MEASURED','SALESPERSON VERIFIED'],requiredElevations:['Front','Rear','Left','Right'],miscPhotos:true,materials:['vinyl siding','fiber cement','engineered wood','brick veneer','CMU/block','exposed foundation'],openingTrimOptions:['J-channel only','standard casing','wide picture-frame trim','PVC/composite trim','aluminum-wrapped trim','brickmould','manufacturer-specific trim','custom / no trim']},
-      deployments:[],orders:[],customers:[],ledger:[],commissionedAt:new Date().toISOString(),commissioningVersion:'8.8.20.13',
+      deployments:[],orders:[],customers:[],ledger:[],commissionedAt:new Date().toISOString(),commissioningVersion:'8.8.20.14',
       lifecycle:{state:'draft',version:3},registry:{version:1,source:'release-bundled',displayNameUnique:false},
       governance:{platformStatus:'approved',history:[]},audit:{enabled:true,policyVersion:'4.0'}
     },
@@ -8396,7 +8396,7 @@
     try{localStorage.removeItem('blackFlagCommissionDraft');}catch(_){}
   }
 
-  // VoyageKeeper 8.8.20.13 — Fleet Core is the durable recovery authority when an
+  // VoyageKeeper 8.8.20.14 — Fleet Core is the durable recovery authority when an
   // authenticated commissioning officer is available. Browser stores remain caches.
   const COMMISSION_VOYAGE_SESSION_KEY='darkSkySupabaseAdmiralSessionV1';
   let commissionServerVoyage=null,commissionServerSaveTimer=null;
@@ -8472,12 +8472,12 @@
   async function resumeActiveCommissionVoyageAfterEngineUnlock(){
     const row=await detectActiveCommissionVoyageForResume();
     if(!row){
-      // VoyageKeeper 8.8.20.13: an Engine refresh must never strand a voyage merely
+      // VoyageKeeper 8.8.20.14: an Engine refresh must never strand a voyage merely
       // because the Fleet Core read requires renewed Admiral account authority.
       // Session/browser state is only a recovery hint — never server truth — but it
       // is enough to restore the exact commissioning workspace and ask for a
       // deliberate server recheck instead of dumping the officer at Engine home.
-      // TruthBridge 8.8.20.13: browser mirrors are caches, but the IndexedDB
+      // HashLock 8.8.20.14: browser mirrors are caches, but the IndexedDB
       // commissioning checkpoint is the durable local return pointer across a full
       // Safari reload. It contains work context only — never Admiral authority.
       let local=readCommissionDraft();
@@ -17150,7 +17150,7 @@ document.addEventListener('click', (event) => {
       try{ await window.igniteProofBootstrap8617?.('engine-entry'); }catch(err){ console.warn('Bootstrap Ignition engine-entry warning',err); }
       if(typeof window.renderBlackFlagHome==='function') await window.renderBlackFlagHome();
       try{window.__darkSkyPostLoginHoldRelay8631?.('engine-home-rendered');}catch(_){ }
-      // VoyageKeeper 8.8.20.13: after the required Engine re-authentication, Fleet Core
+      // VoyageKeeper 8.8.20.14: after the required Engine re-authentication, Fleet Core
       // gets first say on unfinished commissioning. Resume the exact server-safe
       // voyage instead of silently dropping the officer at generic Engine home.
       const resumedVoyage=await resumeActiveCommissionVoyageAfterEngineUnlock();
