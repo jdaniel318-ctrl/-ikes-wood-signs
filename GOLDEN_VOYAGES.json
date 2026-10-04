@@ -1,8 +1,23 @@
 {
   "schema": "dark-sky-golden-voyages-v1",
-  "build": "8.8.20.16",
+  "build": "8.8.20.17",
   "policy": "real-ui-path-release-assurance-with-admiral-course-authority",
   "voyages": [
+    {
+      "id": "blackwake-authority-hull",
+      "label": "BlackWake Authority Hull Voyage",
+      "class": "required",
+      "release_blocker": true,
+      "proof": [
+        "anonymous-rpc-denial",
+        "admiral-server-authority-check",
+        "exact-vessel-captain-scope",
+        "exact-project-owner-scope",
+        "actor-bound-commissioning-recovery",
+        "fleet-core-readback-before-server-safe"
+      ],
+      "summary": "Authority is proven by Fleet Core and exact server scope; browser/session state is never authority."
+    },
     {
       "id": "fleet-entry",
       "path": [
@@ -59,7 +74,7 @@
         "transfer-preserves-vessel-id",
         "transfer-audited-recoverable"
       ],
-      "summary": "Vessel entry → ownership → operating authority remain separate; self-join and deliberate transfer cannot silently escalate Fleet authority."
+      "summary": "Vessel entry \u2192 ownership \u2192 operating authority remain separate; self-join and deliberate transfer cannot silently escalate Fleet authority."
     },
     {
       "id": "lateral-fleet-structure",

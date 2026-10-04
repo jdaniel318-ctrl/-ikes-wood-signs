@@ -1,8 +1,8 @@
 {
-  "release": "8.8.20.16",
-  "name": "DeadReckoning",
-  "build": "8.8.20.16",
-  "seal": "deadreckoning-882016",
+  "release": "8.8.20.17",
+  "name": "BlackWake",
+  "build": "8.8.20.17",
+  "seal": "blackwake-882017",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
@@ -91,5 +91,5 @@
     "styles.css",
     "sw.js"
   ],
-  "releaseName": "HashLock"
+  "releaseName": "BlackWake"
 }

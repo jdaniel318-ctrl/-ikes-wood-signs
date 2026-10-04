@@ -1,9 +1,9 @@
 {
-  "schema": "dark-sky-release-gate-forgeseal-v1",
-  "build": "8.8.20.16",
-  "release": "DeadReckoning",
+  "schema": "dark-sky-release-gate-blackwake-v1",
+  "build": "8.8.20.17",
+  "release": "BlackWake",
   "pass": true,
-  "evidence_scope": "Commissioning recovery command-surface hardening, pending-recovery navigation gate, and final-byte package integrity. Native iPad field acceptance remains pending.",
+  "evidence_scope": "Live Fleet Core authority inspection converted into explicit authority-hull regression doctrine plus non-destructive supporting-index migration. Package/static verification passed; native iPad acceptance for BlackWake remains pending.",
   "native_field_acceptance": "pending",
   "prior_release_evidence": {
     "schema": "dark-sky-release-gate-bloompick-v1",

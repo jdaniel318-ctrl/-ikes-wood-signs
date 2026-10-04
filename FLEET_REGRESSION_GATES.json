@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.8.20.16",
-  "release": "HashLock",
+  "build": "8.8.20.17",
+  "release": "BlackWake",
   "excluded_sources": [
     "The situation"
   ],
@@ -48,7 +48,13 @@
       "admiral_pin_opens_security_layer_not_workspace",
       "admiral_workspace_hidden_until_supabase_identity_verified",
       "owner_identity_cannot_open_admiral_workspace",
-      "admiral_sign_out_immediately_relocks_workspace"
+      "admiral_sign_out_immediately_relocks_workspace",
+      "blackwake_anonymous_authority_rpc_denial",
+      "blackwake_admiral_rpc_server_scope",
+      "blackwake_exact_vessel_captain_scope",
+      "blackwake_exact_project_owner_scope",
+      "blackwake_commissioning_actor_binding",
+      "blackwake_server_safe_requires_fleet_core_readback"
     ],
     "true_helm": [
       "explicit_in_app_navigation",

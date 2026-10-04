@@ -1,10 +1,14 @@
-# Dark Sky 8.8.20.16 — DeadReckoning
+# Dark Sky 8.8.20.17 — BlackWake
 
-DeadReckoning hardens VoyageKeeper recovery into a native Black Flag command surface. Recovered voyages now show one explicit next action, block forward navigation until Fleet Core is re-read, and expose recovery evidence inline instead of through browser alerts.
+BlackWake converts live Fleet Core inspection into enforceable authority-hull doctrine. It preserves DeadReckoning recovery behavior, adds explicit RPC/scope regression gates, and ships a non-destructive supporting-index migration. No RLS widening or authority shortcut is introduced.
+
+# Dark Sky 8.8.20.17 — BlackWake
+
+BlackWake hardens VoyageKeeper recovery into a native Black Flag command surface. Recovered voyages now show one explicit next action, block forward navigation until Fleet Core is re-read, and expose recovery evidence inline instead of through browser alerts.
 
 Browser/session storage remains a cache. Fleet Core remains the durable commissioning authority.
 
-## 8.8.20.16 DeadReckoning
+## 8.8.20.17 BlackWake
 - Replaces the commissioning Recovery Inspector browser alert with an inline Black Flag evidence panel.
 - Makes the pending recovery state explicit: one security step remains, then the voyage resumes.
 - Disables ordinary Continue while a recovered voyage still requires Admiral/Fleet Core re-verification.
