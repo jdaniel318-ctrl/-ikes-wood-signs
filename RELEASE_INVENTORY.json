@@ -1,8 +1,8 @@
 {
-  "release": "8.8.20.11",
-  "name": "VoyageKeeper",
-  "build": "8.8.20.11",
-  "seal": "voyagekeeper-88211",
+  "release": "8.8.20.12",
+  "name": "TrueReturn",
+  "build": "8.8.20.12",
+  "seal": "truereturn-88212",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
@@ -91,5 +91,5 @@
     "styles.css",
     "sw.js"
   ],
-  "releaseName": "VoyageKeeper"
+  "releaseName": "TrueReturn"
 }

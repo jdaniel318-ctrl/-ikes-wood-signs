@@ -1,4 +1,4 @@
-# 8.8.20.11 — VoyageKeeper
+# 8.8.20.12 — VoyageKeeper
 
 - Preserves focused same-tab voyage authorization from PassageLine.
 - After refresh, Engine PIN remains required.
@@ -9,7 +9,7 @@
 - SERVER SAFE still requires server save plus same-voyage readback.
 
 
-## 8.8.20.11 VoyageKeeper
+## 8.8.20.12 VoyageKeeper
 - Recovery pointer survives Engine lock without claiming server truth.
 - Engine re-entry restores an unfinished voyage into a Secure Voyage checkpoint instead of a blank commissioning form.
 - Admiral recovery re-reads Fleet Core before any server-safe claim and never overwrites an authoritative voyage from a hint-only draft.

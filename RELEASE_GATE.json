@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-release-gate-forgeseal-v1",
-  "build": "8.8.20.11",
-  "release": "VoyageKeeper",
+  "build": "8.8.20.12",
+  "release": "TrueReturn",
   "pass": true,
   "evidence_scope": "Final-byte release integrity closure: runtime/model hashes regenerated only after release freeze, whole-package checksums regenerated after manifest, and finished ZIP independently reverified. Native iPad boot remains field acceptance.",
   "native_field_acceptance": "pending",
@@ -3440,5 +3440,14 @@
     "migration_applied_live": false,
     "no_blind_retry": true,
     "ui": "resume-inspect-discard"
+  },
+  "truereturn_scope": {
+    "status": "candidate",
+    "checks": [
+      "exact commissioning return after Engine unlock",
+      "server recheck required when Admiral authority expired",
+      "release identity documents fetched fresh",
+      "negative photo requirement respected"
+    ]
   }
 }
