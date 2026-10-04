@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.24",
-  "release": "KeelProof",
-  "seal": "keelproof-882024",
+  "build": "8.8.20.25",
+  "release": "HarborGlass",
+  "seal": "harborglass-882025",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "KeelProof",
-  "name": "KeelProof",
-  "releaseName": "KeelProof"
+  "release_name": "HarborGlass",
+  "name": "HarborGlass",
+  "releaseName": "HarborGlass"
 }

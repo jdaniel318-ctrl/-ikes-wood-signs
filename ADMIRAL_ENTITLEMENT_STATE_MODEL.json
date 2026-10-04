@@ -1,6 +1,6 @@
 {
-  "release": "KeelProof",
-  "build": "8.8.20.24",
+  "release": "HarborGlass",
+  "build": "8.8.20.25",
   "name": "VoyageKeeper",
   "purpose": "Give every Fleet feature an independent Off, Free or Paid state for every vessel.",
   "owner_state_precedence": [

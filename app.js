@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.20.24';
+  const BUILD_VERSION='8.8.20.25';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -8586,7 +8586,7 @@
       button.onclick=event=>{event.preventDefault();event.stopPropagation();return action(event);};
     });
     bind('[data-authorize-voyage]',()=>authorizeCurrentCommissioningVoyage());
-    bind('[data-voyage-resume]',()=>document.querySelector('#projectCommissioningWorkspace .commission-panel')?.scrollIntoView({block:'start',behavior:'smooth'}));
+    bind('[data-voyage-resume]',()=>resumeVerifiedCommissioningVoyage());
     bind('[data-voyage-inspect]',()=>{
       const panel=root.querySelector('[data-voyage-inspector]');if(!panel)return;
       const open=panel.classList.contains('hidden');
@@ -8603,6 +8603,28 @@
       catch(err){alert(String(err?.message||err));}
     });
   }
+  function resumeVerifiedCommissioningVoyage(){
+    if(!commissionDraft)return false;
+    const truth=commissionRecoveryTruth();
+    if(!truth.verified){
+      commissionError('Recovery is not server-safe yet. Verify Admiral & Resume before entering Review.');
+      return false;
+    }
+    // Entering Review is navigation only: no Fleet Core save, commission command,
+    // publication, owner handoff, or authority grant is issued here.
+    captureCommissionFields();
+    commissionStep=Math.max(6,Math.min(7,Number(commissionDraft._step||1)));
+    if(commissionStep!==6)commissionStep=6;
+    commissionDraft._step=commissionStep;
+    commissionDraft._maxStepReached=Math.max(Number(commissionDraft._maxStepReached||1),commissionStep);
+    commissionDraft.updatedAt=new Date().toISOString();
+    writeCommissionDraftSafe(commissionDraft,{durable:false});
+    renderCommissioning();
+    requestAnimationFrame(()=>document.querySelector('#projectCommissioningWorkspace .commission-panel')?.scrollIntoView({block:'start',behavior:'smooth'}));
+    window.BlackFlagV3Core?.audit?.({actorRole:commissionDraft.commissionerRole||'engine_admin',category:'project',action:'commissioning.recovery.review_entered',detail:`${commissionDraft.draftId} • voyage ${commissionDraft._serverVoyageId||'unknown'} • stage 6 • ${BUILD_VERSION} • navigation only`});
+    return true;
+  }
+
   function refreshCommissionRecoveryStatus(){
     const slot=$('commissionRecoverySlot');
     if(!slot||!commissionDraft||slot.dataset.draftId!==String(commissionDraft.draftId||''))return;
@@ -9148,6 +9170,7 @@
       <div class="commission-panel sea-trial-review">
         <div class="eyebrow">06 • REVIEW</div><h2>Review before proof</h2>
         <p>Review the project before Black Flag creates it. Commissioned projects begin private and unpublished.</p>
+        ${commissionRecoveryTruth().verified?`<div class="commission-review-recovery"><div><small>RECOVERED VOYAGE</small><strong>SERVER SAFE • NOT PUBLISHED</strong><span>Fleet Core confirmed this exact recovered draft before Review opened.</span></div><div><small>VOYAGE</small><b>${escapeHtml(d._serverVoyageId||'Verified voyage')}</b></div><div><small>NEXT COMMAND</small><b>REVIEW ONLY</b><span>No commission or publish command has run.</span></div></div>`:''}
         <div class="commission-review-grid">
           <div><small>PROJECT</small><b>${escapeHtml(d.name||'Not named')}</b></div>
           <div><small>OWNER</small><b>${escapeHtml(d.ownerName||'Not assigned')}</b></div>

@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-release-gate-blackwake-v1",
-  "build": "8.8.20.24",
-  "release": "KeelProof",
+  "build": "8.8.20.25",
+  "release": "HarborGlass",
   "pass": true,
   "evidence_scope": "Focused exact-function Chromium recovery/disclosure and synthetic-RPC hydration tests, plus final-byte static/package/atomic-loader verification. Not full-site, live backend, native iPad acceptance, production commissioning or Captain handoff.",
   "native_field_acceptance": "pending",
@@ -3455,7 +3455,7 @@
     "native_ipad_retest_required": true
   },
   "ironlatch_scope": {
-    "build": "8.8.20.24",
+    "build": "8.8.20.25",
     "baseline": "8.8.20.22 Dead Man's Chest",
     "scope": "Recovery button binding and read-only recovery status presentation only; release identity and final-byte packaging metadata refreshed.",
     "one_action_per_tap": true,

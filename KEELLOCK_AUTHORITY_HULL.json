@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-blackwake-authority-hull-v1",
-  "build": "8.8.20.24",
-  "release": "KeelProof",
+  "build": "8.8.20.25",
+  "release": "HarborGlass",
   "doctrine": "Inspect live truth first, then build. Browser state never manufactures authority.",
   "live_truth_anchor": {
     "supabase_project_state": "ACTIVE_HEALTHY",

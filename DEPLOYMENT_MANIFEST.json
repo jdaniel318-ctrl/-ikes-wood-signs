@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.20.24",
-  "version": "8.8.20.24",
-  "release_name": "KeelProof",
-  "releaseName": "KeelProof",
-  "release_seal": "keelproof-882024",
+  "build": "8.8.20.25",
+  "version": "8.8.20.25",
+  "release_name": "HarborGlass",
+  "releaseName": "HarborGlass",
+  "release_seal": "harborglass-882025",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -92,7 +92,7 @@
     "project_data_boundary": "exact-project-id"
   },
   "release_focus": "Deterministic Admiral recovery handoff: every rendered recovery authorization control is bound to the secure gate and returns to exact-voyage Fleet Core re-read.",
-  "release_note": "KeelProof makes recovery fail-closed and actionable: every recovered voyage that is not currently server-verified exposes Verify Admiral & Resume, then requires an exact Fleet Core voyage read-back before the recovery hold can clear. No publication, ownership, Captain grant, or new commissioning command is performed by the verification step.",
+  "release_note": "HarborGlass makes recovery fail-closed and actionable: every recovered voyage that is not currently server-verified exposes Verify Admiral & Resume, then requires an exact Fleet Core voyage read-back before the recovery hold can clear. No publication, ownership, Captain grant, or new commissioning command is performed by the verification step.",
   "tax_ledger_upgrade": {
     "schema": "dark-sky-fleet-tax-ledger-v1",
     "model": "TAX_LEDGER_MODEL.json",
@@ -215,7 +215,7 @@
     "files": {
       "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": {
         "sha256": "828a5192e18f26dd60b4cc90a72c325b4c0c3235b67e0d5dfc9a5053f622c59e",
-        "build": "8.8.20.24",
+        "build": "8.8.20.25",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -263,13 +263,13 @@
       },
       "FLEET_COMMAND_MODEL.json": {
         "sha256": "1708975d313d2cdbf9e6af7ad76c716a7c8b25939bfa94744a5f4a4c8ac364a6",
-        "build": "8.8.20.24",
+        "build": "8.8.20.25",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
       "FLEET_DOCTRINE_REGISTRY.json": {
         "sha256": "20e541b660e7ea921123ca90583fed670f72bf537da7d2b0ca89dbf4e9639202",
-        "build": "8.8.20.24",
+        "build": "8.8.20.25",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -329,7 +329,7 @@
       },
       "GOLDEN_VOYAGES.json": {
         "sha256": "21bc7dd09a21cd03788192d19ff9afce93637fa15cbf56fe11f12831964767b7",
-        "build": "8.8.20.24",
+        "build": "8.8.20.25",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -930,7 +930,7 @@
     "project_data_mutation": false,
     "field_failure_proof": "8.8.20.13 held on styles.css because packaged DEPLOYMENT_MANIFEST runtime hash did not match packaged styles.css bytes"
   },
-  "release": "KeelProof",
+  "release": "HarborGlass",
   "clearbearing_upgrade": {
     "build": "8.8.20.22",
     "baseline": "8.8.20.14 HashLock",
@@ -948,7 +948,7 @@
     "evidence": "RELEASE_INTEGRITY_ROOT_CAUSE_882018.json"
   },
   "ironlatch_repair": {
-    "build": "8.8.20.24",
+    "build": "8.8.20.25",
     "baseline": "8.8.20.22 Dead Man's Chest",
     "scope": "Recovery button binding and read-only recovery status presentation only; release identity and final-byte packaging metadata refreshed.",
     "one_action_per_tap": true,
@@ -962,7 +962,7 @@
     "new_deployed_paths": 0,
     "historical_proof_files": "unchanged; not current acceptance evidence"
   },
-  "keelproof_upgrade": {
+  "harborglass_upgrade": {
     "scope": "recovered-voyage exact server recheck",
     "behavior": [
       "Every recovered voyage without current exact-voyage verification exposes Verify Admiral & Resume.",

@@ -1,4 +1,4 @@
-# Current release — KeelProof 8.8.20.24
+# Current release — HarborGlass 8.8.20.25
 
 The recovery repair is a presentation/binding change inside the existing commissioning workspace. `commissionRecoveryTruth` supplies the banner, inspector and footer. Its same-voyage check is display evidence, not an authorization grant. Existing Admiral gate, hydration/save/receipt RPCs, pending-recovery continuation hold, project commissioning, data stores, ledger and project boundaries are unchanged.
 

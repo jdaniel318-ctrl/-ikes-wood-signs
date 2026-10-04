@@ -1,4 +1,4 @@
-# Dark Sky 8.8.20.24 — KeelProof
+# Dark Sky 8.8.20.25 — HarborGlass
 
 Client test candidate for the recovery-details button failure in Dead Man's Chest.
 

@@ -1,4 +1,4 @@
-# Dark Sky 8.8.20.24 — KeelProof
+# Dark Sky 8.8.20.25 — HarborGlass
 
 - Makes every recovered voyage that lacks current exact-voyage Fleet Core verification expose **VERIFY ADMIRAL & RESUME**, including the field-proven Sync Needed state where the older pending flag is absent.
 - Routes that recovery authorization through the existing Admiral gate and authoritative voyage hydration path; it does not fall through to a new server save merely because the older pending flag is false.

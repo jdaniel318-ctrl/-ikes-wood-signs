@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-doctrine-registry-v1",
-  "build": "8.8.20.24",
-  "release": "KeelProof",
+  "build": "8.8.20.25",
+  "release": "HarborGlass",
   "status": "active",
   "principles": [
     {
