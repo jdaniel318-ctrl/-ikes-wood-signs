@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.20.25';
-const RELEASE_SEAL='harborglass-882025';
+const RELEASE_BUILD='8.8.20.26';
+const RELEASE_SEAL='forgeseal-882026';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.

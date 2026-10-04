@@ -1,4 +1,4 @@
-# Dark Sky 8.8.20.25 — HarborGlass
+# Dark Sky 8.8.20.26 — ForgeSeal
 
 Client test candidate for the recovery-details button failure in Dead Man's Chest.
 

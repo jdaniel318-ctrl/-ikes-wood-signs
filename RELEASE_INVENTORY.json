@@ -1,8 +1,8 @@
 {
-  "release": "8.8.20.25",
-  "name": "HarborGlass",
-  "build": "8.8.20.25",
-  "seal": "harborglass-882025",
+  "release": "ForgeSeal",
+  "name": "ForgeSeal",
+  "build": "8.8.20.26",
+  "seal": "forgeseal-882026",
   "file_count": 94,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
@@ -100,5 +100,5 @@
     "styles.css",
     "sw.js"
   ],
-  "releaseName": "HarborGlass"
+  "releaseName": "ForgeSeal"
 }
