@@ -1,0 +1,20 @@
+{
+  "schema": "dark-sky-recovery-authority-unification-v1",
+  "build": "8.8.20.21",
+  "release": "TrueColors",
+  "parent": "8.8.20.20 AnchorWatch",
+  "field_evidence": {
+    "stage4_payload_recovery": "PASS",
+    "recovery_banner": "showed VERIFIED",
+    "footer": "showed SERVER NOT VERIFIED",
+    "continue_voyage": "could dismiss banner while authority truth disagreed"
+  },
+  "repair": [
+    "One canonical predicate now decides recovery verification for banner, footer, and advance controls.",
+    "Server-resume path records explicit recoveryPending=false, verified timestamp, server revision and voyage ID.",
+    "Continue Voyage is available only when canonical Fleet Core server-safe truth is established.",
+    "Acknowledging a verified recovery removes the recovery banner cleanly; it cannot hide an unverified hold.",
+    "Normal Continue remains held whenever recovered-voyage authority is ambiguous."
+  ],
+  "safety": "No RLS widening, authority bypass, checksum exception, publication, or project-data deletion."
+}
