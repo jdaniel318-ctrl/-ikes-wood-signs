@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.20.9';
+  const BUILD_VERSION='8.8.20.10';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -203,7 +203,7 @@
         {id:'openings-takeoff',name:'Windows / Doors / Trim Takeoff',published:true,active:true,customerReady:true}
       ],
       houseHull:{engine:'PlumbLine',scaleStatus:'experimental',truthLevels:['AI ESTIMATE','FIELD MEASURED','SALESPERSON VERIFIED'],requiredElevations:['Front','Rear','Left','Right'],miscPhotos:true,materials:['vinyl siding','fiber cement','engineered wood','brick veneer','CMU/block','exposed foundation'],openingTrimOptions:['J-channel only','standard casing','wide picture-frame trim','PVC/composite trim','aluminum-wrapped trim','brickmould','manufacturer-specific trim','custom / no trim']},
-      deployments:[],orders:[],customers:[],ledger:[],commissionedAt:new Date().toISOString(),commissioningVersion:'8.8.20.9',
+      deployments:[],orders:[],customers:[],ledger:[],commissionedAt:new Date().toISOString(),commissioningVersion:'8.8.20.10',
       lifecycle:{state:'draft',version:3},registry:{version:1,source:'release-bundled',displayNameUnique:false},
       governance:{platformStatus:'approved',history:[]},audit:{enabled:true,policyVersion:'4.0'}
     },
@@ -8382,7 +8382,7 @@
     try{localStorage.removeItem('blackFlagCommissionDraft');}catch(_){}
   }
 
-  // WakeLine 8.8.20.9 — Fleet Core is the durable recovery authority when an
+  // HomeWake 8.8.20.10 — Fleet Core is the durable recovery authority when an
   // authenticated commissioning officer is available. Browser stores remain caches.
   const COMMISSION_VOYAGE_SESSION_KEY='darkSkySupabaseAdmiralSessionV1';
   let commissionServerVoyage=null,commissionServerSaveTimer=null;
@@ -8440,7 +8440,25 @@
   }
   async function resumeActiveCommissionVoyageAfterEngineUnlock(){
     const row=await detectActiveCommissionVoyageForResume();
-    if(!row)return false;
+    if(!row){
+      // HomeWake 8.8.20.10: an Engine refresh must never strand a voyage merely
+      // because the Fleet Core read requires renewed Admiral account authority.
+      // Session/browser state is only a recovery hint — never server truth — but it
+      // is enough to restore the exact commissioning workspace and ask for a
+      // deliberate server recheck instead of dumping the officer at Engine home.
+      const local=readCommissionDraft();
+      if(!local?.name)return false;
+      commissionDraft={...freshCommissionDraft(),...local,_recovered:true,_serverRecoveryPending:true};
+      commissionStep=Math.max(1,Math.min(7,Number(commissionDraft._step||1)));
+      commissionDraft._step=commissionStep;
+      commissionDraft._maxStepReached=Math.max(commissionStep,Number(commissionDraft._maxStepReached||1));
+      setCommissionServerSyncState('auth','Voyage restored from this secure browser. Admiral verification is required to re-read Fleet Core before server-safe work continues.');
+      writeCommissionDraftSafe(commissionDraft,{durable:false});
+      openProjectCommissioning(commissionDraft.commissionerRole||'engine_admin');
+      requestAnimationFrame(()=>document.querySelector('.commission-voyage-recovery')?.scrollIntoView({block:'start',behavior:'instant'}));
+      window.BlackFlagV3Core?.audit?.({actorRole:commissionDraft.commissionerRole||'engine_admin',category:'project',action:'commissioning.browser_hint_resume_after_engine_unlock',detail:`${commissionDraft.draftId} • stage ${commissionStep} • ${BUILD_VERSION} • server recheck required`});
+      return true;
+    }
     commissionServerVoyage=row;
     commissionDraft={...freshCommissionDraft(),...row.draft,_recovered:true,_serverRecovered:true,_serverVoyageId:row.voyage_id,_serverReceipt:row.receipt||null};
     commissionStep=Math.max(1,Math.min(7,Number(row.safe_stage||commissionDraft._step||1)));
@@ -8466,9 +8484,11 @@
     try{return await client.rpc('record_commissioning_receipt',{p_voyage_id:id,p_operation_id:operationId,p_intended_project_id:String(projectId||''),p_preview_fingerprint:String(commissionDraft?._forgeFingerprint||''),p_command_state:state,p_detail:detail},'Fleet Core could not record the commissioning receipt.');}catch(err){window.__voyageGuardReceiptError=String(err?.message||err);return null;}
   }
   function commissionRecoveryBannerMarkup(){
-    if(!commissionDraft?._serverRecovered)return '';
-    const receipt=commissionDraft._serverReceipt; const state=String(receipt?.command_state||'draft_preserved').replaceAll('_',' ').toUpperCase();
-    return `<section class="commission-voyage-recovery"><div><small>WAKELINE • UNFINISHED COMMISSIONING FOUND</small><h3>${escapeHtml(commissionDraft.name||'Unnamed vessel')}</h3><p>Last verified stage: <b>${String(Number(commissionDraft._step||1)).padStart(2,'0')} / 07</b> • Previous command: <b>${escapeHtml(state)}</b></p></div><div class="commission-voyage-actions"><button type="button" class="primary-btn" data-voyage-resume>RESUME VOYAGE</button><button type="button" class="secondary-btn" data-voyage-inspect>INSPECT RECOVERY</button><button type="button" class="secondary-btn" data-voyage-discard>DISCARD DRAFT</button></div></section>`;
+    if(!commissionDraft?._serverRecovered&&!commissionDraft?._serverRecoveryPending)return '';
+    const pending=!!commissionDraft._serverRecoveryPending;
+    const receipt=commissionDraft._serverReceipt; const state=pending?'SERVER RECHECK REQUIRED':String(receipt?.command_state||'draft_preserved').replaceAll('_',' ').toUpperCase();
+    const truth=pending?'This secure browser recovered the exact voyage. Fleet Core has not been re-read yet; verify Admiral authority before server-safe work continues.':'Fleet Core read-back recovered this exact voyage. You may continue from the verified stage.';
+    return `<section class="commission-voyage-recovery ${pending?'is-pending':''}"><div><small>HOMEWAKE • ${pending?'VOYAGE FOUND · SERVER RECHECK':'SERVER VOYAGE RECOVERED'}</small><h3>${escapeHtml(commissionDraft.name||'Unnamed vessel')}</h3><p>Stage: <b>${String(Number(commissionDraft._step||1)).padStart(2,'0')} / 07</b> • <b>${escapeHtml(state)}</b></p><p class="voyage-recovery-truth">${escapeHtml(truth)}</p></div><div class="commission-voyage-actions">${pending?'<button type="button" class="primary-btn" data-authorize-voyage>VERIFY ADMIRAL & RECOVER SERVER COPY</button>':'<button type="button" class="primary-btn" data-voyage-resume>CONTINUE VOYAGE</button>'}<button type="button" class="secondary-btn" data-voyage-inspect>INSPECT RECOVERY</button></div></section>`;
   }
 
   function openProjectCommissioning(actorRole='engine_admin'){
@@ -17078,7 +17098,7 @@ document.addEventListener('click', (event) => {
       try{ await window.igniteProofBootstrap8617?.('engine-entry'); }catch(err){ console.warn('Bootstrap Ignition engine-entry warning',err); }
       if(typeof window.renderBlackFlagHome==='function') await window.renderBlackFlagHome();
       try{window.__darkSkyPostLoginHoldRelay8631?.('engine-home-rendered');}catch(_){ }
-      // WakeLine 8.8.20.9: after the required Engine re-authentication, Fleet Core
+      // HomeWake 8.8.20.10: after the required Engine re-authentication, Fleet Core
       // gets first say on unfinished commissioning. Resume the exact server-safe
       // voyage instead of silently dropping the officer at generic Engine home.
       const resumedVoyage=await resumeActiveCommissionVoyageAfterEngineUnlock();

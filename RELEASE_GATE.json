@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-release-gate-forgeseal-v1",
-  "build": "8.8.20.9",
-  "release": "WakeLine",
+  "build": "8.8.20.10",
+  "release": "HomeWake",
   "pass": true,
   "evidence_scope": "Final-byte release integrity closure: runtime/model hashes regenerated only after release freeze, whole-package checksums regenerated after manifest, and finished ZIP independently reverified. Native iPad boot remains field acceptance.",
   "native_field_acceptance": "pending",

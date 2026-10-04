@@ -1,6 +1,6 @@
-# WakeLine 8.8.20.9 — Release Acceptance
+# HomeWake 8.8.20.10 — Release Acceptance
 
-1. Confirm 8.8.20.9 · WAKELINE boots without Release Recovery.
+1. Confirm 8.8.20.10 · HOMEWAKE boots without Release Recovery.
 2. Open Test Exterior Services and save the small persistence-test brief.
 3. If authorization is required, choose AUTHORIZE THIS VOYAGE.
 4. Confirm the focused Admiral gate stays on the commissioning course and does not open the Admiral Command Deck.

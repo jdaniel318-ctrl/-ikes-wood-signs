@@ -1,4 +1,4 @@
-# 8.8.20.9 — WakeLine
+# 8.8.20.10 — HomeWake
 
 - Preserves focused same-tab voyage authorization from PassageLine.
 - After refresh, Engine PIN remains required.
