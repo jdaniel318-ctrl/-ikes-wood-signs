@@ -1,3 +1,11 @@
+# Dark Sky 8.8.20.24 — KeelProof
+
+- Makes every recovered voyage that lacks current exact-voyage Fleet Core verification expose **VERIFY ADMIRAL & RESUME**, including the field-proven Sync Needed state where the older pending flag is absent.
+- Routes that recovery authorization through the existing Admiral gate and authoritative voyage hydration path; it does not fall through to a new server save merely because the older pending flag is false.
+- Keeps the recovery hold fail-closed on missing or mismatched Fleet Core evidence and preserves the local draft.
+- Clarifies the recovery banner: Admiral verification re-reads the exact voyage and does not publish it.
+- Preserves IronLatch disclosure behavior, commissioning stages, owner/Captain boundaries, and existing server authority contracts.
+
 # Dark Sky 8.8.20.23 — IronLatch
 
 Client test candidate for the recovery-details button failure in Dead Man's Chest.

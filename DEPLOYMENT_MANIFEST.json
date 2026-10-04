@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.20.23",
-  "version": "8.8.20.23",
-  "release_name": "IronLatch",
-  "releaseName": "IronLatch",
-  "release_seal": "ironlatch-882023",
+  "build": "8.8.20.24",
+  "version": "8.8.20.24",
+  "release_name": "KeelProof",
+  "releaseName": "KeelProof",
+  "release_seal": "keelproof-882024",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -92,7 +92,7 @@
     "project_data_boundary": "exact-project-id"
   },
   "release_focus": "Deterministic Admiral recovery handoff: every rendered recovery authorization control is bound to the secure gate and returns to exact-voyage Fleet Core re-read.",
-  "release_note": "KeelLock repairs the field-proven dead Verify Admiral & Resume control without weakening authority. Recovery remains fail-closed: browser state is a pointer only, Admiral verification is explicit, and Fleet Core read-back decides server-safe continuation.",
+  "release_note": "KeelProof makes recovery fail-closed and actionable: every recovered voyage that is not currently server-verified exposes Verify Admiral & Resume, then requires an exact Fleet Core voyage read-back before the recovery hold can clear. No publication, ownership, Captain grant, or new commissioning command is performed by the verification step.",
   "tax_ledger_upgrade": {
     "schema": "dark-sky-fleet-tax-ledger-v1",
     "model": "TAX_LEDGER_MODEL.json",
@@ -214,8 +214,8 @@
     "algorithm": "SHA-256",
     "files": {
       "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": {
-        "sha256": "6579900c1dda5fd07624273bb79e8648c17b61b98730d4b78e59d4b5bf87a1bc",
-        "build": "8.8.20.23",
+        "sha256": "828a5192e18f26dd60b4cc90a72c325b4c0c3235b67e0d5dfc9a5053f622c59e",
+        "build": "8.8.20.24",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -262,14 +262,14 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_COMMAND_MODEL.json": {
-        "sha256": "4e844c6b706b89896637c84abf1e7dccfdbd0781c443ee81757262eac1c9572f",
-        "build": "8.8.20.23",
+        "sha256": "1708975d313d2cdbf9e6af7ad76c716a7c8b25939bfa94744a5f4a4c8ac364a6",
+        "build": "8.8.20.24",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
       "FLEET_DOCTRINE_REGISTRY.json": {
-        "sha256": "c64ffc5927e8f92de7b96e3428f5ed83c16119634824b564929b967f424ca698",
-        "build": "8.8.20.23",
+        "sha256": "20e541b660e7ea921123ca90583fed670f72bf537da7d2b0ca89dbf4e9639202",
+        "build": "8.8.20.24",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -298,7 +298,7 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_REGRESSION_GATES.json": {
-        "sha256": "16e2a871a1a6afd97a49ee3075ea59e4ce15202b56528ca35cfe7b96567bb897",
+        "sha256": "6c4be53970fff35d5e0f750c69ee4a1a64ee5c372a72f696bf0f584ed7e11b1a",
         "build": "8.8.20.22",
         "policy": "retained-versioned-reference",
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
@@ -328,8 +328,8 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "GOLDEN_VOYAGES.json": {
-        "sha256": "a600b33839d99ec543192cb070c3736197b61023f9b7ebc8844598302a317549",
-        "build": "8.8.20.23",
+        "sha256": "21bc7dd09a21cd03788192d19ff9afce93637fa15cbf56fe11f12831964767b7",
+        "build": "8.8.20.24",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -478,24 +478,24 @@
     "algorithm": "SHA-256",
     "serialization": "UTF-8 response body, same text executed by atomic loader",
     "files": {
-      "styles.css": "9bed0276a9d4c4c488757cf01c79038e929a2b4ba9a674150b4d4a97f9adc17d",
+      "styles.css": "5e6d8a9702958b84eb653caa38208c9edbfbd95f91215a154b27b983dc72804a",
       "simple_books.css": "5939590021ef2d3738d5f5f7249d72f8da64cc274bf287ef8183958517b0ba46",
       "platform_core.js": "7f797bc382a73eb9ec4365a7458e8329da60c50561e3ac751ca3fb9d7cd5ec49",
       "platform_v4.js": "21daf7777150d654467042893298147374318fdfc7ac38faf9260f874522019b",
       "platform_identity.js": "aa855c8de0b69cc89e36d4ad9dfff32012551c297147830fd2e84256e3bfcbd1",
       "fleet_supabase.js": "a8675fb446d0587e61bdb31701f089d77e3b0cef521218b0df317c60cd679c64",
       "ike_style_registry.js": "6b348ebceb47e172e6676f46252b19c1c6bb7532baf76febfa8dd81760a76ab7",
-      "app.js": "8e33eff63d084ec931b10a628e23d7ebf8a7a74e484b141e32eb8b4e322d5979",
+      "app.js": "b8b47962f670b62c6fa57be8aed6d9ab0532264fa2d15f6a83577e0146258a2a",
       "captain.js": "47f7afcbabcce44cf5b84f4936842bdce20aed1bbec8e78a6d94e18ab235a0b4",
       "simple_books.js": "cd9f4691324c7c5361160a63a820416ab328806509f9f7fbce38a013667fe862",
       "owner.html": "a823e8ba92fe927d6c7a01dbef5f23f454b51a0c871a4931d7d6a2221895ae59",
-      "manifest.webmanifest": "0a1c9bfb908cbd297a14f631caab9a8d74f2234c7c59d4b75b5dfb8e3c2ddb1e",
+      "manifest.webmanifest": "fb4ba1a3043af688bb84f84fd4080bcd586c548688f8572711e55f291b7d88d3",
       "IKE_STYLE_FOUNDRY.json": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
-      "sw.js": "9386049721bdc2d1104e94dab4304d1111cb05fc16b5b9f56ed80f7bde8ec89c",
-      "FLEET_DOCTRINE_REGISTRY.json": "c64ffc5927e8f92de7b96e3428f5ed83c16119634824b564929b967f424ca698",
-      "GOLDEN_VOYAGES.json": "a600b33839d99ec543192cb070c3736197b61023f9b7ebc8844598302a317549",
-      "FLEET_COMMAND_MODEL.json": "4e844c6b706b89896637c84abf1e7dccfdbd0781c443ee81757262eac1c9572f",
-      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "6579900c1dda5fd07624273bb79e8648c17b61b98730d4b78e59d4b5bf87a1bc"
+      "sw.js": "e37d977cd61163478644b35a48306c62a1b03cb1ba885f984d38b41148b79e65",
+      "FLEET_DOCTRINE_REGISTRY.json": "20e541b660e7ea921123ca90583fed670f72bf537da7d2b0ca89dbf4e9639202",
+      "GOLDEN_VOYAGES.json": "21bc7dd09a21cd03788192d19ff9afce93637fa15cbf56fe11f12831964767b7",
+      "FLEET_COMMAND_MODEL.json": "1708975d313d2cdbf9e6af7ad76c716a7c8b25939bfa94744a5f4a4c8ac364a6",
+      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "828a5192e18f26dd60b4cc90a72c325b4c0c3235b67e0d5dfc9a5053f622c59e"
     }
   },
   "watchbeacon_upgrade": {
@@ -784,7 +784,7 @@
     "scope": "project-owned canonical logo routing and Fleet Mission presentation",
     "logo_source": "existing projectGraphics/projectLogo exact-vessel store",
     "fleet_mission_display": true,
-    "quick_route": "Fleet Mission LOGO → exact vessel Project Control → Marketing → Project Logo / Mark",
+    "quick_route": "Fleet Mission LOGO \u2192 exact vessel Project Control \u2192 Marketing \u2192 Project Logo / Mark",
     "cross_vessel_copy": false,
     "authority_changes": false,
     "business_record_changes": false,
@@ -930,7 +930,7 @@
     "project_data_mutation": false,
     "field_failure_proof": "8.8.20.13 held on styles.css because packaged DEPLOYMENT_MANIFEST runtime hash did not match packaged styles.css bytes"
   },
-  "release": "IronLatch",
+  "release": "KeelProof",
   "clearbearing_upgrade": {
     "build": "8.8.20.22",
     "baseline": "8.8.20.14 HashLock",
@@ -948,7 +948,7 @@
     "evidence": "RELEASE_INTEGRITY_ROOT_CAUSE_882018.json"
   },
   "ironlatch_repair": {
-    "build": "8.8.20.23",
+    "build": "8.8.20.24",
     "baseline": "8.8.20.22 Dead Man's Chest",
     "scope": "Recovery button binding and read-only recovery status presentation only; release identity and final-byte packaging metadata refreshed.",
     "one_action_per_tap": true,
@@ -961,5 +961,15 @@
     "all_original_deployment_paths_retained": 94,
     "new_deployed_paths": 0,
     "historical_proof_files": "unchanged; not current acceptance evidence"
+  },
+  "keelproof_upgrade": {
+    "scope": "recovered-voyage exact server recheck",
+    "behavior": [
+      "Every recovered voyage without current exact-voyage verification exposes Verify Admiral & Resume.",
+      "Existing Admiral gate is reused; verification does not publish or grant authority.",
+      "Fleet Core read-back must match the local draft key and any recorded voyage ID before the recovery hold clears.",
+      "Missing or mismatched evidence remains fail-closed and preserves the draft."
+    ],
+    "field_acceptance": "native iPad acceptance pending"
   }
 }

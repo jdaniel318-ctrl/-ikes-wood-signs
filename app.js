@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.20.23';
+  const BUILD_VERSION='8.8.20.24';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -8444,9 +8444,11 @@
       if(!row?.found||!row?.draft){setCommissionServerSyncState('error','Fleet Core did not return an unfinished voyage. Nothing was overwritten.');return null;}
       const expectedKey=String(commissionDraft?.draftId||'');
       const returnedKey=String(row.draft_key||row.draft?.draftId||'');
-      if(expectedKey && returnedKey && expectedKey!==returnedKey){
-        setCommissionServerSyncState('error',`Fleet Core returned a different voyage (${returnedKey}). Recovery remains locked.`);
-        window.__voyageGuardRecoveryConflict={expectedKey,returnedKey,voyageId:row.voyage_id};
+      const expectedVoyageId=String(commissionDraft?._serverVoyageId||'');
+      const returnedVoyageId=String(row.voyage_id||'');
+      if((expectedKey&&returnedKey&&expectedKey!==returnedKey)||(expectedVoyageId&&returnedVoyageId&&expectedVoyageId!==returnedVoyageId)){
+        setCommissionServerSyncState('error',`Fleet Core returned a different voyage (${returnedKey||returnedVoyageId||'unknown'}). Recovery remains locked.`);
+        window.__voyageGuardRecoveryConflict={expectedKey,returnedKey,expectedVoyageId,returnedVoyageId};
         return null;
       }
       const localBefore=commissionDraftClone(commissionDraft);
@@ -8564,9 +8566,10 @@
     const truth=commissionRecoveryTruth();
     if(!truth.active)return '';
     const heading=truth.verified?'VERIFIED':truth.label==='SERVER SYNCING'?'SYNCING':'RECHECK REQUIRED';
-    const note=truth.verified?'Fleet Core read-back confirmed this exact draft. Publication and working-ship handoff remain separate.':truth.label==='SERVER SYNCING'?'Fleet Core synchronization is in progress. Server-safe status has not been confirmed.':truth.pending?'Your saved checkpoint is preserved. Complete the existing Admiral check so Fleet Core can re-read this voyage.':'This saved draft has not been verified against Fleet Core in the current workspace. Reviewing it does not verify or publish it.';
-    const action=truth.pending?'<button type="button" class="primary-btn" data-authorize-voyage>VERIFY ADMIRAL & RESUME</button>':`<button type="button" class="primary-btn" data-voyage-resume>${truth.verified?'CONTINUE VOYAGE':'REVIEW SAVED DRAFT'}</button>`;
-    return `<section class="commission-voyage-recovery ${truth.verified?'':'is-pending'}"><div class="voyage-recovery-copy"><small>RECOVERY CHECKPOINT • ${heading}</small><h3>${escapeHtml(commissionDraft.name||'Unnamed vessel')}</h3><p>Stage <b>${String(Number(commissionDraft._step||1)).padStart(2,'0')} of 07</b> • <b>${escapeHtml(truth.label)}</b></p><p class="voyage-recovery-truth">${escapeHtml(note)}</p>${truth.pending?'<p class="voyage-recovery-next"><b>NEXT:</b> Verify Admiral. Black Flag will re-read Fleet Core, confirm this exact voyage, and return you here.</p>':''}</div><div class="commission-voyage-actions">${action}<button type="button" class="secondary-btn" data-voyage-inspect aria-expanded="false" aria-controls="commissionRecoveryInspector">VIEW RECOVERY DETAILS</button></div></section>${commissionRecoveryInspectorMarkup()}`;
+    const recoveryHeld=truth.active&&!truth.verified;
+    const note=truth.verified?'Fleet Core read-back confirmed this exact draft. Publication and working-ship handoff remain separate.':truth.label==='SERVER SYNCING'?'Fleet Core synchronization is in progress. Server-safe status has not been confirmed.':'Your saved checkpoint is preserved, but this exact voyage is not yet verified against Fleet Core in this workspace. Admiral verification is required before commissioning can continue.';
+    const action=recoveryHeld?'<button type="button" class="primary-btn" data-authorize-voyage>VERIFY ADMIRAL & RESUME</button>':`<button type="button" class="primary-btn" data-voyage-resume>CONTINUE VOYAGE</button>`;
+    return `<section class="commission-voyage-recovery ${truth.verified?'':'is-pending'}"><div class="voyage-recovery-copy"><small>RECOVERY CHECKPOINT • ${heading}</small><h3>${escapeHtml(commissionDraft.name||'Unnamed vessel')}</h3><p>Stage <b>${String(Number(commissionDraft._step||1)).padStart(2,'0')} of 07</b> • <b>${escapeHtml(truth.label)}</b></p><p class="voyage-recovery-truth">${escapeHtml(note)}</p>${recoveryHeld?'<p class="voyage-recovery-next"><b>NEXT:</b> Verify Admiral. Black Flag will re-read Fleet Core and require this exact voyage before releasing the recovery hold. Nothing is published by this check.</p>':''}</div><div class="commission-voyage-actions">${action}<button type="button" class="secondary-btn" data-voyage-inspect aria-expanded="false" aria-controls="commissionRecoveryInspector">VIEW RECOVERY DETAILS</button></div></section>${commissionRecoveryInspectorMarkup()}`;
   }
   function setCommissionRecoveryDetailsOpen(open,root=$('projectCommissioningWorkspace')){
     const panel=root?.querySelector('[data-voyage-inspector]'),button=root?.querySelector('[data-voyage-inspect]');
@@ -9266,10 +9269,10 @@
     try{sessionStorage.removeItem('darkSkyCommissionAuthorizeReturnV1');}catch(_){}
     setCommissionServerSyncState('syncing','Admiral verified. Re-reading the authoritative voyage from Fleet Core…');
     renderCommissioning();
-    if(commissionDraft?._serverRecoveryPending){
+    if(commissionRecoveryTruth().active&&!commissionRecoveryTruth().verified){
       const recovered=await hydrateCommissionVoyageFromServer();
-      if(recovered&&commissionDraft?._serverRecovered&&!commissionDraft?._serverRecoveryPending){commissionDraft._recoveryHintOnly=false;writeCommissionDraftSafe(commissionDraft,{durable:false});renderCommissioning();return true;}
-      setCommissionServerSyncState('error','Fleet Core did not return the unfinished voyage. Nothing was overwritten.');renderCommissioning();return false;
+      if(recovered&&commissionDraft?._serverRecovered&&!commissionDraft?._serverRecoveryPending&&commissionRecoveryTruth().verified){commissionDraft._recoveryHintOnly=false;writeCommissionDraftSafe(commissionDraft,{durable:false});renderCommissioning();return true;}
+      setCommissionServerSyncState('error','Fleet Core did not confirm this exact unfinished voyage. The recovery hold remains and nothing was overwritten.');renderCommissioning();return false;
     }
     await saveCommissionDraft();
     return true;

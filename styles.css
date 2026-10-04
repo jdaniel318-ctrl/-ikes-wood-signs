@@ -16163,3 +16163,5 @@ dialog.cg-workspace::backdrop{background:#061c24;}
 .voyage-inspector-grid b{display:block;margin-top:5px;overflow-wrap:anywhere}
 .voyage-inspector p{margin:14px 0 0;color:#b8c9cd;line-height:1.5}
 @media(max-width:820px){.voyage-inspector-grid{grid-template-columns:1fr}.voyage-inspector-head{align-items:flex-start}.voyage-inspector-close{flex:0 0 auto}}
+
+/* 8.8.20.24 KeelProof — recovery hold uses the existing polished pending banner and explicit Admiral verification action. */

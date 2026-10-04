@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.23",
-  "release": "IronLatch",
-  "seal": "ironlatch-882023",
+  "build": "8.8.20.24",
+  "release": "KeelProof",
+  "seal": "keelproof-882024",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "IronLatch",
-  "name": "IronLatch",
-  "releaseName": "IronLatch"
+  "release_name": "KeelProof",
+  "name": "KeelProof",
+  "releaseName": "KeelProof"
 }

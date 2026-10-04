@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-blackwake-authority-hull-v1",
-  "build": "8.8.20.23",
-  "release": "IronLatch",
+  "build": "8.8.20.24",
+  "release": "KeelProof",
   "doctrine": "Inspect live truth first, then build. Browser state never manufactures authority.",
   "live_truth_anchor": {
     "supabase_project_state": "ACTIVE_HEALTHY",

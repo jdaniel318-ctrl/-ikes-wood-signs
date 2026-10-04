@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.8.20.23",
-  "release": "IronLatch",
+  "build": "8.8.20.24",
+  "release": "KeelProof",
   "excluded_sources": [
     "The situation"
   ],

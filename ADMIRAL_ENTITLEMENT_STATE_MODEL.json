@@ -1,6 +1,6 @@
 {
-  "release": "IronLatch",
-  "build": "8.8.20.23",
+  "release": "KeelProof",
+  "build": "8.8.20.24",
   "name": "VoyageKeeper",
   "purpose": "Give every Fleet feature an independent Off, Free or Paid state for every vessel.",
   "owner_state_precedence": [
