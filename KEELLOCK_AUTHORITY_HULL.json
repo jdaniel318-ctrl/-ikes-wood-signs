@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-blackwake-authority-hull-v1",
-  "build": "8.8.20.21",
+  "build": "8.8.20.22",
   "release": "KeelLock",
   "doctrine": "Inspect live truth first, then build. Browser state never manufactures authority.",
   "live_truth_anchor": {

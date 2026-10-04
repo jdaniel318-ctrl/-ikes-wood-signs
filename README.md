@@ -1,14 +1,14 @@
-# Dark Sky 8.8.20.21 — HoldFast
+# Dark Sky 8.8.20.22 — Dead Man's Chest
 
 KeelLock converts live Fleet Core inspection into enforceable authority-hull doctrine. It preserves DeadReckoning recovery behavior, adds explicit RPC/scope regression gates, and ships a non-destructive supporting-index migration. No RLS widening or authority shortcut is introduced.
 
-# Dark Sky 8.8.20.21 — KeelLock
+# Dark Sky 8.8.20.22 — KeelLock
 
 KeelLock hardens VoyageKeeper recovery into a native Black Flag command surface. Recovered voyages now show one explicit next action, block forward navigation until Fleet Core is re-read, and expose recovery evidence inline instead of through browser alerts.
 
 Browser/session storage remains a cache. Fleet Core remains the durable commissioning authority.
 
-## 8.8.20.21 KeelLock
+## 8.8.20.22 KeelLock
 - Replaces the commissioning Recovery Inspector browser alert with an inline Black Flag evidence panel.
 - Makes the pending recovery state explicit: one security step remains, then the voyage resumes.
 - Disables ordinary Continue while a recovered voyage still requires Admiral/Fleet Core re-verification.
@@ -32,5 +32,5 @@ Browser/session storage remains a cache. Fleet Core remains the durable commissi
 - Recovery and authorization use command-surface styling; red is reserved for actual failure.
 
 
-## 8.8.20.21 KeelLock — release integrity repair
+## 8.8.20.22 KeelLock — release integrity repair
 BlackWake field proof isolated a packaging-order defect: final runtime bytes and DEPLOYMENT_MANIFEST runtime hashes diverged. KeelLock regenerates integrity hashes from the final immutable bytes and validates the package before ZIP handoff. Runtime integrity remains fail-closed; no checksum bypass was added. Field deployment proof remains required.

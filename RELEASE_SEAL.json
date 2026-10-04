@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.21",
-  "release": "TrueColors",
-  "seal": "truecolors-882021",
+  "build": "8.8.20.22",
+  "release": "Dead Man's Chest",
+  "seal": "deadmanschest-882022",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "TrueColors",
-  "name": "TrueColors",
-  "releaseName": "TrueColors"
+  "release_name": "Dead Man's Chest",
+  "name": "Dead Man's Chest",
+  "releaseName": "Dead Man's Chest"
 }

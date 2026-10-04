@@ -1,8 +1,8 @@
 {
-  "release": "8.8.20.21",
+  "release": "8.8.20.22",
   "name": "KeelLock",
-  "build": "8.8.20.21",
-  "seal": "truecolors-882021",
+  "build": "8.8.20.22",
+  "seal": "deadmanschest-882022",
   "file_count": 90,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

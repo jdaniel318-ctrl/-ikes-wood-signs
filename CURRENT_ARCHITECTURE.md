@@ -5,5 +5,5 @@ Commissioning durability uses the live VoyageGuard Fleet Core tables/RPCs. Brows
 A successful Admiral gate does not itself commission a vessel. Server-safe status still requires save + readback of the same voyage. Commissioning remains separately gated by Review/Prove and the canonical commissioning RPC.
 
 
-## 8.8.20.21 KeelLock — release integrity repair
+## 8.8.20.22 KeelLock — release integrity repair
 BlackWake field proof isolated a packaging-order defect: final runtime bytes and DEPLOYMENT_MANIFEST runtime hashes diverged. KeelLock regenerates integrity hashes from the final immutable bytes and validates the package before ZIP handoff. Runtime integrity remains fail-closed; no checksum bypass was added. Field deployment proof remains required.

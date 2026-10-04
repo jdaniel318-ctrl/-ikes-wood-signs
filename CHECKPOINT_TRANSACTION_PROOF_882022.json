@@ -1,0 +1,20 @@
+{
+  "schema": "dark-sky-checkpoint-transaction-proof-v1",
+  "build": "8.8.20.22",
+  "release": "Dead Man's Chest",
+  "parent": "8.8.20.21 TrueColors",
+  "field_evidence": {
+    "authority_unification": "PASS",
+    "stage4_to_stage5": "PASS",
+    "stage5_checkpoint": "FAIL: remained SERVER SYNCING"
+  },
+  "root_cause": "The uploaded 8.8.20.21 hull set SERVER SYNCING on forward Continue but did not call queueCommissionVoyageServerSave after the stage transition.",
+  "repair": [
+    "Forward Continue now queues the exact new-stage snapshot.",
+    "Save and read-back each have an 8-second bound.",
+    "SERVER SAFE requires same voyage plus exact intended stage on Fleet Core read-back.",
+    "Failure terminates as SYNC FAILED instead of indefinite SERVER SYNCING.",
+    "Terminal checkpoint state automatically repaints the commissioning screen."
+  ],
+  "safety": "No RLS widening, authority bypass, publication, checksum exception, or project-data deletion."
+}

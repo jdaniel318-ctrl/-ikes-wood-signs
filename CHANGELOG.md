@@ -1,4 +1,12 @@
-# 8.8.20.21 — TrueColors
+# 8.8.20.22 — Dead Man's Chest
+
+- Fixes the proven forward-stage checkpoint defect at its source: Continue now actually queues the new-stage Fleet Core save.
+- Requires exact voyage + intended-stage read-back before `SERVER SAFE`.
+- Bounds save and read-back operations to 8 seconds each; failures terminate as `SYNC FAILED` instead of hanging.
+- Repaints automatically when checkpointing reaches a terminal state.
+- Preserves the verified recovery/authority behavior from TrueColors.
+
+# 8.8.20.22 — TrueColors
 
 - Unifies recovery banner, footer, and navigation under one Fleet Core server-safe truth.
 - Removes the contradictory `RECOVERY VERIFIED` / `SERVER NOT VERIFIED` state.
@@ -6,14 +14,14 @@
 - Server recovery now carries explicit verification timestamp and server revision evidence.
 - Preserves AnchorWatch checkpointing, HoldFast dependency recovery, and KeelLock final-byte integrity.
 
-# 8.8.20.21 — AnchorWatch
+# 8.8.20.22 — AnchorWatch
 
 - Fixes the proven Stage 4 indefinite `SERVER SYNCING` defect.
 - Forward commissioning transitions now queue the Fleet Core voyage checkpoint.
 - Background checkpoint completion repaints the UI with confirmed `SERVER SAFE` or explicit sync failure.
 - Preserves HoldFast recovery reconciliation and KeelLock final-byte integrity discipline.
 
-# 8.8.20.21 — HoldFast
+# 8.8.20.22 — HoldFast
 
 - Restores Forge Plan from Fleet Core `forge_truth` when an older voyage draft lacks embedded Forge state.
 - Rehydrates Offer dependencies from that recovered plan.
@@ -21,7 +29,7 @@
 - Corrects the visible release label to HoldFast.
 - Preserves KeelLock's freeze-bytes-before-hash release-integrity discipline.
 
-# 8.8.20.21 — KeelLock
+# 8.8.20.22 — KeelLock
 
 - Anchors release work to live Fleet Core truth before build changes.
 - Adds Authority Hull contract and release-blocking scope checks.
@@ -29,14 +37,14 @@
 - Adds three idempotent foreign-key supporting indexes as an explicit migration.
 - Makes no destructive cleanup, RLS widening, or browser-only authority change.
 
-# 8.8.20.21 — KeelLock
+# 8.8.20.22 — KeelLock
 
 - Bind the recovery checkpoint `VERIFY ADMIRAL & RESUME` control to the same scoped Admiral authorization path used by server-save authorization.
 - Preserve fail-closed recovery: normal Continue stays disabled until Admiral verification and Fleet Core exact-voyage read-back succeed.
 - Add this field failure to release evidence: a rendered recovery button must execute the authority handoff; rendering alone is not a pass.
 - Preserve ClearBearing recovery detection, project isolation, durable voyage pointers, and server-truth boundaries.
 
-# 8.8.20.21 — KeelLock
+# 8.8.20.22 — KeelLock
 
 - Refit commissioning recovery as an inline command surface; no browser alert for Recovery Details.
 - Hold forward commissioning navigation until Admiral/Fleet Core recovery verification completes.
@@ -78,5 +86,5 @@
 - Recovery and authorization use command-surface styling; red is reserved for actual failure.
 
 
-## 8.8.20.21 KeelLock — release integrity repair
+## 8.8.20.22 KeelLock — release integrity repair
 BlackWake field proof isolated a packaging-order defect: final runtime bytes and DEPLOYMENT_MANIFEST runtime hashes diverged. KeelLock regenerates integrity hashes from the final immutable bytes and validates the package before ZIP handoff. Runtime integrity remains fail-closed; no checksum bypass was added. Field deployment proof remains required.
