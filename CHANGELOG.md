@@ -1,8 +1,9 @@
-# 8.8.20.8 — PassageLine
+# 8.8.20.9 — WakeLine
 
-- Corrects the HarborPass authorization round trip: commissioning now opens a focused same-tab Admiral gate and returns directly to the preserved voyage after verified authority.
-- The Admiral Command Deck is no longer the destination for voyage authorization.
-- After verification, the pending server save runs automatically; SERVER SAFE still requires Fleet Core save plus same-voyage readback.
-- Unrelated Admiral session changes cannot silently authorize a commissioning voyage.
-- Critical commissioning state stays in the guided voyage path; footer status remains secondary navigation context.
-- Existing fleet authority, vessel isolation, logos, ledger, and production gates are unchanged.
+- Preserves focused same-tab voyage authorization from PassageLine.
+- After refresh, Engine PIN remains required.
+- After successful Engine authentication, Black Flag queries Fleet Core for the authenticated officer's active commissioning voyage.
+- If found, the exact server voyage, safe stage, Project ID context and draft are restored automatically.
+- Recovery is visibly identified inside commissioning; no duplicate voyage is created.
+- If no server voyage exists, normal Engine Room behavior is unchanged.
+- SERVER SAFE still requires server save plus same-voyage readback.

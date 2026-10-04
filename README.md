@@ -1,5 +1,5 @@
-# Dark Sky 8.8.20.8 — PassageLine
+# Dark Sky 8.8.20.9 — WakeLine
 
-PassageLine repairs the commissioning authorization journey without weakening authority. AUTHORIZE THIS VOYAGE opens the existing PIN + account verification as a focused same-tab checkpoint. Successful verification returns directly to the preserved commissioning workspace and performs the pending Fleet Core save/readback. The full Admiral Command Deck is not entered for this scoped task.
+WakeLine preserves PassageLine's focused Admiral authorization and adds server-authoritative commissioning recovery after the required Engine PIN. If Fleet Core holds an unfinished voyage, successful Engine re-entry resumes that exact voyage and displays its recovery banner instead of silently landing at generic Engine home.
 
-SERVER SAFE remains evidence-based: authenticated save plus readback of the same voyage ID. No owner, Captain, publication, production, or new server authority is granted by this release.
+Browser/session storage remains a cache. Fleet Core remains the durable commissioning authority.

@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.20.8';
+  const BUILD_VERSION='8.8.20.9';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -203,7 +203,7 @@
         {id:'openings-takeoff',name:'Windows / Doors / Trim Takeoff',published:true,active:true,customerReady:true}
       ],
       houseHull:{engine:'PlumbLine',scaleStatus:'experimental',truthLevels:['AI ESTIMATE','FIELD MEASURED','SALESPERSON VERIFIED'],requiredElevations:['Front','Rear','Left','Right'],miscPhotos:true,materials:['vinyl siding','fiber cement','engineered wood','brick veneer','CMU/block','exposed foundation'],openingTrimOptions:['J-channel only','standard casing','wide picture-frame trim','PVC/composite trim','aluminum-wrapped trim','brickmould','manufacturer-specific trim','custom / no trim']},
-      deployments:[],orders:[],customers:[],ledger:[],commissionedAt:new Date().toISOString(),commissioningVersion:'8.8.20.8',
+      deployments:[],orders:[],customers:[],ledger:[],commissionedAt:new Date().toISOString(),commissioningVersion:'8.8.20.9',
       lifecycle:{state:'draft',version:3},registry:{version:1,source:'release-bundled',displayNameUnique:false},
       governance:{platformStatus:'approved',history:[]},audit:{enabled:true,policyVersion:'4.0'}
     },
@@ -8382,7 +8382,7 @@
     try{localStorage.removeItem('blackFlagCommissionDraft');}catch(_){}
   }
 
-  // PassageLine 8.8.20.8 — Fleet Core is the durable recovery authority when an
+  // WakeLine 8.8.20.9 — Fleet Core is the durable recovery authority when an
   // authenticated commissioning officer is available. Browser stores remain caches.
   const COMMISSION_VOYAGE_SESSION_KEY='darkSkySupabaseAdmiralSessionV1';
   let commissionServerVoyage=null,commissionServerSaveTimer=null;
@@ -8431,6 +8431,29 @@
       return row;
     }catch(err){window.__voyageGuardServerError=String(err?.message||err);return null;}
   }
+  async function detectActiveCommissionVoyageForResume(){
+    const client=commissioningServerClient(); if(!client)return null;
+    try{
+      const row=await client.rpc('read_active_commissioning_voyage',{},'Fleet Core recovery read was unavailable.');
+      return row?.found&&row?.draft?row:null;
+    }catch(err){window.__voyageGuardResumeProbeError=String(err?.message||err);return null;}
+  }
+  async function resumeActiveCommissionVoyageAfterEngineUnlock(){
+    const row=await detectActiveCommissionVoyageForResume();
+    if(!row)return false;
+    commissionServerVoyage=row;
+    commissionDraft={...freshCommissionDraft(),...row.draft,_recovered:true,_serverRecovered:true,_serverVoyageId:row.voyage_id,_serverReceipt:row.receipt||null};
+    commissionStep=Math.max(1,Math.min(7,Number(row.safe_stage||commissionDraft._step||1)));
+    commissionDraft._step=commissionStep;
+    commissionDraft._maxStepReached=Math.max(commissionStep,Number(commissionDraft._maxStepReached||1));
+    setCommissionServerSyncState('safe',`Fleet Core recovered voyage ${row.voyage_id}.`);
+    writeCommissionDraftSafe(commissionDraft,{durable:false});
+    openProjectCommissioning(commissionDraft.commissionerRole||'engine_admin');
+    requestAnimationFrame(()=>document.querySelector('.commission-voyage-recovery')?.scrollIntoView({block:'start',behavior:'instant'}));
+    window.BlackFlagV3Core?.audit?.({actorRole:commissionDraft.commissionerRole||'engine_admin',category:'project',action:'commissioning.server_resume_after_engine_unlock',detail:`${row.voyage_id} • stage ${commissionStep} • ${BUILD_VERSION}`});
+    return true;
+  }
+
   async function discardCommissionVoyageServer(){
     const id=commissionDraft?._serverVoyageId||commissionServerVoyage?.voyage_id; if(!id)return false;
     const client=commissioningServerClient(); if(!client)return false;
@@ -8445,7 +8468,7 @@
   function commissionRecoveryBannerMarkup(){
     if(!commissionDraft?._serverRecovered)return '';
     const receipt=commissionDraft._serverReceipt; const state=String(receipt?.command_state||'draft_preserved').replaceAll('_',' ').toUpperCase();
-    return `<section class="commission-voyage-recovery"><div><small>PASSAGELINE • UNFINISHED COMMISSIONING FOUND</small><h3>${escapeHtml(commissionDraft.name||'Unnamed vessel')}</h3><p>Last verified stage: <b>${String(Number(commissionDraft._step||1)).padStart(2,'0')} / 07</b> • Previous command: <b>${escapeHtml(state)}</b></p></div><div class="commission-voyage-actions"><button type="button" class="primary-btn" data-voyage-resume>RESUME VOYAGE</button><button type="button" class="secondary-btn" data-voyage-inspect>INSPECT RECOVERY</button><button type="button" class="secondary-btn" data-voyage-discard>DISCARD DRAFT</button></div></section>`;
+    return `<section class="commission-voyage-recovery"><div><small>WAKELINE • UNFINISHED COMMISSIONING FOUND</small><h3>${escapeHtml(commissionDraft.name||'Unnamed vessel')}</h3><p>Last verified stage: <b>${String(Number(commissionDraft._step||1)).padStart(2,'0')} / 07</b> • Previous command: <b>${escapeHtml(state)}</b></p></div><div class="commission-voyage-actions"><button type="button" class="primary-btn" data-voyage-resume>RESUME VOYAGE</button><button type="button" class="secondary-btn" data-voyage-inspect>INSPECT RECOVERY</button><button type="button" class="secondary-btn" data-voyage-discard>DISCARD DRAFT</button></div></section>`;
   }
 
   function openProjectCommissioning(actorRole='engine_admin'){
@@ -17055,7 +17078,11 @@ document.addEventListener('click', (event) => {
       try{ await window.igniteProofBootstrap8617?.('engine-entry'); }catch(err){ console.warn('Bootstrap Ignition engine-entry warning',err); }
       if(typeof window.renderBlackFlagHome==='function') await window.renderBlackFlagHome();
       try{window.__darkSkyPostLoginHoldRelay8631?.('engine-home-rendered');}catch(_){ }
-      scheduleIronHullFortification();
+      // WakeLine 8.8.20.9: after the required Engine re-authentication, Fleet Core
+      // gets first say on unfinished commissioning. Resume the exact server-safe
+      // voyage instead of silently dropping the officer at generic Engine home.
+      const resumedVoyage=await resumeActiveCommissionVoyageAfterEngineUnlock();
+      if(!resumedVoyage)scheduleIronHullFortification();
     }catch(err){
       console.warn('Engine home render warning',err);
       window.DarkSkyBootState={...(window.DarkSkyBootState||{}),renderWarning:String(err?.message||err),build:'6.0.0'};

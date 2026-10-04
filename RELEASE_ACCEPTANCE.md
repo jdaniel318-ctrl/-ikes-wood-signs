@@ -1,6 +1,6 @@
-# PassageLine 8.8.20.8 — Release Acceptance
+# WakeLine 8.8.20.9 — Release Acceptance
 
-1. Confirm 8.8.20.8 · PASSAGELINE boots without Release Recovery.
+1. Confirm 8.8.20.9 · WAKELINE boots without Release Recovery.
 2. Open Test Exterior Services and save the small persistence-test brief.
 3. If authorization is required, choose AUTHORIZE THIS VOYAGE.
 4. Confirm the focused Admiral gate stays on the commissioning course and does not open the Admiral Command Deck.

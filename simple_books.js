@@ -1,7 +1,7 @@
-/* Dark Sky 8.8.20.8 KeelGuard — stable document-flow editing and protected amounts. */
+/* Dark Sky 8.8.20.9 KeelGuard — stable document-flow editing and protected amounts. */
 ;(()=>{
 'use strict';
-const BUILD='8.8.20.8',SESSION_KEY='darkSkySupabaseAdmiralSessionV1',BOOK_KEY='darkSkyAccountantBooksV1',DB_NAME='darkSkyDurableLedgerV1',DB_STORE='books',RECOVERY_KEY='darkSkyLedgerRecoveryReceiptV1',RECOVERY_MIRROR_KEY='darkSkyLedgerRecoveryMirrorV1',RECOVERY_IDB_KEY='recovery:ledger-v1',RECOVERY_VERSION='ledger-recovery-v1',PAGE=25;
+const BUILD='8.8.20.9',SESSION_KEY='darkSkySupabaseAdmiralSessionV1',BOOK_KEY='darkSkyAccountantBooksV1',DB_NAME='darkSkyDurableLedgerV1',DB_STORE='books',RECOVERY_KEY='darkSkyLedgerRecoveryReceiptV1',RECOVERY_MIRROR_KEY='darkSkyLedgerRecoveryMirrorV1',RECOVERY_IDB_KEY='recovery:ledger-v1',RECOVERY_VERSION='ledger-recovery-v1',PAGE=25;
 const el=id=>document.getElementById(id);
 const safe=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 const pretty=value=>String(value||'recorded activity').replaceAll('_',' ').replace(/\b\w/g,letter=>letter.toUpperCase());

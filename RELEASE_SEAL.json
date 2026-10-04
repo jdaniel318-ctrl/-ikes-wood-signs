@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.8",
-  "release": "PassageLine",
-  "seal": "passageline-88208",
+  "build": "8.8.20.9",
+  "release": "WakeLine",
+  "seal": "wakeline-88209",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "PassageLine",
-  "name": "PassageLine",
-  "releaseName": "PassageLine"
+  "release_name": "WakeLine",
+  "name": "WakeLine",
+  "releaseName": "WakeLine"
 }

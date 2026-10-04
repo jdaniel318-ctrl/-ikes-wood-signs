@@ -1,8 +1,8 @@
 {
-  "release": "PassageLine",
-  "name": "PassageLine",
-  "build": "8.8.20.8",
-  "seal": "passageline-88208",
+  "release": "WakeLine",
+  "name": "WakeLine",
+  "build": "8.8.20.9",
+  "seal": "wakeline-88209",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
@@ -91,5 +91,5 @@
     "styles.css",
     "sw.js"
   ],
-  "releaseName": "PassageLine"
+  "releaseName": "WakeLine"
 }

@@ -1,7 +1,7 @@
 {
   "release": "8.8.17",
-  "build": "8.8.20.8",
-  "name": "PassageLine",
+  "build": "8.8.20.9",
+  "name": "WakeLine",
   "purpose": "Give every Fleet feature an independent Off, Free or Paid state for every vessel.",
   "owner_state_precedence": [
     "enabled",
