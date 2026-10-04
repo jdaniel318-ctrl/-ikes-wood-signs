@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-release-gate-forgeseal-v1",
-  "build": "8.8.20.12",
-  "release": "TrueReturn",
+  "build": "8.8.20.13",
+  "release": "TruthBridge",
   "pass": true,
   "evidence_scope": "Final-byte release integrity closure: runtime/model hashes regenerated only after release freeze, whole-package checksums regenerated after manifest, and finished ZIP independently reverified. Native iPad boot remains field acceptance.",
   "native_field_acceptance": "pending",
@@ -3441,13 +3441,17 @@
     "no_blind_retry": true,
     "ui": "resume-inspect-discard"
   },
-  "truereturn_scope": {
+  "truthbridge_scope": {
     "status": "candidate",
-    "checks": [
-      "exact commissioning return after Engine unlock",
-      "server recheck required when Admiral authority expired",
-      "release identity documents fetched fresh",
-      "negative photo requirement respected"
-    ]
+    "field_defect_reproduced": "Fleet Core preservation claim with browser form still unverified/blank after restore attempt",
+    "fixes": [
+      "authoritative server payload wins explicit restore",
+      "exact draft-key reconciliation",
+      "no unverified server-preservation wording",
+      "server-verified state requires installed server payload",
+      "failed read-back stays locked"
+    ],
+    "live_server_migration_changed": false,
+    "native_ipad_retest_required": true
   }
 }

@@ -1,8 +1,8 @@
 {
-  "release": "8.8.20.12",
-  "name": "TrueReturn",
-  "build": "8.8.20.12",
-  "seal": "truereturn-88212",
+  "release": "8.8.20.13",
+  "name": "TruthBridge",
+  "build": "8.8.20.13",
+  "seal": "truthbridge-88213",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
@@ -91,5 +91,5 @@
     "styles.css",
     "sw.js"
   ],
-  "releaseName": "TrueReturn"
+  "releaseName": "TruthBridge"
 }

@@ -1,6 +1,6 @@
-# VoyageKeeper 8.8.20.12 — Release Acceptance
+# VoyageKeeper 8.8.20.13 — Release Acceptance
 
-1. Confirm 8.8.20.12 · VOYAGEKEEPER boots without Release Recovery.
+1. Confirm 8.8.20.13 · VOYAGEKEEPER boots without Release Recovery.
 2. Open Test Exterior Services and save the small persistence-test brief.
 3. If authorization is required, choose AUTHORIZE THIS VOYAGE.
 4. Confirm the focused Admiral gate stays on the commissioning course and does not open the Admiral Command Deck.
@@ -9,7 +9,7 @@
 7. Confirm no owner/Captain/publication/production authority changed.
 
 
-## 8.8.20.12 VoyageKeeper
+## 8.8.20.13 VoyageKeeper
 - Recovery pointer survives Engine lock without claiming server truth.
 - Engine re-entry restores an unfinished voyage into a Secure Voyage checkpoint instead of a blank commissioning form.
 - Admiral recovery re-reads Fleet Core before any server-safe claim and never overwrites an authoritative voyage from a hint-only draft.

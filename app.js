@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.20.12';
+  const BUILD_VERSION='8.8.20.13';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -203,7 +203,7 @@
         {id:'openings-takeoff',name:'Windows / Doors / Trim Takeoff',published:true,active:true,customerReady:true}
       ],
       houseHull:{engine:'PlumbLine',scaleStatus:'experimental',truthLevels:['AI ESTIMATE','FIELD MEASURED','SALESPERSON VERIFIED'],requiredElevations:['Front','Rear','Left','Right'],miscPhotos:true,materials:['vinyl siding','fiber cement','engineered wood','brick veneer','CMU/block','exposed foundation'],openingTrimOptions:['J-channel only','standard casing','wide picture-frame trim','PVC/composite trim','aluminum-wrapped trim','brickmould','manufacturer-specific trim','custom / no trim']},
-      deployments:[],orders:[],customers:[],ledger:[],commissionedAt:new Date().toISOString(),commissioningVersion:'8.8.20.12',
+      deployments:[],orders:[],customers:[],ledger:[],commissionedAt:new Date().toISOString(),commissioningVersion:'8.8.20.13',
       lifecycle:{state:'draft',version:3},registry:{version:1,source:'release-bundled',displayNameUnique:false},
       governance:{platformStatus:'approved',history:[]},audit:{enabled:true,policyVersion:'4.0'}
     },
@@ -8396,7 +8396,7 @@
     try{localStorage.removeItem('blackFlagCommissionDraft');}catch(_){}
   }
 
-  // VoyageKeeper 8.8.20.12 — Fleet Core is the durable recovery authority when an
+  // VoyageKeeper 8.8.20.13 — Fleet Core is the durable recovery authority when an
   // authenticated commissioning officer is available. Browser stores remain caches.
   const COMMISSION_VOYAGE_SESSION_KEY='darkSkySupabaseAdmiralSessionV1';
   let commissionServerVoyage=null,commissionServerSaveTimer=null;
@@ -8433,17 +8433,34 @@
     commissionServerSaveTimer=setTimeout(()=>saveCommissionVoyageServer(copy),180);
   }
   async function hydrateCommissionVoyageFromServer(){
-    const client=commissioningServerClient(); if(!client)return null;
+    const client=commissioningServerClient(); if(!client){setCommissionServerSyncState('error','Fleet Core client configuration is unavailable. Nothing was changed.');return null;}
     try{
       const row=await client.rpc('read_active_commissioning_voyage',{},'Fleet Core recovery read was unavailable.');
-      if(!row?.found||!row?.draft){setCommissionServerSyncState('unknown','No unfinished server voyage was found.');return null;}
-      commissionServerVoyage=row;setCommissionServerSyncState('safe',`Fleet Core recovered voyage ${row.voyage_id}.`);
-      const local=commissionDraft;
-      const server={...freshCommissionDraft(),...row.draft,_recovered:true,_serverRecovered:true,_serverVoyageId:row.voyage_id,_serverReceipt:row.receipt||null};
-      const serverTime=Date.parse(row.updated_at||server.updatedAt||0)||0,localTime=Date.parse(local?.updatedAt||0)||0;
-      if(!local?.name||serverTime>=localTime){commissionDraft=server;commissionStep=Math.max(1,Math.min(7,Number(row.safe_stage||server._step||1)));commissionDraft._step=commissionStep;commissionDraft._maxStepReached=Math.max(commissionStep,Number(server._maxStepReached||1));writeCommissionDraftSafe(commissionDraft,{durable:false});renderCommissioning();}
+      if(!row?.found||!row?.draft){setCommissionServerSyncState('error','Fleet Core did not return an unfinished voyage. Nothing was overwritten.');return null;}
+      const expectedKey=String(commissionDraft?.draftId||'');
+      const returnedKey=String(row.draft_key||row.draft?.draftId||'');
+      if(expectedKey && returnedKey && expectedKey!==returnedKey){
+        setCommissionServerSyncState('error',`Fleet Core returned a different voyage (${returnedKey}). Recovery remains locked.`);
+        window.__voyageGuardRecoveryConflict={expectedKey,returnedKey,voyageId:row.voyage_id};
+        return null;
+      }
+      const localBefore=commissionDraftClone(commissionDraft);
+      const server={...freshCommissionDraft(),...row.draft,_recovered:true,_serverRecovered:true,_serverRecoveryPending:false,_serverVoyageId:row.voyage_id,_serverReceipt:row.receipt||null,_serverVerifiedAt:new Date().toISOString(),_serverRevisionAt:row.updated_at||''};
+      commissionServerVoyage=row;
+      // Explicit Restore means Fleet Core wins. A newer browser timestamp must never
+      // suppress authoritative read-back; browser state is retained only as evidence.
+      if(localBefore?.updatedAt && Date.parse(localBefore.updatedAt||0)>Date.parse(row.updated_at||server.updatedAt||0)){
+        window.__voyageGuardLocalNewerEvidence={draftId:localBefore.draftId,updatedAt:localBefore.updatedAt,serverUpdatedAt:row.updated_at||''};
+      }
+      commissionDraft=server;
+      commissionStep=Math.max(1,Math.min(7,Number(row.safe_stage||server._step||1)));
+      commissionDraft._step=commissionStep;
+      commissionDraft._maxStepReached=Math.max(commissionStep,Number(server._maxStepReached||1));
+      writeCommissionDraftSafe(commissionDraft,{durable:false});
+      setCommissionServerSyncState('safe',`Fleet Core verified voyage ${row.voyage_id} at ${row.updated_at||'current server revision'}.`);
+      renderCommissioning();
       return row;
-    }catch(err){window.__voyageGuardServerError=String(err?.message||err);return null;}
+    }catch(err){const message=String(err?.message||err);window.__voyageGuardServerError=message;setCommissionServerSyncState('error',message);return null;}
   }
   async function detectActiveCommissionVoyageForResume(){
     const client=commissioningServerClient(); if(!client)return null;
@@ -8455,12 +8472,12 @@
   async function resumeActiveCommissionVoyageAfterEngineUnlock(){
     const row=await detectActiveCommissionVoyageForResume();
     if(!row){
-      // VoyageKeeper 8.8.20.12: an Engine refresh must never strand a voyage merely
+      // VoyageKeeper 8.8.20.13: an Engine refresh must never strand a voyage merely
       // because the Fleet Core read requires renewed Admiral account authority.
       // Session/browser state is only a recovery hint — never server truth — but it
       // is enough to restore the exact commissioning workspace and ask for a
       // deliberate server recheck instead of dumping the officer at Engine home.
-      // TrueReturn 8.8.20.12: browser mirrors are caches, but the IndexedDB
+      // TruthBridge 8.8.20.13: browser mirrors are caches, but the IndexedDB
       // commissioning checkpoint is the durable local return pointer across a full
       // Safari reload. It contains work context only — never Admiral authority.
       let local=readCommissionDraft();
@@ -9163,7 +9180,7 @@
     renderCommissioning();
     if(commissionDraft?._serverRecoveryPending){
       const recovered=await hydrateCommissionVoyageFromServer();
-      if(recovered){commissionDraft._serverRecoveryPending=false;commissionDraft._recoveryHintOnly=false;writeCommissionDraftSafe(commissionDraft,{durable:false});renderCommissioning();return true;}
+      if(recovered&&commissionDraft?._serverRecovered&&!commissionDraft?._serverRecoveryPending){commissionDraft._recoveryHintOnly=false;writeCommissionDraftSafe(commissionDraft,{durable:false});renderCommissioning();return true;}
       setCommissionServerSyncState('error','Fleet Core did not return the unfinished voyage. Nothing was overwritten.');renderCommissioning();return false;
     }
     await saveCommissionDraft();
@@ -9358,7 +9375,7 @@
     bindBusinessIntakeControls();
     bindVesselForgeControls();
     workspace.querySelector('[data-voyage-resume]')?.addEventListener('click',e=>{e.preventDefault();document.querySelector('.commission-panel')?.scrollIntoView({block:'start',behavior:'smooth'});});
-    workspace.querySelector('[data-voyage-inspect]')?.addEventListener('click',e=>{e.preventDefault();const r=commissionDraft?._serverReceipt;alert(r?`Recovery receipt: ${String(r.command_state||'unknown').replaceAll('_',' ').toUpperCase()}\nOperation: ${r.operation_id||'—'}\nUpdated: ${r.updated_at||'—'}`:'No prior command receipt is attached. The draft itself is safely preserved in Fleet Core.');});
+    workspace.querySelector('[data-voyage-inspect]')?.addEventListener('click',e=>{e.preventDefault();const r=commissionDraft?._serverReceipt,verified=!!commissionDraft?._serverRecovered&&!commissionDraft?._serverRecoveryPending&&commissionServerSyncState.state==='safe';if(r){alert(`Recovery receipt: ${String(r.command_state||'unknown').replaceAll('_',' ').toUpperCase()}\nOperation: ${r.operation_id||'—'}\nUpdated: ${r.updated_at||'—'}`);return;}if(verified){alert(`Fleet Core read-back verified this voyage.\nVoyage: ${commissionDraft?._serverVoyageId||'—'}\nServer revision: ${commissionDraft?._serverRevisionAt||commissionServerSyncState.at||'—'}\nNo prior commissioning command receipt is attached.`);return;}alert('Browser recovery checkpoint found. Fleet Core has not yet been re-read and no server preservation claim is being made. Verify Admiral & Restore Voyage to perform authoritative read-back.');});
     workspace.querySelector('[data-voyage-discard]')?.addEventListener('click',async e=>{e.preventDefault();if(!confirm('Discard this unfinished commissioning voyage? This does not delete or change any commissioned vessel.'))return;try{await discardCommissionVoyageServer();clearCommissionDraft();commissionDraft=freshCommissionDraft();commissionStep=1;renderCommissioning();}catch(err){alert(String(err?.message||err));}});
     workspace.querySelectorAll('[data-commission-toggle]').forEach(btn=>{
       btn.onclick=(event)=>{
@@ -17133,7 +17150,7 @@ document.addEventListener('click', (event) => {
       try{ await window.igniteProofBootstrap8617?.('engine-entry'); }catch(err){ console.warn('Bootstrap Ignition engine-entry warning',err); }
       if(typeof window.renderBlackFlagHome==='function') await window.renderBlackFlagHome();
       try{window.__darkSkyPostLoginHoldRelay8631?.('engine-home-rendered');}catch(_){ }
-      // VoyageKeeper 8.8.20.12: after the required Engine re-authentication, Fleet Core
+      // VoyageKeeper 8.8.20.13: after the required Engine re-authentication, Fleet Core
       // gets first say on unfinished commissioning. Resume the exact server-safe
       // voyage instead of silently dropping the officer at generic Engine home.
       const resumedVoyage=await resumeActiveCommissionVoyageAfterEngineUnlock();

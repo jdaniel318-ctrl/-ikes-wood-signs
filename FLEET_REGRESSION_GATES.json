@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.8.20.12",
-  "release": "TrueReturn",
+  "build": "8.8.20.13",
+  "release": "TruthBridge",
   "excluded_sources": [
     "The situation"
   ],
@@ -241,5 +241,13 @@
       "localstorage_media_mirrors_compact"
     ]
   },
-  "promotion": "manual-captain-known-good"
+  "promotion": "manual-captain-known-good",
+  "truthbridge_88213": [
+    "explicit_restore_always_hydrates_authoritative_server_payload",
+    "newer_browser_timestamp_cannot_suppress_server_restore",
+    "recovery_draft_key_mismatch_locks_instead_of_merging",
+    "inspect_recovery_never_claims_server_preservation_before_readback",
+    "server_verified_requires_actual_server_recovered_payload",
+    "failed_readback_keeps_recovery_locked_and_preserves_browser_evidence"
+  ]
 }
