@@ -1,9 +1,9 @@
 {
-  "release": "8.8.20.22",
-  "name": "KeelLock",
-  "build": "8.8.20.22",
-  "seal": "deadmanschest-882022",
-  "file_count": 90,
+  "release": "8.8.20.23",
+  "name": "IronLatch",
+  "build": "8.8.20.23",
+  "seal": "ironlatch-882023",
+  "file_count": 94,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
     "ADMIRAL_RELEASE_DOCTRINE.json",
@@ -11,6 +11,7 @@
     "BOOTSTRAP_IGNITION_MODEL.json",
     "CAPABILITY_ADOPTION_MAP.json",
     "CHANGELOG.md",
+    "CHECKPOINT_TRANSACTION_PROOF_882022.json",
     "CHECKSUMS.sha256",
     "CURRENT_ARCHITECTURE.md",
     "DEPLOYMENT_MANIFEST.json",
@@ -47,6 +48,8 @@
     "PROOF_CHAIN_SETTLEMENT_MODEL.json",
     "PROOF_SIGNER_TRACE_MODEL.json",
     "README.md",
+    "RECOVERY_AUTHORITY_PROOF_882021.json",
+    "RECOVERY_DEPENDENCY_PROOF_882019.json",
     "REGISTRY_LEDGER_MODEL.json",
     "RELEASE_ACCEPTANCE.md",
     "RELEASE_CHECKSUMS.sha256",
@@ -58,6 +61,7 @@
     "RLS_READ_BOUNDARY_MODEL.json",
     "RUNTIME_ENTRY_TRACE_MODEL.json",
     "SHA256SUMS.txt",
+    "STAGE_CHECKPOINT_PROOF_882020.json",
     "STORAGE_SAFE_PROOF_BUS_MODEL.json",
     "SUPABASE_ADMIRAL_COMMISSIONING_886.sql",
     "SUPABASE_KEELLOCK_SUPPORTING_INDEXES_882018.sql",
@@ -96,5 +100,5 @@
     "styles.css",
     "sw.js"
   ],
-  "releaseName": "KeelLock"
+  "releaseName": "IronLatch"
 }

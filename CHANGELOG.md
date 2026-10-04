@@ -1,3 +1,20 @@
+# Dark Sky 8.8.20.23 — IronLatch
+
+Client test candidate for the recovery-details button failure in Dead Man's Chest.
+
+- Recovery controls use replacement-style handlers; reopening or rebinding does not stack click actions. Render owns initial binding.
+- View Recovery Details opens one inline panel; Close returns focus. Disclosure state and visible button text stay synchronized. No draft write or commissioning action is triggered by inspection.
+- Banner, details and footer share one recovery-status derivation. A cached recovery flag or command receipt cannot manufacture current verification. Matching in-memory Fleet Core read-back and the existing sync/pending states are required for the verified display.
+- Async sync-state changes repaint only recovery/status UI, retaining unfinished field input. Open details remain open during same-draft refresh.
+- All 94 original deployment files are retained. No new deployment files, project removals, SQL execution, live permissions changes or publication occurred in the build process.
+
+Upload the extracted folder's CONTENTS to the existing deployment root, including the small JSON/hash files. Do not upload the enclosing folder as a new nested website. Keep existing project/browser data.
+
+Native iPad acceptance is still required: same VoyageKeeper draft, same Step 5; one tap opens details; Close and reopen work; all three recovery labels agree. Do not reset the draft or advance commissioning during this check.
+
+## Inherited release notes
+The older notes below are preserved history, not proof that those live workflows were rerun for IronLatch.
+
 # 8.8.20.22 — Dead Man's Chest
 
 - Fixes the proven forward-stage checkpoint defect at its source: Continue now actually queues the new-stage Fleet Core save.

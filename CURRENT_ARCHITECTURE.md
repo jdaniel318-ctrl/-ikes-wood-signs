@@ -1,3 +1,11 @@
+# Current release — IronLatch 8.8.20.23
+
+The recovery repair is a presentation/binding change inside the existing commissioning workspace. `commissionRecoveryTruth` supplies the banner, inspector and footer. Its same-voyage check is display evidence, not an authorization grant. Existing Admiral gate, hydration/save/receipt RPCs, pending-recovery continuation hold, project commissioning, data stores, ledger and project boundaries are unchanged.
+
+Recovery status changes update only the dedicated recovery slot and footer status; they never capture editable fields. The existing authoritative hydration function still governs replacing a draft following successful read-back. This patch does not create a new backend, publish a vessel, appoint a Captain, or claim a production handoff.
+
+## Preserved prior architecture notes
+
 # Current Architecture — VoyageKeeper 8.8.20.14
 
 Commissioning durability uses the live VoyageGuard Fleet Core tables/RPCs. Browser/session state is a cache and recovery aid, not server truth. VoyageKeeper adds a same-tab bridge to the existing Admiral PIN + authenticated account workspace so the commissioning document can obtain its own valid authenticated session before calling VoyageGuard RPCs.

@@ -1,9 +1,9 @@
 {
   "schema": "dark-sky-release-gate-blackwake-v1",
-  "build": "8.8.20.22",
-  "release": "KeelLock",
+  "build": "8.8.20.23",
+  "release": "IronLatch",
   "pass": true,
-  "evidence_scope": "Live Fleet Core authority inspection converted into explicit authority-hull regression doctrine plus non-destructive supporting-index migration. Package/static verification passed; native iPad acceptance for KeelLock remains pending.",
+  "evidence_scope": "Focused exact-function Chromium recovery/disclosure and synthetic-RPC hydration tests, plus final-byte static/package/atomic-loader verification. Not full-site, live backend, native iPad acceptance, production commissioning or Captain handoff.",
   "native_field_acceptance": "pending",
   "prior_release_evidence": {
     "schema": "dark-sky-release-gate-bloompick-v1",
@@ -3453,5 +3453,20 @@
     ],
     "live_server_migration_changed": false,
     "native_ipad_retest_required": true
+  },
+  "ironlatch_scope": {
+    "build": "8.8.20.23",
+    "baseline": "8.8.20.22 Dead Man's Chest",
+    "scope": "Recovery button binding and read-only recovery status presentation only; release identity and final-byte packaging metadata refreshed.",
+    "one_action_per_tap": true,
+    "verified_display_requires": "Recovered draft, no pending recovery, existing safe sync state, matching in-memory Fleet Core draft/voyage identifiers.",
+    "async_status_repaint": "Recovery region and status text only; no form-field capture/replacement or storage writes.",
+    "authority_predicates_changed": false,
+    "server_functions_changed": false,
+    "live_operations_performed": false,
+    "native_ipad_acceptance": "pending",
+    "all_original_deployment_paths_retained": 94,
+    "new_deployed_paths": 0,
+    "historical_proof_files": "unchanged; not current acceptance evidence"
   }
 }

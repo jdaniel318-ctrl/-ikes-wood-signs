@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.20.22';
+  const BUILD_VERSION='8.8.20.23';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -8401,8 +8401,13 @@
   const COMMISSION_VOYAGE_SESSION_KEY='darkSkySupabaseAdmiralSessionV1';
   let commissionServerVoyage=null,commissionServerSaveTimer=null;
   let commissionServerSyncState={state:'unknown',message:'Server persistence has not been verified.',at:''};
-  function setCommissionServerSyncState(state,message=''){commissionServerSyncState={state:String(state||'unknown'),message:String(message||''),at:new Date().toISOString()};window.__voyageGuardServerSyncState=commissionServerSyncState;return commissionServerSyncState;}
-  function commissionServerSyncLabel(){const s=commissionServerSyncState.state;if(s==='safe')return 'SERVER SAFE';if(s==='syncing')return 'SERVER SYNCING';if(s==='auth')return 'SERVER SIGN-IN REQUIRED';if(s==='needed'||s==='error')return 'SYNC NEEDED';return 'SERVER NOT VERIFIED';}
+  function setCommissionServerSyncState(state,message=''){
+    commissionServerSyncState={state:String(state||'unknown'),message:String(message||''),at:new Date().toISOString()};
+    window.__voyageGuardServerSyncState=commissionServerSyncState;
+    refreshCommissionRecoveryStatus();
+    return commissionServerSyncState;
+  }
+  function commissionServerSyncLabel(){return commissionRecoveryTruth().label;}
   function commissioningServerClient(){
     const c=window.BlackFlagV3Identity?.productionAuth?.readClientConfig?.();
     if(!c?.url||!c?.publishableKey||!window.DarkSkySupabase?.create)return null;
@@ -8524,26 +8529,91 @@
     if(!id||!client||!operationId)return null;
     try{return await client.rpc('record_commissioning_receipt',{p_voyage_id:id,p_operation_id:operationId,p_intended_project_id:String(projectId||''),p_preview_fingerprint:String(commissionDraft?._forgeFingerprint||''),p_command_state:state,p_detail:detail},'Fleet Core could not record the commissioning receipt.');}catch(err){window.__voyageGuardReceiptError=String(err?.message||err);return null;}
   }
+  // IronLatch: presentation only. A cached recovery flag/receipt is not a
+  // current read-back. This helper grants no authority and issues no commands.
+  function commissionRecoveryTruth(){
+    const d=commissionDraft, sync=String(commissionServerSyncState.state||'unknown');
+    const active=!!(d?._serverRecovered||d?._serverRecoveryPending);
+    const pending=!!d?._serverRecoveryPending;
+    const row=commissionServerVoyage;
+    const draftKey=String(d?.draftId||''), voyageId=String(d?._serverVoyageId||'');
+    const sameVoyage=!!draftKey&&!!voyageId&&draftKey===String(row?.draft_key||row?.draft?.draftId||'')&&voyageId===String(row?.voyage_id||'');
+    const verified=active&&!!d?._serverRecovered&&!pending&&sync==='safe'&&sameVoyage;
+    const labels={safe:'SERVER SAFE',syncing:'SERVER SYNCING',auth:'SERVER SIGN-IN REQUIRED',needed:'SYNC NEEDED',error:'SYNC NEEDED'};
+    let label=labels[sync]||'SERVER NOT VERIFIED';
+    if(active&&!verified&&(sync==='safe'||(pending&&sync==='unknown')))label='SERVER RECHECK REQUIRED';
+    return {active,pending,verified,label};
+  }
+  function commissionDraftStatusText(){
+    const recovered=commissionDraft?._recovered?' • RECOVERED DRAFT':'';
+    const storage=commissionDraftStorageState.degraded?' • SESSION SAFE':'';
+    return `DRAFT • STEP ${commissionStep}/7${recovered}${storage} • ${commissionServerSyncLabel()} • NOT PUBLISHED`;
+  }
   function commissionRecoveryInspectorMarkup(){
-    if(!commissionDraft?._serverRecovered&&!commissionDraft?._serverRecoveryPending)return '';
+    const truth=commissionRecoveryTruth();
+    if(!truth.active)return '';
     const r=commissionDraft?._serverReceipt;
-    const verified=!!commissionDraft?._serverRecovered&&!commissionDraft?._serverRecoveryPending&&commissionServerSyncState.state==='safe';
-    const title=r?'Command receipt':verified?'Fleet Core read-back':'Recovery checkpoint';
-    const status=r?String(r.command_state||'unknown').replaceAll('_',' ').toUpperCase():verified?'SERVER VERIFIED':'SERVER RECHECK REQUIRED';
-    const rows=r
-      ?[['Status',status],['Operation',r.operation_id||'Not recorded'],['Updated',r.updated_at||'Not recorded']]
-      :verified
-        ?[['Status',status],['Voyage',commissionDraft?._serverVoyageId||'Not recorded'],['Server revision',commissionDraft?._serverRevisionAt||commissionServerSyncState.at||'Not recorded']]
-        :[['Status',status],['Browser checkpoint','FOUND'],['Fleet Core read-back','NOT YET PERFORMED']];
-    const note=r?'This receipt records the last server command attached to this voyage.':verified?'Fleet Core verified this voyage. No prior commissioning command receipt is attached; that is informational, not a failure.':'The browser has preserved the voyage pointer only. No server-safe claim is made until Admiral verification completes.';
-    return `<div class="voyage-inspector hidden" data-voyage-inspector role="region" aria-live="polite"><div class="voyage-inspector-head"><div><small>RECOVERY DETAILS</small><strong>${escapeHtml(title)}</strong></div><button type="button" class="voyage-inspector-close" data-voyage-inspect-close aria-label="Close recovery details">CLOSE</button></div><div class="voyage-inspector-grid">${rows.map(([k,v])=>`<div><small>${escapeHtml(k)}</small><b>${escapeHtml(v)}</b></div>`).join('')}</div><p>${escapeHtml(note)}</p></div>`;
+    const rows=[['Recovery status',truth.label],['Source',truth.verified?'Fleet Core read-back':'Saved recovery checkpoint'],['Voyage pointer',commissionDraft?._serverVoyageId||'Not recorded']];
+    if(truth.verified)rows.push(['Server revision',commissionDraft?._serverRevisionAt||'Not recorded'],['Read-back checked',commissionDraft?._serverVerifiedAt||commissionServerSyncState.at||'Not recorded']);
+    const grid=values=>values.map(([k,v])=>`<div><small>${escapeHtml(k)}</small><b>${escapeHtml(v)}</b></div>`).join('');
+    const note=truth.verified?'Fleet Core read-back confirmed this exact draft in this workspace. This does not establish publication, Captain handoff, or a continuing authorization grant.':'The saved checkpoint is not current server verification. Existing Admiral checks and Fleet Core read-back still govern server-safe work.';
+    const receipt=r?`<p><b>LAST RECORDED COMMAND</b> — separate from current recovery verification.</p><div class="voyage-inspector-grid">${grid([['Command state',String(r.command_state||'unknown').replaceAll('_',' ').toUpperCase()],['Operation',r.operation_id||'Not recorded'],['Recorded',r.updated_at||'Not recorded']])}</div>`:'<p>No prior commissioning command receipt is attached. That alone is not a recovery failure.</p>';
+    return `<div id="commissionRecoveryInspector" class="voyage-inspector hidden" data-voyage-inspector role="region" aria-labelledby="commissionRecoveryDetailsTitle" aria-live="polite"><div class="voyage-inspector-head"><div><small>RECOVERY DETAILS</small><strong id="commissionRecoveryDetailsTitle">Recovery checkpoint</strong></div><button type="button" class="voyage-inspector-close" data-voyage-inspect-close aria-label="Close recovery details">CLOSE</button></div><div class="voyage-inspector-grid">${grid(rows)}</div><p>${escapeHtml(note)}</p>${receipt}</div>`;
   }
   function commissionRecoveryBannerMarkup(){
-    if(!commissionDraft?._serverRecovered&&!commissionDraft?._serverRecoveryPending)return '';
-    const pending=!!commissionDraft._serverRecoveryPending;
-    const receipt=commissionDraft._serverReceipt; const state=pending?'SERVER RECHECK REQUIRED':String(receipt?.command_state||'draft_preserved').replaceAll('_',' ').toUpperCase();
-    const truth=pending?'Your voyage is preserved in this browser. One security check remains before server-safe work can continue.':'Fleet Core read-back recovered this exact voyage. You may continue from the verified stage.';
-    return `<section class="commission-voyage-recovery ${pending?'is-pending':''}"><div class="voyage-recovery-copy"><small>${pending?'RECOVERY CHECKPOINT • 1 STEP REMAINS':'RECOVERY CHECKPOINT • VERIFIED'}</small><h3>${escapeHtml(commissionDraft.name||'Unnamed vessel')}</h3><p>Stage <b>${String(Number(commissionDraft._step||1)).padStart(2,'0')} of 07</b> • <b>${escapeHtml(state)}</b></p><p class="voyage-recovery-truth">${escapeHtml(truth)}</p>${pending?'<p class="voyage-recovery-next"><b>NEXT:</b> Verify Admiral. Black Flag will re-read Fleet Core, confirm this exact voyage, and return you here.</p>':''}</div><div class="commission-voyage-actions">${pending?'<button type="button" class="primary-btn" data-authorize-voyage>VERIFY ADMIRAL & RESUME</button>':'<button type="button" class="primary-btn" data-voyage-resume>CONTINUE VOYAGE</button>'}<button type="button" class="secondary-btn" data-voyage-inspect>VIEW RECOVERY DETAILS</button></div></section>${commissionRecoveryInspectorMarkup()}`;
+    const truth=commissionRecoveryTruth();
+    if(!truth.active)return '';
+    const heading=truth.verified?'VERIFIED':truth.label==='SERVER SYNCING'?'SYNCING':'RECHECK REQUIRED';
+    const note=truth.verified?'Fleet Core read-back confirmed this exact draft. Publication and working-ship handoff remain separate.':truth.label==='SERVER SYNCING'?'Fleet Core synchronization is in progress. Server-safe status has not been confirmed.':truth.pending?'Your saved checkpoint is preserved. Complete the existing Admiral check so Fleet Core can re-read this voyage.':'This saved draft has not been verified against Fleet Core in the current workspace. Reviewing it does not verify or publish it.';
+    const action=truth.pending?'<button type="button" class="primary-btn" data-authorize-voyage>VERIFY ADMIRAL & RESUME</button>':`<button type="button" class="primary-btn" data-voyage-resume>${truth.verified?'CONTINUE VOYAGE':'REVIEW SAVED DRAFT'}</button>`;
+    return `<section class="commission-voyage-recovery ${truth.verified?'':'is-pending'}"><div class="voyage-recovery-copy"><small>RECOVERY CHECKPOINT • ${heading}</small><h3>${escapeHtml(commissionDraft.name||'Unnamed vessel')}</h3><p>Stage <b>${String(Number(commissionDraft._step||1)).padStart(2,'0')} of 07</b> • <b>${escapeHtml(truth.label)}</b></p><p class="voyage-recovery-truth">${escapeHtml(note)}</p>${truth.pending?'<p class="voyage-recovery-next"><b>NEXT:</b> Verify Admiral. Black Flag will re-read Fleet Core, confirm this exact voyage, and return you here.</p>':''}</div><div class="commission-voyage-actions">${action}<button type="button" class="secondary-btn" data-voyage-inspect aria-expanded="false" aria-controls="commissionRecoveryInspector">VIEW RECOVERY DETAILS</button></div></section>${commissionRecoveryInspectorMarkup()}`;
+  }
+  function setCommissionRecoveryDetailsOpen(open,root=$('projectCommissioningWorkspace')){
+    const panel=root?.querySelector('[data-voyage-inspector]'),button=root?.querySelector('[data-voyage-inspect]');
+    if(!panel||!button)return;
+    panel.classList.toggle('hidden',!open);
+    button.setAttribute('aria-expanded',String(!!open));
+    button.textContent=open?'HIDE RECOVERY DETAILS':'VIEW RECOVERY DETAILS';
+  }
+  function bindCommissionRecoveryControls(root=$('projectCommissioningWorkspace')){
+    if(!root)return;
+    // Replacement-style handlers, just like the commissioning footer: setup may
+    // run repeatedly, but a tap must never accumulate duplicate toggle/commands.
+    const bind=(selector,action)=>root.querySelectorAll(selector).forEach(button=>{
+      button.onclick=event=>{event.preventDefault();event.stopPropagation();return action(event);};
+    });
+    bind('[data-authorize-voyage]',()=>authorizeCurrentCommissioningVoyage());
+    bind('[data-voyage-resume]',()=>document.querySelector('#projectCommissioningWorkspace .commission-panel')?.scrollIntoView({block:'start',behavior:'smooth'}));
+    bind('[data-voyage-inspect]',()=>{
+      const panel=root.querySelector('[data-voyage-inspector]');if(!panel)return;
+      const open=panel.classList.contains('hidden');
+      setCommissionRecoveryDetailsOpen(open,root);
+      if(open)panel.scrollIntoView({block:'start',behavior:'smooth'});
+    });
+    bind('[data-voyage-inspect-close]',()=>{
+      setCommissionRecoveryDetailsOpen(false,root);
+      root.querySelector('[data-voyage-inspect]')?.focus({preventScroll:true});
+    });
+    bind('[data-voyage-discard]',async()=>{
+      if(!confirm('Discard this unfinished commissioning voyage? This does not delete or change any commissioned vessel.'))return;
+      try{await discardCommissionVoyageServer();clearCommissionDraft();commissionDraft=freshCommissionDraft();commissionStep=1;renderCommissioning();}
+      catch(err){alert(String(err?.message||err));}
+    });
+  }
+  function refreshCommissionRecoveryStatus(){
+    const slot=$('commissionRecoverySlot');
+    if(!slot||!commissionDraft||slot.dataset.draftId!==String(commissionDraft.draftId||''))return;
+    const oldPanel=slot.querySelector('[data-voyage-inspector]');
+    const open=!!oldPanel&&!oldPanel.classList.contains('hidden');
+    const focus=document.activeElement;
+    const focused=focus&&slot.contains(focus)?['data-voyage-inspect','data-voyage-inspect-close','data-authorize-voyage','data-voyage-resume'].find(attr=>focus.hasAttribute(attr)):null;
+    // Refresh only this read-only region. Do not capture or rebuild form fields,
+    // change the draft/stage, invoke authority, or write storage during repaint.
+    slot.innerHTML=commissionRecoveryBannerMarkup();
+    bindCommissionRecoveryControls(slot);
+    if(open)setCommissionRecoveryDetailsOpen(true,slot);
+    if(focused)slot.querySelector(`[${focused}]`)?.focus({preventScroll:true});
+    const status=$('commissionDraftStatus');if(status)status.textContent=commissionDraftStatusText();
   }
 
   function openProjectCommissioning(actorRole='engine_admin'){
@@ -8562,8 +8632,7 @@
     const w=$('projectCommissioningWorkspace');
     w.classList.remove('hidden'); w.setAttribute('aria-hidden','false');
     document.body.classList.add('engine-workspace-open');
-    renderCommissioning();
-    bindCommissioningControls();
+    renderCommissioning(); // Rendering owns control binding; do not bind a second time.
     setTimeout(()=>hydrateCommissionVoyageFromServer(),0);
     window.BlackFlagV3Core?.audit?.({actorRole:commissionDraft.commissionerRole||requestedRole,category:'project',action:recovered?'commissioning.resumed':'commissioning.opened',detail:`${commissionDraft.draftId} • authority ${(commissionDraft.commissionerRole||requestedRole)}`});
   }
@@ -9137,7 +9206,9 @@
 
   function renderCommissioning(){
     if(!commissionDraft)return;
-    $('commissioningBody').innerHTML=commissionRecoveryBannerMarkup()+commissioningStepMarkup();
+    const previous=$('commissionRecoverySlot');
+    const keepDetails=previous?.dataset.draftId===String(commissionDraft.draftId||'')&&previous.querySelector('[data-voyage-inspector]')?.classList.contains('hidden')===false;
+    $('commissioningBody').innerHTML=`<div id="commissionRecoverySlot" data-draft-id="${escapeHtml(commissionDraft.draftId||'')}">${commissionRecoveryBannerMarkup()}</div>`+commissioningStepMarkup();
     document.querySelectorAll('[data-commission-step]').forEach(b=>{
       const step=Number(b.dataset.commissionStep);
       b.classList.toggle('active',step===commissionStep);
@@ -9151,11 +9222,10 @@
     if(commissionStep===7){$('commissionNext').disabled=true;$('commissionNext').title='Running PROVE readiness checks…';}
     else if(recoveryHeld){$('commissionNext').disabled=true;$('commissionNext').title='Verify Admiral & Resume before continuing this recovered voyage.';}
     else {$('commissionNext').disabled=false;$('commissionNext').title='';}
-    const recovered=commissionDraft._recovered?' • RECOVERED DRAFT':'';
-    const storage=commissionDraftStorageState.degraded?' • SESSION SAFE':'';
-    $('commissionDraftStatus').textContent=`DRAFT • STEP ${commissionStep}/7${recovered}${storage} • ${commissionServerSyncLabel()} • NOT PUBLISHED`;
+    $('commissionDraftStatus').textContent=commissionDraftStatusText();
     clearCommissionValidation();
     bindCommissioningControls();
+    if(keepDetails)setCommissionRecoveryDetailsOpen(true);
     if(commissionStep===7)setTimeout(()=>refreshCommissionProofStatus(),0);
   }
 
@@ -9175,7 +9245,7 @@
       if(el){
         if(label==='SERVER SIGN-IN REQUIRED'){
           el.innerHTML=`<b>SERVER SAVE REQUIRES ADMIRAL AUTHORIZATION</b><span>${escapeHtml(detail)}</span><button type="button" class="primary-btn" data-authorize-voyage>AUTHORIZE THIS VOYAGE</button><small>Authorization opens in this same tab and is scoped to this commissioning workspace. Your draft remains session-safe while you verify.</small>`;
-          el.querySelector('[data-authorize-voyage]')?.addEventListener('click',()=>authorizeCurrentCommissioningVoyage());
+          bindCommissionRecoveryControls(el);
         }else el.textContent=`${label}: ${detail}`;
         el.classList.add('visible');
       }
@@ -9392,11 +9462,7 @@
     if(close)close.onclick=(event)=>{event.preventDefault();closeProjectCommissioning();};
     bindBusinessIntakeControls();
     bindVesselForgeControls();
-    workspace.querySelector('[data-authorize-voyage]')?.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();authorizeCurrentCommissioningVoyage();});
-    workspace.querySelector('[data-voyage-resume]')?.addEventListener('click',e=>{e.preventDefault();document.querySelector('.commission-panel')?.scrollIntoView({block:'start',behavior:'smooth'});});
-    workspace.querySelector('[data-voyage-inspect]')?.addEventListener('click',e=>{e.preventDefault();const panel=workspace.querySelector('[data-voyage-inspector]');if(!panel)return;panel.classList.toggle('hidden');if(!panel.classList.contains('hidden'))panel.scrollIntoView({block:'nearest',behavior:'smooth'});});
-    workspace.querySelector('[data-voyage-inspect-close]')?.addEventListener('click',e=>{e.preventDefault();workspace.querySelector('[data-voyage-inspector]')?.classList.add('hidden');workspace.querySelector('[data-voyage-inspect]')?.focus({preventScroll:true});});
-    workspace.querySelector('[data-voyage-discard]')?.addEventListener('click',async e=>{e.preventDefault();if(!confirm('Discard this unfinished commissioning voyage? This does not delete or change any commissioned vessel.'))return;try{await discardCommissionVoyageServer();clearCommissionDraft();commissionDraft=freshCommissionDraft();commissionStep=1;renderCommissioning();}catch(err){alert(String(err?.message||err));}});
+    bindCommissionRecoveryControls(workspace);
     workspace.querySelectorAll('[data-commission-toggle]').forEach(btn=>{
       btn.onclick=(event)=>{
         event.preventDefault();

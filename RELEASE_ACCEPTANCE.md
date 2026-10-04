@@ -1,3 +1,20 @@
+# IronLatch 8.8.20.23 — current acceptance scope
+
+**Release classification: client test candidate. Native iPad and live deployment acceptance: PENDING.**
+
+Exact shipped commissioning functions, markup and styles are exercised in an isolated Chromium fixture with synthetic draft data and inert server/auth/storage substitutes. A separate fixture executes the original hydration function with delayed synthetic RPC responses. These are not a full-site or live-backend acceptance test.
+
+Required behavior: one tap opens recovery details; Close returns focus; repeated binding/reopening never duplicates recovery actions; native Enter/Space each toggle once; no draft writes, authority calls or stage changes result from inspection; pending recovery holds remain; cached receipts are distinct from current recovery status; async read-back failure updates all three labels without discarding field edits; an unmatched voyage is never displayed as verified.
+
+Release checks must be rerun from the final extracted ZIP: JS/inline-script syntax, JSON parsing, runtime/model SHA-256 bodies, all three checksum manifests, exact release identity, unchanged protected modules/functions, inventory and ZIP CRC. The deployment retains all 94 original paths. Historical proof JSON remains unchanged and is not current field evidence.
+
+## iPad field check — three steps
+1. Upload all files inside DarkSky882023-IronLatch to the existing site root and confirm 8.8.20.23 / IRONLATCH on the Engine.
+2. Open Commission New Project and confirm VoyageKeeper Recovery Test remains at Step 5; tap View Recovery Details once.
+3. Tap Close, open the details again, and capture the open panel for review. Do not reset or advance commissioning.
+
+## Preserved prior acceptance notes — not newly rerun live evidence
+
 # 8.8.20.22 KeelLock acceptance focus
 
 Native iPad acceptance requires the recovered-voyage button to visibly enter Admiral verification, return to the same commissioning voyage, re-read Fleet Core, and only then enable server-safe continuation. A visible button with no transition is a release failure.
