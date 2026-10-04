@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.19",
-  "release": "HoldFast",
-  "seal": "holdfast-882019",
+  "build": "8.8.20.20",
+  "release": "AnchorWatch",
+  "seal": "anchorwatch-882020",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "HoldFast",
-  "name": "HoldFast",
-  "releaseName": "HoldFast"
+  "release_name": "AnchorWatch",
+  "name": "AnchorWatch",
+  "releaseName": "AnchorWatch"
 }

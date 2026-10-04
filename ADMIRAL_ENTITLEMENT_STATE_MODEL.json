@@ -1,6 +1,6 @@
 {
   "release": "KeelLock",
-  "build": "8.8.20.19",
+  "build": "8.8.20.20",
   "name": "VoyageKeeper",
   "purpose": "Give every Fleet feature an independent Off, Free or Paid state for every vessel.",
   "owner_state_precedence": [

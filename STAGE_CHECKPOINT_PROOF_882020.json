@@ -1,0 +1,17 @@
+{
+  "schema": "dark-sky-stage-checkpoint-proof-v1",
+  "build": "8.8.20.20",
+  "release": "AnchorWatch",
+  "parent": "8.8.20.19 HoldFast",
+  "field_evidence": {
+    "stage3_server_recovery": "PASS",
+    "stage4_local_progression": "PASS",
+    "stage4_server_checkpoint": "FAIL: remained SERVER SYNCING"
+  },
+  "root_cause": "Continue advanced browser state and painted SERVER SYNCING but never queued saveCommissionVoyageServer for the new stage.",
+  "repair": [
+    "Every forward stage transition now queues a Fleet Core checkpoint.",
+    "Background checkpoint completion repaints SERVER SAFE or explicit SYNC NEEDED truth."
+  ],
+  "safety": "No authority widening, RLS bypass, checksum exception, or project-data deletion."
+}

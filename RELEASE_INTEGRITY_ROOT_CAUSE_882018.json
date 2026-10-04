@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-release-integrity-root-cause-v1",
-  "build": "8.8.20.19",
+  "build": "8.8.20.20",
   "release": "KeelLock",
-  "seal": "holdfast-882019",
+  "seal": "anchorwatch-882020",
   "parent": "8.8.20.17 BlackWake",
   "field_evidence": {
     "blackwake_clean_retry": "worker registrations removed; application caches cleared; runtime verification still held",

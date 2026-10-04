@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-release-gate-blackwake-v1",
-  "build": "8.8.20.19",
+  "build": "8.8.20.20",
   "release": "KeelLock",
   "pass": true,
   "evidence_scope": "Live Fleet Core authority inspection converted into explicit authority-hull regression doctrine plus non-destructive supporting-index migration. Package/static verification passed; native iPad acceptance for KeelLock remains pending.",
