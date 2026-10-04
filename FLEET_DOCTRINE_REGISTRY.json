@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-fleet-doctrine-registry-v1",
-  "build": "8.8.20.15",
+  "build": "8.8.20.16",
   "release": "HashLock",
   "status": "active",
   "principles": [

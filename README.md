@@ -1,10 +1,10 @@
-# Dark Sky 8.8.20.15 — ClearBearing
+# Dark Sky 8.8.20.16 — DeadReckoning
 
-ClearBearing hardens VoyageKeeper recovery into a native Black Flag command surface. Recovered voyages now show one explicit next action, block forward navigation until Fleet Core is re-read, and expose recovery evidence inline instead of through browser alerts.
+DeadReckoning hardens VoyageKeeper recovery into a native Black Flag command surface. Recovered voyages now show one explicit next action, block forward navigation until Fleet Core is re-read, and expose recovery evidence inline instead of through browser alerts.
 
 Browser/session storage remains a cache. Fleet Core remains the durable commissioning authority.
 
-## 8.8.20.15 ClearBearing
+## 8.8.20.16 DeadReckoning
 - Replaces the commissioning Recovery Inspector browser alert with an inline Black Flag evidence panel.
 - Makes the pending recovery state explicit: one security step remains, then the voyage resumes.
 - Disables ordinary Continue while a recovered voyage still requires Admiral/Fleet Core re-verification.

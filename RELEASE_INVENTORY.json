@@ -1,8 +1,8 @@
 {
-  "release": "8.8.20.15",
-  "name": "ClearBearing",
-  "build": "8.8.20.15",
-  "seal": "clearbearing-882015",
+  "release": "8.8.20.16",
+  "name": "DeadReckoning",
+  "build": "8.8.20.16",
+  "seal": "deadreckoning-882016",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

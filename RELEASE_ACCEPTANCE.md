@@ -1,4 +1,8 @@
-# 8.8.20.15 ClearBearing — Release Acceptance
+# 8.8.20.16 DeadReckoning acceptance focus
+
+Native iPad acceptance requires the recovered-voyage button to visibly enter Admiral verification, return to the same commissioning voyage, re-read Fleet Core, and only then enable server-safe continuation. A visible button with no transition is a release failure.
+
+# 8.8.20.16 DeadReckoning — Release Acceptance
 
 Package-level acceptance: PASS. Native iPad field acceptance: PENDING. This release changes recovery presentation/navigation only and preserves server authority boundaries. Final-byte hashes are regenerated after all edits.
 

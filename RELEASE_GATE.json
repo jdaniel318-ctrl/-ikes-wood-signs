@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-release-gate-forgeseal-v1",
-  "build": "8.8.20.15",
-  "release": "ClearBearing",
+  "build": "8.8.20.16",
+  "release": "DeadReckoning",
   "pass": true,
   "evidence_scope": "Commissioning recovery command-surface hardening, pending-recovery navigation gate, and final-byte package integrity. Native iPad field acceptance remains pending.",
   "native_field_acceptance": "pending",

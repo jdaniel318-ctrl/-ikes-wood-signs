@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.20.15';
+  const BUILD_VERSION='8.8.20.16';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -203,7 +203,7 @@
         {id:'openings-takeoff',name:'Windows / Doors / Trim Takeoff',published:true,active:true,customerReady:true}
       ],
       houseHull:{engine:'PlumbLine',scaleStatus:'experimental',truthLevels:['AI ESTIMATE','FIELD MEASURED','SALESPERSON VERIFIED'],requiredElevations:['Front','Rear','Left','Right'],miscPhotos:true,materials:['vinyl siding','fiber cement','engineered wood','brick veneer','CMU/block','exposed foundation'],openingTrimOptions:['J-channel only','standard casing','wide picture-frame trim','PVC/composite trim','aluminum-wrapped trim','brickmould','manufacturer-specific trim','custom / no trim']},
-      deployments:[],orders:[],customers:[],ledger:[],commissionedAt:new Date().toISOString(),commissioningVersion:'8.8.20.15',
+      deployments:[],orders:[],customers:[],ledger:[],commissionedAt:new Date().toISOString(),commissioningVersion:'8.8.20.16',
       lifecycle:{state:'draft',version:3},registry:{version:1,source:'release-bundled',displayNameUnique:false},
       governance:{platformStatus:'approved',history:[]},audit:{enabled:true,policyVersion:'4.0'}
     },
@@ -9392,6 +9392,7 @@
     if(close)close.onclick=(event)=>{event.preventDefault();closeProjectCommissioning();};
     bindBusinessIntakeControls();
     bindVesselForgeControls();
+    workspace.querySelector('[data-authorize-voyage]')?.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();authorizeCurrentCommissioningVoyage();});
     workspace.querySelector('[data-voyage-resume]')?.addEventListener('click',e=>{e.preventDefault();document.querySelector('.commission-panel')?.scrollIntoView({block:'start',behavior:'smooth'});});
     workspace.querySelector('[data-voyage-inspect]')?.addEventListener('click',e=>{e.preventDefault();const panel=workspace.querySelector('[data-voyage-inspector]');if(!panel)return;panel.classList.toggle('hidden');if(!panel.classList.contains('hidden'))panel.scrollIntoView({block:'nearest',behavior:'smooth'});});
     workspace.querySelector('[data-voyage-inspect-close]')?.addEventListener('click',e=>{e.preventDefault();workspace.querySelector('[data-voyage-inspector]')?.classList.add('hidden');workspace.querySelector('[data-voyage-inspect]')?.focus({preventScroll:true});});

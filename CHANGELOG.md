@@ -1,4 +1,11 @@
-# 8.8.20.15 — ClearBearing
+# 8.8.20.16 — DeadReckoning
+
+- Bind the recovery checkpoint `VERIFY ADMIRAL & RESUME` control to the same scoped Admiral authorization path used by server-save authorization.
+- Preserve fail-closed recovery: normal Continue stays disabled until Admiral verification and Fleet Core exact-voyage read-back succeed.
+- Add this field failure to release evidence: a rendered recovery button must execute the authority handoff; rendering alone is not a pass.
+- Preserve ClearBearing recovery detection, project isolation, durable voyage pointers, and server-truth boundaries.
+
+# 8.8.20.16 — DeadReckoning
 
 - Refit commissioning recovery as an inline command surface; no browser alert for Recovery Details.
 - Hold forward commissioning navigation until Admiral/Fleet Core recovery verification completes.
