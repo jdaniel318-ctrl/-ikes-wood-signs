@@ -1,4 +1,4 @@
-# Current release — Blackwake 8.8.20.27
+# Current release — Crosscheck 8.8.20.28
 
 The recovery repair is a presentation/binding change inside the existing commissioning workspace. `commissionRecoveryTruth` supplies the banner, inspector and footer. Its same-voyage check is display evidence, not an authorization grant. Existing Admiral gate, hydration/save/receipt RPCs, pending-recovery continuation hold, project commissioning, data stores, ledger and project boundaries are unchanged.
 

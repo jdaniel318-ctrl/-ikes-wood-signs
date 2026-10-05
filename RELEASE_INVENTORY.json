@@ -1,8 +1,8 @@
 {
-  "release": "Blackwake",
-  "name": "Blackwake",
-  "build": "8.8.20.27",
-  "seal": "blackwake-882027",
+  "release": "Crosscheck",
+  "name": "Crosscheck",
+  "build": "8.8.20.28",
+  "seal": "crosscheck-882028",
   "file_count": 94,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
@@ -100,5 +100,5 @@
     "styles.css",
     "sw.js"
   ],
-  "releaseName": "Blackwake"
+  "releaseName": "Crosscheck"
 }

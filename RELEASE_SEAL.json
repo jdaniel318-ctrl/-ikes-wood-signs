@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.27",
-  "release": "Blackwake",
-  "seal": "blackwake-882027",
+  "build": "8.8.20.28",
+  "release": "Crosscheck",
+  "seal": "crosscheck-882028",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Blackwake",
-  "name": "Blackwake",
-  "releaseName": "Blackwake"
+  "release_name": "Crosscheck",
+  "name": "Crosscheck",
+  "releaseName": "Crosscheck"
 }

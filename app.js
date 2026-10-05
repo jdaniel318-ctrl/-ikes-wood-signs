@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.20.27';
+  const BUILD_VERSION='8.8.20.28';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -8531,6 +8531,28 @@
     if(!id||!client||!operationId)return null;
     try{return await client.rpc('record_commissioning_receipt',{p_voyage_id:id,p_operation_id:operationId,p_intended_project_id:String(projectId||''),p_preview_fingerprint:String(commissionDraft?._forgeFingerprint||''),p_command_state:state,p_detail:detail},'Fleet Core could not record the commissioning receipt.');}catch(err){window.__voyageGuardReceiptError=String(err?.message||err);return null;}
   }
+  // Crosscheck: consequential commissioning truth is reconciled by Fleet Core, never browser inference.
+  function commissionReceiptNeedsReconciliation(receipt=commissionDraft?._serverReceipt){
+    if(!receipt)return false;
+    const state=String(receipt.command_state||'').toLowerCase();
+    return ['prepared','submitted','outcome_uncertain','verified_created'].includes(state);
+  }
+  async function reconcileExistingCommissionOperation(){
+    const receipt=commissionDraft?._serverReceipt;
+    const voyageId=commissionDraft?._serverVoyageId||commissionServerVoyage?.voyage_id;
+    const operationId=receipt?.operation_id;
+    const client=commissioningServerClient();
+    if(!voyageId||!operationId||!client)throw new Error('No preserved commissioning operation is available to reconcile.');
+    const result=await client.rpc('reconcile_commissioning_receipt',{p_voyage_id:voyageId,p_operation_id:operationId},'Fleet Core could not reconcile the preserved commissioning operation.');
+    const row=await client.rpc('read_active_commissioning_voyage',{},'Fleet Core could not read the reconciled voyage.');
+    if(!row?.found||String(row.voyage_id||'')!==String(voyageId))throw new Error('Reconciliation read-back did not return this exact voyage.');
+    commissionServerVoyage=row;
+    commissionDraft={...commissionDraft,...(row.draft||{}),_recovered:true,_serverRecovered:true,_serverRecoveryPending:false,_serverVoyageId:row.voyage_id,_serverReceipt:row.receipt||null,_step:7,_maxStepReached:7};
+    setCommissionServerSyncState('safe',`Fleet Core reconciled operation ${operationId}.`);
+    writeCommissionDraftSafe(commissionDraft,{durable:false});
+    renderCommissioning();
+    return result;
+  }
   // IronLatch: presentation only. A cached recovery flag/receipt is not a
   // current read-back. This helper grants no authority and issues no commands.
   function commissionRecoveryTruth(){
@@ -9210,7 +9232,8 @@
           <div><small>AUTO RETRY</small><b>FORBIDDEN</b></div>
           <div><small>PUBLICATION</small><b>STILL BLOCKED</b></div>
         </div>
-        <div id="commissionProofMessage" class="commission-callout warning"><b>PROVE CHECK RUNNING</b><span>Commission Project remains held until the local recovery channel and canonical registry read both pass.</span></div>
+        <div id="commissionProofMessage" class="commission-callout warning"><b>PROVE CHECK RUNNING</b><span>Commission Project remains held until recovery, registry truth, and any preserved operation are reconciled.</span></div>
+        ${commissionReceiptNeedsReconciliation(d._serverReceipt)?`<div class="commission-callout warning commission-reconcile-hold"><b>PREVIOUS OPERATION • RECONCILIATION REQUIRED</b><span>Operation ${escapeHtml(d._serverReceipt.operation_id||'unknown')} is preserved. Black Flag will not commission again until Fleet Core resolves this operation against the canonical vessel registry.</span><button type="button" class="primary-btn" data-reconcile-commission>RECONCILE EXISTING OPERATION</button></div>`:(String(d._serverReceipt?.command_state||'').toLowerCase()==='verified_not_created'?`<div class="commission-callout success"><b>PREVIOUS OPERATION • VERIFIED NOT CREATED</b><span>The prior operation is closed by canonical Fleet Core proof. A new deliberate commissioning attempt may now be prepared.</span></div>`:'')}
         <div class="commission-callout"><b>THREE VALID OUTCOMES</b><span>VERIFIED CREATED • VERIFIED NOT CREATED • OUTCOME UNCERTAIN — RECONCILE. Uncertain means stop and reconcile; never press Commission again blindly.</span></div>
       </div>`;
   }
@@ -9225,9 +9248,10 @@
     let registryOk=false,registryError='';
     try{await readCanonicalProjectRegistryStrict();registryOk=true;}catch(err){registryError=String(err?.message||err);}
     if(registry)registry.textContent=registryOk?'READABLE':'HOLD';
-    const ready=!conflicts.length&&probe.ok&&registryOk;
-    if(button){button.disabled=!ready;button.title=ready?'':'Resolve PROVE holds before commissioning.';}
-    if(message){message.className=`commission-callout ${ready?'success':'warning'}`;message.innerHTML=ready?'<b>PROVE READINESS • CLEAR</b><span>Recovery journal is writable and the canonical vessel registry is readable. Commissioning may proceed; server read-back will still decide the final outcome.</span>':`<b>PROVE HOLD</b><span>${escapeHtml(conflicts[0]||probe.error||registryError||'Commissioning readiness is incomplete.')}</span>`;}
+    const receiptHold=commissionReceiptNeedsReconciliation(commissionDraft?._serverReceipt);
+    const ready=!conflicts.length&&probe.ok&&registryOk&&!receiptHold;
+    if(button){button.disabled=!ready;button.title=ready?'':receiptHold?'Reconcile the preserved operation before any new commissioning command.':'Resolve PROVE holds before commissioning.';}
+    if(message){message.className=`commission-callout ${ready?'success':'warning'}`;message.innerHTML=ready?'<b>PROVE READINESS • CLEAR</b><span>Recovery journal is writable, the canonical vessel registry is readable, and no unresolved operation is blocking commissioning.</span>':receiptHold?'<b>RECONCILIATION HOLD</b><span>A previous commissioning operation is preserved. Reconcile it against Fleet Core before any new commission command.</span>':`<b>PROVE HOLD</b><span>${escapeHtml(conflicts[0]||probe.error||registryError||'Commissioning readiness is incomplete.')}</span>`;}
   }
 
   function renderCommissioning(){
@@ -9489,6 +9513,12 @@
     bindBusinessIntakeControls();
     bindVesselForgeControls();
     bindCommissionRecoveryControls(workspace);
+    workspace.querySelector('[data-reconcile-commission]')?.addEventListener('click',async(event)=>{
+      event.preventDefault();event.stopPropagation();
+      const btn=event.currentTarget;btn.disabled=true;btn.textContent='RECONCILING…';
+      try{await reconcileExistingCommissionOperation();}
+      catch(err){commissionError(`Reconciliation stopped safely. No commission command ran. ${String(err?.message||err)}`);btn.disabled=false;btn.textContent='RECONCILE EXISTING OPERATION';}
+    });
     workspace.querySelectorAll('[data-commission-toggle]').forEach(btn=>{
       btn.onclick=(event)=>{
         event.preventDefault();
@@ -9523,6 +9553,7 @@
   async function commissionProject(){
     captureCommissionFields();
     if(!validateCommissionDraftFinal())return;
+    if(commissionReceiptNeedsReconciliation(commissionDraft?._serverReceipt))return commissionError('RECONCILIATION HOLD — a previous commissioning operation must be reconciled against Fleet Core before any new commission command.');
     // 07 · PROVE — fail before mutation when the recovery channel or canonical
     // registry cannot be read. Commissioning never uses blind retry semantics.
     const recoveryProbe=commissionRecoveryStorageProbe();

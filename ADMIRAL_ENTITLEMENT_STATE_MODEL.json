@@ -1,6 +1,6 @@
 {
-  "release": "Blackwake",
-  "build": "8.8.20.27",
+  "release": "Crosscheck",
+  "build": "8.8.20.28",
   "name": "VoyageKeeper",
   "purpose": "Give every Fleet feature an independent Off, Free or Paid state for every vessel.",
   "owner_state_precedence": [
