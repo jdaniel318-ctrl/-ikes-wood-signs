@@ -16179,3 +16179,12 @@ dialog.cg-workspace::backdrop{background:#061c24;}
   .commission-action{min-height:44px!important}
   .commission-reconcile-hold .primary-btn{width:100%!important;margin-top:8px!important}
 }
+
+/* Ironbound: readable immutable identities, explicit single-send states, no page scroll lock. */
+.ironbound-proof .ironbound-id{overflow-wrap:anywhere;word-break:normal;font-size:clamp(.85rem,1.5vw,1rem);line-height:1.4;}
+.ironbound-proof .commission-callout button{min-height:46px;white-space:normal;margin-top:8px;}
+.ironbound-proof .commission-callout span{line-height:1.5;}
+.ironbound-proof .prove-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;}
+.ironbound-proof .prove-grid>div{min-width:0;}
+#commissionNext:disabled{cursor:not-allowed;}
+@media(max-width:650px){.ironbound-proof .prove-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.ironbound-proof .commission-callout button{width:100%;}}

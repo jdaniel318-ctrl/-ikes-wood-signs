@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.28",
-  "release": "Crosscheck",
-  "seal": "crosscheck-882028",
+  "build": "8.8.20.30",
+  "release": "Ironbound TEST",
+  "seal": "ironbound-882030",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Crosscheck",
-  "name": "Crosscheck",
-  "releaseName": "Crosscheck"
+  "release_name": "Ironbound TEST",
+  "name": "Ironbound TEST",
+  "releaseName": "Ironbound TEST"
 }

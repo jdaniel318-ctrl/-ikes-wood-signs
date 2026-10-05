@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.20.28",
-  "version": "8.8.20.28",
-  "release_name": "Crosscheck",
-  "releaseName": "Crosscheck",
-  "release_seal": "crosscheck-882028",
+  "build": "8.8.20.30",
+  "version": "8.8.20.30",
+  "release_name": "Ironbound TEST",
+  "releaseName": "Ironbound TEST",
+  "release_seal": "ironbound-882030",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -91,8 +91,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "Sealed recovered-voyage passage: exact Fleet Core recovery verification followed by deterministic navigation-only entry to Step 6 Review.",
-  "release_note": "Crosscheck makes preserved commissioning outcomes reconcile against canonical Fleet Core truth before any new command; blind retry remains forbidden. iPad commissioning footer no longer overlays the working area.",
+  "release_focus": "Server-first commissioning; operation reconciliation; no automatic retry.",
+  "release_note": "TEST BUILD: server-first commissioning plus explicit saved no-photo brief correction. Native VoyageKeeper commissioning and Captain handoff pending.",
   "tax_ledger_upgrade": {
     "schema": "dark-sky-fleet-tax-ledger-v1",
     "model": "TAX_LEDGER_MODEL.json",
@@ -214,8 +214,8 @@
     "algorithm": "SHA-256",
     "files": {
       "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": {
-        "sha256": "cc5ed04f1f31c8dadc1791f139cd44dc424cb6b038c94bd2ba38240a608370d9",
-        "build": "8.8.20.28",
+        "sha256": "acccd3e24df218f65adcd5a6751508fc92669592f938b463582559ab438b854d",
+        "build": "8.8.20.30",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -262,14 +262,14 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_COMMAND_MODEL.json": {
-        "sha256": "5c4e8fadb54a027e092263d4fb8e5ce4b25a2be6f7cc7f1e181b464f9635aaa4",
-        "build": "8.8.20.28",
+        "sha256": "4f776d8de273cb414aa8862942763b5677400fcb9bd30bcfda1cfd55b3b056c1",
+        "build": "8.8.20.30",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
       "FLEET_DOCTRINE_REGISTRY.json": {
-        "sha256": "75f43966b7a21fd5ba0c60c82bf356fc6bc6e2d90f6073342f7ab92c53b97b63",
-        "build": "8.8.20.28",
+        "sha256": "0a2fde550563719aa09b7c2aef8492cac48d78071a1940a458a8fc1f2cee3171",
+        "build": "8.8.20.30",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -328,8 +328,8 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "GOLDEN_VOYAGES.json": {
-        "sha256": "0f4cb90231dbb88fb1d910f21170645fc0ff6b91d632862fbf41ed9eefde501b",
-        "build": "8.8.20.28",
+        "sha256": "3d98c1dcf0ef807e8ec8e8028c83b88301ae129cecc1d0cd8505112d280c83c0",
+        "build": "8.8.20.30",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -478,24 +478,24 @@
     "algorithm": "SHA-256",
     "serialization": "UTF-8 response body, same text executed by atomic loader",
     "files": {
-      "styles.css": "99845f3a3239591d6e204e646d313e4537dddc4a5a13f2d3b1ba461bcdbca3c5",
+      "styles.css": "8e26f34523d764b92a2a13c930d2fba9a2709435b53b3c29f28cfd6d78428f39",
       "simple_books.css": "5939590021ef2d3738d5f5f7249d72f8da64cc274bf287ef8183958517b0ba46",
       "platform_core.js": "7f797bc382a73eb9ec4365a7458e8329da60c50561e3ac751ca3fb9d7cd5ec49",
       "platform_v4.js": "21daf7777150d654467042893298147374318fdfc7ac38faf9260f874522019b",
       "platform_identity.js": "aa855c8de0b69cc89e36d4ad9dfff32012551c297147830fd2e84256e3bfcbd1",
-      "fleet_supabase.js": "a8675fb446d0587e61bdb31701f089d77e3b0cef521218b0df317c60cd679c64",
+      "fleet_supabase.js": "3a053ce83e27df8f16c02e0a43c14047f91f41afee47beb0e1f67fd8e1251450",
       "ike_style_registry.js": "6b348ebceb47e172e6676f46252b19c1c6bb7532baf76febfa8dd81760a76ab7",
-      "app.js": "b1a51414d3b8cfee93fd0c9f086900260e35b86533835129210775a8f66f5d28",
+      "app.js": "0911f97107c14eff82b5f1a022505e22239e4858ebda16ab1f319f62f2c54e32",
       "captain.js": "47f7afcbabcce44cf5b84f4936842bdce20aed1bbec8e78a6d94e18ab235a0b4",
       "simple_books.js": "cd9f4691324c7c5361160a63a820416ab328806509f9f7fbce38a013667fe862",
       "owner.html": "a823e8ba92fe927d6c7a01dbef5f23f454b51a0c871a4931d7d6a2221895ae59",
-      "manifest.webmanifest": "1eef161d2eab203a0ba857f33b455d5b867782d7e1aa2f09114980ec8c2e76cf",
+      "manifest.webmanifest": "c6957a1230702422fe850bca6f025b309009a2fbf857e4d95a30d7d47b9490c8",
       "IKE_STYLE_FOUNDRY.json": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
-      "sw.js": "d445760444ffb66fa17f6555f68ac01eff751ed1ca96c7d8234fc98af6bb5778",
-      "FLEET_DOCTRINE_REGISTRY.json": "75f43966b7a21fd5ba0c60c82bf356fc6bc6e2d90f6073342f7ab92c53b97b63",
-      "GOLDEN_VOYAGES.json": "0f4cb90231dbb88fb1d910f21170645fc0ff6b91d632862fbf41ed9eefde501b",
-      "FLEET_COMMAND_MODEL.json": "5c4e8fadb54a027e092263d4fb8e5ce4b25a2be6f7cc7f1e181b464f9635aaa4",
-      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "cc5ed04f1f31c8dadc1791f139cd44dc424cb6b038c94bd2ba38240a608370d9"
+      "sw.js": "f7813221c7961780a7d5ce8dca0e74c7825f2cb8e9b339e3caa2469ebb1fd535",
+      "FLEET_DOCTRINE_REGISTRY.json": "0a2fde550563719aa09b7c2aef8492cac48d78071a1940a458a8fc1f2cee3171",
+      "GOLDEN_VOYAGES.json": "3d98c1dcf0ef807e8ec8e8028c83b88301ae129cecc1d0cd8505112d280c83c0",
+      "FLEET_COMMAND_MODEL.json": "4f776d8de273cb414aa8862942763b5677400fcb9bd30bcfda1cfd55b3b056c1",
+      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "acccd3e24df218f65adcd5a6751508fc92669592f938b463582559ab438b854d"
     }
   },
   "watchbeacon_upgrade": {
@@ -784,7 +784,7 @@
     "scope": "project-owned canonical logo routing and Fleet Mission presentation",
     "logo_source": "existing projectGraphics/projectLogo exact-vessel store",
     "fleet_mission_display": true,
-    "quick_route": "Fleet Mission LOGO \u2192 exact vessel Project Control \u2192 Marketing \u2192 Project Logo / Mark",
+    "quick_route": "Fleet Mission LOGO → exact vessel Project Control → Marketing → Project Logo / Mark",
     "cross_vessel_copy": false,
     "authority_changes": false,
     "business_record_changes": false,
@@ -930,7 +930,7 @@
     "project_data_mutation": false,
     "field_failure_proof": "8.8.20.13 held on styles.css because packaged DEPLOYMENT_MANIFEST runtime hash did not match packaged styles.css bytes"
   },
-  "release": "Crosscheck",
+  "release": "Ironbound TEST",
   "clearbearing_upgrade": {
     "build": "8.8.20.22",
     "baseline": "8.8.20.14 HashLock",
@@ -977,5 +977,29 @@
     "baseline": "8.8.20.26 ForgeSeal field package",
     "repair": "Advance all boot-enforced current governance models together; preserve historical versioned references; regenerate final runtime/model hashes and checksum ledgers after final bytes; verify fresh ZIP extraction.",
     "field_boundary": "No claim of live iPad acceptance until deployed and observed."
+  },
+  "ironbound_upgrade": {
+    "protocol": "server-first-v1",
+    "database_migrations": [
+      "ironbound_server_first_guards_882029",
+      "ironbound_server_first_commissioning_882029"
+    ],
+    "browser_cache_authoritative": false,
+    "auto_retry": false,
+    "current_operations_replayed": false,
+    "live_publication": false,
+    "owner_or_captain_granted": false,
+    "full_baseline_retained": true,
+    "test_build": true,
+    "current_test_build": "8.8.20.30"
+  },
+  "ironbound_brief_correction": {
+    "build": "8.8.20.30",
+    "explicit_action_required": true,
+    "preserves_operation_identity": true,
+    "readback_required": true,
+    "lost_readback": "hold_and_restore",
+    "server_test_activation": "blocked",
+    "evidence": "IRONBOUND_TEST_EVIDENCE.json"
   }
 }

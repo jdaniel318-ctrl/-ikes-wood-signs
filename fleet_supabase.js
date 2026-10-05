@@ -314,3 +314,105 @@
 
   window.DarkSkySupabase = Object.freeze({ create, cleanEmail });
 })();
+// IRONBOUND_COORDINATOR_BEGIN
+;(() => {
+  'use strict';
+  // No storage dependency, scheduled writes, replay loop, or authentication shortcut.
+  // Only a preparation made in this document can authorize its single commit call.
+  function create(client, onState = () => {}) {
+    if (!client || typeof client.rpc !== 'function') throw new Error('Fleet Core commissioning transport is unavailable.');
+    let phase = 'idle', busy = false, receipt = null, proof = null, sent = false, message = '';
+    const copy = value => value == null ? value : JSON.parse(JSON.stringify(value));
+    const snapshot = () => copy({phase, busy, receipt, proof, message});
+    function emit(next, text = '') {
+      phase = next; message = text;
+      try { onState(snapshot()); } catch (_) { /* Presentation cannot change server truth. */ }
+    }
+    function start() {
+      if (busy) throw new Error('A commissioning request is already in flight. No second command was sent.');
+      busy = true;
+    }
+    function finish() { busy = false; try { onState(snapshot()); } catch (_) {} }
+    function check(data, voyage, operation, expected = null) {
+      if (!data || data.voyage_id !== voyage || data.operation_id !== operation ||
+          data.receipt?.operation_id !== operation || data.receipt?.voyage_id !== voyage ||
+          data.receipt?.intended_project_id !== data.intended_project_id ||
+          data.receipt?.preview_fingerprint !== data.preview_fingerprint ||
+          data.receipt?.command_state !== data.command_state ||
+          (expected && (data.intended_project_id !== expected.intended_project_id ||
+                        data.preview_fingerprint !== expected.preview_fingerprint))) {
+        throw new Error('Fleet Core returned a mismatched operation. Reconciliation is required; nothing will be replayed.');
+      }
+      return data;
+    }
+    function verified(data) {
+      return data.command_state === 'verified_created' && data.canonical_vessel_exists === true &&
+        data.canonical_matches_operation === true && data.blueprint_verified === true &&
+        data.vessel?.project_id === data.intended_project_id && data.project?.id === data.intended_project_id &&
+        data.vessel?.namespace === data.project?.namespace && data.project?.published === false;
+    }
+    async function inspect(voyage, operation, expected = null) {
+      return check(await client.rpc('read_commissioning_operation', {
+        p_voyage_id: voyage, p_operation_id: operation
+      }, 'The operation read-back is unavailable. Do not repeat the commission.'), voyage, operation, expected);
+    }
+    function accept(data, allowPrepared = false) {
+      receipt = copy(data.receipt); proof = verified(data) ? copy(data) : null;
+      if (proof) emit('verified', 'Fleet Core independently verified the vessel and its bound blueprint.');
+      else if (['verified_not_created', 'cancelled'].includes(data.command_state) && data.canonical_vessel_exists === false)
+        emit('closed', 'This operation is closed. Only a separately prepared, deliberate new operation is allowed.');
+      else if (allowPrepared && data.command_state === 'prepared') emit('prepared', 'Prepared on Fleet Core. Review this identity before issuing it once.');
+      else emit('uncertain', 'Preserved operation requires reconciliation. Automatic retry is forbidden.');
+      return data;
+    }
+    async function prepare(voyage, fingerprint) {
+      if (!['idle', 'closed'].includes(phase)) throw new Error('Read or reconcile the existing operation before preparing another.');
+      start(); sent = false; proof = null;
+      emit('preparing', 'Preparing one server-owned operation. No vessel is being created.');
+      try {
+        const result = await client.rpc('prepare_commissioning_operation', {
+          p_voyage_id: voyage, p_expected_draft_fingerprint: fingerprint
+        }, 'Preparation was not confirmed. Read the saved voyage; do not prepare again blindly.');
+        check(result, voyage, result.operation_id);
+        receipt = copy(result.receipt);
+        const data = await inspect(voyage, result.operation_id, result);
+        if (data.command_state !== 'prepared' || data.receipt?.detail?.protocol !== 'server-first-v1')
+          throw new Error('The server did not confirm a new prepared operation. Reconcile the preserved receipt.');
+        return accept(data, true);
+      } catch (error) { emit('uncertain', String(error?.message || error)); throw error; }
+      finally { finish(); }
+    }
+    async function commit() {
+      if (phase !== 'prepared' || sent || !receipt) throw new Error('This operation cannot be sent again. Read or reconcile it first.');
+      start(); sent = true; const expected = copy(receipt);
+      emit('submitting', 'Sending this commissioning operation once. Automatic retry is forbidden.');
+      try {
+        await client.rpc('commit_commissioning_operation', {
+          p_voyage_id: expected.voyage_id, p_operation_id: expected.operation_id,
+          p_expected_fingerprint: expected.preview_fingerprint
+        }, 'The command response is unconfirmed. Reconcile this same operation; do not resend it.');
+        const data = await inspect(expected.voyage_id, expected.operation_id, expected);
+        if (!verified(data)) throw new Error('Canonical vessel and bound blueprint were not both verified. Reconcile this operation.');
+        return accept(data);
+      } catch (error) { emit('uncertain', String(error?.message || error)); throw error; }
+      finally { finish(); }
+    }
+    async function read(voyage, operation) {
+      start();
+      try { return accept(await inspect(voyage, operation)); }
+      catch (error) { emit('uncertain', String(error?.message || error)); throw error; }
+      finally { finish(); }
+    }
+    async function reconcile(voyage, operation) {
+      start(); sent = true; emit('reconciling', 'Reading canonical Fleet Core truth. No commission is being sent.');
+      try {
+        await client.rpc('reconcile_commissioning_receipt', {p_voyage_id: voyage, p_operation_id: operation}, 'Reconciliation is unavailable. The operation remains held.');
+        return accept(await inspect(voyage, operation));
+      } catch (error) { emit('uncertain', String(error?.message || error)); throw error; }
+      finally { finish(); }
+    }
+    return Object.freeze({snapshot, prepare, commit, read, reconcile});
+  }
+  window.BlackFlagCommissioning = Object.freeze({create, protocol: 'server-first-v1', autoRetry: false});
+})();
+// IRONBOUND_COORDINATOR_END

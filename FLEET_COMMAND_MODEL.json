@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-command-model-v1",
-  "build": "8.8.20.28",
+  "build": "8.8.20.30",
   "views": {
     "operational": "professional-default",
     "presentation": "cinematic-secondary"
@@ -31,7 +31,7 @@
     "Proven Capability",
     "Fleet Standard / Shared Service / New Vessel"
   ],
-  "release": "Crosscheck",
+  "release": "Ironbound TEST",
   "dualOfficeCommission": {
     "samePersonMayHoldCaptainAndAdmiral": true,
     "officesRemainDistinct": true,

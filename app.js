@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.20.28';
+  const BUILD_VERSION='8.8.20.30';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -8400,6 +8400,28 @@
   // authenticated commissioning officer is available. Browser stores remain caches.
   const COMMISSION_VOYAGE_SESSION_KEY='darkSkySupabaseAdmiralSessionV1';
   let commissionServerVoyage=null,commissionServerSaveTimer=null;
+  let commissionSaveFlight=Promise.resolve(),commissionCommandBusy=false,commissionProofCheck=0;
+  let commissionServerPreview=null,commissionController=null,commissionControllerKey='';
+  function commissionCoordinator(){
+    const key=String(commissionDraft?.draftId||'')+'|'+String(commissionDraft?._serverVoyageId||'');
+    if(!commissionController||commissionControllerKey!==key){
+      commissionController=window.BlackFlagCommissioning.create(commissioningServerClient(),state=>{
+        if(commissionControllerKey!==key)return;
+        if(state.receipt&&commissionDraft)commissionDraft._serverReceipt=state.receipt;
+        const button=$('commissionNext');if(button&&state.busy)button.disabled=true;
+      });
+      commissionControllerKey=key;
+    }
+    return commissionController;
+  }
+  function commissionOperationFrozen(){
+    const key=String(commissionDraft?.draftId||'')+'|'+String(commissionDraft?._serverVoyageId||'');
+    const phase=commissionControllerKey===key?commissionController?.snapshot().phase:'idle';
+    return !!(phase&&!['idle','closed'].includes(phase))||commissionReceiptNeedsReconciliation(commissionDraft?._serverReceipt)||commissionDraft?._serverVoyageStatus==='commissioned';
+  }
+  function commissionProofState(){
+    try{return commissionCoordinator().snapshot();}catch(_){return {phase:'idle',busy:false,receipt:commissionDraft?._serverReceipt||null,proof:null};}
+  }
   let commissionServerSyncState={state:'unknown',message:'Server persistence has not been verified.',at:''};
   function setCommissionServerSyncState(state,message=''){
     commissionServerSyncState={state:String(state||'unknown'),message:String(message||''),at:new Date().toISOString()};
@@ -8414,7 +8436,8 @@
     try{return window.DarkSkySupabase.create({url:c.url,publishableKey:c.publishableKey,sessionKey:COMMISSION_VOYAGE_SESSION_KEY,build:BUILD_VERSION});}catch(_){return null;}
   }
   function commissionForgeTruthSnapshot(d){return {conflicts:forgeReviewConflicts(d||commissionDraft),forgePlan:d?.forgePlan||null,stage:Number(d?._step||commissionStep||1),build:BUILD_VERSION};}
-  async function saveCommissionVoyageServer(snapshot=commissionDraft){
+  async function performCommissionVoyageServerSave(snapshot=commissionDraft){
+    if(commissionOperationFrozen())return null;
     const client=commissioningServerClient();
     if(!snapshot){setCommissionServerSyncState('needed','No commissioning draft is available to synchronize.');return null;}
     if(!client){setCommissionServerSyncState('needed','Fleet Core client configuration is unavailable.');return null;}
@@ -8422,9 +8445,11 @@
     try{
       const result=await client.rpc('save_commissioning_voyage',{p_draft_key:String(snapshot.draftId||''),p_display_name:String(snapshot.name||''),p_project_id_hint:String(snapshot._projectIdHint||''),p_safe_stage:Math.max(1,Math.min(7,Number(snapshot._step||commissionStep||1))),p_draft:snapshot,p_forge_truth:commissionForgeTruthSnapshot(snapshot)},'Fleet Core could not preserve this commissioning voyage.');
       const readback=await client.rpc('read_active_commissioning_voyage',{},'Fleet Core saved the voyage but read-back could not be verified.');
-      if(!readback?.found||String(readback.voyage_id||'')!==String(result?.voyage_id||''))throw new Error('Fleet Core did not confirm the same commissioning voyage on read-back.');
+      if(!readback?.found||String(readback.voyage_id||'')!==String(result?.voyage_id||'')||String(readback.draft_key||'')!==String(snapshot.draftId||'')||String(commissionDraft?.draftId||'')!==String(snapshot.draftId||''))throw new Error('Fleet Core did not confirm the same commissioning voyage on read-back.');
       commissionServerVoyage={...readback,found:true};
       commissionDraft._serverVoyageId=readback.voyage_id;
+      commissionDraft._serverReceipt=readback.receipt||null;
+      commissionDraft._serverVoyageStatus=readback.status;
       setCommissionServerSyncState('safe',`Fleet Core confirmed voyage ${readback.voyage_id}.`);
       return readback;
     }catch(err){
@@ -8433,10 +8458,19 @@
       return null;
     }
   }
-  function queueCommissionVoyageServerSave(snapshot=commissionDraft){
-    clearTimeout(commissionServerSaveTimer); const copy=commissionDraftClone(snapshot);
-    commissionServerSaveTimer=setTimeout(()=>saveCommissionVoyageServer(copy),180);
+  async function saveCommissionVoyageServer(snapshot=commissionDraft){
+    const copy=commissionDraftClone(snapshot);
+    const flight=commissionSaveFlight.then(()=>performCommissionVoyageServerSave(copy));
+    commissionSaveFlight=flight.catch(()=>null);
+    return flight;
   }
+  function queueCommissionVoyageServerSave(snapshot=commissionDraft){
+    clearTimeout(commissionServerSaveTimer);
+    if(commissionCommandBusy||commissionOperationFrozen())return;
+    const copy=commissionDraftClone(snapshot);
+    commissionServerSaveTimer=setTimeout(()=>{if(!commissionCommandBusy&&!commissionOperationFrozen())saveCommissionVoyageServer(copy);},180);
+  }
+
   async function hydrateCommissionVoyageFromServer(){
     const client=commissioningServerClient(); if(!client){setCommissionServerSyncState('error','Fleet Core client configuration is unavailable. Nothing was changed.');return null;}
     try{
@@ -8452,7 +8486,7 @@
         return null;
       }
       const localBefore=commissionDraftClone(commissionDraft);
-      const server={...freshCommissionDraft(),...row.draft,_recovered:true,_serverRecovered:true,_serverRecoveryPending:false,_serverVoyageId:row.voyage_id,_serverReceipt:row.receipt||null,_serverVerifiedAt:new Date().toISOString(),_serverRevisionAt:row.updated_at||''};
+      const server={...freshCommissionDraft(),...row.draft,_recovered:true,_serverRecovered:true,_serverRecoveryPending:false,_serverVoyageId:row.voyage_id,_serverReceipt:row.receipt||null,_serverVoyageStatus:row.status,_serverVerifiedAt:new Date().toISOString(),_serverRevisionAt:row.updated_at||''};
       commissionServerVoyage=row;
       // Explicit Restore means Fleet Core wins. A newer browser timestamp must never
       // suppress authoritative read-back; browser state is retained only as evidence.
@@ -8538,21 +8572,24 @@
     return ['prepared','submitted','outcome_uncertain','verified_created'].includes(state);
   }
   async function reconcileExistingCommissionOperation(){
-    const receipt=commissionDraft?._serverReceipt;
-    const voyageId=commissionDraft?._serverVoyageId||commissionServerVoyage?.voyage_id;
-    const operationId=receipt?.operation_id;
-    const client=commissioningServerClient();
-    if(!voyageId||!operationId||!client)throw new Error('No preserved commissioning operation is available to reconcile.');
-    const result=await client.rpc('reconcile_commissioning_receipt',{p_voyage_id:voyageId,p_operation_id:operationId},'Fleet Core could not reconcile the preserved commissioning operation.');
-    const row=await client.rpc('read_active_commissioning_voyage',{},'Fleet Core could not read the reconciled voyage.');
-    if(!row?.found||String(row.voyage_id||'')!==String(voyageId))throw new Error('Reconciliation read-back did not return this exact voyage.');
-    commissionServerVoyage=row;
-    commissionDraft={...commissionDraft,...(row.draft||{}),_recovered:true,_serverRecovered:true,_serverRecoveryPending:false,_serverVoyageId:row.voyage_id,_serverReceipt:row.receipt||null,_step:7,_maxStepReached:7};
-    setCommissionServerSyncState('safe',`Fleet Core reconciled operation ${operationId}.`);
-    writeCommissionDraftSafe(commissionDraft,{durable:false});
-    renderCommissioning();
-    return result;
+    if(commissionCommandBusy)throw new Error('A request is already in flight. No second command was sent.');
+    commissionCommandBusy=true;clearTimeout(commissionServerSaveTimer);
+    try{
+      const client=commissioningServerClient();
+      const row=await client.rpc('read_active_commissioning_voyage',{},'Read the preserved voyage before reconciliation.');
+      if(!row?.found||row.draft_key!==commissionDraft?.draftId||(commissionDraft?._serverVoyageId&&row.voyage_id!==commissionDraft._serverVoyageId))throw new Error('Fleet Core did not return this exact voyage. Nothing was reconciled.');
+      commissionServerVoyage=row;commissionDraft._serverVoyageId=row.voyage_id;commissionDraft._serverReceipt=row.receipt||null;commissionDraft._serverVoyageStatus=row.status;
+      if(!row.receipt?.operation_id)throw new Error('No server operation was found. Restore this exact saved voyage before preparing anything new.');
+      const result=await commissionCoordinator().reconcile(row.voyage_id,row.receipt.operation_id);
+      commissionDraft._serverReceipt=result.receipt;
+      if(result.command_state==='verified_created')commissionDraft._serverVoyageStatus='commissioned';
+      setCommissionServerSyncState('safe','Fleet Core operation reconciliation read-back complete. No commissioning command was sent.');
+      writeCommissionDraftSafe(commissionDraft,{durable:false});
+      if(commissionProofState().proof)await mirrorVerifiedCommission(result);
+      return result;
+    }finally{commissionCommandBusy=false;renderCommissioning();}
   }
+
   // IronLatch: presentation only. A cached recovery flag/receipt is not a
   // current read-back. This helper grants no authority and issues no commands.
   function commissionRecoveryTruth(){
@@ -8569,6 +8606,7 @@
     return {active,pending,verified,label};
   }
   function commissionDraftStatusText(){
+    if(commissionProofState().proof)return 'FLEET CORE VERIFIED • VESSEL + BLUEPRINT • PRIVATE TEST • NOT PUBLISHED';
     const recovered=commissionDraft?._recovered?' • RECOVERED DRAFT':'';
     const storage=commissionDraftStorageState.degraded?' • SESSION SAFE':'';
     return `DRAFT • STEP ${commissionStep}/7${recovered}${storage} • ${commissionServerSyncLabel()} • NOT PUBLISHED`;
@@ -8620,6 +8658,7 @@
       root.querySelector('[data-voyage-inspect]')?.focus({preventScroll:true});
     });
     bind('[data-voyage-discard]',async()=>{
+      if(commissionCommandBusy||commissionOperationFrozen()){commissionError('Read or reconcile the preserved operation first.');return;}
       if(!confirm('Discard this unfinished commissioning voyage? This does not delete or change any commissioned vessel.'))return;
       try{await discardCommissionVoyageServer();clearCommissionDraft();commissionDraft=freshCommissionDraft();commissionStep=1;renderCommissioning();}
       catch(err){alert(String(err?.message||err));}
@@ -8627,6 +8666,7 @@
   }
   function resumeVerifiedCommissioningVoyage(){
     if(!commissionDraft)return false;
+    if(commissionCommandBusy||commissionOperationFrozen()){commissionStep=7;renderCommissioning();return false;}
     const truth=commissionRecoveryTruth();
     if(!truth.verified){
       commissionError('Recovery is not server-safe yet. Verify Admiral & Resume before entering Review.');
@@ -9220,38 +9260,75 @@
         </div>
         <div class="commission-callout success"><b>CAPTAIN APPROVAL REQUIRED FOR PUBLISHING</b><span>Commissioning creates the project structure only. It does not publish the business.</span></div>
       </div>`;
-    return `
-      <div class="commission-panel sea-trial-review">
-        <div class="eyebrow">07 • PROVE — COMMISSIONING & RECOVERY</div><h2>Prove the command can land safely</h2>
-        <p>Black Flag checks recovery storage and the canonical vessel registry before enabling commissioning. A failed or uncertain command is never retried automatically.</p>
-        <div class="commission-review-grid prove-grid">
-          <div><small>FORGE TRUTH</small><b>${forgeReviewConflicts(d).length?'HOLD':'CLEAR'}</b></div>
-          <div><small>RECOVERY JOURNAL</small><b id="commissionProofRecovery">CHECKING…</b></div>
-          <div><small>CANONICAL REGISTRY</small><b id="commissionProofRegistry">CHECKING…</b></div>
-          <div><small>COMMAND OUTCOME</small><b>RECEIPT REQUIRED</b></div>
-          <div><small>AUTO RETRY</small><b>FORBIDDEN</b></div>
-          <div><small>PUBLICATION</small><b>STILL BLOCKED</b></div>
-        </div>
-        <div id="commissionProofMessage" class="commission-callout warning"><b>PROVE CHECK RUNNING</b><span>Commission Project remains held until recovery, registry truth, and any preserved operation are reconciled.</span></div>
-        ${commissionReceiptNeedsReconciliation(d._serverReceipt)?`<div class="commission-callout warning commission-reconcile-hold"><b>PREVIOUS OPERATION • RECONCILIATION REQUIRED</b><span>Operation ${escapeHtml(d._serverReceipt.operation_id||'unknown')} is preserved. Black Flag will not commission again until Fleet Core resolves this operation against the canonical vessel registry.</span><button type="button" class="primary-btn" data-reconcile-commission>RECONCILE EXISTING OPERATION</button></div>`:(String(d._serverReceipt?.command_state||'').toLowerCase()==='verified_not_created'?`<div class="commission-callout success"><b>PREVIOUS OPERATION • VERIFIED NOT CREATED</b><span>The prior operation is closed by canonical Fleet Core proof. A new deliberate commissioning attempt may now be prepared.</span></div>`:'')}
-        <div class="commission-callout"><b>THREE VALID OUTCOMES</b><span>VERIFIED CREATED • VERIFIED NOT CREATED • OUTCOME UNCERTAIN — RECONCILE. Uncertain means stop and reconcile; never press Commission again blindly.</span></div>
-      </div>`;
+    return ironboundCommissionProofMarkup();
+  }
+
+  function ironboundCommissionProofMarkup(){
+    const state=commissionProofState(),proof=state.proof,receipt=state.receipt||commissionDraft?._serverReceipt;
+    const ready=state.phase==='prepared',held=commissionOperationFrozen()&&!ready&&!proof;
+    return `<div class="commission-panel sea-trial-review ironbound-proof">
+      <div class="eyebrow">07 • FLEET CORE PROOF · IRONBOUND TEST BUILD</div>
+      <h2>${proof?'Vessel and blueprint verified':ready?'Review the server-owned operation':held?'Read the preserved operation':'Prepare a new private test vessel'}</h2>
+      <p>${proof?'Fleet Core confirmed this exact operation, its canonical vessel, and the saved blueprint in a separate read. Captain handoff and isolation are not yet proven.':ready?'Preparation created no vessel. The next tap issues this one operation once. A reload requires reconciliation, not replay.':'The server creates the vessel and blueprint together. Browser storage is an optional cache, never commissioning authority.'}</p>
+      ${!proof&&!ready&&!held&&commissionPhotoBriefConflict(commissionDraft)?`<div class="commission-callout warning"><b>SAVED BRIEF CORRECTION</b><span>Your brief says “No photo required.” The older Forge Plan still requires a photo. This action changes that requirement only, preserves the prior plan as evidence, and saves the same voyage. It does not create or retry an operation.</span><button type="button" class="primary-btn" data-apply-photo-brief ${commissionCommandBusy||commissionDraft?._serverRecoveryPending?'disabled':''}>APPLY SAVED BRIEF: NO PHOTO</button></div>`:''}
+      <div class="commission-review-grid prove-grid">
+        <div><small>VESSEL</small><b>${escapeHtml(proof?.vessel?.display_name||commissionDraft?.name||'Unnamed')}</b></div>
+        <div><small>COMMAND STATE</small><b id="commissionProofRecovery">${proof?'VERIFIED CREATED':ready?'PREPARED — NOT CREATED':escapeHtml((receipt?.command_state||'NOT PREPARED').replaceAll('_',' ').toUpperCase())}</b></div>
+        <div><small>SERVER READ-BACK</small><b id="commissionProofRegistry">${proof?'VESSEL + BLUEPRINT':ready?'PREPARATION VERIFIED':'CHECKING…'}</b></div>
+        <div><small>AUTO RETRY</small><b>FORBIDDEN</b></div>
+        <div><small>PROJECT ID</small><b class="ironbound-id">${escapeHtml(receipt?.intended_project_id||'Server assigns a fresh ID')}</b></div>
+        <div><small>OPERATION</small><b class="ironbound-id">${escapeHtml(receipt?.operation_id||'Server assigns a fresh operation')}</b></div>
+      </div>
+      <div id="commissionProofMessage" class="commission-callout ${proof?'success':'warning'}" role="status" aria-live="polite"><b>${proof?'SERVER PROOF VERIFIED':ready?'READY FOR ONE DELIBERATE COMMAND':'CHECKING FLEET CORE'}</b><span>${proof?'Private test commission only. No ownership, Captain membership, paid feature, or publication was granted.':ready?'Verify the business name, Project ID and operation above. COMMISSION ONCE sends only this prepared operation.':'No creation command runs while this screen checks the existing server record.'}</span></div>
+      ${proof?`<div class="commission-callout"><b>NEXT GATE · CAPTAIN APPOINTMENT</b><span>Open Admiral → Delegate. Select ${escapeHtml(proof.vessel.display_name)} using Project ID ${escapeHtml(proof.intended_project_id)}. Preview an exact-vessel appointment only after choosing the Captain. Acceptance must precede the own-vessel / other-vessel isolation test.</span><button type="button" class="primary-btn" data-export-commission-proof>EXPORT VERIFIED RECEIPT</button><button type="button" class="commission-action secondary" data-new-commission-voyage>START ANOTHER DRAFT</button><span>Appointment: ${escapeHtml(proof.handoff?.appointments?.length?'See current server appointment record':'NOT ISSUED')} · Isolation proof: NOT RUN · Working-ship handoff: NOT PROVEN</span></div>`:
+      held?`<div class="commission-callout warning"><b>NO REPLAY — RECONCILIATION REQUIRED</b><span>${escapeHtml(state.message||'A preserved server operation must be resolved before another can be prepared.')}</span><button type="button" class="primary-btn" data-reconcile-commission>RECONCILE EXISTING OPERATION</button></div>`:
+      receipt&&['verified_not_created','cancelled'].includes(receipt.command_state)?`<div class="commission-callout success"><b>PREVIOUS OPERATION CLOSED · NOT RETRIED</b><span>The previous operation and its Project ID stay retired. Preparation creates a different server-owned operation and ID; it does not replay the old one.</span></div>`:''}
+      <div class="commission-callout"><b>PRIVATE TEST ONLY · NOT PUBLISHED</b><span>Refresh, restore, reconnection and login never retry commissioning. An unconfirmed response stays held until you explicitly read or reconcile it.</span></div>
+    </div>`;
   }
 
   async function refreshCommissionProofStatus(){
     if(commissionStep!==7)return;
-    const button=$('commissionNext');
-    const recovery=$('commissionProofRecovery'),registry=$('commissionProofRegistry'),message=$('commissionProofMessage');
-    const conflicts=forgeReviewConflicts(commissionDraft);
-    const probe=commissionRecoveryStorageProbe();
-    if(recovery)recovery.textContent=probe.ok?'READY':'HOLD';
-    let registryOk=false,registryError='';
-    try{await readCanonicalProjectRegistryStrict();registryOk=true;}catch(err){registryError=String(err?.message||err);}
-    if(registry)registry.textContent=registryOk?'READABLE':'HOLD';
-    const receiptHold=commissionReceiptNeedsReconciliation(commissionDraft?._serverReceipt);
-    const ready=!conflicts.length&&probe.ok&&registryOk&&!receiptHold;
-    if(button){button.disabled=!ready;button.title=ready?'':receiptHold?'Reconcile the preserved operation before any new commissioning command.':'Resolve PROVE holds before commissioning.';}
-    if(message){message.className=`commission-callout ${ready?'success':'warning'}`;message.innerHTML=ready?'<b>PROVE READINESS • CLEAR</b><span>Recovery journal is writable, the canonical vessel registry is readable, and no unresolved operation is blocking commissioning.</span>':receiptHold?'<b>RECONCILIATION HOLD</b><span>A previous commissioning operation is preserved. Reconcile it against Fleet Core before any new commission command.</span>':`<b>PROVE HOLD</b><span>${escapeHtml(conflicts[0]||probe.error||registryError||'Commissioning readiness is incomplete.')}</span>`;}
+    const check=++commissionProofCheck,draftKey=commissionDraft?.draftId,state=commissionProofState();
+    const button=$('commissionNext'),message=$('commissionProofMessage'),registry=$('commissionProofRegistry');
+    if(!button)return;
+    button.disabled=true;
+    if(state.proof){button.textContent='VERIFIED · NOT PUBLISHED';if(registry)registry.textContent='VESSEL + BLUEPRINT';return;}
+    if(state.phase==='prepared'&&!state.busy&&!commissionCommandBusy){button.textContent='COMMISSION ONCE';button.disabled=false;return;}
+    button.textContent=state.busy||commissionCommandBusy?'REQUEST IN FLIGHT — NO RETRY':'PREPARE NEW OPERATION';
+    if(state.busy||commissionCommandBusy)return;
+    try{
+      if(commissionDraft?._serverRecoveryPending)throw new Error('Verify Admiral & Resume this exact saved voyage first.');
+      const client=commissioningServerClient();if(!client)throw new Error('Authorize Admiral access before reading Fleet Core.');
+      const voyage=commissionDraft?._serverVoyageId;
+      if(!voyage)throw new Error('Use Save Draft to preserve this voyage in Fleet Core before preparation.');
+      const receipt=commissionDraft?._serverReceipt;
+      // Recovery reads do not enable an old prepared command, and never call commit.
+      if(receipt?.operation_id&&commissionReceiptNeedsReconciliation(receipt)){
+        if(state.phase==='idle'){
+          const proof=await commissionCoordinator().read(voyage,receipt.operation_id);
+          if(check!==commissionProofCheck||draftKey!==commissionDraft?.draftId)return;
+          commissionDraft._serverReceipt=proof.receipt;
+          renderCommissioning();return;
+        }
+        throw new Error('Preserved operation held. Use RECONCILE EXISTING OPERATION; no replay will occur.');
+      }
+      if(commissionOperationFrozen())throw new Error(state.message||'Read or reconcile the preserved operation first.');
+      const preview=await client.rpc('preview_commissioning_voyage',{p_voyage_id:voyage},'Server-first commissioning preview is unavailable. No command was sent.');
+      if(check!==commissionProofCheck||draftKey!==commissionDraft?.draftId||commissionCommandBusy)return;
+      if(preview?.voyage_id!==voyage||preview?.draft_key!==draftKey)throw new Error('Fleet Core returned a different voyage. Preparation remains blocked.');
+      commissionServerPreview=preview;
+      if(preview.receipt)commissionDraft._serverReceipt=preview.receipt;
+      if(preview.ready!==true)throw new Error((preview.issues||[]).join(' ')||'Fleet Core held preparation.');
+      if(forgeReviewConflicts(commissionDraft).length)throw new Error(forgeReviewConflicts(commissionDraft).join(' '));
+      if(registry)registry.textContent='SAVED VOYAGE VERIFIED';
+      button.disabled=false;button.textContent='PREPARE NEW OPERATION';button.title='Creates a new server-owned preparation only; no vessel yet.';
+      if(message){message.className='commission-callout success';message.innerHTML='<b>SERVER PREVIEW READY</b><span>The first tap prepares a fresh operation. Review its identity, then issue it once with a separate tap. Browser quota cannot substitute for or block server proof.</span>';}
+    }catch(error){
+      if(check!==commissionProofCheck||draftKey!==commissionDraft?.draftId)return;
+      if(registry)registry.textContent='HOLD';
+      if(message){message.className='commission-callout warning';message.innerHTML='<b>SERVER CHECK HELD</b><span>'+escapeHtml(String(error?.message||error))+'</span>';}
+    }
   }
 
   function renderCommissioning(){
@@ -9263,11 +9340,12 @@
       const step=Number(b.dataset.commissionStep);
       b.classList.toggle('active',step===commissionStep);
       b.classList.toggle('complete',step<commissionStep||step<Number(commissionDraft._maxStepReached||1));
-      b.disabled=step>Number(commissionDraft._maxStepReached||1);
+      b.disabled=commissionCommandBusy||commissionOperationFrozen()||step>Number(commissionDraft._maxStepReached||1);
       b.setAttribute('aria-current',step===commissionStep?'step':'false');
     });
-    $('commissionPrev').disabled=commissionStep===1;
-    $('commissionNext').textContent=commissionStep===7?'COMMISSION PROJECT':'CONTINUE';
+    $('commissionPrev').disabled=commissionStep===1||commissionCommandBusy||commissionOperationFrozen();
+    for(const id of ['commissionSaveDraft','commissionReset'])if($(id))$(id).disabled=commissionCommandBusy||commissionOperationFrozen();
+    $('commissionNext').textContent=commissionStep===7?'PREPARE NEW OPERATION':'CONTINUE';
     const recoveryHeld=!!commissionDraft?._serverRecoveryPending;
     if(commissionStep===7){$('commissionNext').disabled=true;$('commissionNext').title='Running PROVE readiness checks…';}
     else if(recoveryHeld){$('commissionNext').disabled=true;$('commissionNext').title='Verify Admiral & Resume before continuing this recovered voyage.';}
@@ -9385,6 +9463,8 @@
   }
 
   async function handleCommissionAction(action){
+    if(commissionCommandBusy)return;
+    if(action!=='continue'&&commissionOperationFrozen()){commissionError('This server operation is held. Read or reconcile it before editing, discarding or sending anything else.');return;}
     try{
       if(!commissionDraft)commissionDraft=readCommissionDraft()||freshCommissionDraft();
       if(action==='back'){
@@ -9402,7 +9482,9 @@
       if(action==='reset'){
         if(!confirm('Discard this commissioning draft and start a new project setup?'))return;
         const discardedId=commissionDraft?.draftId||'';
-        clearCommissionDraft();
+        clearTimeout(commissionServerSaveTimer);await commissionSaveFlight;
+        if(commissionDraft?._serverVoyageId){const result=await commissioningServerClient().rpc('discard_active_commissioning_voyage',{p_voyage_id:commissionDraft._serverVoyageId},'Fleet Core did not confirm discarding this draft.');if(result?.discarded!==true)throw new Error('Server discard was not confirmed. Draft retained.');}
+        clearCommissionDraft();commissionController=null;commissionControllerKey='';
         commissionDraft=freshCommissionDraft();
         commissionStep=1;
         renderCommissioning();
@@ -9410,7 +9492,7 @@
         return;
       }
       if(action==='continue'){
-        if(!validateCommissionStep())return;
+        if(commissionStep<7&&!validateCommissionStep())return;
         if(commissionStep<7){
           commissionStep++;
           commissionDraft._step=commissionStep;
@@ -9426,7 +9508,7 @@
       }
     }catch(err){
       console.error('Commissioning command failed',err);
-      commissionError(`Commissioning command interrupted. Nothing was advanced. ${err?.message||'Please try again.'}`);
+      commissionError(`Commissioning is held. A sent command is never automatically repeated. Read or reconcile its preserved operation. ${err?.message||'The response could not be confirmed.'}`);
       window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',category:'project',action:'commissioning.command.failed',detail:String(err?.message||err)});
     }
   }
@@ -9479,9 +9561,51 @@
     commissionDraft.photoRequired=plan.photoRequired??rec.photoRequired??commissionDraft.photoRequired; commissionDraft.contactCapture=plan.contactCapture??rec.contactCapture??commissionDraft.contactCapture; commissionDraft.visualProfile=commissionDraft.visualProfile||'none'; commissionDraft.launchServiceFocus=plan.serviceFocus||commissionDraft.launchServiceFocus||'online_presence';
     commissionDraft.updatedAt=new Date().toISOString();writeCommissionDraftSafe(commissionDraft); return {type,category,plan};
   }
+  function commissionPhotoBriefConflict(d){
+    const brief=String(d?.businessBrief||d?.description||'').toLowerCase();
+    const negative=/(?:no|without)\s+(?:customer\s+)?(?:photo|photos|picture|pictures|image|images)(?:\s+(?:is|are))?\s*(?:required|needed|necessary)?|(?:photo|photos|picture|pictures|image|images)\s+(?:is|are)?\s*not\s+(?:required|needed|necessary)/.test(brief);
+    return negative&&(d?.photoRequired===true||d?.forgePlan?.photoRequired===true);
+  }
+  function commissionDraftWithPhotoCorrection(d){
+    if(!commissionPhotoBriefConflict(d)||!d?.forgePlan)throw new Error('No explicit no-photo conflict is present in this saved brief.');
+    const next=commissionDraftClone(d),old=commissionDraftClone(d.forgePlan),at=new Date().toISOString();
+    next._photoCorrectionEvidence={action:'user_confirmed_saved_brief_no_photo',at,previousPlan:old,previousPhotoRequired:d.photoRequired,previousEvidence:d._photoCorrectionEvidence||null};
+    next.photoRequired=false;
+    next.forgePlan={...old,photoRequired:false,
+      evidence:(old.evidence||[]).filter(x=>!/photos? \/ visual reference/i.test(String(x))),
+      workflow:(old.workflow||[]).filter(x=>!/^collect reference photos$/i.test(String(x).trim())),
+      visualReason:'The saved brief explicitly says no photo is required. Optional visual tools are not a required customer step.',
+      reviewedAt:at};
+    next.updatedAt=at;
+    return next;
+  }
+  async function applyCommissionPhotoBrief(){
+    if(commissionCommandBusy||commissionOperationFrozen())return commissionError('Read or reconcile the preserved operation before changing its draft. No correction was sent.');
+    if(commissionDraft?._serverRecoveryPending)return commissionError('Verify Admiral & Resume the exact saved voyage first.');
+    if(!commissionPhotoBriefConflict(commissionDraft))return;
+    commissionCommandBusy=true;clearTimeout(commissionServerSaveTimer);++commissionProofCheck;
+    let failure='';
+    try{
+      await commissionSaveFlight;
+      // The labelled button is the explicit approval. No patch runs on load or recovery.
+      commissionDraft=commissionDraftWithPhotoCorrection(commissionDraft);
+      const readback=await saveCommissionVoyageServer(commissionDraft);
+      if(!readback?.found||readback.draft_key!==commissionDraft.draftId||readback.voyage_id!==commissionDraft._serverVoyageId||readback.draft.photoRequired!==false||readback.draft.forgePlan?.photoRequired!==false)
+        throw new Error('Fleet Core did not confirm the exact no-photo draft. Restore and read the saved voyage; do not prepare it yet.');
+      commissionDraft._serverRecoveryPending=false;
+      writeCommissionDraftSafe(commissionDraft,{durable:false});
+    }catch(error){
+      // A lost acknowledgement is not proof that the save failed. Hold until restore.
+      commissionDraft._serverRecoveryPending=true;
+      failure=String(error?.message||error);
+      writeCommissionDraftSafe(commissionDraft,{durable:false});
+    }finally{commissionCommandBusy=false;renderCommissioning();if(failure)commissionError(failure);}
+  }
+
   function forgeReviewConflicts(d){
     const p=d?.forgePlan;if(!p)return ['No Forge Plan exists for this draft.'];
     const conflicts=[];
+    if(commissionPhotoBriefConflict(d))conflicts.push('The saved brief says no photo is required, but the preserved Forge Plan requires one. Apply the saved brief correction before commissioning.');
     if(p.offer&&String(d.primaryOffer||'').trim()!==String(p.offer).trim())conflicts.push('Offer differs from the reviewed Forge Plan.');
     if(p.pricing&&String(d.pricingMode||'manual')!==String(p.pricing))conflicts.push('Pricing approach differs from the reviewed Forge Plan.');
     if(p.customerMode&&String(d.customerMode||'guided')!==String(p.customerMode))conflicts.push('Customer flow differs from the reviewed Forge Plan.');
@@ -9513,6 +9637,9 @@
     bindBusinessIntakeControls();
     bindVesselForgeControls();
     bindCommissionRecoveryControls(workspace);
+    workspace.querySelector('[data-apply-photo-brief]')?.addEventListener('click',()=>applyCommissionPhotoBrief());
+    workspace.querySelector('[data-export-commission-proof]')?.addEventListener('click',()=>exportCommissionServerProof());
+    workspace.querySelector('[data-new-commission-voyage]')?.addEventListener('click',()=>startNextCommissionDraft().catch(error=>commissionError(String(error?.message||error))));
     workspace.querySelector('[data-reconcile-commission]')?.addEventListener('click',async(event)=>{
       event.preventDefault();event.stopPropagation();
       const btn=event.currentTarget;btn.disabled=true;btn.textContent='RECONCILING…';
@@ -9540,7 +9667,7 @@
       btn.onclick=(event)=>{
         event.preventDefault();
         const requested=Number(btn.dataset.commissionStep);
-        if(!commissionDraft || requested>Number(commissionDraft._maxStepReached||1))return;
+        if(commissionCommandBusy||commissionOperationFrozen()||!commissionDraft || requested>Number(commissionDraft._maxStepReached||1))return;
         captureCommissionFields();
         commissionStep=requested;
         commissionDraft._step=commissionStep;
@@ -9550,144 +9677,72 @@
     });
   }
 
-  async function commissionProject(){
-    captureCommissionFields();
-    if(!validateCommissionDraftFinal())return;
-    if(commissionReceiptNeedsReconciliation(commissionDraft?._serverReceipt))return commissionError('RECONCILIATION HOLD — a previous commissioning operation must be reconciled against Fleet Core before any new commission command.');
-    // 07 · PROVE — fail before mutation when the recovery channel or canonical
-    // registry cannot be read. Commissioning never uses blind retry semantics.
-    const recoveryProbe=commissionRecoveryStorageProbe();
-    if(!recoveryProbe.ok)return commissionError(`PROVE HOLD — commissioning recovery storage is unavailable on this device. No vessel was created. ${recoveryProbe.error||''}`.trim());
-    try{ await readCanonicalProjectRegistryStrict(); }
-    catch(err){ return commissionError(`PROVE HOLD — Black Flag cannot read the canonical vessel registry. No vessel was created. ${String(err?.message||err)}`); }
-    const commissionerRole=String(commissionDraft.commissionerRole||'engine_admin');
-    const commissionAuthority=window.BlackFlagV3Identity?.commissioningAuthority;
-    if(commissionAuthority && !commissionAuthority.canCommission(commissionerRole))return commissionError('Commissioning authority is no longer valid. Captain, Admiral, or Engine Admin authority is required.');
-    const code=(commissionDraft.projectCode||commissionCode(commissionDraft.name)).toUpperCase();
-    const core=window.BlackFlagV3Core;
-    const id=core?.createProjectId?.(commissionDraft.name,companies)||('bf-p-'+Date.now().toString(36)+Math.random().toString(36).slice(2,8));
-    const sameNames=core?.findProjectsByName?.(companies,commissionDraft.name,{includeArchived:false})||[];
-    if(sameNames.length){
-      core?.audit?.({actorRole:'engine_admin',category:'project',action:'project.display_name.reused',detail:`${commissionDraft.name} • existing ${sameNames.map(x=>x.projectId).join(', ')}`});
-    }
-    const voyageOperationId=(crypto?.randomUUID?.()||('00000000-0000-4000-8000-'+Math.random().toString(16).slice(2).padEnd(12,'0').slice(0,12)));
-    commissionDraft._projectIdHint=id; commissionDraft._operationId=voyageOperationId; commissionDraft.updatedAt=new Date().toISOString(); writeCommissionDraftSafe(commissionDraft);
-    await recordCommissionReceiptServer(voyageOperationId,'prepared',id,{build:BUILD_VERSION,stage:7});
-    const p={
-      id,
-      name:commissionDraft.name.trim(),
-      description:commissionDraft.description||commissionDraft.businessBrief||commissionDraft.primaryOffer||'New commissioned project',
-      businessBrief:{text:String(commissionDraft.businessBrief||commissionDraft.description||'').trim(),source:commissionDraft.businessIntake?'business_intake':'commissioning',updatedAt:new Date().toISOString()},
-      businessIntake:commissionDraft.businessIntake?{...commissionDraft.businessIntake,appliedAt:commissionDraft.intakeAppliedAt||null,sourceWebsite:commissionDraft.sourceWebsite||commissionDraft.businessIntake.sourceWebsite||''}:null,
-      projectCode:code,
-      orderPrefix:commissionDraft.orderPrefix||code,
-      namespace:core?.namespaceFor?.(id)||('bf.project.'+id),
-      permanentNamespace:core?.namespaceFor?.(id)||('bf.project.'+id),
-      status:'development',
-      visibility:'private',
-      approved:true,
-      published:false,
-      characterLimit:Number(commissionDraft.characterLimit||32),
-      theme:'commissioned',
-      businessType:commissionDraft.businessType,
-      type:commissionDraft.businessType||'custom_service',
-      customerExperience:{
-        mode:commissionDraft.customerMode,
-        relationshipType:commissionDraft.relationshipType&&commissionDraft.relationshipType!=='auto'?commissionDraft.relationshipType:undefined,
-        photoRequired:!!commissionDraft.photoRequired,
-        contactCapture:!!commissionDraft.contactCapture
-      },
-      visualPresentation:window.BlackFlagV3Core?.normalizeVisualPresentation?.({businessType:commissionDraft.businessType,customerExperience:{photoRequired:!!commissionDraft.photoRequired},visualPresentation:{profile:commissionDraft.visualProfile||'none'}}),
-      products:commissionDraft.primaryOffer?[{id:'product-'+Date.now().toString(36),name:commissionDraft.primaryOffer,active:true,published:true,customerReady:true,pricingMode:commissionDraft.pricingMode}]:[],
-      ownerAccess:{
-        enabled:!!commissionDraft.ownerPortal,
-        ownerName:commissionDraft.ownerName||'',
-        ownerEmail:commissionDraft.ownerEmail||'',
-        status:'not_claimed',
-        invitation:null,
-        credential:null,
-        updatedAt:new Date().toISOString()
-      },
-      capabilities:{
-        customerRetention:!!commissionDraft.customerRetention,
-        notifications:!!commissionDraft.notifications,
-        fleetLaunchService:!!commissionDraft.launchService
-      },
-      serviceInstances:[],
-      orders:[],customers:[],deployments:[],ledger:[],
-      createdAt:new Date().toISOString(),
-      updatedAt:new Date().toISOString(),
-      commissionedAt:new Date().toISOString(),
-      commissioningAuthority:{role:commissionerRole,identitySource:'dark-sky-authority',ownerAutomaticallyGranted:false,ownerState:(commissionDraft.ownerName&&commissionDraft.ownerEmail)?'assignment_prepared':'fleet_unassigned',build:BUILD_VERSION},
-      lifecycle:{state:'draft',version:3,updatedAt:new Date().toISOString()},
-      registry:{version:1,source:'commissioning',displayNameUnique:false},
-      commissioningVersion:'4.5.0'
-    };
-    const launchService=fleetLaunchServiceContract(commissionDraft,id);
-    if(launchService)p.serviceInstances.push(launchService);
-
-    // Commissioning is a durable registry transaction, not a visual completion.
-    // Seal the candidate, commit it to the canonical per-project store + legacy
-    // mirror atomically, read the registry back, then render FROM that read-back.
-    // The draft is cleared only after all of those checks succeed.
-    core?.ensure?.(p);
-    // First durable checkpoint: preserve the complete immutable project candidate
-    // outside IndexedDB before attempting any registry transaction.
-    writeCommissionJournal(p,'candidate_captured','Project identity sealed; canonical registry write has not completed yet.');
-    const beforeCommission=structuredClone(companies);
-    companies.push(p);
-    let persistedRegistry;
+  // Optional Engine display mirror. Its failure cannot change Fleet Core proof.
+  async function mirrorVerifiedCommission(proof){
+    if(commissionProofState().proof?.operation_id!==proof.operation_id)return;
+    let mirrorError='';
     try{
-      persistedRegistry=await saveCompanies();
-      await recordCommissionReceiptServer(voyageOperationId,'submitted',id,{build:BUILD_VERSION});
-      writeCommissionJournal(p,'registry_written','Canonical registry transaction completed; verifying read-back.');
-      if(!registryContainsProject(persistedRegistry,id)){
-        throw new Error(`${p.name} was not verified in the canonical fleet registry.`);
+      const p=commissionDraftClone(proof.project);
+      if(!p||p.id!==proof.intended_project_id||p.namespace!==proof.vessel.namespace)throw new Error('Verified project identity mismatch.');
+      const existing=projectById(p.id);
+      if(existing&&existing.namespace!==p.namespace)throw new Error('Local identity collision; server record remains intact.');
+      if(!existing)companies.push(normalizeProjectCode(ensureProjectGovernance(p)));
+      // This is a cache write AFTER independent vessel + blueprint proof, never a command writer.
+      await saveCompanies();
+    }catch(error){mirrorError=String(error?.message||error);}
+    window.__ironboundMirror={operationId:proof.operation_id,cacheSaved:!mirrorError,error:mirrorError};
+    writeCommissionEvidenceSafe('blackFlagLastCommissionVerificationV1',{projectId:proof.intended_project_id,operationId:proof.operation_id,serverVerified:true,blueprintVerified:true,localMirrorSaved:!mirrorError,build:BUILD_VERSION});
+  }
+  async function startNextCommissionDraft(){
+    if(commissionCommandBusy||!commissionProofState().proof)return;
+    if(!confirm('Start a separate new draft? The verified vessel, blueprint and receipt will remain in Fleet Core.'))return;
+    const previous=commissionDraft,previousController=commissionController,previousKey=commissionControllerKey;
+    commissionCommandBusy=true;clearTimeout(commissionServerSaveTimer);
+    try{
+      await commissionSaveFlight;
+      commissionDraft=freshCommissionDraft();commissionStep=1;commissionController=null;commissionControllerKey='';
+      const row=await saveCommissionVoyageServer(commissionDraft);
+      if(!row)throw new Error(commissionServerSyncState.message||'The new draft was not confirmed. The previous receipt is preserved.');
+      writeCommissionDraftSafe(commissionDraft,{durable:false});
+    }catch(error){commissionDraft=previous;commissionStep=7;commissionController=previousController;commissionControllerKey=previousKey;throw error;}
+    finally{commissionCommandBusy=false;renderCommissioning();}
+  }
+  function exportCommissionServerProof(){
+    const p=commissionProofState().proof;if(!p)return;
+    const report={schema:p.schema,build:BUILD_VERSION,testOnly:true,voyage_id:p.voyage_id,operation_id:p.operation_id,project_id:p.intended_project_id,preview_fingerprint:p.preview_fingerprint,command_state:p.command_state,canonical_vessel_exists:p.canonical_vessel_exists,canonical_matches_operation:p.canonical_matches_operation,blueprint_verified:p.blueprint_verified,vessel:p.vessel,observed_at:p.observed_at,handoff:p.handoff,autoRetry:false,localMirror:window.__ironboundMirror||null};
+    const url=URL.createObjectURL(new Blob([JSON.stringify(report,null,2)],{type:'application/json'}));
+    const a=document.createElement('a');a.href=url;a.download='BlackFlag-Commission-Proof-'+p.operation_id+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  }
+  async function commissionProject(){
+    if(commissionCommandBusy)return;
+    commissionCommandBusy=true;clearTimeout(commissionServerSaveTimer);++commissionProofCheck;
+    if($('commissionNext')){$('commissionNext').disabled=true;$('commissionNext').textContent='REQUEST IN FLIGHT — NO RETRY';}
+    let result=null;
+    try{
+      const state=commissionProofState();
+      if(state.phase==='prepared'){
+        result=await commissionCoordinator().commit();
+        commissionDraft._serverReceipt=result.receipt;commissionDraft._serverVoyageStatus='commissioned';
+        writeCommissionDraftSafe(commissionDraft,{durable:false});
+      }else{
+        if(commissionOperationFrozen())throw new Error('Read or reconcile the preserved operation first. No replay was attempted.');
+        if(commissionDraft?._serverRecoveryPending)throw new Error('Verify Admiral & Resume this exact saved voyage before preparing it.');
+        if(!validateCommissionDraftFinal())return;
+        if(forgeReviewConflicts(commissionDraft).length)throw new Error(forgeReviewConflicts(commissionDraft).join(' '));
+        commissionDraft._step=7;commissionDraft._maxStepReached=7;
+        await commissionSaveFlight;
+        const saved=await saveCommissionVoyageServer(commissionDraft);
+        if(!saved||saved.draft_key!==commissionDraft.draftId)throw new Error(commissionServerSyncState.message||'The exact saved voyage was not confirmed. No preparation was sent.');
+        const preview=await commissioningServerClient().rpc('preview_commissioning_voyage',{p_voyage_id:saved.voyage_id},'The saved voyage preview was not confirmed.');
+        if(preview?.ready!==true||preview.voyage_id!==saved.voyage_id||preview.draft_key!==commissionDraft.draftId)throw new Error((preview?.issues||[]).join(' ')||'The server held this exact voyage.');
+        await commissionCoordinator().prepare(saved.voyage_id,preview.draft_fingerprint);
+        writeCommissionDraftSafe(commissionDraft,{durable:false});
       }
-      const canonicalReadback=await readCanonicalProjectRegistry();
-      if(!registryContainsProject(canonicalReadback,id)){
-        throw new Error(`${p.name} disappeared during canonical registry read-back.`);
-      }
-      companies=canonicalReadback.map(normalizeProjectCode).map(ensureProjectGovernance);
-      if(!projectById(id)) throw new Error(`${p.name} could not be resolved after registry reload.`);
-      await addProjectToV4FleetManifest(id);
-      writeCommissionJournal(p,'registry_verified','Canonical project registry read-back verified and Project ID added to the V4 fleet manifest. Rendering Engine card.');
-    }catch(err){
-      companies=beforeCommission;
-      commissionDraft._lastError=String(err?.message||err);
-      commissionDraft._step=7;
-      commissionDraft._maxStepReached=7;
-      commissionDraft.updatedAt=new Date().toISOString();
-      writeCommissionDraftSafe(commissionDraft);
-      let outcome='OUTCOME UNCERTAIN — RECONCILE';
-      try{
-        const verify=await readCanonicalProjectRegistryStrict();
-        outcome=registryContainsProject(verify,id)?'VERIFIED CREATED':'VERIFIED NOT CREATED';
-      }catch(_){ }
-      writeCommissionJournal(p,outcome==='VERIFIED CREATED'?'registry_verified_after_error':outcome==='VERIFIED NOT CREATED'?'registry_failed_verified_absent':'registry_failed_uncertain',`${outcome} • ${String(err?.message||err)}`);
-      await recordCommissionReceiptServer(voyageOperationId,outcome==='VERIFIED CREATED'?'verified_created':outcome==='VERIFIED NOT CREATED'?'verified_not_created':'outcome_uncertain',id,{error:String(err?.message||err)});
-      if(outcome==='VERIFIED CREATED')throw new Error(`${p.name} was verified in the fleet registry after an interrupted response. Do not retry. Reload the Engine to reconcile the vessel.`);
-      if(outcome==='VERIFIED NOT CREATED')throw new Error(`${p.name} was verified NOT created. The commissioning attempt stopped safely. ${String(err?.message||err)}`);
-      throw new Error(`${p.name} commissioning outcome is uncertain. Do not retry. Reload the Engine so Black Flag can reconcile the preserved operation before another command.`);
+    }finally{
+      commissionCommandBusy=false;renderCommissioning();
     }
-
-    await recordCommissionReceiptServer(voyageOperationId,'verified_created',id,{registryVerified:true,build:BUILD_VERSION});
-    window.BlackFlagV3Core?.audit?.({actorRole:commissionerRole,projectId:id,category:'project',action:'project.commissioned',detail:`${p.name} • ${p.namespace} • canonical registry verified`});
-    // Record durable success BEFORE any presentation work. A UI refresh is allowed
-    // to fail without changing the truth that the vessel is already in the registry.
-    writeCommissionEvidenceSafe('blackFlagLastCommissionVerificationV1',{projectId:id,name:p.name,at:new Date().toISOString(),registryVerified:true,renderVerified:false,build:BUILD_VERSION});
-    closeProjectCommissioning();
-    await renderEngineRoom();
-    const rendered=document.querySelector(`[data-open-project-control="${CSS.escape(id)}"]`);
-    if(!rendered){
-      writeCommissionJournal(p,'presentation_refresh_failed','Registry verified, but the Engine card did not appear after refresh.');
-      throw new Error(`${p.name} is safely in the fleet registry, but its Engine card did not render. Reload the Engine; the project has NOT been lost.`);
-    }
-    clearCommissionDraft();
-    clearCommissionJournal(id);
-    writeCommissionEvidenceSafe('blackFlagLastCommissionVerificationV1',{projectId:id,name:p.name,at:new Date().toISOString(),registryVerified:true,renderVerified:true,build:BUILD_VERSION});
-    window.BlackFlagV3Core?.audit?.({actorRole:commissionerRole,projectId:id,category:'project',action:'commissioning.presentation.verified',detail:`${p.name} rendered in Project Command on build ${BUILD_VERSION}`});
-    setTimeout(async()=>{const created=projectById(id);if(created)await continueProjectLaunch(created);},120);
+    // A cache/presentation failure is separate from the verified commit outcome.
+    if(result)await mirrorVerifiedCommission(result);
   }
 
   async function openProjectEngineControl(id){

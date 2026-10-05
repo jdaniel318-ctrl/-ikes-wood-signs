@@ -1,3 +1,17 @@
+# Current test architecture — 8.8.20.30
+Fleet Core is commissioning authority. Server-first protocol v1, introduced in 8.8.20.29, persists a saved voyage, freezes a distinct prepared operation, atomically writes vessel/blueprint/audit/receipt and requires independent canonical read-back. The browser is only a best-effort presentation cache. Automatic retry remains forbidden.
+
+Step 7 now handles the actual preserved no-photo contradiction by an explicit, evidence-preserving correction followed by an exact server read. No correction runs on load; missing acknowledgement holds preparation. A database trigger blocks activation of test-commissioned vessels until a separately reviewed production path exists.
+
+Captain appointment/acceptance/isolation and signed commissioning agreement remain separate. Existing Admiral/owner/Captain auth paths, branding, data and reports are retained. SQL filenames preserve their original lineage; do not execute retained historical SQL on deployment.
+
+## Prior architecture notes
+# Ironbound 8.8.20.29 — TEST BUILD
+
+Commissioning now uses Fleet Core preview → server-owned preparation → one atomic commit → independent canonical read. The old operation was reconciled, not retried. Closed intended project keys are retired. Browser stores remain optional caches. No owner/Captain authority, entitlements or publication were granted. Working-ship and native field acceptance remain pending. See TEST_BUILD_REPORT.md.
+
+## Earlier history
+
 # Current release — Crosscheck 8.8.20.28
 
 The recovery repair is a presentation/binding change inside the existing commissioning workspace. `commissionRecoveryTruth` supplies the banner, inspector and footer. Its same-voyage check is display evidence, not an authorization grant. Existing Admiral gate, hydration/save/receipt RPCs, pending-recovery continuation hold, project commissioning, data stores, ledger and project boundaries are unchanged.

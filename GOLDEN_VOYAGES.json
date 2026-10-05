@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-golden-voyages-v1",
-  "build": "8.8.20.28",
+  "build": "8.8.20.30",
   "policy": "real-ui-path-release-assurance-with-admiral-course-authority",
   "voyages": [
     {
@@ -253,5 +253,6 @@
     "authored_build": "8.8.17",
     "verified_by": "keelguard-package-validation",
     "proves_live_operation": false
-  }
+  },
+  "release": "Ironbound TEST"
 }

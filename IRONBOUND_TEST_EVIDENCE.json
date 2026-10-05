@@ -1,0 +1,523 @@
+{
+  "schema": "black-flag-ironbound-test-evidence-v2",
+  "build": "8.8.20.30",
+  "release": "Ironbound TEST",
+  "classification": "TEST BUILD; native acceptance and real commissioning pending",
+  "created_at": "2026-10-05T01:34:57.397603+00:00",
+  "baseline": {
+    "filename": "DarkSky882028-Crosscheck(1).zip",
+    "sha256": "e90ab030a9c737fc4959d134cad78a356d093917df9ba944509c2f843dc9253c",
+    "original_files_retained": 94
+  },
+  "prior_test_build_sha256": "efdf5ad981000f511f0a8036ee288b364a9ebe1739cce6caff92d94379d0cffd",
+  "live_readback": {
+    "observed_at": "2026-10-05T01:29:51.436508+00:00",
+    "fleet_count": 6,
+    "target_vessel_count": 0,
+    "real_operation_replayed": false,
+    "operation": {
+      "operation_id": "2d7fc23f-180d-4d61-ae22-f241d096cde5",
+      "intended_project_id": "bf-p-42be92cbac12",
+      "command_state": "verified_not_created",
+      "operation_closed": true,
+      "retry_forbidden": true,
+      "reconciled_at": "2026-10-05T00:51:25.358106+00:00",
+      "replayed": false
+    },
+    "persisted_no_photo_mismatch_observed": true,
+    "real_draft_modified_by_this_patch": false,
+    "extra_installed_migration": {
+      "name": "ironbound_test_boundary_and_brief_guard_882029",
+      "version": "20261005012853"
+    }
+  },
+  "node_tests": {
+    "result": "PASS",
+    "tests": 16,
+    "failures": 0,
+    "skipped": 0,
+    "new_regressions_red_before_patch": 4,
+    "output": "TAP version 13\n# Subtest: actual commission handler routes through server-first coordinator, not browser registry\nok 1 - actual commission handler routes through server-first coordinator, not browser registry\n  ---\n  duration_ms: 4.65123\n  type: 'test'\n  ...\n# Subtest: prepare -> independent read -> one commit -> independent canonical proof\nok 2 - prepare -> independent read -> one commit -> independent canonical proof\n  ---\n  duration_ms: 3.066865\n  type: 'test'\n  ...\n# Subtest: double-tap cannot send a second mutation while first is unresolved\nok 3 - double-tap cannot send a second mutation while first is unresolved\n  ---\n  duration_ms: 0.893485\n  type: 'test'\n  ...\n# Subtest: lost commit response stays uncertain and never retries, even on a second tap\nok 4 - lost commit response stays uncertain and never retries, even on a second tap\n  ---\n  duration_ms: 0.888187\n  type: 'test'\n  ...\n# Subtest: write response alone never proves creation when canonical read is unavailable\nok 5 - write response alone never proves creation when canonical read is unavailable\n  ---\n  duration_ms: 0.714365\n  type: 'test'\n  ...\n# Subtest: local presentation/quota callback failure cannot erase verified server truth\nok 6 - local presentation/quota callback failure cannot erase verified server truth\n  ---\n  duration_ms: 0.858692\n  type: 'test'\n  ...\n# Subtest: wrong-voyage readback fails closed\nok 7 - wrong-voyage readback fails closed\n  ---\n  duration_ms: 1.677214\n  type: 'test'\n  ...\n# Subtest: wrong-project receipt cannot authorize a commit\nok 8 - wrong-project receipt cannot authorize a commit\n  ---\n  duration_ms: 0.618591\n  type: 'test'\n  ...\n# Subtest: canonical vessel without bound blueprint is not verified success\nok 9 - canonical vessel without bound blueprint is not verified success\n  ---\n  duration_ms: 0.888147\n  type: 'test'\n  ...\n# Subtest: recovered prepared operation cannot be committed by a fresh page\nok 10 - recovered prepared operation cannot be committed by a fresh page\n  ---\n  duration_ms: 0.92324\n  type: 'test'\n  ...\n# Subtest: manual reconciliation closes a never-created operation without a create call\nok 11 - manual reconciliation closes a never-created operation without a create call\n  ---\n  duration_ms: 0.586202\n  type: 'test'\n  ...\n# Subtest: lost prepare response does not permit a blind second prepare\nok 12 - lost prepare response does not permit a blind second prepare\n  ---\n  duration_ms: 0.582406\n  type: 'test'\n  ...\n# Subtest: saved no-photo brief conflicts with required-photo draft and plan\nok 13 - saved no-photo brief conflicts with required-photo draft and plan\n  ---\n  duration_ms: 6.996259\n  type: 'test'\n  ...\n# Subtest: explicit no-photo correction preserves immutable identities and original plan evidence\nok 14 - explicit no-photo correction preserves immutable identities and original plan evidence\n  ---\n  duration_ms: 7.96025\n  type: 'test'\n  ...\n# Subtest: photo correction refuses a brief that did not negate required photos\nok 15 - photo correction refuses a brief that did not negate required photos\n  ---\n  duration_ms: 8.044776\n  type: 'test'\n  ...\n# Subtest: photo correction is explicit, checks server readback, and cannot commission\nok 16 - photo correction is explicit, checks server readback, and cannot commission\n  ---\n  duration_ms: 4.520493\n  type: 'test'\n  ...\n1..16\n# tests 16\n# suites 0\n# pass 16\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 94.918285\n"
+  },
+  "dom_tests": {
+    "scope": "Local Chromium DOM integration of actual Step-7 functions, handlers, markup and CSS. Simulated RPC boundary. No live auth/commission, hosted boot, service-worker or native Safari claim.",
+    "browser": "Chromium 144.0.7559.96",
+    "results": [
+      {
+        "scenario": "success",
+        "pass": true,
+        "phase": "verified",
+        "prepareCount": 1,
+        "commitCount": 1,
+        "quotaMirrorFailureHandled": true,
+        "pageErrors": [],
+        "viewports": [
+          {
+            "width": 1024,
+            "height": 768,
+            "proofPanelHorizontalOverflow": false
+          },
+          {
+            "width": 390,
+            "height": 844,
+            "proofPanelHorizontalOverflow": false
+          }
+        ]
+      },
+      {
+        "scenario": "lost-commit",
+        "pass": true,
+        "phase": "verified",
+        "prepareCount": 1,
+        "commitCount": 1,
+        "quotaMirrorFailureHandled": true,
+        "pageErrors": [],
+        "viewports": [
+          {
+            "width": 1024,
+            "height": 768,
+            "proofPanelHorizontalOverflow": false
+          },
+          {
+            "width": 390,
+            "height": 844,
+            "proofPanelHorizontalOverflow": false
+          }
+        ]
+      },
+      {
+        "scenario": "lost-read",
+        "pass": true,
+        "phase": "verified",
+        "prepareCount": 1,
+        "commitCount": 1,
+        "quotaMirrorFailureHandled": true,
+        "pageErrors": [],
+        "viewports": [
+          {
+            "width": 1024,
+            "height": 768,
+            "proofPanelHorizontalOverflow": false
+          },
+          {
+            "width": 390,
+            "height": 844,
+            "proofPanelHorizontalOverflow": false
+          }
+        ]
+      },
+      {
+        "scenario": "lost-prepare",
+        "pass": true,
+        "phase": "closed",
+        "prepareCount": 1,
+        "commitCount": 0,
+        "quotaMirrorFailureHandled": false,
+        "pageErrors": [],
+        "viewports": [
+          {
+            "width": 1024,
+            "height": 768,
+            "proofPanelHorizontalOverflow": false
+          },
+          {
+            "width": 390,
+            "height": 844,
+            "proofPanelHorizontalOverflow": false
+          }
+        ]
+      },
+      {
+        "scenario": "photo-conflict",
+        "pass": true,
+        "phase": "verified",
+        "prepareCount": 1,
+        "commitCount": 1,
+        "quotaMirrorFailureHandled": true,
+        "pageErrors": [],
+        "viewports": [
+          {
+            "width": 1024,
+            "height": 768,
+            "proofPanelHorizontalOverflow": false
+          },
+          {
+            "width": 390,
+            "height": 844,
+            "proofPanelHorizontalOverflow": false
+          }
+        ]
+      },
+      {
+        "scenario": "photo-save-lost",
+        "pass": true,
+        "phase": "correction-readback-held",
+        "prepareCount": 0,
+        "commitCount": 0,
+        "pageErrors": []
+      }
+    ]
+  },
+  "server_test": {
+    "result": "PASS",
+    "observed_at": "2026-10-05T01:32:43.195184+00:00",
+    "scope": "Synthetic fixtures rolled back; no real voyage saved, prepared, commissioned or retried.",
+    "checks": [
+      "actual no-photo mismatch rejected despite empty client conflict array",
+      "blocked prepare creates no receipt",
+      "corrected flags read back",
+      "new preparation creates no vessel",
+      "single synthetic commit independently verified",
+      "blueprint preserves no-photo setting",
+      "test production activation denied",
+      "no memberships or entitlements",
+      "all fixture rows rolled back"
+    ]
+  },
+  "pending": [
+    "Native iPad Safari",
+    "Full hosted boot and real authentication",
+    "Actual VoyageKeeper commission",
+    "Chosen Captain appointment and acceptance",
+    "Exact-vessel isolation under Captain account",
+    "Working-ship handoff",
+    "Signed agreement and publication"
+  ],
+  "security_advisor": {
+    "observed_at": "2026-10-05T01:12:53.411Z",
+    "rls_no_policy_info": 11,
+    "authenticated_security_definer_warning": 61,
+    "leaked_password_protection_disabled_warning": 1,
+    "review": "No RLS was widened. RPC-only tables remain default deny for direct clients. New authenticated definer endpoints explicitly check unrevoked Admiral authority and exact actor ownership; synthetic unauthorized calls were rejected. Existing password protection setting was not changed. This is not a clean-security-scan claim."
+  },
+  "packaging_contract": {
+    "baseline_files_retained": 94,
+    "archive_files": 100,
+    "single_matching_folder": true,
+    "timestamps": "normalized to actual package time",
+    "checksum_order": "final bytes then model/runtime manifest hashes then external checksums then ZIP"
+  },
+  "prior_882029_evidence": {
+    "schema": "black-flag-ironbound-test-evidence-v1",
+    "build": "8.8.20.29",
+    "release": "Ironbound TEST",
+    "classification": "TEST BUILD, NOT PRODUCTION ACCEPTANCE",
+    "baseline": {
+      "filename": "DarkSky882028-Crosscheck(1).zip",
+      "sha256": "e90ab030a9c737fc4959d134cad78a356d093917df9ba944509c2f843dc9253c",
+      "original_files_retained": 94
+    },
+    "live_postflight": {
+      "observed_at": "2026-10-05T01:16:40.845348+00:00",
+      "fleet_count": 6,
+      "old_project_vessel_count": 0,
+      "public_tables_with_rls": 20,
+      "unprotected_public_tables": 0,
+      "synthetic_accounts_remaining": 0,
+      "operation": {
+        "operation_id": "2d7fc23f-180d-4d61-ae22-f241d096cde5",
+        "intended_project_id": "bf-p-42be92cbac12",
+        "command_state": "verified_not_created",
+        "operation_closed": true,
+        "retry_forbidden": true,
+        "reconciled_at": "2026-10-05T00:51:25.358106+00:00",
+        "replayed": false
+      },
+      "unchanged_fingerprints": {
+        "fleet_vessels": "0abd2c61b45b42757fa08510140b2481",
+        "fleet_global_authorities": "7d20b336b888025bd9667f422b5d1fc1",
+        "fleet_memberships": "149e3ce647361e35211819e414851bcd"
+      },
+      "migrations": [
+        {
+          "version": "20261005010653",
+          "name": "ironbound_server_first_guards_882029"
+        },
+        {
+          "version": "20261005010800",
+          "name": "ironbound_server_first_commissioning_882029"
+        }
+      ],
+      "new_rpc_acl": {
+        "anonymous_execute": false,
+        "authenticated_execute": true,
+        "in_function_authority": "active, unrevoked Admiral; exact actor/voyage/operation",
+        "search_path": "empty"
+      }
+    },
+    "server_regression": {
+      "result": "PASS",
+      "observed_at": "2026-10-05T01:08:50.082744+00:00",
+      "scope": "Actual deployed SQL functions using temporary synthetic accounts and transactionally rolled-back fixtures; not a real VoyageKeeper commission.",
+      "asserted_cases": [
+        "exact saved voyage read-back",
+        "stale preview rejected",
+        "prepare creates no vessel",
+        "duplicate preparation blocked",
+        "prepared draft edits blocked",
+        "prepared discard blocked",
+        "client-written terminal receipt rejected",
+        "cross-actor read denied",
+        "cross-actor commit denied",
+        "absent reconciliation without creation",
+        "closed operation replay blocked",
+        "closed receipt reopening blocked",
+        "immutable operation tuple",
+        "retired project key insertion blocked",
+        "new operation and project identifiers differ",
+        "wrong commit fingerprint rejected",
+        "atomic canonical vessel plus bound blueprint",
+        "namespace compatible with engine",
+        "private test lifecycle",
+        "no implicit memberships or entitlements",
+        "independent canonical read",
+        "duplicate delivery cannot create another vessel",
+        "refresh recovers committed voyage",
+        "late checkpoint cannot reopen voyage",
+        "success reconciliation remains read-only",
+        "revoked authority denied",
+        "anonymous authority denied",
+        "fixture accounts and vessels rolled back",
+        "anonymous RPC execute privilege absent"
+      ]
+    },
+    "offline_regression": {
+      "result": "PASS",
+      "tests": 12,
+      "source": "VERIFY_IRONBOUND.cjs",
+      "baseline_result": "All 12 failed before the coordinator/handler repair; final candidate passed.",
+      "final_run_output": "TAP version 13\n# Subtest: actual commission handler routes through server-first coordinator, not browser registry\nok 1 - actual commission handler routes through server-first coordinator, not browser registry\n  ---\n  duration_ms: 5.548391\n  type: 'test'\n  ...\n# Subtest: prepare -> independent read -> one commit -> independent canonical proof\nok 2 - prepare -> independent read -> one commit -> independent canonical proof\n  ---\n  duration_ms: 2.994616\n  type: 'test'\n  ...\n# Subtest: double-tap cannot send a second mutation while first is unresolved\nok 3 - double-tap cannot send a second mutation while first is unresolved\n  ---\n  duration_ms: 1.231736\n  type: 'test'\n  ...\n# Subtest: lost commit response stays uncertain and never retries, even on a second tap\nok 4 - lost commit response stays uncertain and never retries, even on a second tap\n  ---\n  duration_ms: 0.903232\n  type: 'test'\n  ...\n# Subtest: write response alone never proves creation when canonical read is unavailable\nok 5 - write response alone never proves creation when canonical read is unavailable\n  ---\n  duration_ms: 0.698951\n  type: 'test'\n  ...\n# Subtest: local presentation/quota callback failure cannot erase verified server truth\nok 6 - local presentation/quota callback failure cannot erase verified server truth\n  ---\n  duration_ms: 0.706562\n  type: 'test'\n  ...\n# Subtest: wrong-voyage readback fails closed\nok 7 - wrong-voyage readback fails closed\n  ---\n  duration_ms: 1.350521\n  type: 'test'\n  ...\n# Subtest: wrong-project receipt cannot authorize a commit\nok 8 - wrong-project receipt cannot authorize a commit\n  ---\n  duration_ms: 0.559234\n  type: 'test'\n  ...\n# Subtest: canonical vessel without bound blueprint is not verified success\nok 9 - canonical vessel without bound blueprint is not verified success\n  ---\n  duration_ms: 0.90853\n  type: 'test'\n  ...\n# Subtest: recovered prepared operation cannot be committed by a fresh page\nok 10 - recovered prepared operation cannot be committed by a fresh page\n  ---\n  duration_ms: 0.910472\n  type: 'test'\n  ...\n# Subtest: manual reconciliation closes a never-created operation without a create call\nok 11 - manual reconciliation closes a never-created operation without a create call\n  ---\n  duration_ms: 0.65802\n  type: 'test'\n  ...\n# Subtest: lost prepare response does not permit a blind second prepare\nok 12 - lost prepare response does not permit a blind second prepare\n  ---\n  duration_ms: 0.572845\n  type: 'test'\n  ...\n1..12\n# tests 12\n# suites 0\n# pass 12\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 27.46664\n"
+    },
+    "dom_integration": {
+      "scope": "Local Chromium DOM integration of actual Step-7 functions, handlers, markup and CSS. Simulated RPC boundary. No live auth/commission, hosted boot, service-worker or native Safari claim.",
+      "browser": "Chromium 144.0.7559.96",
+      "results": [
+        {
+          "scenario": "success",
+          "pass": true,
+          "phase": "verified",
+          "prepareCount": 1,
+          "commitCount": 1,
+          "quotaMirrorFailureHandled": true,
+          "pageErrors": [],
+          "viewports": [
+            {
+              "width": 1024,
+              "height": 768,
+              "proofPanelHorizontalOverflow": false
+            },
+            {
+              "width": 390,
+              "height": 844,
+              "proofPanelHorizontalOverflow": false
+            }
+          ]
+        },
+        {
+          "scenario": "lost-commit",
+          "pass": true,
+          "phase": "verified",
+          "prepareCount": 1,
+          "commitCount": 1,
+          "quotaMirrorFailureHandled": true,
+          "pageErrors": [],
+          "viewports": [
+            {
+              "width": 1024,
+              "height": 768,
+              "proofPanelHorizontalOverflow": false
+            },
+            {
+              "width": 390,
+              "height": 844,
+              "proofPanelHorizontalOverflow": false
+            }
+          ]
+        },
+        {
+          "scenario": "lost-read",
+          "pass": true,
+          "phase": "verified",
+          "prepareCount": 1,
+          "commitCount": 1,
+          "quotaMirrorFailureHandled": true,
+          "pageErrors": [],
+          "viewports": [
+            {
+              "width": 1024,
+              "height": 768,
+              "proofPanelHorizontalOverflow": false
+            },
+            {
+              "width": 390,
+              "height": 844,
+              "proofPanelHorizontalOverflow": false
+            }
+          ]
+        },
+        {
+          "scenario": "lost-prepare",
+          "pass": true,
+          "phase": "closed",
+          "prepareCount": 1,
+          "commitCount": 0,
+          "quotaMirrorFailureHandled": false,
+          "pageErrors": [],
+          "viewports": [
+            {
+              "width": 1024,
+              "height": 768,
+              "proofPanelHorizontalOverflow": false
+            },
+            {
+              "width": 390,
+              "height": 844,
+              "proofPanelHorizontalOverflow": false
+            }
+          ]
+        }
+      ]
+    },
+    "not_verified": [
+      "Hosted complete loader/service-worker execution: local HTTP navigation was blocked by this environment (ERR_BLOCKED_BY_ADMINISTRATOR). Final-byte integrity is separately checked.",
+      "Native iPad/Safari field commissioning",
+      "Real VoyageKeeper new-operation commit",
+      "Captain appointment and acceptance for VoyageKeeper",
+      "Own-vessel/other-vessel Captain isolation proof",
+      "Signed commissioning agreement and production activation"
+    ],
+    "security_advisor": {
+      "observed_at": "2026-10-05T01:12:53.411Z",
+      "rls_no_policy_info": 11,
+      "authenticated_security_definer_warning": 61,
+      "leaked_password_protection_disabled_warning": 1,
+      "review": "No RLS was widened. RPC-only tables remain default deny for direct clients. New authenticated definer endpoints explicitly check unrevoked Admiral authority and exact actor ownership; synthetic unauthorized calls were rejected. Existing password protection setting was not changed. This is not a clean-security-scan claim."
+    },
+    "build_created_at": "2026-10-05T01:21:01+00:00",
+    "reproducible_server_sql": {
+      "file": "VERIFY_IRONBOUND.sql",
+      "result": "PASS",
+      "fixture_rows_rolled_back": true
+    },
+    "packaging": {
+      "original_file_names_retained": [
+        "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
+        "ADMIRAL_RELEASE_DOCTRINE.json",
+        "BOOTSTRAP_COMMIT_MODEL.json",
+        "BOOTSTRAP_IGNITION_MODEL.json",
+        "CAPABILITY_ADOPTION_MAP.json",
+        "CHANGELOG.md",
+        "CHECKPOINT_TRANSACTION_PROOF_882022.json",
+        "CHECKSUMS.sha256",
+        "CURRENT_ARCHITECTURE.md",
+        "DEPLOYMENT_MANIFEST.json",
+        "DOCK_SOURCE_TRACE_MODEL.json",
+        "EVIDENCE_RECONCILIATION_MODEL.json",
+        "FEATURE_ENTITLEMENT_MODEL_870.json",
+        "FLEET_COMMAND_MODEL.json",
+        "FLEET_DOCTRINE_REGISTRY.json",
+        "FLEET_INTELLIGENCE_MODEL.json",
+        "FLEET_LEARNING_RECOMMENDATIONS_814.json",
+        "FLEET_LEARNING_REGISTRY.json",
+        "FLEET_MUSTER_SEED.json",
+        "FLEET_REGRESSION_GATES.json",
+        "FLEET_SERVICES_FRAMEWORK.json",
+        "FLEET_SERVICE_PACKAGE_MODEL.json",
+        "FLEET_STEWARD_MODEL.json",
+        "GENERATION_RELAY_MODEL.json",
+        "GOLDEN_VOYAGES.json",
+        "IDENTITY_KEEL_MODEL.json",
+        "IGNITION_WITNESS_MODEL.json",
+        "IKE_STYLE_FOUNDRY.json",
+        "KEELLOCK_AUTHORITY_HULL.json",
+        "MEMORY_COMMIT_WATCHDOG_MODEL.json",
+        "MEMORY_MUSTER_MODEL.json",
+        "MUSTER_TRACE_MODEL.json",
+        "OWNER_AUTHORITY_MODEL.json",
+        "OWNER_AUTH_STATE_GATE_MODEL.json",
+        "OWNER_BRIDGE_MODEL.json",
+        "OWNER_PASSWORD_MODEL.json",
+        "OWNER_RECOVERY_MODEL.json",
+        "OWNER_SIGNIN_BRIDGE_MODEL.json",
+        "PROOF_BARRIER_MODEL.json",
+        "PROOF_BOOTSTRAP_MODEL.json",
+        "PROOF_CHAIN_SETTLEMENT_MODEL.json",
+        "PROOF_SIGNER_TRACE_MODEL.json",
+        "README.md",
+        "RECOVERY_AUTHORITY_PROOF_882021.json",
+        "RECOVERY_DEPENDENCY_PROOF_882019.json",
+        "REGISTRY_LEDGER_MODEL.json",
+        "RELEASE_ACCEPTANCE.md",
+        "RELEASE_CHECKSUMS.sha256",
+        "RELEASE_GATE.json",
+        "RELEASE_INTEGRITY_ROOT_CAUSE_882018.json",
+        "RELEASE_INVENTORY.json",
+        "RELEASE_SEAL.json",
+        "RESOLVER_LIFELINE_MODEL.json",
+        "RLS_READ_BOUNDARY_MODEL.json",
+        "RUNTIME_ENTRY_TRACE_MODEL.json",
+        "SHA256SUMS.txt",
+        "STAGE_CHECKPOINT_PROOF_882020.json",
+        "STORAGE_SAFE_PROOF_BUS_MODEL.json",
+        "SUPABASE_ADMIRAL_COMMISSIONING_886.sql",
+        "SUPABASE_KEELLOCK_SUPPORTING_INDEXES_882018.sql",
+        "SUPABASE_LEDGER_INTEGRITY_88171.sql",
+        "TAX_LEDGER_MODEL.json",
+        "WITNESS_TRUTH_MODEL.json",
+        "admirals_deck_ceremonial_v640.png",
+        "app.js",
+        "black_flag_platform_icon.png",
+        "black_flag_primary_lockup.png",
+        "bootstrap_build_horizontal.png",
+        "bootstrap_build_icon.png",
+        "bootstrap_build_logo.png",
+        "captain.js",
+        "captains_quarters_cinematic_v2953.jpg",
+        "captains_quarters_command_center_v578.png",
+        "engine_room_modern_benchmark_v2976.png",
+        "engine_room_pirate_benchmark_v2978.png",
+        "fleet_supabase.js",
+        "ike_calibration_2ft_cedar_reference.jpg",
+        "ike_character.png",
+        "ike_style_a_ramjet_reference.jpg",
+        "ike_style_b_smoke_hole_reference.jpg",
+        "ike_style_registry.js",
+        "ikes_real_sign_lettering_reference.jpg",
+        "index.html",
+        "ledger_integrity.js",
+        "manifest.webmanifest",
+        "owner.html",
+        "platform_core.js",
+        "platform_identity.js",
+        "platform_v4.js",
+        "signal_restoration_logo.png",
+        "simple_books.css",
+        "simple_books.js",
+        "styles.css",
+        "sw.js"
+      ],
+      "file_count": 100,
+      "standalone_javascript_syntax_files": 10,
+      "inline_javascript_syntax_blocks": 6,
+      "runtime_hashes": 18,
+      "all_json_parsed": true,
+      "native_safari_acceptance": "PENDING",
+      "hosted_boot": "NOT RUN; see test report",
+      "checksums_exclude_only_the_three_checksum_catalogs": true
+    }
+  },
+  "final_postflight": {
+    "observed_at": "2026-10-05T01:35:22.043131+00:00",
+    "target_state": "verified_not_created",
+    "operation_closed": true,
+    "retry_forbidden": true,
+    "fleet_count": 6,
+    "target_vessel_count": 0,
+    "rls_tables": 20,
+    "remaining_fixtures": 0,
+    "test_activation_guard_exists": true,
+    "fleet_fingerprint": "0abd2c61b45b42757fa08510140b2481",
+    "authority_fingerprint": "7d20b336b888025bd9667f422b5d1fc1",
+    "membership_fingerprint": "149e3ce647361e35211819e414851bcd"
+  }
+}

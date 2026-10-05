@@ -1,3 +1,16 @@
+# 8.8.20.30 — Ironbound TEST
+- Added explicit saved-brief no-photo correction on Step 7, exact server read-back and hold after a lost acknowledgement.
+- Preserved original draft/plan evidence and every retired operation; no automatic preparation or commissioning.
+- Included the already-installed no-photo and test-activation server guards in cumulative support source.
+- Reran 16 client checks and six isolated browser scenarios; additional no-photo/activation rollback tests passed.
+- Real VoyageKeeper commissioning and Captain handoff remain pending native acceptance.
+
+# Ironbound 8.8.20.29 — TEST BUILD
+
+Commissioning now uses Fleet Core preview → server-owned preparation → one atomic commit → independent canonical read. The old operation was reconciled, not retried. Closed intended project keys are retired. Browser stores remain optional caches. No owner/Captain authority, entitlements or publication were granted. Working-ship and native field acceptance remain pending. See TEST_BUILD_REPORT.md.
+
+## Earlier history
+
 # Dark Sky 8.8.20.28 — Crosscheck
 
 - Makes every recovered voyage that lacks current exact-voyage Fleet Core verification expose **VERIFY ADMIRAL & RESUME**, including the field-proven Sync Needed state where the older pending flag is absent.
