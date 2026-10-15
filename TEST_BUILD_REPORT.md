@@ -1,67 +1,69 @@
-# Ironbound 8.8.20.30 — TEST BUILD verification
+# Black Flag 8.8.20.31 — SteadyHand TEST
 
-## Current deliverable
-This release replaces the earlier 8.8.20.29 test ZIP. It is derived from the uploaded Crosscheck 8.8.20.28 through Ironbound 8.8.20.29. All 94 Crosscheck filenames and every visual asset are retained. The complete package has 100 files; no project, ledger history, logo or feature was removed to reduce the file count.
+## Purpose and release boundary
+Based on the persistent **DarkSky882030-Ironbound-TEST.zip**, not a rebuilt or empty fleet. This is a frontend hardening TEST BUILD: field-aware paste cleanup, exact report proof, clearer lifecycle/authority/version labels, and responsive observation details. It does not add authority, commission another vessel, change saved reports, run SQL, send invitations, activate a service, or publish a customer site.
 
-## Old operation: reconciled, not replayed
-Fleet Core read-back at **2026-10-05 01:29:51 UTC** confirmed operation `2d7fc23f-180d-4d61-ae22-f241d096cde5`, intended Project ID `bf-p-42be92cbac12`, as **verified_not_created**, with `operation_closed=true` and `retry_forbidden=true`. The intended key has zero canonical vessels. The fleet still has six vessels. No real VoyageKeeper commissioning command was issued during this verification.
+**No Supabase migration or dashboard configuration is required. Do not execute the retained historical SQL files.** They are preserved source history, not installation instructions for this build.
 
-## Additional blocker removed
-The real persisted VoyageKeeper brief says “No photo required,” while its saved `photoRequired` and Forge Plan flag both remained true. The server correctly holds that contradiction. Step 7 now exposes **APPLY SAVED BRIEF: NO PHOTO** rather than leaving the user to discover the mismatch in another stage. Only an explicit tap applies the correction. It preserves the voyage and retired operation identifiers, retains the original plan as evidence, saves the corrected draft, and checks the two corrected flags in the exact server read-back. It neither prepares nor commits a vessel.
+## Reproduced defects and changes
+### 1. Visible pasted whitespace
+The baseline Captain email handler trimmed a request copy without cleaning the displayed field. A browser regression reproduced the visible defect using nonbreaking-space padding. A shared `input_hygiene.js` module now cleans ordinary field boundaries after user paste and autofill replacement, on blur/change, and before existing submit/button handlers consume edited values. Both the visible value and submitted value agree.
 
-A lost correction read-back leaves preparation disabled and requests an authenticated restoration. No success is inferred from a cache or unconfirmed write. Test-commissioned vessels are also prevented from becoming active by the installed server guard. This does not grant any membership, entitlement, contract approval or publication.
+The release inventory covers **139 reviewed ordinary input instances** across the Engine, Admiral login and delegation, Captain, owner, commissioning, customer intake and ledger forms. **44 explicitly protected instances** cover passwords/PINs and production wording/examples. Unknown fields, raw imports, readonly/disabled fields and secrets remain untouched by default. Future ordinary fields opt in with `data-bf-trim="boundary"`; meaningful wording/raw content opts out with `data-bf-trim="preserve"`.
 
-## Fresh tests
-The current Node suite passed **16/16** tests. The four new regressions were observed failing on 8.8.20.29 before this patch. The 12 inherited server-first coordinator regressions were rerun and passed.
+Only leading/trailing whitespace is removed. Internal spacing, case and multiline indentation are preserved where the control supports multiline text. Native single-line inputs still apply their own line-ending rules. Caret offset, composition input and dynamically rendered controls are covered. There is no network, storage, permission, submission or retry command in the helper. Existing user-edit listeners continue receiving the normalized user edit. No stored records are swept or rewritten.
 
-The actual Step-7 functions, handlers, markup and CSS passed **six isolated Chromium scenarios** using simulated RPC responses: successful commissioning despite cache quota failure, lost commit response, lost canonical read-back, lost preparation response, explicit no-photo correction through successful commissioning, and lost correction read-back. The last scenario sends no preparation or commit. The other mutation-loss scenarios use explicit reconciliation, never replay. No uncaught page errors were observed. Success proof panels were checked at 1024 × 768 and 390 × 844 without horizontal overflow.
+### 2. Successful report wrongly called unconfirmed
+The baseline reproduced the padded-work false warning. It also accepted a changed issue summary, an omitted issue summary, and an independently reloaded report whose text did not match the new write.
 
-A fresh server rollback test passed at **2026-10-05 01:32:43 UTC**: a no-photo brief with conflicting true flags is rejected even when the client's conflicts array is empty; rejection creates no receipt; explicit correction reads back; new preparation creates no vessel; one synthetic commission produces independently verified vessel/blueprint proof with the corrected photo flag; production activation is blocked; membership and entitlement counts remain zero. All synthetic fixture rows were rolled back. The earlier operation-bound, duplicate-delivery, cross-actor and immutable-receipt SQL tests remain documented below as prior evidence, not newly invented runs.
+The repaired Captain handler builds one canonical payload and uses it for validation, counters, the command response and an independent saved-report read. It verifies **Project ID, work text, issue count, issue summary, report identifier and a valid report timestamp**. The read must return the same report identifier that was just saved. An empty summary is allowed to round-trip as PostgreSQL NULL; absent or materially changed content is rejected.
 
-## Acceptance still pending
-Real VoyageKeeper commissioning in native iPad Safari, full hosted boot/authentication, Captain appointment and acceptance, exact-vessel isolation under the chosen Captain account, operational workflows, signed agreement and live publication remain unverified. This ZIP is a **TEST BUILD**, not a completed working-ship handoff. No Captain was appointed and no email or invitation was sent.
+ECMAScript whitespace is removed from the outgoing boundaries before the existing SQL trim runs; JavaScript and PostgreSQL trim behavior are not assumed to be identical. The response is not broadly normalized to hide a real mismatch. Character counting uses Unicode code points for report validation, consistent with database character counts.
 
-The complete hosted loader was not executed. Its runtime hashes, model hashes, JavaScript syntax, retained assets, archive contents, checksums and CRC are validated at packaging. The isolated browser harness is not a native Safari or full-site test.
+A lost response, wrong vessel, changed content, missing field or unavailable read-back enters the existing explicit recheck state. **No automatic retry is sent.** Double taps send one command while unresolved, and late completion after sign-out cannot repaint vessel data. Recheck reads the saved report; it does not republish.
 
-## Next three field steps
-1. Upload the contents of **DarkSky882030-Ironbound-TEST** to the existing deployment root and confirm **8.8.20.30**. Preserve existing browser data. Server support is already installed; do not run the historical SQL files.
-2. Use the existing Admiral security path to restore the same VoyageKeeper draft, open Step 7 and tap **APPLY SAVED BRIEF: NO PHOTO**. Wait for **SERVER PREVIEW READY**. The old operation remains closed.
-3. Tap **PREPARE NEW OPERATION**, review the new operation and Project ID, then tap **COMMISSION ONCE**. Stop at the resulting proof or reconciliation hold; do not submit again after an uncertain response.
+### 3. Truthful Admiral observation
+The detail view now separates **VESSEL LIFECYCLE**, **REPORT FRESHNESS**, **OWNERSHIP STATUS**, **OPERATING MODEL**, **CAPTAIN REPORT SAVED AT**, and **LAST FLEET READ (NOT A NEW REPORT)**. A stale report is no longer displayed as the vessel lifecycle. Owner-account counts explicitly say they are not Captain counts.
 
-## Security review scope
-The last advisor scan retained 11 informational RLS-without-policy findings, 61 authenticated SECURITY DEFINER review warnings, and disabled leaked-password protection. These were not hidden by widening policies. The new endpoints enforce current Admiral authority plus exact actor/voyage/operation scope and deny anonymous execution. These findings do not constitute a full security certification.
+The yellow message is now **FLEET COMMAND OPERATIONS NOT ENABLED**, with an explanation that this is neither backend health nor publication state and does not cancel an accepted exact-vessel Captain's separate station. The operation button remains disabled: no permission bypass was added.
 
-## Prior 8.8.20.29 report — historical evidence
+Live interface/adapter build constants now identify **8.8.20.31 / SteadyHand TEST**. Historical model/API versions and historical evidence are retained, not repainted as newly verified evidence. Observation details use three columns where width allows and wrap safely on a narrow screen. Existing logos and images are unchanged.
 
-# Ironbound 8.8.20.29 — test-build verification
+## Fresh verification
+**36 Node checks passed:** 20 SteadyHand helper/report/presentation/syntax/package checks plus all 16 inherited Ironbound commissioning regressions.
 
-## Delivered scope
-Full Crosscheck-derived static-site test ZIP, with all 94 baseline filenames retained. Server-side support was installed and checked separately. Nothing automatically commissions or retries on load.
+**25 isolated Chromium scenarios passed:** 19 SteadyHand actual-handler/markup integrations plus all six inherited Step-7 scenarios. The new coverage includes padded email and report input, substantive mismatch rejection, missing response fields, lost writes/read-backs, double taps, no-republish recheck, sign-out during an in-flight write, same-account other-vessel denial and return, representative annotated fields, secrets/production wording, IME/caret behavior, dynamic fields, and actual Admiral detail rendering. Captain and Admiral detail layouts were checked at **1024×768 and 390×844** without horizontal overflow in the tested panels.
 
-## Live truth
-Operation `2d7fc23f-180d-4d61-ae22-f241d096cde5` / Project ID `bf-p-42be92cbac12` was reconciled on Fleet Core at **2026-10-05 00:51:25 UTC** as **verified_not_created**, with `operation_closed=true` and `retry_forbidden=true`. No commissioning command was issued for that operation. A postflight read at **01:16:40 UTC** still found zero vessels for that key and six total vessels. Fleet-vessel, global-authority and membership row fingerprints match their predeployment values. All 20 public tables still have RLS enabled; no fixture accounts remain.
+The before/after regression ran against the untouched Ironbound baseline: **five failures were reproduced** in the initial 11-scenario subset and all five then passed on SteadyHand. Test results and source tests are included in the ZIP.
 
-## Defect repaired
-The Crosscheck commission handler wrote the local browser registry and reported receipt states; it did not invoke a server vessel-creating handler. A browser quota failure could therefore leave a Submitted receipt without a canonical vessel. The repaired handler never treats a browser registry read as server commissioning proof.
+**Test limits:** RPC and authentication boundaries were synthetic; no real user was signed in by the tests and no real vessel command was submitted. Browser event tests exercise actual JavaScript handlers but do not certify the native iPad clipboard or keyboard. The environment blocked local HTTP navigation, so the owner/Watchtower tests executed actual source in isolated Chromium DOM contexts. This does **not** certify a full hosted startup, native Safari, real authentication callback, or service-worker upgrade. Runtime SHA-256 bodies, loader dependency order, inline-script syntax, current model identities, archive CRCs and whole-file checksums are checked separately. This is a self-review with automated regressions, not an independent external security audit.
 
-Preparation creates a new server-owned operation and immutable project key from the persisted voyage. The following deliberate command creates the canonical vessel, durable blueprint and bound receipt in one transaction. A separate read verifies the exact voyage, operation, project, namespace, audit binding and blueprint before displaying success. Quota errors in the optional display cache cannot change that server proof.
+## Live Fleet Core boundary
+A read-only preflight at **2026-10-15 01:26:41 UTC** returned VoyageKeeper Project ID `bf-p-fc2816b8254a4845`, lifecycle `commissioning`, operating model `captain_operated`, one active exact-vessel operator membership, zero fleet-wide authorities, and exactly one saved Captain report (`5e926e87-10f5-4d76-aff4-6d254a0c8fdf`, original timestamp **2026-10-05 04:02:39 UTC**). The old failed operation remained verified-not-created/closed/retry-forbidden; the successful operation remained verified-created/closed/retry-forbidden.
 
-## Tests run
-The offline Node suite passed **12/12** tests. It includes the actual app handler's server-first routing, independent read-back, duplicate taps, lost responses, tuple mismatches, missing blueprint, recovered prepared commands and the no-retry rule.
+A requested final read-only comparison was **blocked by the tool safety layer**. No post-build live comparison is claimed. No database write, migration, role change, new account, invitation, report submission, appointment change or commissioning request was attempted during this build. The test harnesses never contact live Fleet Core.
 
-The deployed SQL functions passed synthetic rollback tests covering preparation, separate new identities, atomic commit, independent proof, duplicate-delivery safety, immutable and closed operations, retired keys, frozen drafts, late saves, unauthorized actors and no implicit authority/feature grants. The fixture records were rolled back. This is **not** a claim that the real VoyageKeeper vessel has commissioned.
+## What remains open
+The already demonstrated browser allow → deny → return and Admiral-observation checkpoints are historical field evidence for 8.8.20.30, not proof that every new byte in this ZIP is native-device verified. Native acceptance of 8.8.20.31 remains next. Direct backend access-denial coverage, revocation/replacement proof, scoped Admiral exports, the first-time account/invitation route, executed-agreement evidence, end-to-end business order work and production launch remain separate gates. This release neither claims nor clears the existing broader readiness holds. The fleet remains private-test only. Existing reports retain their old words and original timestamps, even when the old test note says “pending.”
 
-Four isolated Chromium DOM scenarios passed using actual Step-7 functions, handlers, markup and CSS with simulated RPC responses: success under cache quota failure, lost commit response, lost read-back, and lost preparation response. Each prepared once; the first three committed once and the fourth did not commit. Recovery used explicit reconciliation, not replay. Proof-panel checks found no horizontal overflow at **1024 × 768** and **390 × 844**. No uncaught page errors were observed in these scenarios. This does not validate the complete hosted app, authentication flow or Safari.
+## Upload and first three device steps
+1. Extract **DarkSky882031-SteadyHand-TEST.zip** and upload the **contents** of its single same-named folder to the existing `/-ikes-wood-signs/` site root, replacing matching files. Preserve browser data. Confirm **8.8.20.31 / STEADYHAND TEST** on the Captain/Admiral surface. Do not re-run SQL, create another project or recommission VoyageKeeper.
+2. In the existing VoyageKeeper Captain station, signed in as `voyagekeeper@yahoo.com`, paste **three spaces + `SteadyHand private test: checking report confirmation.` + three spaces** into Current work. Paste **three spaces + `Browser isolation passed; backend and revocation tests remain.` + three spaces** into Issue summary. Keep Open issues at **1**. The accidental boundary padding must disappear; internal wording stays intact.
+3. Tap **PUBLISH WATCH UPDATE once**. Only after explicit success, refresh the station once and send the resulting screen. This deliberately adds a new private test report; it does not rewrite/delete the original report. If saving is uncertain, use **RECHECK STATION**; do not republish or repeat the appointment.
 
-## Remaining acceptance — do not promote yet
-Native iPad/Safari commissioning of the real saved VoyageKeeper draft remains the next field check. The full hosted loader/service-worker flow was not executed here: local HTTP navigation was blocked by the execution environment. Final runtime hashes, JavaScript syntax, JSON inventory and ZIP CRCs are checked independently during packaging.
+The Admiral detail-label check follows this report checkpoint. Do not change report history merely to make a freshness warning disappear.
 
-A verified private commission is only the next foundation. Captain appointment, candidate acceptance, exact-vessel isolation, operational work, signed agreement and production publication remain separate gates. No Captain or owner was appointed, no invitation was sent, and no vessel was activated or published during this build.
+## Recovery and rollback
+Retain the prior Ironbound ZIP. A frontend rollback means restoring that complete matching package, not mixing individual old/new runtime files. It also brings back its known whitespace/read-back/label defects. No database rollback is required or authorized by this frontend-only change. Keep all existing sessions, reports and commissioning guards. Reload/reconnect must never replay a commission or report command.
 
-## Security advisor findings retained for review
-The scan reported 11 informational RLS-without-policy findings, 61 authenticated SECURITY DEFINER warnings across the existing RPC architecture, and disabled leaked-password protection. No broad policies or roles were granted to suppress those notices. The new definer endpoints require active, unrevoked Admiral authority and exact actor/voyage/operation ownership; their anonymous execution privilege is revoked. Synthetic cross-actor and revoked-authority checks passed. Existing RPCs are not represented as newly audited.
+## Reproduce the offline checks
+From the extracted folder: `node VERIFY_STEADYHAND.cjs .` and `node VERIFY_IRONBOUND.cjs .`. With Python Playwright, BeautifulSoup and a local Chromium binary: `python VERIFY_STEADYHAND_UI.py . /tmp/steadyhand-qa` and `python VERIFY_IRONBOUND_UI.py . /tmp/ironbound-qa`. Do not run `VERIFY_IRONBOUND.sql` against production as part of installing this ZIP.
 
-[Supabase: RLS-enabled tables without policies](https://supabase.com/docs/guides/database/database-linter?lint=0008_rls_enabled_no_policy) · [Supabase: authenticated SECURITY DEFINER review](https://supabase.com/docs/guides/database/database-linter?lint=0029_authenticated_security_definer_function_executable) · [Supabase: leaked-password protection](https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection)
+## Technical references
+- MDN, paste events: https://developer.mozilla.org/en-US/docs/Web/API/Element/paste_event
+- MDN, boundary whitespace: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/trim
+- These explain browser event/whitespace behavior. Claims about Black Flag itself come from its source, the recorded read-only preflight and the attached regression runs.
 
-## Upload and recovery
-Upload the complete extracted folder **contents** to the existing site root. Preserve project data. The new server migration is already installed; do not run the retained historical SQL files. A timeout, cancellation, refresh or lost response calls for read/reconciliation of the preserved operation, never automatic reissue. Original source history is retained in the baseline ZIP and release history. Do not roll back the server operation guards to resume Crosscheck's client receipt writes.
+## Preservation inventory
+
+All **100 baseline filenames** are retained; **16 original image assets** and all existing SQL files are byte-for-byte unchanged. This ZIP contains 105 files. New files: FIELD_WHITESPACE_POLICY.json, STEADYHAND_TEST_EVIDENCE.json, VERIFY_STEADYHAND.cjs, VERIFY_STEADYHAND_UI.py, input_hygiene.js.

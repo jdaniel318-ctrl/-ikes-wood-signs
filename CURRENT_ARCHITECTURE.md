@@ -1,3 +1,9 @@
+# Current delta: SteadyHand 8.8.20.31 TEST
+
+The inherited Ironbound server-first commissioning protocol and actual database authority contracts are unchanged. A new input_hygiene.js module is hash-verified and executed before Engine form code; owner.html loads that same versioned helper before its Captain handlers. Standalone Captain startup fails closed if the helper's release does not match.
+
+Field cleanup is opt-in for reviewed ordinary controls; passwords, PINs, production wording, raw/readonly content and unknown fields are preserved. Report confirmation uses exact canonical payload agreement plus a separate read of the same report. Admiral lifecycle, report age, ownership and operating model are separate presentation facts. No stored record, membership or server function is migrated by this release.
+
 # Current test architecture — 8.8.20.30
 Fleet Core is commissioning authority. Server-first protocol v1, introduced in 8.8.20.29, persists a saved voyage, freezes a distinct prepared operation, atomically writes vessel/blueprint/audit/receipt and requires independent canonical read-back. The browser is only a best-effort presentation cache. Automatic retry remains forbidden.
 

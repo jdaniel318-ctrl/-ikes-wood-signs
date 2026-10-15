@@ -1,9 +1,9 @@
 {
-  "release": "Ironbound TEST",
-  "name": "Ironbound TEST",
-  "build": "8.8.20.30",
-  "seal": "ironbound-882030",
-  "file_count": 100,
+  "release": "SteadyHand TEST",
+  "name": "SteadyHand TEST",
+  "build": "8.8.20.31",
+  "seal": "steadyhand-882031",
+  "file_count": 105,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
     "ADMIRAL_RELEASE_DOCTRINE.json",
@@ -18,6 +18,7 @@
     "DOCK_SOURCE_TRACE_MODEL.json",
     "EVIDENCE_RECONCILIATION_MODEL.json",
     "FEATURE_ENTITLEMENT_MODEL_870.json",
+    "FIELD_WHITESPACE_POLICY.json",
     "FLEET_COMMAND_MODEL.json",
     "FLEET_DOCTRINE_REGISTRY.json",
     "FLEET_INTELLIGENCE_MODEL.json",
@@ -63,6 +64,7 @@
     "RUNTIME_ENTRY_TRACE_MODEL.json",
     "SHA256SUMS.txt",
     "STAGE_CHECKPOINT_PROOF_882020.json",
+    "STEADYHAND_TEST_EVIDENCE.json",
     "STORAGE_SAFE_PROOF_BUS_MODEL.json",
     "SUPABASE_ADMIRAL_COMMISSIONING_886.sql",
     "SUPABASE_IRONBOUND_882029.sql",
@@ -73,6 +75,8 @@
     "VERIFY_IRONBOUND.cjs",
     "VERIFY_IRONBOUND.sql",
     "VERIFY_IRONBOUND_UI.py",
+    "VERIFY_STEADYHAND.cjs",
+    "VERIFY_STEADYHAND_UI.py",
     "WITNESS_TRUTH_MODEL.json",
     "admirals_deck_ceremonial_v640.png",
     "app.js",
@@ -94,6 +98,7 @@
     "ike_style_registry.js",
     "ikes_real_sign_lettering_reference.jpg",
     "index.html",
+    "input_hygiene.js",
     "ledger_integrity.js",
     "manifest.webmanifest",
     "owner.html",
@@ -106,5 +111,5 @@
     "styles.css",
     "sw.js"
   ],
-  "releaseName": "Ironbound TEST"
+  "releaseName": "SteadyHand TEST"
 }

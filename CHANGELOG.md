@@ -1,3 +1,14 @@
+# 8.8.20.31 — SteadyHand TEST
+
+- Shared, field-aware visible paste/validation cleanup; 139 ordinary and 44 explicitly protected input instances inventoried.
+- Reproduced and repaired padded-report false failure; exact summary/count/identity and independent report-ID/content verification retained and strengthened.
+- Explicit read-only recovery; no command replay; double-tap and late-sign-out regressions.
+- Distinct vessel lifecycle/report freshness/ownership/operating model and two separate timestamps in Admiral details; mobile wrapping repaired.
+- UI/adapter build labels aligned; historical contracts, images, SQL and all baseline filenames retained.
+- 36 Node checks and 25 isolated browser scenarios passed; native/hosted acceptance remains pending. No live database writes.
+
+## Prior release history (unchanged below)
+
 # 8.8.20.30 — Ironbound TEST
 - Added explicit saved-brief no-photo correction on Step 7, exact server read-back and hold after a lost acknowledgement.
 - Preserved original draft/plan evidence and every retired operation; no automatic preparation or commissioning.

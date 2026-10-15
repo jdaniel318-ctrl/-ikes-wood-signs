@@ -1,3 +1,11 @@
+# SteadyHand 8.8.20.31 acceptance boundary
+
+TEST BUILD only. Fresh offline checks: 20 new Node + 16 inherited Node; 19 new browser scenarios + 6 inherited commissioning browser scenarios. Native Safari, complete hosted startup and current-build on-device acceptance are pending. No production launch certification, direct backend security audit, live revocation test or complete working-business handoff is claimed.
+
+Preserve the working VoyageKeeper and its account/appointment/report. Install by replacing the matching frontend files only. Do not execute SQL or replay commissioning. See TEST_BUILD_REPORT.md.
+
+<details><summary>Historical release acceptance record — retained, not current acceptance</summary>
+
 # Crosscheck 8.8.20.28 — current acceptance scope
 
 Crosscheck is a client test candidate for the recovered-voyage authorization path. It preserves IronLatch recovery disclosure behavior and changes the unverified recovered-voyage primary action to **VERIFY ADMIRAL & RESUME**.
@@ -13,3 +21,5 @@ A recovered voyage may clear its hold only after the existing Admiral gate succe
 
 ## 8.8.20.28 — Crosscheck
 Verified recovered voyages now enter 06 · Review deterministically from Continue Voyage. Entering Review is navigation-only: no commission, publication, owner handoff, or Fleet Core mutation is issued. Review carries the exact recovered voyage identity and SERVER SAFE / NOT PUBLISHED truth.
+
+</details>

@@ -1,0 +1,1122 @@
+{
+  "schema": "black-flag-field-whitespace-policy-v1",
+  "build": "8.8.20.31",
+  "default": "preserve unknown inputs",
+  "normalization": "ECMAScript trim on ordinary field boundaries only; internal text, case and line formatting retained",
+  "sql_contract": "Existing PostgreSQL publisher trims ASCII boundary spaces; browser submits canonical whitespace-free boundaries. Reply and independent read compared exactly; only null versus empty issue summary is equivalent. No SQL changes.",
+  "triggers": [
+    "user paste",
+    "autofill replacement input",
+    "user blur/change",
+    "before user submit/button handler reads edited fields"
+  ],
+  "protected": [
+    "passwords and PINs",
+    "tokens and secrets",
+    "sign-production wording and exact exemplars",
+    "raw import/code fields",
+    "readonly/disabled values",
+    "stored records not being edited"
+  ],
+  "direct_side_effects": "No network, storage, authority, submit/change/click dispatch or automatic retry in helper",
+  "field_instances": [
+    {
+      "file": "index.html",
+      "id": "darkSkyAdmiralRecoveryPassword",
+      "mode": "preserve",
+      "tag": "<input id=\"darkSkyAdmiralRecoveryPassword\" type=\"password\" autocomplete=\"new-password\" minlength=\"10\" />"
+    },
+    {
+      "file": "index.html",
+      "id": "darkSkyAdmiralRecoveryConfirm",
+      "mode": "preserve",
+      "tag": "<input id=\"darkSkyAdmiralRecoveryConfirm\" type=\"password\" autocomplete=\"new-password\" minlength=\"10\" />"
+    },
+    {
+      "file": "index.html",
+      "id": "darkSkyAdmiralRecoveryEmail",
+      "mode": "boundary",
+      "tag": "<input id=\"darkSkyAdmiralRecoveryEmail\" type=\"email\" autocomplete=\"username\" placeholder=\"Dedicated Admiral email\" />"
+    },
+    {
+      "file": "index.html",
+      "id": "blackFlagEntryPin",
+      "mode": "preserve",
+      "tag": "<input id=\"blackFlagEntryPin\" class=\"bf-pin-input\" type=\"password\" inputmode=\"numeric\" maxlength=\"8\" autocomplete=\"one-time-code\" autocorrect=\"off\" autocapitalize=\"none\" spellcheck=\"false\" />"
+    },
+    {
+      "file": "index.html",
+      "id": "captainPinInput",
+      "mode": "preserve",
+      "tag": "<input id=\"captainPinInput\" type=\"password\" inputmode=\"numeric\" maxlength=\"8\" autocomplete=\"one-time-code\" autocorrect=\"off\" autocapitalize=\"none\" spellcheck=\"false\" />"
+    },
+    {
+      "file": "index.html",
+      "id": "testAccessEnginePin",
+      "mode": "preserve",
+      "tag": "<input id=\"testAccessEnginePin\" type=\"password\" inputmode=\"numeric\" maxlength=\"8\" autocomplete=\"off\">"
+    },
+    {
+      "file": "index.html",
+      "id": "testAccessCaptainPin",
+      "mode": "preserve",
+      "tag": "<input id=\"testAccessCaptainPin\" type=\"password\" inputmode=\"numeric\" maxlength=\"8\" autocomplete=\"off\">"
+    },
+    {
+      "file": "index.html",
+      "id": "ikeWordingInput",
+      "mode": "preserve",
+      "tag": "<input id=\"ikeWordingInput\" class=\"text-input big\" maxlength=\"60\" autocomplete=\"off\" autocorrect=\"off\" autocapitalize=\"off\" spellcheck=\"false\" inputmode=\"text\" enterkeyhint=\"done\" />"
+    },
+    {
+      "file": "index.html",
+      "id": "wordingInput",
+      "mode": "preserve",
+      "tag": "<input id=\"wordingInput\" class=\"text-input big\" value=\"Smoke Hole\" maxlength=\"60\" autocomplete=\"off\" autocapitalize=\"none\" spellcheck=\"false\" />"
+    },
+    {
+      "file": "index.html",
+      "id": "customerName",
+      "mode": "boundary",
+      "tag": "<input id=\"customerName\" class=\"text-input\" autocomplete=\"name\" />"
+    },
+    {
+      "file": "index.html",
+      "id": "customerPhone",
+      "mode": "boundary",
+      "tag": "<input id=\"customerPhone\" class=\"text-input\" type=\"tel\" autocomplete=\"tel\" inputmode=\"tel\" />"
+    },
+    {
+      "file": "index.html",
+      "id": "customerEmail",
+      "mode": "boundary",
+      "tag": "<input id=\"customerEmail\" class=\"text-input\" type=\"email\" autocomplete=\"email\" inputmode=\"email\" />"
+    },
+    {
+      "file": "index.html",
+      "id": "adminPinInput",
+      "mode": "preserve",
+      "tag": "<input id=\"adminPinInput\" class=\"text-input pin-input\" type=\"password\" inputmode=\"numeric\" maxlength=\"8\" autocomplete=\"off\" />"
+    },
+    {
+      "file": "index.html",
+      "id": "mugsMessage",
+      "mode": "preserve",
+      "tag": "<textarea id=\"mugsMessage\" class=\"mugs-input\" maxlength=\"32\" rows=\"3\" placeholder=\"Your Message\">"
+    },
+    {
+      "file": "index.html",
+      "id": "mugsCustomerName",
+      "mode": "boundary",
+      "tag": "<input id=\"mugsCustomerName\" class=\"mugs-input\" autocomplete=\"name\">"
+    },
+    {
+      "file": "index.html",
+      "id": "mugsCustomerPhone",
+      "mode": "boundary",
+      "tag": "<input id=\"mugsCustomerPhone\" class=\"mugs-input\" type=\"tel\" autocomplete=\"tel\">"
+    },
+    {
+      "file": "index.html",
+      "id": "mugsCustomerEmail",
+      "mode": "boundary",
+      "tag": "<input id=\"mugsCustomerEmail\" class=\"mugs-input\" type=\"email\" autocomplete=\"email\">"
+    },
+    {
+      "file": "index.html",
+      "id": "flowersMessage",
+      "mode": "preserve",
+      "tag": "<textarea id=\"flowersMessage\" class=\"mugs-input flowers-message-input\" maxlength=\"120\" rows=\"4\" placeholder=\"Your Message\">"
+    },
+    {
+      "file": "index.html",
+      "id": "flowersCustomerName",
+      "mode": "boundary",
+      "tag": "<input id=\"flowersCustomerName\" class=\"mugs-input\" autocomplete=\"name\">"
+    },
+    {
+      "file": "index.html",
+      "id": "flowersCustomerPhone",
+      "mode": "boundary",
+      "tag": "<input id=\"flowersCustomerPhone\" class=\"mugs-input\" type=\"tel\" autocomplete=\"tel\">"
+    },
+    {
+      "file": "index.html",
+      "id": "flowersCustomerEmail",
+      "mode": "boundary",
+      "tag": "<input id=\"flowersCustomerEmail\" class=\"mugs-input\" type=\"email\" autocomplete=\"email\">"
+    },
+    {
+      "file": "index.html",
+      "id": "businessNameSetting",
+      "mode": "boundary",
+      "tag": "<input id=\"businessNameSetting\" class=\"text-input\" type=\"text\">"
+    },
+    {
+      "file": "index.html",
+      "id": "orderPrefixSetting",
+      "mode": "boundary",
+      "tag": "<input id=\"orderPrefixSetting\" class=\"text-input\" type=\"text\" maxlength=\"8\">"
+    },
+    {
+      "file": "index.html",
+      "id": "thankYouSetting",
+      "mode": "boundary",
+      "tag": "<input id=\"thankYouSetting\" class=\"text-input\" type=\"text\">"
+    },
+    {
+      "file": "index.html",
+      "id": "priceChoicesSetting",
+      "mode": "boundary",
+      "tag": "<input id=\"priceChoicesSetting\" class=\"text-input\" type=\"text\" placeholder=\"45,55,65,90,135\">"
+    },
+    {
+      "file": "index.html",
+      "id": "newAdminPin",
+      "mode": "preserve",
+      "tag": "<input id=\"newAdminPin\" class=\"text-input\" type=\"password\" inputmode=\"numeric\" maxlength=\"8\" placeholder=\"Enter a new PIN\" />"
+    },
+    {
+      "file": "index.html",
+      "id": "confirmAdminPin",
+      "mode": "preserve",
+      "tag": "<input id=\"confirmAdminPin\" class=\"text-input\" type=\"password\" inputmode=\"numeric\" maxlength=\"8\" placeholder=\"Re-enter the new PIN\" />"
+    },
+    {
+      "file": "index.html",
+      "id": "adminContactName",
+      "mode": "boundary",
+      "tag": "<input id=\"adminContactName\" class=\"text-input\" type=\"text\">"
+    },
+    {
+      "file": "index.html",
+      "id": "adminBusinessPhone",
+      "mode": "boundary",
+      "tag": "<input id=\"adminBusinessPhone\" class=\"text-input\" type=\"tel\">"
+    },
+    {
+      "file": "index.html",
+      "id": "adminBusinessEmail",
+      "mode": "boundary",
+      "tag": "<input id=\"adminBusinessEmail\" class=\"text-input\" type=\"email\">"
+    },
+    {
+      "file": "index.html",
+      "id": "adminBusinessAddress",
+      "mode": "boundary",
+      "tag": "<input id=\"adminBusinessAddress\" class=\"text-input\" type=\"text\">"
+    },
+    {
+      "file": "index.html",
+      "id": "adminCurrentPinChange",
+      "mode": "preserve",
+      "tag": "<input id=\"adminCurrentPinChange\" class=\"text-input pin-input\" type=\"password\" inputmode=\"numeric\" autocomplete=\"off\">"
+    },
+    {
+      "file": "index.html",
+      "id": "adminNewPinChange",
+      "mode": "preserve",
+      "tag": "<input id=\"adminNewPinChange\" class=\"text-input pin-input\" type=\"password\" inputmode=\"numeric\" autocomplete=\"off\">"
+    },
+    {
+      "file": "index.html",
+      "id": "adminConfirmPinChange",
+      "mode": "preserve",
+      "tag": "<input id=\"adminConfirmPinChange\" class=\"text-input pin-input\" type=\"password\" inputmode=\"numeric\" autocomplete=\"off\">"
+    },
+    {
+      "file": "index.html",
+      "id": "enginePinInput",
+      "mode": "preserve",
+      "tag": "<input id=\"enginePinInput\" class=\"text-input pin-input\" type=\"password\" inputmode=\"numeric\" maxlength=\"8\" autocomplete=\"one-time-code\" autocorrect=\"off\" autocapitalize=\"none\" spellcheck=\"false\" />"
+    },
+    {
+      "file": "index.html",
+      "id": "fleetDockSearch",
+      "mode": "boundary",
+      "tag": "<input id=\"fleetDockSearch\" type=\"search\" placeholder=\"Search vessels…\" autocomplete=\"off\">"
+    },
+    {
+      "file": "index.html",
+      "id": "engineFleetSearch",
+      "mode": "boundary",
+      "tag": "<input id=\"engineFleetSearch\" type=\"search\" placeholder=\"Search projects…\" autocomplete=\"off\" />"
+    },
+    {
+      "file": "index.html",
+      "id": "engineStatusesSetting",
+      "mode": "boundary",
+      "tag": "<textarea id=\"engineStatusesSetting\" rows=\"4\">"
+    },
+    {
+      "file": "index.html",
+      "id": "engineNameSetting",
+      "mode": "boundary",
+      "tag": "<input id=\"engineNameSetting\" class=\"text-input\" type=\"text\" value=\"Workshop Engine\" />"
+    },
+    {
+      "file": "index.html",
+      "id": "engineResetPinInput",
+      "mode": "preserve",
+      "tag": "<input id=\"engineResetPinInput\" class=\"text-input pin-input\" type=\"password\" inputmode=\"numeric\" maxlength=\"8\" autocomplete=\"off\" />"
+    },
+    {
+      "file": "owner.html",
+      "id": "loginUser",
+      "mode": "boundary",
+      "tag": "<input id=\"loginUser\" type=\"email\" autocomplete=\"email\" inputmode=\"email\">"
+    },
+    {
+      "file": "owner.html",
+      "id": "loginPass",
+      "mode": "preserve",
+      "tag": "<input id=\"loginPass\" type=\"password\" autocomplete=\"current-password\">"
+    },
+    {
+      "file": "owner.html",
+      "id": "newPassword",
+      "mode": "preserve",
+      "tag": "<input id=\"newPassword\" type=\"password\" autocomplete=\"new-password\">"
+    },
+    {
+      "file": "owner.html",
+      "id": "confirmPassword",
+      "mode": "preserve",
+      "tag": "<input id=\"confirmPassword\" type=\"password\" autocomplete=\"new-password\">"
+    },
+    {
+      "file": "owner.html",
+      "id": "recoveryLogin",
+      "mode": "boundary",
+      "tag": "<input id=\"recoveryLogin\" type=\"text\" autocomplete=\"username\">"
+    },
+    {
+      "file": "owner.html",
+      "id": "recoveryPin",
+      "mode": "preserve",
+      "tag": "<input id=\"recoveryPin\" type=\"password\" inputmode=\"numeric\" autocomplete=\"one-time-code\">"
+    },
+    {
+      "file": "owner.html",
+      "id": "localNewPassword",
+      "mode": "preserve",
+      "tag": "<input id=\"localNewPassword\" type=\"password\" autocomplete=\"new-password\">"
+    },
+    {
+      "file": "owner.html",
+      "id": "localConfirmPassword",
+      "mode": "preserve",
+      "tag": "<input id=\"localConfirmPassword\" type=\"password\" autocomplete=\"new-password\">"
+    },
+    {
+      "file": "owner.html",
+      "id": "captainLoginEmail",
+      "mode": "boundary",
+      "tag": "<input id=\"captainLoginEmail\" type=\"email\" inputmode=\"email\" autocomplete=\"username\" autocapitalize=\"none\" spellcheck=\"false\" placeholder=\"Captain account email\" required>"
+    },
+    {
+      "file": "owner.html",
+      "id": "captainLoginPassword",
+      "mode": "preserve",
+      "tag": "<input id=\"captainLoginPassword\" type=\"password\" autocomplete=\"current-password\" placeholder=\"Fleet account password\" required>"
+    },
+    {
+      "file": "owner.html",
+      "id": "captainWatchWork",
+      "mode": "boundary",
+      "tag": "<textarea id=\"captainWatchWork\" maxlength=\"160\" rows=\"2\">"
+    },
+    {
+      "file": "owner.html",
+      "id": "captainWatchSummary",
+      "mode": "boundary",
+      "tag": "<textarea id=\"captainWatchSummary\" maxlength=\"500\">"
+    },
+    {
+      "file": "owner.html",
+      "id": "(attribute-scoped)",
+      "mode": "boundary",
+      "tag": "<input data-edit-title=\"${esc(r.id)}\" value=\"${esc(r.title||'')}\" aria-label=\"evidence title\">"
+    },
+    {
+      "file": "owner.html",
+      "id": "(attribute-scoped)",
+      "mode": "preserve",
+      "tag": "<input data-edit-text=\"${esc(r.id)}\" value=\"${esc(r.sampleText||'')}\" aria-label=\"exact wording\">"
+    },
+    {
+      "file": "owner.html",
+      "id": "watchCurrentWork",
+      "mode": "boundary",
+      "tag": "<input id=\"watchCurrentWork\" required minlength=\"3\" maxlength=\"160\" value=\"${esc(record?.current_work||'')}\" placeholder=\"Required: what is the business working on now?\">"
+    },
+    {
+      "file": "owner.html",
+      "id": "watchIssueSummary",
+      "mode": "boundary",
+      "tag": "<textarea id=\"watchIssueSummary\" maxlength=\"500\" placeholder=\"Name blockers or leave blank when there are none.\">"
+    },
+    {
+      "file": "owner.html",
+      "id": "brandName",
+      "mode": "boundary",
+      "tag": "<input id=\"brandName\" value=\"${esc(project.name||'')}\">"
+    },
+    {
+      "file": "owner.html",
+      "id": "brandSub",
+      "mode": "boundary",
+      "tag": "<input id=\"brandSub\" value=\"${esc(project.branding?.subtitle||'')}\">"
+    },
+    {
+      "file": "owner.html",
+      "id": "sfGraphicName",
+      "mode": "boundary",
+      "tag": "<input id=\"sfGraphicName\" placeholder=\"Example: Cabin Serif\">"
+    },
+    {
+      "file": "owner.html",
+      "id": "sfGraphicText",
+      "mode": "preserve",
+      "tag": "<input id=\"sfGraphicText\" placeholder=\"Type exactly what the graphic shows\">"
+    },
+    {
+      "file": "owner.html",
+      "id": "sfNewName",
+      "mode": "boundary",
+      "tag": "<input id=\"sfNewName\" placeholder=\"Example: Rustic Script\">"
+    },
+    {
+      "file": "owner.html",
+      "id": "sfNewSample",
+      "mode": "preserve",
+      "tag": "<input id=\"sfNewSample\" placeholder=\"Example wording\">"
+    },
+    {
+      "file": "owner.html",
+      "id": "sfText",
+      "mode": "preserve",
+      "tag": "<input id=\"sfText\" placeholder=\"Type exactly what appears in the photo\">"
+    },
+    {
+      "file": "owner.html",
+      "id": "sfTitle",
+      "mode": "boundary",
+      "tag": "<input id=\"sfTitle\" placeholder=\"Finished sign example\">"
+    },
+    {
+      "file": "app.js",
+      "id": "clientPreviewUnlockPin",
+      "mode": "preserve",
+      "tag": "<input id=\"clientPreviewUnlockPin\" type=\"password\" inputmode=\"numeric\" autocomplete=\"off\" maxlength=\"10\" placeholder=\"Preview PIN\">"
+    },
+    {
+      "file": "app.js",
+      "id": "ownerLoginEmail",
+      "mode": "boundary",
+      "tag": "<input id=\"ownerLoginEmail\" type=\"text\" autocomplete=\"username\" value=\"${escapeHtml(p.ownerAccess.credential?.testMode?'joe':(p.ownerAccess.ownerEmail||''))}\">"
+    },
+    {
+      "file": "app.js",
+      "id": "ownerLoginPassword",
+      "mode": "preserve",
+      "tag": "<input id=\"ownerLoginPassword\" type=\"password\" autocomplete=\"current-password\">"
+    },
+    {
+      "file": "app.js",
+      "id": "hhFieldJob",
+      "mode": "boundary",
+      "tag": "<input id=\"hhFieldJob\" value=\"${escapeHtml(d.job||'')}\" placeholder=\"Address or job name\">"
+    },
+    {
+      "file": "app.js",
+      "id": "ownerAccessName",
+      "mode": "boundary",
+      "tag": "<input id=\"ownerAccessName\" value=\"${escapeHtml(oa.ownerName||'')}\" placeholder=\"Business owner\" ${(oa.ownerName||oa.ownerEmail)?'readonly':''}>"
+    },
+    {
+      "file": "app.js",
+      "id": "ownerAccessEmail",
+      "mode": "boundary",
+      "tag": "<input id=\"ownerAccessEmail\" type=\"email\" value=\"${escapeHtml(oa.ownerEmail||'')}\" placeholder=\"owner@example.com\" ${(oa.ownerName||oa.ownerEmail)?'readonly':''}>"
+    },
+    {
+      "file": "app.js",
+      "id": "ptBusinessBrief",
+      "mode": "boundary",
+      "tag": "<textarea id=\"ptBusinessBrief\" rows=\"9\" maxlength=\"12000\" placeholder=\"What does this business do? What does it sell or provide? How should customers interact with it? How is work fulfilled? What information, scheduling, photos, approvals, "
+    },
+    {
+      "file": "app.js",
+      "id": "ptOperatingFulfillment",
+      "mode": "boundary",
+      "tag": "<input id=\"ptOperatingFulfillment\" class=\"text-input\" value=\"${escapeHtml((operating.fulfillment||[]).join(', '))}\" placeholder=\"pickup, delivery, shipping, on-site\">"
+    },
+    {
+      "file": "app.js",
+      "id": "ptWorkflow",
+      "mode": "boundary",
+      "tag": "<textarea id=\"ptWorkflow\" rows=\"8\">"
+    },
+    {
+      "file": "app.js",
+      "id": "newDeploymentName",
+      "mode": "boundary",
+      "tag": "<input id=\"newDeploymentName\" class=\"text-input\" autocomplete=\"off\" placeholder=\"Example: Lemonade Stand — Front Counter\">"
+    },
+    {
+      "file": "app.js",
+      "id": "deployName",
+      "mode": "boundary",
+      "tag": "<input id=\"deployName\" class=\"text-input\" value=\"${escapeHtml(d.name)}\">"
+    },
+    {
+      "file": "app.js",
+      "id": "deployAttractTitle",
+      "mode": "boundary",
+      "tag": "<input id=\"deployAttractTitle\" class=\"text-input\" value=\"${escapeHtml(d.attractTitle||'Ready when you are.')}\" />"
+    },
+    {
+      "file": "app.js",
+      "id": "deploymentLaunchOfferName",
+      "mode": "boundary",
+      "tag": "<input id=\"deploymentLaunchOfferName\" class=\"text-input\" placeholder=\"e.g., Fresh Lemonade\">"
+    },
+    {
+      "file": "app.js",
+      "id": "commissionWebsiteUrl",
+      "mode": "boundary",
+      "tag": "<input id=\"commissionWebsiteUrl\" inputmode=\"url\" autocomplete=\"url\" value=\"${escapeHtml(d.sourceWebsite||'')}\" placeholder=\"https://yourbusiness.com\">"
+    },
+    {
+      "file": "app.js",
+      "id": "(attribute-scoped)",
+      "mode": "boundary",
+      "tag": "<input data-cfield=\"name\" value=\"${escapeHtml(d.name)}\" placeholder=\"Example Company\">"
+    },
+    {
+      "file": "app.js",
+      "id": "(attribute-scoped)",
+      "mode": "boundary",
+      "tag": "<input data-cfield=\"projectCode\" value=\"${escapeHtml(d.projectCode)}\" placeholder=\"Assigned automatically\">"
+    },
+    {
+      "file": "app.js",
+      "id": "(attribute-scoped)",
+      "mode": "boundary",
+      "tag": "<input data-cfield=\"ownerName\" value=\"${escapeHtml(d.ownerName)}\" placeholder=\"Business owner\">"
+    },
+    {
+      "file": "app.js",
+      "id": "(attribute-scoped)",
+      "mode": "boundary",
+      "tag": "<input data-cfield=\"ownerEmail\" value=\"${escapeHtml(d.ownerEmail)}\" placeholder=\"owner@example.com\">"
+    },
+    {
+      "file": "app.js",
+      "id": "(attribute-scoped)",
+      "mode": "boundary",
+      "tag": "<textarea data-cfield=\"businessBrief\" rows=\"9\" maxlength=\"12000\" placeholder=\"Tell Dark Sky what the business does, what it sells or provides, how customers should interact with it, how work is fulfilled, whether scheduling matters, what in"
+    },
+    {
+      "file": "app.js",
+      "id": "(attribute-scoped)",
+      "mode": "boundary",
+      "tag": "<input data-cfield=\"primaryOffer\" value=\"${escapeHtml(d.primaryOffer)}\" placeholder=\"What customers request or buy\">"
+    },
+    {
+      "file": "app.js",
+      "id": "(attribute-scoped)",
+      "mode": "boundary",
+      "tag": "<input data-cfield=\"commissioningPartnerName\" value=\"${escapeHtml(d.commissioningPartnerName||'')}\" placeholder=\"Optional support contact\">"
+    },
+    {
+      "file": "app.js",
+      "id": "hhAddress",
+      "mode": "boundary",
+      "tag": "<input id=\"hhAddress\" class=\"universal-input\" value=\"${escapeHtml(universalCustomerState.serviceAddress||'')}\" placeholder=\"Street address, city, state ZIP\">"
+    },
+    {
+      "file": "app.js",
+      "id": "universalNotes",
+      "mode": "boundary",
+      "tag": "<textarea id=\"universalNotes\" class=\"universal-input\" rows=\"5\" placeholder=\"Existing materials, damage, planned replacement, additions, unusual areas…\">"
+    },
+    {
+      "file": "app.js",
+      "id": "universalCustomerName",
+      "mode": "boundary",
+      "tag": "<input id=\"universalCustomerName\" class=\"universal-input\" value=\"${escapeHtml(universalCustomerState.customerName||'')}\">"
+    },
+    {
+      "file": "app.js",
+      "id": "universalCustomerPhone",
+      "mode": "boundary",
+      "tag": "<input id=\"universalCustomerPhone\" class=\"universal-input\" type=\"tel\" value=\"${escapeHtml(universalCustomerState.customerPhone||'')}\">"
+    },
+    {
+      "file": "app.js",
+      "id": "universalCustomerEmail",
+      "mode": "boundary",
+      "tag": "<input id=\"universalCustomerEmail\" class=\"universal-input\" type=\"email\" value=\"${escapeHtml(universalCustomerState.customerEmail||'')}\">"
+    },
+    {
+      "file": "app.js",
+      "id": "plumbingServiceAddress",
+      "mode": "boundary",
+      "tag": "<input id=\"plumbingServiceAddress\" class=\"universal-input\" autocomplete=\"street-address\" value=\"${escapeHtml(universalCustomerState.serviceAddress||'')}\" placeholder=\"Street address, city, state ZIP\">"
+    },
+    {
+      "file": "app.js",
+      "id": "universalNotes",
+      "mode": "boundary",
+      "tag": "<textarea id=\"universalNotes\" class=\"universal-input\" rows=\"6\" placeholder=\"Leak location, symptoms, project scope, what you have already tried, or anything the plumber should know.\">"
+    },
+    {
+      "file": "app.js",
+      "id": "universalPreferredTiming",
+      "mode": "boundary",
+      "tag": "<input id=\"universalPreferredTiming\" class=\"universal-input\" value=\"${escapeHtml(universalCustomerState.preferredTiming||'')}\" placeholder=\"Example: Tuesday morning or next available\">"
+    },
+    {
+      "file": "app.js",
+      "id": "plumbingCallbackTime",
+      "mode": "boundary",
+      "tag": "<input id=\"plumbingCallbackTime\" class=\"universal-input\" value=\"${escapeHtml(universalCustomerState.callbackTime||'')}\" placeholder=\"Example: 9–11 AM\">"
+    },
+    {
+      "file": "app.js",
+      "id": "universalCustomerName",
+      "mode": "boundary",
+      "tag": "<input id=\"universalCustomerName\" class=\"universal-input\" autocomplete=\"name\" value=\"${escapeHtml(universalCustomerState.customerName)}\">"
+    },
+    {
+      "file": "app.js",
+      "id": "universalCustomerPhone",
+      "mode": "boundary",
+      "tag": "<input id=\"universalCustomerPhone\" class=\"universal-input\" type=\"tel\" autocomplete=\"tel\" value=\"${escapeHtml(universalCustomerState.customerPhone)}\">"
+    },
+    {
+      "file": "app.js",
+      "id": "universalCustomerEmail",
+      "mode": "boundary",
+      "tag": "<input id=\"universalCustomerEmail\" class=\"universal-input\" type=\"email\" autocomplete=\"email\" value=\"${escapeHtml(universalCustomerState.customerEmail)}\">"
+    },
+    {
+      "file": "app.js",
+      "id": "universalNotes",
+      "mode": "boundary",
+      "tag": "<textarea id=\"universalNotes\" class=\"universal-input\" rows=\"5\" maxlength=\"${Math.max(1000,Number(p.characterLimit||500))}\" placeholder=\"${escapeHtml(detailPlaceholder)}\">"
+    },
+    {
+      "file": "app.js",
+      "id": "universalPreferredTiming",
+      "mode": "boundary",
+      "tag": "<input id=\"universalPreferredTiming\" class=\"universal-input\" value=\"${escapeHtml(universalCustomerState.preferredTiming)}\" placeholder=\"When would you like this?\">"
+    },
+    {
+      "file": "app.js",
+      "id": "universalCustomerName",
+      "mode": "boundary",
+      "tag": "<input id=\"universalCustomerName\" class=\"universal-input\" autocomplete=\"name\" value=\"${escapeHtml(universalCustomerState.customerName)}\">"
+    },
+    {
+      "file": "app.js",
+      "id": "universalCustomerPhone",
+      "mode": "boundary",
+      "tag": "<input id=\"universalCustomerPhone\" class=\"universal-input\" type=\"tel\" autocomplete=\"tel\" value=\"${escapeHtml(universalCustomerState.customerPhone)}\">"
+    },
+    {
+      "file": "app.js",
+      "id": "universalCustomerEmail",
+      "mode": "boundary",
+      "tag": "<input id=\"universalCustomerEmail\" class=\"universal-input\" type=\"email\" autocomplete=\"email\" value=\"${escapeHtml(universalCustomerState.customerEmail)}\">"
+    },
+    {
+      "file": "app.js",
+      "id": "borAddress",
+      "mode": "boundary",
+      "tag": "<input id=\"borAddress\" class=\"bor-input\" autocomplete=\"street-address\" value=\"${escapeHtml(borCustomerState.address)}\" placeholder=\"Street address\">"
+    },
+    {
+      "file": "app.js",
+      "id": "borNotes",
+      "mode": "boundary",
+      "tag": "<textarea id=\"borNotes\" class=\"bor-input\" rows=\"3\" placeholder=\"Affected rooms, visible damage, safety concerns…\">"
+    },
+    {
+      "file": "app.js",
+      "id": "borName",
+      "mode": "boundary",
+      "tag": "<input id=\"borName\" class=\"bor-input\" autocomplete=\"name\" value=\"${escapeHtml(borCustomerState.name)}\" placeholder=\"Your name\">"
+    },
+    {
+      "file": "app.js",
+      "id": "borPhone",
+      "mode": "boundary",
+      "tag": "<input id=\"borPhone\" class=\"bor-input\" type=\"tel\" inputmode=\"tel\" autocomplete=\"tel\" value=\"${escapeHtml(borCustomerState.phone)}\" placeholder=\"(804) 555-0123\">"
+    },
+    {
+      "file": "app.js",
+      "id": "borEmail",
+      "mode": "boundary",
+      "tag": "<input id=\"borEmail\" required class=\"bor-input\" type=\"email\" inputmode=\"email\" autocomplete=\"email\" value=\"${escapeHtml(borCustomerState.email)}\" placeholder=\"you@example.com\">"
+    },
+    {
+      "file": "app.js",
+      "id": "(attribute-scoped)",
+      "mode": "boundary",
+      "tag": "<input data-reference-title class=\"text-input\" placeholder=\"Example: RAMJET production alphabet\">"
+    },
+    {
+      "file": "app.js",
+      "id": "(attribute-scoped)",
+      "mode": "preserve",
+      "tag": "<input data-reference-sample-text class=\"text-input\" placeholder=\"Example: Smoke Hole!\">"
+    },
+    {
+      "file": "app.js",
+      "id": "(attribute-scoped)",
+      "mode": "boundary",
+      "tag": "<input data-reference-note class=\"text-input\" placeholder=\"What should Dark Sky learn from this example?\">"
+    },
+    {
+      "file": "app.js",
+      "id": "(attribute-scoped)",
+      "mode": "boundary",
+      "tag": "<input data-owner-product-name=\"${escapeHtml(pr.id)}\" value=\"${escapeHtml(pr.name)}\">"
+    },
+    {
+      "file": "app.js",
+      "id": "ownerPriceChoices",
+      "mode": "boundary",
+      "tag": "<input id=\"ownerPriceChoices\" value=\"${escapeHtml(config.prices.join(', '))}\">"
+    },
+    {
+      "file": "app.js",
+      "id": "ownerBrandName",
+      "mode": "boundary",
+      "tag": "<input id=\"ownerBrandName\" value=\"${escapeHtml(branding.businessName||p.name)}\">"
+    },
+    {
+      "file": "app.js",
+      "id": "ownerBrandSubtitle",
+      "mode": "boundary",
+      "tag": "<input id=\"ownerBrandSubtitle\" value=\"${escapeHtml(branding.subtitle||'')}\">"
+    },
+    {
+      "file": "app.js",
+      "id": "ownerCurrentPassword",
+      "mode": "preserve",
+      "tag": "<input id=\"ownerCurrentPassword\" type=\"password\" autocomplete=\"current-password\">"
+    },
+    {
+      "file": "app.js",
+      "id": "ownerNewPassword",
+      "mode": "preserve",
+      "tag": "<input id=\"ownerNewPassword\" type=\"password\" autocomplete=\"new-password\">"
+    },
+    {
+      "file": "app.js",
+      "id": "ownerConfirmPassword",
+      "mode": "preserve",
+      "tag": "<input id=\"ownerConfirmPassword\" type=\"password\" autocomplete=\"new-password\">"
+    },
+    {
+      "file": "app.js",
+      "id": "(attribute-scoped)",
+      "mode": "preserve",
+      "tag": "<input type=\"password\" disabled>"
+    },
+    {
+      "file": "app.js",
+      "id": "ownerClaimLogin",
+      "mode": "boundary",
+      "tag": "<input id=\"ownerClaimLogin\" type=\"email\" value=\"${escapeHtml(p.ownerAccess.ownerEmail||'')}\" autocomplete=\"username\">"
+    },
+    {
+      "file": "app.js",
+      "id": "ownerClaimPassword",
+      "mode": "preserve",
+      "tag": "<input id=\"ownerClaimPassword\" type=\"password\" value=\"\" autocomplete=\"new-password\" placeholder=\"8+ characters, letter + number\">"
+    },
+    {
+      "file": "captain.js",
+      "id": "watchEmail",
+      "mode": "boundary",
+      "tag": "<input id=\"watchEmail\" type=\"email\" inputmode=\"email\" autocomplete=\"username\" autocapitalize=\"none\" spellcheck=\"false\" placeholder=\"Dedicated Admiral email\" required>"
+    },
+    {
+      "file": "captain.js",
+      "id": "watchPassword",
+      "mode": "preserve",
+      "tag": "<input id=\"watchPassword\" type=\"password\" autocomplete=\"current-password\" placeholder=\"Admiral account password\" required>"
+    },
+    {
+      "file": "captain.js",
+      "id": "watchSearch",
+      "mode": "boundary",
+      "tag": "<input id=\"watchSearch\" type=\"search\" placeholder=\"Vessel name, key, or operating model\">"
+    },
+    {
+      "file": "captain.js",
+      "id": "admiralPinInput",
+      "mode": "preserve",
+      "tag": "<input id=\"admiralPinInput\" type=\"password\" inputmode=\"numeric\" maxlength=\"8\" autocomplete=\"off\" aria-describedby=\"admiralPinError\" />"
+    },
+    {
+      "file": "captain.js",
+      "id": "admiralAirlockEmail",
+      "mode": "boundary",
+      "tag": "<input id=\"admiralAirlockEmail\" type=\"email\" inputmode=\"email\" autocomplete=\"username\" autocapitalize=\"none\" spellcheck=\"false\" placeholder=\"Your Admiral account email\" />"
+    },
+    {
+      "file": "captain.js",
+      "id": "admiralAirlockPassword",
+      "mode": "preserve",
+      "tag": "<input id=\"admiralAirlockPassword\" type=\"password\" autocomplete=\"current-password\" placeholder=\"Your account password\" />"
+    },
+    {
+      "file": "captain.js",
+      "id": "admiralIdentityEmail",
+      "mode": "boundary",
+      "tag": "<input id=\"admiralIdentityEmail\" type=\"email\" inputmode=\"email\" autocapitalize=\"none\" spellcheck=\"false\" autocomplete=\"username\" placeholder=\"Admiral email\">"
+    },
+    {
+      "file": "captain.js",
+      "id": "admiralIdentityPassword",
+      "mode": "preserve",
+      "tag": "<input id=\"admiralIdentityPassword\" type=\"password\" autocomplete=\"current-password\" placeholder=\"Password\">"
+    },
+    {
+      "file": "captain.js",
+      "id": "admiralCourseIntent",
+      "mode": "boundary",
+      "tag": "<input id=\"admiralCourseIntent\" type=\"text\" maxlength=\"500\" placeholder=\"Optional reason for the record\">"
+    },
+    {
+      "file": "captain.js",
+      "id": "admiralCommissioningEmail",
+      "mode": "boundary",
+      "tag": "<input id=\"admiralCommissioningEmail\" type=\"email\" inputmode=\"email\" autocapitalize=\"none\" spellcheck=\"false\" autocomplete=\"username\" placeholder=\"Admiral email\">"
+    },
+    {
+      "file": "captain.js",
+      "id": "admiralCommissioningPassword",
+      "mode": "preserve",
+      "tag": "<input id=\"admiralCommissioningPassword\" type=\"password\" autocomplete=\"current-password\" placeholder=\"Password\">"
+    },
+    {
+      "file": "captain.js",
+      "id": "admiralCommissioningName",
+      "mode": "boundary",
+      "tag": "<input id=\"admiralCommissioningName\" type=\"text\" maxlength=\"80\" value=\"Bootstrap Build\" placeholder=\"Working vessel name\">"
+    },
+    {
+      "file": "captain.js",
+      "id": "admiralCommissioningSummary",
+      "mode": "boundary",
+      "tag": "<input id=\"admiralCommissioningSummary\" type=\"text\" maxlength=\"500\" value=\"Construction scheduling and field coordination\" placeholder=\"What this vessel is being built to do\">"
+    },
+    {
+      "file": "captain.js",
+      "id": "admiralCommissioningProject",
+      "mode": "boundary",
+      "tag": "<input id=\"admiralCommissioningProject\" type=\"text\" maxlength=\"63\" value=\"construction-scheduling-01\" autocapitalize=\"none\" spellcheck=\"false\">"
+    },
+    {
+      "file": "captain.js",
+      "id": "admiralCommissioningNamespace",
+      "mode": "boundary",
+      "tag": "<input id=\"admiralCommissioningNamespace\" type=\"text\" maxlength=\"63\" value=\"construction-scheduling-01\" autocapitalize=\"none\" spellcheck=\"false\">"
+    },
+    {
+      "file": "captain.js",
+      "id": "admiralCommissioningIntent",
+      "mode": "boundary",
+      "tag": "<input id=\"admiralCommissioningIntent\" type=\"text\" maxlength=\"500\" placeholder=\"Optional reason for the record\">"
+    },
+    {
+      "file": "captain.js",
+      "id": "visualForgeName",
+      "mode": "boundary",
+      "tag": "<input id=\"visualForgeName\" type=\"text\" placeholder=\"Name this concept\" />"
+    },
+    {
+      "file": "captain.js",
+      "id": "visualForgeObjective",
+      "mode": "boundary",
+      "tag": "<textarea id=\"visualForgeObjective\" rows=\"5\" placeholder=\"Describe what you want the visual to become, what must work, what must stay isolated, and what the user should be able to do.\">"
+    },
+    {
+      "file": "captain.js",
+      "id": "admiralBrandEmail",
+      "mode": "boundary",
+      "tag": "<input id=\"admiralBrandEmail\" type=\"email\" inputmode=\"email\" autocapitalize=\"none\" spellcheck=\"false\" autocomplete=\"username\" placeholder=\"Admiral email\">"
+    },
+    {
+      "file": "captain.js",
+      "id": "admiralBrandPassword",
+      "mode": "preserve",
+      "tag": "<input id=\"admiralBrandPassword\" type=\"password\" autocomplete=\"current-password\" placeholder=\"Password\">"
+    },
+    {
+      "file": "captain.js",
+      "id": "admiralBrandIntent",
+      "mode": "boundary",
+      "tag": "<input id=\"admiralBrandIntent\" type=\"text\" maxlength=\"500\" placeholder=\"Optional reason for the record\" disabled>"
+    },
+    {
+      "file": "captain.js",
+      "id": "bootstrapScheduleTitle",
+      "mode": "boundary",
+      "tag": "<input id=\"bootstrapScheduleTitle\" maxlength=\"80\" required placeholder=\"Construction task\">"
+    },
+    {
+      "file": "captain.js",
+      "id": "bootstrapScheduleTrade",
+      "mode": "boundary",
+      "tag": "<input id=\"bootstrapScheduleTrade\" maxlength=\"40\" required placeholder=\"Trade or crew\">"
+    },
+    {
+      "file": "captain.js",
+      "id": "bootstrapFleetEmail",
+      "mode": "boundary",
+      "tag": "<input id=\"bootstrapFleetEmail\" type=\"email\" inputmode=\"email\" autocomplete=\"username\" autocapitalize=\"none\" spellcheck=\"false\" placeholder=\"Admiral email\">"
+    },
+    {
+      "file": "captain.js",
+      "id": "bootstrapFleetPassword",
+      "mode": "preserve",
+      "tag": "<input id=\"bootstrapFleetPassword\" type=\"password\" autocomplete=\"current-password\" placeholder=\"Password\">"
+    },
+    {
+      "file": "captain.js",
+      "id": "bootstrapScheduleTitle",
+      "mode": "boundary",
+      "tag": "<input id=\"bootstrapScheduleTitle\" maxlength=\"80\" required placeholder=\"Construction task\">"
+    },
+    {
+      "file": "captain.js",
+      "id": "bootstrapScheduleTrade",
+      "mode": "boundary",
+      "tag": "<input id=\"bootstrapScheduleTrade\" maxlength=\"40\" required placeholder=\"Trade or crew\">"
+    },
+    {
+      "file": "captain.js",
+      "id": "bootstrapScheduleTaskTitle",
+      "mode": "boundary",
+      "tag": "<input id=\"bootstrapScheduleTaskTitle\" maxlength=\"80\" required placeholder=\"Construction task\">"
+    },
+    {
+      "file": "captain.js",
+      "id": "bootstrapScheduleTrade",
+      "mode": "boundary",
+      "tag": "<input id=\"bootstrapScheduleTrade\" maxlength=\"40\" required placeholder=\"Trade or crew\">"
+    },
+    {
+      "file": "captain.js",
+      "id": "captainCargoNote",
+      "mode": "boundary",
+      "tag": "<textarea id=\"captainCargoNote\" placeholder=\"Describe an idea, experiment or reusable capability…\">"
+    },
+    {
+      "file": "captain.js",
+      "id": "captainGovernanceReason",
+      "mode": "boundary",
+      "tag": "<textarea id=\"captainGovernanceReason\" placeholder=\"Required for Suspend or End Relationship…\">"
+    },
+    {
+      "file": "captain.js",
+      "id": "captainCommandSearchInput",
+      "mode": "boundary",
+      "tag": "<input id=\"captainCommandSearchInput\" placeholder=\"Search project, order #, customer, phone, or email\" autocomplete=\"off\" enterkeyhint=\"search\">"
+    },
+    {
+      "file": "captain.js",
+      "id": "captainV4LabBrief",
+      "mode": "boundary",
+      "tag": "<input id=\"captainV4LabBrief\" placeholder=\"What are we trying?\">"
+    },
+    {
+      "file": "captain.js",
+      "id": "captainV4LabObjective",
+      "mode": "boundary",
+      "tag": "<input id=\"captainV4LabObjective\" placeholder=\"What should improve?\">"
+    },
+    {
+      "file": "captain.js",
+      "id": "captainV4LabSuccess",
+      "mode": "boundary",
+      "tag": "<input id=\"captainV4LabSuccess\" placeholder=\"What proves this worked?\">"
+    },
+    {
+      "file": "captain.js",
+      "id": "captainStandingOrderInput",
+      "mode": "boundary",
+      "tag": "<input id=\"captainStandingOrderInput\" placeholder=\"Add a standing order…\" />"
+    },
+    {
+      "file": "captain.js",
+      "id": "captainV4Decision",
+      "mode": "boundary",
+      "tag": "<input id=\"captainV4Decision\" placeholder=\"Record a platform decision…\">"
+    },
+    {
+      "file": "captain.js",
+      "id": "captainV4Rationale",
+      "mode": "boundary",
+      "tag": "<input id=\"captainV4Rationale\" placeholder=\"Rationale / warning…\">"
+    },
+    {
+      "file": "captain.js",
+      "id": "admiralCommissioningRenameName",
+      "mode": "boundary",
+      "tag": "<input id=\"admiralCommissioningRenameName\" type=\"text\" maxlength=\"80\" placeholder=\"New working name\">"
+    },
+    {
+      "file": "captain.js",
+      "id": "authorityLedgerSearch",
+      "mode": "boundary",
+      "tag": "<input id=\"authorityLedgerSearch\" type=\"search\" placeholder=\"Vessel, program, action, intent…\">"
+    },
+    {
+      "file": "captain.js",
+      "id": "harborCaptainEmail",
+      "mode": "boundary",
+      "tag": "<input id=\"harborCaptainEmail\" type=\"email\" required maxlength=\"254\" autocomplete=\"off\" autocapitalize=\"none\" spellcheck=\"false\" placeholder=\"Account you control for this test\">"
+    },
+    {
+      "file": "captain.js",
+      "id": "harborCaptainIntent",
+      "mode": "boundary",
+      "tag": "<textarea id=\"harborCaptainIntent\" rows=\"1\" maxlength=\"500\" placeholder=\"Reason for this exact-vessel appointment\">"
+    },
+    {
+      "file": "captain.js",
+      "id": "harborEvidenceRef",
+      "mode": "boundary",
+      "tag": "<input id=\"harborEvidenceRef\" required minlength=\"8\" maxlength=\"160\" placeholder=\"Reference to evidence you have inspected\">"
+    },
+    {
+      "file": "captain.js",
+      "id": "cg-",
+      "mode": "boundary",
+      "tag": "<input id=\"cg-'+k+'\" data-cg-field=\"'+k+'\" type=\"'+type+'\" maxlength=\"'+FIELDS[k]+'\" '+extra+' autocomplete=\"off\">"
+    },
+    {
+      "file": "captain.js",
+      "id": "cg-",
+      "mode": "boundary",
+      "tag": "<textarea id=\"cg-'+k+'\" data-cg-field=\"'+k+'\" maxlength=\"'+FIELDS[k]+'\" rows=\"'+rows+'\">"
+    },
+    {
+      "file": "captain.js",
+      "id": "cgPlanName",
+      "mode": "boundary",
+      "tag": "<input id=\"cgPlanName\" maxlength=\"180\">"
+    },
+    {
+      "file": "captain.js",
+      "id": "cgPlanKey",
+      "mode": "boundary",
+      "tag": "<input id=\"cgPlanKey\" maxlength=\"63\" autocapitalize=\"none\" spellcheck=\"false\" placeholder=\"new-vessel-key\">"
+    },
+    {
+      "file": "captain.js",
+      "id": "cgEvidenceRef",
+      "mode": "boundary",
+      "tag": "<input id=\"cgEvidenceRef\" maxlength=\"240\" autocomplete=\"off\" placeholder=\"Private envelope or records reference\">"
+    },
+    {
+      "file": "simple_books.js",
+      "id": "authorityLedgerSearch",
+      "mode": "boundary",
+      "tag": "<input id=\"authorityLedgerSearch\" type=\"search\" placeholder=\"Vessel, program, action, intent…\">"
+    },
+    {
+      "file": "simple_books.js",
+      "id": "taxCounterparty",
+      "mode": "boundary",
+      "tag": "<input id=\"taxCounterparty\" maxlength=\"120\" placeholder=\"Customer or vendor\">"
+    },
+    {
+      "file": "simple_books.js",
+      "id": "taxDescription",
+      "mode": "boundary",
+      "tag": "<input id=\"taxDescription\" maxlength=\"300\" required placeholder=\"A short plain-language note\">"
+    },
+    {
+      "file": "simple_books.js",
+      "id": "taxEvidence",
+      "mode": "boundary",
+      "tag": "<input id=\"taxEvidence\" maxlength=\"240\" placeholder=\"Check number, ACH trace, receipt, or safe reference\">"
+    },
+    {
+      "file": "simple_books.js",
+      "id": "(attribute-scoped)",
+      "mode": "boundary",
+      "tag": "<input name=\"evidence_ref\" maxlength=\"240\" value=\"${safe(row.evidence_ref||'')}\" placeholder=\"${safe(referencePlaceholder)}\">"
+    },
+    {
+      "file": "simple_books.js",
+      "id": "(attribute-scoped)",
+      "mode": "boundary",
+      "tag": "<input name=\"counterparty\" maxlength=\"120\" value=\"${safe(row.counterparty||'')}\">"
+    },
+    {
+      "file": "simple_books.js",
+      "id": "(attribute-scoped)",
+      "mode": "boundary",
+      "tag": "<input name=\"description\" maxlength=\"300\" value=\"${safe(row.description)}\">"
+    },
+    {
+      "file": "simple_books.js",
+      "id": "(attribute-scoped)",
+      "mode": "boundary",
+      "tag": "<input name=\"correction_reason\" maxlength=\"240\" placeholder=\"Required when changing details\">"
+    },
+    {
+      "file": "simple_books.js",
+      "id": "approvalAccountant",
+      "mode": "boundary",
+      "tag": "<input id=\"approvalAccountant\" name=\"accountant_name\" maxlength=\"160\" required value=\"${safe(editState.approvalDraft?.accountant_name||'')}\">"
+    },
+    {
+      "file": "simple_books.js",
+      "id": "(attribute-scoped)",
+      "mode": "boundary",
+      "tag": "<input name=\"approval_evidence\" maxlength=\"240\" required placeholder=\"Safe reference to an actual approval message or document\" value=\"${safe(editState.approvalDraft?.evidence_ref||'')}\">"
+    },
+    {
+      "file": "simple_books.js",
+      "id": "correctionPaymentReference",
+      "mode": "boundary",
+      "tag": "<input id=\"correctionPaymentReference\" name=\"evidence_ref\" data-field-label=\"Payment reference\" maxlength=\"240\" value=\"${safe(values.evidence_ref||'')}\" autocapitalize=\"none\" autocorrect=\"off\" spellcheck=\"false\" enterkeyhint=\"next\" aria-des"
+    },
+    {
+      "file": "simple_books.js",
+      "id": "correctionReason",
+      "mode": "boundary",
+      "tag": "<input id=\"correctionReason\" name=\"correction_reason\" data-field-label=\"Reason for correction\" maxlength=\"240\" required minlength=\"3\" placeholder=\"Why are these details changing?\" value=\"${safe(editState.reason)}\" enterkeyhint=\"done\">"
+    },
+    {
+      "file": "simple_books.js",
+      "id": "correctionAmount",
+      "mode": "boundary",
+      "tag": "<input id=\"correctionAmount\" name=\"amount\" data-field-label=\"Amount in dollars\" type=\"text\" inputmode=\"decimal\" maxlength=\"18\" required value=\"${safe(Number(values.amount).toFixed(2))}\" ${unlocked?'':'disabled'} autocomplete=\"off\" autocorre"
+    },
+    {
+      "file": "simple_books.js",
+      "id": "correctionCounterparty",
+      "mode": "boundary",
+      "tag": "<input id=\"correctionCounterparty\" name=\"counterparty\" data-field-label=\"Customer or vendor\" maxlength=\"120\" value=\"${safe(values.counterparty||'')}\" ${unlocked?'':'disabled'}>"
+    },
+    {
+      "file": "simple_books.js",
+      "id": "correctionDescription",
+      "mode": "boundary",
+      "tag": "<input id=\"correctionDescription\" name=\"description\" data-field-label=\"Purpose\" maxlength=\"300\" required value=\"${safe(values.description)}\" ${unlocked?'':'disabled'}>"
+    }
+  ]
+}

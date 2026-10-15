@@ -16188,3 +16188,17 @@ dialog.cg-workspace::backdrop{background:#061c24;}
 .ironbound-proof .prove-grid>div{min-width:0;}
 #commissionNext:disabled{cursor:not-allowed;}
 @media(max-width:650px){.ironbound-proof .prove-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.ironbound-proof .commission-callout button{width:100%;}}
+
+/* SteadyHand 8.8.20.31 — keep the clarified observation labels readable on mobile. */
+#watchOverviewBody,#watchOverviewBody header>div,.fleet-vessel-context>article{min-width:0}
+#watchOverviewBody header{grid-template-columns:92px minmax(0,1fr) auto}
+#watchOverviewBody header h2,#watchOverviewBody header p,.fleet-vessel-context b{overflow-wrap:anywhere}
+#watchOverviewBody header em{box-sizing:border-box;max-width:100%;justify-self:start}
+#watchOverviewBody .tb-command-access button{max-width:100%;white-space:normal;overflow-wrap:anywhere}
+@media(min-width:920px){#watchOverviewBody .fleet-vessel-context{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:700px){
+ #watchOverviewBody header{grid-template-columns:82px minmax(0,1fr)}
+ #watchOverviewBody header .fleet-watch-code-mark{width:82px;height:82px}
+ #watchOverviewBody header h2{font-size:26px}
+ #watchOverviewBody header em{grid-column:1/-1}
+}

@@ -15,7 +15,7 @@
   </style>
   <script id="darkSkyFirstLightBootstrap">
     // Dark Sky 8.6.23 MEMORY MUSTER — canonical release identity.
-    const DARK_SKY_RELEASE = Object.freeze({build:'8.8.20.30',seal:'ironbound-882030'});
+    const DARK_SKY_RELEASE = Object.freeze({build:'8.8.20.31',seal:'steadyhand-882031'});
     const DARK_SKY_EXPECTED_BUILD = DARK_SKY_RELEASE.build;
     const DARK_SKY_RELEASE_SEAL = DARK_SKY_RELEASE.seal;
     // 8.6.23 Storage Safe Harbor — three independent channels, no silent storage failures.
@@ -269,8 +269,8 @@
         <strong>BLACK FLAG</strong>
         <span>SET NEW ADMIRAL PASSWORD</span>
         <p class="ds-recovery-copy">Supabase verified this recovery session and Dark Sky verified active Admiral authority. Choose a new password for the dedicated Admiral identity. This does not change the Engine PIN, Captain PIN, Ike owner password, or Fleet authority records.</p>
-        <label class="ds-recovery-field">New password<input id="darkSkyAdmiralRecoveryPassword" type="password" autocomplete="new-password" minlength="10" /></label>
-        <label class="ds-recovery-field">Confirm password<input id="darkSkyAdmiralRecoveryConfirm" type="password" autocomplete="new-password" minlength="10" /></label>
+        <label class="ds-recovery-field">New password<input data-bf-trim="preserve" id="darkSkyAdmiralRecoveryPassword" type="password" autocomplete="new-password" minlength="10" /></label>
+        <label class="ds-recovery-field">Confirm password<input data-bf-trim="preserve" id="darkSkyAdmiralRecoveryConfirm" type="password" autocomplete="new-password" minlength="10" /></label>
         <button type="button" id="darkSkyAdmiralRecoverySave">SAVE NEW PASSWORD</button>
         <p id="darkSkyAdmiralRecoveryStatus" class="ds-recovery-status" role="status" aria-live="polite">Use at least 10 characters. Your password stays with Supabase Auth.</p>
       </div>`;
@@ -329,7 +329,7 @@
             <div class="ds-first-light-mark">⚑</div>
             <strong>BLACK FLAG</strong><span>SEND SECURE RECOVERY LINK</span>
             <p class="ds-recovery-copy">Send a recovery link for the dedicated Admiral identity. The email will return to this exact recovery landing instead of the project or Engine route.</p>
-            <label class="ds-recovery-field">Admiral email<input id="darkSkyAdmiralRecoveryEmail" type="email" autocomplete="username" placeholder="Dedicated Admiral email" /></label>
+            <label class="ds-recovery-field">Admiral email<input data-bf-trim="boundary" id="darkSkyAdmiralRecoveryEmail" type="email" autocomplete="username" placeholder="Dedicated Admiral email" /></label>
             <button type="button" id="darkSkyAdmiralRecoverySend">SEND ADMIRAL RECOVERY LINK</button>
             <p id="darkSkyAdmiralRecoveryRequestStatus" class="ds-recovery-status" role="status" aria-live="polite"></p>
           </div>`;
@@ -490,7 +490,7 @@
 
       <div class="bf-entry-panel">
         <label for="blackFlagEntryPin">BLACK FLAG ENGINE PIN</label>
-      <input id="blackFlagEntryPin" class="bf-pin-input" type="password" inputmode="numeric" maxlength="8" autocomplete="one-time-code" autocorrect="off" autocapitalize="none" spellcheck="false" />
+      <input data-bf-trim="preserve" id="blackFlagEntryPin" class="bf-pin-input" type="password" inputmode="numeric" maxlength="8" autocomplete="one-time-code" autocorrect="off" autocapitalize="none" spellcheck="false" />
         <p id="blackFlagEntryError" class="bf-entry-error" aria-live="polite"></p><p id="blackFlagLockTimer" class="pin-lock-timer hidden"></p>
         <button type="button" id="blackFlagEntryUnlock" class="bf-entry-primary">ENTER ENGINE ROOM →</button>
 <button type="button" id="closeBlackFlagEntry" class="bf-entry-secondary bf-close-entry">RETURN TO PROJECT</button>
@@ -525,7 +525,7 @@
       <h2 id="captainQuartersTitle">Captain's Quarters</h2>
       <p>A separate Captain-authority chamber above the Engine Room. Project shells remain untouched.</p>
       <label for="captainPinInput">CAPTAIN PIN</label>
-      <input id="captainPinInput" type="password" inputmode="numeric" maxlength="8" autocomplete="one-time-code" autocorrect="off" autocapitalize="none" spellcheck="false" />
+      <input data-bf-trim="preserve" id="captainPinInput" type="password" inputmode="numeric" maxlength="8" autocomplete="one-time-code" autocorrect="off" autocapitalize="none" spellcheck="false" />
       <p id="captainPinError" class="captain-error" aria-live="polite"></p>
       <button id="captainUnlockBtn" class="captain-primary" type="button">ENTER CAPTAIN'S QUARTERS →</button>
       <a id="captainGateCloseBtn" class="captain-secondary captain-link-button" href="#">← RETURN TO ENGINE</a>
@@ -698,8 +698,8 @@
           <div class="captain-kicker">CAPTAIN CONTROL • DUAL AUTHORIZATION</div>
           <h3 id="captainTestAccessTitle">Enable Test Access</h3>
           <p>This does not remove or change any PIN. It only bypasses PIN entry for this browser session and leaves project boundaries intact.</p>
-          <label for="testAccessEnginePin">ENGINE PIN</label><input id="testAccessEnginePin" type="password" inputmode="numeric" maxlength="8" autocomplete="off">
-          <label for="testAccessCaptainPin">CAPTAIN PIN</label><input id="testAccessCaptainPin" type="password" inputmode="numeric" maxlength="8" autocomplete="off">
+          <label for="testAccessEnginePin">ENGINE PIN</label><input data-bf-trim="preserve" id="testAccessEnginePin" type="password" inputmode="numeric" maxlength="8" autocomplete="off">
+          <label for="testAccessCaptainPin">CAPTAIN PIN</label><input data-bf-trim="preserve" id="testAccessCaptainPin" type="password" inputmode="numeric" maxlength="8" autocomplete="off">
           <p id="captainTestAccessError" class="error-text" aria-live="polite"></p>
           <div class="captain-test-access-actions"><button id="captainTestAccessConfirm" type="button">AUTHORIZE TEST ACCESS</button><button id="captainTestAccessCancel" type="button">CANCEL</button></div>
         </div>
@@ -894,7 +894,7 @@
         <div class="ike-design-workspace">
           <div class="ike-design-controls">
             <section class="ike-design-block">
-              <div class="ike-design-number">1</div><div class="ike-design-block-body"><label for="ikeWordingInput"><strong>Your wording</strong></label><input id="ikeWordingInput" class="text-input big" maxlength="60" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="text" enterkeyhint="done" /><div class="input-meta"><span>Type it exactly as you want it made.</span><strong id="ikeCharCount">0 characters</strong></div></div>
+              <div class="ike-design-number">1</div><div class="ike-design-block-body"><label for="ikeWordingInput"><strong>Your wording</strong></label><input data-bf-trim="preserve" id="ikeWordingInput" class="text-input big" maxlength="60" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="text" enterkeyhint="done" /><div class="input-meta"><span>Type it exactly as you want it made.</span><strong id="ikeCharCount">0 characters</strong></div></div>
             </section>
             <section class="ike-design-block">
               <div class="ike-design-number">2</div><div class="ike-design-block-body"><div class="ike-design-label"><strong>Choose lettering style</strong><span>BASED ON IKE'S REAL SIGN STYLES</span></div>
@@ -960,7 +960,7 @@
       <section class="screen" data-screen="wording">
         <h2 id="wordingStepTitle">What should your sign say?</h2>
         <label for="wordingInput">Type it exactly the way you want it carved</label>
-        <input id="wordingInput" class="text-input big" value="Smoke Hole" maxlength="60" autocomplete="off" autocapitalize="none" spellcheck="false" />
+        <input data-bf-trim="preserve" id="wordingInput" class="text-input big" value="Smoke Hole" maxlength="60" autocomplete="off" autocapitalize="none" spellcheck="false" />
         <div class="input-meta"><span>Uppercase, lowercase, spaces, numbers and punctuation are preserved.</span><strong id="charCount">10 characters</strong></div>
         <div class="preview-card compact"><img class="preview-image" data-preview-img alt="Wood preview" /><div class="preview-fallback"></div><div class="preview-text style-b" data-preview-text>Smoke Hole</div></div>
         <button type="button" class="primary-btn next" data-next="font">CHOOSE LETTER STYLE →</button>
@@ -1021,11 +1021,11 @@
         <h2>Your Contact Information</h2>
         <p id="customerStepCopy">Ike will use this information to let you know when your sign is ready for pickup.</p>
         <label for="customerName">Name <span class="required-cue">Required</span></label>
-        <input id="customerName" class="text-input" autocomplete="name" />
+        <input data-bf-trim="boundary" id="customerName" class="text-input" autocomplete="name" />
         <label for="customerPhone">Cell Phone Number <span class="required-cue">Required</span></label>
-        <input id="customerPhone" class="text-input" type="tel" autocomplete="tel" inputmode="tel" />
+        <input data-bf-trim="boundary" id="customerPhone" class="text-input" type="tel" autocomplete="tel" inputmode="tel" />
         <label for="customerEmail">Email Address <span class="required-cue">Required</span></label>
-        <input id="customerEmail" class="text-input" type="email" autocomplete="email" inputmode="email" />
+        <input data-bf-trim="boundary" id="customerEmail" class="text-input" type="email" autocomplete="email" inputmode="email" />
         <label>Preferred pickup contact</label>
         <div id="contactChoices" class="choice-grid two-col">
           <button type="button" class="choice-btn selected" data-contact="Text">TEXT ME</button>
@@ -1084,7 +1084,7 @@
         <div id="projectAdminGateKicker" class="project-admin-gate-kicker">PROJECT ADMIN</div>
         <h2 id="pinGateTitle">Admin Access</h2>
         <p id="projectAdminGatePrompt">Enter this project's admin PIN to view saved orders and settings.</p>
-        <input id="adminPinInput" class="text-input pin-input" type="password" inputmode="numeric" maxlength="8" autocomplete="off" />
+        <input data-bf-trim="preserve" id="adminPinInput" class="text-input pin-input" type="password" inputmode="numeric" maxlength="8" autocomplete="off" />
         <p id="pinGateError" class="error-text centered" aria-live="polite"></p><p id="adminLockTimer" class="pin-lock-timer hidden"></p>
         <button type="button" id="unlockAdminBtn" class="primary-btn project-admin-gate-primary">UNLOCK ADMIN</button>
         <button type="button" id="cancelAdminPinBtn" class="secondary-btn project-admin-gate-secondary">← RETURN TO MY ORDER</button>
@@ -1097,9 +1097,9 @@
 <main class="mugs-main">
 <section class="mugs-screen active" data-mugs-screen="welcome"><div class="mugs-hero"><div class="mugs-hero-copy"><div class="mugs-eyebrow">MUGS AFTER DARK</div><h1>Make the mug yours.</h1><p>Photograph the mug you are customizing, add your message, preview it, and approve the order.</p><div class="mugs-ribbon">YOUR MUG • YOUR WORDS • YOUR STYLE</div><button type="button" class="mugs-primary" data-mugs-next="photo">START YOUR MUG →</button></div><div id="mugsHeroArt" class="mugs-hero-art project-hero-art" aria-hidden="true"><img id="mugsHeroGraphicImg" class="project-slot-image hero-slot-image hidden" alt="Mugs After Dark showcase artwork"><div class="project-hero-fallback"><span></span><span></span><span></span></div></div></div><div class="mugs-feature-grid"><article><strong>1. Photograph</strong><span>Use the exact mug for this order.</span></article><article><strong>2. Personalize</strong><span>Type the message exactly as you want it.</span></article><article><strong>3. Approve</strong><span>Review the finished concept before submitting.</span></article></div></section>
 <section class="mugs-screen" data-mugs-screen="photo"><div class="mugs-step-kicker">YOUR MUG</div><h2>Photograph Your Mug</h2><p class="mugs-helper">The order cannot be submitted until a mug photo has been confirmed.</p><label class="mugs-photo-picker"><input id="mugsPhotoInput" type="file" accept="image/*" capture="environment"><span>TAKE OR CHOOSE PHOTO</span></label><div id="mugsPhotoPreviewWrap" class="mugs-photo-preview hidden"><img id="mugsPhotoPreview" alt="Confirmed mug photo"><button id="mugsRetakePhoto" class="mugs-secondary" type="button">CHANGE PHOTO</button></div><div class="mugs-actions"><button type="button" class="mugs-secondary" data-mugs-back="welcome">← BACK</button><button type="button" id="mugsPhotoNext" class="mugs-primary" data-mugs-next="message" disabled>CONFIRM PHOTO →</button></div></section>
-<section class="mugs-screen" data-mugs-screen="message"><div class="mugs-step-kicker">YOUR WORDS</div><h2>What should your mug say?</h2><label for="mugsMessage">Type it exactly as you want it shown</label><textarea id="mugsMessage" class="mugs-input" maxlength="32" rows="3" placeholder="Your Message"></textarea><div class="mugs-character-count"><span id="mugsCharCount">0</span>/32</div><label for="mugsStyle">Letter style</label><select id="mugsStyle" class="mugs-input"><option value="bold">Bold</option><option value="classic">Classic</option><option value="script">Script</option></select><div class="mugs-actions"><button type="button" class="mugs-secondary" data-mugs-back="photo">← BACK</button><button type="button" class="mugs-primary" data-mugs-next="preview">PREVIEW →</button></div></section>
+<section class="mugs-screen" data-mugs-screen="message"><div class="mugs-step-kicker">YOUR WORDS</div><h2>What should your mug say?</h2><label for="mugsMessage">Type it exactly as you want it shown</label><textarea data-bf-trim="preserve" id="mugsMessage" class="mugs-input" maxlength="32" rows="3" placeholder="Your Message"></textarea><div class="mugs-character-count"><span id="mugsCharCount">0</span>/32</div><label for="mugsStyle">Letter style</label><select id="mugsStyle" class="mugs-input"><option value="bold">Bold</option><option value="classic">Classic</option><option value="script">Script</option></select><div class="mugs-actions"><button type="button" class="mugs-secondary" data-mugs-back="photo">← BACK</button><button type="button" class="mugs-primary" data-mugs-next="preview">PREVIEW →</button></div></section>
 <section class="mugs-screen" data-mugs-screen="preview"><div class="mugs-step-kicker">PREVIEW</div><h2>Review Your Mug</h2><div class="mugs-preview-card mug-cylinder-preview"><img id="mugsPreviewImage" alt="Mug preview"><div id="mugsPreviewText" class="mugs-preview-text mug-wrap-overlay">Your Message</div><span class="mug-wrap-cue">CYLINDRICAL WRAP PREVIEW</span></div><p class="mugs-helper">The lettering preview now simulates a cylindrical wrap. Exact print placement can be confirmed before production.</p><div class="mugs-actions"><button type="button" class="mugs-secondary" data-mugs-back="message">← EDIT</button><button type="button" class="mugs-primary" data-mugs-next="customer">YES — CONTINUE →</button></div></section>
-<section class="mugs-screen" data-mugs-screen="customer"><div class="mugs-step-kicker">CONTACT</div><h2>Your Contact Information</h2><label for="mugsCustomerName">Name</label><input id="mugsCustomerName" class="mugs-input" autocomplete="name"><label for="mugsCustomerPhone">Phone</label><input id="mugsCustomerPhone" class="mugs-input" type="tel" autocomplete="tel"><label for="mugsCustomerEmail">Email</label><input id="mugsCustomerEmail" class="mugs-input" type="email" autocomplete="email"><div class="mugs-actions"><button type="button" class="mugs-secondary" data-mugs-back="preview">← BACK</button><button id="mugsCustomerNext" class="mugs-primary" type="button">REVIEW ORDER →</button></div></section>
+<section class="mugs-screen" data-mugs-screen="customer"><div class="mugs-step-kicker">CONTACT</div><h2>Your Contact Information</h2><label for="mugsCustomerName">Name</label><input data-bf-trim="boundary" id="mugsCustomerName" class="mugs-input" autocomplete="name"><label for="mugsCustomerPhone">Phone</label><input data-bf-trim="boundary" id="mugsCustomerPhone" class="mugs-input" type="tel" autocomplete="tel"><label for="mugsCustomerEmail">Email</label><input data-bf-trim="boundary" id="mugsCustomerEmail" class="mugs-input" type="email" autocomplete="email"><div class="mugs-actions"><button type="button" class="mugs-secondary" data-mugs-back="preview">← BACK</button><button id="mugsCustomerNext" class="mugs-primary" type="button">REVIEW ORDER →</button></div></section>
 <section class="mugs-screen" data-mugs-screen="review"><div class="mugs-step-kicker">FINAL REVIEW</div><h2>Approve Your Mug Order</h2><div id="mugsReviewSummary" class="mugs-review-summary"></div><label class="mugs-approval"><input id="mugsApprovalCheck" type="checkbox"><span>I approve the mug photo, wording, and preview shown above.</span></label><div class="mugs-actions"><button type="button" class="mugs-secondary" data-mugs-back="customer">← BACK</button><button id="mugsSubmitOrder" class="mugs-primary" type="button" disabled>PLACE TEST ORDER →</button></div></section>
 <section class="mugs-screen" data-mugs-screen="done"><div class="mugs-done"><div class="mugs-done-mark">✓</div><div class="mugs-step-kicker">ORDER RECEIVED</div><h2>Your Mugs After Dark order is in the queue.</h2><p>Test order <strong id="mugsDoneOrderId"></strong> has been saved to the Mugs After Dark project only.</p><img id="mugsDonePreview" class="mugs-done-preview" alt="Approved mug preview"><button id="mugsNewOrder" class="mugs-primary" type="button">START ANOTHER MUG</button></div></section>
 </main><footer class="mugs-shell-footer"><div class="project-footer-brand"><img id="mugsFooterGraphicImg" class="project-slot-image footer-slot-image hidden" alt="Mugs After Dark footer graphic"><strong>MUGS AFTER DARK</strong></div></footer></section>
@@ -1112,9 +1112,9 @@
 <section class="mugs-screen" data-flowers-screen="photo"><div class="mugs-step-kicker">YOUR FLOWERS</div><h2>Add Your Flower Photo</h2><p class="mugs-helper">Add the exact arrangement for this order. Your device will let you choose Photos, Camera, or Files.</p><div id="flowersPhotoChoices" class="flowers-photo-choices" role="group" aria-label="Add a flower photo">
 <label class="mugs-photo-picker flowers-photo-source" for="flowersPhotoInput"><input id="flowersPhotoInput" type="file" accept="image/*" aria-labelledby="flowersPhotoLabel" aria-describedby="flowersPhotoHelp"><span id="flowersPhotoLabel">ADD FLOWER PHOTO</span><small>Photo Library • Camera • Files</small></label>
 </div><p id="flowersPhotoHelp" class="flowers-photo-help"><strong>Private by default:</strong> Black Flag keeps the selected image only in this active test-order session. It is not carried into a new order or written to Black Flag browser order storage.</p><p id="flowersPhotoStatus" class="flowers-photo-status" role="status" aria-live="polite" aria-atomic="true">No photo selected.</p><div id="flowersPhotoPreviewWrap" class="mugs-photo-preview hidden"><img id="flowersPhotoPreview" alt="Confirmed flower arrangement photo"><button id="flowersRetakePhoto" class="mugs-secondary" type="button">CHOOSE ANOTHER PHOTO</button></div><div class="mugs-actions"><button type="button" class="mugs-secondary" data-flowers-back="welcome">← BACK</button><button type="button" id="flowersPhotoNext" class="mugs-primary" data-flowers-next="message" disabled>CONFIRM PHOTO →</button></div></section>
-<section class="mugs-screen" data-flowers-screen="message"><div class="mugs-step-kicker">YOUR WORDS</div><h2>What should the card say?</h2><label for="flowersMessage">Type it exactly as you want it shown</label><textarea id="flowersMessage" class="mugs-input flowers-message-input" maxlength="120" rows="4" placeholder="Your Message"></textarea><div class="mugs-character-count flowers-character-count"><span id="flowersCharCount">0</span>/120</div><p class="flowers-message-hint">Up to 120 characters. Extra spaces at the beginning or end are cleaned automatically; spaces and line breaks inside your message are preserved.</p><label for="flowersStyle">Letter style</label><select id="flowersStyle" class="mugs-input"><option value="script" selected>Script</option><option value="classic">Classic</option><option value="bold">Bold</option></select><div class="mugs-actions"><button type="button" class="mugs-secondary" data-flowers-back="photo">← BACK</button><button type="button" class="mugs-primary" data-flowers-next="preview">PREVIEW →</button></div></section>
+<section class="mugs-screen" data-flowers-screen="message"><div class="mugs-step-kicker">YOUR WORDS</div><h2>What should the card say?</h2><label for="flowersMessage">Type it exactly as you want it shown</label><textarea data-bf-trim="preserve" id="flowersMessage" class="mugs-input flowers-message-input" maxlength="120" rows="4" placeholder="Your Message"></textarea><div class="mugs-character-count flowers-character-count"><span id="flowersCharCount">0</span>/120</div><p class="flowers-message-hint">Up to 120 characters. Extra spaces at the beginning or end are cleaned automatically; spaces and line breaks inside your message are preserved.</p><label for="flowersStyle">Letter style</label><select id="flowersStyle" class="mugs-input"><option value="script" selected>Script</option><option value="classic">Classic</option><option value="bold">Bold</option></select><div class="mugs-actions"><button type="button" class="mugs-secondary" data-flowers-back="photo">← BACK</button><button type="button" class="mugs-primary" data-flowers-next="preview">PREVIEW →</button></div></section>
 <section class="mugs-screen" data-flowers-screen="preview"><div class="mugs-step-kicker">PREVIEW</div><h2>Review Your Flowers</h2><div class="mugs-preview-card flowers-preview-card"><img id="flowersPreviewImage" alt="Flower preview"><div id="flowersPreviewText" class="mugs-preview-text flowers-preview-text">Your Message</div></div><p class="mugs-helper">Your flowers stay center stage while the card message is previewed below. Test project pricing is not yet configured in Black Flag.</p><div class="mugs-actions"><button type="button" class="mugs-secondary" data-flowers-back="message">← EDIT</button><button type="button" class="mugs-primary" data-flowers-next="customer">YES — CONTINUE →</button></div></section>
-<section class="mugs-screen" data-flowers-screen="customer"><div class="mugs-step-kicker">CONTACT</div><h2>Your Contact Information</h2><label for="flowersCustomerName">Name</label><input id="flowersCustomerName" class="mugs-input" autocomplete="name"><label for="flowersCustomerPhone">Phone</label><input id="flowersCustomerPhone" class="mugs-input" type="tel" autocomplete="tel"><label for="flowersCustomerEmail">Email</label><input id="flowersCustomerEmail" class="mugs-input" type="email" autocomplete="email"><div class="mugs-actions"><button type="button" class="mugs-secondary" data-flowers-back="preview">← BACK</button><button id="flowersCustomerNext" class="mugs-primary" type="button">REVIEW ORDER →</button></div></section>
+<section class="mugs-screen" data-flowers-screen="customer"><div class="mugs-step-kicker">CONTACT</div><h2>Your Contact Information</h2><label for="flowersCustomerName">Name</label><input data-bf-trim="boundary" id="flowersCustomerName" class="mugs-input" autocomplete="name"><label for="flowersCustomerPhone">Phone</label><input data-bf-trim="boundary" id="flowersCustomerPhone" class="mugs-input" type="tel" autocomplete="tel"><label for="flowersCustomerEmail">Email</label><input data-bf-trim="boundary" id="flowersCustomerEmail" class="mugs-input" type="email" autocomplete="email"><div class="mugs-actions"><button type="button" class="mugs-secondary" data-flowers-back="preview">← BACK</button><button id="flowersCustomerNext" class="mugs-primary" type="button">REVIEW ORDER →</button></div></section>
 <section class="mugs-screen" data-flowers-screen="review"><div class="mugs-step-kicker">FINAL REVIEW</div><h2>Approve Your Flower Order</h2><div id="flowersReviewSummary" class="mugs-review-summary"></div><label class="mugs-approval"><input id="flowersApprovalCheck" type="checkbox"><span>I approve the flower arrangement photo, wording, and preview shown above.</span></label><div class="mugs-actions"><button type="button" class="mugs-secondary" data-flowers-back="customer">← BACK</button><button id="flowersSubmitOrder" class="mugs-primary" type="button" disabled>PLACE TEST ORDER →</button></div></section>
 <section class="mugs-screen" data-flowers-screen="done"><div class="mugs-done"><div class="mugs-done-mark">✓</div><div class="mugs-step-kicker">ORDER RECEIVED</div><h2>Your Becca's Bloom Shop order is in the queue.</h2><p>Test order <strong id="flowersDoneOrderId"></strong> has been saved to the Becca's Bloom Shop project only.</p><img id="flowersDonePreview" class="mugs-done-preview" alt="Approved mug preview"><button id="flowersNewOrder" class="mugs-primary" type="button">START ANOTHER FLOWER ORDER</button></div></section>
 </main><footer class="mugs-shell-footer"><div class="project-footer-brand"><img id="flowersFooterGraphicImg" class="project-slot-image footer-slot-image hidden" alt="Becca's Bloom Shop footer graphic"><strong>BECCA'S BLOOM SHOP</strong></div></footer></section>
@@ -1161,10 +1161,10 @@
         <h3>Business Configuration</h3>
         <p class="helper">Change core business options without editing code.</p>
         <div class="config-grid">
-          <label>Business name<input id="businessNameSetting" class="text-input" type="text"></label>
-          <label>Order prefix<input id="orderPrefixSetting" class="text-input" type="text" maxlength="8"></label>
-          <label>Thank-you headline<input id="thankYouSetting" class="text-input" type="text"></label>
-          <label>Price choices<input id="priceChoicesSetting" class="text-input" type="text" placeholder="45,55,65,90,135"></label>
+          <label>Business name<input data-bf-trim="boundary" id="businessNameSetting" class="text-input" type="text"></label>
+          <label>Order prefix<input data-bf-trim="boundary" id="orderPrefixSetting" class="text-input" type="text" maxlength="8"></label>
+          <label>Thank-you headline<input data-bf-trim="boundary" id="thankYouSetting" class="text-input" type="text"></label>
+          <label>Price choices<input data-bf-trim="boundary" id="priceChoicesSetting" class="text-input" type="text" placeholder="45,55,65,90,135"></label>
         </div>
         <button type="button" id="saveBusinessSettingsBtn" class="primary-btn small">SAVE BUSINESS SETTINGS</button>
         <p id="businessSettingsStatus" class="helper"></p>
@@ -1177,9 +1177,9 @@
         </div>
         <div class="admin-divider"></div>
         <label for="newAdminPin">Change admin PIN</label>
-        <input id="newAdminPin" class="text-input" type="password" inputmode="numeric" maxlength="8" placeholder="Enter a new PIN" />
+        <input data-bf-trim="preserve" id="newAdminPin" class="text-input" type="password" inputmode="numeric" maxlength="8" placeholder="Enter a new PIN" />
         <label for="confirmAdminPin">Confirm new PIN</label>
-        <input id="confirmAdminPin" class="text-input" type="password" inputmode="numeric" maxlength="8" placeholder="Re-enter the new PIN" />
+        <input data-bf-trim="preserve" id="confirmAdminPin" class="text-input" type="password" inputmode="numeric" maxlength="8" placeholder="Re-enter the new PIN" />
         <p id="pinSettingsError" class="error-text" aria-live="polite"></p>
         <button type="button" id="savePinBtn" class="primary-btn small">SAVE NEW PIN</button>
         <p class="helper">Enter this project's passage PIN. The PIN opens the local doorway; the named Supabase account still determines identity and authority.</p>
@@ -1200,17 +1200,17 @@
           <div><h3>Admin Settings</h3><p class="helper">Project administrator settings for this business.</p></div>
         </div>
         <div class="admin-core-settings-grid">
-          <label>Admin contact name<input id="adminContactName" class="text-input" type="text"></label>
-          <label>Business phone<input id="adminBusinessPhone" class="text-input" type="tel"></label>
-          <label>Business email<input id="adminBusinessEmail" class="text-input" type="email"></label>
-          <label>Business address<input id="adminBusinessAddress" class="text-input" type="text"></label>
+          <label>Admin contact name<input data-bf-trim="boundary" id="adminContactName" class="text-input" type="text"></label>
+          <label>Business phone<input data-bf-trim="boundary" id="adminBusinessPhone" class="text-input" type="tel"></label>
+          <label>Business email<input data-bf-trim="boundary" id="adminBusinessEmail" class="text-input" type="email"></label>
+          <label>Business address<input data-bf-trim="boundary" id="adminBusinessAddress" class="text-input" type="text"></label>
         </div>
         <div class="admin-divider"></div>
         <h4>Change Project Admin PIN</h4>
         <div class="admin-pin-change-grid">
-          <label>Current PIN<input id="adminCurrentPinChange" class="text-input pin-input" type="password" inputmode="numeric" autocomplete="off"></label>
-          <label>New PIN<input id="adminNewPinChange" class="text-input pin-input" type="password" inputmode="numeric" autocomplete="off"></label>
-          <label>Confirm new PIN<input id="adminConfirmPinChange" class="text-input pin-input" type="password" inputmode="numeric" autocomplete="off"></label>
+          <label>Current PIN<input data-bf-trim="preserve" id="adminCurrentPinChange" class="text-input pin-input" type="password" inputmode="numeric" autocomplete="off"></label>
+          <label>New PIN<input data-bf-trim="preserve" id="adminNewPinChange" class="text-input pin-input" type="password" inputmode="numeric" autocomplete="off"></label>
+          <label>Confirm new PIN<input data-bf-trim="preserve" id="adminConfirmPinChange" class="text-input pin-input" type="password" inputmode="numeric" autocomplete="off"></label>
         </div>
         <button type="button" id="saveAdminCoreSettingsBtn" class="primary-btn small">SAVE ADMIN SETTINGS</button>
         <p id="adminCoreSettingsStatus" class="helper"></p>
@@ -1255,7 +1255,7 @@
         <h2 id="enginePinTitle">Ye Be Entering the Engine Room</h2>
         <p>Only captains, code-wranglers, and suspiciously competent pirates beyond this point.</p>
         <label for="enginePinInput">Enter Captain's Code</label>
-        <input id="enginePinInput" class="text-input pin-input" type="password" inputmode="numeric" maxlength="8" autocomplete="one-time-code" autocorrect="off" autocapitalize="none" spellcheck="false" />
+        <input data-bf-trim="preserve" id="enginePinInput" class="text-input pin-input" type="password" inputmode="numeric" maxlength="8" autocomplete="one-time-code" autocorrect="off" autocapitalize="none" spellcheck="false" />
         <p id="enginePinError" class="pirate-error" aria-live="polite"></p><p id="engineLockTimer" class="pin-lock-timer hidden"></p>
         <button type="button" id="unlockEngineBtn" class="pirate-primary-btn">BOARD THE ENGINE ROOM →</button>
         <button type="button" id="cancelEngineBtn" class="secondary-btn">RETURN TO PROJECT</button>
@@ -1326,7 +1326,7 @@
       </nav>
 
       <section id="clearDeckLaunchpad" class="clear-deck-launchpad" aria-label="Engine command launchpad">
-        <div class="clear-deck-brief"><small id="engineReleaseLabel">8.8.20.30 • IRONBOUND TEST</small><h3>Where are we working?</h3><p>Captain and Admiral are established as separate offices. The Admiral rank is durable; every secure session and modifying action still declares its authority source and exact scope.</p><div class="admiral-keel-office-state"><b>ADMIRAL OFFICE · COMMISSIONED</b><span>Rank persists until explicit server revocation. PIN + account verification protect each secure workspace session; session expiry does not demote the Admiral.</span></div></div>
+        <div class="clear-deck-brief"><small id="engineReleaseLabel">8.8.20.31 • STEADYHAND TEST</small><h3>Where are we working?</h3><p>Captain and Admiral are established as separate offices. The Admiral rank is durable; every secure session and modifying action still declares its authority source and exact scope.</p><div class="admiral-keel-office-state"><b>ADMIRAL OFFICE · COMMISSIONED</b><span>Rank persists until explicit server revocation. PIN + account verification protect each secure workspace session; session expiry does not demote the Admiral.</span></div></div>
         <div class="clear-deck-primary-actions">
           <button type="button" class="clear-deck-action primary" data-clear-deck-command="projects"><span class="clear-deck-action-number">01</span><span><strong>OPERATE VESSELS</strong><small>Choose an independent vessel, then enter its exact Project Control or product surface.</small></span></button>
           <button type="button" class="clear-deck-action" data-command-open="captain"><span class="clear-deck-action-number">02</span><span><strong>CAPTAIN WATCH</strong><small>Review signals, decide a course, route deliberate action, and retain the outcome.</small></span></button>
@@ -1549,7 +1549,7 @@
         </section>
         <div id="fleetCommissioningSummary" class="fleet-commissioning-summary"></div>
         <div class="fleet-dock-toolbar" aria-label="Fleet Dock search and filters">
-          <label class="fleet-dock-search"><span class="sr-only">Search fleet</span><input id="fleetDockSearch" type="search" placeholder="Search vessels…" autocomplete="off"></label>
+          <label class="fleet-dock-search"><span class="sr-only">Search fleet</span><input data-bf-trim="boundary" id="fleetDockSearch" type="search" placeholder="Search vessels…" autocomplete="off"></label>
           <div id="fleetDockFilters" class="fleet-dock-filters" role="group" aria-label="Fleet Dock filter">
             <button type="button" class="active" data-fleet-dock-filter="all">ALL</button>
             <button type="button" data-fleet-dock-filter="attention">NEEDS ATTENTION</button>
@@ -1583,7 +1583,7 @@
           <div class="modern-project-tools">
             <label class="engine-fleet-search">
               <span class="sr-only">Find project</span>
-              <input id="engineFleetSearch" type="search" placeholder="Search projects…" autocomplete="off" />
+              <input data-bf-trim="boundary" id="engineFleetSearch" type="search" placeholder="Search projects…" autocomplete="off" />
             </label>
             <div class="engine-fleet-filters" role="group" aria-label="Project status filter">
               <button type="button" data-engine-fleet-filter="all" class="active">All</button>
@@ -1756,7 +1756,7 @@
         <article class="engine-card legacy-global-project-control">
           <h3>Default Workflow</h3>
           <p class="helper">Comma-separated production stages used by the reusable order engine.</p>
-          <label>Order statuses<textarea id="engineStatusesSetting" rows="4"></textarea></label>
+          <label>Order statuses<textarea data-bf-trim="boundary" id="engineStatusesSetting" rows="4"></textarea></label>
           <button type="button" id="saveEngineWorkflowBtn" class="primary-btn small">SAVE WORKFLOW</button>
           <p id="engineWorkflowStatus" class="helper"></p>
         </article>
@@ -1808,7 +1808,7 @@
             </div>
 
             <div id="engineIdentityEditView" class="engine-identity-edit-view hidden">
-              <label>Engine name<input id="engineNameSetting" class="text-input" type="text" value="Workshop Engine" /></label>
+              <label>Engine name<input data-bf-trim="boundary" id="engineNameSetting" class="text-input" type="text" value="Workshop Engine" /></label>
               <p class="helper engine-identity-helper">Captain-level name for this Dark Sky Engine. It does not rename projects, change project branding, or alter project namespaces.</p>
               <div class="engine-identity-edit-actions">
                 <button id="saveEngineIdentityBtn" class="primary-btn small" type="button">SAVE ENGINE NAME</button>
@@ -1843,7 +1843,7 @@
           <h2 id="engineResetTitle">Confirm Engine Reset</h2>
           <p>Enter the Engine PIN again. You will receive one final confirmation before anything is reset.</p>
           <label for="engineResetPinInput">Engine PIN</label>
-          <input id="engineResetPinInput" class="text-input pin-input" type="password" inputmode="numeric" maxlength="8" autocomplete="off" />
+          <input data-bf-trim="preserve" id="engineResetPinInput" class="text-input pin-input" type="password" inputmode="numeric" maxlength="8" autocomplete="off" />
           <p id="engineResetError" class="pirate-error" aria-live="polite"></p><p id="engineResetLockTimer" class="pin-lock-timer hidden"></p>
           <button type="button" id="confirmEngineResetBtn" class="danger-btn">CONTINUE RESET</button>
           <button type="button" id="cancelEngineResetBtn" class="secondary-btn">CANCEL</button>
@@ -1993,7 +1993,7 @@
     const APP_SCOPE=new URL('./',location.href).href;
     const APP_CACHE=/^(ikes-wood-signs-|workshop-engine-|black-flag-|dark-sky-)/;
     const delay=ms=>new Promise(r=>setTimeout(r,ms));
-    const snapshotPaths=['styles.css','simple_books.css','platform_core.js','platform_v4.js','platform_identity.js','fleet_supabase.js','ike_style_registry.js','app.js','captain.js','simple_books.js'];
+    const snapshotPaths=['input_hygiene.js','styles.css','simple_books.css','platform_core.js','platform_v4.js','platform_identity.js','fleet_supabase.js','ike_style_registry.js','app.js','captain.js','simple_books.js'];
     // Manifest, seal and inventory are fetched and verified as the first group;
     // do not download those same documents again in the presence group.
     const presencePaths=['owner.html','manifest.webmanifest','IKE_STYLE_FOUNDRY.json','sw.js','FLEET_DOCTRINE_REGISTRY.json','GOLDEN_VOYAGES.json','FLEET_COMMAND_MODEL.json','ADMIRAL_ENTITLEMENT_STATE_MODEL.json'];
@@ -2293,7 +2293,7 @@
     async function executeVerifiedSnapshot(fetched){
       const css=document.createElement('style');css.id='darkSkyVerifiedReleaseStyles';css.dataset.releaseSeal=SEAL;css.textContent=fetched['styles.css']+'\n'+fetched['simple_books.css'];document.head.appendChild(css);
       window.__darkSkyRuntimeEntryWitness8620?.('verified-styles-installed',{seal:SEAL});
-      for(const path of ['platform_core.js','platform_v4.js','platform_identity.js','fleet_supabase.js','ike_style_registry.js','app.js','captain.js','simple_books.js']){
+      for(const path of ['input_hygiene.js','platform_core.js','platform_v4.js','platform_identity.js','fleet_supabase.js','ike_style_registry.js','app.js','captain.js','simple_books.js']){
         await new Promise((resolve,reject)=>{const blob=new Blob([fetched[path]+`\n//# sourceURL=dark-sky-${SEAL}/${path}`],{type:'text/javascript'});const url=URL.createObjectURL(blob);const el=document.createElement('script');el.async=false;el.dataset.releaseSeal=SEAL;el.onload=()=>{URL.revokeObjectURL(url);window.__darkSkyRuntimeEntryWitness8620?.('runtime-script-executed',{path});resolve();};el.onerror=()=>{URL.revokeObjectURL(url);window.__darkSkyRuntimeEntryWitness8620?.('runtime-script-error',{path});reject(new Error(`Verified ${path} could not execute.`));};el.src=url;document.body.appendChild(el);});
       }
     }
@@ -2368,7 +2368,7 @@
 
   (()=>{
     'use strict';
-    const BUILD='8.8.20.30';
+    const BUILD='8.8.20.31';
     const AUTO_TIMEOUT=2500;
     const COMMAND_TIMEOUT=2600;
     const RECOVERY_TIMEOUT=5200;

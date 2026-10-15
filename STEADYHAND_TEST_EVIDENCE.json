@@ -1,0 +1,363 @@
+{
+  "schema": "black-flag-steadyhand-evidence-v1",
+  "build": "8.8.20.31",
+  "source_baseline": "DarkSky882030-Ironbound-TEST.zip",
+  "baseline_sha256": "b040b43732685525ad3e3bd68d0a9f17013deaabaa17d36824855e2c439d4e93",
+  "build_scope": [
+    "shared field-aware visible paste cleanup",
+    "exact canonical report reply plus independent read verification",
+    "separate lifecycle/freshness/ownership/operating labels",
+    "consistent live UI build labels",
+    "mobile observation layout"
+  ],
+  "regression_red": [
+    {
+      "test": "captain email visible and request normalization",
+      "pass": false,
+      "error": "Padded email remains visible"
+    },
+    {
+      "test": "padded saved report is verified with canonical count",
+      "pass": false,
+      "error": "Saved report wrongly held after server boundary trim"
+    },
+    {
+      "test": "wrong-project fails closed without retry",
+      "pass": true
+    },
+    {
+      "test": "wrong-work fails closed without retry",
+      "pass": true
+    },
+    {
+      "test": "wrong-summary fails closed without retry",
+      "pass": false,
+      "error": "wrong-summary accepted mismatched or uncertain proof"
+    },
+    {
+      "test": "wrong-count fails closed without retry",
+      "pass": true
+    },
+    {
+      "test": "missing-count fails closed without retry",
+      "pass": true
+    },
+    {
+      "test": "missing-summary fails closed without retry",
+      "pass": false,
+      "error": "missing-summary accepted mismatched or uncertain proof"
+    },
+    {
+      "test": "wrong-read fails closed without retry",
+      "pass": false,
+      "error": "wrong-read accepted mismatched or uncertain proof"
+    },
+    {
+      "test": "lost-response fails closed without retry",
+      "pass": true
+    },
+    {
+      "test": "lost-read fails closed without retry",
+      "pass": true
+    }
+  ],
+  "regression_green": [
+    {
+      "test": "captain email visible and request normalization",
+      "pass": true
+    },
+    {
+      "test": "padded saved report is verified with canonical count",
+      "pass": true
+    },
+    {
+      "test": "wrong-project fails closed without retry",
+      "pass": true
+    },
+    {
+      "test": "wrong-work fails closed without retry",
+      "pass": true
+    },
+    {
+      "test": "wrong-summary fails closed without retry",
+      "pass": true
+    },
+    {
+      "test": "wrong-count fails closed without retry",
+      "pass": true
+    },
+    {
+      "test": "missing-count fails closed without retry",
+      "pass": true
+    },
+    {
+      "test": "missing-summary fails closed without retry",
+      "pass": true
+    },
+    {
+      "test": "wrong-read fails closed without retry",
+      "pass": true
+    },
+    {
+      "test": "lost-response fails closed without retry",
+      "pass": true
+    },
+    {
+      "test": "lost-read fails closed without retry",
+      "pass": true
+    },
+    {
+      "test": "paste/autofill/IME/caret/dynamic-field/secret protections",
+      "pass": true
+    },
+    {
+      "test": "actual annotated fields across Engine Admiral owner intake and ledger",
+      "pass": true
+    },
+    {
+      "test": "assigned-vessel return is read-only and mobile layout remains usable",
+      "pass": true
+    },
+    {
+      "test": "double tap sends one report command",
+      "pass": true
+    },
+    {
+      "test": "explicit recheck reads saved report without republishing",
+      "pass": true
+    },
+    {
+      "test": "actual Admiral detail separates lifecycle freshness ownership and operator status",
+      "pass": true
+    },
+    {
+      "test": "same-account other-vessel denial and own-vessel restoration",
+      "pass": true
+    },
+    {
+      "test": "late report completion cannot restore signed-out vessel data",
+      "pass": true
+    }
+  ],
+  "inherited_browser": {
+    "scope": "Local Chromium DOM integration of actual Step-7 functions, handlers, markup and CSS. Simulated RPC boundary. No live auth/commission, hosted boot, service-worker or native Safari claim.",
+    "browser": "Chromium 144.0.7559.96",
+    "results": [
+      {
+        "scenario": "success",
+        "pass": true,
+        "phase": "verified",
+        "prepareCount": 1,
+        "commitCount": 1,
+        "quotaMirrorFailureHandled": true,
+        "pageErrors": [],
+        "viewports": [
+          {
+            "width": 1024,
+            "height": 768,
+            "proofPanelHorizontalOverflow": false
+          },
+          {
+            "width": 390,
+            "height": 844,
+            "proofPanelHorizontalOverflow": false
+          }
+        ]
+      },
+      {
+        "scenario": "lost-commit",
+        "pass": true,
+        "phase": "verified",
+        "prepareCount": 1,
+        "commitCount": 1,
+        "quotaMirrorFailureHandled": true,
+        "pageErrors": [],
+        "viewports": [
+          {
+            "width": 1024,
+            "height": 768,
+            "proofPanelHorizontalOverflow": false
+          },
+          {
+            "width": 390,
+            "height": 844,
+            "proofPanelHorizontalOverflow": false
+          }
+        ]
+      },
+      {
+        "scenario": "lost-read",
+        "pass": true,
+        "phase": "verified",
+        "prepareCount": 1,
+        "commitCount": 1,
+        "quotaMirrorFailureHandled": true,
+        "pageErrors": [],
+        "viewports": [
+          {
+            "width": 1024,
+            "height": 768,
+            "proofPanelHorizontalOverflow": false
+          },
+          {
+            "width": 390,
+            "height": 844,
+            "proofPanelHorizontalOverflow": false
+          }
+        ]
+      },
+      {
+        "scenario": "lost-prepare",
+        "pass": true,
+        "phase": "closed",
+        "prepareCount": 1,
+        "commitCount": 0,
+        "quotaMirrorFailureHandled": false,
+        "pageErrors": [],
+        "viewports": [
+          {
+            "width": 1024,
+            "height": 768,
+            "proofPanelHorizontalOverflow": false
+          },
+          {
+            "width": 390,
+            "height": 844,
+            "proofPanelHorizontalOverflow": false
+          }
+        ]
+      },
+      {
+        "scenario": "photo-conflict",
+        "pass": true,
+        "phase": "verified",
+        "prepareCount": 1,
+        "commitCount": 1,
+        "quotaMirrorFailureHandled": true,
+        "pageErrors": [],
+        "viewports": [
+          {
+            "width": 1024,
+            "height": 768,
+            "proofPanelHorizontalOverflow": false
+          },
+          {
+            "width": 390,
+            "height": 844,
+            "proofPanelHorizontalOverflow": false
+          }
+        ]
+      },
+      {
+        "scenario": "photo-save-lost",
+        "pass": true,
+        "phase": "correction-readback-held",
+        "prepareCount": 0,
+        "commitCount": 0,
+        "pageErrors": []
+      }
+    ]
+  },
+  "live_before_read": {
+    "observed_at": "2026-10-15T01:26:41.323034+00:00",
+    "project_id": "bf-p-fc2816b8254a4845",
+    "lifecycle_state": "commissioning",
+    "operating_model": "captain_operated",
+    "owner_state": "fleet_unassigned",
+    "report_count": 1,
+    "report_id": "5e926e87-10f5-4d76-aff4-6d254a0c8fdf",
+    "report_timestamp": "2026-10-05T04:02:39.40665+00:00",
+    "membership": "one active exact-vessel operator",
+    "global_authority_count": 0,
+    "commissioning_receipts": "old verified_not_created closed and retry forbidden; successful verified_created closed and retry forbidden"
+  },
+  "not_claimed": [
+    "native iPad/Safari execution of this new build",
+    "complete hosted startup/authentication/service-worker execution",
+    "new direct backend or revocation security proof",
+    "completed production working-business handoff"
+  ],
+  "live_changes": [],
+  "packaged_at_utc": "2026-10-15T02:00:10.058945+00:00",
+  "fresh_node_checks": {
+    "steadyhand": 20,
+    "inherited_ironbound": 16,
+    "failures": 0
+  },
+  "final_live_read": {
+    "status": "BLOCKED_BY_TOOL_SAFETY_LAYER",
+    "no_post_build_server_comparison_claimed": true
+  },
+  "source_review": {
+    "method": "self-review plus executable regression tests",
+    "independent_reviewer": false
+  },
+  "retained_baseline_files": 100,
+  "unchanged_images": [
+    {
+      "file": "admirals_deck_ceremonial_v640.png",
+      "sha256": "75fe3acc4a986a6cabc2cb8258343dd0321509335a7ac89c8ee032817c3b535c"
+    },
+    {
+      "file": "ike_character.png",
+      "sha256": "18cc8f3fe2bec6a1b433f0bdbbd7e2e23bec5fc53e4b345aef68da68f0b9f2b1"
+    },
+    {
+      "file": "bootstrap_build_logo.png",
+      "sha256": "88f2722a079b716d8e51de0aa4ba1da15e651466e6e6f0c7225f8ba332f8ba21"
+    },
+    {
+      "file": "ikes_real_sign_lettering_reference.jpg",
+      "sha256": "facde0135b9e89c06981493cb922c7b4feba4ff8717d3a1087edcab1c6cf21dd"
+    },
+    {
+      "file": "signal_restoration_logo.png",
+      "sha256": "8f6de458c854380b2732880ae1b807c64b906266ca4cb50e846d1e5981428aeb"
+    },
+    {
+      "file": "captains_quarters_cinematic_v2953.jpg",
+      "sha256": "f68e466636693e4dc9b47f2b7fbfca687b7bf4724ba2b5cb14dde179c790ef2b"
+    },
+    {
+      "file": "engine_room_pirate_benchmark_v2978.png",
+      "sha256": "e76e0834ed18cfb550283dcd071d7ce3d6f263172f4fbc2a4b625e7e26ab2b68"
+    },
+    {
+      "file": "engine_room_modern_benchmark_v2976.png",
+      "sha256": "7619c6ea8c7e37c820ec9aa873ab8a0aca612eeed0c86a882bcee8a9d3d8dd8a"
+    },
+    {
+      "file": "bootstrap_build_icon.png",
+      "sha256": "66d616f58b5067a04516de418c65f7dbf85e8d0d9292f2f157da8fd841a6b7ea"
+    },
+    {
+      "file": "black_flag_platform_icon.png",
+      "sha256": "7cbad06b0903bf5a1154206cf91b47a1f668561647bd1bd08e6563600e9ba4d9"
+    },
+    {
+      "file": "captains_quarters_command_center_v578.png",
+      "sha256": "a661a594389ea2d0a83d964cbe29cc1fcfe32a5908e51c0904a25b6ce3d3ee24"
+    },
+    {
+      "file": "bootstrap_build_horizontal.png",
+      "sha256": "a934aa244bc6e8af726f1d3a15d58a954093ce9e2a4f192d93583808309ee2e2"
+    },
+    {
+      "file": "ike_style_a_ramjet_reference.jpg",
+      "sha256": "b26e0ba1e63e4b2c4568af44d1e3dd876b992781ca0a355ba404270c3a318599"
+    },
+    {
+      "file": "black_flag_primary_lockup.png",
+      "sha256": "bd572004133761656ca2fcb509b54c640bb59ec34898eaafc0d7a94a476cfff5"
+    },
+    {
+      "file": "ike_calibration_2ft_cedar_reference.jpg",
+      "sha256": "b174221717e45c0014ba40ce7147317585ca7cb6962eea01b3dc0c6941a4643f"
+    },
+    {
+      "file": "ike_style_b_smoke_hole_reference.jpg",
+      "sha256": "861394f624ec4b96da21ec4c43e3bfe42a8c6810f2470f62194390a065d6d857"
+    }
+  ],
+  "retained_SQL_unchanged": true
+}

@@ -1,3 +1,15 @@
+# Black Flag 8.8.20.31 — SteadyHand TEST
+
+Frontend hardening of the persistent Ironbound baseline. **Upload the folder contents to the existing site root; no SQL installation or permission changes.**
+
+Fixes: visible boundary-space cleanup on reviewed operational fields; strict exact report response plus independent read-back; distinct lifecycle/report-age/ownership/operating labels; aligned UI release labels. Protected production wording, credentials and saved records remain untouched. Automatic command retry remains forbidden.
+
+Read **TEST_BUILD_REPORT.md** for the verified test scope, retained limitations, rollback and first three iPad steps. **Do not recommission VoyageKeeper or repeat its Captain appointment.** Your existing vessel and report are the test baseline.
+
+All original files remain. Historical SQL and older evidence in the package are not new installation instructions or fresh acceptance claims.
+
+<details><summary>Historical Ironbound README — retained for build history, not current instructions</summary>
+
 # Dark Sky 8.8.20.30 — Ironbound TEST BUILD
 
 **Use this ZIP instead of the earlier 8.8.20.29 Ironbound ZIP. Upload the extracted folder's contents, not its enclosing folder, to the existing site root.**
@@ -106,3 +118,5 @@ Browser/session storage remains a cache. Fleet Core remains the durable commissi
 
 ## 8.8.20.22 KeelLock — release integrity repair
 BlackWake field proof isolated a packaging-order defect: final runtime bytes and DEPLOYMENT_MANIFEST runtime hashes diverged. KeelLock regenerates integrity hashes from the final immutable bytes and validates the package before ZIP handoff. Runtime integrity remains fail-closed; no checksum bypass was added. Field deployment proof remains required.
+
+</details>
