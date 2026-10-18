@@ -1,16 +1,17 @@
 {
   "schema": "blackflag-readiness-matrix-v1",
-  "release": "8.8.20.35",
+  "release": "8.8.20.36",
   "allows_production_launch": false,
   "historical_evidence_is_not_current_live_audit": true,
-  "current_live_read": "blocked_by_tool_safety_layer_no_retry",
+  "current_live_read": "not_requested_in_headway_no_new_live_audit",
   "gates": [
     {
       "id": "ike_owner_navigation",
       "area": "SureFoot different-namespace navigation repair",
       "offline_status": "offline_regression",
-      "native_status": "pending",
-      "required_evidence": "Owner home → Orders → exact record → Back, with the same authenticated owner. No record writes."
+      "native_status": "headway_pending",
+      "required_evidence": "Owner home → Orders → exact record → Back, with the same authenticated owner. No record writes.",
+      "prior_field_evidence": "Keelmark .35 user screenshots showed Orders/search/detail/back worked; current release must be field checked."
     },
     {
       "id": "new_ship_identity",
@@ -36,8 +37,8 @@
     {
       "id": "durability",
       "area": "Orders/photos/revisions recoverable",
-      "offline_status": "not_certified",
-      "native_status": "not_run",
+      "offline_status": "full-row-export_and_isolated_memory_rehearsal_tested_not_cloud_restore",
+      "native_status": "pending",
       "required_evidence": "Private server persistence, exact export, backup and actual restore; current owner orders are browser-local."
     },
     {
@@ -57,9 +58,30 @@
     {
       "id": "shared_decks",
       "area": "Common controls and isolation",
-      "offline_status": "offline_regression",
-      "native_status": "partial_historical_evidence",
+      "offline_status": "headway_common_css_and_explicit_navigation_tested",
+      "native_status": "pending",
       "required_evidence": "No cross-project logo/customer/finance bleed; field testing remains per business."
+    },
+    {
+      "id": "headway_viewport",
+      "area": "Primary work in available viewport; full image visible",
+      "offline_status": "isolated_chromium",
+      "native_status": "pending",
+      "production_activation": false
+    },
+    {
+      "id": "ike_nominal_size",
+      "area": "Separate sample standard size and wood decisions",
+      "offline_status": "preview_fixture_only_real_owner_service_held",
+      "native_status": "pending",
+      "production_activation": false
+    },
+    {
+      "id": "ike_complete_job",
+      "area": "Frozen source/preview/approval and single-attempt storage contract",
+      "offline_status": "preview_in_memory_and_isolated_test_store_only",
+      "native_status": "pending",
+      "production_activation": false
     }
   ]
 }

@@ -1,3 +1,13 @@
+# Headway 8.8.20.36 — TEST
+
+- Scoped, compact shared viewport adapter; deliberate navigation preserves return-to-list state and avoids input/resize resets.
+- Ike header and test banner are in flow; photo/plank tasks keep their heading, full image and next action visible in tested tablet layouts.
+- Explicit sample nominal size and separate wood decision in Private Preview; repeated-photo size promotion no longer grants acceptance.
+- New frozen draft/approval/source/preview contract with original lineage and actual acceptance time; isolated once-only write/read-back tests. Real owner service/live submission remains held.
+- Exact-owner full order export and isolated restore comparison, no database import.
+- Retains Keelmark businesses, artwork, geometry and terminal commissioning contracts. No production launch, data migration or paid resources.
+
+---
 # Keelmark 8.8.20.35 — release changes
 
 - Recheck the actual .34 full archive and supported update baselines.

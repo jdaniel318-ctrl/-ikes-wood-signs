@@ -17,6 +17,7 @@ with sync_playwright() as pw:
   for x in doc.find_all('script'):x.decompose()
   for x in doc.find_all('link',rel='stylesheet'):x.decompose()
   page.set_content(str(doc));page.add_style_tag(content=(root/'business_deck.css').read_text())
+  page.add_style_tag(content=(root/'fleet_viewport.css').read_text());page.evaluate((root/'fleet_viewport.js').read_text());page.evaluate((root/'headway_contracts.js').read_text())
   # A test-only probe to simulate a changed/expired receipt. Not installed in product code.
   old="boot().catch(e=>{$('failureDetail')"
   new="window.__ownerTest={read:()=>ownerSession(),valid:()=>sessionValid(ownerSession()),setLocalNamespace:x=>{project.namespace=x;},clear:()=>clearSession('fixture-clear')};boot().catch(e=>{$('failureDetail')"

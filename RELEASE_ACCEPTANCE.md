@@ -1,15 +1,9 @@
-# Keelmark 8.8.20.35 — release acceptance
+# Headway 8.8.20.36 — acceptance scope
 
-TEST ONLY. Begin with START_HERE_KEELMARK.md. A new release label is not a field or server-security pass.
+The release is for TEST upload only. Passing offline tests is not an actual Apple Safari pass, production authorization, proof of every RPC/table, or a successful restore of the real business database.
 
-## Immediate native gate
-Ike owner sign-in → Today → Open active orders → inspect the exact existing order → return with search/filter retained. Confirm Keelmark, the same owner, untouched values and no sign-in bounce. No repeated sign-ins if a hold persists.
-
-## Preserved boundaries
-No unauthorized account/vessel proof; no automatic command retry; no overwritten browser namespace; no order repricing/deletion; no A/B geometry or secret trimming changes. The known local durability limitation remains.
-
-## New-ship gate
-HouseHull is the approved design name. Reconcile the exact existing draft/identity. Iron Square is not an approved rename. Siding first, photos supplied at quote request, verified scale, openings/trim, complete accessories and fasteners, explicit holds. Plans are not deployed capabilities.
-
-## Outstanding
-Full hosted Safari startup, direct backend RLS/RPC testing, continuous revocation, durable backups/restore, approved commercial terms and complete business workflow remain separate evidence gates. This release changes no database permissions.
+1. Confirm version; owner Today → active Orders → known record → Back retains query/filter/position; no sign-in bounce for the current valid owner. An actual expired or mismatched session remains held.
+2. In Private Preview, first screen and plank/photo controls begin below the header. Full photo stays contained. Independent sample size and Cedar buttons are labeled simulation. They do not demand another measurement photo, do not certify species or manufacturing, and do not enable Live/Sea Trial activation.
+3. A new preview draft can stage and accept its real renderer artifact through the existing flow; exact case/space and media snapshots remain associated. Confirm editing the draft invalidates approval. Private Preview must not save an order or contact a customer. Actual lettering/cutting fidelity remains its own gate.
+4. Before any later field-test write, deliberately export this business’s full order backup, confirm the downloaded file, and inspect isolated rehearsal results. Never import over the original Safari database. Production private storage, real restore and server permissions remain separately required.
+5. HouseHull naming/planning remains unchanged; do not commission duplicates or replay the terminal operations. Retain all historical records/images. iPhone can scroll vertically; one-screen iPad is a useful-workspace goal, not permission to hide required information.

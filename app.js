@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.20.35';
+  const BUILD_VERSION='8.8.20.36';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -1309,8 +1309,99 @@
     });
   }
   function ikeSpeciesRate(speciesId){return normalizeIkeSpeciesRates(businessConfig.ikeSpeciesRates).find(x=>x.id===speciesId&&x.enabled)?.rate||0;}
+
+  // Headway: accepted nominal sizes are not camera measurements. No live owner
+  // service is assumed. This build exposes explicit, memory-only preview fixtures.
+  function headwayContext(){
+    const original=state.photoOriginalData||state.photoData;
+    if(!original||state.headwayBoundOriginal!==original||!state.headwayPhotoHash)return null;
+    const ctx=currentExperienceContext(activeProject());
+    return {projectId:activeProjectId,plankId:state.headwayPlankId,photoHash:state.headwayPhotoHash,mode:ctx?.state==='preview'?'preview':String(ctx?.state||'live'),now:new Date().toISOString()};
+  }
+  function headwayResetPlank(){
+    state.headwayBoundOriginal='';state.headwayPhotoHash='';state.headwayPlankId='';state.headwaySizeDecision=null;state.headwaySpeciesDecision=null;state.headwayApproval=null;state.headwayCandidateFingerprint='';state.headwayPending=null;
+    invalidateIkeApprovedDesignLock();
+  }
+  async function headwayPhotoContext(){
+    const H=window.BlackFlagHeadway,original=state.photoOriginalData||state.photoData,pid=activeProjectId;
+    if(!H||pid!=='ikes-wood-signs'||!original)throw Error('Photograph the selected plank first.');
+    if(state.headwayBoundOriginal!==original){const hash=await H.sha256(original);if(activeProjectId!==pid||original!==(state.photoOriginalData||state.photoData))throw Error('The plank changed. Review its current photo.');state.headwaySizeDecision=null;state.headwaySpeciesDecision=null;state.headwayBoundOriginal=original;state.headwayPhotoHash=hash;state.headwayPlankId='photo-plank-'+hash.slice(0,24);}
+    return headwayContext();
+  }
+  function headwayRefreshRecognition(){
+    if(activeProjectId!=='ikes-wood-signs')return;
+    const H=window.BlackFlagHeadway,r=state.plankRecognition||{},c=headwayContext();
+    const size=H&&c?H.validateSize(state.headwaySizeDecision,c):{ok:false};
+    const wood=H&&c?H.validateSpecies(state.headwaySpeciesDecision,c):{ok:false};
+    if(!r.headwayAdjusted){r.headwaySuggestedWood=r.speciesName||'';r.headwaySuggestedSpeciesId=r.speciesId||'';r.lengthCandidateFeet=Number(r.lengthCandidateFeet||r.lengthFeet||0);}
+    r.headwayAdjusted=true;r.lengthResolved=!!size.ok;r.lengthFeet=size.ok?size.nominalFeet:0;r.lengthNeedsSecondPhoto=false;r.lengthReviewRequired=!size.ok;r.lengthResolutionMethod=size.ok?'preview-nominal-simulation':'owner-size-decision-needed';
+    r.speciesResolved=!!wood.ok;
+    if(wood.ok){r.speciesId=state.headwaySpeciesDecision.speciesId;r.speciesName=state.headwaySpeciesDecision.speciesName;r.speciesConfidence='preview-fixture';}
+    else{r.speciesId=r.headwaySuggestedSpeciesId||'';r.speciesName=r.headwaySuggestedWood||'';r.speciesConfidence='suggestion-only';}
+    state.plankRecognition=r;
+  }
+  function headwaySizeMarkup(){
+    const c=headwayContext(),H=window.BlackFlagHeadway,preview=currentExperienceContext(activeProject())?.state==='preview';
+    const valid=H&&c&&H.validateSize(state.headwaySizeDecision,c).ok;
+    if(valid)return '<div class="hw-decision-card"><strong>Test standard size: '+Number(state.headwaySizeDecision.nominalFeet)+' ft — simulation</strong><small>Pricing category only. Not an exact camera measurement.</small></div>';
+    if(preview)return '<div class="hw-decision-card"><small>PRIVATE PREVIEW · SAMPLE STOCK</small><strong>Try the standard-size workflow</strong><p>Use a sample 2 ft stock decision for this photo. No owner approval or stock record is created.</p><button type="button" data-hw-size>USE TEST STANDARD SIZE: 2 FT</button></div>';
+    return '<div class="hw-decision-card hw-held"><strong>Needs Ike’s size decision</strong><p>A known stock size or authorized owner acceptance is required. More photographs will not establish a size. The server-authorized stock/decision service is not activated in this TEST build.</p></div>';
+  }
+  function headwayWoodMarkup(){
+    const c=headwayContext(),H=window.BlackFlagHeadway,preview=currentExperienceContext(activeProject())?.state==='preview';
+    if(H&&c&&H.validateSpecies(state.headwaySpeciesDecision,c).ok)return '<div class="hw-decision-card"><strong>Test wood: Cedar — simulation</strong><small>Separate from size acceptance. Not a species-identification result.</small></div>';
+    if(preview)return '<div class="hw-decision-card"><small>SEPARATE WOOD DECISION</small><button type="button" data-hw-wood>USE TEST WOOD: CEDAR</button><small>Simulation only; does not approve the real plank’s species.</small></div>';
+    return '<div class="hw-decision-card hw-held"><strong>Wood confirmation needed</strong><small>Photo recognition is a suggestion, not an owner-confirmed species.</small></div>';
+  }
+  async function headwayPreviewDecision(kind){
+    if(currentExperienceContext(activeProject())?.state!=='preview')throw Error('Preview fixture is unavailable outside Private Preview.');
+    const c=await headwayPhotoContext();if(c.mode!=='preview')throw Error('Preview context changed.');
+    invalidateIkeApprovedDesignLock();
+    if(kind==='size')state.headwaySizeDecision=window.BlackFlagHeadway.previewSize(c,2);
+    else state.headwaySpeciesDecision=window.BlackFlagHeadway.previewSpecies(c,'cedar','Cedar');
+    headwayRefreshRecognition();recalcIkePrice();updateUi();
+  }
+  function headwayRenderPlank(){
+      if($('ikePlankConfirmPhoto')&&state.photoData)$('ikePlankConfirmPhoto').src=state.photoData;
+      const r=state.plankRecognition||{};
+      if($('ikeRecognitionHeadline'))$('ikeRecognitionHeadline').textContent=r.lengthResolved?(r.speciesResolved?'PREVIEW PLANK PREPARED':'SIZE SET · WOOD CHECK NEEDED'):'STANDARD SIZE NEEDED';
+      if($('ikeDetectedOrientation'))$('ikeDetectedOrientation').textContent=r.orientationResolved?(r.orientation||state.orientation||'—'):'Checking orientation';
+      if($('ikeDetectedSize'))$('ikeDetectedSize').textContent=r.lengthResolved?`Standard ${Number(r.lengthFeet)} ft · test`:'Needs Ike’s decision';
+      if($('ikeDetectedSpecies'))$('ikeDetectedSpecies').textContent=r.speciesResolved?'Cedar · test fixture':(r.speciesName?`${r.speciesName} · suggestion`:'Needs wood confirmation');
+      if($('ikePlankPrice'))$('ikePlankPrice').textContent=(r.speciesResolved&&ikeSpeciesRate(r.speciesId)>0&&r.lengthResolved&&r.lengthFeet)?`$${Number(state.price||0).toFixed(2).replace('.00','')}`:'After checks';
+      if($('ikeSpeciesAssist'))$('ikeSpeciesAssist').innerHTML=headwayWoodMarkup();if($('ikeLengthAssist'))$('ikeLengthAssist').innerHTML=headwaySizeMarkup();
+      if($('ikeSpeciesResolutionStatus'))$('ikeSpeciesResolutionStatus').textContent=r.lengthResolved&&r.speciesResolved?'Preview inputs ready. Size and wood are simulations; geometry still needs review.':'No extra-photo loop. Size, wood and design approval remain separate.';
+      if($('ikeConfirmPlankBtn'))$('ikeConfirmPlankBtn').disabled=!(r.orientationResolved&&r.speciesResolved&&ikeSpeciesRate(r.speciesId)>0&&r.lengthResolved&&r.lengthFeet);
+      if($('ikeRecognitionConfidence'))$('ikeRecognitionConfidence').textContent=r.confidence==='geometry-clear'?'Geometry: High':(r.confidence==='geometry-probable'?'Geometry: Medium':'Visual geometry only');
+      if($('ikeRecognitionSafeArea'))$('ikeRecognitionSafeArea').textContent=r.usableRegion?'Usable lettering zone detected':(r.usableArea==='safe-margin-preview'?'Basic margin active':'Not analyzed');
+      if($('ikeRecognitionObstacle'))$('ikeRecognitionObstacle').textContent=r.obstacleDetected?'Ike review: edge / cutout clearance':(r.obstacleAvoidance==='sea-trial-active'?'Edge clearance checked — Ike verifies':'No interior obstacle detected');
+  }
+  function headwayDraft(){
+    const d=state.headwaySizeDecision,w=state.headwaySpeciesDecision;
+    return {projectId:activeProjectId,plankId:state.headwayPlankId,photoData:state.photoData,photoOriginalData:state.photoOriginalData||state.photoData,photoQuarterTurns:Number(state.photoQuarterTurns||0),photoLineageHash:state.headwayPhotoHash,topSide:state.topSide||'Top of photo',usableRegion:state.plankRecognition?.fitBand||state.plankRecognition?.usableRegion||null,obstacleAvoidance:String(state.plankRecognition?.obstacleAvoidance||''),renderVersion:typeof IKE_PRODUCTION_CONTRACT==='undefined'?'unresolved':IKE_PRODUCTION_CONTRACT,wording:String(state.wording||''),font:String(state.font||''),fontVersion:String(state.styleReferenceName||'bundled-v1'),letterSize:state.letterSize||'Ike Fit',fill:state.fill,customColor:state.customColor,orientation:state.orientation,price:Number(state.price),ratePerFoot:ikeSpeciesRate(w?.speciesId),pricingRevision:'current-owner-rate:'+String(ikeSpeciesRate(w?.speciesId)),sizeDecision:d,speciesDecision:w};
+  }
+  async function headwaySaveJob(){
+    const H=window.BlackFlagHeadway,c=await headwayPhotoContext();
+    if(c.mode!=='preview')throw Error('Complete-job activation held: server-authorized stock and species decisions, and backup/restore proof, are required before a real or Sea Trial order.');
+    if(!H.validateSize(state.headwaySizeDecision,c).ok||!H.validateSpecies(state.headwaySpeciesDecision,c).ok)throw Error('Review the separate size and wood decisions first.');
+    const d=headwayDraft();
+    if(!await H.approvalMatches(state.headwayApproval,d,state.approvedPreviewData))throw Error('The design changed after approval. Review and approve the current design.');
+    const binding=await H.fingerprint(d);
+    if(state.headwayPending?.binding===binding&&state.currentOrder?.headwayJob)return state.currentOrder;
+    const id='PREVIEW-'+(globalThis.crypto?.randomUUID?.()||Date.now().toString(36)),op='HW-'+id;
+    const row={...d,id,namespace:window.BlackFlagV3Core?.namespaceFor?.(activeProjectId)||'bf.project.'+activeProjectId,isolation:{projectId:activeProjectId,crossProjectAccess:'deny'},createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),status:'New',testMode:true,approved:true,approvedPreviewData:state.approvedPreviewData,approvedDesignLock:{...state.approvedDesignLock,approvedAt:state.headwayApproval.approvedAt,generatedAt:state.headwayApproval.generatedAt},approvedArtifactHash:state.approvedDesignLock?.artifactHash||'',pricingProof:{speciesId:state.headwaySpeciesDecision.speciesId,speciesName:state.headwaySpeciesDecision.speciesName,lengthFeet:state.headwaySizeDecision.nominalFeet,ratePerFoot:d.ratePerFoot,price:d.price,source:'preview-nominal-simulation',nominalOnly:true},plankRecognition:ikeRecognitionForOrder(),customerName:state.customerName,customerEmail:state.customerEmail,customerPhone:state.customerPhone,contactPreference:state.contactPreference};
+    const packet=await H.jobPacket(row,state.headwayApproval,{...c,operationId:op});
+    // No persistence port is even supplied in a preview.
+    const tx=H.transaction(packet);await tx.submit({mode:'preview'});
+    state.headwayPending={binding,operationId:op,state:'preview'};state.currentOrderId=id;state.currentOrder=packet;
+    $('doneOrderId').textContent='PREVIEW-NO-RECORD';if($('doneOrderRecordNote'))$('doneOrderRecordNote').textContent='Simulation complete. Both images and the approved job packet were checked in memory; no order was saved.';
+    if($('doneApprovedPreview')){$('doneApprovedPreview').src=packet.approvedPreviewData;$('doneApprovedPreview').classList.remove('hidden');}
+    return packet;
+  }
+
   function recalcIkePrice(){
     if(activeProjectId!=='ikes-wood-signs')return;
+    headwayRefreshRecognition();
     const r=state.plankRecognition||{},rate=ikeSpeciesRate(r.speciesId),feet=Number(r.lengthFeet||0);
     if(rate>0&&feet>0&&r.speciesResolved===true&&r.lengthResolved===true) state.price=Math.round(rate*feet*100)/100;
     else state.price=0;
@@ -1319,6 +1410,7 @@
   function ikeRecognitionForOrder(){
     const r=state.plankRecognition||{};
     return {
+      nominalSizeDecision:state.headwaySizeDecision||null,speciesDecision:state.headwaySpeciesDecision||null,physicalLengthFeet:null,
       status:String(r.status||''),method:String(r.method||''),confidence:String(r.confidence||''),
       orientation:String(r.orientation||state.orientation||''),orientationResolved:!!r.orientationResolved,orientationScore:Number(r.orientationScore||0),
       speciesId:String(r.speciesId||''),speciesName:String(r.speciesName||''),speciesResolved:!!r.speciesResolved,speciesConfidence:String(r.speciesConfidence||''),speciesScore:Number(r.speciesScore||0),speciesReason:String(r.speciesReason||''),
@@ -9267,7 +9359,7 @@
     const state=commissionProofState(),proof=state.proof,receipt=state.receipt||commissionDraft?._serverReceipt;
     const ready=state.phase==='prepared',held=commissionOperationFrozen()&&!ready&&!proof;
     return `<div class="commission-panel sea-trial-review ironbound-proof">
-      <div class="eyebrow">07 • FLEET CORE PROOF · KEELMARK TEST BUILD</div>
+      <div class="eyebrow">07 • FLEET CORE PROOF · HEADWAY TEST BUILD</div>
       <h2>${proof?'Vessel and blueprint verified':ready?'Review the server-owned operation':held?'Read the preserved operation':'Prepare a new private test vessel'}</h2>
       <p>${proof?'Fleet Core confirmed this exact operation, its canonical vessel, and the saved blueprint in a separate read. Captain handoff and isolation are not yet proven.':ready?'Preparation created no vessel. The next tap issues this one operation once. A reload requires reconciliation, not replay.':'The server creates the vessel and blueprint together. Browser storage is an optional cache, never commissioning authority.'}</p>
       ${!proof&&!ready&&!held&&commissionPhotoBriefConflict(commissionDraft)?`<div class="commission-callout warning"><b>SAVED BRIEF CORRECTION</b><span>Your brief says “No photo required.” The older Forge Plan still requires a photo. This action changes that requirement only, preserves the prior plan as evidence, and saves the same voyage. It does not create or retry an operation.</span><button type="button" class="primary-btn" data-apply-photo-brief ${commissionCommandBusy||commissionDraft?._serverRecoveryPending?'disabled':''}>APPLY SAVED BRIEF: NO PHOTO</button></div>`:''}
@@ -11957,11 +12049,7 @@
     $('backBtn').style.visibility=['welcome','done'].includes(name)?'hidden':'visible';
     updateUi();
     saveDraft();
-    requestAnimationFrame(()=>{
-      window.scrollTo({top:0,left:0,behavior:'instant'});
-      document.documentElement.scrollTop=0;
-      document.body.scrollTop=0;
-    });
+    if(window.BlackFlagViewport)window.BlackFlagViewport.enter({key:'customer:'+activeProjectId+':'+name,reason:'new'});else window.scrollTo({top:0,left:0,behavior:'auto'});
   }
 
   function selectButtons(containerId, attr, value){
@@ -12024,6 +12112,7 @@
   }
 
   function updateUi(){
+    if(activeProjectId==='ikes-wood-signs')headwayRefreshRecognition();
     selectButtons('priceChoices','data-price',state.price);
     selectButtons('orientationChoices','data-orientation',state.orientation);
     selectButtons('fontChoices','data-font',state.font);
@@ -12068,19 +12157,8 @@
       $$('[data-ike-font-sample]').forEach(el=>{const c=el.closest('[data-ike-font]')?.dataset.ikeFont;el.textContent=c==='A'?'RAMJET':'SMOKE HOLE!';});
       $$('#ikeFontChoices [data-ike-font]').forEach(b=>b.classList.toggle('selected',!!state.fontChosen&&b.dataset.ikeFont===state.font));
       $$('#ikeFillChoices [data-ike-fill]').forEach(b=>b.classList.toggle('selected',b.dataset.ikeFill===state.fill));
-      if($('ikePlankConfirmPhoto')&&state.photoData)$('ikePlankConfirmPhoto').src=state.photoData;
+      headwayRenderPlank();
       const r=state.plankRecognition||{};
-      if($('ikeRecognitionHeadline'))$('ikeRecognitionHeadline').textContent=r.status==='detected'?(r.speciesResolved?'PLANK READY':'WOOD CHECK IN PROGRESS'):'PHOTO READY';
-      if($('ikeDetectedOrientation'))$('ikeDetectedOrientation').textContent=r.orientationResolved?(r.orientation||state.orientation||'—'):'Checking orientation';
-      if($('ikeDetectedSize'))$('ikeDetectedSize').textContent=r.lengthResolved&&r.lengthFeet?`${Number(r.lengthFeet).toFixed(Number(r.lengthFeet)%1?1:0)} ft`:(r.lengthCandidateFeet?`Checking ${Number(r.lengthCandidateFeet)} ft`:'Checking length');
-      if($('ikeDetectedSpecies'))$('ikeDetectedSpecies').textContent=r.speciesResolved?(r.speciesName||'Confirmed'):(r.family==='oak'?'Oak family — confirm type':(r.speciesName||'Checking wood'));
-      if($('ikePlankPrice'))$('ikePlankPrice').textContent=(r.speciesResolved&&ikeSpeciesRate(r.speciesId)>0&&r.lengthResolved&&r.lengthFeet)?`$${Number(state.price||0).toFixed(2).replace('.00','')}`:'After checks';
-      if($('ikeSpeciesAssist'))$('ikeSpeciesAssist').innerHTML=ikeSpeciesPromptMarkup(r);if($('ikeLengthAssist'))$('ikeLengthAssist').innerHTML=ikeLengthPromptMarkup(r);
-      if($('ikeSpeciesResolutionStatus')){const bits=[];if(r.speciesResolved)bits.push(r.speciesConfidence==='customer-confirmed'?`${r.speciesName} confirmed.`:`${r.speciesName} matched.`);if(r.lengthResolved&&r.lengthFeet)bits.push(`${Number(r.lengthFeet).toFixed(Number(r.lengthFeet)%1?1:0)} ft length confirmed.`);if(r.speciesResolved&&r.lengthResolved&&ikeSpeciesRate(r.speciesId)>0)bits.push('Price ready.');$('ikeSpeciesResolutionStatus').textContent=bits.join(' ');}
-      if($('ikeConfirmPlankBtn'))$('ikeConfirmPlankBtn').disabled=!(r.orientationResolved&&r.speciesResolved&&ikeSpeciesRate(r.speciesId)>0&&r.lengthResolved&&r.lengthFeet);
-      if($('ikeRecognitionConfidence'))$('ikeRecognitionConfidence').textContent=r.confidence==='geometry-clear'?'Geometry: High':(r.confidence==='geometry-probable'?'Geometry: Medium':'Visual geometry only');
-      if($('ikeRecognitionSafeArea'))$('ikeRecognitionSafeArea').textContent=r.usableRegion?'Usable lettering zone detected':(r.usableArea==='safe-margin-preview'?'Basic margin active':'Not analyzed');
-      if($('ikeRecognitionObstacle'))$('ikeRecognitionObstacle').textContent=r.obstacleDetected?'Ike review: edge / cutout clearance':(r.obstacleAvoidance==='sea-trial-active'?'Edge clearance checked — Ike verifies':'No interior obstacle detected');
       if($('ikeDesignPrice'))$('ikeDesignPrice').textContent=`$${Number(state.price||0)}`;
       if($('ikeDesignOrientation'))$('ikeDesignOrientation').textContent=state.orientation;
       if($('ikeDesignFill'))$('ikeDesignFill').textContent=state.fill==='Natural'?'CNC Carved':state.fill;
@@ -12169,6 +12247,7 @@
 
   function invalidateIkeApprovedDesignLock(){
     if(activeProjectId!=='ikes-wood-signs')return;
+    state.headwayApproval=null;state.headwayCandidateFingerprint='';
     state.approvedPreviewData='';state.approvedDesignLock=null;state.approvalCandidateData='';state.approvalCandidateHash='';state.approvalCandidateLock=null;
   }
 
@@ -12225,8 +12304,14 @@
 
   async function stageIkeApprovalArtifact(){
     if(activeProjectId!=='ikes-wood-signs')return true;
+    await headwayPhotoContext();headwayRefreshRecognition();
+    if(!state.plankRecognition.lengthResolved||!state.plankRecognition.speciesResolved)return false;
+    const candidateBinding=await window.BlackFlagHeadway.fingerprint(headwayDraft());
+    const generatedAt=new Date().toISOString();
     const lock=ikeCurrentRenderLock();
     const artifact=await renderIkeApprovedArtifact(state.photoData,lock);
+    if(candidateBinding!==await window.BlackFlagHeadway.fingerprint(headwayDraft()))return false;
+    state.headwayCandidateFingerprint=candidateBinding;state.headwayGeneratedAt=generatedAt;
     if(!artifact)return false;
     const artifactHash=ikeFastHash(artifact);
     lock.hash=ikeFastHash(ikeDesignLockHashPayload(lock));
@@ -12243,9 +12328,15 @@
     return !!(state.approvalCandidateData&&state.approvalCandidateHash&&state.approvalCandidateLock&&ikeFastHash(state.approvalCandidateData)===state.approvalCandidateHash);
   }
 
-  function lockIkeApprovedDesign(){
+  async function lockIkeApprovedDesign(){
     if(activeProjectId!=='ikes-wood-signs')return true;
     if(!verifyIkeApprovalCandidate())return false;
+    const current=await window.BlackFlagHeadway.fingerprint(headwayDraft());
+    if(current!==state.headwayCandidateFingerprint)return false;
+    const candidateData=state.approvalCandidateData,draftAtApproval=headwayDraft();
+    const accepted=await window.BlackFlagHeadway.approve(draftAtApproval,candidateData,state.headwayGeneratedAt,new Date().toISOString());
+    if(current!==await window.BlackFlagHeadway.fingerprint(headwayDraft())||candidateData!==state.approvalCandidateData)return false;
+    state.headwayApproval=accepted;
     state.approvedPreviewData=state.approvalCandidateData;
     state.approvedDesignLock={...state.approvalCandidateLock,artifactHash:state.approvalCandidateHash,artifactId:`IKE-ART-${state.approvalCandidateHash.toUpperCase()}`};
     return true;
@@ -12360,6 +12451,7 @@
   }
 
   async function saveOrder(){
+    if(activeProjectId==='ikes-wood-signs')return headwaySaveJob();
     if(!canCreateOrderNumber()){
       alert('A confirmed product photo is required before this order can be submitted.');
       return null;
@@ -12422,9 +12514,10 @@
   function projectBusinessConfigKey(){return `businessConfig:${activeProjectId||'no-project'}`;}
 
   function resetRuntimeStateForProject(p){
+    headwayResetPlank();
     const x=customerExperienceForProject(p);
     Object.assign(state,{
-      current:'welcome',price:Number(x.defaultPrice||0),photoData:'',orientation:'Horizontal',
+      current:'welcome',price:Number(x.defaultPrice||0),photoData:'',photoOriginalData:'',photoQuarterTurns:0,orientation:'Horizontal',
       topSide:'Top of photo',wording:(p?.id==='ikes-wood-signs'?'':(x.wordingDefault||'Your Message')),font:'B',letterSize:'Ike Fit',fill:'Black',
       contactPreference:'Text',customerName:'',customerPhone:'',customerEmail:'',
       currentOrderId:'',currentOrder:null,approvedPreviewData:'',approvedDesignLock:null,approvalCandidateData:'',approvalCandidateHash:'',approvalCandidateLock:null,customColor:'#1f6feb',fontChosen:false,plankRecognition:null,styleReferenceData:'',styleReferenceName:''
@@ -12563,6 +12656,7 @@
     return repaired;
   }
   function saveDraft(){
+    if(currentExperienceContext(activeProject())?.state==='preview')return;
     if(['welcome','done'].includes(state.current))return;
     try{localStorage.setItem(projectDraftKey(),JSON.stringify(compactDraftRecord(state)));}
     catch(err){
@@ -12570,10 +12664,11 @@
       try{relieveSecondaryStoragePressure();repairLocalOrderBackupFootprint();repairProjectDraftFootprint();localStorage.setItem(projectDraftKey(),JSON.stringify(compactDraftRecord(state)));}catch(retryErr){console.warn('Draft mirror skipped; active in-memory design remains intact.',retryErr);}
     }
   }
-  function clearDraft(){try{localStorage.removeItem(projectDraftKey())}catch(_){}}
-  function recoverDraft(){try{const d=JSON.parse(localStorage.getItem(projectDraftKey())||'null');if(d&&currentScreenOrder().includes(d.current)){Object.assign(state,d);return true}}catch(_){}return false}
+  function clearDraft(){if(currentExperienceContext(activeProject())?.state==='preview')return;try{localStorage.removeItem(projectDraftKey())}catch(_){}}
+  function recoverDraft(){if(currentExperienceContext(activeProject())?.state==='preview')return false;try{const d=JSON.parse(localStorage.getItem(projectDraftKey())||'null');if(d&&currentScreenOrder().includes(d.current)){Object.assign(state,d);return true}}catch(_){}return false}
 
   function resetOrder(){
+    if(activeProjectId==='ikes-wood-signs')headwayResetPlank();
     Object.assign(state,{current:'welcome',price:65,photoData:'',photoOriginalData:'',orientation:'Horizontal',topSide:'Top of photo',photoQuarterTurns:0,wording:'',font:'B',letterSize:'Ike Fit',fill:'Black',contactPreference:'Text',customerName:'',customerPhone:'',customerEmail:'',currentOrderId:'',currentOrder:null,approvedPreviewData:'',approvedDesignLock:null,approvalCandidateData:'',approvalCandidateHash:'',approvalCandidateLock:null,customColor:'#1f6feb',fontChosen:false,plankRecognition:null,styleReferenceData:'',styleReferenceName:''});
     ['customerName','customerPhone','customerEmail'].forEach(id=>$(id).value='');$('approvalCheck').checked=false;setScreen('welcome');
   }
@@ -13724,7 +13819,7 @@ The full order and approved media remain stored with this project.`;
       canvas.width=w;canvas.height=h;
       const ctx=canvas.getContext('2d',{alpha:false});
       ctx.drawImage(video,0,0,w,h);
-      if(activeProjectId==='ikes-wood-signs'){state.plankRecognition={};state.photoQuarterTurns=0;}
+      if(activeProjectId==='ikes-wood-signs'){headwayResetPlank();state.plankRecognition={};state.photoQuarterTurns=0;}
       state.photoData=canvas.toDataURL('image/jpeg',0.78);
       if(activeProjectId==='ikes-wood-signs') state.photoOriginalData=state.photoData;
       stopCamera();
@@ -16390,7 +16485,7 @@ The full order and approved media remain stored with this project.`;
         await submitOrder(order);
       }catch(err){
         console.error('Place order command failed',err);
-        if($('approvalError')) $('approvalError').textContent=isQuotaError(err)?'Your exact approved design is still preserved. This iPad needs storage cleanup before the durable order record can be completed. No second order was created; please retry after cleanup.':`The order could not be completed: ${String(err?.message||err)}`;
+        if($('approvalError')) $('approvalError').textContent=isQuotaError(err)?'Save unconfirmed. Keep this draft and recheck the original operation before any new attempt. Do not clear website data.':`The order could not be completed: ${String(err?.message||err)}`;
       }finally{
         btn.disabled=false;
         btn.textContent='PLACE MY ORDER →';
@@ -16466,6 +16561,9 @@ The full order and approved media remain stored with this project.`;
       ikeWordingControl.addEventListener('input',e=>{invalidateIkeApprovedDesignLock();state.wording=String(e.target.value||'');updateUi();});
     }
     $('ikeSpeciesAssist')?.addEventListener('click',e=>{
+      if(e.target.closest('[data-hw-wood]')){headwayPreviewDecision('wood').catch(err=>{if($('ikeSpeciesResolutionStatus'))$('ikeSpeciesResolutionStatus').textContent=err.message;});return;}
+      return; // Suggestions do not grant owner species authority.
+
       const choice=e.target.closest('[data-ike-species-choice]');
       if(choice){ikeResolveSpeciesChoice(choice.dataset.ikeSpeciesChoice);return;}
       if(e.target.closest('[data-ike-species-more-photo]')){
@@ -16478,6 +16576,9 @@ The full order and approved media remain stored with this project.`;
       try{await analyzeIkeSecondSpeciesPhoto(file);}catch(err){console.error('Ike second wood photo failed',err);if($('ikeSpeciesResolutionStatus'))$('ikeSpeciesResolutionStatus').textContent='That photo did not give us enough to use. Try one closer view of the grain.';}finally{input.value='';}
     });
     $('ikeLengthAssist')?.addEventListener('click',e=>{
+      if(e.target.closest('[data-hw-size]')){headwayPreviewDecision('size').catch(err=>{if($('ikeSpeciesResolutionStatus'))$('ikeSpeciesResolutionStatus').textContent=err.message;});return;}
+      return; // Legacy length-picker controls cannot authorize nominal sizes.
+
       const choice=e.target.closest('[data-ike-length-choice]');
       if(choice){invalidateIkeApprovedDesignLock();setIkeLengthFeet(Number(choice.dataset.ikeLengthChoice),'customer-confirmed');return;}
       if(e.target.closest('[data-ike-length-more-photo]')){const input=$('ikeSecondLengthPhotoInput');if(input)input.click();}
@@ -16493,9 +16594,9 @@ The full order and approved media remain stored with this project.`;
     $('ikeCustomColor')?.addEventListener('input',e=>{invalidateIkeApprovedDesignLock();state.customColor=e.target.value;state.fill='Other';updateUi();});
     $('rotatePhotoLeftBtn')?.addEventListener('click',()=>queueIkePhotoQuarterTurn(-1));
     $('rotatePhotoRightBtn')?.addEventListener('click',()=>queueIkePhotoQuarterTurn(1));
-    $('ikeConfirmPlankBtn')?.addEventListener('click',()=>{const r=state.plankRecognition||{};if(!r.lengthResolved||!r.lengthFeet){if($('ikeSpeciesResolutionStatus'))$('ikeSpeciesResolutionStatus').textContent='Finish the quick length check first so we never guess on size.';return;}if(!r.speciesResolved){if($('ikeSpeciesResolutionStatus'))$('ikeSpeciesResolutionStatus').textContent='Finish the quick wood check first so we price the right species.';return;}if(!(ikeSpeciesRate(r.speciesId)>0)){if($('ikeSpeciesResolutionStatus'))$('ikeSpeciesResolutionStatus').textContent='This species does not have an active owner price yet. Please ask Ike before continuing.';return;}recalcIkePrice();setScreen('ike-design');});
+    $('ikeConfirmPlankBtn')?.addEventListener('click',()=>{const r=state.plankRecognition||{};if(!r.lengthResolved||!r.lengthFeet){if($('ikeSpeciesResolutionStatus'))$('ikeSpeciesResolutionStatus').textContent='A known stock size or an authorized size decision is needed. More photos will not establish it.';return;}if(!r.speciesResolved){if($('ikeSpeciesResolutionStatus'))$('ikeSpeciesResolutionStatus').textContent='Finish the quick wood check first so we price the right species.';return;}if(!(ikeSpeciesRate(r.speciesId)>0)){if($('ikeSpeciesResolutionStatus'))$('ikeSpeciesResolutionStatus').textContent='This species does not have an active owner price yet. Please ask Ike before continuing.';return;}recalcIkePrice();setScreen('ike-design');});
     $('ikeDesignNextBtn')?.addEventListener('click',async()=>{if(!state.wording.trim()){if($('ikeDesignError'))$('ikeDesignError').textContent='Type the wording for your sign first.';return;}if(!state.fontChosen){if($('ikeDesignError'))$('ikeDesignError').textContent='Choose a lettering style before placing the words on your plank.';return;}if($('ikeDesignError'))$('ikeDesignError').textContent='';const btn=$('ikeDesignNextBtn');if(btn){btn.disabled=true;btn.textContent='BUILDING APPROVAL ARTIFACT…';}const ok=await stageIkeApprovalArtifact();if(btn){btn.disabled=false;btn.textContent='REVIEW MY DESIGN →';}if(!ok){alert('The approval artifact could not be created. Please review the plank photo and try again.');return;}setScreen('ike-approve');});
-    $('ikeApproveDesignBtn')?.addEventListener('click',()=>{const ok=lockIkeApprovedDesign();if(!ok){alert('The approved artifact fingerprint changed. Return to Design and build the approval artifact again.');return;}setScreen('customer');});
+    $('ikeApproveDesignBtn')?.addEventListener('click',async()=>{const ok=await lockIkeApprovedDesign();if(!ok){alert('The approved artifact fingerprint changed. Return to Design and build the approval artifact again.');return;}setScreen('customer');});
     $('ikeEditDesignBtn')?.addEventListener('click',()=>{invalidateIkeApprovedDesignLock();setScreen('ike-design');});
     $('reviewEditDesignBtn')?.addEventListener('click',()=>setScreen(activeProjectId==='ikes-wood-signs'?'ike-design':'wording'));
     $('ikeStyleReferenceInput')?.addEventListener('change',async e=>{const input=e.target;const f=input.files?.[0];if(!f)return;try{state.styleReferenceData=await resizePhoto(f);state.styleReferenceName=f.name||'Lettering reference';updateUi();}catch(err){console.error('Lettering reference failed',err);}finally{input.value='';}});
@@ -16533,7 +16634,7 @@ The full order and approved media remain stored with this project.`;
       if($('photoError')) $('photoError').textContent='';
       if($('photoHelp')) $('photoHelp').textContent='Preparing your picture…';
       try{
-        if(activeProjectId==='ikes-wood-signs'){state.plankRecognition={};state.photoQuarterTurns=0;}
+        if(activeProjectId==='ikes-wood-signs'){headwayResetPlank();state.plankRecognition={};state.photoQuarterTurns=0;}
         state.photoData=await resizePhoto(f);
         if(activeProjectId==='ikes-wood-signs') state.photoOriginalData=state.photoData;
         stopCamera();
@@ -16549,7 +16650,7 @@ The full order and approved media remain stored with this project.`;
     });
     $('retakeBtn')?.addEventListener('click',()=>{
       state.photoData='';
-      if(activeProjectId==='ikes-wood-signs'){state.photoOriginalData='';state.plankRecognition={};state.photoQuarterTurns=0;}
+      if(activeProjectId==='ikes-wood-signs'){headwayResetPlank();state.photoOriginalData='';state.plankRecognition={};state.photoQuarterTurns=0;}
       updateUi();
       startCamera().catch(err=>{
         console.error('Camera retake command failed',err);

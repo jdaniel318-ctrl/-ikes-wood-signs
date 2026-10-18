@@ -1,0 +1,117 @@
+/* Headway shared viewport contract. Natural vertical scrolling always retained.
+   All overrides are scoped to hw-viewport; no canvas glyph/layout geometry rules. */
+body.hw-viewport {scroll-padding-top:12px;}
+.hw-viewport :is(input,select,textarea){font-size:16px;}
+.hw-viewport :is(button,.btn){touch-action:manipulation;}
+.hw-viewport :is(.portal,.workspace,.captain-handoff-shell,.ike-plank-grid)>*{min-width:0;}
+.hw-viewport :is(.portal-head,.workspace-head){position:relative!important;top:auto!important;}
+.hw-viewport .workspace{min-height:0!important;}
+.hw-viewport .workhorse-owner{padding:12px!important;}
+.hw-viewport .workhorse-owner .portal-head{padding:12px 16px;margin-bottom:10px;}
+.hw-viewport .workhorse-owner .portal-head h1{font-size:28px;margin:2px 0 5px;}
+.hw-viewport .workhorse-owner .bd-business-logo{width:50px;height:56px;}
+.hw-viewport .workhorse-owner .workspace{padding:16px;}
+.hw-viewport .workhorse-owner .workspace-head{margin-bottom:14px;padding-bottom:8px;}
+.hw-viewport .workhorse-owner .workspace-head h2{font-size:26px;}
+.hw-viewport .workhorse-owner .workspace-head p{font-size:16px;}
+.hw-viewport .bd-hero{padding:14px 18px;grid-template-columns:minmax(0,1fr) 180px;gap:14px;}
+.hw-viewport .bd-hero h2{font-size:28px;margin:4px 0 6px;}
+.hw-viewport .bd-hero p{margin:4px 0 10px;}
+.hw-viewport .bd-hero-summary .bd-hero-count{font-size:42px;}
+.hw-viewport .bd-kpis{margin:10px 0 12px;gap:10px;}
+.hw-viewport .bd-kpi{padding:12px;}
+.hw-viewport .bd-kpi strong{font-size:28px;}
+.hw-viewport .bd-home-columns{gap:12px;}
+.hw-viewport .bd-home-work,.hw-viewport .bd-home-tools{padding:14px;}
+.hw-viewport .bd-home h3{font-size:20px;margin:3px 0 10px;}
+.hw-viewport .bd-mini-order{padding:10px 0;}
+.hw-viewport .bd-mini-order strong{font-size:16px;}
+.hw-viewport .bd-home-tools .bd-tool-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}
+.hw-viewport .bd-tool{padding:10px;min-height:64px;grid-template-columns:minmax(0,1fr) auto;}
+.hw-viewport .bd-tool-icon{display:none;}
+.hw-viewport .bd-tool strong{font-size:16px;}
+.hw-viewport .bd-tool small{font-size:12px;}
+.hw-viewport .bd-insight{margin:10px 0;padding:10px 12px;}
+.hw-viewport .bd-support{margin:10px 0;}
+.hw-viewport .bd-support summary{min-height:44px;}
+.hw-viewport .bd-origin{margin:8px 0;}
+.hw-viewport .bd-tabs button,.hw-viewport .bd-pagination button,.hw-viewport .bd-link-button{min-height:44px;}
+.hw-viewport .bd-order-controls :is(input,select){min-height:46px;}
+.hw-viewport .bd-detail-section{padding:16px;}
+.hw-viewport .bd-detail-grid{gap:12px;}
+.hw-viewport .bd-detail-image img{max-height:340px;object-fit:contain;}
+/* Compact customer identity stays in normal document flow, never over the task. */
+body.hw-viewport.ikes-project:not(.engine-mode) #app{min-height:100svh;height:auto!important;max-height:none!important;}
+body.hw-viewport.ikes-project.project-mode #app>.brand-header{position:relative!important;top:auto!important;min-height:64px!important;max-height:none!important;height:auto!important;padding:8px 16px!important;overflow:visible!important;}
+body.hw-viewport.ikes-project #app>.brand-header .brand-title{font-size:20px!important;line-height:1.15!important;}
+body.hw-viewport.ikes-project #app>.brand-header .icon-btn{width:44px!important;height:44px!important;}
+body.hw-viewport.ikes-project #experienceModeBanner{position:relative!important;inset:auto!important;left:auto!important;right:auto!important;top:auto!important;bottom:auto!important;transform:none!important;width:auto!important;max-width:none!important;margin:0!important;padding:7px 16px!important;min-height:48px!important;border-radius:0!important;box-shadow:none!important;display:flex;justify-content:space-between;gap:12px;z-index:11!important;}
+body.hw-viewport.ikes-project #experienceModeBanner.hidden{display:none!important;}
+body.hw-viewport.ikes-project #experienceModeBanner :is(button,.secondary-btn){min-height:44px!important;font-size:12px!important;white-space:normal!important;}
+body.hw-viewport.ikes-project #experienceModeBanner b{font-size:12px!important;}
+body.hw-viewport.ikes-project #experienceModeBanner small{font-size:12px!important;}
+body.hw-viewport.ikes-project #customerApp{padding:14px 18px!important;overflow:visible!important;height:auto!important;max-height:none!important;}
+body.hw-viewport.ikes-project #customerApp>.mini-brand{display:none!important;}
+body.hw-viewport.ikes-project #customerApp .screen-heading{margin:0 0 8px!important;}
+body.hw-viewport.ikes-project #customerApp .screen-heading h2{display:block!important;font-size:26px!important;line-height:1.15!important;margin:3px 0 4px!important;}
+body.hw-viewport.ikes-project #customerApp .screen>.helper{font-size:16px;line-height:1.4;margin:6px 0 12px;}
+body.hw-viewport.ikes-project .nav-row{margin-top:10px;min-height:44px;}
+body.hw-viewport.ikes-project .welcome-brand{min-height:150px!important;margin:0 0 12px!important;border-radius:14px!important;}
+body.hw-viewport.ikes-project .welcome-copy{padding:20px!important;}
+body.hw-viewport.ikes-project .welcome-wordmark{font-size:34px!important;}
+body.hw-viewport.ikes-project .welcome-subtitle{font-size:22px!important;}
+body.hw-viewport.ikes-project .welcome-copy p{font-size:16px!important;margin:8px 0!important;}
+body.hw-viewport.ikes-project .welcome-brand .ike-character{height:190px!important;}
+body.hw-viewport.ikes-project .ikes-trust-row{margin:8px 0;}
+body.hw-viewport.ikes-project .ikes-journey .brand-action{min-height:0;padding:12px;}
+body.hw-viewport.ikes-project .ikes-start-card{margin:10px 0;padding:14px;}
+body.hw-viewport.ikes-project .camera-panel{height:clamp(180px,38svh,350px)!important;min-height:0!important;}
+body.hw-viewport.ikes-project .photo-review img{max-height:38svh;object-fit:contain;}
+body.hw-viewport.ikes-project .ike-plank-grid{gap:14px;margin-top:8px;align-items:start;}
+body.hw-viewport.ikes-project .ike-plank-photo-card{min-height:0!important;height:clamp(210px,45svh,380px)!important;border-radius:18px;}
+body.hw-viewport.ikes-project .ike-plank-photo-card img{width:100%;height:100%;max-height:100%;object-fit:contain;}
+body.hw-viewport.ikes-project .ike-recognition-card{padding:12px;border-radius:18px;}
+body.hw-viewport.ikes-project .ike-recognition-status{padding-bottom:8px;}
+body.hw-viewport.ikes-project .ike-recognition-status strong{font-size:18px;}
+body.hw-viewport.ikes-project .ike-recognition-facts{gap:6px;margin:8px 0;grid-template-columns:repeat(2,minmax(0,1fr));}
+body.hw-viewport.ikes-project .ike-recognition-facts>div{padding:7px 9px;}
+body.hw-viewport.ikes-project .ike-recognition-facts strong{font-size:16px;}
+body.hw-viewport.ikes-project .ike-recognition-note{font-size:14px;margin:8px 0;}
+.hw-viewport .hw-decision-card{padding:10px 12px;margin:8px 0;border:1px solid #acc1c5;border-radius:12px;background:#f3f8f8;color:#193b46;}
+.hw-viewport .hw-decision-card strong{display:block;font-size:16px;margin:2px 0 5px;}
+.hw-viewport .hw-decision-card p{font-size:14px;line-height:1.4;margin:4px 0 8px;}
+.hw-viewport .hw-decision-card button{font-size:16px;min-height:44px;width:100%;border-radius:10px;border:1px solid #166d9c;background:#146f9b;color:#fff;padding:9px;}
+.hw-viewport .hw-decision-card small{font-size:12px;}
+.hw-viewport .hw-held{border-color:#b38d40;background:#fffaeb;}
+.hw-viewport #ikeConfirmPlankBtn{min-height:44px!important;font-size:16px;}
+.hw-viewport .ike-species-resolution-status{font-size:14px;margin:8px 0;}
+.hw-viewport .hw-backup{margin:14px 0;padding:12px;border:1px solid #51747b;border-radius:12px;}
+.hw-viewport .hw-backup summary{min-height:44px;cursor:pointer;font-weight:700;}
+.hw-viewport .hw-backup button{min-height:44px;font-size:16px;margin:8px 8px 8px 0;}
+.hw-viewport .hw-backup p{font-size:14px;line-height:1.45;}
+.hw-viewport .modern-engine-hero{padding:16px!important;}
+.hw-viewport .fleet-command-clear-deck{padding:16px!important;}
+.hw-viewport :is(.captain-handoff-head,.admiral-command-header){min-height:0;}
+.hw-viewport :is(.admiral-deck-overlay,.admiral-gate-overlay,.captain-gate-overlay){align-items:start;overflow-y:auto;}
+@media(min-width:780px){body.hw-viewport.ikes-project .ike-plank-grid{grid-template-columns:minmax(0,1.1fr) minmax(340px,.9fr)!important;}}
+@media(min-width:780px) and (max-height:720px){.hw-viewport .bd-hero{grid-template-columns:1fr 140px;}.hw-viewport .bd-hero h2{font-size:26px;}.hw-viewport .bd-hero p{margin:2px 0 6px;}.hw-viewport .bd-home-columns{grid-template-columns:1fr 1fr;}.hw-viewport .bd-mini-order{padding:7px 0;}}
+@media(max-width:779px){.hw-viewport .bd-hero{grid-template-columns:1fr auto;gap:10px;padding:14px;}.hw-viewport .bd-hero h2{font-size:25px;}.hw-viewport .bd-home-columns{grid-template-columns:1fr;}.hw-viewport .bd-kpis{grid-template-columns:repeat(2,minmax(0,1fr));}.hw-viewport .bd-tool-grid{grid-template-columns:1fr!important;}.hw-viewport .portal-head{flex-wrap:wrap!important;}.hw-viewport .portal-head .head-actions{flex-wrap:wrap;}.hw-viewport .bd-order-rows,.hw-viewport .bd-detail-grid{grid-template-columns:1fr!important;}body.hw-viewport.ikes-project .ike-plank-grid{grid-template-columns:1fr!important;}body.hw-viewport.ikes-project #customerApp{padding:12px!important;}body.hw-viewport.ikes-project .brand-header{gap:8px!important;}body.hw-viewport.ikes-project .welcome-wordmark{font-size:28px!important;}body.hw-viewport.ikes-project .welcome-brand{grid-template-columns:1fr 90px!important;}body.hw-viewport.ikes-project .welcome-brand .ike-character{height:150px!important;}body.hw-viewport.ikes-project .welcome-copy{padding:12px!important;}body.hw-viewport.ikes-project .ikes-start-card{grid-template-columns:1fr;}body.hw-viewport.ikes-project .ike-plank-photo-card{height:230px!important;}.hw-viewport #experienceModeBanner span{min-width:0;}}
+@media(prefers-reduced-motion:reduce){.hw-viewport .stage-in,.hw-viewport .stage-out{animation:none!important;transition:none!important;transform:none!important;}}
+
+/* Keep independent stock/species decisions beside the source image, not stacked
+   beneath every recognition fact. No required input is hidden to fit a tablet. */
+.hw-viewport .hw-plank-visual-column{min-width:0;}
+.hw-viewport .hw-plank-decisions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;align-items:start;}
+.hw-viewport .hw-plank-decisions .hw-decision-card{height:100%;box-sizing:border-box;padding:9px;margin:8px 0 0;}
+.hw-viewport .hw-plank-decisions .hw-decision-card strong{font-size:16px;}
+.hw-viewport .hw-plank-decisions .hw-decision-card p{font-size:14px;line-height:1.3;}
+.hw-viewport .hw-plank-decisions .hw-decision-card button{font-size:15px;}
+@media(min-width:780px) and (max-height:720px){
+ body.hw-viewport.ikes-project .ike-plank-photo-card{height:200px!important;}
+ body.hw-viewport.ikes-project .ike-recognition-note{margin:6px 0;}
+}
+@media(max-width:779px){.hw-viewport .hw-plank-decisions{grid-template-columns:1fr;}}
+/* Grid items otherwise retain their intrinsic minimum height and crop a photo
+   inside a short card, despite object-fit: contain. Keep the full source in view. */
+body.hw-viewport.ikes-project .ike-plank-photo-card{grid-template-rows:minmax(0,1fr);grid-template-columns:minmax(0,1fr);}
+body.hw-viewport.ikes-project .ike-plank-photo-card img{min-width:0;min-height:0;max-width:100%;max-height:100%;object-fit:contain;}
