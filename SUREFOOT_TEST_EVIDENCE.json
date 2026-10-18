@@ -1,0 +1,208 @@
+{
+  "schema": "black-flag-surefoot-offline-evidence-v1",
+  "build": "8.8.20.33",
+  "baseline": "8.8.20.32",
+  "baseline_archive_sha256": "5686c362cef2a938b56fcfecbe11ebcc6315dfc77dc37673db897dd24602eae0",
+  "created_at_utc": "2026-10-18T13:26:43.384027+00:00",
+  "navigation_reproduction": "Valid same-project server and local namespace strings differ; .32 home paints but active-order navigation returns to login. .33 navigation succeeds without rewriting either namespace.",
+  "baseline_suite": [
+    {
+      "name": "same-namespace verified owner navigates home/orders/details/pricing without writes",
+      "pass": true
+    },
+    {
+      "name": "separate server and browser namespaces for same verified project navigate without login bounce",
+      "pass": false,
+      "error": "VALID OWNER BOUNCED TO LOGIN: Sign in again to open this business workspace."
+    },
+    {
+      "name": "missing membership fails closed before owner records paint",
+      "pass": true
+    },
+    {
+      "name": "missing vessel fails closed before owner records paint",
+      "pass": true
+    },
+    {
+      "name": "wrong returned project fails closed before owner records paint",
+      "pass": false,
+      "error": "unauthorized proof displayed owner home"
+    },
+    {
+      "name": "different membership vessel fails closed before owner records paint",
+      "pass": false,
+      "error": "unauthorized proof displayed owner home"
+    },
+    {
+      "name": "different membership user fails closed before owner records paint",
+      "pass": false,
+      "error": "unauthorized proof displayed owner home"
+    },
+    {
+      "name": "operator is not owner fails closed before owner records paint",
+      "pass": false,
+      "error": "unauthorized proof displayed owner home"
+    },
+    {
+      "name": "inactive membership fails closed before owner records paint",
+      "pass": false,
+      "error": "unauthorized proof displayed owner home"
+    },
+    {
+      "name": "revoked membership fails closed before owner records paint",
+      "pass": false,
+      "error": "unauthorized proof displayed owner home"
+    },
+    {
+      "name": "missing canonical namespace fails closed before owner records paint",
+      "pass": false,
+      "error": "unauthorized proof displayed owner home"
+    },
+    {
+      "name": "expired remains held on navigation",
+      "pass": true
+    },
+    {
+      "name": "scope remains held on navigation",
+      "pass": true
+    },
+    {
+      "name": "tampered_session remains held on navigation",
+      "pass": false,
+      "error": "tampered_session opened owner records"
+    },
+    {
+      "name": "missing_expiry remains held on navigation",
+      "pass": false,
+      "error": "missing_expiry opened owner records"
+    },
+    {
+      "name": "local_namespace_changed remains held on navigation",
+      "pass": true
+    },
+    {
+      "name": "cleared remains held on navigation",
+      "pass": true
+    },
+    {
+      "name": "auth_cleared remains held on navigation",
+      "pass": false,
+      "error": "auth_cleared opened owner records"
+    },
+    {
+      "name": "auth_user_changed remains held on navigation",
+      "pass": false,
+      "error": "auth_user_changed opened owner records"
+    },
+    {
+      "name": "auth_expired remains held on navigation",
+      "pass": false,
+      "error": "auth_expired opened owner records"
+    },
+    {
+      "name": "queued navigation cannot render after clearing the owner session",
+      "pass": true
+    }
+  ],
+  "new_suite": [
+    {
+      "name": "same-namespace verified owner navigates home/orders/details/pricing without writes",
+      "pass": true
+    },
+    {
+      "name": "separate server and browser namespaces for same verified project navigate without login bounce",
+      "pass": true
+    },
+    {
+      "name": "missing membership fails closed before owner records paint",
+      "pass": true
+    },
+    {
+      "name": "missing vessel fails closed before owner records paint",
+      "pass": true
+    },
+    {
+      "name": "wrong returned project fails closed before owner records paint",
+      "pass": true
+    },
+    {
+      "name": "different membership vessel fails closed before owner records paint",
+      "pass": true
+    },
+    {
+      "name": "different membership user fails closed before owner records paint",
+      "pass": true
+    },
+    {
+      "name": "operator is not owner fails closed before owner records paint",
+      "pass": true
+    },
+    {
+      "name": "inactive membership fails closed before owner records paint",
+      "pass": true
+    },
+    {
+      "name": "revoked membership fails closed before owner records paint",
+      "pass": true
+    },
+    {
+      "name": "missing canonical namespace fails closed before owner records paint",
+      "pass": true
+    },
+    {
+      "name": "expired remains held on navigation",
+      "pass": true
+    },
+    {
+      "name": "scope remains held on navigation",
+      "pass": true
+    },
+    {
+      "name": "tampered_session remains held on navigation",
+      "pass": true
+    },
+    {
+      "name": "missing_expiry remains held on navigation",
+      "pass": true
+    },
+    {
+      "name": "local_namespace_changed remains held on navigation",
+      "pass": true
+    },
+    {
+      "name": "cleared remains held on navigation",
+      "pass": true
+    },
+    {
+      "name": "auth_cleared remains held on navigation",
+      "pass": true
+    },
+    {
+      "name": "auth_user_changed remains held on navigation",
+      "pass": true
+    },
+    {
+      "name": "auth_expired remains held on navigation",
+      "pass": true
+    },
+    {
+      "name": "queued navigation cannot render after clearing the owner session",
+      "pass": true
+    }
+  ],
+  "inherited_node_suites": {
+    "Workhorse": 24,
+    "SteadyHand": 20,
+    "Ironbound": 16
+  },
+  "inherited_browser_suites": {
+    "Workhorse": 21,
+    "SteadyHand": 19,
+    "Ironbound": 6
+  },
+  "live_sql": "A requested read-only precheck was blocked; no live readback in this repair is claimed.",
+  "live_database_writes": false,
+  "native_ipad_result": "awaiting user retest",
+  "local_http_attempt": "blocked by execution environment (ERR_BLOCKED_BY_ADMINISTRATOR); isolated actual-source tests used",
+  "review": "source self-review and automated regressions; no independent external audit"
+}

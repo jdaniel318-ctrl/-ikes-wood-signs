@@ -1,3 +1,67 @@
+# Black Flag 8.8.20.33 — SureFoot TEST
+
+## Purpose
+A focused correction on the full Workhorse 8.8.20.32 baseline for the owner-home → Orders → sign-in regression. Keep Workhorse’s new Today, Orders, Pricing and Lettering layouts. Do not recreate the business or clear browser storage.
+
+## Reproduced failure and evidence
+In the actual .32 owner script, `enterSupabaseOwner()` saves the server vessel namespace in the owner receipt. `sessionValid()` then compares that server namespace against the browser project’s local storage namespace. The home was rendered after the server owner check, but the new navigation guard required the two differently purposed namespace strings to match.
+
+An unexpired synthetic owner account, a confirmed exact-project owner membership, server namespace `ikes-wood-signs`, and browser namespace `bf.project.ikes-wood-signs` reproduced the reported sequence: home visible → Open active orders → the same "Sign in again to open this business workspace" message. The same-namespace control opened Orders successfully. The original Workhorse fixture used identical namespace strings, so it missed this case.
+
+This proves a code defect that reproduces the screenshot. It does not establish the exact namespace or expiry state in the user’s iPad: the attempted live read-only precheck was blocked. A genuinely expired session can also require sign-in; the repair does not suppress expiration.
+
+## Corrected contract
+The browser’s namespace remains a storage locator. The server’s namespace remains part of its canonical vessel identity. Neither is rewritten, merged, or used as a substitute for an owner membership.
+
+After verifying the authenticated user and the exact server vessel/membership, SureFoot creates an in-memory, document-bound owner proof containing the exact Project ID, vessel ID, user ID, receipt ID, server namespace and unchanged local namespace. Protected navigation requires this proof, the matching receipt, a consistent current authenticated account and unexpired session/token timestamps. A receipt copied into a fresh document is not authority: startup must verify the server account/membership again.
+
+The membership read now explicitly filters for the authenticated user, exact vessel, `project_owner`, active status, and no revocation. Returned identity/role/status fields are also checked instead of trusting a one-row response by shape alone. This is a stricter client read/response contract, not a server RLS migration or a permission grant. Server authorization remains necessary.
+
+Home, Orders, order detail, return-to-list, and overview navigation use the same guard. Clearing the owner receipt invalidates queued navigation. Expired sessions and unmatched session context show different explanations. No automatic sign-in, invitation, password reset, commissioning, report submission, or retry is added.
+
+## Verification completed
+- **21 new isolated Chromium cases passed**, running the actual owner page, shared transport, input helper and business-deck code against simulated auth/data responses. The matching-namespace control and different-namespace case both cover home → Orders → exact wording → Back to orders with search retained → Pricing.
+- The unchanged baseline passed 8 of these 21 tests and failed 13. Only the namespace/navigation case is asserted as the reproduced reported defect. The other new negative cases deliberately supply malformed or inconsistent responses and test defense in depth; they are not evidence of live data exposure.
+- Negative coverage: no vessel/membership, wrong returned Project ID, wrong membership vessel/user, operator-only role, inactive/revoked membership, missing server namespace, expired or missing receipt expiry, changed receipt ID, changed local namespace, cleared authentication, changed authenticated account, expired token, and a cleared receipt during the queued transition. All remain held.
+- **All 60 inherited Node checks passed**: Workhorse 24, SteadyHand 20, Ironbound 16.
+- **All 46 inherited isolated browser scenarios passed**: Workhorse 21, SteadyHand 19, Ironbound 6. The inherited Workhorse synthetic member responses now supply the `user_id` and `revoked_at` columns selected and validated by the actual code; no behavioral assertion was removed.
+- Total browser coverage: **67 passing isolated scenarios**. JavaScript and inline-script syntax checks passed.
+
+The owner-navigation tests reject record writes and non-GET calls, and compare the synthetic saved records before and after navigation. Exact sign wording and order search state remain intact. Actual customer data and account credentials were not copied into the tests.
+
+## Scope and limitations
+No live database write, migration, deployment, role change, invitation, report submission, order edit or password operation was performed by the assistant. The connector blocked the requested live read-only precheck; no current server audit is claimed.
+
+Local HTTP startup was tried and blocked by the execution environment with `net::ERR_BLOCKED_BY_ADMINISTRATOR`. Browser checks run actual source in isolated Chromium DOM contexts, with real transport logic and simulated network/storage boundaries. They do not certify native Safari, a real sign-in callback, full hosted startup, continuous backend revocation, every table/RPC, or cloud durability.
+
+The patch changes owner-session proof/validation and associated UI holds. Other executable code changes only current release markers. All baseline files and images, SQL, production lettering geometry, order presentation helper behavior, and commissioning/no-retry coordinator behavior are retained. No browser project namespace or historical business record is rewritten by the repair.
+
+Orders and pricing still use the existing browser-local business records. Do not clear website data. The cloud-backup and full production-permission gates remain open.
+
+## Install and next iPad test
+1. Upload every file inside the small SureFoot update ZIP to the existing repository root over Workhorse 8.8.20.32. Keep every other repository file. No SQL and no deletion.
+2. Reload the same Ike’s owner tab. Use the existing owner sign-in if requested; do not reset the account or use Local Recovery. Confirm **SUREFOOT TEST · 8.8.20.33**.
+3. Tap **Open active orders once**. The expected result is the Orders list, not a login bounce. Send that screen. Leave rates, statuses, lettering, and reports unchanged. If a hold returns, report its exact message instead of repeatedly signing in.
+
+## Rollback and preservation
+The full .32 Workhorse archive remains the pre-repair baseline. A rollback restores its complete matching runtime/metadata; it also restores the known navigation defect. No server rollback is needed. The full .33 snapshot is for recovery, not a single browser-upload batch. Archive identities, delta reconstruction and checksums are verified during final packaging.
+
+## Reproduction
+```
+node VERIFY_WORKHORSE.cjs .
+node VERIFY_STEADYHAND.cjs .
+node VERIFY_IRONBOUND.cjs .
+python VERIFY_SUREFOOT_UI.py . /tmp/surefoot-ui
+python VERIFY_WORKHORSE_UI.py . /tmp/workhorse-ui
+python VERIFY_STEADYHAND_UI.py . /tmp/steadyhand-ui
+python VERIFY_IRONBOUND_UI.py . /tmp/ironbound-ui
+```
+No SQL file is part of installing this frontend repair.
+
+
+---
+# Archived Workhorse 8.8.20.32 report (historical scope, not this repair)
+
 # Black Flag 8.8.20.32 — Workhorse TEST
 
 ## Decision and scope

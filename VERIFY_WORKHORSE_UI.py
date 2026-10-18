@@ -40,7 +40,7 @@ with sync_playwright() as pw:
    if '.supabase.co/' in url:
     if r.request.method!='GET':writes.append({'url':url,'method':r.request.method});return r.fulfill(status=403,body='{}',content_type='application/json')
     if '/fleet_vessels?' in url:return r.fulfill(json=[{'id':'vessel-fixture','project_id':pid,'namespace':'bf.project.'+pid,'display_name':name,'owner_state':'owner_assigned'}] if allow else [])
-    if '/fleet_memberships?' in url:return r.fulfill(json=[{'id':'member-fixture','vessel_id':'vessel-fixture','role':'project_owner','active':True}] if allow else [])
+    if '/fleet_memberships?' in url:return r.fulfill(json=[{'id':'member-fixture','vessel_id':'vessel-fixture','user_id':'owner-fixture','role':'project_owner','active':True,'revoked_at':None}] if allow else [])
     return r.fulfill(json=[])
    if url.startswith(base):return r.continue_()
    return r.abort()
@@ -70,7 +70,7 @@ with sync_playwright() as pw:
    const fetch=async(url,opts={})=>{
      if((opts.method||'GET')!=='GET'){window.fixtureWrites.push({method:opts.method,url});return {ok:false,status:403,json:async()=>({})};}
      if(url.includes('/fleet_vessels?'))return {ok:true,json:async()=>data.allow?[{id:'vessel-fixture',project_id:data.pid,namespace:'bf.project.'+data.pid,display_name:data.name,owner_state:'owner_assigned'}]:[]};
-     if(url.includes('/fleet_memberships?'))return {ok:true,json:async()=>data.allow?[{id:'member-fixture',vessel_id:'vessel-fixture',role:'project_owner',active:true}]:[]};
+     if(url.includes('/fleet_memberships?'))return {ok:true,json:async()=>data.allow?[{id:'member-fixture',vessel_id:'vessel-fixture',user_id:'owner-fixture',role:'project_owner',active:true,revoked_at:null}]:[]};
      return {ok:true,json:async()=>[]};
    };
   """

@@ -1,9 +1,9 @@
 {
-  "release": "Workhorse TEST",
-  "name": "Workhorse TEST",
-  "build": "8.8.20.32",
-  "seal": "workhorse-882032",
-  "file_count": 111,
+  "release": "SureFoot TEST",
+  "name": "SureFoot TEST",
+  "build": "8.8.20.33",
+  "seal": "surefoot-882033",
+  "file_count": 113,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
     "ADMIRAL_RELEASE_DOCTRINE.json",
@@ -70,6 +70,7 @@
     "SUPABASE_IRONBOUND_882029.sql",
     "SUPABASE_KEELLOCK_SUPPORTING_INDEXES_882018.sql",
     "SUPABASE_LEDGER_INTEGRITY_88171.sql",
+    "SUREFOOT_TEST_EVIDENCE.json",
     "TAX_LEDGER_MODEL.json",
     "TEST_BUILD_REPORT.md",
     "VERIFY_IRONBOUND.cjs",
@@ -77,6 +78,7 @@
     "VERIFY_IRONBOUND_UI.py",
     "VERIFY_STEADYHAND.cjs",
     "VERIFY_STEADYHAND_UI.py",
+    "VERIFY_SUREFOOT_UI.py",
     "VERIFY_WORKHORSE.cjs",
     "VERIFY_WORKHORSE_UI.py",
     "WITNESS_TRUTH_MODEL.json",
@@ -117,5 +119,5 @@
     "styles.css",
     "sw.js"
   ],
-  "releaseName": "Workhorse TEST"
+  "releaseName": "SureFoot TEST"
 }

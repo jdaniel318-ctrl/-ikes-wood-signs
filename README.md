@@ -1,3 +1,13 @@
+# Black Flag 8.8.20.33 — SureFoot TEST
+
+Owner navigation repair on Workhorse 8.8.20.32. Separate server authority identity from local storage identity without weakening exact-vessel owner checks. Preserve all orders, rates, styles, receipts and browser data.
+
+Use the small delta upload for the existing repository; keep the complete snapshot for recovery. Do not run SQL or reset credentials. New owner scripts require a matching complete release. The first acceptance check is Today → Open active orders → Orders on the same authorized owner account.
+
+See TEST_BUILD_REPORT.md and SUREFOOT_TEST_EVIDENCE.json. Native iPad acceptance pending; no production release or cloud-backup claim.
+
+---
+## Prior Workhorse README (historical)
 # Black Flag 8.8.20.32 — Workhorse TEST
 
 The existing fleet, with a task-focused owner home, searchable/read-only order detail, labeled price arithmetic and simpler lettering evidence controls. Built on the complete SteadyHand 8.8.20.31 baseline. All existing files and assets are retained.

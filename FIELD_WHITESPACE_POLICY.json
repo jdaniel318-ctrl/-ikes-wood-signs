@@ -1,6 +1,6 @@
 {
   "schema": "black-flag-field-whitespace-policy-v1",
-  "build": "8.8.20.32",
+  "build": "8.8.20.33",
   "default": "preserve unknown inputs",
   "normalization": "ECMAScript trim on ordinary field boundaries only; internal text, case and line formatting retained",
   "sql_contract": "Existing PostgreSQL publisher trims ASCII boundary spaces; browser submits canonical whitespace-free boundaries. Reply and independent read compared exactly; only null versus empty issue summary is equivalent. No SQL changes.",

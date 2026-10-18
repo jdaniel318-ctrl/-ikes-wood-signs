@@ -1,3 +1,10 @@
+## 8.8.20.33 — SureFoot TEST
+- Reproduced Workhorse’s owner-login bounce when server and browser namespaces differ for the same verified Project ID.
+- Bound server and unchanged browser namespaces to an exact, current verified owner identity in memory; preserved expiry checks.
+- Tightened user/vessel/role/active/revoked membership read validation; no server migration or permission changes.
+- Added 21 actual-source owner-navigation regressions; retained Workhorse layouts and all original records/history/assets.
+- No automatic retry or record rewriting. Native acceptance pending.
+
 # 8.8.20.32 — Workhorse TEST
 
 - Shared owner Today desk with real scoped status counts, focused work queue and persistent business navigation.

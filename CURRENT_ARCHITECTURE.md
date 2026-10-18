@@ -1,3 +1,8 @@
+# Current patch: 8.8.20.33 SureFoot TEST
+Owner navigation uses a document-bound proof of the authenticated exact-project owner. The local storage namespace and server vessel namespace are independently retained; string equality between the two is not an authorization requirement. Current account, exact project/vessel/user, owner role, active/non-revoked membership at verification, and session expiry remain required. No RLS or database write in this release.
+
+---
+## Prior architecture notes (retained)
 # Workhorse 8.8.20.32 — current owner-workspace layer
 
 `business_deck.js` and `business_deck.css` provide presentation for the authenticated exact-project owner portal. `owner.html` retains its existing authentication, storage and explicit save handlers. New order details are read-only; the existing local order store is not converted to cloud storage. Helper access does not grant server permissions. Pricing saves delegate only after an explicit click; they do not modify saved order prices. Advanced lettering controls and all production geometry remain original.
