@@ -1,3 +1,23 @@
+# Keelmark 8.8.20.35 — release changes
+
+- Recheck the actual .34 full archive and supported update baselines.
+- Preserve HouseHull as approved new-ship name; keep Iron Square unapproved and historical documents intact.
+- Add explicit measurement/identity/durability gates and a public-safe build brief.
+- Add offline strict package verification and adversarial regression tests.
+- Keep existing runtime behavior unchanged except release identity and static planning link. No DB write, deployment or role change.
+
+## Previous release history (unchanged)
+
+# 8.8.20.34 — Chartwright TEST
+
+- Revalidate SureFoot with unequal server/browser namespaces and all inherited tests.
+- Keep runtime behavior unchanged except unique release markers and static Engine brief link.
+- Correct current acceptance instructions still headed SteadyHand. Preserve historical originals below clearly marked sections.
+- Add phased Iron Square plan: siding first including accessories, nails, openings and trim; roofing/foundations later; no automatic commission.
+- Add archive/runtime preservation and specification-fixture verification. Combined update supports .32 and .33.
+- No database writes, paid resources or permission changes; no new-ship implementation claim.
+
+---
 ## 8.8.20.33 — SureFoot TEST
 - Reproduced Workhorse’s owner-login bounce when server and browser namespaces differ for the same verified Project ID.
 - Bound server and unchanged browser namespaces to an exact, current verified owner identity in memory; preserved expiry checks.

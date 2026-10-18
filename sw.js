@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.20.33';
-const RELEASE_SEAL='surefoot-882033';
+const RELEASE_BUILD='8.8.20.35';
+const RELEASE_SEAL='keelmark-882035';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.

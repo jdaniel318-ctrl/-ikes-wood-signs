@@ -1,25 +1,15 @@
-# SteadyHand 8.8.20.31 acceptance boundary
+# Keelmark 8.8.20.35 — release acceptance
 
-TEST BUILD only. Fresh offline checks: 20 new Node + 16 inherited Node; 19 new browser scenarios + 6 inherited commissioning browser scenarios. Native Safari, complete hosted startup and current-build on-device acceptance are pending. No production launch certification, direct backend security audit, live revocation test or complete working-business handoff is claimed.
+TEST ONLY. Begin with START_HERE_KEELMARK.md. A new release label is not a field or server-security pass.
 
-Preserve the working VoyageKeeper and its account/appointment/report. Install by replacing the matching frontend files only. Do not execute SQL or replay commissioning. See TEST_BUILD_REPORT.md.
+## Immediate native gate
+Ike owner sign-in → Today → Open active orders → inspect the exact existing order → return with search/filter retained. Confirm Keelmark, the same owner, untouched values and no sign-in bounce. No repeated sign-ins if a hold persists.
 
-<details><summary>Historical release acceptance record — retained, not current acceptance</summary>
+## Preserved boundaries
+No unauthorized account/vessel proof; no automatic command retry; no overwritten browser namespace; no order repricing/deletion; no A/B geometry or secret trimming changes. The known local durability limitation remains.
 
-# Crosscheck 8.8.20.28 — current acceptance scope
+## New-ship gate
+HouseHull is the approved design name. Reconcile the exact existing draft/identity. Iron Square is not an approved rename. Siding first, photos supplied at quote request, verified scale, openings/trim, complete accessories and fasteners, explicit holds. Plans are not deployed capabilities.
 
-Crosscheck is a client test candidate for the recovered-voyage authorization path. It preserves IronLatch recovery disclosure behavior and changes the unverified recovered-voyage primary action to **VERIFY ADMIRAL & RESUME**.
-
-A recovered voyage may clear its hold only after the existing Admiral gate succeeds and Fleet Core read-back confirms the exact saved draft/voyage pair. Failure, mismatch, or unavailable server evidence keeps the recovery hold in place and does not publish, grant ownership, appoint a Captain, or create a replacement voyage.
-
-## iPad acceptance
-
-1. Upload all files inside `DarkSky882028-Crosscheck` to the existing site root and confirm **8.8.20.28 / CROSSCHECK** on the Engine.
-2. Open **Commission New Project** and confirm VoyageKeeper remains at Step 5 with **Sync Needed / Recheck Required**. The primary recovery action must read **VERIFY ADMIRAL & RESUME**.
-3. Tap it once. Complete the existing Admiral gate. Stop on the returned commissioning screen and capture the result before using Continue. A mismatch or failed read-back must remain held.
-
-
-## 8.8.20.28 — Crosscheck
-Verified recovered voyages now enter 06 · Review deterministically from Continue Voyage. Entering Review is navigation-only: no commission, publication, owner handoff, or Fleet Core mutation is issued. Review carries the exact recovered voyage identity and SERVER SAFE / NOT PUBLISHED truth.
-
-</details>
+## Outstanding
+Full hosted Safari startup, direct backend RLS/RPC testing, continuous revocation, durable backups/restore, approved commercial terms and complete business workflow remain separate evidence gates. This release changes no database permissions.

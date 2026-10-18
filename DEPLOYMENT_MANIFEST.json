@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.20.33",
-  "version": "8.8.20.33",
-  "release_name": "SureFoot TEST",
-  "releaseName": "SureFoot TEST",
-  "release_seal": "surefoot-882033",
+  "build": "8.8.20.35",
+  "version": "8.8.20.35",
+  "release_name": "Keelmark TEST",
+  "releaseName": "Keelmark TEST",
+  "release_seal": "keelmark-882035",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -94,8 +94,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "Focused repair for owner home-to-orders session validation: separately bind server and browser namespaces to the authenticated exact-project owner. No record migration or permission grants.",
-  "release_note": "TEST BUILD. Install over Workhorse 8.8.20.32. No SQL, new account, role change, record rewrite or automatic retry. Preserve browser data. Native iPad acceptance pending.",
+  "release_focus": "Rechecked owner navigation repair; preserved approved HouseHull identity with Iron Square only an unapproved alternative; static current brief and strict offline package verification. No new ship runtime, database action or permission change.",
+  "release_note": "TEST ONLY. Combined small update supports Workhorse .32, SureFoot .33 or Chartwright .34. Native Ike owner navigation still requires user proof. No SQL, password reset or browser-data clearing.",
   "tax_ledger_upgrade": {
     "schema": "dark-sky-fleet-tax-ledger-v1",
     "model": "TAX_LEDGER_MODEL.json",
@@ -217,8 +217,8 @@
     "algorithm": "SHA-256",
     "files": {
       "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": {
-        "sha256": "5ccfb537e43c820ac93e21806ac9450fd9c1e86846a09efdf5661101096a11f8",
-        "build": "8.8.20.33",
+        "sha256": "710bdea3dfdab23b84f067cb92f959df69d7262e779bd69baf02dd49929488d8",
+        "build": "8.8.20.35",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -265,14 +265,14 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_COMMAND_MODEL.json": {
-        "sha256": "ba1ede7b5b39395c931c51e2b43876e925802fe1ba293324a72f8f61344847ed",
-        "build": "8.8.20.33",
+        "sha256": "c404c8dbbc93949eac47450671ed492a2fe4ff9810306a7d586504f6a1d4c8c9",
+        "build": "8.8.20.35",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
       "FLEET_DOCTRINE_REGISTRY.json": {
-        "sha256": "b43b1d0af85fe6c660bb9f825d694a7ae27739097aa03ed4eea36b9617336080",
-        "build": "8.8.20.33",
+        "sha256": "b0f9182847d7f8345f79c8c5d2ca4f34455328ae91ae3ddc838bd4245dfd7b8a",
+        "build": "8.8.20.35",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -331,8 +331,8 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "GOLDEN_VOYAGES.json": {
-        "sha256": "52a43fc13fb118bff561688b270d2dadd15f6de6db3c4cb49d693d56dacfe272",
-        "build": "8.8.20.33",
+        "sha256": "1715365d190c987db6fe0fb53c1c4ce835aae4037c288bcba4b85f17d49a1c98",
+        "build": "8.8.20.35",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -485,22 +485,22 @@
       "simple_books.css": "5939590021ef2d3738d5f5f7249d72f8da64cc274bf287ef8183958517b0ba46",
       "platform_core.js": "7f797bc382a73eb9ec4365a7458e8329da60c50561e3ac751ca3fb9d7cd5ec49",
       "platform_v4.js": "21daf7777150d654467042893298147374318fdfc7ac38faf9260f874522019b",
-      "platform_identity.js": "93826eb215535e192a34d7e932cf0646f8668dcfcb9b9f83fa6e3cf939468fdf",
-      "fleet_supabase.js": "390f52a9ca9ddff4276e1e37ae79da7d442e0e927a992834658613dc483feb0a",
+      "platform_identity.js": "ae43e681c5086a96a0558e85c760b14406b22de35a3c7e587771a8b146497962",
+      "fleet_supabase.js": "7855c57cf2111dea9bbdeb79779d45601239cbeb0a94ea6f66b33d0a032413cd",
       "ike_style_registry.js": "6b348ebceb47e172e6676f46252b19c1c6bb7532baf76febfa8dd81760a76ab7",
-      "app.js": "c7bd26adf3e9a78674ba43ca8a34d51d3e48de2825e939ed7b6efba34ee616ad",
-      "captain.js": "2da551b82f2c1f0be686766ad4851e8eaf49020127c2d82969d870d8e9f45979",
-      "simple_books.js": "adce04a35f2021db65a519f72c08a703642cf93e106e5c05e11f2d620176b244",
-      "owner.html": "c0add95723fef737de5035e12878b84348ced42a73cb5e9fbc6dd494d300f9b0",
-      "manifest.webmanifest": "21856aa04502855bd4237c62722f882e5fb8422f167696c556ef514d8b6a6081",
+      "app.js": "673f3fc549b344ebd465225bb86bdd1cd10a3c4323897fc344bc3e74c7dec66b",
+      "captain.js": "ea6301f4d417d8c9d754efed1179c26b6313794b81a9825929d75f480e428fb9",
+      "simple_books.js": "9203ec43b09b79ccab65932056c84330e22b01f53cd8bf9ee87dc3c20433f13a",
+      "owner.html": "a8ebb95a57a190c52b77ff44d4ed975d70f19a0a5c8889d8ccad5f71bce5f74c",
+      "manifest.webmanifest": "c6d5b4a098f23b097626f96c2026258ad160714434785c3dda920a0b4713f229",
       "IKE_STYLE_FOUNDRY.json": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
-      "sw.js": "8f4ec110e53c8c4f475c09b870c01fd6422aaf8bd8ae9292d1875696616a1f5c",
-      "FLEET_DOCTRINE_REGISTRY.json": "b43b1d0af85fe6c660bb9f825d694a7ae27739097aa03ed4eea36b9617336080",
-      "GOLDEN_VOYAGES.json": "52a43fc13fb118bff561688b270d2dadd15f6de6db3c4cb49d693d56dacfe272",
-      "FLEET_COMMAND_MODEL.json": "ba1ede7b5b39395c931c51e2b43876e925802fe1ba293324a72f8f61344847ed",
-      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "5ccfb537e43c820ac93e21806ac9450fd9c1e86846a09efdf5661101096a11f8",
-      "input_hygiene.js": "87e140205eaa3812d6d64bb74a95021688f72914af1f41e5298a60dbdbef23e5",
-      "business_deck.js": "b701e4d515f1598098939116671e398f6e3f9e9ee45b2fa2eeca19e359165dde",
+      "sw.js": "4fa43ee8fd772cf72b50a2ca0b2a7d69a439f4242606ff06a96af24ecd568b62",
+      "FLEET_DOCTRINE_REGISTRY.json": "b0f9182847d7f8345f79c8c5d2ca4f34455328ae91ae3ddc838bd4245dfd7b8a",
+      "GOLDEN_VOYAGES.json": "1715365d190c987db6fe0fb53c1c4ce835aae4037c288bcba4b85f17d49a1c98",
+      "FLEET_COMMAND_MODEL.json": "c404c8dbbc93949eac47450671ed492a2fe4ff9810306a7d586504f6a1d4c8c9",
+      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "710bdea3dfdab23b84f067cb92f959df69d7262e779bd69baf02dd49929488d8",
+      "input_hygiene.js": "bc8ffe45d81dc8a45e6d580b9a75d23831cbbd0dbd23f7b037571a21ba15112f",
+      "business_deck.js": "23ee75f16f7522db674659dd5099fa8235754725d408f149b4eb1c6c4462e986",
       "business_deck.css": "445fa81fff307d41cdd9a7d181ec86f9daae6843d24ac0d9fe14f939a25b6289"
     }
   },
@@ -790,7 +790,7 @@
     "scope": "project-owned canonical logo routing and Fleet Mission presentation",
     "logo_source": "existing projectGraphics/projectLogo exact-vessel store",
     "fleet_mission_display": true,
-    "quick_route": "Fleet Mission LOGO \u2192 exact vessel Project Control \u2192 Marketing \u2192 Project Logo / Mark",
+    "quick_route": "Fleet Mission LOGO → exact vessel Project Control → Marketing → Project Logo / Mark",
     "cross_vessel_copy": false,
     "authority_changes": false,
     "business_record_changes": false,
@@ -936,7 +936,7 @@
     "project_data_mutation": false,
     "field_failure_proof": "8.8.20.13 held on styles.css because packaged DEPLOYMENT_MANIFEST runtime hash did not match packaged styles.css bytes"
   },
-  "release": "SureFoot TEST",
+  "release": "Keelmark TEST",
   "clearbearing_upgrade": {
     "build": "8.8.20.22",
     "baseline": "8.8.20.14 HashLock",
@@ -1038,5 +1038,14 @@
     "local_records_rewritten": false,
     "auto_retry": "forbidden",
     "server_permission_certification": false
+  },
+  "chartwright_review": {
+    "scope": "runtime preservation plus release/plan documentation",
+    "plan_file": "chartwright-brief.html",
+    "machine_readable_plan": "IRON_SQUARE_PLAN.json",
+    "planning_only": true,
+    "new_ship_commissioned": false,
+    "auto_retry": "forbidden",
+    "permissions_changed": false
   }
 }

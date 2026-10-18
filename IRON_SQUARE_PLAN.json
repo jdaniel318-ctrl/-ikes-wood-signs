@@ -1,0 +1,41 @@
+{
+  "schema": "blackflag-vessel-design-plan-v1",
+  "plan_version": "IS-DESIGN-1",
+  "release_build": "8.8.20.34",
+  "working_name": "Iron Square",
+  "name_status": "working_title_not_trademark_or_domain_clearance",
+  "status": "planning_only",
+  "commissioned": false,
+  "canonical_project_id": null,
+  "auto_commission": false,
+  "auto_retry": "forbidden",
+  "permissions_changed": false,
+  "proposed_class": "fleet_core_business_vessel",
+  "proposed_ownership": "admiral_owned",
+  "final_class_requires_approval": true,
+  "bootstrap_build_class": "admiral_program_outside_fleet_core",
+  "prior_househull_reconciliation_required": true,
+  "mission": "Help a salesperson produce a traceable siding takeoff after a quote request, using verified dimensions, four-side photos, openings, trim and product-specific material rules.",
+  "photo_views": ["front", "back", "left", "right"],
+  "material_line_types": ["siding", "starter", "inside_corners", "outside_corners", "opening_trim", "finish_trim", "flashing", "fasteners", "miscellaneous"],
+  "scale_policy": "field_measure_or_verified_reference_required",
+  "complete_takeoff_requires_resolved_material_rules": true,
+  "draft_state_model": ["draft", "needs_measurement", "needs_product_rules", "reviewed_takeoff", "approved_quote", "superseded"],
+  "phases": [
+    {"id":"siding", "scope":"Quote request, salesperson handoff, four-side photos, verified wall/gable dimensions, doors/windows, trim choice, accessories, nails and manual miscellaneous lines; internal takeoff revision."},
+    {"id":"roofing", "scope":"Independent measured roof planes, pitch/slope basis, ridge/hip/valley/eave/rake lengths and selected-product accessory/fastener coverage; no hidden pitch conversion or double waste."},
+    {"id":"foundation", "scope":"Brick/block foundation faces, measured wall area and openings, selected unit nominal coverage, waste, trim/finishes; never structural design certification."},
+    {"id":"assisted_measurement", "scope":"Aerial, drone or vision providers only after consent, accuracy and licensing/cost review; suggested numbers require verification."}
+  ],
+  "labor_modes": ["per_square", "per_square_foot", "per_linear_foot", "per_opening", "per_item", "per_crew_day", "manual_line"],
+  "isolation_contract": {"keys":["vessel_id","estimate_id","revision_id"],"photos":"private_vessel_scoped_storage","customer_data_cross_vessel":"denied","admiral_observation":"read_only_authenticated_and_audited","writes":"exact_vessel_authenticated_explicit_once_with_readback","exports":"exact_vessel_revision_scoped_without_other_records"},
+  "existing_operation_policy": "read_and_reconcile_only_never_replay",
+  "protected_operations": ["2d7fc23f-180d-4d61-ae22-f241d096cde5", "5bceb74a-86c6-49e3-a2a1-d9152527d3b0"],
+  "fixture_scope": "synthetic_specification_examples_not_product_execution",
+  "arithmetic_fixtures": [
+    {"id":"SIDING-RECT-001","width_ft":40,"height_ft":10,"gable_base_ft":0,"gable_height_ft":0,"openings":[{"width_ft":3,"height_ft":5,"count":2},{"width_ft":3,"height_ft":7,"count":1}],"waste_percent":10,"pack_coverage_sqft":200,"expected":{"gross_sqft":400,"net_sqft":349,"net_squares":3.49,"with_waste_sqft":383.9,"packs":2}},
+    {"id":"SIDING-GABLE-002","width_ft":30,"height_ft":10,"gable_base_ft":30,"gable_height_ft":6,"openings":[{"width_ft":3,"height_ft":5,"count":2}],"waste_percent":10,"pack_coverage_sqft":200,"expected":{"gross_sqft":390,"net_sqft":360,"net_squares":3.6,"with_waste_sqft":396,"packs":2}}
+  ],
+  "fixture_assumptions": "Opening subtraction, 10 percent waste and 200 sqft per package are chosen arithmetic fixtures only, not product recommendations or verified installation rules.",
+  "release_gates": ["Admiral approves final class/name", "Reconcile any existing HouseHull draft", "Private test-only server-first commission once", "Measured example matches hand calculations", "All required product accessory/fastener rules supplied", "Exact-vessel Captain accepts", "Direct backend own/foreign read-write tests", "Revocation and restoration proof", "Private storage and backup restore", "Scoped Admiral exports", "iPad Safari field proof", "Commercial agreement before paid launch"]
+}

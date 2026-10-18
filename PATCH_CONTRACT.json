@@ -1,0 +1,27 @@
+{
+  "schema": "blackflag-patch-contract-v1",
+  "target_build": "8.8.20.35",
+  "target_seal": "keelmark-882035",
+  "supported_bases": [
+    {
+      "build": "8.8.20.32",
+      "archive_name": "DarkSky882032-Workhorse-TEST.zip",
+      "sha256": "5686c362cef2a938b56fcfecbe11ebcc6315dfc77dc37673db897dd24602eae0"
+    },
+    {
+      "build": "8.8.20.33",
+      "archive_name": "DarkSky882033-SureFoot-TEST.zip",
+      "sha256": "b2c76202f0cbe5169a223aa527a30e635418a80253fd97d2604a420715e2c4a4"
+    },
+    {
+      "build": "8.8.20.34",
+      "archive_name": "DarkSky882034-Chartwright-TEST.zip",
+      "sha256": "634e08b351ea015851ee48b7e4c8c8cbfab8ecc4c4deaa38fe6ddff26d7d623b"
+    }
+  ],
+  "requires_deletions": false,
+  "max_upload_files": 85,
+  "database_actions": "none",
+  "rule": "All update files go at existing repository root. Full recovery archive is not one browser upload. Unknown or mixed baselines require inspection.",
+  "hash_limit": "Integrity checks detect inconsistency; they are not a digital signature or authorization."
+}
