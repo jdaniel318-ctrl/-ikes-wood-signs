@@ -1,3 +1,84 @@
+# Black Flag 8.8.20.32 — Workhorse TEST
+
+## Decision and scope
+A business-workspace improvement based on the complete SteadyHand 8.8.20.31 release, not a new or empty fleet. The shared owner portal now makes daily work easier to find and inspect, with an Ike-specific sign-order detail view, clear price arithmetic, and an evidence-only lettering overview. Existing Captain, Admiral, customer, commissioning, ledger, and production-rendering code is preserved apart from current release identities and required loader metadata.
+
+This is a **TEST BUILD, not a production launch or full server-permission certification**. No live database writes, migrations, deployments, invitations, paid resources, role changes, new reports, order edits, style compilation, or publication were performed while preparing it. No automation was scheduled. The package is delivered for the Captain’s deliberate upload.
+
+## What is new
+
+### 1. A usable owner home across businesses
+One compact business header and persistent Today / Orders / Pricing navigation; Ike’s also has Lettering Styles. Real counts are derived from the already-loaded exact-business records: new, in progress, ready, and completed/closed. The first view puts active work and an oldest-received queue ahead of platform reporting. Existing Features, Branding, Fleet Report, Fleet Services and Settings remain reachable. No existing module is deleted.
+
+Unknown status stays visible as other active work. Missing price, missing payment status, and explicitly labeled test records remain distinct. No duplicate classification is inferred from customer names or repeated wording. An unreadable order store creates an explicit hold rather than displaying a false zero. Conflicting same-project identity metadata is withheld with an explicit count; the records are not deleted or reclassified. The root record source is clearly labeled as this browser’s saved business records.
+
+### 2. Searchable orders and actual detail views
+The old summary-only cards now have a View order action. Search by saved order identifier, customer, wording, contact details or status; filter by work stage; sort oldest/newest; browse six records per page. Returning from a detail retains the search, stage, sorting and page.
+
+The new detail screen is read-only. It exposes the recorded order number, dates, status, exact case and spacing of sign wording, lettering style, saved species/length/rate, price, recorded payment status, notes, customer fields, and supported saved raster photos/approved-preview snapshots when present. Missing fields stay missing, not invented. Conflicting saved approval wording or price is flagged for review without choosing which is authoritative. Service-business details label requested scheduling windows as not confirmed.
+
+**No new-order creation, status-editing, customer messaging, or production-export workflow was added to the owner portal.** Existing workflows elsewhere remain. This change makes the saved order useful to inspect without adding unreviewed data-writing authority.
+
+### 3. Pricing that explains itself
+Existing six-species values and Active checkboxes are unchanged. Rate fields explicitly state dollars per linear foot. A known-length calculator accepts inches or feet and shows rate × length using the current form values. It is clearly arithmetic only, not a quote and not a claim that minimums, taxes, extras or rounding policies have been resolved.
+
+Edits now create an honest unsaved-state message. No-change Save is disabled. An explicit save invokes the existing settings handler once; fields freeze while it completes so a later edit cannot be misrepresented as saved. Unconfirmed writes hold without an automatic retry. Reopening Pricing rereads saved settings. Existing orders are not repriced. This does not introduce a new cloud-backed pricing endpoint.
+
+### 4. Lettering without false promises
+Real A/B references are shown in compact cards. A case-sensitive exact-wording checker compares the characters with the evidence loaded in the current workspace, preserves deliberate spaces and lowercase, and never certifies machine geometry. The old foundry controls remain under Advanced production review: uploads, draft styles, evidence editing, segmentation, canonical selection, compilation, certification, publication and history are not removed or bypassed.
+
+Presentation distinguishes workflow scores from production approval and reference-character coverage from cutting-path tests. Bundled anchor flags, A/B registry, geometry and sample images are unchanged. No owner evidence was added, removed or approved. Empty evidence in one loaded view is not proof that earlier files were lost.
+
+### 5. Shared presentation, preserved business identity
+The owner deck is shared across businesses; tests cover Ike’s, Legacy Plumbing, Becca’s Bloom Shop, Mugs After Dark, Signal Restoration and Grizzly Bear with synthetic data. Business names, exact project identifiers and saved supported logos remain scoped. Shared services text no longer calls another business “Ike’s.” New controls have readable labels, focus states, touch-friendly sizes and responsive layouts. Customer sign canvases and business-specific customer journeys were not redesigned in this update.
+
+## Verification
+
+- **60 Node checks passed:** 24 new Workhorse checks, 20 inherited SteadyHand checks, and all 16 inherited Ironbound commissioning checks.
+- **46 isolated Chromium scenarios passed:** 21 owner-workspace scenarios, 19 SteadyHand report/input/Admiral scenarios, and six Ironbound commissioning scenarios.
+- New coverage includes whole owner-script startup into the exact-business fixture, denied and expired owner sessions, search/filter/pagination and detail-return behavior, foreign/conflicting record withholding, missing and zero amounts, text injection/unsafe-image rejection, exact wording/case, no-write navigation and calculators, explicit once-only pricing saves, failed reads, uncertain-save holds, and unchanged order prices.
+- A delayed-save regression reproduced editable pricing fields during an in-flight save before the fix. The corrected test verifies the field freeze, one write, and correct post-save dirty state. Earlier red runs reproduced the missing task home/actionable queue, incorrect unchanged-pricing message, absent persistent nav and missing conflict-count behavior.
+- Actual owner, order, price and lettering panels were checked at widths 390, 768, 1024 and 1366 pixels. Tested panels had no horizontal overflow. Screenshots contain synthetic sample records, not the user’s real order counts or customers.
+- Preserved all **105 baseline filenames**, all **16 image assets**, all **five SQL files**, the A/B style registry and original broad platform CSS. Authentication/membership and geometry declarations received a source comparison. Existing geometry and permission rules were not replaced by the new presentation helper.
+- Final packaging verifies runtime/model hashes, archive CRCs, identical checksum ledgers, a single correctly named folder, safe paths, a small delta upload, and byte-exact reconstruction of the full release from SteadyHand plus that delta.
+
+## Test limitations
+Full HTTP navigation in the execution environment was blocked with `net::ERR_BLOCKED_BY_ADMINISTRATOR`. The owner tests therefore execute the actual HTML, actual JavaScript handlers and actual release assets in isolated Chromium DOM contexts with an in-memory IndexedDB-shaped fixture and synthetic authentication/read responses. All real network requests are blocked. This is meaningful integration testing, **not** proof of full hosted startup, native iPad paste behavior, service-worker upgrade, real authentication callbacks, or server RLS/revocation. WebKit was unavailable. Native Safari acceptance remains the next step.
+
+One screenshot-heavy owner-suite rerun exceeded a 45-second command budget after 20 passing scenarios; the complete suite was rerun successfully with a longer budget, with all 21 scenarios passing. No failing functional result was suppressed.
+
+Review was a source self-review with automated regressions, not an independent external security review. No false claim is made that every customer form across the fleet is newly field-certified.
+
+## Live read-only checkpoints
+Preflight at **2026-10-17 19:36:06 UTC** and postflight at **2026-10-17 20:14:10 UTC** returned the same relevant posture: Ike’s staging/owner-operated/owner-assigned; VoyageKeeper commissioning/Captain-operated/owner-unassigned; four total active memberships; one active global authority; two VoyageKeeper reports. The retired failed operation remains verified-not-created/closed/retry-forbidden, and its successful successor remains verified-created/closed/retry-forbidden. These checks did not fetch customer payloads and do not establish a full database-wide equality proof. No write request was sent.
+
+## Data durability and remaining work
+The owner Orders and Pricing path reviewed here still consumes browser-local business records/settings. A successful server owner sign-in does not turn those records into a cloud backup. Do not clear Safari data. No local order was moved, swept, repriced or deleted by this build process.
+
+Remaining gates include complete live backend read/write denial coverage, deliberate revocation/replacement proof, scoped Admiral exports, first-time invitation route improvement, measured production-lettering fidelity, the full customer-to-production order workflow, and a production durability/availability plan. Existing broader readiness holds are not cleared by this UI release. Automatic retry remains forbidden.
+
+## Install and first three iPad checks
+1. Use the small **Workhorse Upload ZIP** on top of the existing **SteadyHand 8.8.20.31** site. Extract it and upload the contents of its one folder to the existing repository root. Preserve all other files. No SQL or permission changes. Keep the full recovery ZIP separately, not as a single browser-upload batch.
+2. Open Ike’s existing Owner Entrance with its already-assigned owner account. Confirm **WORKHORSE TEST · 8.8.20.32** and the new Today screen. Counts must reflect the records in that browser, not the sample counts in the test screenshots.
+3. Open Orders, search an existing wording or identifier, select View order, then Back to orders. Confirm the saved wording, price, status and available image details, and that the list filter remains. Send the new home and order/detail screen. Do not save pricing, compile lettering, change order status or publish a report for this first check.
+
+## Rollback and source reproduction
+Keep the complete SteadyHand .31 archive. Rollback restores the complete matching prior runtime and manifests, not individual mixed-version files. No database rollback is needed or authorized; new unused presentation assets need not be deleted. Historical SQL is retained evidence, not installation instructions.
+
+From the extracted full package, run:
+```
+node VERIFY_WORKHORSE.cjs .
+node VERIFY_STEADYHAND.cjs .
+node VERIFY_IRONBOUND.cjs .
+python VERIFY_WORKHORSE_UI.py . /tmp/workhorse-ui
+python VERIFY_STEADYHAND_UI.py . /tmp/steadyhand-ui
+python VERIFY_IRONBOUND_UI.py . /tmp/ironbound-ui
+```
+The Python test harnesses require installed Playwright, BeautifulSoup and Chromium; no new runtime dependency was added to Black Flag.
+
+
+<details><summary>Retained prior SteadyHand report — historical, not current installation instructions</summary>
+
 # Black Flag 8.8.20.31 — SteadyHand TEST
 
 ## Purpose and release boundary
@@ -67,3 +148,5 @@ From the extracted folder: `node VERIFY_STEADYHAND.cjs .` and `node VERIFY_IRONB
 ## Preservation inventory
 
 All **100 baseline filenames** are retained; **16 original image assets** and all existing SQL files are byte-for-byte unchanged. This ZIP contains 105 files. New files: FIELD_WHITESPACE_POLICY.json, STEADYHAND_TEST_EVIDENCE.json, VERIFY_STEADYHAND.cjs, VERIFY_STEADYHAND_UI.py, input_hygiene.js.
+
+</details>

@@ -1,9 +1,9 @@
 {
-  "release": "SteadyHand TEST",
-  "name": "SteadyHand TEST",
-  "build": "8.8.20.31",
-  "seal": "steadyhand-882031",
-  "file_count": 105,
+  "release": "Workhorse TEST",
+  "name": "Workhorse TEST",
+  "build": "8.8.20.32",
+  "seal": "workhorse-882032",
+  "file_count": 111,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
     "ADMIRAL_RELEASE_DOCTRINE.json",
@@ -77,7 +77,11 @@
     "VERIFY_IRONBOUND_UI.py",
     "VERIFY_STEADYHAND.cjs",
     "VERIFY_STEADYHAND_UI.py",
+    "VERIFY_WORKHORSE.cjs",
+    "VERIFY_WORKHORSE_UI.py",
     "WITNESS_TRUTH_MODEL.json",
+    "WORKHORSE_FIELD_GUIDE.md",
+    "WORKHORSE_TEST_EVIDENCE.json",
     "admirals_deck_ceremonial_v640.png",
     "app.js",
     "black_flag_platform_icon.png",
@@ -85,6 +89,8 @@
     "bootstrap_build_horizontal.png",
     "bootstrap_build_icon.png",
     "bootstrap_build_logo.png",
+    "business_deck.css",
+    "business_deck.js",
     "captain.js",
     "captains_quarters_cinematic_v2953.jpg",
     "captains_quarters_command_center_v578.png",
@@ -111,5 +117,5 @@
     "styles.css",
     "sw.js"
   ],
-  "releaseName": "SteadyHand TEST"
+  "releaseName": "Workhorse TEST"
 }

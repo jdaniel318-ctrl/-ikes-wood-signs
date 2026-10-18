@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.20.31",
-  "version": "8.8.20.31",
-  "release_name": "SteadyHand TEST",
-  "releaseName": "SteadyHand TEST",
-  "release_seal": "steadyhand-882031",
+  "build": "8.8.20.32",
+  "version": "8.8.20.32",
+  "release_name": "Workhorse TEST",
+  "releaseName": "Workhorse TEST",
+  "release_seal": "workhorse-882032",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -54,7 +54,9 @@
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
     "bootstrap_build_logo.png",
     "bootstrap_build_horizontal.png",
-    "bootstrap_build_icon.png"
+    "bootstrap_build_icon.png",
+    "business_deck.js",
+    "business_deck.css"
   ],
   "atomic_release_contract": {
     "manifest_runtime_agreement": "required-before-execution",
@@ -92,8 +94,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "Field-aware paste cleanup, exact report proof, truthful lifecycle/authority labels; no database migrations or permission changes.",
-  "release_note": "TEST BUILD. Preserve existing VoyageKeeper, appointment and report. Do not commission again. Native acceptance of the hardening changes is pending.",
+  "release_focus": "Shared task-focused owner workspaces, scoped read-only order details, rate arithmetic, evidence-only lettering review; existing security and production geometry unchanged.",
+  "release_note": "TEST BUILD. No SQL, new vessel, owner/Captain appointment, live activation, or database migration. Preserve all saved orders and prior release. Native iPad acceptance pending.",
   "tax_ledger_upgrade": {
     "schema": "dark-sky-fleet-tax-ledger-v1",
     "model": "TAX_LEDGER_MODEL.json",
@@ -215,8 +217,8 @@
     "algorithm": "SHA-256",
     "files": {
       "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": {
-        "sha256": "16e427db68164749d84b27efa53ad2a8da25df51b20e8a6fb113c17bac420d7e",
-        "build": "8.8.20.31",
+        "sha256": "dbd32f86a4978879964cc5056e0cc15136729b098e273fee5d5ec1069a22c565",
+        "build": "8.8.20.32",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -263,14 +265,14 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_COMMAND_MODEL.json": {
-        "sha256": "ff800ea6f68236e1b378c22a17f82a8d27ab6901f3b81c18a8dc70f7c84087ae",
-        "build": "8.8.20.31",
+        "sha256": "d5ee37df07651555100a9e60d57511e8ac32d7a8e1c59fe428dc0c25555c4ff0",
+        "build": "8.8.20.32",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
       "FLEET_DOCTRINE_REGISTRY.json": {
-        "sha256": "ed7766106c405a6f3cbed63134c2942732bf60564c9acdf5b95ffced27b4ed7c",
-        "build": "8.8.20.31",
+        "sha256": "8a226ce52e13aa43e38f3817e056d634c5001f46a404bfd3156cdbe2061770ad",
+        "build": "8.8.20.32",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -329,8 +331,8 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "GOLDEN_VOYAGES.json": {
-        "sha256": "dd8d0c2faa606a4473a24db1d17c334e739df6f28a655a8ac51c5dbb5c594a01",
-        "build": "8.8.20.31",
+        "sha256": "57096e12b726f18cd7dae2f4089974158e6d31a9a7a662d7162c5e5241b01f0e",
+        "build": "8.8.20.32",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -483,21 +485,23 @@
       "simple_books.css": "5939590021ef2d3738d5f5f7249d72f8da64cc274bf287ef8183958517b0ba46",
       "platform_core.js": "7f797bc382a73eb9ec4365a7458e8329da60c50561e3ac751ca3fb9d7cd5ec49",
       "platform_v4.js": "21daf7777150d654467042893298147374318fdfc7ac38faf9260f874522019b",
-      "platform_identity.js": "ef498870d08d23e61f5883e5dc76829874afccd66f357fb4dbfbbc7fefee6435",
-      "fleet_supabase.js": "c89e7b582b5611fa19823437acb6c807f553cabb4274f9bac932db1abfd3f619",
+      "platform_identity.js": "d153e4bc00e73826efc628138bf82590830b38cfd1aafac489f138c526b8353a",
+      "fleet_supabase.js": "dd8a8a6b1d992570d964829ff2bb5c1ad3d044b636ca3d3248b547fdad44f71e",
       "ike_style_registry.js": "6b348ebceb47e172e6676f46252b19c1c6bb7532baf76febfa8dd81760a76ab7",
-      "app.js": "5f1fe84cd695fd868d97fc3167c52d79dc75bd0a78f4879ad2a24654f77f6990",
-      "captain.js": "1c5f41f00bd22565fd5e5656afd8d92d10c01e98a14531cffcfc6a01641253b7",
-      "simple_books.js": "13e104c3ac348bc705f06ab78da4527166ace4683d5390ca6ac0681db31043a6",
-      "owner.html": "7e1506cdf9029c2bdc416969c048923183f774a532dd988843a22dfa6ea716e1",
-      "manifest.webmanifest": "d9b52fcf0cbb145b62d70e0c1b6e50a220f61e5b52c0b5953e048798eb9d6449",
+      "app.js": "0ebd4556478fbd2fd592ae988d5299a591f95db0d1515dccdadaadefba732af9",
+      "captain.js": "1d5399fd926b48199e6c5ab67daad49e714dd191c70039268373f72d095ff3d0",
+      "simple_books.js": "f156c66c1888d7005bbdf1c3c08d949ed7e6b0a6a96723af1835941852c626e7",
+      "owner.html": "cc00c72773cecda7f8ceeda83538e0322525f831d00fb41b9f808ed68d9c01ad",
+      "manifest.webmanifest": "a04574488941f608c9292f9e32216e333c629b45618279ec6164d7171b483635",
       "IKE_STYLE_FOUNDRY.json": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
-      "sw.js": "7751cc1690f0c4040be60a75af7a38b5edf695e21253b2306257d7f3e6ed8052",
-      "FLEET_DOCTRINE_REGISTRY.json": "ed7766106c405a6f3cbed63134c2942732bf60564c9acdf5b95ffced27b4ed7c",
-      "GOLDEN_VOYAGES.json": "dd8d0c2faa606a4473a24db1d17c334e739df6f28a655a8ac51c5dbb5c594a01",
-      "FLEET_COMMAND_MODEL.json": "ff800ea6f68236e1b378c22a17f82a8d27ab6901f3b81c18a8dc70f7c84087ae",
-      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "16e427db68164749d84b27efa53ad2a8da25df51b20e8a6fb113c17bac420d7e",
-      "input_hygiene.js": "c779c66cb7026d585add6b84542f98e56cdb84cfc0d6cdfaf1e0948ad2ae24a1"
+      "sw.js": "cbfa4f96b6257824872a4aa30792a424bc142784cfb70878c6165e16c4a52f7e",
+      "FLEET_DOCTRINE_REGISTRY.json": "8a226ce52e13aa43e38f3817e056d634c5001f46a404bfd3156cdbe2061770ad",
+      "GOLDEN_VOYAGES.json": "57096e12b726f18cd7dae2f4089974158e6d31a9a7a662d7162c5e5241b01f0e",
+      "FLEET_COMMAND_MODEL.json": "d5ee37df07651555100a9e60d57511e8ac32d7a8e1c59fe428dc0c25555c4ff0",
+      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "dbd32f86a4978879964cc5056e0cc15136729b098e273fee5d5ec1069a22c565",
+      "input_hygiene.js": "3ff6a2920048f75108b427713b36f659dcddaae0db35160b7b3aa53032a73677",
+      "business_deck.js": "0933b52b37196ef8a41a710421ef647c88f2fe62b5f7ac504c4ec82f6fded3f5",
+      "business_deck.css": "445fa81fff307d41cdd9a7d181ec86f9daae6843d24ac0d9fe14f939a25b6289"
     }
   },
   "watchbeacon_upgrade": {
@@ -932,7 +936,7 @@
     "project_data_mutation": false,
     "field_failure_proof": "8.8.20.13 held on styles.css because packaged DEPLOYMENT_MANIFEST runtime hash did not match packaged styles.css bytes"
   },
-  "release": "SteadyHand TEST",
+  "release": "Workhorse TEST",
   "clearbearing_upgrade": {
     "build": "8.8.20.22",
     "baseline": "8.8.20.14 HashLock",
@@ -1013,5 +1017,17 @@
     "auto_retry": "forbidden",
     "existing_records": "not migrated or rewritten",
     "permission_changes": "none"
+  },
+  "workhorse_upgrade": {
+    "build": "8.8.20.32",
+    "baseline": "8.8.20.31",
+    "scope": "existing owner workspace; shared presentation and exact-local-order review",
+    "order_source": "existing browser IndexedDB records, not a new cloud order queue",
+    "new_order_mutations": false,
+    "server_migrations": false,
+    "authority_changes": false,
+    "geometry_changes": false,
+    "auto_retry": "forbidden",
+    "packaging": "delta upload below GitHub browser limit; full snapshot separately retained"
   }
 }

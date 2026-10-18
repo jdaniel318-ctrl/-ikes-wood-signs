@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.31",
-  "release": "SteadyHand TEST",
-  "seal": "steadyhand-882031",
+  "build": "8.8.20.32",
+  "release": "Workhorse TEST",
+  "seal": "workhorse-882032",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "SteadyHand TEST",
-  "name": "SteadyHand TEST",
-  "releaseName": "SteadyHand TEST"
+  "release_name": "Workhorse TEST",
+  "name": "Workhorse TEST",
+  "releaseName": "Workhorse TEST"
 }

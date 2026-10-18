@@ -1,3 +1,13 @@
+# Black Flag 8.8.20.32 — Workhorse TEST
+
+The existing fleet, with a task-focused owner home, searchable/read-only order detail, labeled price arithmetic and simpler lettering evidence controls. Built on the complete SteadyHand 8.8.20.31 baseline. All existing files and assets are retained.
+
+**Install the small Workhorse Upload ZIP over SteadyHand .31. Upload its folder contents to the existing repository root; do not delete other files. No SQL, browser-data clearing, new account, commissioning, or permission changes.** Keep the full recovery archive separate from the browser upload.
+
+Read **WORKHORSE_FIELD_GUIDE.md** for the first three field steps and **TEST_BUILD_REPORT.md** for tests, limits and rollback. Automatic retry remains forbidden. Owner-local business records are labeled honestly; this is not a new cloud-backed order system or a production-security certification.
+
+<details><summary>Historical SteadyHand and earlier README — preserved, not current instructions</summary>
+
 # Black Flag 8.8.20.31 — SteadyHand TEST
 
 Frontend hardening of the persistent Ironbound baseline. **Upload the folder contents to the existing site root; no SQL installation or permission changes.**
@@ -118,5 +128,7 @@ Browser/session storage remains a cache. Fleet Core remains the durable commissi
 
 ## 8.8.20.22 KeelLock — release integrity repair
 BlackWake field proof isolated a packaging-order defect: final runtime bytes and DEPLOYMENT_MANIFEST runtime hashes diverged. KeelLock regenerates integrity hashes from the final immutable bytes and validates the package before ZIP handoff. Runtime integrity remains fail-closed; no checksum bypass was added. Field deployment proof remains required.
+
+</details>
 
 </details>

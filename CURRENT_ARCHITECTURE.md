@@ -1,3 +1,11 @@
+# Workhorse 8.8.20.32 — current owner-workspace layer
+
+`business_deck.js` and `business_deck.css` provide presentation for the authenticated exact-project owner portal. `owner.html` retains its existing authentication, storage and explicit save handlers. New order details are read-only; the existing local order store is not converted to cloud storage. Helper access does not grant server permissions. Pricing saves delegate only after an explicit click; they do not modify saved order prices. Advanced lettering controls and all production geometry remain original.
+
+The Engine verifies the new runtime assets through its existing runtime-integrity manifest. Standalone owner startup checks the matching helper/input version and stylesheet load error before displaying the new workspace. No new runtime package dependency or live endpoint is introduced.
+
+## Preserved prior architecture
+
 # Current delta: SteadyHand 8.8.20.31 TEST
 
 The inherited Ironbound server-first commissioning protocol and actual database authority contracts are unchanged. A new input_hygiene.js module is hash-verified and executed before Engine form code; owner.html loads that same versioned helper before its Captain handlers. Standalone Captain startup fails closed if the helper's release does not match.

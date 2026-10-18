@@ -1,3 +1,14 @@
+# 8.8.20.32 — Workhorse TEST
+
+- Shared owner Today desk with real scoped status counts, focused work queue and persistent business navigation.
+- Actionable searchable, filtered, paginated orders; exact saved order details without adding write authority.
+- Missing values, conflicting approvals and local record source explicit; no fabricated paid status or production proof.
+- Unit-labeled species rates, arithmetic-only length guide, correct unsaved state, once-only/frozen-in-flight existing save handler and unconfirmed-save hold.
+- Compact A/B evidence overview and case-preserving wording check; every original advanced foundry control retained; evidence coverage no longer described as cutting-path proof.
+- All baseline assets, SQL, geometry and auth boundaries preserved. No live write or deployment. 60 Node checks and 46 isolated Chromium scenarios passed; native Safari and hosted startup still require field acceptance.
+
+## Previous release history — preserved
+
 # 8.8.20.31 — SteadyHand TEST
 
 - Shared, field-aware visible paste/validation cleanup; 139 ordinary and 44 explicitly protected input instances inventoried.

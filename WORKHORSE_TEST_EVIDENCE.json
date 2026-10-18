@@ -1,0 +1,403 @@
+{
+  "schema": "black-flag-workhorse-test-evidence-v1",
+  "build": "8.8.20.32",
+  "release": "Workhorse TEST",
+  "state": "OFFLINE_TESTS_PASSED_NATIVE_PENDING",
+  "baseline": "SteadyHand 8.8.20.31",
+  "baseline_archive_sha256": "381a256ed0c2fabf1a3ba2ca300adff834b9fdfc772820816f473e38f8c4b472",
+  "node_suites": [
+    {
+      "suite": "workhorse-unit.txt",
+      "passed": 24,
+      "total": 24
+    },
+    {
+      "suite": "steadyhand-node.txt",
+      "passed": 20,
+      "total": 20
+    },
+    {
+      "suite": "ironbound-node.txt",
+      "passed": 16,
+      "total": 16
+    }
+  ],
+  "node_total_passed": 60,
+  "isolated_chromium_total_passed": 46,
+  "owner_scenarios": [
+    {
+      "name": "actual authenticated owner startup shows scoped task home",
+      "pass": true
+    },
+    {
+      "name": "order details are actionable, exact-worded, scoped and read-only",
+      "pass": true
+    },
+    {
+      "name": "search, status groups, six-record pages and sorting work",
+      "pass": true
+    },
+    {
+      "name": "missing price/payment and conflicting approval remain explicit",
+      "pass": true
+    },
+    {
+      "name": "price arithmetic uses inches/feet, labels units, never auto-saves",
+      "pass": true
+    },
+    {
+      "name": "lettering overview preserves exact case, distinguishes evidence, retains advanced controls",
+      "pass": true
+    },
+    {
+      "name": "shared owner deck keeps service identity and requested scheduling separate",
+      "pass": true
+    },
+    {
+      "name": "denied owner membership never renders the new business deck",
+      "pass": true
+    },
+    {
+      "name": "persistent business navigation and every existing support tool remain reachable",
+      "pass": true
+    },
+    {
+      "name": "explicit pricing save changes only settings once and retains order prices",
+      "pass": true
+    },
+    {
+      "name": "unavailable order store is an explicit hold, never an empty-business claim",
+      "pass": true
+    },
+    {
+      "name": "expired owner session cannot navigate into a new record detail",
+      "pass": true
+    },
+    {
+      "name": "pricing fields are frozen during a save so confirmation cannot hide later edits",
+      "pass": true
+    },
+    {
+      "name": "uncertain local pricing save holds without retry and can reread unchanged settings",
+      "pass": true
+    },
+    {
+      "name": "shared owner identity and queue: Becca’s Bloom Shop",
+      "pass": true
+    },
+    {
+      "name": "shared owner identity and queue: Mugs After Dark",
+      "pass": true
+    },
+    {
+      "name": "shared owner identity and queue: Signal Restoration",
+      "pass": true
+    },
+    {
+      "name": "shared owner identity and queue: Grizzly Bear",
+      "pass": true
+    },
+    {
+      "name": "owner home/orders/pricing/lettering fit 390px",
+      "pass": true
+    },
+    {
+      "name": "owner home/orders/pricing/lettering fit 768px",
+      "pass": true
+    },
+    {
+      "name": "owner home/orders/pricing/lettering fit 1366px",
+      "pass": true
+    }
+  ],
+  "inherited_steadyhand_scenarios": [
+    {
+      "test": "captain email visible and request normalization",
+      "pass": true
+    },
+    {
+      "test": "padded saved report is verified with canonical count",
+      "pass": true
+    },
+    {
+      "test": "wrong-project fails closed without retry",
+      "pass": true
+    },
+    {
+      "test": "wrong-work fails closed without retry",
+      "pass": true
+    },
+    {
+      "test": "wrong-summary fails closed without retry",
+      "pass": true
+    },
+    {
+      "test": "wrong-count fails closed without retry",
+      "pass": true
+    },
+    {
+      "test": "missing-count fails closed without retry",
+      "pass": true
+    },
+    {
+      "test": "missing-summary fails closed without retry",
+      "pass": true
+    },
+    {
+      "test": "wrong-read fails closed without retry",
+      "pass": true
+    },
+    {
+      "test": "lost-response fails closed without retry",
+      "pass": true
+    },
+    {
+      "test": "lost-read fails closed without retry",
+      "pass": true
+    },
+    {
+      "test": "paste/autofill/IME/caret/dynamic-field/secret protections",
+      "pass": true
+    },
+    {
+      "test": "actual annotated fields across Engine Admiral owner intake and ledger",
+      "pass": true
+    },
+    {
+      "test": "assigned-vessel return is read-only and mobile layout remains usable",
+      "pass": true
+    },
+    {
+      "test": "double tap sends one report command",
+      "pass": true
+    },
+    {
+      "test": "explicit recheck reads saved report without republishing",
+      "pass": true
+    },
+    {
+      "test": "actual Admiral detail separates lifecycle freshness ownership and operator status",
+      "pass": true
+    },
+    {
+      "test": "same-account other-vessel denial and own-vessel restoration",
+      "pass": true
+    },
+    {
+      "test": "late report completion cannot restore signed-out vessel data",
+      "pass": true
+    }
+  ],
+  "inherited_ironbound_scenarios": [
+    {
+      "scenario": "success",
+      "pass": true,
+      "phase": "verified",
+      "prepareCount": 1,
+      "commitCount": 1,
+      "quotaMirrorFailureHandled": true,
+      "pageErrors": [],
+      "viewports": [
+        {
+          "width": 1024,
+          "height": 768,
+          "proofPanelHorizontalOverflow": false
+        },
+        {
+          "width": 390,
+          "height": 844,
+          "proofPanelHorizontalOverflow": false
+        }
+      ]
+    },
+    {
+      "scenario": "lost-commit",
+      "pass": true,
+      "phase": "verified",
+      "prepareCount": 1,
+      "commitCount": 1,
+      "quotaMirrorFailureHandled": true,
+      "pageErrors": [],
+      "viewports": [
+        {
+          "width": 1024,
+          "height": 768,
+          "proofPanelHorizontalOverflow": false
+        },
+        {
+          "width": 390,
+          "height": 844,
+          "proofPanelHorizontalOverflow": false
+        }
+      ]
+    },
+    {
+      "scenario": "lost-read",
+      "pass": true,
+      "phase": "verified",
+      "prepareCount": 1,
+      "commitCount": 1,
+      "quotaMirrorFailureHandled": true,
+      "pageErrors": [],
+      "viewports": [
+        {
+          "width": 1024,
+          "height": 768,
+          "proofPanelHorizontalOverflow": false
+        },
+        {
+          "width": 390,
+          "height": 844,
+          "proofPanelHorizontalOverflow": false
+        }
+      ]
+    },
+    {
+      "scenario": "lost-prepare",
+      "pass": true,
+      "phase": "closed",
+      "prepareCount": 1,
+      "commitCount": 0,
+      "quotaMirrorFailureHandled": false,
+      "pageErrors": [],
+      "viewports": [
+        {
+          "width": 1024,
+          "height": 768,
+          "proofPanelHorizontalOverflow": false
+        },
+        {
+          "width": 390,
+          "height": 844,
+          "proofPanelHorizontalOverflow": false
+        }
+      ]
+    },
+    {
+      "scenario": "photo-conflict",
+      "pass": true,
+      "phase": "verified",
+      "prepareCount": 1,
+      "commitCount": 1,
+      "quotaMirrorFailureHandled": true,
+      "pageErrors": [],
+      "viewports": [
+        {
+          "width": 1024,
+          "height": 768,
+          "proofPanelHorizontalOverflow": false
+        },
+        {
+          "width": 390,
+          "height": 844,
+          "proofPanelHorizontalOverflow": false
+        }
+      ]
+    },
+    {
+      "scenario": "photo-save-lost",
+      "pass": true,
+      "phase": "correction-readback-held",
+      "prepareCount": 0,
+      "commitCount": 0,
+      "pageErrors": []
+    }
+  ],
+  "preservation": {
+    "build": "8.8.20.32",
+    "baseline": "8.8.20.31",
+    "baseline_archive_sha256": "381a256ed0c2fabf1a3ba2ca300adff834b9fdfc772820816f473e38f8c4b472",
+    "baseline_files": 105,
+    "candidate_files": 111,
+    "missing_baseline_files": [],
+    "unchanged_assets": {
+      "admirals_deck_ceremonial_v640.png": "75fe3acc4a986a6cabc2cb8258343dd0321509335a7ac89c8ee032817c3b535c",
+      "black_flag_platform_icon.png": "7cbad06b0903bf5a1154206cf91b47a1f668561647bd1bd08e6563600e9ba4d9",
+      "black_flag_primary_lockup.png": "bd572004133761656ca2fcb509b54c640bb59ec34898eaafc0d7a94a476cfff5",
+      "bootstrap_build_horizontal.png": "a934aa244bc6e8af726f1d3a15d58a954093ce9e2a4f192d93583808309ee2e2",
+      "bootstrap_build_icon.png": "66d616f58b5067a04516de418c65f7dbf85e8d0d9292f2f157da8fd841a6b7ea",
+      "bootstrap_build_logo.png": "88f2722a079b716d8e51de0aa4ba1da15e651466e6e6f0c7225f8ba332f8ba21",
+      "captains_quarters_cinematic_v2953.jpg": "f68e466636693e4dc9b47f2b7fbfca687b7bf4724ba2b5cb14dde179c790ef2b",
+      "captains_quarters_command_center_v578.png": "a661a594389ea2d0a83d964cbe29cc1fcfe32a5908e51c0904a25b6ce3d3ee24",
+      "engine_room_modern_benchmark_v2976.png": "7619c6ea8c7e37c820ec9aa873ab8a0aca612eeed0c86a882bcee8a9d3d8dd8a",
+      "engine_room_pirate_benchmark_v2978.png": "e76e0834ed18cfb550283dcd071d7ce3d6f263172f4fbc2a4b625e7e26ab2b68",
+      "ike_calibration_2ft_cedar_reference.jpg": "b174221717e45c0014ba40ce7147317585ca7cb6962eea01b3dc0c6941a4643f",
+      "ike_character.png": "18cc8f3fe2bec6a1b433f0bdbbd7e2e23bec5fc53e4b345aef68da68f0b9f2b1",
+      "ike_style_a_ramjet_reference.jpg": "b26e0ba1e63e4b2c4568af44d1e3dd876b992781ca0a355ba404270c3a318599",
+      "ike_style_b_smoke_hole_reference.jpg": "861394f624ec4b96da21ec4c43e3bfe42a8c6810f2470f62194390a065d6d857",
+      "ikes_real_sign_lettering_reference.jpg": "facde0135b9e89c06981493cb922c7b4feba4ff8717d3a1087edcab1c6cf21dd",
+      "signal_restoration_logo.png": "8f6de458c854380b2732880ae1b807c64b906266ca4cb50e846d1e5981428aeb"
+    },
+    "unchanged_sql_files": {
+      "SUPABASE_ADMIRAL_COMMISSIONING_886.sql": "f0185fb70a6388df1d89884b5966eb2449afb9942504541de34da6ddfa9e36ac",
+      "SUPABASE_IRONBOUND_882029.sql": "3fc9ea5ed4353331e84c51f5f9f7e08d9c522e0d1fa5d6fb222c665a2ba7a8bc",
+      "SUPABASE_KEELLOCK_SUPPORTING_INDEXES_882018.sql": "033cd930d03f5a1d4997cf555714d9c26316956e1b9a99b4767d410d72453827",
+      "SUPABASE_LEDGER_INTEGRITY_88171.sql": "e7f07b5bcd981f7bab9bbc3d9a22839aa3732b8be18816e3d595b246e491c982",
+      "VERIFY_IRONBOUND.sql": "a97a5f0e246740c4186bb0ef18e2c776b4748785e49aa68509b6b73c9389017b"
+    },
+    "unchanged_geometry_registry": "6b348ebceb47e172e6676f46252b19c1c6bb7532baf76febfa8dd81760a76ab7",
+    "unchanged_auth_geometry_declarations": [
+      "verifySupabaseMembership",
+      "resolveLiveOwnerState",
+      "enterSupabaseOwner",
+      "clearSession",
+      "sessionValid",
+      "passwordStrongEnough",
+      "estimatedSegments",
+      "benchmarkReplay",
+      "compileGlyphForge",
+      "stylePackCards",
+      "candidateMarkup",
+      "nextGeometryVersion",
+      "function stylePackRegistry()",
+      "function styleCoverage(style)"
+    ],
+    "scope": "Static preservation audit; not a server security certification."
+  },
+  "live_read_only_postflight": {
+    "observed_at": "2026-10-17T20:14:10.573353+00:00",
+    "vessels": [
+      {
+        "lifecycle": "staging",
+        "project_id": "ikes-wood-signs",
+        "owner_state": "owner_assigned",
+        "operating_model": "owner_operated"
+      },
+      {
+        "lifecycle": "commissioning",
+        "project_id": "bf-p-fc2816b8254a4845",
+        "owner_state": "fleet_unassigned",
+        "operating_model": "captain_operated"
+      }
+    ],
+    "active_authority_count": 1,
+    "active_membership_count": 4,
+    "voyagekeeper_report_count": 2,
+    "receipts": [
+      {
+        "state": "verified_not_created",
+        "closed": true,
+        "operation_id": "2d7fc23f-180d-4d61-ae22-f241d096cde5",
+        "retry_forbidden": true
+      },
+      {
+        "state": "verified_created",
+        "closed": true,
+        "operation_id": "5bceb74a-86c6-49e3-a2a1-d9152527d3b0",
+        "retry_forbidden": true
+      }
+    ]
+  },
+  "live_database_writes": false,
+  "deployment_performed": false,
+  "automatic_retry": "forbidden",
+  "review": "self-review plus automated regression; no independent audit",
+  "limits": [
+    "Full local HTTP navigation blocked by environment; actual scripts exercised in isolated DOM with synthetic boundaries.",
+    "One 45-second command budget interrupted a screenshot-heavy rerun; rerun completed all 21 owner tests successfully with a longer command budget.",
+    "No native Safari/WebKit, real clipboard or full hosted startup certification.",
+    "No live server permission or revocation certification.",
+    "Owner business orders/settings in this path remain browser-local; no cloud migration.",
+    "No new-order/status-write or machine geometry certification workflow added."
+  ]
+}
