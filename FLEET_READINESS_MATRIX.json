@@ -1,6 +1,6 @@
 {
   "schema": "blackflag-readiness-matrix-v1",
-  "release": "8.8.20.36",
+  "release": "Strongbox TEST",
   "allows_production_launch": false,
   "historical_evidence_is_not_current_live_audit": true,
   "current_live_read": "not_requested_in_headway_no_new_live_audit",
@@ -82,6 +82,13 @@
       "offline_status": "preview_in_memory_and_isolated_test_store_only",
       "native_status": "pending",
       "production_activation": false
+    },
+    {
+      "id": "strongbox_legacy_backup",
+      "status": "offline_contract_and_actual_owner_ui_checked",
+      "native_status": "pending",
+      "production_activation": false,
+      "scope": "legacy archive and in-memory rehearsal; no database restore or live permissions audit"
     }
   ]
 }

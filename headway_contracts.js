@@ -1,4 +1,4 @@
-/* Headway 8.8.20.36 — pure, scoped test-job contracts.
+/* Headway 8.8.20.37 — pure, scoped test-job contracts.
  * No network, permission grants, live storage, automatic retry, or production geometry.
  * Preview fixtures are never server-authorized owner decisions. */
 (function(root,factory){'use strict';const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;if(root&&root.document)root.BlackFlagHeadway=api;})(typeof globalThis!=='undefined'?globalThis:this,function(){
@@ -40,8 +40,136 @@ function transaction(record){const frozen=clean(record);let phase='prepared',att
  async function read(ports){try{const got=await ports.get(frozen.id);if(!got){phase='not_found';return result();}if(!await verifyJob(got,frozen.projectId)||canonical(got)!==canonical(frozen))throw Error('saved-record-mismatch');phase='verified';return result();}catch(e){phase='unconfirmed';return result(e);}}
  return Object.freeze({state:()=>phase,snapshot:()=>clone(frozen),async submit(ports){if(!['preview','isolated_test','sea_trial'].includes(ports.mode))fail('live-activation-held');if(!await verifyJob(frozen,frozen.projectId))fail('invalid-job');if(ports.mode==='preview'){phase='preview';return result();}if(ports.mode==='sea_trial'&&frozen.headwayJob.nominalSize?.source==='preview_fixture')fail('preview-fixture-not-sea-trial');if(pending)return pending;if(attempted)return result();attempted=true;phase='pending';pending=(async()=>{try{await ports.put(clone(frozen));return await read(ports);}catch(e){phase='unconfirmed';return result(e);}finally{pending=null;}})();return pending;},async recheck(ports){if(pending)return pending;if(!attempted)return result();return read(ports);}});
 }
-function checkRows(pid,rows){if(typeof pid!=='string'||!pid||!Array.isArray(rows)||rows.length>10000)fail('invalid-backup');const seen=new Set();for(const r of rows){clean(r);if(!r||r.projectId!==pid||!r.id||seen.has(r.id)||r.isolation?.projectId&&r.isolation.projectId!==pid||r.namespace&&r.namespace!=='bf.project.'+pid)fail('backup-scope-or-duplicate');seen.add(r.id);}}
-async function backup(projectId,rows){checkRows(projectId,rows);const b={schema:'headway-business-backup-v1',projectId,createdAt:new Date().toISOString(),rows:clean(rows),count:rows.length,includes:'Complete supplied order rows including supported stored media; no credentials or settings are requested.'};b.integrityHash=await sha256(canonical(b));return b;}
-async function rehearse(b,pid){const c=clean(b);if(c.schema!=='headway-business-backup-v1'||c.projectId!==pid||c.count!==c.rows?.length)fail('backup-identity');checkRows(pid,c.rows);const hash=c.integrityHash;delete c.integrityHash;if(hash!==await sha256(canonical(c)))fail('backup-integrity');const isolated=new Map();for(const row of c.rows)isolated.set(row.id,clone(row));const restored=Array.from(isolated.values());if(canonical(restored)!==canonical(c.rows))fail('restore-readback');return {ok:true,projectId:pid,records:restored.length,sourcePhotos:restored.filter(r=>image(r.photoData)).length,approvedPreviews:restored.filter(r=>image(r.approvedPreviewData)).length,missingSourcePhotos:restored.filter(r=>!image(r.photoData)).length,missingPreviews:restored.filter(r=>!image(r.approvedPreviewData)).length,restoreTarget:'isolated memory only; existing browser database untouched',integrityHash:hash};}
-return Object.freeze({version:'8.8.20.36',canonical,sha256,image,previewSize,previewSpecies,validateSize,validateSpecies,fingerprint,approve,approvalMatches,jobPacket,verifyJob,transaction,backup,rehearse});
+/* Strongbox archival boundary: do not reuse clean() to validate legacy records.
+ * The new-job canonical()/approval/transaction path above deliberately stays strict.
+ * v1 stays readable; v2 encodes EVERY value as a typed tuple, preventing tag collisions.
+ * Neither this codec nor rehearsal contains storage or network operations. */
+const BACKUP_V1='headway-business-backup-v1',BACKUP_V2='strongbox-business-backup-v2';
+const ARCHIVE_ENCODING='blackflag-typed-json-v1',UNSAFE_KEYS=new Set(['__proto__','prototype','constructor']);
+const pointer=(base,key)=>base+'/'+String(key).replace(/~/g,'~0').replace(/\//g,'~1');
+function archiveState(maxDepth=100,maxNodes=500000){return {active:new WeakSet(),nodes:0,specialValues:[],maxDepth,maxNodes};}
+function archiveEncode(v,at,state,depth=0){
+ if(depth>state.maxDepth)fail('backup-depth: '+at);
+ if(++state.nodes>state.maxNodes)fail('backup-node-limit: '+at);
+ const special=kind=>state.specialValues.push({path:at,kind});
+ if(v===null)return ['null'];
+ if(typeof v==='string')return ['string',v];
+ if(typeof v==='boolean')return ['boolean',v];
+ if(typeof v==='undefined'){special('undefined');return ['undefined'];}
+ if(typeof v==='number'){
+  let kind=Number.isNaN(v)?'NaN':v===Infinity?'Infinity':v===-Infinity?'-Infinity':Object.is(v,-0)?'-0':null;
+  if(kind){special(kind);return ['special',kind];}return ['number',v];
+ }
+ if(typeof v!=='object')fail('unsupported-backup-type: '+at);
+ if(state.active.has(v))fail('cyclic-backup-data: '+at);
+ const proto=Object.getPrototypeOf(v),array=Array.isArray(v);
+ if(!array&&proto!==Object.prototype&&proto!==null)fail('unsupported-backup-type: '+at);
+ if(Object.getOwnPropertySymbols(v).length)fail('unsupported-backup-symbol: '+at);
+ const descriptors=Object.getOwnPropertyDescriptors(v);
+ for(const key of Object.keys(descriptors)){
+  const d=descriptors[key];if(array&&key==='length')continue;
+  if(UNSAFE_KEYS.has(key))fail('unsafe-object-key: '+pointer(at,key));
+  if(!Object.hasOwn(d,'value')||!d.enumerable)fail('unsupported-backup-property: '+pointer(at,key));
+ }
+ state.active.add(v);
+ try{
+  if(array){
+   if(v.length>100000)fail('backup-array-limit: '+at);
+   const entries=[];for(const key of Object.keys(descriptors)){
+    if(key==='length')continue;
+    const i=Number(key);if(!Number.isInteger(i)||i<0||i>=v.length||String(i)!==key)fail('unsupported-backup-array-property: '+pointer(at,key));
+   }
+   let holes=0;for(let i=0;i<v.length;i++){if(Object.hasOwn(descriptors,i))entries.push([i,archiveEncode(descriptors[i].value,pointer(at,i),state,depth+1)]);else holes++;}
+   if(holes)special('sparse-array');
+   return ['array',v.length,entries];
+  }
+  if(proto===null)special('null-prototype-object');
+  return ['object',Object.keys(descriptors).sort().map(key=>[key,archiveEncode(descriptors[key].value,pointer(at,key),state,depth+1)]),proto===null?'null-prototype':'plain'];
+ }finally{state.active.delete(v);}
+}
+function archiveDecode(w,at,state,depth=0){
+ if(depth>state.maxDepth)fail('backup-depth: '+at);
+ if(++state.nodes>state.maxNodes)fail('backup-node-limit: '+at);
+ const bad=()=>fail('backup-wire: '+at);
+ if(!Array.isArray(w)||typeof w[0]!=='string')return bad();
+ switch(w[0]){
+  case 'null':if(w.length!==1)return bad();return null;
+  case 'undefined':if(w.length!==1)return bad();return undefined;
+  case 'string':if(w.length!==2||typeof w[1]!=='string')return bad();return w[1];
+  case 'boolean':if(w.length!==2||typeof w[1]!=='boolean')return bad();return w[1];
+  case 'number':if(w.length!==2||!finite(w[1])||Object.is(w[1],-0))return bad();return w[1];
+  case 'special':{
+   if(w.length!==2||typeof w[1]!=='string')return bad();
+   if(w[1]==='NaN')return NaN;if(w[1]==='Infinity')return Infinity;if(w[1]==='-Infinity')return -Infinity;if(w[1]==='-0')return -0;return bad();
+  }
+  case 'array':{
+   if(w.length!==3||!Number.isInteger(w[1])||w[1]<0||w[1]>100000||!Array.isArray(w[2]))return bad();
+   const out=new Array(w[1]);let previous=-1;
+   for(const entry of w[2]){
+    if(!Array.isArray(entry)||entry.length!==2||!Number.isInteger(entry[0])||entry[0]<=previous||entry[0]>=w[1])return bad();
+    previous=entry[0];out[entry[0]]=archiveDecode(entry[1],pointer(at,entry[0]),state,depth+1);
+   }return out;
+  }
+  case 'object':{
+   if(w.length!==3||!Array.isArray(w[1])||!['plain','null-prototype'].includes(w[2]))return bad();
+   const out=w[2]==='plain'?{}:Object.create(null);let previous=null;
+   for(const entry of w[1]){
+    if(!Array.isArray(entry)||entry.length!==2||typeof entry[0]!=='string')return bad();const key=entry[0];
+    if(UNSAFE_KEYS.has(key))fail('unsafe-object-key: '+pointer(at,key));
+    if(previous!==null&&key<=previous)return bad();previous=key;
+    Object.defineProperty(out,key,{value:archiveDecode(entry[1],pointer(at,key),state,depth+1),enumerable:true,configurable:true,writable:true});
+   }return out;
+  }
+  default:return bad();
+ }
+}
+function archiveRows(rows){
+ if(!Array.isArray(rows)||rows.length>10000)fail('invalid-backup');
+ const state=archiveState(),wire=[];
+ for(let i=0;i<rows.length;i++){if(!Object.hasOwn(rows,i))fail('backup-scope-or-duplicate');wire.push(archiveEncode(rows[i],'/rows/'+i,state));}
+ return {wire,specialValues:state.specialValues};
+}
+function checkRows(pid,rows){
+ if(typeof pid!=='string'||!pid||!Array.isArray(rows)||rows.length>10000)fail('invalid-backup');
+ const seen=new Set();for(const r of rows){
+  const validId=r&&(typeof r.id==='string'&&r.id.length>0||finite(r.id));
+  if(!r||Array.isArray(r)||r.projectId!==pid||!validId||seen.has(r.id)||(r.isolation?.projectId&&r.isolation.projectId!==pid)||(r.namespace&&r.namespace!=='bf.project.'+pid))fail('backup-scope-or-duplicate');
+  seen.add(r.id);
+ }
+}
+async function backup(projectId,rows){
+ const encoded=archiveRows(rows);checkRows(projectId,rows);
+ const special=encoded.specialValues.length>0;
+ const b={schema:special?BACKUP_V2:BACKUP_V1,projectId,createdAt:new Date().toISOString(),rows:special?encoded.wire:clean(rows),count:rows.length,includes:'Complete supplied order rows including supported stored media; no credentials or settings are requested.'};
+ if(special){b.encoding=ARCHIVE_ENCODING;b.specialValues=encoded.specialValues;}
+ b.integrityHash=await sha256(canonical(b));return b;
+}
+async function readBackupRows(b,pid){
+ // Validate the JSON envelope before hashing: no getters, special JS values, cycles or exotic objects.
+ const safe=archiveState(450,4000000);archiveEncode(b,'',safe);
+ if(safe.specialValues.length)fail('backup-wire-not-json');
+ const c=clean(b);
+ if(!c||!([BACKUP_V1,BACKUP_V2].includes(c.schema))||c.projectId!==pid||!Array.isArray(c.rows)||c.rows.length>10000||c.count!==c.rows.length)fail('backup-identity');
+ const hash=c.integrityHash;delete c.integrityHash;
+ if(typeof hash!=='string'||hash!==await sha256(canonical(c)))fail('backup-integrity');
+ let rows;
+ if(c.schema===BACKUP_V1){rows=clone(c.rows);archiveRows(rows);}
+ else{
+  if(c.encoding!==ARCHIVE_ENCODING||!Array.isArray(c.specialValues))fail('backup-wire');
+  const state=archiveState();rows=c.rows.map((w,i)=>archiveDecode(w,'/rows/'+i,state));
+  const check=archiveRows(rows);
+  if(canonical(check.wire)!==canonical(c.rows))fail('backup-wire-noncanonical');
+  if(canonical(check.specialValues)!==canonical(c.specialValues))fail('backup-special-manifest');
+ }
+ checkRows(pid,rows);return rows;
+}
+async function rehearse(b,pid){
+ const rows=await readBackupRows(b,pid),encoded=archiveRows(rows),isolated=new Map(),state=archiveState();
+ for(let i=0;i<rows.length;i++)isolated.set(rows[i].id,archiveDecode(encoded.wire[i],'/rows/'+i,state));
+ const restored=Array.from(isolated.values()),again=archiveRows(restored);
+ if(canonical(again.wire)!==canonical(encoded.wire)||canonical(again.specialValues)!==canonical(encoded.specialValues))fail('restore-readback');
+ const specialValues=encoded.specialValues.map(x=>({...x,orderId:String(rows[Number(x.path.split('/')[2])].id)}));
+ return {ok:true,projectId:pid,records:restored.length,sourcePhotos:restored.filter(r=>image(r.photoData)).length,approvedPreviews:restored.filter(r=>image(r.approvedPreviewData)).length,missingSourcePhotos:restored.filter(r=>!image(r.photoData)).length,missingPreviews:restored.filter(r=>!image(r.approvedPreviewData)).length,specialValues,specialValueCount:specialValues.length,restoreTarget:'isolated memory only; existing browser database untouched',integrityHash:b.integrityHash};
+}
+return Object.freeze({version:'8.8.20.37',canonical,sha256,image,previewSize,previewSpecies,validateSize,validateSpecies,fingerprint,approve,approvalMatches,jobPacket,verifyJob,transaction,backup,rehearse,readBackupRows});
 });

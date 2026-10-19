@@ -1,13 +1,11 @@
-# Black Flag 8.8.20.36 — Headway TEST
+# Black Flag 8.8.20.37 — Strongbox TEST
 
-A tested continuation of Keelmark, not a replacement fleet. See START_HERE_HEADWAY.md for installation, HEADWAY_HD1_SPEC.md for approved scope, TEST_BUILD_REPORT.md for evidence, and FLEET_READINESS_MATRIX.json for unresolved gates.
+A bounded backup compatibility repair over complete Headway .36. Follow **START_HERE_STRONGBOX.md**, not an older START_HERE file. The small update includes only changed/new files, while the full recovery snapshot preserves every Headway filename.
 
-Headway adds compact shared screen presentation with deliberate opening position; explicit **Private Preview only** nominal-size and separate wood fixtures; a frozen, complete photo/approval job contract and once-only isolated persistence tests; and owner-authorized full-order backup export plus an isolated memory restore comparison. It preserves existing businesses, original images, production lettering code and SQL history.
+The shared owner backup now preserves NaN, positive/negative infinity, negative zero, explicit undefined values, sparse arrays and null-prototype plain objects in a reversible, typed v2 archive when ordinary JSON cannot represent them faithfully. Every affected location is recorded in the checksummed manifest and displayed safely as text. Ordinary JSON-compatible records retain the v1 format. Existing v1 files remain readable.
 
-**TEST ONLY. Real owner stock/species authorization service is not activated. New complete-job live/Sea Trial submission is held.** A local flag, repeated photo estimate, or preview fixture never grants real owner authority. Private Preview may demonstrate the customer journey without creating an order.
+No original record is corrected, omitted, repriced, or rewritten. New-job numeric validation is unchanged and still rejects invalid values. Unsupported archival types fail explicitly with a field path, instead of being silently converted. No supported-type claim is made for arbitrary IndexedDB values such as Date, Blob, typed arrays, cyclic graphs, or Maps.
 
-Owner business data remains browser-local; sign-in is not backup. No cloud migration, new vessel, role change, email, deployment or SQL operation was performed in preparing this release. HouseHull remains the approved future vessel name; its existing design/prototype is retained, not recommissioned.
+The owner gate, namespace binding, customer forms, production geometry, nominal-size preview, no-retry policies and HouseHull plan are unchanged apart from release identities. The real owner-stock service and new complete-job production/Sea Trial path remain held.
 
-Checks reproduce from this folder: node VERIFY_HEADWAY.cjs .; node VERIFY_HEADWAY_RELEASE.cjs .; node VERIFY_WORKHORSE.cjs .; node VERIFY_STEADYHAND.cjs .; node VERIFY_IRONBOUND.cjs .; python VERIFY_PACKAGE_TESTS.py. Browser suites: VERIFY_HEADWAY_APP.py, VERIFY_HEADWAY_VIEW.py, VERIFY_HEADWAY_OWNER_UI.py, VERIFY_HEADWAY_BRIEF_UI.py, VERIFY_SUREFOOT_UI.py, VERIFY_WORKHORSE_UI.py, VERIFY_STEADYHAND_UI.py and VERIFY_IRONBOUND_UI.py. Each browser suite takes the folder and an output directory. Use installed Chromium, Playwright and BeautifulSoup. Tests use synthetic boundaries and are not native Safari certification.
-
-VERIFY_KEELMARK, VERIFY_CHARTWRIGHT and specifically named prior identity/preservation evidence target their historical full archives, not the Headway release. The current release verifier replaces the .35-only release-contract assertions without deleting those historical files.
+Full verification details and limits: **TEST_BUILD_REPORT.md**. Checksums detect inconsistent content, not malicious authorship. This is TEST only, not production launch, a server security audit, actual database restore, or cloud durability certification.

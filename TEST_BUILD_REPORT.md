@@ -1,56 +1,37 @@
-# Headway 8.8.20.36 — TEST verification and release boundaries
+# Strongbox 8.8.20.37 TEST — final verification report
 
-## Delivery
-This is a behavioral update on complete Keelmark 8.8.20.35, not another renamed copy or a new fleet. It implements the approved HD-1 interfaces and shared layout changes within the explicitly allowed real-service hold. The original 133 filenames are retained. The small Upload ZIP is for repository-root upload over .35; the full snapshot is separate recovery material. Exact counts and hashes are verified in the final external Package Proof.
+Checked: 2026-10-18T23:50:18.801257+00:00. Narrow backup repair on complete Headway 8.8.20.36. Not a production launch, native Safari certification, cloud backup or database restore.
 
-## Built in this release
-**HW-VIEW:** shared scoped CSS and one explicit-navigation epoch adapter. New task entrances begin at the top, while intentional Back can restore list position. Input changes, resize, foreground rechecks and repaint do not repeatedly reset scrolling. Ike’s customer header and private-preview banner now occupy document flow, not the title’s space. Duplicate decorative task footer is removed from presentation; original imagery stays in the archive. Source-photo containment is tested, including the short 1024 × 640 viewport. Compact owner presentation keeps business tools and records accessible; longer histories still scroll. No “one screen” claim overrides readability or required content.
+## The repair
+Headway's archive export called strict new-job canonicalization and rejected legacy NaN/infinities before download. Strongbox separates archival preservation from business validation. JSON-safe records retain the old v1 format. Records needing lossless special-value representation use `strongbox-business-backup-v2` with typed tuples and a checked exception-location manifest. Old v1 archives remain readable. New v2 files require Strongbox or a compatible reader.
 
-**IKE-SIZE:** photo-based shape guesses can no longer be promoted into a verified standard size merely by repeated matching photographs. Exact-plank lineage and decisions are separate from visual suggestions. Private Preview provides a sample **2 ft standard size** decision and a separate **Cedar** decision, both conspicuously labeled simulation. The current photo is bound to those inputs. Replacing the source clears them; supported display rotation preserves original lineage without silently changing the pricing category. A project change clears transient photo lineage and Headway decisions.
+NaN, both infinities, negative zero, undefined values, sparse arrays and null-prototype plain objects are preserved rather than corrected, dropped or changed to a normal number. Original source and preview strings, exact wording and existing fields are retained when present. New-job prices and measurements still reject invalid numbers. Unsupported types fail explicitly with a field path; arbitrary IndexedDB type support is not claimed.
 
-**REAL SERVICE HOLD:** the archive does not establish a reviewed, server-authorized owner stock/species service. Therefore actual owner acceptance and the new complete-job live/Sea Trial submission path remain disabled. Do not represent the preview fixture as the Admiral’s or Ike’s authenticated approval. An attempted real activation reports its dependency instead of accepting a local owner flag. Size decisions apply only to Ike’s. HouseHull’s strict source/scale requirements remain separate and its plan is preserved unchanged.
+The actual owner export and file controls show an escaped list of affected order IDs/paths. The existing owner gate is rechecked before and after asynchronous reads. No export/rehearsal handler writes to the original order database. A downloaded-file check reconstructs only an in-memory Map; it does not import into IndexedDB or verify disaster recovery.
 
-**IKE-JOB:** strengthens the existing artifact chain rather than adding a competing order database. The Headway draft includes the displayed app-resolution source photo, original photo lineage, rotation, exact case/spacing, style/render revision, real usable-region data, pricing basis, and separate nominal-size and species decisions. Artifact generation time and actual acceptance time are distinct. Changes to bound data invalidate approval. A complete test packet retains both source and approved composite; unknown or quota results do not invoke the historical photo-dropping fallback or create repeated put attempts.
+## Fresh passing checks
+- **167 Node checks:** Strongbox archive contracts 36; current release/preservation 22; inherited Headway job contracts 49; Workhorse 24; SteadyHand 20; Ironbound 16.
+- **112 isolated Chromium scenarios:** Strongbox actual owner controls 11; inherited Headway app 16, viewport 13, owner backup 2, brief 3; SureFoot 21; Workhorse UI 21; SteadyHand UI 19; Ironbound UI 6.
+- **13 offline package-verifier unit tests.** Final extracted ZIP checks are recorded separately in the external Package Proof.
 
-Private Preview assembles that packet in memory and sends no order/customer message. The once-only persistence adapter is exercised in an isolated synthetic store and independently read back through the actual shared owner reader. It is **not** a new activated production endpoint. Real order persistence, private storage, migration and restore remain separately gated.
+The 26-row synthetic case retains 26 source strings and 26 preview strings, preserves three nested NaN/infinity values, includes completed work, excludes a foreign-business row, and leaves the fixture's original records unchanged. These are test records, NOT access to the user's 26 saved orders. The real affected fields are still unknown until the repaired panel reports them.
 
-**Owner backup:** the existing exact-owner Orders view now offers a deliberate full-order JSON download and a file check that reconstructs a temporary Map in memory. Both media and metadata are included when present; missing legacy data remains missing. Wrong-vessel, duplicate, mutated and prototype-polluting input is rejected. Rehearsal never writes to the original IndexedDB. The download is sensitive customer data; keep it private and confirm it actually reached Files/Downloads. This is not a cloud backup, actual IndexedDB restore, or disaster-recovery certification.
+Negative tests cover wrong scope, conflicting namespace, duplicated IDs, altered payload or exception manifest, invalid JSON/schema, malformed typed tags, marker-like literal data, unsafe keys, unsupported types, cycles, bounded nesting, stale owner proof and diagnostic HTML injection. Strict job creation/approval, namespace binding, permissions, pricing behavior, photo rendering and closed commissioning paths remain unchanged.
 
-## Verification
-The current release suites are rerun before packaging; the actual extracted archive is checked again after packaging. Consolidated browser evidence and source fingerprints are in HEADWAY_TEST_RESULTS.json.
+## Preservation and packaging
+Every one of Headway's 148 filenames is retained. Original 16 images, five SQL files, A/B registry/foundry and HouseHull plan are unchanged. Beyond the two backup integration files, executable changes are release identity only. The four current model latches and whitespace policy receive a build-label update only; their predicates are unaltered and tested. Original historical files and prior evidence remain distinct from current results.
 
-| Suite | Passing checks |
-|---|---:|
-| Headway pure contracts | 49 |
-| Headway release/preservation contracts | 17 |
-| Inherited Workhorse Node checks | 24 |
-| Inherited SteadyHand Node checks | 20 |
-| Inherited Ironbound Node checks | 16 |
-| **Node total** | **126** |
-| Actual Headway app-function / DOM integration | 16 |
-| Shared viewport and task HTML/CSS | 13 |
-| Actual owner backup download/rehearsal | 2 |
-| Static build brief, three viewport widths | 3 |
-| Inherited SureFoot owner-boundary scenarios | 21 |
-| Inherited Workhorse business UI scenarios | 21 |
-| Inherited SteadyHand report/input/Admiral scenarios | 19 |
-| Inherited Ironbound commissioning scenarios | 6 |
-| **Isolated Chromium total** | **101** |
-| Offline package-verifier unit tests | 13 |
+The upload is a delta for **Headway .36 only**, with a matching single folder and <=85 files. A separate full snapshot is provided. Three checksum ledgers, manifest/runtime/model hashes, safe ZIP entries and exact reconstruction are verified. Hashes show internal consistency, not authenticity or server authorization.
 
-SHA-256 native and fallback results agree with Node for empty input, `abc`, longer input and Unicode. Scope/media/approval tests use synthetic records, not the user’s saved orders. The original 16 image assets, five SQL files, A/B registry/foundry and protected commissioning history remain byte-identical; runtime functions responsible for lettering geometry are not replaced by the new decision contract. Namespaces, memberships and terminal operations are not rewritten.
+## Problems encountered and disposition
+An initial new test had an async-arrow syntax error and was corrected before the meaningful red run. The unchanged baseline then failed the new legacy-data cases. A supported-depth check exposed typed-wire depth expansion and drove a separate bounded wire-validation budget. Actual UI tests exposed missing location reporting before it was added. The inherited release check found four model build latches still at .36; only those labels were updated. A concurrent browser runner timed out before two suites finished; those suites were rerun sequentially and passed in full. No incomplete run was counted as passed.
 
-## Failures found and corrected, not discarded
-The initial contract test ran before the helper existed. Additional tests then exposed missing approval bindings for original photo/rotation/region data and inconsistent lineage; those now pass. Actual populated short-tablet layouts initially placed the confirmation control too low. Moving distinct sample decisions below the photo corrected that without hiding them. A further image-box assertion exposed an intrinsic CSS-grid minimum that cropped the image inside its smaller card; explicit zero-minimum grid tracks fixed it. A cross-business transition test exposed retained transient original-photo lineage; the reset now clears it and Headway decisions for every project switch.
+**Full local HTTP startup was attempted once and blocked by the environment with `net::ERR_BLOCKED_BY_ADMINISTRATOR`.** It was not bypassed. The retained VERIFY_STRONGBOX_BOOT.py script is an open check, not included in the passing scenario count. Browser passes use shipped source/HTML/CSS with synthetic authentication/network/storage boundaries, not a fully hosted boot or actual production IndexedDB restore. No independent reviewer agent is available; this is inline source review plus automated evidence.
 
-An intermediate release run correctly failed on unsealed hashes. After identity stamping, an inherited version assertion still expected .35; its target is explicitly .36 now, with every behavioral assertion retained. The entire .35-only Keelmark and .34-only Chartwright verifiers remain unchanged historical tools for those archives. They are not claimed as current-version suites. No functional failing result was silently removed.
+## Live-data and authority limits
+No user Safari database, live server, account password, membership, invitation, commissioning operation, hosted deployment, subscription or plugin permission was changed. The app's existing browser-local storage still needs private backup. Real stock/species authorization and new complete-job live/Sea Trial activation remain held as in Headway. Headway's residual Orders opening-position issue is not declared fixed by this backup patch. HouseHull is not newly commissioned.
 
-## Limits and live state
-A fresh attempt to navigate a local HTTP-served owner page returned `net::ERR_BLOCKED_BY_ADMINISTRATOR`. Tests therefore use actual shipped source/markup/CSS in isolated Chromium documents with synthetic network, authentication and storage boundaries. The customer packet integration exercises the actual staging/acceptance functions with a synthetic renderer artifact; it does not certify actual cutting geometry or every full hosted customer transition. WebKit and native Apple Safari were not exercised.
+Follow START_HERE_STRONGBOX.md: upload the small delta, export a private JSON and confirm its download, check that file in isolation, and report the status screenshot. Do not clear Safari data, run SQL, alter orders to force an export, or upload customer backups to GitHub.
 
-No fresh live Supabase read was requested or claimed during this execution; earlier blocked requests were not bypassed. No live writes, migrations, role changes, invitations, password resets, deployment, automatic email, paid service or commissioning operation occurred. The original client/source artifact snapshots were inspected and used as baseline; no user's Safari database was accessed by the assistant.
-
-This release still has pending native iPad/iPhone acceptance, a real authorized stock/species service, complete live backend isolation/revocation, actual database backup/restore and production durability. Existing Engine review metadata and historical generic write paths are preserved; “no preview order record” is not a claim that all platform diagnostic/setup metadata is write-free. HouseHull is planned, not newly commissioned.
-
-## First field handoff
-Follow START_HERE_HEADWAY.md in three focused steps. Do not run SQL, clear website data or recommission a vessel. Check owner navigation and Private Preview first; do not create a real or Sea Trial order. Preserve the full .35 recovery archive. This code ZIP does not back up the business orders stored in Safari.
+## Reproduce
+Run `node VERIFY_STRONGBOX.cjs .`, `node VERIFY_STRONGBOX_RELEASE.cjs .`, `node VERIFY_HEADWAY.cjs .`, `node VERIFY_WORKHORSE.cjs .`, `node VERIFY_STEADYHAND.cjs .`, `node VERIFY_IRONBOUND.cjs .`, and `python VERIFY_PACKAGE_TESTS.py`. Run the nine current browser scripts with release/output paths. Old .36-only VERIFY_HEADWAY_RELEASE, .35-only VERIFY_KEELMARK and earlier target-label verifiers remain historical; their behavioral assertions are carried into the explicit .37 release checker.

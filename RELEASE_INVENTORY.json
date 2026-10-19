@@ -1,9 +1,9 @@
 {
-  "release": "8.8.20.36 Headway TEST",
-  "name": "Headway TEST",
-  "build": "8.8.20.36",
-  "seal": "headway-882036",
-  "file_count": 148,
+  "release": "8.8.20.37 Strongbox TEST",
+  "name": "Strongbox TEST",
+  "build": "8.8.20.37",
+  "seal": "strongbox-882037",
+  "file_count": 156,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
     "ADMIRAL_RELEASE_DOCTRINE.json",
@@ -81,8 +81,12 @@
     "START_HERE_CHARTWRIGHT.md",
     "START_HERE_HEADWAY.md",
     "START_HERE_KEELMARK.md",
+    "START_HERE_STRONGBOX.md",
     "STEADYHAND_TEST_EVIDENCE.json",
     "STORAGE_SAFE_PROOF_BUS_MODEL.json",
+    "STRONGBOX_PRESERVATION.json",
+    "STRONGBOX_REPAIR_NOTES.md",
+    "STRONGBOX_TEST_RESULTS.json",
     "SUPABASE_ADMIRAL_COMMISSIONING_886.sql",
     "SUPABASE_IRONBOUND_882029.sql",
     "SUPABASE_KEELLOCK_SUPPORTING_INDEXES_882018.sql",
@@ -107,6 +111,10 @@
     "VERIFY_PACKAGE_TESTS.py",
     "VERIFY_STEADYHAND.cjs",
     "VERIFY_STEADYHAND_UI.py",
+    "VERIFY_STRONGBOX.cjs",
+    "VERIFY_STRONGBOX_BOOT.py",
+    "VERIFY_STRONGBOX_RELEASE.cjs",
+    "VERIFY_STRONGBOX_UI.py",
     "VERIFY_SUREFOOT_UI.py",
     "VERIFY_WORKHORSE.cjs",
     "VERIFY_WORKHORSE_UI.py",
@@ -153,6 +161,5 @@
     "simple_books.js",
     "styles.css",
     "sw.js"
-  ],
-  "releaseName": "Headway TEST"
+  ]
 }

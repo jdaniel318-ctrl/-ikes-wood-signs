@@ -1,3 +1,9 @@
+# Strongbox 8.8.20.37 TEST
+
+Backup-only reversible legacy values; transparent field-path report; exact-business in-memory comparison; historical business data and new-input validation unchanged. See TEST_BUILD_REPORT.md.
+
+---
+
 # Headway 8.8.20.36 — TEST
 
 - Scoped, compact shared viewport adapter; deliberate navigation preserves return-to-list state and avoids input/resize resets.
