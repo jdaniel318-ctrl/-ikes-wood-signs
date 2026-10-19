@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.20.37",
-  "version": "8.8.20.37",
-  "release_name": "Strongbox TEST",
-  "releaseName": "Strongbox TEST",
-  "release_seal": "strongbox-882037",
+  "build": "8.8.20.38",
+  "version": "8.8.20.38",
+  "release_name": "Wayfinder TEST",
+  "releaseName": "Wayfinder TEST",
+  "release_seal": "wayfinder-882038",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -97,8 +97,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "Lossless scoped backup of special legacy numeric values; unchanged new-job validation and permissions",
-  "release_note": "TEST ONLY. Backup codec repair on Headway. Stored legacy numbers are preserved, not corrected. Rehearsal is isolated memory, not live database restore or cloud backup. Existing real-service holds remain.",
+  "release_focus": "Fleet Compass; source vs filtered roster protection; latest-view wins; separate operation-level storage observations",
+  "release_note": "TEST ONLY. Search and routes do not grant owner authority or certify backups. Storage warnings remain separate and require field evidence; no cleanup, database mutation or new service activation.",
   "tax_ledger_upgrade": {
     "schema": "dark-sky-fleet-tax-ledger-v1",
     "model": "TAX_LEDGER_MODEL.json",
@@ -220,260 +220,260 @@
     "algorithm": "SHA-256",
     "files": {
       "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": {
-        "sha256": "a328ee3ff3a9744ef638e6cc68bd381f369b68681c94c54eb0b43cd0ebb69a63",
-        "build": "8.8.20.37",
+        "sha256": "d3f16ebbc7e730376407d2f5471ff2ad1113766be372924daacdc0297a29b7bd",
+        "build": "8.8.20.38",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
       "ADMIRAL_RELEASE_DOCTRINE.json": {
         "sha256": "bc288db943075764f2080770553d2a1db1eb893b0520cf9e35ecac600e88c408",
-        "build": "8.8.20.22",
+        "build": "8.7.0",
         "policy": "retained-versioned-reference",
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "BOOTSTRAP_COMMIT_MODEL.json": {
         "sha256": "fbe902aec010558634c9bd5f40d3b87b231f6f7e83db402baaf12c9f777a05ba",
-        "build": "8.8.20.22",
+        "build": "8.6.28",
         "policy": "retained-versioned-reference",
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "BOOTSTRAP_IGNITION_MODEL.json": {
         "sha256": "9cb3c319dd1c511be99b46fb39816656b451c02478dc129df61d39fcd0eb4258",
-        "build": "8.8.20.22",
+        "build": "8.6.28",
         "policy": "retained-versioned-reference",
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "CAPABILITY_ADOPTION_MAP.json": {
         "sha256": "5c036b4c126ce41ed3d2464195bbf0febbfff2b1be61a3851d224b1ffb2863cb",
-        "build": "8.8.20.22",
+        "build": "8.8.10",
         "policy": "retained-versioned-reference",
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "DOCK_SOURCE_TRACE_MODEL.json": {
         "sha256": "6cd53b3bb5ea12be70f70bb43e7f3b726c71b111960467ab60abbdebc075314f",
-        "build": "8.8.20.22",
+        "build": "8.6.28",
         "policy": "retained-versioned-reference",
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "EVIDENCE_RECONCILIATION_MODEL.json": {
         "sha256": "1cb3bdeb5fa11deb3a3fc329872192b967e5ba1a20ace69476aebddebc0fbe39",
-        "build": "8.8.20.22",
+        "build": "8.6.28",
         "policy": "retained-versioned-reference",
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FEATURE_ENTITLEMENT_MODEL_870.json": {
         "sha256": "8fe024b0e53d2a0e1205a126ad431b118e47698eabef079a47100072d86c3451",
-        "build": "8.8.20.22",
+        "build": "8.8.11.9",
         "policy": "retained-versioned-reference",
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_COMMAND_MODEL.json": {
-        "sha256": "01aed38e8ebc479d0a370c08394275a106a19191e7a48f9e2c0021ee286ed60b",
-        "build": "8.8.20.37",
+        "sha256": "154d6152e254edaf111b83af12d3fed4db33e4ba8d981ec0f66a8483563c37a0",
+        "build": "8.8.20.38",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
       "FLEET_DOCTRINE_REGISTRY.json": {
-        "sha256": "7d7cb755ad520b1072fd26a82f7d4753aba7f715de0f0d02dda06bb36889afab",
-        "build": "8.8.20.37",
+        "sha256": "7126a082b7ed243cb5667cbab06208debd41fee4310532992bb960c05c218a7c",
+        "build": "8.8.20.38",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
       "FLEET_INTELLIGENCE_MODEL.json": {
         "sha256": "303f21ff1683636b5558ad35825047d19e982c80c9d872fd288a1984aa0c2a14",
-        "build": "8.8.20.22",
+        "build": "8.6.28",
         "policy": "retained-versioned-reference",
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_LEARNING_RECOMMENDATIONS_814.json": {
         "sha256": "d364472c6c552119523c682d9fd28f00aeaccbac69c1fdd2d0282ac819bf33b7",
-        "build": "8.8.20.22",
+        "build": "8.6.28",
         "policy": "retained-versioned-reference",
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_LEARNING_REGISTRY.json": {
         "sha256": "56272063199779e1d023636f857ded94500b003037c5e388a90d76ec366edbe0",
-        "build": "8.8.20.22",
+        "build": "8.6.28",
         "policy": "retained-versioned-reference",
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_MUSTER_SEED.json": {
         "sha256": "1ec644aa2b77446814e15591890c3b6014d79a03799f3bcd46658826c215be2a",
-        "build": "8.8.20.22",
+        "build": "8.6.28",
         "policy": "retained-versioned-reference",
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_REGRESSION_GATES.json": {
         "sha256": "0ce4b750db4acdac01233a2e3eecb97e85d001dfcc1be5fdf8536afcb5201a4d",
-        "build": "8.8.20.22",
+        "build": "8.8.20.28",
         "policy": "retained-versioned-reference",
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_SERVICES_FRAMEWORK.json": {
         "sha256": "3d2107e3005a9fa8ef15278137ce45349d0baedd7173164d2ea4a9c649049ac4",
-        "build": "8.8.20.22",
+        "build": "8.8.17",
         "policy": "retained-versioned-reference",
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_SERVICE_PACKAGE_MODEL.json": {
         "sha256": "d5ee0b80aca50f2b751b60ff8b2099d1c4876b8968091e5548e694a59647905a",
-        "build": "8.8.20.22",
+        "build": "8.8.17",
         "policy": "retained-versioned-reference",
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_STEWARD_MODEL.json": {
         "sha256": "cf08bb0cb43ff1bf3b796ce5bcc1680ca8b4deff49a42152b06d15a69bc3a198",
-        "build": "8.8.20.22",
+        "build": "8.6.35",
         "policy": "retained-versioned-reference",
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "GENERATION_RELAY_MODEL.json": {
         "sha256": "9cb05762348145d10b141de4a930d671ea928d90d541579a8eead79e11498fdb",
-        "build": "8.8.20.22",
+        "build": "8.7.0",
         "policy": "retained-versioned-reference",
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "GOLDEN_VOYAGES.json": {
-        "sha256": "3abe431cbd2729756e76831207056f83f5b990939fbaba8883d9cc6c31f05dcf",
-        "build": "8.8.20.37",
+        "sha256": "b74f85fcdaffea3f4a841a1bde134005d4d0f1ed19d0e3607a1d9d9f95c85cd8",
+        "build": "8.8.20.38",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
       "IDENTITY_KEEL_MODEL.json": {
         "sha256": "ced9516ccbe494008607017cf85b845c1a8f37b6a3432407a2b59e57e669566c",
-        "build": "8.8.20.22",
+        "build": "8.8.6",
         "policy": "retained-versioned-reference",
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "IGNITION_WITNESS_MODEL.json": {
         "sha256": "bd2fac149feea48f0be74e6deb4a500aca995b965118bf07962fcb161164d42f",
-        "build": "8.8.20.22",
+        "build": "8.7.0",
         "policy": "retained-versioned-reference",
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "IKE_STYLE_FOUNDRY.json": {
         "sha256": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
-        "build": "8.8.20.22",
+        "build": "8.6.28",
         "policy": "retained-versioned-reference",
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "MEMORY_COMMIT_WATCHDOG_MODEL.json": {
         "sha256": "b35c977c0bc864447cfbf10ae529defc8d4a380f5cd6ee14d42890ae5f7767c6",
-        "build": "8.8.20.22",
+        "build": "8.6.28",
         "policy": "retained-versioned-reference",
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "MEMORY_MUSTER_MODEL.json": {
         "sha256": "6bd9430827a73131bb944358f66d5545301b97424ee18462a57e3fa27497a605",
-        "build": "8.8.20.22",
+        "build": "8.6.28",
         "policy": "retained-versioned-reference",
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "MUSTER_TRACE_MODEL.json": {
         "sha256": "65f8043db0b446378ed0dc95dd3ceb4fbfebfb33597e69980ab782537d477a4a",
-        "build": "8.8.20.22",
+        "build": "8.6.28",
         "policy": "retained-versioned-reference",
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "OWNER_AUTHORITY_MODEL.json": {
         "sha256": "a62aaaba274919cad8794b096d2be3e19220274d61a665ecf574c86569128a98",
-        "build": "8.8.20.22",
+        "build": "8.7.0",
         "policy": "retained-versioned-reference",
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "OWNER_AUTH_STATE_GATE_MODEL.json": {
         "sha256": "351aad0ee5e42961347b4a13e7850f7807ddc55b9e88669a9576550cfb42af10",
-        "build": "8.8.20.22",
+        "build": "8.7.0",
         "policy": "retained-versioned-reference",
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "OWNER_BRIDGE_MODEL.json": {
         "sha256": "90e3759218d615cc5cb196e3e3ed5a8635bb62a8981e8d7987f941f09d5e558e",
-        "build": "8.8.20.22",
+        "build": "8.7.0",
         "policy": "retained-versioned-reference",
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "OWNER_PASSWORD_MODEL.json": {
         "sha256": "fdca024e75efe690ea5bd2f9bf9176da009ac87038a89de3c9b0f941573b739a",
-        "build": "8.8.20.22",
+        "build": "8.8.17",
         "policy": "retained-versioned-reference",
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "OWNER_RECOVERY_MODEL.json": {
         "sha256": "32895b87c96415c74883dae00612de39ff060678358e52cd00677f7dfdcaffed",
-        "build": "8.8.20.22",
+        "build": "8.8.17",
         "policy": "retained-versioned-reference",
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "OWNER_SIGNIN_BRIDGE_MODEL.json": {
         "sha256": "0764043e941d3e858f54cbce6b4f24f69c20e5868766152babd749775856df71",
-        "build": "8.8.20.22",
+        "build": "8.7.0",
         "policy": "retained-versioned-reference",
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "PROOF_BARRIER_MODEL.json": {
         "sha256": "b74cb9685ad59517df63745e74778316deec693f64679aad7ef27ab6df49692f",
-        "build": "8.8.20.22",
+        "build": "8.6.28",
         "policy": "retained-versioned-reference",
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "PROOF_BOOTSTRAP_MODEL.json": {
         "sha256": "89e1c8a7951177b83d49ed07ed2491e55c474da932f0083606fa01a8d148cbc2",
-        "build": "8.8.20.22",
+        "build": "8.6.28",
         "policy": "retained-versioned-reference",
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "PROOF_CHAIN_SETTLEMENT_MODEL.json": {
         "sha256": "46983f943adfd3337ce0384ce2594f65a44cdaa9de641cdcc2b6e6ec5d49960a",
-        "build": "8.8.20.22",
+        "build": "8.7.0",
         "policy": "retained-versioned-reference",
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "PROOF_SIGNER_TRACE_MODEL.json": {
         "sha256": "6d0a6cf2c610e405af9ff3ffd1e7362c396a9339a60fb5843960198b35d5cb7e",
-        "build": "8.8.20.22",
+        "build": "8.6.28",
         "policy": "retained-versioned-reference",
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "REGISTRY_LEDGER_MODEL.json": {
         "sha256": "7666458b9a3d8768f04bc16dd1cd00ca21bc0a53f302e7baec9bdf39174d6276",
-        "build": "8.8.20.22",
+        "build": "8.8.17",
         "policy": "retained-versioned-reference",
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "RESOLVER_LIFELINE_MODEL.json": {
         "sha256": "59e8e20ee2aab686d15f7436a83f6ec1d6f755fad36d650f7293d0b0e80b69d1",
-        "build": "8.8.20.22",
+        "build": "8.6.28",
         "policy": "retained-versioned-reference",
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "RLS_READ_BOUNDARY_MODEL.json": {
         "sha256": "36e38e762437c697b09aefb578b84b62be0bb487b1fcead51e1749739cb00f3f",
-        "build": "8.8.20.22",
+        "build": "8.7.0",
         "policy": "retained-versioned-reference",
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "RUNTIME_ENTRY_TRACE_MODEL.json": {
         "sha256": "7a54584fbfdce44c0c00942b28b8d41886fcf6c6e0bc3b721294e100ab543f34",
-        "build": "8.8.20.22",
+        "build": "8.6.28",
         "policy": "retained-versioned-reference",
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "STORAGE_SAFE_PROOF_BUS_MODEL.json": {
         "sha256": "d4911fae317d88248fe4f106276964c97dad885e3ba279f6b518b64c0ad0376d",
-        "build": "8.8.20.22",
+        "build": "8.7.0",
         "policy": "retained-versioned-reference",
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "TAX_LEDGER_MODEL.json": {
         "sha256": "f6f190527df28b7b8f2553eb4ac8241a56c6f22798cc7500cfa5fda9b40302ee",
-        "build": "8.8.20.22",
+        "build": "8.8.17.13",
         "policy": "retained-versioned-reference",
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "WITNESS_TRUTH_MODEL.json": {
         "sha256": "7cad06fff0014c09e2045178fb51cf88bbf2455058fea72af68af922c63a42df",
-        "build": "8.8.20.22",
+        "build": "8.7.0",
         "policy": "retained-versioned-reference",
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       }
@@ -484,30 +484,30 @@
     "algorithm": "SHA-256",
     "serialization": "UTF-8 response body, same text executed by atomic loader",
     "files": {
-      "styles.css": "2560869c6b3078475d54e2f451b524d844d037183ec8adfc250b0c834f1210a7",
+      "styles.css": "aa0337a5ec80a7261d41d30e028259abba8883d08d9ef88194a2de53c7458768",
       "simple_books.css": "5939590021ef2d3738d5f5f7249d72f8da64cc274bf287ef8183958517b0ba46",
       "platform_core.js": "7f797bc382a73eb9ec4365a7458e8329da60c50561e3ac751ca3fb9d7cd5ec49",
       "platform_v4.js": "21daf7777150d654467042893298147374318fdfc7ac38faf9260f874522019b",
-      "platform_identity.js": "559f351335397f5b37b080e3822f33c3e50f0c695a2c2aa900603e517652bac6",
-      "fleet_supabase.js": "6cc837ad8a269d3937d7b42cbe421e968bbb3e7778f7ffd208fdb1c6d417baeb",
+      "platform_identity.js": "00fbb70c376b396eb949299c9050e9e4230581acd1070bcd456bbbe84f46a450",
+      "fleet_supabase.js": "6d731c99e3113e2915271a18f8494a59bff359ca1e48d973dc169f535cd465c5",
       "ike_style_registry.js": "6b348ebceb47e172e6676f46252b19c1c6bb7532baf76febfa8dd81760a76ab7",
-      "app.js": "ae6128c1dfd5083eaa6f3783d7b44a430ff17b335eb2823b5fcd0e02cd6fa0ce",
-      "captain.js": "39f536b0da189bcaf0eef93747d9a8ed8ed9289cf70428c456029024be0a1cd4",
-      "simple_books.js": "88442d3789224073298d650a573bf474377037622560b20e440e77e851f18119",
-      "owner.html": "f41a3f2a0535cacc51d7b6d7b4413e60013e36248f689204ad54fb227bd4c8d3",
-      "manifest.webmanifest": "a6e7aacfb5700ba8fcbf4428b86deacbede568e86cfdf293f25d55dc3e6c9c02",
+      "app.js": "ece28bcbef9dcac71bab0382ee15c53f70c7f083b3618c463529a4ae590ba5c0",
+      "captain.js": "8b75df7b6b25e0b8bd4da1b01aeed34c6bfb362b0c8ab96b649b8804c36fafab",
+      "simple_books.js": "c5ccad067917f0b418aab91e9c6ca793202e25cd181f29fc25a765db13e6e7f1",
+      "owner.html": "1d878ceac0f489bbf8a2b7db024e24d42cf3b5ae73ba6a7b88547247f38ab560",
+      "manifest.webmanifest": "182ca056a515b9546ffd91601223ce4781ab404c8eb349301b907be50ce4ad66",
       "IKE_STYLE_FOUNDRY.json": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
-      "sw.js": "01a24a0a1ccdd86300d300b325de1f8ce24a9ba999c8eb3bc03899592894add4",
-      "FLEET_DOCTRINE_REGISTRY.json": "7d7cb755ad520b1072fd26a82f7d4753aba7f715de0f0d02dda06bb36889afab",
-      "GOLDEN_VOYAGES.json": "3abe431cbd2729756e76831207056f83f5b990939fbaba8883d9cc6c31f05dcf",
-      "FLEET_COMMAND_MODEL.json": "01aed38e8ebc479d0a370c08394275a106a19191e7a48f9e2c0021ee286ed60b",
-      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "a328ee3ff3a9744ef638e6cc68bd381f369b68681c94c54eb0b43cd0ebb69a63",
-      "input_hygiene.js": "c59c97b24e2026c54dcf13611f0465d2d01bcce7a1d01ddab3e3afebb312782b",
-      "business_deck.js": "094d3cfabfb1fc98113eaeddc80a774d83d10c087bc99f6591a4136e5526d9a5",
+      "sw.js": "3da734c4ebfa83f0cc4e5e401b3d2d56168ad2c8dd801903631c79daac9eeedd",
+      "FLEET_DOCTRINE_REGISTRY.json": "7126a082b7ed243cb5667cbab06208debd41fee4310532992bb960c05c218a7c",
+      "GOLDEN_VOYAGES.json": "b74f85fcdaffea3f4a841a1bde134005d4d0f1ed19d0e3607a1d9d9f95c85cd8",
+      "FLEET_COMMAND_MODEL.json": "154d6152e254edaf111b83af12d3fed4db33e4ba8d981ec0f66a8483563c37a0",
+      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "d3f16ebbc7e730376407d2f5471ff2ad1113766be372924daacdc0297a29b7bd",
+      "input_hygiene.js": "60a5bc53f2f830bab65ad0e8ccc132dbf3119715053ffb58b2a747c0b1e99fdf",
+      "business_deck.js": "c7c7154df68e29705545710a4beab02183cbd6048523c68b2da7ad26a9fbc591",
       "business_deck.css": "445fa81fff307d41cdd9a7d181ec86f9daae6843d24ac0d9fe14f939a25b6289",
       "fleet_viewport.js": "14ea8ff7d2c834014d8661a743c9408f9556141e7c81d32b590bd6988d0cfa55",
       "fleet_viewport.css": "1dbdbbac10ea9d1976d015e88610cd000685941e0d310c7cbd934159a63b85f8",
-      "headway_contracts.js": "4501194309c79eb228aa64d0620f4d794cf2ce49ee4ed03c380b028fbee7a759"
+      "headway_contracts.js": "02f7ad83ff49e6c0ac614f01a06e61fb858c6a3dc72d9c9e742d618a3b7433dd"
     }
   },
   "watchbeacon_upgrade": {
@@ -942,7 +942,7 @@
     "project_data_mutation": false,
     "field_failure_proof": "8.8.20.13 held on styles.css because packaged DEPLOYMENT_MANIFEST runtime hash did not match packaged styles.css bytes"
   },
-  "release": "8.8.20.37 Strongbox TEST",
+  "release": "8.8.20.38 Wayfinder TEST",
   "clearbearing_upgrade": {
     "build": "8.8.20.22",
     "baseline": "8.8.20.14 HashLock",
@@ -1078,5 +1078,16 @@
     "native_safari": "pending",
     "permissions_changed": false,
     "database_actions": "none"
+  },
+  "wayfinder_upgrade": {
+    "base_build": "8.8.20.37",
+    "filtered_roster_is_not_full_roster": true,
+    "expected_rendered_ids": "exact selected snapshot including newer vessels",
+    "view_only_seal_or_proof_writes": false,
+    "quota_cause": "field reproduction still needed; operation-level observations added",
+    "new_persistent_state": false,
+    "server_changes": false,
+    "existing_customer_owner_control_routes": "retained",
+    "native_safari": "pending"
   }
 }

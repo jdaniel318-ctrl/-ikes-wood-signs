@@ -1,3 +1,14 @@
+# Wayfinder 8.8.20.38 TEST — Fleet Compass
+
+Current installation instructions: **START_HERE_WAYFINDER.md**. Install only over complete Strongbox 8.8.20.37. No SQL, record cleanup, permission change or commissioning.
+
+Search now validates the full protected source before comparing the exact selected-card set. Fleet Compass reuses project logos and the existing preview, owner, control and customer routes. Storage failures are observed separately; quota recovery is not claimed.
+
+See WAYFINDER_REVIEW.md and WAYFINDER_TEST_RESULTS.json for scope and fresh verification limits.
+
+---
+## Preserved earlier release documentation (historical, not installation instructions)
+
 # Strongbox 8.8.20.37 TEST — final verification report
 
 Checked: 2026-10-18T23:50:18.801257+00:00. Narrow backup repair on complete Headway 8.8.20.36. Not a production launch, native Safari certification, cloud backup or database restore.

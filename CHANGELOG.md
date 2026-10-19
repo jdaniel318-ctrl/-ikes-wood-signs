@@ -1,3 +1,11 @@
+# 8.8.20.38 — Wayfinder TEST
+
+- Repair both source/filtered-view and post-render card checks, including empty results.
+- Snapshot queries and prevent obsolete asynchronous paint from replacing a newer view.
+- Add Fleet Compass with existing logos, separate destination buttons, clear search and honest local/setup status.
+- Make quota observations operation-specific and non-persistent; no silent cleanup or retry.
+- Preserve Strongbox backups, Headway jobs/layout, owner boundaries and HouseHull plan.
+
 # Strongbox 8.8.20.37 TEST
 
 Backup-only reversible legacy values; transparent field-path report; exact-business in-memory comparison; historical business data and new-input validation unchanged. See TEST_BUILD_REPORT.md.

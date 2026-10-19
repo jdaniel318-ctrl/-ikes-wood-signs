@@ -1,17 +1,17 @@
 {
   "schema": "blackflag-patch-contract-v1",
-  "target_build": "8.8.20.37",
-  "target_seal": "strongbox-882037",
+  "target_build": "8.8.20.38",
+  "target_seal": "wayfinder-882038",
   "supported_bases": [
     {
-      "build": "8.8.20.36",
-      "archive_name": "DarkSky882036-Headway-TEST.zip",
-      "sha256": "01a062f0abe38d8a79be4798d829f078aa80accaef6e373c9a21506eb64ea676"
+      "build": "8.8.20.37",
+      "archive_name": "DarkSky882037-Strongbox-TEST.zip",
+      "sha256": "8a9ee88c97e2ed9f0762c19d3e3785af842629a09ecb9d42c5e7f7a362e2c44f"
     }
   ],
   "requires_deletions": false,
   "max_upload_files": 85,
   "database_actions": "none",
-  "rule": "All update files at existing repository root over complete Headway .36 only. Keep all other files. No SQL or customer-data clearing.",
-  "hash_limit": "Consistency only; not a signature, access authority or cloud backup."
+  "rule": "Update all supplied files at repository root over complete Strongbox .37. Keep all other files. Do not run SQL or clear website data.",
+  "hash_limit": "Consistency only; not an authenticity signature, authorization or business-data backup."
 }

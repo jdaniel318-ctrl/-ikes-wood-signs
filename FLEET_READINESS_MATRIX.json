@@ -1,9 +1,9 @@
 {
   "schema": "blackflag-readiness-matrix-v1",
-  "release": "Strongbox TEST",
+  "release": "Wayfinder TEST",
   "allows_production_launch": false,
   "historical_evidence_is_not_current_live_audit": true,
-  "current_live_read": "not_requested_in_headway_no_new_live_audit",
+  "current_live_read": "not_requested; no new live audit",
   "gates": [
     {
       "id": "ike_owner_navigation",
@@ -89,6 +89,37 @@
       "native_status": "pending",
       "production_activation": false,
       "scope": "legacy archive and in-memory rehearsal; no database restore or live permissions audit"
+    },
+    {
+      "id": "wayfinder_search",
+      "area": "Full source versus selected subset and exact card comparison",
+      "offline_status": "actual_functions_and_isolated_markup_tests_passed",
+      "native_status": "pending",
+      "production_activation": false
+    },
+    {
+      "id": "wayfinder_compass",
+      "area": "Same-vessel navigation and responsive workstation",
+      "offline_status": "actual_functions_and_isolated_markup_tests_passed",
+      "native_status": "pending",
+      "production_activation": false
+    },
+    {
+      "id": "fleet_quota_observation",
+      "area": "Storage warning with operation and location",
+      "offline_status": "injected_failure_location_tests_passed; real cause not established",
+      "native_status": "cause_unconfirmed",
+      "production_activation": false
     }
-  ]
+  ],
+  "prior_field_checkpoint": {
+    "build": "8.8.20.37",
+    "source": "user screenshots October 18, 2026, 21:36 local",
+    "scope": "downloaded order backup checked in isolated memory",
+    "records": 26,
+    "source_photos": 26,
+    "saved_previews": 21,
+    "special_legacy_values_preserved": 16,
+    "actual_database_restore": false
+  }
 }

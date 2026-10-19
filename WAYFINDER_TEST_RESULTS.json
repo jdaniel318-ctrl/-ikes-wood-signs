@@ -1,0 +1,110 @@
+{
+  "build": "8.8.20.38",
+  "seal": "wayfinder-882038",
+  "checked_at": "2026-10-19T02:50:18.506850+00:00",
+  "scope": "pre-package Node and isolated Chromium tests; no native Safari/full hosted boot/live backend audit",
+  "node": {
+    "WAYFINDER": {
+      "passed": 23,
+      "failed": 0
+    },
+    "WAYFINDER_RELEASE": {
+      "passed": 24,
+      "failed": 0
+    },
+    "STRONGBOX": {
+      "passed": 36,
+      "failed": 0
+    },
+    "HEADWAY": {
+      "passed": 49,
+      "failed": 0
+    },
+    "WORKHORSE": {
+      "passed": 24,
+      "failed": 0
+    },
+    "STEADYHAND": {
+      "passed": 20,
+      "failed": 0
+    },
+    "IRONBOUND": {
+      "passed": 16,
+      "failed": 0
+    }
+  },
+  "node_total": 192,
+  "browser": {
+    "WAYFINDER_UI": {
+      "passed": 21,
+      "failed": 0
+    },
+    "STRONGBOX_UI": {
+      "passed": 11,
+      "failed": 0
+    },
+    "HEADWAY_APP": {
+      "passed": 16,
+      "failed": 0
+    },
+    "HEADWAY_VIEW": {
+      "passed": 13,
+      "failed": 0
+    },
+    "HEADWAY_OWNER_UI": {
+      "passed": 2,
+      "failed": 0
+    },
+    "HEADWAY_BRIEF_UI": {
+      "passed": 3,
+      "failed": 0
+    },
+    "SUREFOOT_UI": {
+      "passed": 21,
+      "failed": 0
+    },
+    "WORKHORSE_UI": {
+      "passed": 21,
+      "failed": 0
+    },
+    "STEADYHAND_UI": {
+      "passed": 19,
+      "failed": 0
+    },
+    "IRONBOUND_UI": {
+      "passed": 6,
+      "failed": 0
+    }
+  },
+  "isolated_chromium_total": 133,
+  "package_unit_tests": 13,
+  "http_boot": {
+    "status": "BLOCKED",
+    "error": "net::ERR_BLOCKED_BY_ADMINISTRATOR at local /seed.html",
+    "counted_as_pass": false
+  },
+  "field_test": "pending",
+  "quota_recovery": "not claimed",
+  "inline_review": "completed; no independent reviewer agent available",
+  "tested_source_sha256": {
+    "app.js": "ece28bcbef9dcac71bab0382ee15c53f70c7f083b3618c463529a4ae590ba5c0",
+    "index.html": "6658fc5697b6a305de192d4b6cbb256f7fd78b1943c9d4f5312c484c720e9539",
+    "styles.css": "aa0337a5ec80a7261d41d30e028259abba8883d08d9ef88194a2de53c7458768",
+    "owner.html": "1d878ceac0f489bbf8a2b7db024e24d42cf3b5ae73ba6a7b88547247f38ab560",
+    "headway_contracts.js": "02f7ad83ff49e6c0ac614f01a06e61fb858c6a3dc72d9c9e742d618a3b7433dd",
+    "fleet_supabase.js": "6d731c99e3113e2915271a18f8494a59bff359ca1e48d973dc169f535cd465c5",
+    "VERIFY_WAYFINDER.cjs": "150c1d8c5f762cc5dcbe7dd9c5b759b62320d698c041dae9aec5c1c9be562996",
+    "VERIFY_WAYFINDER_UI.py": "9d7c036d518e0776bfe402f8eaf2f5c14b9332bedd25eda5e663f0fdd4201eb6"
+  },
+  "earlier_failures": {
+    "red_search_suite": {
+      "tests": 15,
+      "passed": 2,
+      "failed": 13,
+      "meaning": "unmodified code rejected valid filtered/empty lists and lacked new observation helpers"
+    },
+    "intermediate": "test brace typo fixed; unsealed release hashes intentionally failed before sealing; one combined browser command timed out and remaining suites were rerun individually",
+    "omitted_failed_behavior_tests": 0
+  },
+  "final_archive_evidence": "external Wayfinder-882038-Package-Proof.json, generated only after extracted archive verification"
+}

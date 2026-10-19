@@ -1,4 +1,4 @@
-/* Headway 8.8.20.37 — pure, scoped test-job contracts.
+/* Headway 8.8.20.38 — pure, scoped test-job contracts.
  * No network, permission grants, live storage, automatic retry, or production geometry.
  * Preview fixtures are never server-authorized owner decisions. */
 (function(root,factory){'use strict';const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;if(root&&root.document)root.BlackFlagHeadway=api;})(typeof globalThis!=='undefined'?globalThis:this,function(){
@@ -171,5 +171,5 @@ async function rehearse(b,pid){
  const specialValues=encoded.specialValues.map(x=>({...x,orderId:String(rows[Number(x.path.split('/')[2])].id)}));
  return {ok:true,projectId:pid,records:restored.length,sourcePhotos:restored.filter(r=>image(r.photoData)).length,approvedPreviews:restored.filter(r=>image(r.approvedPreviewData)).length,missingSourcePhotos:restored.filter(r=>!image(r.photoData)).length,missingPreviews:restored.filter(r=>!image(r.approvedPreviewData)).length,specialValues,specialValueCount:specialValues.length,restoreTarget:'isolated memory only; existing browser database untouched',integrityHash:b.integrityHash};
 }
-return Object.freeze({version:'8.8.20.37',canonical,sha256,image,previewSize,previewSpecies,validateSize,validateSpecies,fingerprint,approve,approvalMatches,jobPacket,verifyJob,transaction,backup,rehearse,readBackupRows});
+return Object.freeze({version:'8.8.20.38',canonical,sha256,image,previewSize,previewSpecies,validateSize,validateSpecies,fingerprint,approve,approvalMatches,jobPacket,verifyJob,transaction,backup,rehearse,readBackupRows});
 });

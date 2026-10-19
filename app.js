@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.20.37';
+  const BUILD_VERSION='8.8.20.38';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -2409,7 +2409,7 @@
   }
   function recordDockProof8610(trace){
     const rendered=trace?.stages?.find(st=>st.name==='Rendered Fleet Dock cards');
-    if(!rendered?.ok){proofSignerTraceEvent8616('dock-proof-skipped',{reason:'rendered-stage-not-ok',count:Number(rendered?.count||0)});return null;}
+    if(!rendered?.ok||trace?.firstDrop||trace?.viewFiltered||rendered.count!==6){proofSignerTraceEvent8616('dock-proof-skipped',{reason:'rendered-stage-not-ok',count:Number(rendered?.count||0)});return null;}
     const generation=Number(memoryMusterRead8612()?.generation||0);
     const out=evidenceReconciliationWrite8610({dock:{ok:true,count:rendered.count,ids:[...(rendered.protectedIds||rendered.ids||[])],trace,generation,capturedAt:new Date().toISOString(),source:'rendered-fleet-dock'}});
     proofSignerTraceEvent8616('dock-proof-recorded',{generation,count:Number(rendered.count||0),ids:[...(rendered.protectedIds||rendered.ids||[])]});
@@ -2844,41 +2844,55 @@
     const have=new Set((values||[]).map(v=>String(canonicalProjectId(v||''))).filter(Boolean));
     return RELEASE_CANONICAL_FLEET_IDS_864.filter(id=>have.has(id));
   }
-  function dockTraceStage868(name,values,{kind='ids',note=''}={}){
-    const ids=kind==='rows'?(values||[]).map(v=>String(canonicalProjectId(v?.id||''))).filter(Boolean):(values||[]).map(v=>String(canonicalProjectId(v||''))).filter(Boolean);
-    const protectedIds=dockTraceProtectedIds868(ids);
-    const missing=RELEASE_CANONICAL_FLEET_IDS_864.filter(id=>!protectedIds.includes(id));
-    return {name,count:protectedIds.length,totalIds:ids.length,ids:[...new Set(ids)],protectedIds,missing,ok:missing.length===0,note};
+  function dockTraceStage868(name,values,{kind='ids',note='',expectedIds=null}={}){
+    const raw=kind==='rows'?(values||[]).map(v=>String(canonicalProjectId(v?.id||''))):(values||[]).map(v=>String(canonicalProjectId(v||'')));
+    const ids=raw.filter(Boolean),unique=[...new Set(ids)],protectedIds=dockTraceProtectedIds868(ids);
+    // Full sources retain the protected-six guard. A display subset is checked
+    // against its own expected IDs, including any newer, non-protected vessel.
+    const subset=Array.isArray(expectedIds);
+    const expected=subset?[...new Set(expectedIds.map(id=>String(canonicalProjectId(id||''))).filter(Boolean))]:[...RELEASE_CANONICAL_FLEET_IDS_864];
+    const missing=expected.filter(id=>!unique.includes(id));
+    const unexpected=subset?unique.filter(id=>!expected.includes(id)):[];
+    const duplicates=ids.filter((id,i)=>ids.indexOf(id)!==i);
+    const strictIds=subset||name==='Fleet Dock input array';
+    return {name,count:protectedIds.length,totalIds:ids.length,ids:unique,protectedIds,missing,unexpected,duplicates,
+      expectedIds:expected,expectedCount:expected.length,matchedCount:expected.filter(id=>unique.includes(id)).length,
+      comparison:subset?'selected-view':'protected-source',
+      ok:missing.length===0&&unexpected.length===0&&(!strictIds||(duplicates.length===0&&raw.length===ids.length)),note};
   }
-  async function collectDockSourceTrace868({includeRendered=true}={}){
+  async function collectDockSourceTrace868({includeRendered=true,view=null,publish=true}={}){
+    // Capture presentation inputs before asynchronous source reads. The caller
+    // can own publication so an obsolete search cannot overwrite a newer trace.
     const seed=[...RELEASE_CANONICAL_FLEET_IDS_864];
+    const search=String(view?.search??fleetDockSearch),filter=String(view?.filter??fleetDockFilter);
+    const memoryRows=view?.memoryRows||(Array.isArray(companies)?companies.slice():[]);
+    const dockRows=view?.rows||projects().slice();
+    const visibleRows=view?.visibleRows||dockRows.filter(p=>fleetDockMatches(p,commissioningSnapshot(structuredClone(p)),{search,filter}));
+    const expectedVisible=visibleRows.map(p=>String(canonicalProjectId(p?.id||''))).filter(Boolean);
     const rawProjects=await resolverRead869('Trace read • IndexedDB projects',()=>getAll(STORE_PROJECTS),[]);
     const mirrorSetting=await resolverRead869('Trace read • settings mirror',()=>getSetting('companies'),null);
     const mirrorRows=Array.isArray(mirrorSetting?.value)?mirrorSetting.value:[];
-    const localAdmissions=readV4AdmissionLedger();
-    let storedAdmissions={};
+    const localAdmissions=readV4AdmissionLedger();let storedAdmissions={};
     try{const row=(await resolverRead869('Trace read • admission mirror',()=>getSetting(V4_ADMISSION_LEDGER_SETTING),null))?.value;if(row&&typeof row==='object'&&!Array.isArray(row))storedAdmissions=row;}catch(_){ }
     const admissionLedger={...storedAdmissions,...localAdmissions};
     const admissionIds=Object.entries(admissionLedger).filter(([id,row])=>validV4Admission(row,id)).map(([id])=>id);
     const manifestIds=readV4FleetManifest();
-    const memoryRows=Array.isArray(companies)?companies:[];
-    const dockRows=projects();
-    const visibleRows=(dockRows||[]).filter(p=>{try{return fleetDockMatches(p,commissioningSnapshot(p));}catch(_){return true;}});
-    const renderedIds=includeRendered?[...document.querySelectorAll('#fleetCommissioningFleet .fleet-dock-card[data-project-id]')].map(el=>String(el.dataset.projectId||'')):[];
     const stages=[
       dockTraceStage868('Protected muster seed',seed),
-      dockTraceStage868('IndexedDB project rows',rawProjects,{kind:'rows',note:`${rawProjects.length} raw project row${rawProjects.length===1?'':'s'}`}),
-      dockTraceStage868('Settings mirror rows',mirrorRows,{kind:'rows',note:`${mirrorRows.length} mirrored project row${mirrorRows.length===1?'':'s'}`}),
-      dockTraceStage868('Valid fleet admissions',admissionIds,{note:`${admissionIds.length} valid admission record${admissionIds.length===1?'':'s'}`}),
-      dockTraceStage868('Active fleet manifest',manifestIds,{note:`${manifestIds.length} manifest ID${manifestIds.length===1?'':'s'}`}),
-      dockTraceStage868('In-memory companies',memoryRows,{kind:'rows',note:`${memoryRows.length} in-memory row${memoryRows.length===1?'':'s'}`}),
-      dockTraceStage868('Fleet Dock input array',dockRows,{kind:'rows',note:`${dockRows.length} row${dockRows.length===1?'':'s'} handed to Fleet Dock`}),
-      dockTraceStage868('Fleet Dock visible array',visibleRows,{kind:'rows',note:`Filter ${fleetDockFilter||'all'} • search ${fleetDockSearch?`“${fleetDockSearch}”`:'none'}`})
+      dockTraceStage868('IndexedDB project rows',rawProjects,{kind:'rows',note:`${rawProjects.length} raw project rows`}),
+      dockTraceStage868('Settings mirror rows',mirrorRows,{kind:'rows',note:`${mirrorRows.length} mirrored project rows`}),
+      dockTraceStage868('Valid fleet admissions',admissionIds,{note:`${admissionIds.length} admission records`}),
+      dockTraceStage868('Active fleet manifest',manifestIds,{note:`${manifestIds.length} manifest IDs`}),
+      dockTraceStage868('In-memory companies',memoryRows,{kind:'rows',note:`${memoryRows.length} in-memory rows`}),
+      dockTraceStage868('Fleet Dock input array',dockRows,{kind:'rows',note:`${dockRows.length} rows before search and filtering`}),
+      dockTraceStage868('Fleet Dock visible array',visibleRows,{kind:'rows',expectedIds:expectedVisible,note:`Filter ${filter||'all'} • search ${search?`“${search}”`:'none'} • expected selected subset`})
     ];
-    if(includeRendered)stages.push(dockTraceStage868('Rendered Fleet Dock cards',renderedIds,{note:`${renderedIds.length} rendered card${renderedIds.length===1?'':'s'}`}));
+    if(includeRendered){const renderedIds=[...document.querySelectorAll('#fleetCommissioningFleet .fleet-dock-card[data-project-id]')].map(el=>String(el.dataset.projectId||''));stages.push(dockTraceStage868('Rendered Fleet Dock cards',renderedIds,{expectedIds:expectedVisible,note:`${renderedIds.length} cards compared with ${expectedVisible.length} selected IDs`}));}
     const firstDrop=stages.slice(1).find(st=>!st.ok)||null;
-    const trace={schema:'dark-sky-dock-source-trace-v1',build:BUILD_VERSION,expected:6,legacyId:'bf-p-f92f87e8ec44',capturedAt:new Date().toISOString(),stages,firstDrop:firstDrop?.name||'',firstDropMissing:firstDrop?.missing||[],legacyByStage:stages.map(st=>({stage:st.name,present:st.ids.includes('bf-p-f92f87e8ec44')}))};
-    window.__darkSkyDockSourceTrace868=trace;
+    const trace={schema:'dark-sky-dock-source-trace-v2',build:BUILD_VERSION,expected:6,legacyId:'bf-p-f92f87e8ec44',capturedAt:new Date().toISOString(),
+      viewFiltered:!!normalizeBusinessIdentityText(search)||filter!=='all',view:{search,filter,expectedIds:expectedVisible},
+      stages,firstDrop:firstDrop?.name||'',firstDropMissing:firstDrop?.missing||[],legacyByStage:stages.map(st=>({stage:st.name,present:st.ids.includes('bf-p-f92f87e8ec44')}))};
+    if(publish)window.__darkSkyDockSourceTrace868=trace;
     return trace;
   }
   function dockTraceShortId868(id){
@@ -2886,13 +2900,12 @@
     return map[id]||id;
   }
   function dockSourceTraceHtml868(trace,{compact=false}={}){
-    if(!trace)return '<section class="dock-source-trace hold"><p>Fleet Registry Trace is not available yet.</p></section>';
+    if(!trace)return '<section class="dock-source-trace hold"><p>Source checks have not completed.</p></section>';
     const first=trace.firstDrop;
-    return `<section class="dock-source-trace ${first?'hold':'clear'}" aria-label="Fleet Registry Trace">
-      <div class="dock-trace-head"><div><small>8.6.8 • FLEET REGISTRY TRACE</small><strong>${first?'FIRST DROP FOUND':'SIX ABOARD'}</strong><p>${first?`Legacy first disappears at <b>${escapeHtml(first)}</b>.`:'All protected vessel identities survive the Dock source pipeline.'}</p></div><span class="dock-trace-state">${first?'HOLD':'6 / 6'}</span></div>
-      <div class="dock-trace-life"><span>LEGACY ANCHOR</span><b>bf-p-f92f87e8ec44</b><em>${trace.legacyByStage.every(x=>x.present)?'Present at every traced stage':`Missing beginning at ${escapeHtml(first||'unknown stage')}`}</em></div>
-      <div class="dock-trace-stages">${trace.stages.map((st,i)=>`<article class="${st.ok?'ok':'bad'}"><div><small>${String(i+1).padStart(2,'0')}</small><strong>${escapeHtml(st.name)}</strong></div><b>${st.count}/6</b><p>${st.protectedIds.map(dockTraceShortId868).join(' • ')||'No protected IDs'}</p>${st.missing.length?`<em>Missing: ${st.missing.map(dockTraceShortId868).join(' • ')}</em>`:'<em>Protected six intact</em>'}${st.note?`<span>${escapeHtml(st.note)}</span>`:''}</article>`).join('')}</div>
-      ${compact?'':`<p class="dock-trace-foot">Read-only trace. No project, admission, order, evidence, or customer record is changed by this panel.</p>`}
+    return `<section class="dock-source-trace ${first?'hold':'clear'}" aria-label="Fleet source and view checks">
+      <div class="dock-trace-head"><div><small>FLEET SOURCE / SELECTED VIEW</small><strong>${first?'SOURCE OR DISPLAY CHECK HELD':'SOURCE AND VIEW MATCH'}</strong><p>${first?`First failing check: <b>${escapeHtml(first)}</b>.`:'The complete source and the intentionally selected results are checked separately.'}</p></div><span class="dock-trace-state">${first?'HOLD':'MATCH'}</span></div>
+      <div class="dock-trace-stages">${trace.stages.map((st,i)=>`<article class="${st.ok?'ok':'bad'}"><div><small>${String(i+1).padStart(2,'0')}</small><strong>${escapeHtml(st.name)}</strong></div><b>${st.matchedCount??st.count}/${st.expectedCount??6}</b><p>${st.ids.map(id=>escapeHtml(dockTraceShortId868(id))).join(' • ')||'No selected vessels'}</p><em>${st.ok?(st.comparison==='selected-view'?'Selected view matches':'Protected source IDs present'):`Missing: ${(st.missing||[]).map(id=>escapeHtml(dockTraceShortId868(id))).join(' • ')||'none'}${st.unexpected?.length?' · Unexpected: '+st.unexpected.map(escapeHtml).join(' • '):''}${st.duplicates?.length?' · Duplicate IDs':''}`}</em>${st.note?`<span>${escapeHtml(st.note)}</span>`:''}</article>`).join('')}</div>
+      ${compact?'':'<p class="dock-trace-foot">Read-only presentation trace. This is not account authorization, production approval, or a business-data backup.</p>'}
     </section>`;
   }
   const SIGNAL_BRAND_SCHEMA_KEY='signalRestorationBrandSchema';
@@ -2967,6 +2980,28 @@
     return companies;
   }
 
+  function noteFleetStorageFailure8838(operation,location,error){
+    try{
+      const errorName=String(error?.name||'Error').slice(0,80),detail=String(error?.message||error||'Storage operation not confirmed').slice(0,240);
+      const watch=window.__blackFlagStorageWatch8838||(window.__blackFlagStorageWatch8838={events:[]});
+      const event={operation:String(operation),location:String(location),errorName,detail,quota:/quota/i.test(errorName+' '+detail),at:new Date().toISOString()};
+      const prior=watch.events.find(e=>e.operation===event.operation&&e.location===event.location&&e.errorName===event.errorName);
+      if(prior){Object.assign(prior,event);prior.observations=(prior.observations||1)+1;}else{event.observations=1;watch.events.push(event);}
+      return event;
+    }catch(_){return null;}
+  }
+  function renderFleetStorageNotice8838(){
+    const host=$('fleetDockStorageNotice');if(!host)return;
+    const events=window.__blackFlagStorageWatch8838?.events||[];
+    const oldLocal=String(window.__darkSkyLiveProofLocalError8621||'');
+    const oldSeal=(window.__darkSkyResolverLifeline869?.stages||[]).find(st=>/quota/i.test(String(st.detail||'')));
+    if(!events.length&&!oldLocal&&!oldSeal){host.hidden=true;host.innerHTML='';return;}
+    host.hidden=false;
+    host.innerHTML=`<strong>Storage warning — separate from search</strong><p>A storage operation was not confirmed. Existing source checks still apply; filtering does not repair or certify persistence.</p>
+      <details><summary>See the reported operation</summary>${events.length?events.map(e=>`<p><b>${escapeHtml(e.operation)}</b> · ${escapeHtml(e.location)}<br>${escapeHtml(e.errorName)}: ${escapeHtml(e.detail)}<br><small>Observed ${escapeHtml(e.at)} · not a recovery confirmation</small></p>`).join(''):`<p>${escapeHtml(oldSeal?.name||'Earlier browser proof write')} · ${escapeHtml(oldSeal?.detail||oldLocal)}<br>Exact operation was not captured by this session.</p>`}</details>
+      <small>No cleanup or save retry is run here. Keep your private backup and do not clear Safari data to dismiss this warning.</small>`;
+  }
+
   async function sealOperationalFleetForCommand(){
     restoreV4BaselineMemory();
     try{
@@ -2974,6 +3009,7 @@
       restoreV4BaselineMemory();
       return {ok:true,count:companies.length};
     }catch(err){
+      noteFleetStorageFailure8838('Operational fleet seal','ensureV4BaselineRegistrySeal (stage boundary)',err);
       console.warn('Operational fleet seal deferred; preserving in-memory fleet',err);
       window.DarkSkyV4?.diagnostic?.('fleet.command_seal.deferred',String(err?.message||err),{count:companies.length,build:BUILD_VERSION});
       return {ok:false,count:companies.length,error:err};
@@ -3869,8 +3905,8 @@
   }
   function writeV4FleetManifest(ids){
     const clean=[...new Set((ids||[]).map(String).filter(Boolean))];
-    try{sessionStorage.setItem(V4_FLEET_MANIFEST_KEY,JSON.stringify(clean));}catch(_){}
-    try{localStorage.setItem(V4_FLEET_MANIFEST_KEY,JSON.stringify(clean));}catch(err){window.__darkSkyLiveProofLocalError8621=String(err?.name||'Error')+': '+String(err?.message||err);}
+    try{sessionStorage.setItem(V4_FLEET_MANIFEST_KEY,JSON.stringify(clean));}catch(err){noteFleetStorageFailure8838('writeV4FleetManifest','sessionStorage/'+V4_FLEET_MANIFEST_KEY,err);}
+    try{localStorage.setItem(V4_FLEET_MANIFEST_KEY,JSON.stringify(clean));}catch(err){noteFleetStorageFailure8838('writeV4FleetManifest','localStorage/'+V4_FLEET_MANIFEST_KEY,err);window.__darkSkyLiveProofLocalError8621=String(err?.name||'Error')+': '+String(err?.message||err);}
     return clean;
   }
   function readV4AdmissionLedger(){
@@ -3879,13 +3915,13 @@
   }
   function writeV4AdmissionLedger(value){
     const clean=value&&typeof value==='object'&&!Array.isArray(value)?value:{};
-    try{sessionStorage.setItem(V4_ADMISSION_LEDGER_KEY,JSON.stringify(clean));}catch(_){}
-    try{localStorage.setItem(V4_ADMISSION_LEDGER_KEY,JSON.stringify(clean));}catch(err){window.__darkSkyLiveProofLocalError8621=String(err?.name||'Error')+': '+String(err?.message||err);}
+    try{sessionStorage.setItem(V4_ADMISSION_LEDGER_KEY,JSON.stringify(clean));}catch(err){noteFleetStorageFailure8838('writeV4AdmissionLedger','sessionStorage/'+V4_ADMISSION_LEDGER_KEY,err);}
+    try{localStorage.setItem(V4_ADMISSION_LEDGER_KEY,JSON.stringify(clean));}catch(err){noteFleetStorageFailure8838('writeV4AdmissionLedger','localStorage/'+V4_ADMISSION_LEDGER_KEY,err);window.__darkSkyLiveProofLocalError8621=String(err?.name||'Error')+': '+String(err?.message||err);}
     return clean;
   }
   async function persistV4AdmissionLedger(value){
     const clean=writeV4AdmissionLedger(value);
-    try{await setSetting(V4_ADMISSION_LEDGER_SETTING,clean);}catch(_){ }
+    try{await setSetting(V4_ADMISSION_LEDGER_SETTING,clean);}catch(err){noteFleetStorageFailure8838('Admission mirror write','IndexedDB settings/'+V4_ADMISSION_LEDGER_SETTING,err);}
     return clean;
   }
   function validV4Admission(row,id){
@@ -3961,7 +3997,7 @@
     // It can never add an ID to the fleet by itself.
     const ids=Object.keys(admissions).filter(id=>canonicalById.has(id)&&validV4Admission(admissions[id],id));
     writeV4FleetManifest(ids);
-    try{await setSetting(V4_FLEET_MANIFEST_SETTING,ids);}catch(_){ }
+    try{await setSetting(V4_FLEET_MANIFEST_SETTING,ids);}catch(err){noteFleetStorageFailure8838('Fleet manifest mirror write','IndexedDB settings/'+V4_FLEET_MANIFEST_SETTING,err);}
 
     const allowed=new Set(ids);
     const orphans=canonical.filter(p=>p?.id&&!allowed.has(String(p.id)));
@@ -4004,7 +4040,11 @@
   function readV4EnvelopeLedger(){
     try{const v=JSON.parse(localStorage.getItem(V4_ENVELOPE_LEDGER_KEY)||'{}');return v&&typeof v==='object'&&!Array.isArray(v)?v:{}}catch(_){return{}}
   }
-  function writeV4EnvelopeLedger(value){localStorage.setItem(V4_ENVELOPE_LEDGER_KEY,JSON.stringify(value||{}));return value||{}}
+  function writeV4EnvelopeLedger(value){
+    try{localStorage.setItem(V4_ENVELOPE_LEDGER_KEY,JSON.stringify(value||{}));}
+    catch(err){noteFleetStorageFailure8838('Envelope projection write','localStorage/'+V4_ENVELOPE_LEDGER_KEY,err);throw err;}
+    return value||{};
+  }
   function buildV4ProjectEnvelope(project){
     const core=window.BlackFlagV3Core, id=String(project?.id||'').trim(); if(!id)return null;
     const namespace=core?.namespaceFor?.(id)||`bf.project.${id}`;
@@ -4146,7 +4186,7 @@
     const rows=readV4Quarantine(), pid=String(projectId||''), payloadId=String(payload?.id||payload?.key||'');
     const duplicate=rows.some(r=>r?.kind===kind&&String(r?.projectId||'')===pid&&String(r?.payload?.id||r?.payload?.key||'')===payloadId&&payloadId);
     if(!duplicate)rows.unshift({id:`Q-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,6)}`,at:new Date().toISOString(),kind,projectId:pid,payload});
-    localStorage.setItem(V4_QUARANTINE_KEY,JSON.stringify(rows.slice(0,250)));
+    try{localStorage.setItem(V4_QUARANTINE_KEY,JSON.stringify(rows.slice(0,250)));}catch(err){noteFleetStorageFailure8838('Admission quarantine write','localStorage/'+V4_QUARANTINE_KEY,err);throw err;}
   }
   function inferCanonicalProjectId(row,valid){
     const raw=String(row?.projectId||'');
@@ -6449,12 +6489,13 @@
     score+=(s.total-s.passed)*10;
     return score;
   }
-  function fleetDockMatches(p,s){
-    const q=normalizeBusinessIdentityText(fleetDockSearch);
-    if(q && !normalizeBusinessIdentityText([p.name,p.projectCode,p.type,p.businessType,p.tagline].filter(Boolean).join(' ')).includes(q))return false;
-    if(fleetDockFilter==='attention')return !s.commissioned && !s.ready;
-    if(fleetDockFilter==='staging')return p?.publish?.status!=='live';
-    if(fleetDockFilter==='live')return p?.publish?.status==='live';
+  function fleetDockMatches(p,s,view=null){
+    const search=view?.search??fleetDockSearch,filter=view?.filter??fleetDockFilter;
+    const q=normalizeBusinessIdentityText(search);
+    if(q && !normalizeBusinessIdentityText([p.name,p.id,p.projectCode,p.type,p.businessType,p.tagline].filter(Boolean).join(' ')).includes(q))return false;
+    if(filter==='attention')return !s.commissioned && !s.ready;
+    if(filter==='staging')return p?.publish?.status!=='live';
+    if(filter==='live')return p?.publish?.status==='live';
     return true;
   }
 
@@ -6507,135 +6548,134 @@
     }));
   }
 
-  async function renderFleetCommissioning({skipConvergence=false}={}){
-    renderFleetMissionControl();
-    const summary=$('fleetCommissioningSummary');
-    const fleet=$('fleetCommissioningFleet');
-    const reference=$('fleetCommissioningReference');
-    const state=$('fleetCommissioningState');
-    if(!summary||!reference)return;
-    if(skipConvergence)await awaitMemoryRosterReady8612({timeoutMs:900,source:'fleet-dock'});
-    const lifeline869=window.__darkSkyResolverLifeline869||null;
-
-    // 8.3.1 DOCK LOCK: Fleet Dock must never wait indefinitely for registry
-    // convergence before painting a usable vessel roster. Paint from the already
-    // loaded canonical/local fleet within a bounded window, then reconcile and
-    // refresh in the background. Navigation remains available during verification.
-    let canonicalSettled=true;
-    if(!skipConvergence){
-      // 8.6.15: reuse the committed memory generation when available. Fleet Dock
-      // must not start a second reconciliation after the Engine already committed six.
-      const ready=await awaitMemoryRosterReady8612({timeoutMs:120,source:'fleet-dock-entry'});
-      if(!ready){
-        const convergence=convergeCanonicalFleetForPresentation({source:'fleet-dock'});
-        canonicalSettled=await commandDeadline(convergence.then(()=>true).catch(err=>{console.warn('fleet dock convergence warning',err);return false;}),650,false);
-        if(!canonicalSettled){
-          if(state){state.textContent='LOCAL ROSTER • VERIFYING';state.className='fleet-commissioning-state ready';}
-          convergence.then(()=>renderFleetCommissioning({skipConvergence:true})).catch(err=>console.warn('fleet dock background reconciliation warning',err));
+  let fleetDockRenderEpoch8838=0;
+  function bindFleetDockControls8838(){
+    const search=$('fleetDockSearch'),clear=$('fleetDockClearSearch');
+    if(search){
+      if(search.value!==fleetDockSearch)search.value=fleetDockSearch;
+      search.oninput=()=>{fleetDockSearch=search.value;renderFleetCommissioning({skipConvergence:true,viewOnly:true});};
+    }
+    if(clear){clear.hidden=!fleetDockSearch;clear.onclick=()=>{fleetDockSearch='';if(search){search.value='';search.focus();}renderFleetCommissioning({skipConvergence:true,viewOnly:true});};}
+    $$('#fleetDockFilters [data-fleet-dock-filter]').forEach(btn=>{
+      btn.classList.toggle('active',btn.dataset.fleetDockFilter===fleetDockFilter);
+      btn.setAttribute('aria-pressed',String(btn.dataset.fleetDockFilter===fleetDockFilter));
+      btn.onclick=()=>{fleetDockFilter=btn.dataset.fleetDockFilter||'all';renderFleetCommissioning({skipConvergence:true,viewOnly:true});};
+    });
+  }
+  async function renderFleetCommissioning({skipConvergence=false,viewOnly=false}={}){
+    const epoch=++fleetDockRenderEpoch8838,current=()=>epoch===fleetDockRenderEpoch8838;
+    const summary=$('fleetCommissioningSummary'),fleet=$('fleetCommissioningFleet'),reference=$('fleetCommissioningReference'),state=$('fleetCommissioningState'),count=$('fleetDockResultCount');
+    if(!summary||!fleet||!reference)return;
+    bindFleetDockControls8838();
+    const query={search:String(fleetDockSearch||''),filter:String(fleetDockFilter||'all')};
+    fleet.setAttribute('aria-busy','true');fleet.inert=true;
+    if(count)count.textContent='Checking the selected view…';
+    try{
+      if(!viewOnly)renderFleetMissionControl();
+      // A display-only search never starts convergence, sealing, admission repair
+      // or full-roster proof publication. Genuine source reads still must pass.
+      if(skipConvergence&&!viewOnly)await awaitMemoryRosterReady8612({timeoutMs:900,source:'fleet-dock'});
+      if(!current())return;
+      let canonicalSettled=true;
+      if(!skipConvergence){
+        const ready=await awaitMemoryRosterReady8612({timeoutMs:120,source:'fleet-dock-entry'});
+        if(!current())return;
+        if(!ready){
+          const convergence=convergeCanonicalFleetForPresentation({source:'fleet-dock'});
+          canonicalSettled=await commandDeadline(convergence.then(()=>true).catch(err=>{console.warn('fleet dock convergence warning',err);return false;}),650,false);
+          if(!current())return;
+          if(!canonicalSettled){
+            if(state){state.textContent='LOCAL ROSTER • VERIFYING';state.className='fleet-commissioning-state ready';}
+            convergence.then(()=>{if(current())renderFleetCommissioning({skipConvergence:true});}).catch(err=>console.warn('fleet dock background reconciliation warning',err));
+          }
         }
       }
-    }
-
-    const list=projects();
-    const sourceTrace868=await collectDockSourceTrace868({includeRendered:false});
-    const dockInputStage868=sourceTrace868.stages.find(st=>st.name==='Fleet Dock input array');
-    const firstDrop868=sourceTrace868.stages.slice(1).find(st=>!st.ok);
-    // LAST-MILE GUARD: the exact array handed to Fleet Dock must carry all six.
-    // If it does not, no incomplete vessel cards are allowed to paint.
-    if(!dockInputStage868?.ok || firstDrop868){
-      if(state){state.textContent=`DOCK SOURCE HOLD • ${(firstDrop868?.name||'DOCK INPUT').toUpperCase()}`;state.className='fleet-commissioning-state hold';}
-      if(fleet)fleet.innerHTML=`${resolverLifelineHtml869(window.__darkSkyResolverLifeline869)}${dockSourceTraceHtml868(sourceTrace868)}`;
-      reference.innerHTML=`<div class="fleet-reference-copy"><span>FLEET DOCK CONTRACT • DOCK SOURCE HOLD</span><strong>Six enter. Six must reach the Dock.</strong><p>The renderer withheld the incomplete roster. First drop: ${escapeHtml(firstDrop868?.name||'Fleet Dock input array')}.</p></div>`;
-      return;
-    }
-    const snaps=list.map(p=>({p,s:commissioningSnapshot(p)}));
-    const commissioned=snaps.filter(x=>x.s.commissioned).length;
-    const ready=snaps.filter(x=>x.s.ready&&!x.s.commissioned).length;
-    const work=snaps.length-commissioned-ready;
-    const live=list.filter(p=>p?.publish?.status==='live').length;
-    const trials=list.filter(p=>migrateLegacyDeployment(p).some(d=>d.state==='sea_trial')).length;
-    const gatesPassed=snaps.reduce((n,x)=>n+x.s.passed,0);
-    const gatesTotal=snaps.reduce((n,x)=>n+x.s.total,0);
-
-    if(state){
-      state.textContent=(list.length?`${list.length} VESSELS • ${live} LIVE • ${trials} SEA TRIAL`:'NO VESSELS')+(!canonicalSettled?' • VERIFYING':'');
-      state.className=`fleet-commissioning-state ${list.length?'ready':'watch'}`;
-    }
-
-    summary.innerHTML=`
-      <article><small>COMMISSIONED</small><strong>${commissioned}</strong><span>Captain-approved vessels</span></article>
-      <article><small>READY</small><strong>${ready}</strong><span>Awaiting final Captain order</span></article>
-      <article><small>IN DOCK</small><strong>${work}</strong><span>Readiness work remains</span></article>
-      <article><small>FLEET PROOF</small><strong>${gatesPassed}/${gatesTotal||0}</strong><span>Verified gates across current vessels</span></article>`;
-
-    if(fleet){
-      const visibleSnaps=snaps.filter(({p,s})=>fleetDockMatches(p,s)).sort((a,b)=>fleetDockPriority(b.p,b.s)-fleetDockPriority(a.p,a.s)||String(a.p.name).localeCompare(String(b.p.name)));
-      fleet.innerHTML=visibleSnaps.length?visibleSnaps.map(({p,s},idx)=>{
-        const deployments=migrateLegacyDeployment(p);
-        const inSeaTrial=deployments.some(d=>d.state==='sea_trial');
-        const status=p?.publish?.status==='live'?'LIVE':inSeaTrial?'SEA TRIAL':'STAGING';
-        const cls=p?.publish?.status==='live'?'commissioned':inSeaTrial?'ready':'work';
+      const list=projects().map(p=>structuredClone(p));
+      const snaps=list.map(p=>({p,s:commissioningSnapshot(p)}));
+      const visibleSnaps=snaps.filter(({p,s})=>fleetDockMatches(p,s,query)).sort((a,b)=>fleetDockPriority(b.p,b.s)-fleetDockPriority(a.p,a.s)||String(a.p.name).localeCompare(String(b.p.name)));
+      const view={...query,rows:list,memoryRows:list,visibleRows:visibleSnaps.map(x=>x.p)};
+      const sourceTrace868=await collectDockSourceTrace868({includeRendered:false,view,publish:false});
+      if(!current())return;
+      window.__darkSkyDockSourceTrace868=sourceTrace868;
+      renderFleetStorageNotice8838();
+      const dockInputStage868=sourceTrace868.stages.find(st=>st.name==='Fleet Dock input array');
+      const firstDrop868=sourceTrace868.stages.slice(1).find(st=>!st.ok);
+      if(!dockInputStage868?.ok||firstDrop868){
+        if(state){state.textContent='SOURCE CHECK HELD';state.className='fleet-commissioning-state hold';}
+        if(count)count.textContent='Source verification is incomplete; search has not changed the fleet.';
+        fleet.classList.remove('wayfinder-focused');
+        fleet.innerHTML=`<div class="wayfinder-source-hold"><strong>Fleet source check needs attention</strong><p>The full roster could not be confirmed at ${escapeHtml(firstDrop868?.name||'Fleet Dock input array')}. This is not a search result or proof that a vessel was deleted. Operating routes stay withheld.</p><small>Do not recommission, clear website data, or create a replacement owner to dismiss this hold.</small></div>`;
+        reference.innerHTML=`<details class="wayfinder-diagnostics"><summary>Source and timing details</summary>${resolverLifelineHtml869(window.__darkSkyResolverLifeline869)}${dockSourceTraceHtml868(sourceTrace868)}</details>`;
+        return;
+      }
+      if(state){state.textContent=`${list.length} VESSELS LOADED • LOCAL VIEW${canonicalSettled?'':' • VERIFYING'}`;state.className='fleet-commissioning-state ready';}
+      if(count)count.textContent=`${visibleSnaps.length} vessel${visibleSnaps.length===1?'':'s'} shown · ${list.length} loaded${query.search?' · Search: '+query.search:''}`;
+      // Retain existing local summary data, explicitly distinguished from server authority.
+      const commissioned=snaps.filter(x=>x.s.commissioned).length,ready=snaps.filter(x=>x.s.ready&&!x.s.commissioned).length;
+      summary.innerHTML=`<article><small>LOCAL COMMISSION CHECKS</small><strong>${commissioned}</strong><span>Not an owner permission check</span></article><article><small>LOCAL READY CHECKS</small><strong>${ready}</strong><span>Not live business certification</span></article><article><small>WORK REMAINS</small><strong>${snaps.length-commissioned-ready}</strong><span>Local setup evidence</span></article>`;
+      fleet.classList.toggle('wayfinder-focused',visibleSnaps.length===1);
+      fleet.innerHTML=visibleSnaps.length?visibleSnaps.map(({p})=>{
+        const deployments=migrateLegacyDeployment(p),trial=deployments.some(d=>d.state==='sea_trial');
+        const status=p?.publish?.status==='live'?'LIVE':trial?'SEA TRIAL':'STAGING';
         const ownerEnabled=!!ensureProjectGovernance(p).ownerAccess?.enabled;
-        return `<article class="fleet-proof-card fleet-dock-card ${cls}" data-project-id="${escapeHtml(p.id)}">
-          <header>
-            <div><small>VESSEL • ${escapeHtml(fleetStableCallsign(p))}</small><strong>${escapeHtml(p.name)}</strong></div>
-            <span>${status}</span>
-          </header>
+        return `<article class="fleet-proof-card fleet-dock-card wayfinder-vessel" data-project-id="${escapeHtml(p.id)}">
+          <header><div class="wayfinder-vessel-identity"><span class="wayfinder-logo" data-compass-logo="${escapeHtml(p.id)}" aria-hidden="true">${escapeHtml(fleetStableCallsign(p))}</span><div><small>EXACT VESSEL · ${escapeHtml(fleetStableCallsign(p))}</small><strong>${escapeHtml(p.name)}</strong></div></div><span class="wayfinder-local-state">Local setup: ${status}</span></header>
+          <p class="wayfinder-choose">Choose where you are going. Each entrance keeps its existing access check.</p>
           <div class="fleet-dock-actions" aria-label="${escapeHtml(p.name)} vessel routes">
-            <div class="fleet-dock-watch-actions">
-              <button type="button" data-open-project-control="${escapeHtml(p.id)}" class="primary-btn small fleet-watch-btn project-control-watch"><span>PROJECT</span><strong>CONTROL</strong></button>
-              <button type="button" data-fleet-dock-action="customer" data-project-id="${escapeHtml(p.id)}" class="secondary-btn small fleet-watch-btn customer-watch"><span>CUSTOMER</span><strong>EXPERIENCE</strong></button>
-              <button type="button" data-fleet-dock-action="owner" data-project-id="${escapeHtml(p.id)}" class="secondary-btn small owner-access-action fleet-watch-btn owner-watch"><span>OWNER / PARTNER</span><strong>${ownerEnabled?(p.ownerAccess?.status==='active'?'CONTROL CENTER':'OWNER ENTRANCE'):'SET UP ACCESS'}</strong></button>
+            <div class="wayfinder-route-grid">
+              <button type="button" data-fleet-dock-action="preview" data-project-id="${escapeHtml(p.id)}" class="wayfinder-route wayfinder-preview"><span class="wayfinder-route-number">01 · LOOK ONLY</span><strong>Private Preview →</strong><small>Open the test deck, then choose Preview.</small></button>
+              <button type="button" data-fleet-dock-action="owner" data-project-id="${escapeHtml(p.id)}" class="wayfinder-route"><span class="wayfinder-route-number">02 · BUSINESS</span><strong>${ownerEnabled?'Owner Workspace':'Owner Access Setup'} →</strong><small>${ownerEnabled?'Sign in for this business only.':'Open existing access configuration.'}</small></button>
+              <button type="button" data-open-project-control="${escapeHtml(p.id)}" class="wayfinder-route"><span class="wayfinder-route-number">03 · BLACK FLAG</span><strong>Project Control →</strong><small>Existing authorized configuration route.</small></button>
             </div>
-            <div class="fleet-dock-test-route"><span>TEST MODE</span><button type="button" data-fleet-dock-action="preview" data-project-id="${escapeHtml(p.id)}" class="secondary-btn small">OPEN TEST / PREVIEW</button></div>
+            <div class="wayfinder-not-checked"><span><b>Owner authority</b> · Not checked here</span><span><b>Order backup</b> · Not checked here</span></div>
+            <details class="wayfinder-customer-route"><summary>Customer Experience — separate from Preview</summary><p>This is the existing customer route. Local setup labels are not proof of publication or production readiness.</p><button type="button" data-fleet-dock-action="customer" data-project-id="${escapeHtml(p.id)}" class="secondary-btn small">OPEN CUSTOMER EXPERIENCE →</button></details>
           </div>
         </article>`;
-      }).join(''):'<div class="fleet-proof-empty">No vessels match the current Fleet Dock view.</div>';
-
+      }).join(''):`<div class="fleet-proof-empty wayfinder-empty"><strong>No vessels match this view.</strong><p>The full roster is still loaded. Clear the search or change the filter.</p><button type="button" data-fleet-dock-reset class="secondary-btn">CLEAR SEARCH & FILTERS</button></div>`;
+      // Validate exactly the expected card set against the SAME source snapshot.
+      // Avoid a second asynchronous source read per keystroke and stale final paint.
+      const renderedIds=[...fleet.querySelectorAll('.fleet-dock-card[data-project-id]')].map(el=>String(el.dataset.projectId||''));
+      const renderedStage868=dockTraceStage868('Rendered Fleet Dock cards',renderedIds,{expectedIds:sourceTrace868.view.expectedIds,note:'Compared with this exact selected view, not the full fleet.'});
+      const finalTrace868={...sourceTrace868,stages:[...sourceTrace868.stages,renderedStage868]};
+      const finalDrop=finalTrace868.stages.slice(1).find(st=>!st.ok);finalTrace868.firstDrop=finalDrop?.name||'';finalTrace868.firstDropMissing=finalDrop?.missing||[];
+      window.__darkSkyDockSourceTrace868=finalTrace868;
+      if(!renderedStage868.ok){
+        if(state){state.textContent='SELECTED DISPLAY HELD';state.className='fleet-commissioning-state hold';}
+        fleet.innerHTML='<div class="wayfinder-source-hold"><strong>The selected vessel cards did not match.</strong><p>Operating routes were withheld. No source record was changed.</p></div>';
+        reference.innerHTML=`<details class="wayfinder-diagnostics"><summary>Inspect the display mismatch</summary>${dockSourceTraceHtml868(finalTrace868)}</details>`;return;
+      }
+      if(!viewOnly&&!finalTrace868.viewFiltered&&renderedStage868.count===6){
+        try{recordDockProof8610(finalTrace868);proofBarrierAdvance8611('DOCK_PAINTED','Complete unfiltered Fleet Dock card set rendered');}
+        catch(err){noteFleetStorageFailure8838('Dock proof publication','existing proof publisher (stage boundary)',err);renderFleetStorageNotice8838();}
+      }
+      reference.innerHTML=`<details class="wayfinder-diagnostics"><summary>Source and view details · ${visibleSnaps.length} shown / ${list.length} loaded</summary><p>Search is presentation only. Full source integrity, selected-card equality, owner authorization and storage recovery are separate checks.</p>${dockSourceTraceHtml868(finalTrace868,{compact:true})}${resolverLifelineHtml869(window.__darkSkyResolverLifeline869)}</details>`;
+      const reset=fleet.querySelector('[data-fleet-dock-reset]');if(reset)reset.onclick=()=>{fleetDockSearch='';fleetDockFilter='all';renderFleetCommissioning({skipConvergence:true,viewOnly:true});};
       fleet.querySelectorAll('[data-fleet-dock-action]').forEach(btn=>btn.addEventListener('click',async()=>{
-        const projectId=btn.dataset.projectId;const action=btn.dataset.fleetDockAction;const project=projectById(projectId);if(!project)return;
-        if(action==='customer'){
-          if(btn.dataset.commandBusy==='1')return;
-          btn.dataset.commandBusy='1';btn.disabled=true;btn.setAttribute('aria-busy','true');
-          try{
-            await openFleetDockCustomerExperience(project);
-          }catch(err){
-            console.error('Fleet Dock Customer Experience route failed',err);
-            showFleetActionStatus(`${project.name} Customer Experience could not open. The vessel was not changed.`,{tone:'watch',duration:8000});
-            alert(`Customer Experience could not open: ${String(err?.message||err)}`);
-          }finally{
-            if(document.body.contains(btn)){delete btn.dataset.commandBusy;btn.disabled=false;btn.removeAttribute('aria-busy');}
+        const projectId=btn.dataset.projectId,action=btn.dataset.fleetDockAction,project=projectById(projectId);if(!project||!current()||btn.dataset.commandBusy==='1')return;
+        btn.dataset.commandBusy='1';btn.disabled=true;btn.setAttribute('aria-busy','true');
+        try{
+          if(action==='customer'){await openFleetDockCustomerExperience(project);return;}
+          if(action==='owner'){
+            const owner=ensureProjectGovernance(project).ownerAccess;
+            if(!owner?.enabled){await openProjectEngineControl(projectId);await renderProjectTab(projectId,'owner');return;}
+            armOwnerRoute(projectId);showFleetActionStatus(`Opening ${project.name} Owner / Partner Control Center…`,{tone:'clear',duration:5200});location.href=ownerPartnerEntryLink(projectId);return;
           }
-          return;
-        }
-        if(action==='owner'){
-          const owner=ensureProjectGovernance(project).ownerAccess;
-          if(!owner?.enabled){await openProjectEngineControl(projectId);await renderProjectTab(projectId,'owner');return;}
-          // Owner/Partner is a project-scoped authority route. Never traverse the
-          // Black Flag Engine login boundary just to enter the business portal.
-          armOwnerRoute(projectId);
-          showFleetActionStatus(`Opening ${project.name} Owner / Partner Control Center…`,{tone:'clear',duration:5200});
-          location.href=ownerPartnerEntryLink(projectId);
-          return;
-        }
-        if(action==='preview'){await openExperienceTestDeck(projectId);return;}
+          if(action==='preview'){await openExperienceTestDeck(projectId);return;}
+        }catch(err){console.error('Fleet Compass route failed',err);showFleetActionStatus(`The selected ${project.name} route could not open. No automatic retry was sent.`,{tone:'watch',duration:8000});}
+        finally{if(document.body.contains(btn)){delete btn.dataset.commandBusy;btn.disabled=false;btn.removeAttribute('aria-busy');}}
       }));
-    }
-
-    const canonicalState=window.__darkSkyCanonicalFleet||{};
-    const identityState=Array.isArray(canonicalState.duplicates)&&canonicalState.duplicates.length?'IDENTITY HOLD':'CANONICAL ROSTER';
-    const finalTrace868=await collectDockSourceTrace868({includeRendered:true});
-    if(finalTrace868?.stages?.find(st=>st.name==='Rendered Fleet Dock cards')?.ok){recordDockProof8610(finalTrace868);proofBarrierAdvance8611('DOCK_PAINTED','Six Fleet Dock cards rendered');}
-    const renderedStage868=finalTrace868.stages.find(st=>st.name==='Rendered Fleet Dock cards');
-    if(!renderedStage868?.ok){
-      if(state){state.textContent='DOCK SOURCE HOLD • RENDERED CARDS';state.className='fleet-commissioning-state hold';}
-      if(fleet)fleet.innerHTML=`${resolverLifelineHtml869(window.__darkSkyResolverLifeline869)}${dockSourceTraceHtml868(finalTrace868)}`;
-      reference.innerHTML=`<div class="fleet-reference-copy"><span>FLEET DOCK CONTRACT • RENDER HOLD</span><strong>Five cards can never masquerade as the fleet.</strong><p>The rendered Fleet Dock lost a protected vessel. The cards were withheld and the source trace is shown instead.</p></div>${dockSourceTraceHtml868(finalTrace868,{compact:true})}`;
-    }else{
-      reference.innerHTML=`<div class="fleet-reference-copy"><span>VESSEL WORKSTATION CONTRACT • ${escapeHtml(identityState)}</span><strong>Choose the vessel, then the exact surface.</strong><p>${list.length} unique vessel${list.length===1?'':'s'} from one canonical registry. Customer Experience, Owner / Partner, and Black Flag Project Control are separate routes. Test / Preview is a safe mode inside the same exact project boundary.</p></div>${dockSourceTraceHtml868(finalTrace868,{compact:true})}`;
-    }
-    const search=$('fleetDockSearch'); if(search){search.value=fleetDockSearch;search.oninput=()=>{fleetDockSearch=search.value;renderFleetCommissioning({skipConvergence:true});};}
-    $$('#fleetDockFilters [data-fleet-dock-filter]').forEach(btn=>{btn.classList.toggle('active',btn.dataset.fleetDockFilter===fleetDockFilter);btn.onclick=()=>{fleetDockFilter=btn.dataset.fleetDockFilter||'all';renderFleetCommissioning({skipConvergence:true});};});
+      // Reuse project-owned artwork. Late logo responses cannot alter a newer view.
+      visibleSnaps.forEach(({p})=>{
+        const mark=[...fleet.querySelectorAll('[data-compass-logo]')].find(el=>el.dataset.compassLogo===String(p.id));if(!mark)return;
+        Promise.resolve(projectBrandVisual(p)).then(visual=>{if(!current()||!mark.isConnected||!visual?.logo)return;const img=document.createElement('img');img.src=visual.logo;img.alt=`${p.name} logo`;mark.removeAttribute('aria-hidden');mark.replaceChildren(img);}).catch(()=>{});
+      });
+    }catch(err){
+      if(!current())return;
+      if(state){state.textContent='WORKSTATION CHECK HELD';state.className='fleet-commissioning-state hold';}
+      if(count)count.textContent='This view could not be verified.';
+      fleet.innerHTML=`<div class="wayfinder-source-hold"><strong>Workstation check did not finish</strong><p>${escapeHtml(String(err?.message||err))}</p><small>No repair, cleanup, or automatic retry was started by this view.</small></div>`;
+      renderFleetStorageNotice8838();
+    }finally{if(current()){fleet.removeAttribute('aria-busy');fleet.inert=false;bindFleetDockControls8838();}}
   }
 
   async function renderProjectCommand(){
@@ -9359,7 +9399,7 @@
     const state=commissionProofState(),proof=state.proof,receipt=state.receipt||commissionDraft?._serverReceipt;
     const ready=state.phase==='prepared',held=commissionOperationFrozen()&&!ready&&!proof;
     return `<div class="commission-panel sea-trial-review ironbound-proof">
-      <div class="eyebrow">07 • FLEET CORE PROOF · STRONGBOX TEST BUILD</div>
+      <div class="eyebrow">07 • FLEET CORE PROOF · WAYFINDER TEST BUILD</div>
       <h2>${proof?'Vessel and blueprint verified':ready?'Review the server-owned operation':held?'Read the preserved operation':'Prepare a new private test vessel'}</h2>
       <p>${proof?'Fleet Core confirmed this exact operation, its canonical vessel, and the saved blueprint in a separate read. Captain handoff and isolation are not yet proven.':ready?'Preparation created no vessel. The next tap issues this one operation once. A reload requires reconciliation, not replay.':'The server creates the vessel and blueprint together. Browser storage is an optional cache, never commissioning authority.'}</p>
       ${!proof&&!ready&&!held&&commissionPhotoBriefConflict(commissionDraft)?`<div class="commission-callout warning"><b>SAVED BRIEF CORRECTION</b><span>Your brief says “No photo required.” The older Forge Plan still requires a photo. This action changes that requirement only, preserves the prior plan as evidence, and saves the same voyage. It does not create or retry an operation.</span><button type="button" class="primary-btn" data-apply-photo-brief ${commissionCommandBusy||commissionDraft?._serverRecoveryPending?'disabled':''}>APPLY SAVED BRIEF: NO PHOTO</button></div>`:''}

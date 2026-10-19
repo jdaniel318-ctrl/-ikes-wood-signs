@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.20.37';
-const RELEASE_SEAL='strongbox-882037';
+const RELEASE_BUILD='8.8.20.38';
+const RELEASE_SEAL='wayfinder-882038';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.

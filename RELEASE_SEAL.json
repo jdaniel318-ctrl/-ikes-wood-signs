@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.37",
-  "release": "Strongbox TEST",
-  "seal": "strongbox-882037",
+  "build": "8.8.20.38",
+  "release": "Wayfinder TEST",
+  "seal": "wayfinder-882038",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Strongbox TEST",
-  "name": "Strongbox TEST",
-  "releaseName": "Strongbox TEST"
+  "release_name": "Wayfinder TEST",
+  "name": "Wayfinder TEST",
+  "releaseName": "Wayfinder TEST"
 }
