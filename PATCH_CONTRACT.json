@@ -1,17 +1,17 @@
 {
   "schema": "blackflag-patch-contract-v1",
-  "target_build": "8.8.20.39",
-  "target_seal": "woodwright-882039",
+  "target_build": "8.8.20.40",
+  "target_seal": "firstlight-882040",
   "supported_bases": [
     {
-      "build": "8.8.20.38",
-      "archive_name": "DarkSky882038-Wayfinder-TEST.zip",
-      "sha256": "dd6392fb4daef6b7ef12e13422d6f4bd6ac557fb94161053dcd5a125614f432b"
+      "build": "8.8.20.39",
+      "archive_name": "DarkSky882039-Woodwright-TEST.zip",
+      "sha256": "33db902d0cb2bd62a2f7b41964a01fd4922a8eceacfc444ed57f0c98081b6740"
     }
   ],
   "requires_deletions": false,
   "max_upload_files": 85,
   "database_actions": "none",
-  "rule": "Upload the supplied delta over complete Wayfinder .38 at the repository root. Keep other files. Do not run SQL or clear website data.",
+  "rule": "Upload the supplied delta over complete Woodwright .39 at the repository root. Keep other files. Do not run SQL or clear website data.",
   "hash_limit": "Consistency only; not an authenticity signature, authorization or business-data backup."
 }

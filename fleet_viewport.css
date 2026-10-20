@@ -115,3 +115,16 @@ body.hw-viewport.ikes-project .ike-recognition-note{font-size:14px;margin:8px 0;
    inside a short card, despite object-fit: contain. Keep the full source in view. */
 body.hw-viewport.ikes-project .ike-plank-photo-card{grid-template-rows:minmax(0,1fr);grid-template-columns:minmax(0,1fr);}
 body.hw-viewport.ikes-project .ike-plank-photo-card img{min-width:0;min-height:0;max-width:100%;max-height:100%;object-fit:contain;}
+
+/* FirstLight: same complete camera frame in live view and photo review.
+   Letterboxing is intentional. These presentation rules never crop stored evidence. */
+body.hw-viewport [data-screen="photo"] :is(#cameraPanel,#photoFrame){
+  box-sizing:border-box!important;width:100%!important;
+  height:clamp(180px,38svh,350px)!important;min-height:0!important;max-height:none!important;
+  padding:0!important;border:0!important;border-radius:18px!important;background:#17242d!important;
+}
+body.hw-viewport [data-screen="photo"] :is(#cameraVideo,#woodPhoto){
+  width:100%!important;height:100%!important;min-width:0!important;min-height:0!important;
+  max-width:100%!important;max-height:100%!important;object-fit:contain!important;
+  object-position:50% 50%!important;background:#17242d!important;transform:none!important;
+}

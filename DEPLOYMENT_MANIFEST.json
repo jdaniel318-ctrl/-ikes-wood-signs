@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.20.39",
-  "version": "8.8.20.39",
-  "release_name": "Woodwright TEST",
-  "releaseName": "Woodwright TEST",
-  "release_seal": "woodwright-882039",
+  "build": "8.8.20.40",
+  "version": "8.8.20.40",
+  "release_name": "FirstLight TEST",
+  "releaseName": "FirstLight TEST",
+  "release_seal": "firstlight-882040",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -98,8 +98,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "Photo-relative plank area, complete visible-ink containment, one exact preview/review raster; preserve fleet search and backups",
-  "release_note": "TEST ONLY. No camera-scale or CNC certification. Explicit visual-area review in Private Preview. No owner service, deployment, data cleanup or permission changes.",
+  "release_focus": "First-photo suggestion handoff and consistent full-frame camera/review; no gameplay or new stock authority",
+  "release_note": "Targeted business repair over Woodwright. FUN first-game plan is a separate reviewed artifact; no FUN runtime is installed.",
   "tax_ledger_upgrade": {
     "schema": "dark-sky-fleet-tax-ledger-v1",
     "model": "TAX_LEDGER_MODEL.json",
@@ -221,8 +221,8 @@
     "algorithm": "SHA-256",
     "files": {
       "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": {
-        "sha256": "5707694f08dde138a3906caa009f7e162a0748e93777a8bc7c449e197a917037",
-        "build": "8.8.20.38",
+        "sha256": "41531e56dfc8f65f9f54bfd23118f7cf3c2f3cc0b9fa35f2398ee844744f492c",
+        "build": "8.8.20.40",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -269,14 +269,14 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_COMMAND_MODEL.json": {
-        "sha256": "a1313ad6f0472f268370464f2757747a9f5a67227d185ae38a0b20ad642ed1ce",
-        "build": "8.8.20.38",
+        "sha256": "7b17c927c0f672fe305bea60401662a45c6f8aa810535d53fe70da853deb06ca",
+        "build": "8.8.20.40",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
       "FLEET_DOCTRINE_REGISTRY.json": {
-        "sha256": "5766480dfe96852968c35b4fc8ae4c1e908bb92ff60f2d16b7d102fb7ae32ef2",
-        "build": "8.8.20.38",
+        "sha256": "c6e8e85acef582622b2a62b86243829d69c4ae90323c12a5733ad34d3a66e605",
+        "build": "8.8.20.40",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -335,8 +335,8 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "GOLDEN_VOYAGES.json": {
-        "sha256": "45ef981bef98ac2afd6c8d44f68f66f6ee6e0ead84802d10e99b618da1c96329",
-        "build": "8.8.20.38",
+        "sha256": "bcfed09f8f404ddbc1b963d4aefa6c65f810fadafac480bd888f141ee0f1812f",
+        "build": "8.8.20.40",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -489,27 +489,27 @@
       "simple_books.css": "5939590021ef2d3738d5f5f7249d72f8da64cc274bf287ef8183958517b0ba46",
       "platform_core.js": "7f797bc382a73eb9ec4365a7458e8329da60c50561e3ac751ca3fb9d7cd5ec49",
       "platform_v4.js": "21daf7777150d654467042893298147374318fdfc7ac38faf9260f874522019b",
-      "platform_identity.js": "59840d543a1ae0bc71d2f85bb452ad1b2985539f9bceb1a73c4eb1ce5018cd6a",
-      "fleet_supabase.js": "be5aebdcb1cb810ce30ab7087a63615cd349b35539353af2bfec8c2c1a0f2da6",
+      "platform_identity.js": "3a770476dd93d062750d114f9c8254748372e48e198e67dbf29127ee48e2ea75",
+      "fleet_supabase.js": "1e997e3aafd7992428472f76d90d7276b5d5c6e38abfde90e2411f92da7688a2",
       "ike_style_registry.js": "6b348ebceb47e172e6676f46252b19c1c6bb7532baf76febfa8dd81760a76ab7",
-      "app.js": "e4e44fa2a05a9b016ab227e4e6dd222871c08e2cdf6e03222e7ecb2ffec6aa97",
-      "captain.js": "cda87e958eb061f7a18a2ba2b1b235e0bb584b1666ad607fe48586dccae1d1ec",
-      "simple_books.js": "80f01962c72af7f2472a5832f3c610ed21dd37379f443fa3b2cdc0e7e7e97b5c",
-      "owner.html": "bb0edb61cef8a00dc0142404cf77f50ac37f3d6ebe434e4595f72cc6e212af97",
-      "manifest.webmanifest": "6f1f835b1ee02154430f8a3b0bb6e55bd5a770e39cff15e53541634e165d9a22",
+      "app.js": "37a91f892e5b1279e84b6ee01f0a9f18af0754d69170012963be2e6265be99aa",
+      "captain.js": "94d20070ddc9d3a7cc9feb44df6bab92c1a1a8a755d761ba64787ec1da9657fa",
+      "simple_books.js": "01eaa5dd22cae9c7db222ae0d795eeb106064ad01c8aba74925f330d2d4524a9",
+      "owner.html": "16aff352ade8f30249b196dcee793b233ef9d2cefc1726e66ef41b374c79a820",
+      "manifest.webmanifest": "5c4c01b35126ab0249b51f1b0f957c38ce72ed827f83274718cd675d0f0e549d",
       "IKE_STYLE_FOUNDRY.json": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
-      "sw.js": "ac824cb2f80eba427079cb574edf88e57229dbd679a2f504c36d91457f95653a",
-      "FLEET_DOCTRINE_REGISTRY.json": "5766480dfe96852968c35b4fc8ae4c1e908bb92ff60f2d16b7d102fb7ae32ef2",
-      "GOLDEN_VOYAGES.json": "45ef981bef98ac2afd6c8d44f68f66f6ee6e0ead84802d10e99b618da1c96329",
-      "FLEET_COMMAND_MODEL.json": "a1313ad6f0472f268370464f2757747a9f5a67227d185ae38a0b20ad642ed1ce",
-      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "5707694f08dde138a3906caa009f7e162a0748e93777a8bc7c449e197a917037",
-      "input_hygiene.js": "0d9c5906c7b8947c1a2b99dfbd977489f2c32ca1e5195a2158b3cc17034553c6",
-      "business_deck.js": "fa9f4d5642633d46e5fb2d28311ca6ce85c7290d750254bea2bc899404c8bd27",
+      "sw.js": "a8dfcc4d54b6e0623ecc1d149bf82a47770c14bfb31f91ad493b43ca44d134a7",
+      "FLEET_DOCTRINE_REGISTRY.json": "c6e8e85acef582622b2a62b86243829d69c4ae90323c12a5733ad34d3a66e605",
+      "GOLDEN_VOYAGES.json": "bcfed09f8f404ddbc1b963d4aefa6c65f810fadafac480bd888f141ee0f1812f",
+      "FLEET_COMMAND_MODEL.json": "7b17c927c0f672fe305bea60401662a45c6f8aa810535d53fe70da853deb06ca",
+      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "41531e56dfc8f65f9f54bfd23118f7cf3c2f3cc0b9fa35f2398ee844744f492c",
+      "input_hygiene.js": "f34c23641b152c15c7b9e88bc9a1cb2a5a484cc93f6f576dba2f8c25509d56ef",
+      "business_deck.js": "e47fb0314328afbee9b94623b45033ca36415abc8d804ec4815d73c2d253cadd",
       "business_deck.css": "445fa81fff307d41cdd9a7d181ec86f9daae6843d24ac0d9fe14f939a25b6289",
       "fleet_viewport.js": "14ea8ff7d2c834014d8661a743c9408f9556141e7c81d32b590bd6988d0cfa55",
-      "fleet_viewport.css": "1dbdbbac10ea9d1976d015e88610cd000685941e0d310c7cbd934159a63b85f8",
-      "headway_contracts.js": "b978fb2f9b3938576c2915e0ebf26d09bf3899d58162eebe739b2f99af3a4415",
-      "woodwright_fit.js": "6f0b8f3ee876db7b54dcbc9ba5a1e0cc86d608a39d09f388806aa504b0f41e60"
+      "fleet_viewport.css": "1045f70708e6d7d1225f64ecab16ac23a883490c6aed6c9d38954777f0dd43c4",
+      "headway_contracts.js": "1cd3e284670b9a0a6f9f7c7754a5b3425ec1bc350217583afe7bcc04bf8beee8",
+      "woodwright_fit.js": "d4c376623004591642cbea0a0af861d26965ec4c7e53e1a7927d0af62b4915dd"
     }
   },
   "watchbeacon_upgrade": {
@@ -944,7 +944,7 @@
     "project_data_mutation": false,
     "field_failure_proof": "8.8.20.13 held on styles.css because packaged DEPLOYMENT_MANIFEST runtime hash did not match packaged styles.css bytes"
   },
-  "release": "8.8.20.39 Woodwright TEST",
+  "release": "8.8.20.40 FirstLight TEST",
   "clearbearing_upgrade": {
     "build": "8.8.20.22",
     "baseline": "8.8.20.14 HashLock",
@@ -1103,5 +1103,14 @@
     "source_photo_preserved": true,
     "new_database": false,
     "househull_precision_changed": false
+  },
+  "firstlight_upgrade": {
+    "recognition_suggestions": "photo-bound asynchronous results; no automatic owner acceptance",
+    "camera": "shared full-frame live/review presentation; original capture unchanged",
+    "owner_service_active": false,
+    "physical_measurement_claim": false,
+    "fun_game_active": false,
+    "new_invitation_service": false,
+    "quota_recovery": false
   }
 }

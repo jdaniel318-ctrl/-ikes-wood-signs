@@ -1,0 +1,80 @@
+{
+  "build": "8.8.20.40",
+  "release": "FirstLight TEST",
+  "checked_utc": "2026-10-20T05:49:25.790020+00:00",
+  "node_expected_passes": 233,
+  "browser_scenarios_passed": 165,
+  "package_tests_passed": 13,
+  "camera_cases": 9,
+  "game_runtime_created": false,
+  "native_safari": "not tested here",
+  "full_http_boot": "blocked before application load: net::ERR_BLOCKED_BY_ADMINISTRATOR",
+  "source_scope": "five app functions plus shared camera presentation; other runtime edits are release identity only",
+  "browser_results": {
+    "VERIFY_FIRSTLIGHT_BOOT": {
+      "passed": 0,
+      "failed": 1,
+      "sha256": "dee91d57f3d2c59f154848d31247d9ec8352e6ca8b3d6ec58c0b5c420a20ea45"
+    },
+    "VERIFY_FIRSTLIGHT_CAMERA": {
+      "passed": 9,
+      "failed": 0,
+      "sha256": "36e22ab7e9e93fe0046ccf7f636cb2b37ad677c402b61ef065fe31994c49264e"
+    },
+    "VERIFY_HEADWAY_APP": {
+      "passed": 16,
+      "failed": 0,
+      "sha256": "9ba36a5e06feb430cf66ac28ef05a60ef29eb09aecc76a8f54d3f8c480a70c8f"
+    },
+    "VERIFY_HEADWAY_BRIEF_UI": {
+      "passed": 3,
+      "failed": 0,
+      "sha256": "5bed6a0e5718c3229d8d6b8fca39f0a88bc8c136d8523f43d12303ab63dd9a21"
+    },
+    "VERIFY_HEADWAY_OWNER_UI": {
+      "passed": 2,
+      "failed": 0,
+      "sha256": "51a4a0442d980153000cca204bb82018a7b1b55e112a5af28c9db11439767933"
+    },
+    "VERIFY_HEADWAY_VIEW": {
+      "passed": 13,
+      "failed": 0,
+      "sha256": "1a38fe33420d875431b7ced93c01461860092decea8da46b1c463ed05b4bb00d"
+    },
+    "VERIFY_IRONBOUND_UI": {
+      "passed": 6,
+      "failed": 0,
+      "sha256": "5551d29f052c27da2f343b6478533dd0b35b6c60e7fccd52d74ff9558a64c656"
+    },
+    "VERIFY_STEADYHAND_UI": {
+      "passed": 19,
+      "failed": 0,
+      "sha256": "46d371ef4df7cec1473954aac8494efcd20c6340bcdf4b9c4735e8304c254a84"
+    },
+    "VERIFY_STRONGBOX_UI": {
+      "passed": 11,
+      "failed": 0,
+      "sha256": "55c05b80062d9d921e115305902f27f8dd44cd3eb774e401ea2065538f88b22c"
+    },
+    "VERIFY_SUREFOOT_UI": {
+      "passed": 21,
+      "failed": 0,
+      "sha256": "4a6df2c2d882dab551dcfba812bc4fb38b31ccc3e29e5b9480cbab7c116f770b"
+    },
+    "VERIFY_WAYFINDER_UI": {
+      "passed": 21,
+      "failed": 0,
+      "sha256": "60e52e310ebb35cb73916c05b014e798c08c962718a53f7dcc10ede920356314"
+    },
+    "VERIFY_WOODWRIGHT_UI": {
+      "passed": 23,
+      "failed": 0,
+      "sha256": "666c5bc16033ed31e1b277293e387ea2416d27acaac59c9462954c2c75f359df"
+    },
+    "VERIFY_WORKHORSE_UI": {
+      "passed": 21,
+      "failed": 0,
+      "sha256": "728ea9d83c638987ad5f3cab0d8027407e1507040ae6ed8053ce3e5e288f34da"
+    }
+  }
+}

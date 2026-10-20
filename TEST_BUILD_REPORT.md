@@ -1,54 +1,31 @@
-# Woodwright 8.8.20.39 — current TEST report
+# FirstLight 8.8.20.40 TEST — verification report
 
-See WOODWRIGHT_TEST_REPORT.md, WOODWRIGHT_TEST_RESULTS.json, and the external final package proof. 212 Node / 156 isolated Chromium / 13 package tests. Full HTTP boot blocked; native Safari pending; no production or quota certification.
+## Delivered scope
+FirstLight is a business-only update over complete Woodwright 8.8.20.39. The FUN game has not been implemented, launched, commissioned or connected to this package. Its first-mission content and implementation plan are separate review documents. No working-looking FUN menu item is installed.
 
-## Prior release report (historical)
+## Repairs
+First-photo analysis now owns a fresh, photo-bound result. Early UI refreshes cannot overwrite the completed species suggestion with an earlier blank snapshot. A monotonic in-memory analysis epoch prevents older callbacks, including callbacks for the same photograph after reset, from overriding current results. Optional secondary-image callbacks are bound to the original project/photo/epoch and refresh their own suggestions. Image decode, zero-sized image and detector failures end in an explicit unresolved state rather than an indefinite analyzing state or stale suggestion.
 
-# Wayfinder 8.8.20.38 TEST — Fleet Compass
+Orientation, a visual wood suggestion, a provisional size-category candidate when one exists, and a proposed lettering area are shown from the first analysis. Species rules remain the existing color/texture heuristics, not a newly trained/calibrated model. A size category remains an unverified shape-based candidate, not a physical measurement. No result automatically grants accepted species, a stock size or a price. Explicit two-foot/Cedar preview samples still produce the unchanged $18 sample price; the real owner-stock service and production/Sea Trial submission holds remain in force.
 
-Current installation instructions: **START_HERE_WAYFINDER.md**. Install only over complete Strongbox 8.8.20.37. No SQL, record cleanup, permission change or commissioning.
+The shared photo-step live video and captured-photo review now use the same frame-height policy, centering and full-frame contain fit. Neutral margins are intentional. The camera request and capture function remain byte-identical after release-label normalization: no zoom constraint, cropped save, changed photo encoding or new hardware request was introduced. This is a display repair, not new camera measurement capability.
 
-Search now validates the full protected source before comparing the exact selected-card set. Fleet Compass reuses project logos and the existing preview, owner, control and customer routes. Storage failures are observed separately; quota recovery is not claimed.
+## Verification
+Current Node suites: 233 passes total (FirstLight 20, current release 29, Woodwright fit 16, Wayfinder 23, Strongbox 36, Headway 49, Workhorse 24, SteadyHand 20, Ironbound 16). Package-verifier unit tests: 13 passed.
 
-See WAYFINDER_REVIEW.md and WAYFINDER_TEST_RESULTS.json for scope and fresh verification limits.
+Isolated Chromium: 165 passed (all 156 inherited supported scenarios plus 9 new camera framing cases). New camera tests use canvas-generated video/photo frames at 16:9, 4:3 and portrait ratios across tablet, narrow tablet and phone viewports. Computed live/review contain fit, panel width/height, centering and no horizontal overflow are checked. These are not hardware-camera tests.
 
----
-## Preserved earlier release documentation (historical, not installation instructions)
+The unchanged Woodwright source failed 14 of the final 20 suggestion/handoff cases and all 9 camera-framing cases. The baseline still passed all 212 of its prior Node checks. The new timing tests substitute image/detector outcomes and exercise the actual extracted handoff functions; they do not prove that the detector correctly identifies the user's actual species. Existing browser suites exercise retained actual UI/fit/auth/backup handlers with synthetic boundary data.
 
-# Strongbox 8.8.20.37 TEST — final verification report
+One full local-HTTP startup attempt failed before the application loaded with net::ERR_BLOCKED_BY_ADMINISTRATOR. It was not bypassed or counted as a pass. Native Safari, actual hosted startup/upgrade and hardware camera behavior remain field checks.
 
-Checked: 2026-10-18T23:50:18.801257+00:00. Narrow backup repair on complete Headway 8.8.20.36. Not a production launch, native Safari certification, cloud backup or database restore.
+## Preservation
+All 174 Woodwright filenames remain. Preservation checks cover 966 untouched named app functions and release-label-only changes in the other executable files. Only five existing app functions and shared camera presentation behavior change. Images, SQL files, A/B reference geometry/profiles and HouseHull plan are byte-identical. The fit algorithm, owner/backup transport and fleet-search behavior are unchanged; their current module build labels advance where present. No real user records, memberships, prices, permissions, invitations, Supabase data or hosted deployment were changed.
 
-## The repair
-Headway's archive export called strict new-job canonicalization and rejected legacy NaN/infinities before download. Strongbox separates archival preservation from business validation. JSON-safe records retain the old v1 format. Records needing lossless special-value representation use `strongbox-business-backup-v2` with typed tuples and a checked exception-location manifest. Old v1 archives remain readable. New v2 files require Strongbox or a compatible reader.
+## Limits and review notes
+The storage-quota warning, real stock authorization, manufacturing glyph certification, actual database restore/cloud backup and cross-app session/scroll issues remain separate unresolved work. Existing local storage helpers may still have their previously documented behavior; this release does not certify the whole boot as write-free or claim quota recovery.
 
-NaN, both infinities, negative zero, undefined values, sparse arrays and null-prototype plain objects are preserved rather than corrected, dropped or changed to a normal number. Original source and preview strings, exact wording and existing fields are retained when present. New-job prices and measurements still reject invalid numbers. Unsupported types fail explicitly with a field path; arbitrary IndexedDB type support is not claimed.
+The first timing-test fixture mistakenly read recognition fields at the state root. That fixture mistake was corrected before the meaningful baseline-red run. Four secondary-callback cases were added during source review and exercised against both unchanged baseline and candidate. One grouped browser run exceeded the container time window after Workhorse completed; the incomplete SteadyHand run was not counted and the suite was rerun alone in full. An attempt to use a streaming execution session was unsupported; ordinary bounded runs were used instead. Review is inline source review plus automated tests; there was no independent reviewer agent.
 
-The actual owner export and file controls show an escaped list of affected order IDs/paths. The existing owner gate is rechecked before and after asynchronous reads. No export/rehearsal handler writes to the original order database. A downloaded-file check reconstructs only an in-memory Map; it does not import into IndexedDB or verify disaster recovery.
-
-## Fresh passing checks
-- **167 Node checks:** Strongbox archive contracts 36; current release/preservation 22; inherited Headway job contracts 49; Workhorse 24; SteadyHand 20; Ironbound 16.
-- **112 isolated Chromium scenarios:** Strongbox actual owner controls 11; inherited Headway app 16, viewport 13, owner backup 2, brief 3; SureFoot 21; Workhorse UI 21; SteadyHand UI 19; Ironbound UI 6.
-- **13 offline package-verifier unit tests.** Final extracted ZIP checks are recorded separately in the external Package Proof.
-
-The 26-row synthetic case retains 26 source strings and 26 preview strings, preserves three nested NaN/infinity values, includes completed work, excludes a foreign-business row, and leaves the fixture's original records unchanged. These are test records, NOT access to the user's 26 saved orders. The real affected fields are still unknown until the repaired panel reports them.
-
-Negative tests cover wrong scope, conflicting namespace, duplicated IDs, altered payload or exception manifest, invalid JSON/schema, malformed typed tags, marker-like literal data, unsafe keys, unsupported types, cycles, bounded nesting, stale owner proof and diagnostic HTML injection. Strict job creation/approval, namespace binding, permissions, pricing behavior, photo rendering and closed commissioning paths remain unchanged.
-
-## Preservation and packaging
-Every one of Headway's 148 filenames is retained. Original 16 images, five SQL files, A/B registry/foundry and HouseHull plan are unchanged. Beyond the two backup integration files, executable changes are release identity only. The four current model latches and whitespace policy receive a build-label update only; their predicates are unaltered and tested. Original historical files and prior evidence remain distinct from current results.
-
-The upload is a delta for **Headway .36 only**, with a matching single folder and <=85 files. A separate full snapshot is provided. Three checksum ledgers, manifest/runtime/model hashes, safe ZIP entries and exact reconstruction are verified. Hashes show internal consistency, not authenticity or server authorization.
-
-## Problems encountered and disposition
-An initial new test had an async-arrow syntax error and was corrected before the meaningful red run. The unchanged baseline then failed the new legacy-data cases. A supported-depth check exposed typed-wire depth expansion and drove a separate bounded wire-validation budget. Actual UI tests exposed missing location reporting before it was added. The inherited release check found four model build latches still at .36; only those labels were updated. A concurrent browser runner timed out before two suites finished; those suites were rerun sequentially and passed in full. No incomplete run was counted as passed.
-
-**Full local HTTP startup was attempted once and blocked by the environment with `net::ERR_BLOCKED_BY_ADMINISTRATOR`.** It was not bypassed. The retained VERIFY_STRONGBOX_BOOT.py script is an open check, not included in the passing scenario count. Browser passes use shipped source/HTML/CSS with synthetic authentication/network/storage boundaries, not a fully hosted boot or actual production IndexedDB restore. No independent reviewer agent is available; this is inline source review plus automated evidence.
-
-## Live-data and authority limits
-No user Safari database, live server, account password, membership, invitation, commissioning operation, hosted deployment, subscription or plugin permission was changed. The app's existing browser-local storage still needs private backup. Real stock/species authorization and new complete-job live/Sea Trial activation remain held as in Headway. Headway's residual Orders opening-position issue is not declared fixed by this backup patch. HouseHull is not newly commissioned.
-
-Follow START_HERE_STRONGBOX.md: upload the small delta, export a private JSON and confirm its download, check that file in isolation, and report the status screenshot. Do not clear Safari data, run SQL, alter orders to force an export, or upload customer backups to GitHub.
-
-## Reproduce
-Run `node VERIFY_STRONGBOX.cjs .`, `node VERIFY_STRONGBOX_RELEASE.cjs .`, `node VERIFY_HEADWAY.cjs .`, `node VERIFY_WORKHORSE.cjs .`, `node VERIFY_STEADYHAND.cjs .`, `node VERIFY_IRONBOUND.cjs .`, and `python VERIFY_PACKAGE_TESTS.py`. Run the nine current browser scripts with release/output paths. Old .36-only VERIFY_HEADWAY_RELEASE, .35-only VERIFY_KEELMARK and earlier target-label verifiers remain historical; their behavioral assertions are carried into the explicit .37 release checker.
+## Final package acceptance
+The external Package Proof records archive fingerprints, safe unique ZIP entries, exact delta reconstruction and the fresh tests rerun from the extracted final package. The downloaded code ZIP is not a backup of the orders on the user's iPad. Keep the existing checked private 26-record JSON and do not upload it to GitHub.

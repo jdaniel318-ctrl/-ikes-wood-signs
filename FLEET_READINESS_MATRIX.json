@@ -1,6 +1,6 @@
 {
   "schema": "blackflag-readiness-matrix-v1",
-  "release": "Woodwright TEST",
+  "release": "FirstLight TEST",
   "allows_production_launch": false,
   "historical_evidence_is_not_current_live_audit": true,
   "current_live_read": "not_requested; no new live audit",
@@ -118,6 +118,13 @@
       "native_status": "PENDING_8.8.20.39",
       "production_activation": false,
       "required_evidence": "HOME White inside proposed wood area on the original iPad photo; visual area check before exact review raster; no CNC claim."
+    },
+    {
+      "id": "firstlight_photo_flow",
+      "native_status": "pending",
+      "production_activation": false,
+      "offline_status": "scoped-tests-passed-native-pending",
+      "scope": "async suggestion preservation and full-frame display only"
     }
   ],
   "prior_field_checkpoint": {
@@ -129,5 +136,6 @@
     "saved_previews": 21,
     "special_legacy_values_preserved": 16,
     "actual_database_restore": false
-  }
+  },
+  "build": "8.8.20.40"
 }

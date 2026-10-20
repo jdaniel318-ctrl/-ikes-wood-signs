@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.39",
-  "release": "Woodwright TEST",
-  "seal": "woodwright-882039",
+  "build": "8.8.20.40",
+  "release": "FirstLight TEST",
+  "seal": "firstlight-882040",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Woodwright TEST",
-  "name": "Woodwright TEST",
-  "releaseName": "Woodwright TEST"
+  "release_name": "FirstLight TEST",
+  "name": "FirstLight TEST",
+  "releaseName": "FirstLight TEST"
 }
