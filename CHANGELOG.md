@@ -1,3 +1,7 @@
+# 8.8.20.39 — Woodwright TEST
+
+Photo-relative fit with explicit visual-area confirmation; rendered alpha containment; one raster from live preview to review; fleet search and backup behavior retained. Production glyph certification remains open.
+
 # 8.8.20.38 — Wayfinder TEST
 
 - Repair both source/filtered-view and post-render card checks, including empty results.

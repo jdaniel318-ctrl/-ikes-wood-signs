@@ -1,0 +1,832 @@
+{
+  "release": "Woodwright TEST 8.8.20.39",
+  "scope": "offline contracts and isolated Chromium; original camera and native Safari pending",
+  "created_utc": "2026-10-19T22:10:35.664240+00:00",
+  "source_sha256": {
+    "app.js": "e4e44fa2a05a9b016ab227e4e6dd222871c08e2cdf6e03222e7ecb2ffec6aa97",
+    "index.html": "4ddc59061937f5d6d8f63bcc75d9387e465ef813f3ca6e239bb2cf859e1dfd62",
+    "styles.css": "4fe677e2af74f3d5ce796fc3e8a76ce23d04fb4c3785ddda1c19e000d3406fc5",
+    "woodwright_fit.js": "6f0b8f3ee876db7b54dcbc9ba5a1e0cc86d608a39d09f388806aa504b0f41e60",
+    "headway_contracts.js": "b978fb2f9b3938576c2915e0ebf26d09bf3899d58162eebe739b2f99af3a4415",
+    "ike_style_registry.js": "6b348ebceb47e172e6676f46252b19c1c6bb7532baf76febfa8dd81760a76ab7"
+  },
+  "node_suite_expected_counts": {
+    "WOODWRIGHT": 16,
+    "WOODWRIGHT_RELEASE": 28,
+    "WAYFINDER": 23,
+    "STRONGBOX": 36,
+    "HEADWAY": 49,
+    "WORKHORSE": 24,
+    "STEADYHAND": 20,
+    "IRONBOUND": 16
+  },
+  "browser": {
+    "WOODWRIGHT_UI": {
+      "passed": 23,
+      "failed": 0,
+      "results_sha256": "6dd2886e3e866508aed569f7e752022f842dc4c086b3434abb1e46bfa325ea2f",
+      "checks": [
+        {
+          "name": "photograph-derived HOME fits inset area; review held before visual confirmation",
+          "pass": true
+        },
+        {
+          "name": "actual Review and Accept buttons reuse exactly the displayed composite, no writes",
+          "pass": true
+        },
+        {
+          "name": "complete private-preview packet preserves exact mixed case/spacing, original photo, $18 and frozen raster",
+          "pass": true
+        },
+        {
+          "name": "blank wording never inserts a sample; clearing removes old ink and readiness",
+          "pass": true
+        },
+        {
+          "name": "changed wording cannot accept the prior candidate",
+          "pass": true
+        },
+        {
+          "name": "changed fill cannot accept the prior candidate",
+          "pass": true
+        },
+        {
+          "name": "changed font cannot accept the prior candidate",
+          "pass": true
+        },
+        {
+          "name": "changed price cannot accept the prior candidate",
+          "pass": true
+        },
+        {
+          "name": "replacement ambiguous photo clears old fit, ink, area and sample stock decisions",
+          "pass": true
+        },
+        {
+          "name": "cross-vessel reset clears private image fit state without writing",
+          "pass": true
+        },
+        {
+          "name": "missing fit runtime fails closed rather than falling back to old positioning",
+          "pass": true
+        },
+        {
+          "name": "a photo-area checkbox cannot confer production or owner-stock approval",
+          "pass": true
+        },
+        {
+          "name": "long wording scales uniformly into the same area without glyph cropping",
+          "pass": true
+        },
+        {
+          "name": "warm featureless background does not receive a fabricated board boundary",
+          "pass": true
+        },
+        {
+          "name": "90/180/270 degree source rotations recompute fit and require new area review",
+          "pass": true
+        },
+        {
+          "name": "a stale render cannot overwrite the latest wording",
+          "pass": true
+        },
+        {
+          "name": "built-in photo-fit selftest verifies the current renderer without changing customer state or claiming CNC",
+          "pass": true
+        },
+        {
+          "name": "1366x1024 no horizontal overflow; photo and ink share identical contain boxes; controls reachable",
+          "pass": true
+        },
+        {
+          "name": "1024x768 no horizontal overflow; photo and ink share identical contain boxes; controls reachable",
+          "pass": true
+        },
+        {
+          "name": "1024x640 no horizontal overflow; photo and ink share identical contain boxes; controls reachable",
+          "pass": true
+        },
+        {
+          "name": "768x1024 no horizontal overflow; photo and ink share identical contain boxes; controls reachable",
+          "pass": true
+        },
+        {
+          "name": "390x844 no horizontal overflow; photo and ink share identical contain boxes; controls reachable",
+          "pass": true
+        },
+        {
+          "name": "430x932 no horizontal overflow; photo and ink share identical contain boxes; controls reachable",
+          "pass": true
+        }
+      ]
+    },
+    "WAYFINDER_UI": {
+      "passed": 21,
+      "failed": 0,
+      "results_sha256": "60e52e310ebb35cb73916c05b014e798c08c962718a53f7dcc10ede920356314",
+      "checks": [
+        {
+          "name": "actual filtered renderer shows Ike; no writes, convergence, or proof publisher",
+          "pass": true
+        },
+        {
+          "name": "empty results and clear-view recover ordinary complete list",
+          "pass": true
+        },
+        {
+          "name": "clear-search remains available and keyboard focus retained",
+          "pass": true
+        },
+        {
+          "name": "all lifecycle filter subsets render without false full-roster alarm",
+          "pass": true
+        },
+        {
+          "name": "real source omission holds and same controls remain usable after source recovery",
+          "pass": true
+        },
+        {
+          "name": "post-render expected-card guard catches missing newer non-protected vessel",
+          "pass": true
+        },
+        {
+          "name": "slow older search cannot overwrite newer cards, controls, or trace",
+          "pass": true
+        },
+        {
+          "name": "stale route button does not route after newer view starts",
+          "pass": true
+        },
+        {
+          "name": "four existing route interfaces receive exact selected identity, not another business",
+          "pass": true
+        },
+        {
+          "name": "unconfigured owner route keeps setup path; local status does not grant access",
+          "pass": true
+        },
+        {
+          "name": "double-tap preview is single route operation while pending",
+          "pass": true
+        },
+        {
+          "name": "storage warning stays visible and independent of healthy search; no cleanup action",
+          "pass": true
+        },
+        {
+          "name": "vessel display text escaped with no injected elements",
+          "pass": true
+        },
+        {
+          "name": "focused layout 1024x640",
+          "pass": true
+        },
+        {
+          "name": "focused layout 1024x768",
+          "pass": true
+        },
+        {
+          "name": "focused layout 1366x900",
+          "pass": true
+        },
+        {
+          "name": "focused layout 768x900",
+          "pass": true
+        },
+        {
+          "name": "focused layout 390x700",
+          "pass": true
+        },
+        {
+          "name": "focused layout 430x800",
+          "pass": true
+        },
+        {
+          "name": "narrow keyboard-height and enlarged text permit scrolling without hidden actions",
+          "pass": true
+        },
+        {
+          "name": "typing does not force scroll-to-top or reset input",
+          "pass": true
+        }
+      ]
+    },
+    "STRONGBOX_UI": {
+      "passed": 11,
+      "failed": 0,
+      "results_sha256": "55c05b80062d9d921e115305902f27f8dd44cd3eb774e401ea2065538f88b22c",
+      "checks": [
+        {
+          "name": "actual owner 26-row legacy download and file rehearsal preserves numeric types/media without writes",
+          "pass": true
+        },
+        {
+          "name": "actual file control rejects wrong-vessel without original mutations",
+          "pass": true
+        },
+        {
+          "name": "actual file control rejects media-damaged without original mutations",
+          "pass": true
+        },
+        {
+          "name": "actual file control rejects manifest-damaged without original mutations",
+          "pass": true
+        },
+        {
+          "name": "actual file control rejects invalid-json without original mutations",
+          "pass": true
+        },
+        {
+          "name": "actual file control rejects unknown-schema without original mutations",
+          "pass": true
+        },
+        {
+          "name": "unsupported stored type reports exact field and does not pretend download completed",
+          "pass": true
+        },
+        {
+          "name": "duplicate stored IDs do not silently reduce backup count",
+          "pass": true
+        },
+        {
+          "name": "owner proof lost during async export prevents download",
+          "pass": true
+        },
+        {
+          "name": "legacy locations and hostile order IDs render as text not markup",
+          "pass": true
+        },
+        {
+          "name": "phone backup diagnostic wraps without horizontal page overflow",
+          "pass": true
+        }
+      ]
+    },
+    "HEADWAY_APP": {
+      "passed": 16,
+      "failed": 0,
+      "results_sha256": "9ba36a5e06feb430cf66ac28ef05a60ef29eb09aecc76a8f54d3f8c480a70c8f",
+      "checks": [
+        {
+          "name": "actual sample-size and wood actions are separate, nominal and no-write",
+          "pass": true
+        },
+        {
+          "name": "live cannot activate preview fixtures or owner authority",
+          "pass": true
+        },
+        {
+          "name": "sea_trial cannot activate preview fixtures or owner authority",
+          "pass": true
+        },
+        {
+          "name": "replacement photo invalidates nominal and wood decisions",
+          "pass": true
+        },
+        {
+          "name": "rotation retains original photo lineage and nominal category",
+          "pass": true
+        },
+        {
+          "name": "actual staging, acceptance and preview handoff retain both photos and exact job",
+          "pass": true
+        },
+        {
+          "name": "actual approval rejects changed wording",
+          "pass": true
+        },
+        {
+          "name": "actual approval rejects changed price",
+          "pass": true
+        },
+        {
+          "name": "actual approval rejects changed font",
+          "pass": true
+        },
+        {
+          "name": "actual approval rejects changed orientation",
+          "pass": true
+        },
+        {
+          "name": "draft changed during renderer await does not gain approval",
+          "pass": true
+        },
+        {
+          "name": "actual submit rejects edits after customer acceptance",
+          "pass": true
+        },
+        {
+          "name": "switching business clears transient source lineage and nominal decisions",
+          "pass": true
+        },
+        {
+          "name": "populated photo decisions layout 1024x640",
+          "pass": true
+        },
+        {
+          "name": "populated photo decisions layout 1366x900",
+          "pass": true
+        },
+        {
+          "name": "populated photo decisions layout 390x700",
+          "pass": true
+        }
+      ]
+    },
+    "HEADWAY_VIEW": {
+      "passed": 13,
+      "failed": 0,
+      "results_sha256": "1a38fe33420d875431b7ced93c01461860092decea8da46b1c463ed05b4bb00d",
+      "checks": [
+        {
+          "test": "new/back cancellation and no reset during input or recheck",
+          "pass": true
+        },
+        {
+          "test": "plank layout 1024x640",
+          "pass": true
+        },
+        {
+          "test": "plank layout 1024x768",
+          "pass": true
+        },
+        {
+          "test": "plank layout 1366x900",
+          "pass": true
+        },
+        {
+          "test": "plank layout 768x900",
+          "pass": true
+        },
+        {
+          "test": "plank layout 390x700",
+          "pass": true
+        },
+        {
+          "test": "plank layout 430x800",
+          "pass": true
+        },
+        {
+          "test": "welcome primary action visible 1024x640",
+          "pass": true
+        },
+        {
+          "test": "welcome primary action visible 390x700",
+          "pass": true
+        },
+        {
+          "test": "photo primary action visible 1024x640",
+          "pass": true
+        },
+        {
+          "test": "photo primary action visible 390x700",
+          "pass": true
+        },
+        {
+          "test": "photo-review primary action visible 1024x640",
+          "pass": true
+        },
+        {
+          "test": "photo-review primary action visible 390x700",
+          "pass": true
+        }
+      ]
+    },
+    "HEADWAY_OWNER_UI": {
+      "passed": 2,
+      "failed": 0,
+      "results_sha256": "51a4a0442d980153000cca204bb82018a7b1b55e112a5af28c9db11439767933",
+      "checks": [
+        {
+          "name": "actual owner full-photo backup, isolated restore and tampered rejection without writes",
+          "pass": true
+        },
+        {
+          "name": "cleared owner proof cannot export saved records",
+          "pass": true
+        }
+      ]
+    },
+    "HEADWAY_BRIEF_UI": {
+      "passed": 3,
+      "failed": 0,
+      "results_sha256": "5bed6a0e5718c3229d8d6b8fca39f0a88bc8c136d8523f43d12303ab63dd9a21",
+      "checks": [
+        {
+          "width": 390,
+          "pass": true
+        },
+        {
+          "width": 1024,
+          "pass": true
+        },
+        {
+          "width": 1366,
+          "pass": true
+        }
+      ]
+    },
+    "SUREFOOT_UI": {
+      "passed": 21,
+      "failed": 0,
+      "results_sha256": "4a6df2c2d882dab551dcfba812bc4fb38b31ccc3e29e5b9480cbab7c116f770b",
+      "checks": [
+        {
+          "name": "same-namespace verified owner navigates home/orders/details/pricing without writes",
+          "pass": true
+        },
+        {
+          "name": "separate server and browser namespaces for same verified project navigate without login bounce",
+          "pass": true
+        },
+        {
+          "name": "missing membership fails closed before owner records paint",
+          "pass": true
+        },
+        {
+          "name": "missing vessel fails closed before owner records paint",
+          "pass": true
+        },
+        {
+          "name": "wrong returned project fails closed before owner records paint",
+          "pass": true
+        },
+        {
+          "name": "different membership vessel fails closed before owner records paint",
+          "pass": true
+        },
+        {
+          "name": "different membership user fails closed before owner records paint",
+          "pass": true
+        },
+        {
+          "name": "operator is not owner fails closed before owner records paint",
+          "pass": true
+        },
+        {
+          "name": "inactive membership fails closed before owner records paint",
+          "pass": true
+        },
+        {
+          "name": "revoked membership fails closed before owner records paint",
+          "pass": true
+        },
+        {
+          "name": "missing canonical namespace fails closed before owner records paint",
+          "pass": true
+        },
+        {
+          "name": "expired remains held on navigation",
+          "pass": true
+        },
+        {
+          "name": "scope remains held on navigation",
+          "pass": true
+        },
+        {
+          "name": "tampered_session remains held on navigation",
+          "pass": true
+        },
+        {
+          "name": "missing_expiry remains held on navigation",
+          "pass": true
+        },
+        {
+          "name": "local_namespace_changed remains held on navigation",
+          "pass": true
+        },
+        {
+          "name": "cleared remains held on navigation",
+          "pass": true
+        },
+        {
+          "name": "auth_cleared remains held on navigation",
+          "pass": true
+        },
+        {
+          "name": "auth_user_changed remains held on navigation",
+          "pass": true
+        },
+        {
+          "name": "auth_expired remains held on navigation",
+          "pass": true
+        },
+        {
+          "name": "queued navigation cannot render after clearing the owner session",
+          "pass": true
+        }
+      ]
+    },
+    "WORKHORSE_UI": {
+      "passed": 21,
+      "failed": 0,
+      "results_sha256": "728ea9d83c638987ad5f3cab0d8027407e1507040ae6ed8053ce3e5e288f34da",
+      "checks": [
+        {
+          "name": "actual authenticated owner startup shows scoped task home",
+          "pass": true
+        },
+        {
+          "name": "order details are actionable, exact-worded, scoped and read-only",
+          "pass": true
+        },
+        {
+          "name": "search, status groups, six-record pages and sorting work",
+          "pass": true
+        },
+        {
+          "name": "missing price/payment and conflicting approval remain explicit",
+          "pass": true
+        },
+        {
+          "name": "price arithmetic uses inches/feet, labels units, never auto-saves",
+          "pass": true
+        },
+        {
+          "name": "lettering overview preserves exact case, distinguishes evidence, retains advanced controls",
+          "pass": true
+        },
+        {
+          "name": "shared owner deck keeps service identity and requested scheduling separate",
+          "pass": true
+        },
+        {
+          "name": "denied owner membership never renders the new business deck",
+          "pass": true
+        },
+        {
+          "name": "persistent business navigation and every existing support tool remain reachable",
+          "pass": true
+        },
+        {
+          "name": "explicit pricing save changes only settings once and retains order prices",
+          "pass": true
+        },
+        {
+          "name": "unavailable order store is an explicit hold, never an empty-business claim",
+          "pass": true
+        },
+        {
+          "name": "expired owner session cannot navigate into a new record detail",
+          "pass": true
+        },
+        {
+          "name": "pricing fields are frozen during a save so confirmation cannot hide later edits",
+          "pass": true
+        },
+        {
+          "name": "uncertain local pricing save holds without retry and can reread unchanged settings",
+          "pass": true
+        },
+        {
+          "name": "shared owner identity and queue: Becca’s Bloom Shop",
+          "pass": true
+        },
+        {
+          "name": "shared owner identity and queue: Mugs After Dark",
+          "pass": true
+        },
+        {
+          "name": "shared owner identity and queue: Signal Restoration",
+          "pass": true
+        },
+        {
+          "name": "shared owner identity and queue: Grizzly Bear",
+          "pass": true
+        },
+        {
+          "name": "owner home/orders/pricing/lettering fit 390px",
+          "pass": true
+        },
+        {
+          "name": "owner home/orders/pricing/lettering fit 768px",
+          "pass": true
+        },
+        {
+          "name": "owner home/orders/pricing/lettering fit 1366px",
+          "pass": true
+        }
+      ]
+    },
+    "STEADYHAND_UI": {
+      "passed": 19,
+      "failed": 0,
+      "results_sha256": "46d371ef4df7cec1473954aac8494efcd20c6340bcdf4b9c4735e8304c254a84",
+      "checks": [
+        {
+          "test": "captain email visible and request normalization",
+          "pass": true
+        },
+        {
+          "test": "padded saved report is verified with canonical count",
+          "pass": true
+        },
+        {
+          "test": "wrong-project fails closed without retry",
+          "pass": true
+        },
+        {
+          "test": "wrong-work fails closed without retry",
+          "pass": true
+        },
+        {
+          "test": "wrong-summary fails closed without retry",
+          "pass": true
+        },
+        {
+          "test": "wrong-count fails closed without retry",
+          "pass": true
+        },
+        {
+          "test": "missing-count fails closed without retry",
+          "pass": true
+        },
+        {
+          "test": "missing-summary fails closed without retry",
+          "pass": true
+        },
+        {
+          "test": "wrong-read fails closed without retry",
+          "pass": true
+        },
+        {
+          "test": "lost-response fails closed without retry",
+          "pass": true
+        },
+        {
+          "test": "lost-read fails closed without retry",
+          "pass": true
+        },
+        {
+          "test": "paste/autofill/IME/caret/dynamic-field/secret protections",
+          "pass": true
+        },
+        {
+          "test": "actual annotated fields across Engine Admiral owner intake and ledger",
+          "pass": true
+        },
+        {
+          "test": "assigned-vessel return is read-only and mobile layout remains usable",
+          "pass": true
+        },
+        {
+          "test": "double tap sends one report command",
+          "pass": true
+        },
+        {
+          "test": "explicit recheck reads saved report without republishing",
+          "pass": true
+        },
+        {
+          "test": "actual Admiral detail separates lifecycle freshness ownership and operator status",
+          "pass": true
+        },
+        {
+          "test": "same-account other-vessel denial and own-vessel restoration",
+          "pass": true
+        },
+        {
+          "test": "late report completion cannot restore signed-out vessel data",
+          "pass": true
+        }
+      ]
+    },
+    "IRONBOUND_UI": {
+      "passed": 6,
+      "failed": 0,
+      "results_sha256": "5551d29f052c27da2f343b6478533dd0b35b6c60e7fccd52d74ff9558a64c656",
+      "checks": [
+        {
+          "scenario": "success",
+          "pass": true,
+          "phase": "verified",
+          "prepareCount": 1,
+          "commitCount": 1,
+          "quotaMirrorFailureHandled": true,
+          "pageErrors": [],
+          "viewports": [
+            {
+              "width": 1024,
+              "height": 768,
+              "proofPanelHorizontalOverflow": false
+            },
+            {
+              "width": 390,
+              "height": 844,
+              "proofPanelHorizontalOverflow": false
+            }
+          ]
+        },
+        {
+          "scenario": "lost-commit",
+          "pass": true,
+          "phase": "verified",
+          "prepareCount": 1,
+          "commitCount": 1,
+          "quotaMirrorFailureHandled": true,
+          "pageErrors": [],
+          "viewports": [
+            {
+              "width": 1024,
+              "height": 768,
+              "proofPanelHorizontalOverflow": false
+            },
+            {
+              "width": 390,
+              "height": 844,
+              "proofPanelHorizontalOverflow": false
+            }
+          ]
+        },
+        {
+          "scenario": "lost-read",
+          "pass": true,
+          "phase": "verified",
+          "prepareCount": 1,
+          "commitCount": 1,
+          "quotaMirrorFailureHandled": true,
+          "pageErrors": [],
+          "viewports": [
+            {
+              "width": 1024,
+              "height": 768,
+              "proofPanelHorizontalOverflow": false
+            },
+            {
+              "width": 390,
+              "height": 844,
+              "proofPanelHorizontalOverflow": false
+            }
+          ]
+        },
+        {
+          "scenario": "lost-prepare",
+          "pass": true,
+          "phase": "closed",
+          "prepareCount": 1,
+          "commitCount": 0,
+          "quotaMirrorFailureHandled": false,
+          "pageErrors": [],
+          "viewports": [
+            {
+              "width": 1024,
+              "height": 768,
+              "proofPanelHorizontalOverflow": false
+            },
+            {
+              "width": 390,
+              "height": 844,
+              "proofPanelHorizontalOverflow": false
+            }
+          ]
+        },
+        {
+          "scenario": "photo-conflict",
+          "pass": true,
+          "phase": "verified",
+          "prepareCount": 1,
+          "commitCount": 1,
+          "quotaMirrorFailureHandled": true,
+          "pageErrors": [],
+          "viewports": [
+            {
+              "width": 1024,
+              "height": 768,
+              "proofPanelHorizontalOverflow": false
+            },
+            {
+              "width": 390,
+              "height": 844,
+              "proofPanelHorizontalOverflow": false
+            }
+          ]
+        },
+        {
+          "scenario": "photo-save-lost",
+          "pass": true,
+          "phase": "correction-readback-held",
+          "prepareCount": 0,
+          "commitCount": 0,
+          "pageErrors": []
+        }
+      ]
+    }
+  },
+  "browser_total": 156,
+  "package_unit_tests": 13,
+  "blocked_checks": [
+    {
+      "name": "Full local HTTP startup with real IndexedDB",
+      "error": "net::ERR_BLOCKED_BY_ADMINISTRATOR before app startup",
+      "pass": false,
+      "included_in_pass_count": false
+    }
+  ],
+  "photo_source": "photo region extracted from a user-supplied screenshot; not original camera bytes; excluded from public ZIP",
+  "native_safari": "NOT_RUN",
+  "physical_measurement": "NOT_CLAIMED",
+  "manufacturing_geometry": "NOT_CERTIFIED",
+  "real_stock_authority": "NOT_ACTIVATED",
+  "live_submission": "HELD",
+  "quota_recovery": "NOT_CLAIMED"
+}

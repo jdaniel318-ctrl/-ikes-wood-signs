@@ -1,3 +1,9 @@
+# Woodwright field acceptance — 8.8.20.39
+
+See START_HERE_WOODWRIGHT.md and WOODWRIGHT_REPAIR_NOTES.md. This is a TEST update over Wayfinder .38, not a production or native Safari certificate. No database, membership, commissioning or price changes.
+
+## Preserved previous release documentation
+
 # Wayfinder 8.8.20.38 TEST — Fleet Compass
 
 Current installation instructions: **START_HERE_WAYFINDER.md**. Install only over complete Strongbox 8.8.20.37. No SQL, record cleanup, permission change or commissioning.

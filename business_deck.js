@@ -9,7 +9,7 @@
   if (root && typeof root.document !== 'undefined') root.BlackFlagBusinessDeck = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this, function () {
   'use strict';
-  const BUILD = '8.8.20.38';
+  const BUILD = '8.8.20.39';
   const text = v => typeof v === 'string' || typeof v === 'number' ? String(v) : '';
   const escape = v => text(v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const first = (...v) => v.find(x => text(x).trim() !== '') ?? '';

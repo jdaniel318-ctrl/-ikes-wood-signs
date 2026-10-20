@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.20.38';
+  const BUILD_VERSION='8.8.20.39';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -1319,6 +1319,7 @@
     return {projectId:activeProjectId,plankId:state.headwayPlankId,photoHash:state.headwayPhotoHash,mode:ctx?.state==='preview'?'preview':String(ctx?.state||'live'),now:new Date().toISOString()};
   }
   function headwayResetPlank(){
+    woodwrightReset();
     state.headwayBoundOriginal='';state.headwayPhotoHash='';state.headwayPlankId='';state.headwaySizeDecision=null;state.headwaySpeciesDecision=null;state.headwayApproval=null;state.headwayCandidateFingerprint='';state.headwayPending=null;
     invalidateIkeApprovedDesignLock();
   }
@@ -1373,8 +1374,8 @@
       if($('ikeSpeciesResolutionStatus'))$('ikeSpeciesResolutionStatus').textContent=r.lengthResolved&&r.speciesResolved?'Preview inputs ready. Size and wood are simulations; geometry still needs review.':'No extra-photo loop. Size, wood and design approval remain separate.';
       if($('ikeConfirmPlankBtn'))$('ikeConfirmPlankBtn').disabled=!(r.orientationResolved&&r.speciesResolved&&ikeSpeciesRate(r.speciesId)>0&&r.lengthResolved&&r.lengthFeet);
       if($('ikeRecognitionConfidence'))$('ikeRecognitionConfidence').textContent=r.confidence==='geometry-clear'?'Geometry: High':(r.confidence==='geometry-probable'?'Geometry: Medium':'Visual geometry only');
-      if($('ikeRecognitionSafeArea'))$('ikeRecognitionSafeArea').textContent=r.usableRegion?'Usable lettering zone detected':(r.usableArea==='safe-margin-preview'?'Basic margin active':'Not analyzed');
-      if($('ikeRecognitionObstacle'))$('ikeRecognitionObstacle').textContent=r.obstacleDetected?'Ike review: edge / cutout clearance':(r.obstacleAvoidance==='sea-trial-active'?'Edge clearance checked — Ike verifies':'No interior obstacle detected');
+      if($('ikeRecognitionSafeArea'))$('ikeRecognitionSafeArea').textContent=r.usableRegion?'Proposed area — check in Design':'No reliable area yet';
+      if($('ikeRecognitionObstacle'))$('ikeRecognitionObstacle').textContent='Edges, knots and cutouts need visual review';
   }
   function headwayDraft(){
     const d=state.headwaySizeDecision,w=state.headwaySpeciesDecision;
@@ -9399,7 +9400,7 @@
     const state=commissionProofState(),proof=state.proof,receipt=state.receipt||commissionDraft?._serverReceipt;
     const ready=state.phase==='prepared',held=commissionOperationFrozen()&&!ready&&!proof;
     return `<div class="commission-panel sea-trial-review ironbound-proof">
-      <div class="eyebrow">07 • FLEET CORE PROOF · WAYFINDER TEST BUILD</div>
+      <div class="eyebrow">07 • FLEET CORE PROOF · WOODWRIGHT TEST BUILD</div>
       <h2>${proof?'Vessel and blueprint verified':ready?'Review the server-owned operation':held?'Read the preserved operation':'Prepare a new private test vessel'}</h2>
       <p>${proof?'Fleet Core confirmed this exact operation, its canonical vessel, and the saved blueprint in a separate read. Captain handoff and isolation are not yet proven.':ready?'Preparation created no vessel. The next tap issues this one operation once. A reload requires reconciliation, not replay.':'The server creates the vessel and blueprint together. Browser storage is an optional cache, never commissioning authority.'}</p>
       ${!proof&&!ready&&!held&&commissionPhotoBriefConflict(commissionDraft)?`<div class="commission-callout warning"><b>SAVED BRIEF CORRECTION</b><span>Your brief says “No photo required.” The older Forge Plan still requires a photo. This action changes that requirement only, preserves the prior plan as evidence, and saves the same voyage. It does not create or retry an operation.</span><button type="button" class="primary-btn" data-apply-photo-brief ${commissionCommandBusy||commissionDraft?._serverRecoveryPending?'disabled':''}>APPLY SAVED BRIEF: NO PHOTO</button></div>`:''}
@@ -12205,9 +12206,10 @@
       if($('ikeDesignFont'))$('ikeDesignFont').textContent=state.fontChosen?`Style ${state.font}`:'Choose style';
       if($('ikeDesignSize'))$('ikeDesignSize').textContent=state.letterSize||'Ike Fit';
       $$('#ikeLetterSizeChoices [data-ike-size]').forEach(b=>b.classList.toggle('selected',b.dataset.ikeSize===(state.letterSize||'Ike Fit')));
-      if($('ikeDesignNextBtn')){const ready=!!(state.wording.trim()&&state.fontChosen);$('ikeDesignNextBtn').disabled=!ready;$('ikeDesignNextBtn').setAttribute('aria-disabled',ready?'false':'true');}
+      if($('ikeDesignNextBtn')){const ready=woodwrightFitReady()&&currentExperienceContext(activeProject())?.state==='preview';$('ikeDesignNextBtn').disabled=!ready;$('ikeDesignNextBtn').setAttribute('aria-disabled',ready?'false':'true');}
       if($('ikeDesignProtection'))$('ikeDesignProtection').textContent=(r.usableRegion?'Detected lettering zone':(r.usableArea==='safe-margin-preview'?'Basic margin':'Zone pending'));
       if($('ikeDesignPreviewText')){const el=$('ikeDesignPreviewText');const base=state.wording||'';el.textContent=state.fontChosen?(state.orientation==='Vertical'?base.trim().split(/\s+/).join('\n'):base):'';el.className=`preview-text style-${String(state.font||'B').toLowerCase()}`+(state.fill==='Natural'?' cnc-carved':(state.fill==='Black'?' ike-routed-black':(state.fill==='White'?' ike-routed-white':'')));if(state.fill!=='Natural')el.style.color=fillColor();else el.style.removeProperty('color');}
+      woodwrightUpdateStatus();
       scheduleIkeDetectedTextPlacement();
       if($('ikeStylePrompt'))$('ikeStylePrompt').classList.toggle('hidden',!!state.fontChosen);
       $$('.ike-top-marker').forEach(el=>el.textContent='TOP');
@@ -12292,7 +12294,7 @@
   }
 
   const IKE_PRODUCTION_CONTRACT=Object.freeze({
-    version:'ike-production-truth-2026-08-v2',source:'canonical-front-and-back-paper-order-form',
+    version:'woodwright-photo-fit-v1-not-production-certified',source:'canonical-front-and-back-paper-order-form',
     characterLimits:{'2ft':14,'4ft':24,'6ft':36},fonts:['A','B','C'],fills:['Black','White','None','Other'],
     contactPreferences:['Text','Call'],pickupWindowDays:'7-10',customerApprovalRequired:true,refusalRight:true,
     otherColorRule:'Customer-supplied spray paint may be required for Other; return at pickup.',
@@ -12317,17 +12319,9 @@
   }
 
   function ikeCaptureLiveRenderSpec(){
-    const el=$('ikeDesignPreviewText'),card=el?.closest('.preview-card'),img=card?.querySelector('.preview-image');
-    if(!el||!card||!img||!img.complete||!img.naturalWidth)return null;
-    const ir=ikeImageContentRect(card,img),cr=card.getBoundingClientRect(),er=el.getBoundingClientRect(),cs=getComputedStyle(el);
-    const fontSize=parseFloat(cs.fontSize)||32,lineHeight=parseFloat(cs.lineHeight)||fontSize*1.05;
-    const left=er.left-cr.left,top=er.top-cr.top;
-    return {
-      strategy:'approved-live-layout-v2',singleLinePreferred:true,wrapOnlyWhenRequired:true,
-      box:{x:(left-ir.x)/ir.w,y:(top-ir.y)/ir.h,w:er.width/ir.w,h:er.height/ir.h},
-      font:{sizeN:fontSize/ir.h,lineHeightN:lineHeight/ir.h,letterSpacingN:(parseFloat(cs.letterSpacing)||0)/ir.h,family:cs.fontFamily||'Georgia',style:cs.fontStyle||'normal',weight:cs.fontWeight||'700'},
-      lines:ikeRenderedTextLines(el)
-    };
+    if(!woodwrightFitReady())return null;
+    const f=woodwrightFrame;return {strategy:'woodwright-single-raster-v1',rendererVersion:f.rendererVersion,
+      region:f.region,inkBox:f.inkBox,proof:f.proof,productionCertified:false};
   }
 
   function ikeCurrentRenderLock(){
@@ -12344,6 +12338,7 @@
 
   async function stageIkeApprovalArtifact(){
     if(activeProjectId!=='ikes-wood-signs')return true;
+    if(!await woodwrightPrepareReview())return false;
     await headwayPhotoContext();headwayRefreshRecognition();
     if(!state.plankRecognition.lengthResolved||!state.plankRecognition.speciesResolved)return false;
     const candidateBinding=await window.BlackFlagHeadway.fingerprint(headwayDraft());
@@ -12370,6 +12365,7 @@
 
   async function lockIkeApprovedDesign(){
     if(activeProjectId!=='ikes-wood-signs')return true;
+    if(!woodwrightFitReady()||currentExperienceContext(activeProject())?.state!=='preview')return false;
     if(!verifyIkeApprovalCandidate())return false;
     const current=await window.BlackFlagHeadway.fingerprint(headwayDraft());
     if(current!==state.headwayCandidateFingerprint)return false;
@@ -12409,6 +12405,16 @@
   }
 
   async function renderIkeApprovedArtifact(source,lock){
+    if(activeProjectId!=='ikes-wood-signs'||!source||source!==state.photoData||!woodwrightFitReady())return '';
+    const f=woodwrightFrame;
+    if(!lock||lock.wording!==state.wording||lock.font!==state.font||lock.fill!==state.fill)return '';
+    lock.render={strategy:'woodwright-single-raster-v1',rendererVersion:f.rendererVersion,
+      sourceWidth:f.width,sourceHeight:f.height,region:f.region,inkBox:f.inkBox,proof:f.proof,
+      photoAreaConfirmed:true,productionCertified:false,outputMime:'image/png'};
+    return f.composite;
+  }
+
+  async function renderIkeApprovedArtifactLegacyReference(source,lock){
     if(!source||!lock)return '';
     return new Promise(resolve=>{
       const img=new Image();
@@ -12437,17 +12443,13 @@
 
   async function runIkeApprovedArtifactAutomatedVoyage(){
     try{
-      const c=document.createElement('canvas');c.width=420;c.height=180;const x=c.getContext('2d',{alpha:false});if(!x)return {ok:false,detail:'Canvas unavailable for automated artifact voyage.'};
-      x.fillStyle='#c79b62';x.fillRect(0,0,c.width,c.height);x.fillStyle='#8b5a2b';x.fillRect(40,35,300,110);x.fillStyle='#f4e7ce';x.beginPath();x.ellipse(315,90,18,28,0,0,Math.PI*2);x.fill();
-      const source=c.toDataURL('image/png');
-      const lock={version:'ike-approved-artifact-selftest-v1',wording:'Smoke Hole',font:'B',fill:'Black',customColor:'#1f6feb',orientation:'Horizontal',topSide:'Top of photo',price:65,usableRegion:{x:.12,y:.22,w:.62,h:.58,source:'self-test'},obstacleDetected:true,recognition:{method:'synthetic',confidence:'high'},render:{strategy:'approved-live-layout-v2',box:{x:.18,y:.28,w:.48,h:.44},font:{sizeN:.16,lineHeightN:.18,family:'"American Typewriter Condensed", "American Typewriter", "Rockwell Extra Bold", Rockwell, "Courier New", serif',style:'normal',weight:'900'},lines:['Smoke','Hole']}};
-      const artifact=await renderIkeApprovedArtifact(source,lock);if(!artifact||!artifact.startsWith('data:image/jpeg'))return {ok:false,detail:'Automated voyage could not produce the immutable production artifact.'};
-      const hash=ikeFastHash(artifact),record={artifactId:`IKE-ART-${hash.toUpperCase()}`,artifactHash:hash,approvedPreviewData:artifact};
-      const stageHashes=['approval','review','confirmation','admin','archive'].map(()=>ikeFastHash(record.approvedPreviewData));
-      const reused=stageHashes.every(h=>h===hash);
-      const contracts=String(updateUi).includes('state.approvedPreviewData')&&String(saveOrder).includes('approvedPreviewData=state.approvedPreviewData')&&String(renderAdmin).includes('approvedPreviewData')&&String(projectOrderCard).includes('approvedPreviewData');
-      return {ok:reused&&contracts,detail:reused&&contracts?`Automated immutable-artifact voyage passed. Production artifact ${record.artifactId} retained one fingerprint through approval, review, confirmation, admin and archive contracts.`:'Automated artifact voyage found a stage-reuse contract gap.'};
-    }catch(err){return {ok:false,detail:`Automated artifact voyage error: ${err?.message||err}`};}
+      const W=window.BlackFlagWoodwright;if(!W)return {ok:false,productionCertified:false,detail:'Photo-fit module unavailable.'};
+      const c=document.createElement('canvas');c.width=640;c.height=360;const x=c.getContext('2d');
+      x.fillStyle='#c0b7a6';x.fillRect(0,0,640,360);x.fillStyle='#b47545';x.fillRect(120,100,405,178);
+      const scene=W.analyzeImage(c),frame=W.render(c,scene,{text:'HOME',spec:ikeFontBlueprint('B'),fill:'White'});
+      const ok=!!(frame.ok&&frame.proof.outsidePixels===0&&frame.composite&&frame.overlay);
+      return {ok,productionCertified:false,detail:ok?'Synthetic photo-fit replay passed: complete lettering is inside the proposed area. No customer state or records changed. This is not cutting-path certification.':'Synthetic photo-fit replay failed; keep design review held.'};
+    }catch(err){return {ok:false,productionCertified:false,detail:'Photo-fit selftest error: '+String(err?.message||err)};}
   }
 
   function projectRequiresPhoto(){
@@ -13159,6 +13161,18 @@ The full order and approved media remain stored with this project.`;
   }
 
   function ikeAnalyzePlankPixelsProven(img){
+    const scene=window.BlackFlagWoodwright?.analyzeImage(img);
+    if(!scene)return null;
+    const c=scene.contour,bw=c.w*scene.width,bh=c.h*scene.height;
+    const orientation=bw>=bh?'Horizontal':'Vertical';
+    return {contour:c,usableRegion:scene.region,fitBand:scene.region,faceGrid:[],
+      obstacleDetected:true,referenceCandidate:false,axisOrientation:orientation,bboxOrientation:orientation,
+      orientationResolved:Math.max(bw,bh)/Math.max(1,Math.min(bw,bh))>=1.25,
+      elongation:Math.max(bw,bh)/Math.max(1,Math.min(bw,bh)),axisAngleDeg:orientation==='Horizontal'?0:90,
+      confidence:'geometry-probable',requiresVisualReview:true,boundaryVersion:scene.version};
+  }
+
+  function ikeAnalyzePlankPixelsLegacyReference(img){
     const maxW=220,scale=Math.min(1,maxW/Math.max(1,img.naturalWidth||img.width));
     const w=Math.max(60,Math.round((img.naturalWidth||img.width)*scale));
     const h=Math.max(40,Math.round((img.naturalHeight||img.height)*scale));
@@ -13416,60 +13430,108 @@ The full order and approved media remain stored with this project.`;
     return {family:'Georgia, "Times New Roman", serif',weight:'500',style:'normal',spacingEm:0,widthTarget:0.86,heightTarget:0.78,widthBoost:0.99,compactWidthTarget:0.88,compactHeightTarget:0.82,opticalYBias:0,metricWidthScale:1,metricHeightScale:1,visualScaleX:1,visualScaleY:1,stylePackStatus:'unsupported'};
   }
 
+  // WOODWRIGHT FIT ADAPTER: one image-coordinate renderer for live ink and review.
+  let woodwrightFrame=null,woodwrightScene=null,woodwrightSceneSource='',woodwrightTask=null;
+  let woodwrightEpoch=0,woodwrightAckSource='',woodwrightAckRegion='';
+
+  function woodwrightSnapshot(){
+    return {projectId:activeProjectId,source:state.photoData||'',tag:JSON.stringify({wording:String(state.wording||''),
+      font:state.font,fontChosen:!!state.fontChosen,fill:state.fill,color:state.customColor,
+      turns:state.photoQuarterTurns||0,orientation:state.orientation,top:state.topSide,
+      spec:ikeFontBlueprint(state.font)})};
+  }
+
+  function woodwrightCurrent(snapshot){
+    const current=woodwrightSnapshot();return current.projectId==='ikes-wood-signs'&&snapshot.projectId===current.projectId&&snapshot.source===current.source&&snapshot.tag===current.tag;
+  }
+
+  function woodwrightReset(){
+    woodwrightEpoch++;woodwrightFrame=null;woodwrightScene=null;woodwrightTask=null;woodwrightSceneSource='';woodwrightAckSource='';woodwrightAckRegion='';
+    document.querySelectorAll('.woodwright-ink,.woodwright-area').forEach(el=>el.remove());
+  }
+
+  function woodwrightAreaAccepted(){
+    return !!(woodwrightScene&&woodwrightAckSource===state.photoData&&woodwrightAckRegion===JSON.stringify(woodwrightScene.region));
+  }
+
+  function woodwrightFitReady(){
+    return !!(activeProjectId==='ikes-wood-signs'&&woodwrightFrame?.ok&&woodwrightCurrent(woodwrightFrame.snapshot)&&woodwrightAreaAccepted());
+  }
+
+  function woodwrightUpdateStatus(){
+    const ready=woodwrightFitReady(),frame=woodwrightFrame,current=frame&&woodwrightCurrent(frame.snapshot),preview=currentExperienceContext(activeProject())?.state==='preview';
+    const status=$('woodwrightFitStatus'),check=$('woodwrightAreaOk'),btn=$('ikeDesignNextBtn');
+    if(status)status.textContent=!state.fontChosen||!String(state.wording||'').trim()?'Choose a style and enter wording to check the fit.':
+      !current?'Checking this photograph and the complete lettering…':!frame.ok?frame.reason:
+      !woodwrightAreaAccepted()?'Lettering fits the outlined area. Check that the whole outline is on usable wood.':
+      'Photo-fit check passed for this wording. Production lettering is not certified.';
+    if(check){check.disabled=!(current&&frame.ok);check.checked=woodwrightAreaAccepted();}
+    if(btn){btn.disabled=!(ready&&preview);btn.setAttribute('aria-disabled',btn.disabled?'true':'false');}
+    if($('ikeDesignProtection'))$('ikeDesignProtection').textContent=ready?'Photo fit checked':current&&frame.ok?'Check lettering area':'Fit review needed';
+    if($('woodwrightProductionNote'))$('woodwrightProductionNote').textContent=preview?'Private Preview only. This checks image placement, not cutting paths.':'Production is held: verified manufacturing alphabets and stock authority are required.';
+  }
+
+  function woodwrightPaintPreview(){
+    const el=$('ikeDesignPreviewText'),card=el?.closest('.preview-card');
+    if(!card)return;
+    el.textContent='';el.style.setProperty('display','none','important');
+    let ink=card.querySelector('.woodwright-ink'),area=card.querySelector('.woodwright-area');
+    if(!ink){ink=document.createElement('img');ink.className='woodwright-ink';ink.alt='';ink.setAttribute('aria-hidden','true');card.appendChild(ink);}
+    if(!area){area=document.createElementNS('http://www.w3.org/2000/svg','svg');area.classList.add('woodwright-area');area.setAttribute('aria-hidden','true');card.appendChild(area);}
+    const f=woodwrightFrame;
+    if(!f?.ok||!woodwrightCurrent(f.snapshot)){ink.removeAttribute('src');ink.hidden=true;area.innerHTML='';woodwrightUpdateStatus();return;}
+    ink.hidden=false;ink.src=f.overlay;
+    const rg=f.region;area.setAttribute('viewBox',`0 0 ${f.width} ${f.height}`);area.setAttribute('preserveAspectRatio','xMidYMid meet');
+    area.innerHTML=`<rect x="${rg.x*f.width}" y="${rg.y*f.height}" width="${rg.w*f.width}" height="${rg.h*f.height}" rx="1" fill="none" stroke="#00b9d3" stroke-width="2" stroke-dasharray="7 5" vector-effect="non-scaling-stroke"/>`;
+    woodwrightUpdateStatus();
+  }
+
+  async function woodwrightEnsureFrame(){
+    if(activeProjectId!=='ikes-wood-signs'){woodwrightReset();return null;}
+    const snapshot=woodwrightSnapshot();
+    if(woodwrightFrame&&woodwrightCurrent(woodwrightFrame.snapshot)){woodwrightPaintPreview();return woodwrightFrame;}
+    if(woodwrightTask&&woodwrightCurrent(woodwrightTask.snapshot))return woodwrightTask.promise;
+    const epoch=++woodwrightEpoch;
+    woodwrightFrame=null;woodwrightPaintPreview();
+    const promise=(async()=>{try{
+      if(!window.BlackFlagWoodwright)throw Error('Photo-fit component is missing. Keep this design on hold.');
+      if(!snapshot.source||!state.fontChosen||!String(state.wording||'').trim())return null;
+      if(!['A','B'].includes(state.font))throw Error('This style has no supported preview profile. Select Style A or B.');
+      await document.fonts?.ready;
+      const image=await new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>reject(Error('The source photograph could not be read.'));img.src=snapshot.source;});
+      if(epoch!==woodwrightEpoch||!woodwrightCurrent(snapshot))return null;
+      if(woodwrightSceneSource!==snapshot.source){woodwrightScene=window.BlackFlagWoodwright.analyzeImage(image);woodwrightSceneSource=snapshot.source;woodwrightAckSource='';woodwrightAckRegion='';}
+      const options=JSON.parse(snapshot.tag),fit=window.BlackFlagWoodwright.render(image,woodwrightScene,{text:options.wording,spec:options.spec,fill:options.fill,customColor:options.color});
+      if(epoch!==woodwrightEpoch||!woodwrightCurrent(snapshot))return null;
+      if(woodwrightScene&&state.plankRecognition){state.plankRecognition.fitBand=woodwrightScene.region;state.plankRecognition.usableRegion=woodwrightScene.region;state.plankRecognition.boundaryVersion=woodwrightScene.version;}
+      woodwrightFrame={...fit,snapshot};woodwrightPaintPreview();return woodwrightFrame;
+    }catch(err){if(epoch===woodwrightEpoch&&woodwrightCurrent(snapshot)){woodwrightFrame={ok:false,reason:String(err.message||err),snapshot};woodwrightPaintPreview();}return null;}})();
+    woodwrightTask={snapshot,promise};await promise;if(woodwrightTask?.snapshot===snapshot)woodwrightTask=null;return woodwrightFrame;
+  }
+
+  function woodwrightAcceptArea(checked){
+    if(!woodwrightFrame?.ok||!woodwrightCurrent(woodwrightFrame.snapshot)||!woodwrightScene)return false;
+    invalidateIkeApprovedDesignLock();woodwrightAckSource=checked?state.photoData:'';woodwrightAckRegion=checked?JSON.stringify(woodwrightScene.region):'';
+    woodwrightUpdateStatus();return woodwrightAreaAccepted();
+  }
+
+  async function woodwrightPrepareReview(){
+    if(currentExperienceContext(activeProject())?.state!=='preview')return false;
+    await woodwrightEnsureFrame();return woodwrightFitReady();
+  }
+
   function ikeApplyDetectedTextPlacementTo(el){
-    const r=state.plankRecognition||{},region=r.fitBand||r.usableRegion,card=el.closest('.preview-card'),img=card?.querySelector('.preview-image');
-    if(!card||!img||!img.complete||!img.naturalWidth||!region){el.style.removeProperty('left');el.style.removeProperty('top');el.style.removeProperty('width');el.style.removeProperty('height');el.style.removeProperty('transform');el.style.removeProperty('max-width');el.style.removeProperty('font-size');el.style.removeProperty('display');el.style.removeProperty('align-items');el.style.removeProperty('justify-content');return;}
-    const ir=ikeImageContentRect(card,img),x=ir.x+region.x*ir.w,y=ir.y+region.y*ir.h,w=region.w*ir.w,h=region.h*ir.h;
-    const wording=String(state.wording||'').trim();
-    if(!wording){el.textContent='';return;}
-    // 8.2.8 IKE FIT: one shop fit, not a generic size selector. Measure the
-    // VISIBLE glyphs and deliberately claim the usable face like Ike's finished
-    // RAMJET / SMOKE HOLE! signs. Customer intent is the wording + style; the
-    // layout engine owns size and optical placement inside the carve-safe band.
-    state.letterSize='Ike Fit';
-    const mode='Ike Fit';
-    const spec=ikeFontBlueprint(state.font);
-    const targets={w:spec.widthTarget,h:spec.heightTarget};
-    const probe=100;
-    const cv=document.createElement('canvas'),cx=cv.getContext('2d');
-    const fontFamily=spec.family;
-    const fontWeight=spec.weight;
-    const fontStyle=spec.style;
-    cx.font=`${fontStyle} ${fontWeight} ${probe}px ${fontFamily}`;
-    const m=cx.measureText(wording);
-    const spacingEm=spec.spacingEm;
-    const spacingPx=Math.max(0,wording.length-1)*probe*spacingEm;
-    const glyphW=Math.max(1,((m.actualBoundingBoxLeft||0)+(m.actualBoundingBoxRight||m.width||1)+spacingPx)*Number(spec.metricWidthScale||1));
-    const glyphH=Math.max(1,((m.actualBoundingBoxAscent||probe*.76)+(m.actualBoundingBoxDescent||probe*.20))*Number(spec.metricHeightScale||1));
-    const byWidth=(w*targets.w)/(glyphW/probe);
-    const byHeight=(h*targets.h)/(glyphH/probe);
-    let fs=Math.min(byWidth,byHeight)*spec.widthBoost;
-    const compactWord=wording.replace(/\s+/g,'').length<=12;
-    // 8.2.8 FONT LOCK: each style stays locked to its approved shop example.
-    // The customer can change wording, but the font behavior should not drift away
-    // from the canonical RAMJET / SMOKE HOLE! samples shown in the UI.
-    if(compactWord){
-      const widthFit=(w*spec.compactWidthTarget)/(glyphW/probe);
-      const heightFit=(h*spec.compactHeightTarget)/(glyphH/probe);
-      fs=Math.min(widthFit,heightFit)*spec.widthBoost;
-    }
-    fs=Math.max(20,Math.min(340,fs));
-    // Optical correction uses the visible glyph bounds so the ink, not invisible
-    // font side-bearings, is centered on the wood face.
-    const leftBearing=(m.actualBoundingBoxLeft||0),rightBearing=Math.max(0,(m.width||glyphW)-(m.actualBoundingBoxRight||m.width||glyphW));
-    const opticalShiftX=Math.max(-w*.035,Math.min(w*.035,(rightBearing-leftBearing)*(fs/probe)*.50));
-    const opticalShiftY=spec.opticalYBias?Math.min(h*spec.opticalYBias,5):0;
-    Object.assign(el.style,{left:`${x+opticalShiftX}px`,top:`${y+opticalShiftY}px`,width:`${Math.max(1,w-Math.abs(opticalShiftX))}px`,height:`${Math.max(1,h-opticalShiftY)}px`,transform:`scaleX(${Number(spec.visualScaleX||1)}) scaleY(${Number(spec.visualScaleY||1)})`,transformOrigin:'center center',maxWidth:'none',fontSize:`${fs}px`,display:'flex',alignItems:'center',justifyContent:'center',padding:'0',lineHeight:state.font==='B'?'.88':'.94',whiteSpace:'nowrap'});
-    el.dataset.ikeFitMode=mode;
-    el.dataset.ikeFitFontPx=String(Math.round(fs));
-    el.dataset.ikeFitTarget=`${Math.round(targets.w*100)}x${Math.round(targets.h*100)}`;el.dataset.ikeFitRegion=String(region.source||'');el.dataset.ikeFitGrid=String(r.faceGrid?.length||0);
+    if(activeProjectId!=='ikes-wood-signs')return;
+    el.textContent='';el.style.setProperty('display','none','important');
+    // Other workflow screens use the flattened review artifact, never a second font layout.
+    if(el.id==='ikeDesignPreviewText')woodwrightEnsureFrame();
   }
 
   function scheduleIkeDetectedTextPlacement(){
     if(activeProjectId!=='ikes-wood-signs')return;
     requestAnimationFrame(()=>{
-      const els=[$('ikeDesignPreviewText'),...$$('.ikes-project [data-preview-text]')].filter(Boolean);
-      els.forEach(el=>{const img=el.closest('.preview-card')?.querySelector('.preview-image');if(img&&!img.complete)img.addEventListener('load',()=>ikeApplyDetectedTextPlacementTo(el),{once:true});ikeApplyDetectedTextPlacementTo(el);});
+      if(activeProjectId!=='ikes-wood-signs')return;
+      [$('ikeDesignPreviewText'),...$$('.ikes-project [data-preview-text]')].filter(Boolean).forEach(ikeApplyDetectedTextPlacementTo);
     });
   }
 
@@ -13730,8 +13792,10 @@ The full order and approved media remain stored with this project.`;
 
   function analyzeIkePlankPhoto(){
     if(activeProjectId!=='ikes-wood-signs'||!state.photoData)return;
+    const requestedPhoto=state.photoData;
     const img=new Image();
     img.onload=()=>{
+      if(activeProjectId!=='ikes-wood-signs'||state.photoData!==requestedPhoto)return;
       const w=Number(img.naturalWidth||img.width||0),h=Number(img.naturalHeight||img.height||0);
       const provenAnalysis=ikeAnalyzePlankPixelsProven(img);
       const lengthAnalysis=ikeAnalyzePlankPixelsLength(img);
@@ -16635,7 +16699,8 @@ The full order and approved media remain stored with this project.`;
     $('rotatePhotoLeftBtn')?.addEventListener('click',()=>queueIkePhotoQuarterTurn(-1));
     $('rotatePhotoRightBtn')?.addEventListener('click',()=>queueIkePhotoQuarterTurn(1));
     $('ikeConfirmPlankBtn')?.addEventListener('click',()=>{const r=state.plankRecognition||{};if(!r.lengthResolved||!r.lengthFeet){if($('ikeSpeciesResolutionStatus'))$('ikeSpeciesResolutionStatus').textContent='A known stock size or an authorized size decision is needed. More photos will not establish it.';return;}if(!r.speciesResolved){if($('ikeSpeciesResolutionStatus'))$('ikeSpeciesResolutionStatus').textContent='Finish the quick wood check first so we price the right species.';return;}if(!(ikeSpeciesRate(r.speciesId)>0)){if($('ikeSpeciesResolutionStatus'))$('ikeSpeciesResolutionStatus').textContent='This species does not have an active owner price yet. Please ask Ike before continuing.';return;}recalcIkePrice();setScreen('ike-design');});
-    $('ikeDesignNextBtn')?.addEventListener('click',async()=>{if(!state.wording.trim()){if($('ikeDesignError'))$('ikeDesignError').textContent='Type the wording for your sign first.';return;}if(!state.fontChosen){if($('ikeDesignError'))$('ikeDesignError').textContent='Choose a lettering style before placing the words on your plank.';return;}if($('ikeDesignError'))$('ikeDesignError').textContent='';const btn=$('ikeDesignNextBtn');if(btn){btn.disabled=true;btn.textContent='BUILDING APPROVAL ARTIFACT…';}const ok=await stageIkeApprovalArtifact();if(btn){btn.disabled=false;btn.textContent='REVIEW MY DESIGN →';}if(!ok){alert('The approval artifact could not be created. Please review the plank photo and try again.');return;}setScreen('ike-approve');});
+    $('woodwrightAreaOk')?.addEventListener('change',e=>woodwrightAcceptArea(!!e.target.checked));
+    $('ikeDesignNextBtn')?.addEventListener('click',async()=>{if(!state.wording.trim()){if($('ikeDesignError'))$('ikeDesignError').textContent='Type the wording for your sign first.';return;}if(!state.fontChosen){if($('ikeDesignError'))$('ikeDesignError').textContent='Choose a lettering style before placing the words on your plank.';return;}if(!woodwrightFitReady()){if($('ikeDesignError'))$('ikeDesignError').textContent='Check that the outlined lettering area is wholly inside the wood first.';return;}if($('ikeDesignError'))$('ikeDesignError').textContent='';const btn=$('ikeDesignNextBtn');if(btn){btn.disabled=true;btn.textContent='BUILDING APPROVAL ARTIFACT…';}const ok=await stageIkeApprovalArtifact();if(btn){btn.textContent='REVIEW MY DESIGN →';woodwrightUpdateStatus();}if(!ok){alert('The approval artifact could not be created. Please review the plank photo and try again.');return;}setScreen('ike-approve');});
     $('ikeApproveDesignBtn')?.addEventListener('click',async()=>{const ok=await lockIkeApprovedDesign();if(!ok){alert('The approved artifact fingerprint changed. Return to Design and build the approval artifact again.');return;}setScreen('customer');});
     $('ikeEditDesignBtn')?.addEventListener('click',()=>{invalidateIkeApprovedDesignLock();setScreen('ike-design');});
     $('reviewEditDesignBtn')?.addEventListener('click',()=>setScreen(activeProjectId==='ikes-wood-signs'?'ike-design':'wording'));

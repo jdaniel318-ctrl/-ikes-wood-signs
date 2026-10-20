@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.20.38",
-  "version": "8.8.20.38",
-  "release_name": "Wayfinder TEST",
-  "releaseName": "Wayfinder TEST",
-  "release_seal": "wayfinder-882038",
+  "build": "8.8.20.39",
+  "version": "8.8.20.39",
+  "release_name": "Woodwright TEST",
+  "releaseName": "Woodwright TEST",
+  "release_seal": "woodwright-882039",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -59,7 +59,8 @@
     "business_deck.css",
     "fleet_viewport.js",
     "fleet_viewport.css",
-    "headway_contracts.js"
+    "headway_contracts.js",
+    "woodwright_fit.js"
   ],
   "atomic_release_contract": {
     "manifest_runtime_agreement": "required-before-execution",
@@ -97,8 +98,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "Fleet Compass; source vs filtered roster protection; latest-view wins; separate operation-level storage observations",
-  "release_note": "TEST ONLY. Search and routes do not grant owner authority or certify backups. Storage warnings remain separate and require field evidence; no cleanup, database mutation or new service activation.",
+  "release_focus": "Photo-relative plank area, complete visible-ink containment, one exact preview/review raster; preserve fleet search and backups",
+  "release_note": "TEST ONLY. No camera-scale or CNC certification. Explicit visual-area review in Private Preview. No owner service, deployment, data cleanup or permission changes.",
   "tax_ledger_upgrade": {
     "schema": "dark-sky-fleet-tax-ledger-v1",
     "model": "TAX_LEDGER_MODEL.json",
@@ -220,7 +221,7 @@
     "algorithm": "SHA-256",
     "files": {
       "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": {
-        "sha256": "d3f16ebbc7e730376407d2f5471ff2ad1113766be372924daacdc0297a29b7bd",
+        "sha256": "5707694f08dde138a3906caa009f7e162a0748e93777a8bc7c449e197a917037",
         "build": "8.8.20.38",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
@@ -268,13 +269,13 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_COMMAND_MODEL.json": {
-        "sha256": "154d6152e254edaf111b83af12d3fed4db33e4ba8d981ec0f66a8483563c37a0",
+        "sha256": "a1313ad6f0472f268370464f2757747a9f5a67227d185ae38a0b20ad642ed1ce",
         "build": "8.8.20.38",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
       "FLEET_DOCTRINE_REGISTRY.json": {
-        "sha256": "7126a082b7ed243cb5667cbab06208debd41fee4310532992bb960c05c218a7c",
+        "sha256": "5766480dfe96852968c35b4fc8ae4c1e908bb92ff60f2d16b7d102fb7ae32ef2",
         "build": "8.8.20.38",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
@@ -334,7 +335,7 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "GOLDEN_VOYAGES.json": {
-        "sha256": "b74f85fcdaffea3f4a841a1bde134005d4d0f1ed19d0e3607a1d9d9f95c85cd8",
+        "sha256": "45ef981bef98ac2afd6c8d44f68f66f6ee6e0ead84802d10e99b618da1c96329",
         "build": "8.8.20.38",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
@@ -484,30 +485,31 @@
     "algorithm": "SHA-256",
     "serialization": "UTF-8 response body, same text executed by atomic loader",
     "files": {
-      "styles.css": "aa0337a5ec80a7261d41d30e028259abba8883d08d9ef88194a2de53c7458768",
+      "styles.css": "4fe677e2af74f3d5ce796fc3e8a76ce23d04fb4c3785ddda1c19e000d3406fc5",
       "simple_books.css": "5939590021ef2d3738d5f5f7249d72f8da64cc274bf287ef8183958517b0ba46",
       "platform_core.js": "7f797bc382a73eb9ec4365a7458e8329da60c50561e3ac751ca3fb9d7cd5ec49",
       "platform_v4.js": "21daf7777150d654467042893298147374318fdfc7ac38faf9260f874522019b",
-      "platform_identity.js": "00fbb70c376b396eb949299c9050e9e4230581acd1070bcd456bbbe84f46a450",
-      "fleet_supabase.js": "6d731c99e3113e2915271a18f8494a59bff359ca1e48d973dc169f535cd465c5",
+      "platform_identity.js": "59840d543a1ae0bc71d2f85bb452ad1b2985539f9bceb1a73c4eb1ce5018cd6a",
+      "fleet_supabase.js": "be5aebdcb1cb810ce30ab7087a63615cd349b35539353af2bfec8c2c1a0f2da6",
       "ike_style_registry.js": "6b348ebceb47e172e6676f46252b19c1c6bb7532baf76febfa8dd81760a76ab7",
-      "app.js": "ece28bcbef9dcac71bab0382ee15c53f70c7f083b3618c463529a4ae590ba5c0",
-      "captain.js": "8b75df7b6b25e0b8bd4da1b01aeed34c6bfb362b0c8ab96b649b8804c36fafab",
-      "simple_books.js": "c5ccad067917f0b418aab91e9c6ca793202e25cd181f29fc25a765db13e6e7f1",
-      "owner.html": "1d878ceac0f489bbf8a2b7db024e24d42cf3b5ae73ba6a7b88547247f38ab560",
-      "manifest.webmanifest": "182ca056a515b9546ffd91601223ce4781ab404c8eb349301b907be50ce4ad66",
+      "app.js": "e4e44fa2a05a9b016ab227e4e6dd222871c08e2cdf6e03222e7ecb2ffec6aa97",
+      "captain.js": "cda87e958eb061f7a18a2ba2b1b235e0bb584b1666ad607fe48586dccae1d1ec",
+      "simple_books.js": "80f01962c72af7f2472a5832f3c610ed21dd37379f443fa3b2cdc0e7e7e97b5c",
+      "owner.html": "bb0edb61cef8a00dc0142404cf77f50ac37f3d6ebe434e4595f72cc6e212af97",
+      "manifest.webmanifest": "6f1f835b1ee02154430f8a3b0bb6e55bd5a770e39cff15e53541634e165d9a22",
       "IKE_STYLE_FOUNDRY.json": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
-      "sw.js": "3da734c4ebfa83f0cc4e5e401b3d2d56168ad2c8dd801903631c79daac9eeedd",
-      "FLEET_DOCTRINE_REGISTRY.json": "7126a082b7ed243cb5667cbab06208debd41fee4310532992bb960c05c218a7c",
-      "GOLDEN_VOYAGES.json": "b74f85fcdaffea3f4a841a1bde134005d4d0f1ed19d0e3607a1d9d9f95c85cd8",
-      "FLEET_COMMAND_MODEL.json": "154d6152e254edaf111b83af12d3fed4db33e4ba8d981ec0f66a8483563c37a0",
-      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "d3f16ebbc7e730376407d2f5471ff2ad1113766be372924daacdc0297a29b7bd",
-      "input_hygiene.js": "60a5bc53f2f830bab65ad0e8ccc132dbf3119715053ffb58b2a747c0b1e99fdf",
-      "business_deck.js": "c7c7154df68e29705545710a4beab02183cbd6048523c68b2da7ad26a9fbc591",
+      "sw.js": "ac824cb2f80eba427079cb574edf88e57229dbd679a2f504c36d91457f95653a",
+      "FLEET_DOCTRINE_REGISTRY.json": "5766480dfe96852968c35b4fc8ae4c1e908bb92ff60f2d16b7d102fb7ae32ef2",
+      "GOLDEN_VOYAGES.json": "45ef981bef98ac2afd6c8d44f68f66f6ee6e0ead84802d10e99b618da1c96329",
+      "FLEET_COMMAND_MODEL.json": "a1313ad6f0472f268370464f2757747a9f5a67227d185ae38a0b20ad642ed1ce",
+      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "5707694f08dde138a3906caa009f7e162a0748e93777a8bc7c449e197a917037",
+      "input_hygiene.js": "0d9c5906c7b8947c1a2b99dfbd977489f2c32ca1e5195a2158b3cc17034553c6",
+      "business_deck.js": "fa9f4d5642633d46e5fb2d28311ca6ce85c7290d750254bea2bc899404c8bd27",
       "business_deck.css": "445fa81fff307d41cdd9a7d181ec86f9daae6843d24ac0d9fe14f939a25b6289",
       "fleet_viewport.js": "14ea8ff7d2c834014d8661a743c9408f9556141e7c81d32b590bd6988d0cfa55",
       "fleet_viewport.css": "1dbdbbac10ea9d1976d015e88610cd000685941e0d310c7cbd934159a63b85f8",
-      "headway_contracts.js": "02f7ad83ff49e6c0ac614f01a06e61fb858c6a3dc72d9c9e742d618a3b7433dd"
+      "headway_contracts.js": "b978fb2f9b3938576c2915e0ebf26d09bf3899d58162eebe739b2f99af3a4415",
+      "woodwright_fit.js": "6f0b8f3ee876db7b54dcbc9ba5a1e0cc86d608a39d09f388806aa504b0f41e60"
     }
   },
   "watchbeacon_upgrade": {
@@ -942,7 +944,7 @@
     "project_data_mutation": false,
     "field_failure_proof": "8.8.20.13 held on styles.css because packaged DEPLOYMENT_MANIFEST runtime hash did not match packaged styles.css bytes"
   },
-  "release": "8.8.20.38 Wayfinder TEST",
+  "release": "8.8.20.39 Woodwright TEST",
   "clearbearing_upgrade": {
     "build": "8.8.20.22",
     "baseline": "8.8.20.14 HashLock",
@@ -1089,5 +1091,17 @@
     "server_changes": false,
     "existing_customer_owner_control_routes": "retained",
     "native_safari": "pending"
+  },
+  "woodwright_upgrade": {
+    "version": "8.8.20.39",
+    "renderer": "woodwright-single-raster-v1",
+    "production_certified": false,
+    "physical_measurement_claim": false,
+    "manual_photo_area_review": true,
+    "uncertain_boundary_behavior": "hold",
+    "legacy_order_edits": false,
+    "source_photo_preserved": true,
+    "new_database": false,
+    "househull_precision_changed": false
   }
 }

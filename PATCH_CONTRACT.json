@@ -1,17 +1,17 @@
 {
   "schema": "blackflag-patch-contract-v1",
-  "target_build": "8.8.20.38",
-  "target_seal": "wayfinder-882038",
+  "target_build": "8.8.20.39",
+  "target_seal": "woodwright-882039",
   "supported_bases": [
     {
-      "build": "8.8.20.37",
-      "archive_name": "DarkSky882037-Strongbox-TEST.zip",
-      "sha256": "8a9ee88c97e2ed9f0762c19d3e3785af842629a09ecb9d42c5e7f7a362e2c44f"
+      "build": "8.8.20.38",
+      "archive_name": "DarkSky882038-Wayfinder-TEST.zip",
+      "sha256": "dd6392fb4daef6b7ef12e13422d6f4bd6ac557fb94161053dcd5a125614f432b"
     }
   ],
   "requires_deletions": false,
   "max_upload_files": 85,
   "database_actions": "none",
-  "rule": "Update all supplied files at repository root over complete Strongbox .37. Keep all other files. Do not run SQL or clear website data.",
+  "rule": "Upload the supplied delta over complete Wayfinder .38 at the repository root. Keep other files. Do not run SQL or clear website data.",
   "hash_limit": "Consistency only; not an authenticity signature, authorization or business-data backup."
 }

@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.38",
-  "release": "Wayfinder TEST",
-  "seal": "wayfinder-882038",
+  "build": "8.8.20.39",
+  "release": "Woodwright TEST",
+  "seal": "woodwright-882039",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Wayfinder TEST",
-  "name": "Wayfinder TEST",
-  "releaseName": "Wayfinder TEST"
+  "release_name": "Woodwright TEST",
+  "name": "Woodwright TEST",
+  "releaseName": "Woodwright TEST"
 }

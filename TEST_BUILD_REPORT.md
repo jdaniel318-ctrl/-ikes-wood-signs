@@ -1,3 +1,9 @@
+# Woodwright 8.8.20.39 — current TEST report
+
+See WOODWRIGHT_TEST_REPORT.md, WOODWRIGHT_TEST_RESULTS.json, and the external final package proof. 212 Node / 156 isolated Chromium / 13 package tests. Full HTTP boot blocked; native Safari pending; no production or quota certification.
+
+## Prior release report (historical)
+
 # Wayfinder 8.8.20.38 TEST — Fleet Compass
 
 Current installation instructions: **START_HERE_WAYFINDER.md**. Install only over complete Strongbox 8.8.20.37. No SQL, record cleanup, permission change or commissioning.

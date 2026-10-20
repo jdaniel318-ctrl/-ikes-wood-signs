@@ -1,9 +1,9 @@
 {
-  "release": "8.8.20.38 Wayfinder TEST",
-  "name": "Wayfinder TEST",
-  "build": "8.8.20.38",
-  "seal": "wayfinder-882038",
-  "file_count": 163,
+  "release": "Woodwright TEST",
+  "name": "Woodwright TEST",
+  "build": "8.8.20.39",
+  "seal": "woodwright-882039",
+  "file_count": 174,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
     "ADMIRAL_RELEASE_DOCTRINE.json",
@@ -83,6 +83,7 @@
     "START_HERE_KEELMARK.md",
     "START_HERE_STRONGBOX.md",
     "START_HERE_WAYFINDER.md",
+    "START_HERE_WOODWRIGHT.md",
     "STEADYHAND_TEST_EVIDENCE.json",
     "STORAGE_SAFE_PROOF_BUS_MODEL.json",
     "STRONGBOX_PRESERVATION.json",
@@ -120,12 +121,21 @@
     "VERIFY_WAYFINDER.cjs",
     "VERIFY_WAYFINDER_RELEASE.cjs",
     "VERIFY_WAYFINDER_UI.py",
+    "VERIFY_WOODWRIGHT.cjs",
+    "VERIFY_WOODWRIGHT_BOOT.py",
+    "VERIFY_WOODWRIGHT_RELEASE.cjs",
+    "VERIFY_WOODWRIGHT_UI.py",
     "VERIFY_WORKHORSE.cjs",
     "VERIFY_WORKHORSE_UI.py",
     "WAYFINDER_PRESERVATION.json",
     "WAYFINDER_REVIEW.md",
     "WAYFINDER_TEST_RESULTS.json",
     "WITNESS_TRUTH_MODEL.json",
+    "WOODWRIGHT_PRESERVATION.json",
+    "WOODWRIGHT_REPAIR_NOTES.md",
+    "WOODWRIGHT_REVIEW.md",
+    "WOODWRIGHT_TEST_REPORT.md",
+    "WOODWRIGHT_TEST_RESULTS.json",
     "WORKHORSE_FIELD_GUIDE.md",
     "WORKHORSE_TEST_EVIDENCE.json",
     "admirals_deck_ceremonial_v640.png",
@@ -167,6 +177,7 @@
     "simple_books.css",
     "simple_books.js",
     "styles.css",
-    "sw.js"
+    "sw.js",
+    "woodwright_fit.js"
   ]
 }
