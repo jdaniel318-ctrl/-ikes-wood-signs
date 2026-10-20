@@ -1,6 +1,6 @@
 {
   "schema": "blackflag-readiness-matrix-v1",
-  "release": "FirstLight TEST",
+  "release": "Fairwind TEST",
   "allows_production_launch": false,
   "historical_evidence_is_not_current_live_audit": true,
   "current_live_read": "not_requested; no new live audit",
@@ -10,7 +10,7 @@
       "area": "SureFoot different-namespace navigation repair",
       "offline_status": "offline_regression",
       "native_status": "headway_pending",
-      "required_evidence": "Owner home → Orders → exact record → Back, with the same authenticated owner. No record writes.",
+      "required_evidence": "Owner home \u2192 Orders \u2192 exact record \u2192 Back, with the same authenticated owner. No record writes.",
       "prior_field_evidence": "Keelmark .35 user screenshots showed Orders/search/detail/back worked; current release must be field checked."
     },
     {
@@ -115,16 +115,9 @@
       "id": "woodwright_photo_fit",
       "area": "Proposed boundary and rendered ink containment",
       "offline_status": "photo_fit_and_actual_handlers_tested",
-      "native_status": "PENDING_8.8.20.39",
+      "native_status": "PENDING_8.8.20.40",
       "production_activation": false,
       "required_evidence": "HOME White inside proposed wood area on the original iPad photo; visual area check before exact review raster; no CNC claim."
-    },
-    {
-      "id": "firstlight_photo_flow",
-      "native_status": "pending",
-      "production_activation": false,
-      "offline_status": "scoped-tests-passed-native-pending",
-      "scope": "async suggestion preservation and full-frame display only"
     }
   ],
   "prior_field_checkpoint": {
@@ -137,5 +130,12 @@
     "special_legacy_values_preserved": 16,
     "actual_database_restore": false
   },
-  "build": "8.8.20.40"
+  "fairwind_current": {
+    "game_solo": "isolated_browser_pass_native_pending",
+    "game_authority": "existing_route_rechecked_synthetic_boundary_tests_not_live_audit",
+    "camera": "12_synthetic_capture_framing_cases_pass_native_pending",
+    "first_photo_handoff": "8_current_source_contracts_pass_real_species_accuracy_not_certified",
+    "memory_progress": "not_cloud_saved",
+    "invitation_or_multiplayer": "not_activated"
+  }
 }

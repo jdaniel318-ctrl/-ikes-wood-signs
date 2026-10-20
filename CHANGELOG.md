@@ -1,6 +1,6 @@
-# FirstLight 8.8.20.40 TEST
+# Fairwind 8.8.20.40 TEST
 
-First-photo suggestion timing and full-frame camera presentation repair. Prior history follows unchanged.
+FUN first solo adventure and guided Chart Room; Admiral-gated sandbox, memory-only game state with small deliberate JSON export/import. First-photo suggestion handoff and matching full-frame camera presentation repaired. Other business data, authority and manufacturing holds retained.
 
 # 8.8.20.39 — Woodwright TEST
 

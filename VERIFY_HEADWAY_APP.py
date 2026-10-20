@@ -12,7 +12,7 @@ def extract(name):
  m=re.search(r'^  (?:async )?function '+name+r'\(',source,re.M)
  if not m:raise AssertionError('Missing actual function '+name)
  return source[m.start():source.find('\n  }\n',m.start())+5]
-try:functions='\n'.join(extract(n) for n in names)
+try:functions=re.search(r'  let fairwindAnalysisEpoch=0;',source).group(0)+'\n'+'\n'.join(extract(n) for n in names)
 except Exception as e:
  (out/'results.json').write_text(json.dumps([{'name':'actual app testability','pass':False,'error':str(e)}],indent=2));print(e);sys.exit(1)
 with sync_playwright() as pw:

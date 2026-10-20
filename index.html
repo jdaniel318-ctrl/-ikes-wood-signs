@@ -15,7 +15,7 @@
   </style>
   <script id="darkSkyFirstLightBootstrap">
     // Dark Sky 8.6.23 MEMORY MUSTER — canonical release identity.
-    const DARK_SKY_RELEASE = Object.freeze({build:'8.8.20.40',seal:'firstlight-882040'});
+    const DARK_SKY_RELEASE = Object.freeze({build:'8.8.20.40',seal:'fairwind-882040'});
     const DARK_SKY_EXPECTED_BUILD = DARK_SKY_RELEASE.build;
     const DARK_SKY_RELEASE_SEAL = DARK_SKY_RELEASE.seal;
     // 8.6.23 Storage Safe Harbor — three independent channels, no silent storage failures.
@@ -1326,7 +1326,7 @@
       </nav>
 
       <section id="clearDeckLaunchpad" class="clear-deck-launchpad" aria-label="Engine command launchpad">
-        <div class="clear-deck-brief"><small id="engineReleaseLabel">8.8.20.40 • FIRSTLIGHT TEST</small><h3>Where are we working?</h3><p>Captain and Admiral are established as separate offices. The Admiral rank is durable; every secure session and modifying action still declares its authority source and exact scope.</p><div class="admiral-keel-office-state"><b>ADMIRAL OFFICE · COMMISSIONED</b><span>Rank persists until explicit server revocation. PIN + account verification protect each secure workspace session; session expiry does not demote the Admiral.</span></div></div>
+        <div class="clear-deck-brief"><small id="engineReleaseLabel">8.8.20.40 • FAIRWIND TEST</small><h3>Where are we working?</h3><p>Captain and Admiral are established as separate offices. The Admiral rank is durable; every secure session and modifying action still declares its authority source and exact scope.</p><div class="admiral-keel-office-state"><b>ADMIRAL OFFICE · COMMISSIONED</b><span>Rank persists until explicit server revocation. PIN + account verification protect each secure workspace session; session expiry does not demote the Admiral.</span></div></div>
         <div class="clear-deck-primary-actions">
           <button type="button" class="clear-deck-action primary" data-clear-deck-command="projects"><span class="clear-deck-action-number">01</span><span><strong>OPERATE VESSELS</strong><small>Choose an independent vessel, then enter its exact Project Control or product surface.</small></span></button>
           <button type="button" class="clear-deck-action" data-command-open="captain"><span class="clear-deck-action-number">02</span><span><strong>CAPTAIN WATCH</strong><small>Review signals, decide a course, route deliberate action, and retain the outcome.</small></span></button>
@@ -1990,7 +1990,7 @@
     const APP_SCOPE=new URL('./',location.href).href;
     const APP_CACHE=/^(ikes-wood-signs-|workshop-engine-|black-flag-|dark-sky-)/;
     const delay=ms=>new Promise(r=>setTimeout(r,ms));
-    const snapshotPaths=['input_hygiene.js','fleet_viewport.js','fleet_viewport.css','headway_contracts.js','woodwright_fit.js','styles.css','simple_books.css','platform_core.js','platform_v4.js','platform_identity.js','fleet_supabase.js','ike_style_registry.js','app.js','captain.js','simple_books.js'];
+    const snapshotPaths=['input_hygiene.js','fun_core.js','fun_program.js','fun_program.css','fun_player.html','fleet_viewport.js','fleet_viewport.css','headway_contracts.js','woodwright_fit.js','styles.css','simple_books.css','platform_core.js','platform_v4.js','platform_identity.js','fleet_supabase.js','ike_style_registry.js','app.js','captain.js','simple_books.js'];
     // Manifest, seal and inventory are fetched and verified as the first group;
     // do not download those same documents again in the presence group.
     const presencePaths=['business_deck.js','business_deck.css','owner.html','manifest.webmanifest','IKE_STYLE_FOUNDRY.json','sw.js','FLEET_DOCTRINE_REGISTRY.json','GOLDEN_VOYAGES.json','FLEET_COMMAND_MODEL.json','ADMIRAL_ENTITLEMENT_STATE_MODEL.json'];
@@ -2288,9 +2288,10 @@
       return {manifestBuild,runtimeBuild,fetched};
     }
     async function executeVerifiedSnapshot(fetched){
-      const css=document.createElement('style');css.id='darkSkyVerifiedReleaseStyles';css.dataset.releaseSeal=SEAL;css.textContent=fetched['styles.css']+'\n'+fetched['simple_books.css']+'\n'+fetched['fleet_viewport.css'];document.head.appendChild(css);
+      window.__funVerifiedPlayerHtml=fetched['fun_player.html'];
+      const css=document.createElement('style');css.id='darkSkyVerifiedReleaseStyles';css.dataset.releaseSeal=SEAL;css.textContent=fetched['fun_program.css']+'\n'+fetched['styles.css']+'\n'+fetched['simple_books.css']+'\n'+fetched['fleet_viewport.css'];document.head.appendChild(css);
       window.__darkSkyRuntimeEntryWitness8620?.('verified-styles-installed',{seal:SEAL});
-      for(const path of ['input_hygiene.js','platform_core.js','fleet_viewport.js','headway_contracts.js','woodwright_fit.js','platform_v4.js','platform_identity.js','fleet_supabase.js','ike_style_registry.js','app.js','captain.js','simple_books.js']){
+      for(const path of ['input_hygiene.js','platform_core.js','fleet_viewport.js','headway_contracts.js','woodwright_fit.js','platform_v4.js','platform_identity.js','fleet_supabase.js','ike_style_registry.js','app.js','captain.js','fun_core.js','fun_program.js','simple_books.js']){
         await new Promise((resolve,reject)=>{const blob=new Blob([fetched[path]+`\n//# sourceURL=dark-sky-${SEAL}/${path}`],{type:'text/javascript'});const url=URL.createObjectURL(blob);const el=document.createElement('script');el.async=false;el.dataset.releaseSeal=SEAL;el.onload=()=>{URL.revokeObjectURL(url);window.__darkSkyRuntimeEntryWitness8620?.('runtime-script-executed',{path});resolve();};el.onerror=()=>{URL.revokeObjectURL(url);window.__darkSkyRuntimeEntryWitness8620?.('runtime-script-error',{path});reject(new Error(`Verified ${path} could not execute.`));};el.src=url;document.body.appendChild(el);});
       }
     }

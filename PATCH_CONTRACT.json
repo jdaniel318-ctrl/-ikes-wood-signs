@@ -1,7 +1,7 @@
 {
   "schema": "blackflag-patch-contract-v1",
   "target_build": "8.8.20.40",
-  "target_seal": "firstlight-882040",
+  "target_seal": "fairwind-882040",
   "supported_bases": [
     {
       "build": "8.8.20.39",
@@ -12,6 +12,5 @@
   "requires_deletions": false,
   "max_upload_files": 85,
   "database_actions": "none",
-  "rule": "Upload the supplied delta over complete Woodwright .39 at the repository root. Keep other files. Do not run SQL or clear website data.",
-  "hash_limit": "Consistency only; not an authenticity signature, authorization or business-data backup."
+  "rule": "Upload supplied small delta over complete Woodwright .39; retain other files. Do not run SQL or clear website data."
 }

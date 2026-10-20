@@ -1,10 +1,10 @@
 {
   "schema": "black-flag-test-release-gate-v6",
   "build": "8.8.20.40",
-  "release": "FirstLight TEST",
+  "release": "Fairwind TEST",
   "classification": "TEST_BUILD_NOT_PRODUCTION_RELEASE",
   "pass": true,
-  "pass_scope": "233 current Node checks; 165 isolated Chromium scenarios; 13 package tests. Full HTTP boot BLOCKED and native Safari UNVERIFIED. Final extracted-archive recheck required separately.",
+  "pass_scope": "236 current Node checks, 184 isolated Chromium scenarios, 13 offline package tests and 12 inline static review checks. Final extracted archive proof is external; not native Safari, hosted boot, live backend audit, or production.",
   "native_field_acceptance": "PENDING for 8.8.20.40",
   "auto_retry": "FORBIDDEN",
   "live_database_writes": "NONE",
@@ -14,15 +14,14 @@
   "new_complete_job_live_or_sea_trial": "HELD",
   "quota_recovery": "NOT_CLAIMED",
   "manufacturing_geometry": "NOT_CERTIFIED",
-  "fun_game": "NOT_IMPLEMENTED_IN_THIS_BUSINESS_RELEASE",
   "prior_release_evidence": {
     "schema": "black-flag-test-release-gate-v6",
-    "build": "8.8.20.39",
-    "release": "Woodwright TEST",
+    "build": "8.8.20.40",
+    "release": "Fairwind TEST",
     "classification": "TEST_BUILD_NOT_PRODUCTION_RELEASE",
     "pass": true,
     "pass_scope": "212 Node checks + 156 isolated Chromium scenarios + 13 package tests, subject to final extracted archive recheck; NOT native Safari or production certification.",
-    "native_field_acceptance": "PENDING for 8.8.20.39",
+    "native_field_acceptance": "PENDING for 8.8.20.40",
     "auto_retry": "FORBIDDEN",
     "live_database_writes": "NONE",
     "server_permission_certification": "NOT_CLAIMED",
@@ -3637,5 +3636,16 @@
     },
     "evidence_file": "WOODWRIGHT_TEST_RESULTS.json"
   },
-  "evidence_file": "FIRSTLIGHT_TEST_RESULTS.json"
+  "evidence_file": "WOODWRIGHT_TEST_RESULTS.json",
+  "game_scope": "Admiral-gated standalone FUN first solo draft; memory/file saves only",
+  "community_enabled": false,
+  "invitations_enabled": false,
+  "fun_game": {
+    "first_draft": true,
+    "admiral_program_not_fleet_core": true,
+    "memory_and_deliberate_game_file_only": true,
+    "invites": false,
+    "community": false,
+    "mastery_or_real_rank": false
+  }
 }

@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
   "build": "8.8.20.40",
-  "release": "FirstLight TEST",
-  "seal": "firstlight-882040",
+  "release": "Fairwind TEST",
+  "seal": "fairwind-882040",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "FirstLight TEST",
-  "name": "FirstLight TEST",
-  "releaseName": "FirstLight TEST"
+  "release_name": "Fairwind TEST",
+  "name": "Fairwind TEST",
+  "releaseName": "Fairwind TEST"
 }

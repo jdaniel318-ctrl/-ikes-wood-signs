@@ -1,4 +1,4 @@
-/* Black Flag 8.8.20.40 FirstLight TEST — field-aware boundary whitespace.
+/* Black Flag 8.8.20.40 Fairwind TEST — field-aware boundary whitespace.
    No network, storage, authority, submission, timer retry, or record migration.
    Unknown fields are preserved. Mark new ordinary fields data-bf-trim="boundary";
    mark production wording, raw imports, credentials and code "preserve". */

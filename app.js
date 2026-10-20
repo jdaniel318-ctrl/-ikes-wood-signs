@@ -1319,7 +1319,7 @@
     return {projectId:activeProjectId,plankId:state.headwayPlankId,photoHash:state.headwayPhotoHash,mode:ctx?.state==='preview'?'preview':String(ctx?.state||'live'),now:new Date().toISOString()};
   }
   function headwayResetPlank(){
-    state.firstlightAnalysisEpoch=(Number(state.firstlightAnalysisEpoch)||0)+1;
+    fairwindAnalysisEpoch++;
     woodwrightReset();
     state.headwayBoundOriginal='';state.headwayPhotoHash='';state.headwayPlankId='';state.headwaySizeDecision=null;state.headwaySpeciesDecision=null;state.headwayApproval=null;state.headwayCandidateFingerprint='';state.headwayPending=null;
     invalidateIkeApprovedDesignLock();
@@ -1365,17 +1365,16 @@
   }
   function headwayRenderPlank(){
       if($('ikePlankConfirmPhoto')&&state.photoData)$('ikePlankConfirmPhoto').src=state.photoData;
-      const r=state.plankRecognition||{},pending=r.analysisStatus==='pending',failed=r.analysisStatus==='failed';
-      const candidate=Number(r.lengthCandidateFeet||0),hasCandidate=Number.isFinite(candidate)&&candidate>0;
-      if($('ikeRecognitionHeadline'))$('ikeRecognitionHeadline').textContent=pending?'ANALYZING YOUR PHOTO':failed?'PHOTO ANALYSIS UNAVAILABLE':r.lengthResolved?(r.speciesResolved?'PREVIEW PLANK PREPARED':'SIZE SET · WOOD CHECK NEEDED'):(r.analysisStatus==='complete'?'PHOTO ANALYZED · CHECK DETAILS':'STANDARD SIZE NEEDED');
-      if($('ikeDetectedOrientation'))$('ikeDetectedOrientation').textContent=r.orientationResolved?(r.orientation||state.orientation||'—'):(pending?'Checking orientation':'Orientation uncertain');
-      if($('ikeDetectedSize'))$('ikeDetectedSize').textContent=r.lengthResolved?`Standard ${Number(r.lengthFeet)} ft · test`:(pending?'Analyzing photo':hasCandidate?`Candidate ${candidate} ft · unverified`:'Needs Ike’s decision');
-      if($('ikeDetectedSpecies'))$('ikeDetectedSpecies').textContent=r.speciesResolved?'Cedar · test fixture':(r.speciesName?`${r.speciesName} · visual suggestion`:(pending?'Analyzing grain and color':'Wood uncertain · needs confirmation'));
+      const r=state.plankRecognition||{};
+      if($('ikeRecognitionHeadline'))$('ikeRecognitionHeadline').textContent=r.lengthResolved?(r.speciesResolved?'PREVIEW PLANK PREPARED':'SIZE SET · WOOD CHECK NEEDED'):(r.analysisState==='reading'?'READING YOUR PLANK':r.analysisState==='unavailable'?'PHOTO ANALYSIS UNAVAILABLE':'PHOTO SUGGESTIONS · NOT YET CONFIRMED');
+      if($('ikeDetectedOrientation'))$('ikeDetectedOrientation').textContent=r.orientationResolved?(r.orientation||state.orientation||'—'):'Checking orientation';
+      if($('ikeDetectedSize'))$('ikeDetectedSize').textContent=r.lengthResolved?`Standard ${Number(r.lengthFeet)} ft · test`:(r.analysisState==='reading'?'Reading photo…':(Number(r.lengthCandidateFeet)>0?`Possible standard ${Number(r.lengthCandidateFeet)} ft · unverified`:'Needs Ike’s decision'));
+      if($('ikeDetectedSpecies'))$('ikeDetectedSpecies').textContent=r.speciesResolved?'Cedar · test fixture':(r.speciesName?`${r.speciesName} · suggestion`:'Needs wood confirmation');
       if($('ikePlankPrice'))$('ikePlankPrice').textContent=(r.speciesResolved&&ikeSpeciesRate(r.speciesId)>0&&r.lengthResolved&&r.lengthFeet)?`$${Number(state.price||0).toFixed(2).replace('.00','')}`:'After checks';
       if($('ikeSpeciesAssist'))$('ikeSpeciesAssist').innerHTML=headwayWoodMarkup();if($('ikeLengthAssist'))$('ikeLengthAssist').innerHTML=headwaySizeMarkup();
-      if($('ikeSpeciesResolutionStatus'))$('ikeSpeciesResolutionStatus').textContent=pending?'Reading this photograph. No size, wood or price has been accepted automatically.':failed?'Photo analysis could not finish. Nothing was inferred or approved. Your photograph is retained.':r.lengthResolved&&r.speciesResolved?'Preview inputs ready. Size and wood are simulations; geometry still needs review.':'First-photo results are suggestions, not owner decisions. Size candidates are not physical measurements; the lettering area still needs visual review.';
+      if($('ikeSpeciesResolutionStatus'))$('ikeSpeciesResolutionStatus').textContent=r.lengthResolved&&r.speciesResolved?'Preview inputs ready. Size and wood are simulations; geometry still needs review.':(r.analysisState==='reading'?'Reading orientation, wood appearance and proposed lettering area…':r.analysisState==='unavailable'?'Photo analysis could not finish. No size or wood was assumed.':r.lengthResolved&&r.speciesResolved?'Preview inputs ready.':'Suggestions come from this photo. Standard size is not measured; owner stock verification is still required outside simulation.');
       if($('ikeConfirmPlankBtn'))$('ikeConfirmPlankBtn').disabled=!(r.orientationResolved&&r.speciesResolved&&ikeSpeciesRate(r.speciesId)>0&&r.lengthResolved&&r.lengthFeet);
-      if($('ikeRecognitionConfidence'))$('ikeRecognitionConfidence').textContent=r.confidence==='geometry-clear'?'Area proposal · check visually':(r.confidence==='geometry-probable'?'Area proposal · check visually':'Visual geometry only');
+      if($('ikeRecognitionConfidence'))$('ikeRecognitionConfidence').textContent=r.confidence==='geometry-clear'?'Geometry: High':(r.confidence==='geometry-probable'?'Geometry: Medium':'Visual geometry only');
       if($('ikeRecognitionSafeArea'))$('ikeRecognitionSafeArea').textContent=r.usableRegion?'Proposed area — check in Design':'No reliable area yet';
       if($('ikeRecognitionObstacle'))$('ikeRecognitionObstacle').textContent='Edges, knots and cutouts need visual review';
   }
@@ -9402,7 +9401,7 @@
     const state=commissionProofState(),proof=state.proof,receipt=state.receipt||commissionDraft?._serverReceipt;
     const ready=state.phase==='prepared',held=commissionOperationFrozen()&&!ready&&!proof;
     return `<div class="commission-panel sea-trial-review ironbound-proof">
-      <div class="eyebrow">07 • FLEET CORE PROOF · FIRSTLIGHT TEST BUILD</div>
+      <div class="eyebrow">07 • FLEET CORE PROOF · FAIRWIND TEST BUILD</div>
       <h2>${proof?'Vessel and blueprint verified':ready?'Review the server-owned operation':held?'Read the preserved operation':'Prepare a new private test vessel'}</h2>
       <p>${proof?'Fleet Core confirmed this exact operation, its canonical vessel, and the saved blueprint in a separate read. Captain handoff and isolation are not yet proven.':ready?'Preparation created no vessel. The next tap issues this one operation once. A reload requires reconciliation, not replay.':'The server creates the vessel and blueprint together. Browser storage is an optional cache, never commissioning authority.'}</p>
       ${!proof&&!ready&&!held&&commissionPhotoBriefConflict(commissionDraft)?`<div class="commission-callout warning"><b>SAVED BRIEF CORRECTION</b><span>Your brief says “No photo required.” The older Forge Plan still requires a photo. This action changes that requirement only, preserves the prior plan as evidence, and saves the same voyage. It does not create or retry an operation.</span><button type="button" class="primary-btn" data-apply-photo-brief ${commissionCommandBusy||commissionDraft?._serverRecoveryPending?'disabled':''}>APPLY SAVED BRIEF: NO PHOTO</button></div>`:''}
@@ -13792,25 +13791,15 @@ The full order and approved media remain stored with this project.`;
     return {resolved:false,orientation:'',confidence:'low',score:.35,reason:'orientation-evidence-conflict'};
   }
 
+  let fairwindAnalysisEpoch=0;
   function analyzeIkePlankPhoto(){
     if(activeProjectId!=='ikes-wood-signs'||!state.photoData)return;
-    const requestedPhoto=state.photoData;
-    const epoch=(Number(state.firstlightAnalysisEpoch)||0)+1;
-    state.firstlightAnalysisEpoch=epoch;
-    // A fresh analysis owns its suggestions; a prior UI refresh is not evidence.
-    state.plankRecognition={status:'analyzing',analysisStatus:'pending',headwayAdjusted:true,headwaySuggestedWood:'',headwaySuggestedSpeciesId:'',lengthCandidateFeet:0};
-    const isCurrent=()=>activeProjectId==='ikes-wood-signs'&&state.photoData===requestedPhoto&&state.firstlightAnalysisEpoch===epoch;
-    const fail=()=>{
-      if(!isCurrent())return;
-      state.plankRecognition={status:'unresolved',analysisStatus:'failed',headwayAdjusted:true,headwaySuggestedWood:'',headwaySuggestedSpeciesId:'',lengthCandidateFeet:0};
-      recalcIkePrice();updateUi();
-    };
+    const requestedPhoto=state.photoData,requestEpoch=++fairwindAnalysisEpoch;
     const img=new Image();
+    state.plankRecognition={...(state.plankRecognition||{}),analysisState:'reading'};
     img.onload=()=>{
-      if(!isCurrent())return;
-      try{
+      if(requestEpoch!==fairwindAnalysisEpoch||activeProjectId!=='ikes-wood-signs'||state.photoData!==requestedPhoto)return;
       const w=Number(img.naturalWidth||img.width||0),h=Number(img.naturalHeight||img.height||0);
-      if(!Number.isFinite(w)||!Number.isFinite(h)||w<=0||h<=0){fail();return;}
       const provenAnalysis=ikeAnalyzePlankPixelsProven(img);
       const lengthAnalysis=ikeAnalyzePlankPixelsLength(img);
       const orientationEvidence=ikeOrientationEvidence(img,provenAnalysis);
@@ -13818,8 +13807,7 @@ The full order and approved media remain stored with this project.`;
       if(orientationEvidence.resolved)state.orientation=orientation;
       state.topSide='Top of photo';
       const primaryEvidence=ikeVisualSpeciesEvidence(img,provenAnalysis);
-      // Supplemental evidence is handled by its own current-photo callback.
-      const prior={};
+      const prior=state.plankRecognition||{};
       const species=ikeCombineSpeciesEvidence(primaryEvidence,prior.secondarySpeciesEvidence||null);
       const primaryLengthEvidence=ikeLengthEvidenceFromGeometry(img,lengthAnalysis);
       const length=ikeCombineLengthEvidence(primaryLengthEvidence,prior.secondaryLengthEvidence||null);
@@ -13827,9 +13815,11 @@ The full order and approved media remain stored with this project.`;
       window.__ikeLengthLastEvidence=lengthTelemetry;
       window.DarkSkyV4?.diagnostic?.('ike.length.evidence','Ike plank length evidence',lengthTelemetry);
       state.plankRecognition={
-        analysisStatus:'complete',headwayAdjusted:false,headwaySuggestedWood:species.speciesName||'',headwaySuggestedSpeciesId:species.speciesId||'',
+        ...prior,
+        // Each completed photo owns its suggestions; an early UI refresh is not evidence.
+        headwayAdjusted:false,headwaySuggestedWood:species.speciesName||'',headwaySuggestedSpeciesId:species.speciesId||'',analysisState:'ready',analysisVersion:'fairwind-first-observation-v1',
         status:'detected',method:provenAnalysis?'proven-visual-detectors+isolated-length':'photo-geometry',pixelWidth:w,pixelHeight:h,orientation,orientationResolved:!!orientationEvidence.resolved,orientationConfidence:orientationEvidence.confidence||'low',orientationScore:Number(orientationEvidence.score||0),orientationReason:orientationEvidence.reason||'',
-        measurement:'visual-category-suggestion-not-physical-scale',measurementReadiness:'owner-standard-size-decision-needed',
+        measurement:'confidence-aware-inventory-geometry',measurementReadiness:length.resolved?'length-resolved':(length.needsSecondPhoto?'needs-second-full-plank-photo':'manual-rack-confirmation'),
         usableArea:provenAnalysis?.usableRegion?'detected-usable-region':'safe-margin-preview',usableRegion:provenAnalysis?.usableRegion||null,fitBand:provenAnalysis?.fitBand||null,faceGrid:provenAnalysis?.faceGrid||null,contour:provenAnalysis?.contour||null,
         obstacleAvoidance:provenAnalysis?'sea-trial-active':'not-commissioned',obstacleDetected:!!provenAnalysis?.obstacleDetected,referenceCandidate:!!provenAnalysis?.referenceCandidate,
         primarySpeciesEvidence:primaryEvidence,
@@ -13838,34 +13828,32 @@ The full order and approved media remain stored with this project.`;
         confidence:provenAnalysis?.confidence||'geometry-probable',analyzedAt:new Date().toISOString()
       };
       recalcIkePrice();updateUi();
-      }catch(_){fail();}
     };
-    img.onerror=fail;
+    img.onerror=()=>{
+      if(requestEpoch!==fairwindAnalysisEpoch||activeProjectId!=='ikes-wood-signs'||state.photoData!==requestedPhoto)return;
+      state.plankRecognition={analysisState:'unavailable',status:'unavailable',speciesName:'',speciesId:'',speciesResolved:false,lengthResolved:false,lengthCandidateFeet:0};
+      recalcIkePrice();updateUi();
+    };
     img.src=requestedPhoto;
   }
 
   async function analyzeIkeSecondSpeciesPhoto(file){
-    if(!file||activeProjectId!=='ikes-wood-signs'||!state.photoData)return;
-    const currentPhoto=state.photoData,epoch=state.firstlightAnalysisEpoch;
+    if(!file)return;
     const data=await resizePhoto(file);
     const img=new Image();
     await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=reject;img.src=data;});
-    if(activeProjectId!=='ikes-wood-signs'||state.photoData!==currentPhoto||state.firstlightAnalysisEpoch!==epoch)return;
     const secondaryPixelAnalysis=ikeAnalyzePlankPixelsProven(img);
     const secondaryEvidence=ikeVisualSpeciesEvidence(img,secondaryPixelAnalysis),r=state.plankRecognition||(state.plankRecognition={});
     r.secondarySpeciesPhotoData=data;r.secondarySpeciesEvidence=secondaryEvidence;
     const combined=ikeCombineSpeciesEvidence(r.primarySpeciesEvidence||null,secondaryEvidence);
     Object.assign(r,{family:combined.family,speciesId:combined.speciesId,speciesName:combined.speciesName,speciesResolved:combined.speciesResolved,speciesConfidence:combined.speciesConfidence,speciesScore:combined.speciesScore,evidenceCount:combined.evidenceCount,needsSecondPhoto:combined.needsSecondPhoto,speciesCandidates:combined.candidates||[],speciesReason:combined.reason||'',secondaryAnalyzedAt:new Date().toISOString()});
-    r.headwayAdjusted=false;r.analysisStatus='complete';
     recalcIkePrice();updateUi();
   }
 
   async function analyzeIkeSecondLengthPhoto(file){
-    if(!file||activeProjectId!=='ikes-wood-signs'||!state.photoData)return;
-    const currentPhoto=state.photoData,epoch=state.firstlightAnalysisEpoch;
+    if(!file)return;
     const data=await resizePhoto(file),img=new Image();
     await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=reject;img.src=data;});
-    if(activeProjectId!=='ikes-wood-signs'||state.photoData!==currentPhoto||state.firstlightAnalysisEpoch!==epoch)return;
     const lengthPixels=ikeAnalyzePlankPixelsLength(img),provenPixels=ikeAnalyzePlankPixelsProven(img),secondary=ikeLengthEvidenceFromGeometry(img,lengthPixels),r=state.plankRecognition||(state.plankRecognition={});
     r.secondaryLengthPhotoData=data;r.secondaryLengthEvidence=secondary;
     const combined=ikeCombineLengthEvidence(r.primaryLengthEvidence||null,secondary);
@@ -13878,7 +13866,6 @@ The full order and approved media remain stored with this project.`;
     r.secondarySpeciesPhotoData=data;r.secondarySpeciesEvidence=speciesEvidence;
     const species=ikeCombineSpeciesEvidence(r.primarySpeciesEvidence||null,speciesEvidence);
     Object.assign(r,{family:species.family,speciesId:species.speciesId,speciesName:species.speciesName,speciesResolved:species.speciesResolved,speciesConfidence:species.speciesConfidence,speciesScore:species.speciesScore,evidenceCount:species.evidenceCount,needsSecondPhoto:species.needsSecondPhoto,speciesCandidates:species.candidates||[],speciesReason:species.reason||'',secondaryAnalyzedAt:new Date().toISOString()});
-    r.headwayAdjusted=false;r.analysisStatus='complete';
     recalcIkePrice();updateUi();
   }
 
