@@ -1,0 +1,5 @@
+'use strict';const{test}=require('node:test'),a=require('node:assert/strict'),fs=require('node:fs'),p=require('node:path');const r=p.resolve(process.argv[2]||__dirname),s=()=>fs.readFileSync(p.join(r,'fun_program.js'),'utf8');
+test('renderer is verified and fetched lazily after Admiral verification',()=>{const t=s();a.ok(t.includes('STORMWAKE_SHA'));a.ok(t.includes("crypto.subtle.digest('SHA-256'"));a.ok(t.indexOf('await verified(turn)')<t.indexOf('await loadStormwake(turn)'));});
+test('new saved run has explicit replacement confirmation',()=>{a.ok(s().includes('funConfirmImport'));a.ok(s().includes('funCancelImport'));});
+test('old and new save engines retained and can be chosen without touching accounts',()=>{a.ok(s().includes('BlackFlagStormwake'));a.ok(s().includes('openLegacy'));a.ok(s().includes('legacyMode'));});
+test('sandbox remains opaque with no arbitrary child requests',()=>{a.ok(s().includes("setAttribute('sandbox','allow-scripts')"));a.ok(s().includes('event.source!==frame.contentWindow'));a.doesNotMatch(s(),/allow-same-origin|indexedDB|localStorage|\.rpc\(/);});

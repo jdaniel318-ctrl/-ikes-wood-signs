@@ -1,16 +1,16 @@
 {
   "schema": "blackflag-patch-contract-v1",
-  "target_build": "8.8.20.40",
-  "target_seal": "fairwind-882040",
+  "target_build": "8.8.20.41",
+  "target_seal": "stormwake-882041",
   "supported_bases": [
     {
-      "build": "8.8.20.39",
-      "archive_name": "DarkSky882039-Woodwright-TEST.zip",
-      "sha256": "33db902d0cb2bd62a2f7b41964a01fd4922a8eceacfc444ed57f0c98081b6740"
+      "build": "8.8.20.40",
+      "archive_name": "DarkSky882040-Fairwind-TEST.zip",
+      "sha256": "82be28c53847219f55f86a4fa9f4007e421ae546c83064634ab142990d69f421"
     }
   ],
   "requires_deletions": false,
   "max_upload_files": 85,
   "database_actions": "none",
-  "rule": "Upload supplied small delta over complete Woodwright .39; retain other files. Do not run SQL or clear website data."
+  "rule": "Upload the small Stormwake delta over complete Fairwind .40 (not FirstLight .40). Retain other files. No SQL or Safari-data clearing."
 }

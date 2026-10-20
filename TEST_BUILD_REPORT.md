@@ -1,3 +1,9 @@
+# Stormwake 8.8.20.41 TEST
+
+Current instructions: START_HERE_STORMWAKE.md. One original 3D FUN rescue, separate Admiral access, explicit compatible game saves. Business workflows unchanged. No production, multiplayer, cloud-save or native-frame-rate certification.
+
+## Earlier release record — historical, not current upload instructions
+
 # Fairwind 8.8.20.40 TEST — first FUN playable and business repair report
 
 ## Delivered scope

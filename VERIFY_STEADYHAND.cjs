@@ -54,7 +54,7 @@ test('known production wording and all password fields explicitly opt out',()=>{
 });
 test('release runtime hashes, inventory and version latch agree',()=>{
  const m=JSON.parse(read('DEPLOYMENT_MANIFEST.json')),seal=JSON.parse(read('RELEASE_SEAL.json')),inv=JSON.parse(read('RELEASE_INVENTORY.json'));
- assert.equal(m.build,'8.8.20.40');assert.equal(seal.build,m.build);assert.equal(inv.build,m.build);assert.equal(inv.seal,m.release_seal);
+ assert.equal(m.build,'8.8.20.41');assert.equal(seal.build,m.build);assert.equal(inv.build,m.build);assert.equal(inv.seal,m.release_seal);
  assert.ok(m.runtime_integrity.files['input_hygiene.js']);
  for(const [file,hash] of Object.entries(m.runtime_integrity.files))assert.equal(crypto.createHash('sha256').update(read(file)).digest('hex'),hash,file+' runtime hash');
  const files=fs.readdirSync(r).filter(n=>fs.statSync(path.join(r,n)).isFile()).sort();assert.deepEqual(inv.files.slice().sort(),files);assert.equal(inv.file_count,files.length);

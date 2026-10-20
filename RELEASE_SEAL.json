@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.40",
-  "release": "Fairwind TEST",
-  "seal": "fairwind-882040",
+  "build": "8.8.20.41",
+  "release": "Stormwake TEST",
+  "seal": "stormwake-882041",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Fairwind TEST",
-  "name": "Fairwind TEST",
-  "releaseName": "Fairwind TEST"
+  "release_name": "Stormwake TEST",
+  "name": "Stormwake TEST",
+  "releaseName": "Stormwake TEST"
 }

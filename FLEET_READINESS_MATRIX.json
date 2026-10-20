@@ -1,6 +1,6 @@
 {
   "schema": "blackflag-readiness-matrix-v1",
-  "release": "Fairwind TEST",
+  "release": "Stormwake TEST",
   "allows_production_launch": false,
   "historical_evidence_is_not_current_live_audit": true,
   "current_live_read": "not_requested; no new live audit",
@@ -115,7 +115,7 @@
       "id": "woodwright_photo_fit",
       "area": "Proposed boundary and rendered ink containment",
       "offline_status": "photo_fit_and_actual_handlers_tested",
-      "native_status": "PENDING_8.8.20.40",
+      "native_status": "PENDING_8.8.20.41",
       "production_activation": false,
       "required_evidence": "HOME White inside proposed wood area on the original iPad photo; visual area check before exact review raster; no CNC claim."
     }

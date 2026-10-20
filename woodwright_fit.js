@@ -1,4 +1,4 @@
-/* Woodwright 8.8.20.40: photo-relative fit, never physical measurement or CNC proof.
+/* Woodwright 8.8.20.41: photo-relative fit, never physical measurement or CNC proof.
    Pure boundary operations can be reused by a vessel with its own reviewed policy.
    No storage, network, authentication, pricing, or mutation of source pixels. */
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.BlackFlagWoodwright=api;})(typeof globalThis!=='undefined'?globalThis:this,function(){
