@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.20.44';
-const RELEASE_SEAL='lanternwake-882044';
+const RELEASE_BUILD='8.8.20.45';
+const RELEASE_SEAL='dreadwater-882045';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.

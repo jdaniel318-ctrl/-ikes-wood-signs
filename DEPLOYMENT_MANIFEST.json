@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.20.44",
-  "version": "8.8.20.44",
-  "release_name": "Lanternwake TEST",
-  "releaseName": "Lanternwake TEST",
-  "release_seal": "lanternwake-882044",
+  "build": "8.8.20.45",
+  "version": "8.8.20.45",
+  "release_name": "Dreadwater TEST",
+  "releaseName": "Dreadwater TEST",
+  "release_seal": "dreadwater-882045",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -104,12 +104,12 @@
     "project_data_boundary": "exact-project-id"
   },
   "release_focus": [
-    "Warm lantern and cool blue harbor lighting",
-    "Adult character proportions and clearer modeled materials",
-    "Preserved completed rescue, mission, input, save and authority behavior from Helmsman .43",
-    "Bounded manual upload over the exact 233-file Helmsman .43 release"
+    "Grounded pirate cast, textured harbor, dusk lighting and animated water",
+    "Pinned offline artwork pipeline with verified complete-player bytes",
+    "Roof/corner camera clearance and close-crew separation",
+    "Compatible saved voyage and bounded manual upload over exact .44"
   ],
-  "release_note": "Lanternwake .44 TEST is a visual-only update over exact Helmsman .43. The user has shown the .43 rescue complete on iPad; keep that completed game save. Current .44 final-byte, compiled render, package and native acceptance evidence remain pending. The unchanged Admiral window is 15 minutes idle / 60 minutes maximum.",
+  "release_note": "Dreadwater .45 TEST upgrades the playable graphics and camera over exact Lanternwake .44. User-confirmed downloaded voyage remains compatible. Native .45 graphics/performance inspection follows the offline release gates. Admiral window remains 15 minutes idle / 60 minutes maximum.",
   "tax_ledger_upgrade": {
     "schema": "dark-sky-fleet-tax-ledger-v1",
     "model": "TAX_LEDGER_MODEL.json",
@@ -231,8 +231,8 @@
     "algorithm": "SHA-256",
     "files": {
       "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": {
-        "sha256": "bd9c188d147f13f0bb9862c41ec20286f472af36cf64d069732e6c9a67e19b58",
-        "build": "8.8.20.44",
+        "sha256": "6ae15874ccb03244edfba9454a76ac7cc60c9ada4c5e318a0bf9a9167d2c3b58",
+        "build": "8.8.20.45",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -279,14 +279,14 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_COMMAND_MODEL.json": {
-        "sha256": "6e0487b75dcde87547a90689fee0a9e6d00bcd5dd1cc8170c34563cb24dc2c7f",
-        "build": "8.8.20.44",
+        "sha256": "6b6d2325cef63c7b8f490ad4c1045ef1e9ac8faf75b10bd4dfec08366396b39f",
+        "build": "8.8.20.45",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
       "FLEET_DOCTRINE_REGISTRY.json": {
-        "sha256": "8818e474a2e83cd879bb12657ce3f6ec4514e5ced35f9d2766f9d15ca5e2b10b",
-        "build": "8.8.20.44",
+        "sha256": "15f5ff7c73a6948816f951d7d8e38b01a38b8e08e40ad0aab86fe82f818ecc53",
+        "build": "8.8.20.45",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -345,8 +345,8 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "GOLDEN_VOYAGES.json": {
-        "sha256": "6877463c3efc9c0c71929c1e0cf6c8ed814c41068009cad6112d968ffd40f52b",
-        "build": "8.8.20.44",
+        "sha256": "58cd7b0df1e8e2200c8af04948984965cfe125a3db371b659feee09715d3cede",
+        "build": "8.8.20.45",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -499,29 +499,29 @@
       "simple_books.css": "5939590021ef2d3738d5f5f7249d72f8da64cc274bf287ef8183958517b0ba46",
       "platform_core.js": "7f797bc382a73eb9ec4365a7458e8329da60c50561e3ac751ca3fb9d7cd5ec49",
       "platform_v4.js": "21daf7777150d654467042893298147374318fdfc7ac38faf9260f874522019b",
-      "platform_identity.js": "5781da71c7f42e321c76ec0ff5972f3b87fbed553b8b2e61082ec6330fd65bf1",
-      "fleet_supabase.js": "df99a1324eeda7ae1759f286a1e78878de066c6de357e193055152a4c6e71b6d",
+      "platform_identity.js": "8f2d0455e9ec269b19e4d62499ca4301c4324483678eaa07589b2670dadbd35a",
+      "fleet_supabase.js": "8bd5c7c74dd125c9be66ffc1d40dcffc85bedc5ea2c922d1ddf304f24096e580",
       "ike_style_registry.js": "6b348ebceb47e172e6676f46252b19c1c6bb7532baf76febfa8dd81760a76ab7",
-      "app.js": "69938e8543823780369a152bfd58c9104e3bff0f082ac35d718687360d050a79",
-      "captain.js": "d626a267f988b0ca986883908bed30428da284a59598dee799b66183d95cbb8e",
-      "simple_books.js": "9d36f214c7ba29321954516f44b675fc6ca5d5e6b41b9f18fb808ee37a1cf738",
-      "owner.html": "ec065017ed8893ac77468002a854dfe35d0a811241de29eaf4c85e390e4035d7",
-      "manifest.webmanifest": "9dbefdc26006fd550018186db4e5d6d692b17c4523dac560fc390eb58514d5b8",
+      "app.js": "dc0fd1c0c053f76f5b5543a27428422f402ae5529f3763c59f74f68c7bf9278a",
+      "captain.js": "d55f1ef3f3474c6740b91d7b27380e0d6f8776dad64aad75c851a050e6487e92",
+      "simple_books.js": "4eb33e2f3344507aceefeef5daabc26fe716efbd0227bc9367f6cab7591a713c",
+      "owner.html": "9ea7e2db75ead37e42291600a5a038d1273c227bfadc7e216844d462a5229e4a",
+      "manifest.webmanifest": "5cc44c86d1f81459aafd121d92228fbac813c9f1ef878f374dbf46dc51594d42",
       "IKE_STYLE_FOUNDRY.json": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
-      "sw.js": "accc67eb43689879496ff3074e939091e09935231935483536533e315c30c8b5",
-      "FLEET_DOCTRINE_REGISTRY.json": "8818e474a2e83cd879bb12657ce3f6ec4514e5ced35f9d2766f9d15ca5e2b10b",
-      "GOLDEN_VOYAGES.json": "6877463c3efc9c0c71929c1e0cf6c8ed814c41068009cad6112d968ffd40f52b",
-      "FLEET_COMMAND_MODEL.json": "6e0487b75dcde87547a90689fee0a9e6d00bcd5dd1cc8170c34563cb24dc2c7f",
-      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "bd9c188d147f13f0bb9862c41ec20286f472af36cf64d069732e6c9a67e19b58",
-      "input_hygiene.js": "f181f08c5e20d0184ca971baf063798582b91ed4005e08f277b156d7d43a0381",
-      "business_deck.js": "2e1d073f8dd3a14d9daaf8d587ca60dd65817a676ba307f79926400d012358bd",
+      "sw.js": "a10cf7b2d74f10c74fbd9884e6ffa84ff66fca2a5c80f5b610d3e7943b715303",
+      "FLEET_DOCTRINE_REGISTRY.json": "15f5ff7c73a6948816f951d7d8e38b01a38b8e08e40ad0aab86fe82f818ecc53",
+      "GOLDEN_VOYAGES.json": "58cd7b0df1e8e2200c8af04948984965cfe125a3db371b659feee09715d3cede",
+      "FLEET_COMMAND_MODEL.json": "6b6d2325cef63c7b8f490ad4c1045ef1e9ac8faf75b10bd4dfec08366396b39f",
+      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "6ae15874ccb03244edfba9454a76ac7cc60c9ada4c5e318a0bf9a9167d2c3b58",
+      "input_hygiene.js": "ca0ea5e075e26f0fe3b02b1886fb0ff228ec418a9a518c707c8283b45270b21a",
+      "business_deck.js": "f1add9806bb3a241edaeffa6ed05c93f7800012e9e6162e0d683ac77e66b3952",
       "business_deck.css": "445fa81fff307d41cdd9a7d181ec86f9daae6843d24ac0d9fe14f939a25b6289",
       "fleet_viewport.js": "14ea8ff7d2c834014d8661a743c9408f9556141e7c81d32b590bd6988d0cfa55",
       "fleet_viewport.css": "36db59f3ef4061631d2fc67aac7b33aed4fff4120453560012413200e0e9bdad",
-      "headway_contracts.js": "3f470de791dcf2cfc9f50ada1730c9e2ef62bdf9499ecec0a1dc849783097c6c",
+      "headway_contracts.js": "2bab0f10e1d8b2cfd1c19315b29180bc19d8e5d970397bc1141458ae7333de74",
       "woodwright_fit.js": "a4efdadf635608419a2bd82f12a701fd2991ec5dc3d14d282fd846680d40606f",
       "fun_core.js": "b21a909fa3dccf44b2d02d4a8243a91fd260b70db2edfc35338f3fd330c810e4",
-      "fun_program.js": "616c43d335322d808d633198533c8a853b9b907820876c3f743095530788d1bb",
+      "fun_program.js": "e528079eeb4d51493f70b7edbf523f59495b1b984d27a0df4d757bd7943482e1",
       "fun_program.css": "3bed37f2d02e156c0f88ac82bc87c7726b96a6eb7929b9b2250ec56eac3b1b23",
       "fun_player.html": "fcfc2d06cdf204f4591a9717968a027facf170e6e0be32d9151ef847870a0fb7",
       "stormwake_core.js": "53bc3070f55feceeff08ac5743f3220d70e0c3dda901b0b107092b2e3da16cc9"
@@ -959,7 +959,7 @@
     "project_data_mutation": false,
     "field_failure_proof": "8.8.20.13 held on styles.css because packaged DEPLOYMENT_MANIFEST runtime hash did not match packaged styles.css bytes"
   },
-  "release": "Lanternwake TEST",
+  "release": "Dreadwater TEST",
   "clearbearing_upgrade": {
     "build": "8.8.20.22",
     "baseline": "8.8.20.14 HashLock",
@@ -1152,9 +1152,9 @@
   },
   "lazy_program_assets": {
     "stormwake_player.html": {
-      "sha256": "7bb9f57c5a0746c5519d5b0d894c03da7066f17e47c2e77f9021b533f5508ad1",
+      "sha256": "e83de03dbad1baa19e3ca1115475721b12e96ea06073ebf9ecda3b6697c1ff9e",
       "load": "after existing verified Admiral entry",
-      "bytes": 172000
+      "bytes": 4982493
     }
   },
   "blacktide_upgrade": {
@@ -1222,6 +1222,37 @@
     "previous_user_observation": "User showed the .43 rescue complete on iPad; this does not establish .44 native acceptance",
     "native_safari_status": "pending-user-art-inspection",
     "verification_status": "offline-final-source-and-compiled-player-verified; archive-and-extracted-startup-checked-after-sealing",
+    "production_activation": false
+  },
+  "dreadwater_upgrade": {
+    "base_build": "8.8.20.44",
+    "base_file_count": 241,
+    "scope": [
+      "pinned Three.js WebGL2 rendering with original WebGL1 fallback",
+      "fixed licensed embedded material images and bounded reproducible compiler",
+      "original skinned crew and improved harbor/boat geometry",
+      "camera roof/corner clearance and close-crew separation"
+    ],
+    "renderer": "Three.js 0.180.0 / WebGL2; original StormGL / WebGL1 fallback",
+    "asset_transport": "fixed data-only artwork compiled inside SHA-256 verified opaque player",
+    "player_limit_bytes": 8388608,
+    "art_limit_bytes": 4194304,
+    "runtime_network": false,
+    "core_mission_save_behavior_changed": false,
+    "game_activity_transport_changed": false,
+    "server_authority_changed": false,
+    "unrelated_business_changes": "release-label-only",
+    "admiral_idle_minutes": 15,
+    "admiral_maximum_minutes": 60,
+    "save_schema": "fun-stormwake-v2",
+    "save_limit_bytes": 8192,
+    "game_file_persistence": "memory plus deliberate JSON file; no autosave/cloud save",
+    "reference_media_bytes_in_game": false,
+    "retained_reference_models": 39,
+    "previous_user_observation": "User loaded their .44 saved voyage on iPad; all three salvage pieces retained and bridge repair pending at the pier.",
+    "native_safari_status": "pending-user-graphics-inspection",
+    "iPad_fps_claim": false,
+    "verification_status": "offline-final-source-and-compiled-player-verified; archive-and-extracted-boot-recorded-separately-after-sealing",
     "production_activation": false
   }
 }

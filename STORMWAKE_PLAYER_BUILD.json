@@ -1,0 +1,49 @@
+{
+  "schema": "stormwake-player-build-v1",
+  "build": "8.8.20.45",
+  "inputs_sha256": {
+    "fun_core.js": "b21a909fa3dccf44b2d02d4a8243a91fd260b70db2edfc35338f3fd330c810e4",
+    "stormwake_core.js": "53bc3070f55feceeff08ac5743f3220d70e0c3dda901b0b107092b2e3da16cc9",
+    "stormwake_comfort.js": "7ec7d00de112b327f31c0a904f0e438cfc7ab1399cf0974a824dac44ddc21800",
+    "stormwake_three_vendor.js": "6e40e410c97c908254aa41dcbeba4bb57de69c7d37b1a33d72def3d0d0f884c6",
+    "stormwake_gl.js": "d55f0b2d4f8a0e9a1f203a153b15eec347efe0ed247f2c8b4c72a526bd4c3ed8",
+    "stormwake_cast.js": "8a3a294c0e231334298b6396fc6c54ed5febef16946e4fff400d8ee431f05f7e",
+    "stormwake_three.js": "a9c2616fa1cf95790aae786c187cff1df9766665d32cd1b945f1ab99b50425f3",
+    "stormwake_world.js": "5362d4609df1d511f4188aee9bd72d2f5b4457198b0d6ea1edb24816a14d9ae4",
+    "stormwake_game.js": "b39ffff70fe1ac3d567c537e8bebf4b5206bb43ca30819a4f2332a251abb10da",
+    "stormwake_assets.json": "b93916ab71d73d4b1bc48a63852834729a27f10610234466adf98b3dd673c3d8",
+    "STORMWAKE_VENDOR.json": "cc9adf42e577db463cc7d2dc4bed3f78da9075549b6cd2b20207f807d75a5664",
+    "fun_player.html": "fcfc2d06cdf204f4591a9717968a027facf170e6e0be32d9151ef847870a0fb7",
+    "stormwake_game.css": "3bed7033f10e8791a15819dfb86e60dbbca9d2d9cf062169a047c8443fe6fee0",
+    "BUILD_STORMWAKE_PLAYER.py": "cac0e58f81485bc61f34622c3ae4ab153fe7ae5d1dc4df5436cc9ba81147a50c",
+    "STORMWAKE_BUILD_RULES.py": "3f1ee32949d598f11e65b2ccc19e85ce941207b95a6d6a26b132f34833663a02"
+  },
+  "art": {
+    "sha256": "b93916ab71d73d4b1bc48a63852834729a27f10610234466adf98b3dd673c3d8",
+    "bytes": 4063325,
+    "maps": 8,
+    "decoded_bytes": 3044280,
+    "pixels": 8389632
+  },
+  "vendor": {
+    "schema": "stormwake-vendor-v1",
+    "name": "three",
+    "version": "0.180.0",
+    "source": "https://www.npmjs.com/package/three/v/0.180.0",
+    "license": "MIT",
+    "bundler": {
+      "name": "esbuild",
+      "version": "0.25.10"
+    },
+    "bundle": "stormwake_three_vendor.js",
+    "bytes": 701368,
+    "sha256": "6e40e410c97c908254aa41dcbeba4bb57de69c7d37b1a33d72def3d0d0f884c6",
+    "runtimeNetwork": false
+  },
+  "player": {
+    "bytes": 4982493,
+    "sha256": "e83de03dbad1baa19e3ca1115475721b12e96ea06073ebf9ecda3b6697c1ff9e",
+    "limit_bytes": 8388608
+  },
+  "runtime_network": false
+}

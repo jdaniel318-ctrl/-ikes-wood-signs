@@ -1,0 +1,296 @@
+{
+  "schema": "dreadwater-test-results-v1",
+  "build": "8.8.20.45",
+  "seal": "dreadwater-882045",
+  "release": "Dreadwater TEST",
+  "pass": true,
+  "status": "OFFLINE_FINAL_SOURCE_AND_COMPILED_PLAYER_VERIFIED",
+  "created_at_utc": "2026-10-21T04:15:56+00:00",
+  "pass_scope": "Final matching offline source, compiled-player20/20, host12/12 and staged visual8/8 checks only; strict archive reconstruction and extracted browser BOOT are independently recorded after sealing.",
+  "baseline": {
+    "build": "8.8.20.44",
+    "seal": "lanternwake-882044",
+    "file_count": 241,
+    "content_digest_algorithm": "release-content-sha256-v1",
+    "content_sha256": "fcbddaeec8def5cad6c16eb364885b6a1c1e07b4c88c83c4c714f14b241efaaa"
+  },
+  "final_build": {
+    "compiled_html_sha256": "e83de03dbad1baa19e3ca1115475721b12e96ea06073ebf9ecda3b6697c1ff9e",
+    "compiled_html_bytes": 4982493,
+    "player_limit_bytes": 8388608,
+    "build_report_sha256": "b46bbcfdb6a2d45bb8f5a8c67d04ac02237aa579058b047ee391cc5eaa199536",
+    "inputs_sha256": {
+      "fun_core.js": "b21a909fa3dccf44b2d02d4a8243a91fd260b70db2edfc35338f3fd330c810e4",
+      "stormwake_core.js": "53bc3070f55feceeff08ac5743f3220d70e0c3dda901b0b107092b2e3da16cc9",
+      "stormwake_comfort.js": "7ec7d00de112b327f31c0a904f0e438cfc7ab1399cf0974a824dac44ddc21800",
+      "stormwake_three_vendor.js": "6e40e410c97c908254aa41dcbeba4bb57de69c7d37b1a33d72def3d0d0f884c6",
+      "stormwake_gl.js": "d55f0b2d4f8a0e9a1f203a153b15eec347efe0ed247f2c8b4c72a526bd4c3ed8",
+      "stormwake_cast.js": "8a3a294c0e231334298b6396fc6c54ed5febef16946e4fff400d8ee431f05f7e",
+      "stormwake_three.js": "a9c2616fa1cf95790aae786c187cff1df9766665d32cd1b945f1ab99b50425f3",
+      "stormwake_world.js": "5362d4609df1d511f4188aee9bd72d2f5b4457198b0d6ea1edb24816a14d9ae4",
+      "stormwake_game.js": "b39ffff70fe1ac3d567c537e8bebf4b5206bb43ca30819a4f2332a251abb10da",
+      "stormwake_assets.json": "b93916ab71d73d4b1bc48a63852834729a27f10610234466adf98b3dd673c3d8",
+      "STORMWAKE_VENDOR.json": "cc9adf42e577db463cc7d2dc4bed3f78da9075549b6cd2b20207f807d75a5664",
+      "fun_player.html": "fcfc2d06cdf204f4591a9717968a027facf170e6e0be32d9151ef847870a0fb7",
+      "stormwake_game.css": "3bed7033f10e8791a15819dfb86e60dbbca9d2d9cf062169a047c8443fe6fee0",
+      "BUILD_STORMWAKE_PLAYER.py": "cac0e58f81485bc61f34622c3ae4ab153fe7ae5d1dc4df5436cc9ba81147a50c",
+      "STORMWAKE_BUILD_RULES.py": "3f1ee32949d598f11e65b2ccc19e85ce941207b95a6d6a26b132f34833663a02"
+    },
+    "all_input_hashes_match": true,
+    "host_declared_player_digest_matches": true
+  },
+  "art": {
+    "status": "PASS",
+    "families": 4,
+    "maps": 8,
+    "json_bytes": 4063325,
+    "art_limit_bytes": 4194304,
+    "sha256": "b93916ab71d73d4b1bc48a63852834729a27f10610234466adf98b3dd673c3d8",
+    "runtime_remote_requests_required": false,
+    "license_inventory": "STORMWAKE_ART_LICENSES.md",
+    "compressed_jpeg_bytes": 3044280
+  },
+  "checks": {
+    "actual_compiled_player": {
+      "status": "PASS",
+      "passed": 20,
+      "failed": 0,
+      "expected_passed": 20,
+      "evidence_file": "qa/player-release/results.json",
+      "evidence_sha256": "a5b1c6bef89e5bad2bbb9be846e78e440a4145eb65d0acb167340ca18d0b237e",
+      "scope": "Actual compiled opaque iframe, real movement/touch/GL; synthetic parent/clock; behavior-only GPU throttling disclosed"
+    },
+    "host": {
+      "status": "PASS",
+      "passed": 12,
+      "failed": 0,
+      "expected_passed": 12,
+      "evidence_file": "qa/host-release/results.json",
+      "evidence_sha256": "c55ec66fe254dcdd7d0a9397075577af49fdf12f0cf9a22171c2d461d0438e13",
+      "scope": "Real host function/DOM, synthetic account service; no live Admiral authority claim",
+      "inputs_file": "qa/host-release/inputs.json",
+      "inputs_sha256": "de66387e7f9d6314df156443140ee7cbf9428deb99e8050ef9c248d9899d4153",
+      "source_sha256": {
+        "VERIFY_DREADWATER_HOST.py": "cfdd45ffab4f9379120d99e97cfe2ed6030d409c8272621b81ac704c226106ce",
+        "fun_program.js": "e528079eeb4d51493f70b7edbf523f59495b1b984d27a0df4d757bd7943482e1",
+        "fun_program.css": "3bed37f2d02e156c0f88ac82bc87c7726b96a6eb7929b9b2250ec56eac3b1b23",
+        "fun_core.js": "b21a909fa3dccf44b2d02d4a8243a91fd260b70db2edfc35338f3fd330c810e4",
+        "stormwake_core.js": "53bc3070f55feceeff08ac5743f3220d70e0c3dda901b0b107092b2e3da16cc9",
+        "fun_player.html": "fcfc2d06cdf204f4591a9717968a027facf170e6e0be32d9151ef847870a0fb7",
+        "stormwake_player.html": "e83de03dbad1baa19e3ca1115475721b12e96ea06073ebf9ecda3b6697c1ff9e"
+      }
+    },
+    "assets": {
+      "status": "PASS",
+      "passed": 8,
+      "failed": 0,
+      "expected_passed": 8,
+      "evidence_file": "qa/final-assets.log",
+      "evidence_sha256": "03eda19b29295517e9e1c709808479f511dd94766361fda4afa369df4d18917a",
+      "scope": "Offline decoder, integrity, malicious/corrupt input and byte bounds"
+    },
+    "core": {
+      "status": "PASS",
+      "passed": 32,
+      "failed": 0,
+      "expected_passed": 32,
+      "evidence_file": "qa/final-core.log",
+      "evidence_sha256": "f8468210bb155b322eba5b59cec94bb263f98d0dd65e88a40beb439ad198bdd4",
+      "scope": "Deterministic unchanged core"
+    },
+    "bridge": {
+      "status": "PASS",
+      "passed": 14,
+      "failed": 0,
+      "expected_passed": 14,
+      "evidence_file": "qa/final-bridge.log",
+      "evidence_sha256": "e552bbb34a43d56aa33f2734124efa85a66bced974b204f45af777d1648e4f7c",
+      "scope": "Real core/world physical repair"
+    },
+    "boat": {
+      "status": "PASS",
+      "passed": 4,
+      "failed": 0,
+      "expected_passed": 4,
+      "evidence_file": "qa/final-boat.log",
+      "evidence_sha256": "aff1ed2552beff04db72c9fda244c86203009105e2a07742ace14b8895c3d3fb",
+      "scope": "Real boat controls and collision poses"
+    },
+    "comfort": {
+      "status": "PASS",
+      "passed": 8,
+      "failed": 0,
+      "expected_passed": 8,
+      "evidence_file": "qa/final-comfort.log",
+      "evidence_sha256": "03a4587a00d6f0cdc38c3daa1767abf0a50dd38082c8e36985e206199b901f13",
+      "scope": "Camera/crew corner, wall and overlap regressions"
+    },
+    "renderer_cpu": {
+      "status": "PASS",
+      "passed": null,
+      "failed": 0,
+      "expected_passed": null,
+      "evidence_file": "qa/final-renderer.log",
+      "evidence_sha256": "f91e9955538a47ba673166f2ce4899f6d4d3b416864d364eaa4ba252ceb2c4d1",
+      "scope": "Portable real Three math/geometry with mocked GPU/image loader"
+    },
+    "cast_world_cpu": {
+      "status": "PASS",
+      "passed": null,
+      "failed": 0,
+      "expected_passed": null,
+      "evidence_file": "qa/final-cast_world.log",
+      "evidence_sha256": "f28037ce053cd96b7ce80f91fd5beadb5d1fddeada88e80af9e105a3050f19e7",
+      "scope": "Portable skin weights/deformed poses/world geometry, including crew rock-height regression"
+    }
+  },
+  "visual_rig": {
+    "status": "PASS_FINAL_RECAPTURE",
+    "scope": "Staged actual renderer/world canvas views; not full-player gameplay evidence",
+    "expected_views": 8,
+    "evidence_file": "qa/visual-release/results.json",
+    "source_sha256": {
+      "fun_core.js": "b21a909fa3dccf44b2d02d4a8243a91fd260b70db2edfc35338f3fd330c810e4",
+      "stormwake_core.js": "53bc3070f55feceeff08ac5743f3220d70e0c3dda901b0b107092b2e3da16cc9",
+      "stormwake_three_vendor.js": "6e40e410c97c908254aa41dcbeba4bb57de69c7d37b1a33d72def3d0d0f884c6",
+      "stormwake_assets.json": "b93916ab71d73d4b1bc48a63852834729a27f10610234466adf98b3dd673c3d8",
+      "stormwake_gl.js": "d55f0b2d4f8a0e9a1f203a153b15eec347efe0ed247f2c8b4c72a526bd4c3ed8",
+      "stormwake_cast.js": "8a3a294c0e231334298b6396fc6c54ed5febef16946e4fff400d8ee431f05f7e",
+      "stormwake_three.js": "a9c2616fa1cf95790aae786c187cff1df9766665d32cd1b945f1ab99b50425f3",
+      "stormwake_world.js": "5362d4609df1d511f4188aee9bd72d2f5b4457198b0d6ea1edb24816a14d9ae4"
+    },
+    "all_sources_match_final_build": true,
+    "all_views_pass": true,
+    "all_eight_maps_ready": true,
+    "gl_page_console_errors": 0,
+    "attempted_requests": 0,
+    "reviewed_lighthouse_crew_visible": true,
+    "pngs": [
+      {
+        "name": "01-harbor-introduction",
+        "screenshot": "01-harbor-introduction.png",
+        "png_sha256": "24fc3ec536de526b1d76144b4f76a18aa27a102b618e3f6d89fe2945925c8c20"
+      },
+      {
+        "name": "02-lighthouse-crew-home",
+        "screenshot": "02-lighthouse-crew-home.png",
+        "png_sha256": "2a2026df3f41768fc88f8397fc125959cf11a4ad048b06a590b79fa5e2a94f88"
+      },
+      {
+        "name": "03-cast-face-proportions",
+        "screenshot": "03-cast-face-proportions.png",
+        "png_sha256": "37cdcb513677728ab2e2f246d9c069760ad6ab01ad58e3a77e0f324c63a55699"
+      },
+      {
+        "name": "04-repaired-bridge-pose",
+        "screenshot": "04-repaired-bridge-pose.png",
+        "png_sha256": "cf2b1ae3633ca9820f0ac161ac22b6e13eb926ac5d570efa8614c4136e9276b6"
+      },
+      {
+        "name": "05-harbor-portrait-low",
+        "screenshot": "05-harbor-portrait-low.png",
+        "png_sha256": "ca3e069693171247b3abec310d60776ab1aa614c7359c62e0f95ae6f3143d0b9"
+      },
+      {
+        "name": "06-production-resting-pier",
+        "screenshot": "06-production-resting-pier.png",
+        "png_sha256": "cd60b4b5cef6017df6baaee1f5fbf0ef74b5da3bb2b549edc513c6aa3ed590c1"
+      },
+      {
+        "name": "07-cast-walk-pose-a",
+        "screenshot": "07-cast-walk-pose-a.png",
+        "png_sha256": "f238e939606563f1aa173e72fa5f844cd272afd6ffcbee0341b316962684d5d8"
+      },
+      {
+        "name": "08-cast-walk-pose-b",
+        "screenshot": "08-cast-walk-pose-b.png",
+        "png_sha256": "0cdcba5bc3dc6f9366d614daf3a18401bdcabab62934291e141c3da29562151f"
+      }
+    ],
+    "evidence_sha256": "835b9acc6ee1a9574e49df754c9554da7327a40a5f06ada4bf57152852bed481",
+    "review_note": "Root inspected final lighthouse PNG and confirmed both crew visible after shoal correction."
+  },
+  "corrections": [
+    {
+      "issue": "Camera target smoothing could enter a wall; first repair collapsed camera",
+      "resolution": "Actual-anchor target recovery and bounded traced lateral alternatives",
+      "final_check": "Verified current matching CPU/visual evidence in checks and visual_rig; package/BOOT evidence stays separate."
+    },
+    {
+      "issue": "Dimension-only JPEG check accepted a truncated non-image with matching updated metadata",
+      "resolution": "Verify and fully decode JPEG pixels at build time; fixed expected vendor hash",
+      "final_check": "Verified current matching CPU/visual evidence in checks and visual_rig; package/BOOT evidence stays separate."
+    },
+    {
+      "issue": "Rock projection seams and excessive near-lantern lighting",
+      "resolution": "Bounded blended triplanar rock albedo/roughness and finite near-field lamp falloff",
+      "final_check": "Verified current matching CPU/visual evidence in checks and visual_rig; package/BOOT evidence stays separate."
+    },
+    {
+      "issue": "Decorative shoulder rocks buried reunited lighthouse crew",
+      "resolution": "Overlap-aware low shoals and suppressed trees; original random draws/core locations preserved",
+      "cpu_regression_reported_rock_tops": [
+        0.7029621084100581,
+        0.7382623285542322
+      ],
+      "crew_foot_plane": 1.6,
+      "final_check": "Verified current matching CPU/visual evidence in checks and visual_rig; package/BOOT evidence stays separate."
+    }
+  ],
+  "package": {
+    "status": "SEPARATE_POST_SEAL_VERIFICATION",
+    "planned_upload_file_count": 61,
+    "planned_target_file_count": 266,
+    "maximum_upload_files": 85,
+    "recommended_zip": "DarkSky882045-Dreadwater-Upload61-TEST.zip",
+    "proof_file": "qa/DREADWATER_FINAL_PACKAGE_PROOF.json",
+    "verification_rule": "Strict exact baseline+delta==full; extracted release15/models10/bridge14/boat4/comfort8 plus portable renderer/cast CPU checks; separate final extracted BOOT",
+    "archive_hash_and_bytes": "Recorded only in external proof after package creation; not embedded here to avoid circular archive self-reference",
+    "final_extracted_browser_boot": "Separate root execution after packaging/extraction; external proof updated without changing release files"
+  },
+  "preservation": {
+    "core_save_schema": "fun-stormwake-v2",
+    "save_limit_bytes": 8192,
+    "core_mission_save_behavior_changed": false,
+    "game_activity_transport_changed": false,
+    "server_authority_changed": false,
+    "admiral_idle_minutes": 15,
+    "admiral_maximum_minutes": 60,
+    "retained_reference_models": 39,
+    "prior_release_evidence": "Exact old .44 gate nested unchanged in RELEASE_GATE.json"
+  },
+  "native_field_acceptance": "PENDING",
+  "iPad_fps_claim": false,
+  "production_activation": false,
+  "live_database_writes": false,
+  "live_fleet_certification": "NOT_CLAIMED",
+  "quota_recovery": "NOT_CLAIMED",
+  "cpu_aggregate": {
+    "status": "PASS",
+    "evidence_file": "qa/final-checks.json",
+    "evidence_sha256": "fd512468ca9b20bade15799445a1551e7ff7483e7de895a5e31b9a23fe615813",
+    "all_source_hashes_match_final_build": true,
+    "source_sha256": {
+      "fun_core.js": "b21a909fa3dccf44b2d02d4a8243a91fd260b70db2edfc35338f3fd330c810e4",
+      "stormwake_core.js": "53bc3070f55feceeff08ac5743f3220d70e0c3dda901b0b107092b2e3da16cc9",
+      "stormwake_comfort.js": "7ec7d00de112b327f31c0a904f0e438cfc7ab1399cf0974a824dac44ddc21800",
+      "stormwake_three.js": "a9c2616fa1cf95790aae786c187cff1df9766665d32cd1b945f1ab99b50425f3",
+      "stormwake_three_vendor.js": "6e40e410c97c908254aa41dcbeba4bb57de69c7d37b1a33d72def3d0d0f884c6",
+      "stormwake_cast.js": "8a3a294c0e231334298b6396fc6c54ed5febef16946e4fff400d8ee431f05f7e",
+      "stormwake_world.js": "5362d4609df1d511f4188aee9bd72d2f5b4457198b0d6ea1edb24816a14d9ae4",
+      "stormwake_game.js": "b39ffff70fe1ac3d567c537e8bebf4b5206bb43ca30819a4f2332a251abb10da",
+      "stormwake_game.css": "3bed7033f10e8791a15819dfb86e60dbbca9d2d9cf062169a047c8443fe6fee0",
+      "fun_program.js": "e528079eeb4d51493f70b7edbf523f59495b1b984d27a0df4d757bd7943482e1",
+      "stormwake_player.html": "e83de03dbad1baa19e3ca1115475721b12e96ea06073ebf9ecda3b6697c1ff9e",
+      "stormwake_assets.json": "b93916ab71d73d4b1bc48a63852834729a27f10610234466adf98b3dd673c3d8",
+      "BUILD_STORMWAKE_PLAYER.py": "cac0e58f81485bc61f34622c3ae4ab153fe7ae5d1dc4df5436cc9ba81147a50c",
+      "STORMWAKE_BUILD_RULES.py": "3f1ee32949d598f11e65b2ccc19e85ce941207b95a6d6a26b132f34833663a02"
+    }
+  },
+  "superseded_evidence_not_used_for_final_acceptance": [
+    "qa/player-final/results.json",
+    "qa/host-final/results.json",
+    "qa/visual-final/results.json",
+    "qa/rocks-final/results.json"
+  ]
+}

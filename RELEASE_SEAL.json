@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.44",
-  "release": "Lanternwake TEST",
-  "seal": "lanternwake-882044",
+  "build": "8.8.20.45",
+  "release": "Dreadwater TEST",
+  "seal": "dreadwater-882045",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Lanternwake TEST",
-  "name": "Lanternwake TEST",
-  "releaseName": "Lanternwake TEST"
+  "release_name": "Dreadwater TEST",
+  "name": "Dreadwater TEST",
+  "releaseName": "Dreadwater TEST"
 }

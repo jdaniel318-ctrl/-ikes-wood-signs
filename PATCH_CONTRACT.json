@@ -1,18 +1,18 @@
 {
   "schema": "blackflag-patch-contract-v1",
-  "target_build": "8.8.20.44",
-  "target_seal": "lanternwake-882044",
+  "target_build": "8.8.20.45",
+  "target_seal": "dreadwater-882045",
   "supported_bases": [
     {
-      "build": "8.8.20.43",
+      "build": "8.8.20.44",
       "content_digest_algorithm": "release-content-sha256-v1",
-      "content_sha256": "8d9edff6bc943dc36215edda00be7f0a9e349f3178d6b8f39becc6c896ab4b69",
-      "file_count": 233,
-      "description": "Exact 233-file Helmsman TEST release previously delivered; ZIP envelope may differ while every filename and body byte must match."
+      "content_sha256": "fcbddaeec8def5cad6c16eb364885b6a1c1e07b4c88c83c4c714f14b241efaaa",
+      "file_count": 241,
+      "description": "Exact 241-file Lanternwake TEST release previously delivered; ZIP envelope can differ while filenames and file bytes must match."
     }
   ],
   "requires_deletions": false,
   "max_upload_files": 85,
   "database_actions": "none",
-  "rule": "Preserve the completed game with SAVE GAME FILE before refresh. Upload every file inside the Lanternwake update folder over the complete Helmsman 8.8.20.43 repository root. Keep all other files. No SQL or browser-data clearing. This patch is not a standalone site."
+  "rule": "Keep the downloaded voyage. Upload all files inside the Dreadwater update folder over the complete Lanternwake 8.8.20.44 repository root. Keep all other files. No SQL or browser-data clearing. This patch is not a standalone site."
 }

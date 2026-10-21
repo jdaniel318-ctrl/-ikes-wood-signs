@@ -1,3 +1,13 @@
+# Dreadwater 8.8.20.45 TEST — current release
+
+Current update: **DarkSky882045-Dreadwater-Upload61-TEST.zip** (61 changed/new files) over exact Lanternwake 8.8.20.44, with all previous filenames retained. Follow START_HERE_DREADWATER.md.
+
+This build introduces pinned Three.js WebGL2 rendering, eight licensed material images, skinned adult crew, detailed harbor and boat geometry, dusk water/lighting, and camera/crew clearance. The complete opaque player is SHA-256 verified and capped at 8 MiB; artwork is embedded and uses no remote runtime service. The original WebGL1 fallback and all prior game/learning content remain available. Mission/save core and fleet authority rules are preserved.
+
+Current measured results belong in DREADWATER_TEST_REPORT.md and DREADWATER_TEST_RESULTS.json. Native iPad/Safari appearance and sustained performance need the Captain's field check. Keep the known downloaded voyage; no replay is required. No database action, live permission change or publication is performed by this ZIP.
+
+---
+
 # Lanternwake 8.8.20.44 TEST
 
 The atomic loader, identity worker, opaque lazy game, .43 mission/input/save behavior and checked gameplay activity relay remain. The visual pass is confined to stormwake_gl.js and stormwake_world.js; game and host sources otherwise change only release labels and the compiled-player digest. Admiral authority, the 15-minute idle / 60-minute maximum and deliberate memory/JSON-file save boundaries remain. The self-contained WebGL 1 renderer gains presentation work without adding external runtime dependencies or image bytes from the reference clip.

@@ -1,0 +1,15 @@
+{
+  "schema": "stormwake-vendor-v1",
+  "name": "three",
+  "version": "0.180.0",
+  "source": "https://www.npmjs.com/package/three/v/0.180.0",
+  "license": "MIT",
+  "bundler": {
+    "name": "esbuild",
+    "version": "0.25.10"
+  },
+  "bundle": "stormwake_three_vendor.js",
+  "bytes": 701368,
+  "sha256": "6e40e410c97c908254aa41dcbeba4bb57de69c7d37b1a33d72def3d0d0f884c6",
+  "runtimeNetwork": false
+}
