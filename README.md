@@ -1,3 +1,9 @@
+# Blacktide 8.8.20.42 TEST
+
+The current upload is **DarkSky882042-Blacktide-Upload53-TEST.zip**, containing **53 files**. Follow START_HERE_BLACKTIDE.md. Install over the complete Stormwake 8.8.20.41 site and keep other repository files. This build adds playable harbor art and comfort improvements, four fleet-model declaration repairs and coherent shared-client identity. It remains TEST. See BLACKTIDE_TEST_REPORT.md for current evidence and native/live limits.
+
+## Preserved earlier release documentation — historical, not current instructions
+
 # Stormwake 8.8.20.41 TEST
 
 Current instructions: START_HERE_STORMWAKE.md. One original 3D FUN rescue, separate Admiral access, explicit compatible game saves. Business workflows unchanged. No production, multiplayer, cloud-save or native-frame-rate certification.

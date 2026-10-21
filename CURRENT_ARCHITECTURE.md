@@ -1,3 +1,9 @@
+# Blacktide 8.8.20.42 TEST
+
+The existing atomic loader, identity worker and lazy opaque game boundary remain in place. Business modules differ only in release labels. The game remains self-contained WebGL 1 with unchanged core/save schema. Material-aware batches and procedural surfaces improve the harbor; the maintained-engine migration is pending. Background holds preserve open dialogs, resize clears input without pausing, and file-state indicators distinguish current memory from prepared/loaded files. Current instructions: START_HERE_BLACKTIDE.md. Current evidence: BLACKTIDE_TEST_REPORT.md.
+
+## Preserved earlier release documentation — historical, not current instructions
+
 # Stormwake 8.8.20.41 TEST
 
 Current instructions: START_HERE_STORMWAKE.md. One original 3D FUN rescue, separate Admiral access, explicit compatible game saves. Business workflows unchanged. No production, multiplayer, cloud-save or native-frame-rate certification.

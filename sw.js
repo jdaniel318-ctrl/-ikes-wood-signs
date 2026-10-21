@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.20.41';
-const RELEASE_SEAL='stormwake-882041';
+const RELEASE_BUILD='8.8.20.42';
+const RELEASE_SEAL='blacktide-882042';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.

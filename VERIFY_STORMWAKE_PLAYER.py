@@ -11,7 +11,7 @@ r=Path(sys.argv[1] if len(sys.argv)>1 else Path(__file__).parent);out=Path(sys.a
 assert (r/'stormwake_player.html').exists(), 'Compiled Stormwake player must exist before gameplay can pass'
 results=[]
 with sync_playwright() as pw:
- browser=pw.chromium.launch(executable_path='/usr/bin/chromium',headless=True,args=['--no-sandbox','--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader'])
+ browser=pw.chromium.launch(executable_path=os.environ.get('BLACKFLAG_CHROMIUM','/usr/bin/chromium'),headless=True,args=['--no-sandbox','--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader'])
  def setup(width=1280,height=820,start=True):
   p=browser.new_page(viewport={'width':width,'height':height});p.set_default_timeout(12000);errors=[];p.on('pageerror',lambda e:errors.append(str(e)));p.route('**/*',lambda rt:rt.abort())
   p.set_content('<style>html,body{margin:0;width:100%;height:100%;}iframe{width:100%;height:100%;border:0}</style>')
@@ -101,16 +101,28 @@ with sync_playwright() as pw:
  def pause_title():
   p,f,e=setup()
   try:
-   p.evaluate("document.getElementById('game').contentWindow.postMessage({type:'pause',channel:'qa-current-channel'},'*')");f.locator('#swResume').wait_for();f.locator('#swResume').dispatch_event('click');assert f.locator('#swHud').is_visible(), 'Resuming a title-screen pause must restore usable controls';assert not e,e
+   p.evaluate("document.getElementById('game').contentWindow.postMessage({type:'pause',channel:'qa-current-channel'},'*')");p.wait_for_timeout(150)
+   assert f.locator('#swStart').is_visible(), 'Background or cancelled import must preserve the title'
+   assert not f.locator('#swResume').count(), 'A title that was never playing must not get a second pause panel'
+   start_play(f);assert f.locator('#swHud').is_visible();assert f.evaluate('StormwakeSnapshot().modal')==''
+   before=f.evaluate('StormwakeSnapshot().player.z');f.evaluate("dispatchEvent(new KeyboardEvent('keydown',{key:'w'}));__qaStep(5);dispatchEvent(new KeyboardEvent('keyup',{key:'w'}))")
+   assert f.evaluate('StormwakeSnapshot().player.z')!=before, 'Starting after a title hold must keep movement usable';assert not e,e
   finally:p.close()
- check('pause or cancelled import before entering still resumes with usable controls',pause_title)
+ check('title hold preserves entry and usable controls',pause_title)
 
  def resize_blur():
   p,f,e=setup()
   try:
-   start_play(f);accelerate(f);f.evaluate("dispatchEvent(new KeyboardEvent('keydown',{key:'w'}));__qaStep(5)");before=f.evaluate('StormwakeSnapshot().player.z');f.evaluate('window.__qaResizeEvents=0;addEventListener("resize",()=>__qaResizeEvents++);document.getElementById("swCanvas").getContext("webgl").finish()');p.set_viewport_size({'width':900,'height':700});p.wait_for_timeout(200);print('RESIZE',f.evaluate('({w:innerWidth,h:innerHeight,count:__qaResizeEvents,s:StormwakeSnapshot().modal})'),flush=True);f.wait_for_selector('#swResume',timeout=30000);frame_steps(f,15);assert f.evaluate('StormwakeSnapshot().player.z')==before;f.locator('#swResume').dispatch_event('click');frame_steps(f,20);assert f.evaluate('StormwakeSnapshot().player.z')==before;f.evaluate("dispatchEvent(new KeyboardEvent('keydown',{key:'w'}));__qaStep(3);dispatchEvent(new Event('blur'))");after=f.evaluate('StormwakeSnapshot().player.z');assert f.locator('#swResume').is_visible();frame_steps(f,20);assert f.evaluate('StormwakeSnapshot().player.z')==after;assert not e,e
+   start_play(f);accelerate(f);f.evaluate("dispatchEvent(new KeyboardEvent('keydown',{key:'w'}));__qaStep(5)");before=f.evaluate('StormwakeSnapshot().player.z')
+   f.evaluate('window.__qaResizeEvents=0;addEventListener("resize",()=>__qaResizeEvents++);document.getElementById("swCanvas").getContext("webgl").finish()');p.set_viewport_size({'width':900,'height':700});p.wait_for_timeout(200)
+   assert f.evaluate('__qaResizeEvents')>=1, 'The browser must deliver an actual viewport resize'
+   assert f.evaluate('StormwakeSnapshot().modal')=='', 'Resize must leave active play uninterrupted'
+   frame_steps(f,35);assert f.evaluate('StormwakeSnapshot().player.z')==before, 'Resize must cancel held movement and catch-up'
+   f.evaluate("dispatchEvent(new KeyboardEvent('keydown',{key:'w'}));__qaStep(3);dispatchEvent(new Event('blur'))");after=f.evaluate('StormwakeSnapshot().player.z')
+   assert after!=before, 'Controls must work after resizing';assert f.locator('#swResume').is_visible();frame_steps(f,20);assert f.evaluate('StormwakeSnapshot().player.z')==after
+   f.locator('#swResume').dispatch_event('click');frame_steps(f,20);assert f.evaluate('StormwakeSnapshot().player.z')==after;assert not e,e
   finally:p.close()
- check('resize and lost focus pause movement without stuck keys or catch-up',resize_blur)
+ check('resize preserves play while lost focus pauses without stuck keys or catch-up',resize_blur)
 
  browser.close()
 (out/'results.json').write_text(json.dumps(results,indent=2));print(json.dumps({'passed':sum(x['pass'] for x in results),'failed':sum(not x['pass'] for x in results)}));sys.exit(any(not x['pass'] for x in results))

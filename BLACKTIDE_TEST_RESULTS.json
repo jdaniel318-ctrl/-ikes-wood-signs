@@ -1,0 +1,487 @@
+{
+  "schema": "blacktide-test-evidence-v1",
+  "build": "8.8.20.42",
+  "seal": "blacktide-882042",
+  "recorded_at_utc": "2026-10-21T00:55:27+00:00",
+  "scope": "Isolated local source, Chromium browser, software WebGL and synthetic account/storage fixtures. No live account, database, deployment, service-worker browser or native iPad certification.",
+  "player": {
+    "bytes": 151259,
+    "sha256": "ebc0c2bc43d55a4cfbf6e38cff5696fd0d2a064db54cdb8fbe9bdd9f14a842a2"
+  },
+  "environment": {
+    "browser": "Chrome for Testing 145.0.7632.6",
+    "python_playwright": "1.58.0",
+    "webgl": "ANGLE SwiftShader software WebGL",
+    "network": "Aborted except same-origin mappings to local release bytes for actual-index tests"
+  },
+  "browser": {
+    "player_current_contract": {
+      "passed": 10,
+      "failed": 0,
+      "cases": [
+        {
+          "name": "actual WebGL harbor, articulated character and visible controls",
+          "pass": true
+        },
+        {
+          "name": "direct player remains locked without parent handshake",
+          "pass": true
+        },
+        {
+          "name": "walk with real keyboard controls, meet Bootstrap and collect one physical repair",
+          "pass": true
+        },
+        {
+          "name": "pause cancels held movement and does not simulate catch-up",
+          "pass": true
+        },
+        {
+          "name": "interactive functions slider moves launch and graph before practice; lesson distinct from rescue",
+          "pass": true
+        },
+        {
+          "name": "original First Light remains playable in a second opaque frame without changing rescue",
+          "pass": true
+        },
+        {
+          "name": "opaque child cannot read parent; self-forged restore ignored",
+          "pass": true
+        },
+        {
+          "name": "complete Broken Passage through actual movement, jump, mechanism, boat, rescue and return",
+          "pass": true
+        },
+        {
+          "name": "title hold preserves entry and usable controls",
+          "pass": true
+        },
+        {
+          "name": "resize preserves play while lost focus pauses without stuck keys or catch-up",
+          "pass": true
+        }
+      ]
+    },
+    "touch_and_responsive": {
+      "passed": 8,
+      "failed": 0,
+      "cases": [
+        {
+          "name": "real pointer entry and simultaneous touch movement/jump with cancellation",
+          "pass": true
+        },
+        {
+          "name": "visible playable controls and scrollable panels 1024x560",
+          "pass": true
+        },
+        {
+          "name": "visible playable controls and scrollable panels 1024x640",
+          "pass": true
+        },
+        {
+          "name": "visible playable controls and scrollable panels 1366x900",
+          "pass": true
+        },
+        {
+          "name": "visible playable controls and scrollable panels 390x700",
+          "pass": true
+        },
+        {
+          "name": "visible playable controls and scrollable panels 430x800",
+          "pass": true
+        },
+        {
+          "name": "real graphics-context loss pauses safely and offers preserved original game",
+          "pass": true
+        },
+        {
+          "name": "sky clouds fade at the horizon instead of making vertical ground-level bands",
+          "pass": true
+        }
+      ]
+    },
+    "host_and_saves": {
+      "passed": 12,
+      "failed": 0,
+      "cases": [
+        {
+          "name": "verified lazy launch checks actual player digest and keeps opaque isolation",
+          "pass": true
+        },
+        {
+          "name": "denied Admiral never fetches or opens 3D player",
+          "pass": true
+        },
+        {
+          "name": "corrupt or mixed-release player remains held with original-game recovery route",
+          "pass": true
+        },
+        {
+          "name": "identity changes during delayed graphics download cannot open prior session",
+          "pass": true
+        },
+        {
+          "name": "cancelled pending authorization cannot reopen the game",
+          "pass": true
+        },
+        {
+          "name": "legacy save needs confirmation, preserves pennant and roundtrips new envelope",
+          "pass": true
+        },
+        {
+          "name": "malformed unknown and business-shaped imports cannot replace active game",
+          "pass": true
+        },
+        {
+          "name": "expired Admiral session removes player and disables saves",
+          "pass": true
+        },
+        {
+          "name": "account change during final import confirmation does not replace retained run",
+          "pass": true
+        },
+        {
+          "name": "forged outer messages cannot award progress; return preserves Admiral workspace",
+          "pass": true
+        },
+        {
+          "name": "save indicator becomes unsaved again after new game progress",
+          "pass": true
+        },
+        {
+          "name": "visible return avoids duplicate pause and still checks authority",
+          "pass": true
+        }
+      ]
+    },
+    "comfort_regressions": {
+      "passed": 4,
+      "failed": 0,
+      "cases": [
+        {
+          "name": "resize preserves play and clears held input",
+          "pass": true
+        },
+        {
+          "name": "backgrounding preserves unfinished dialogue",
+          "pass": true
+        },
+        {
+          "name": "background play pauses explicitly without stuck movement",
+          "pass": true
+        },
+        {
+          "name": "collecting the gear first reports only that item",
+          "pass": true
+        }
+      ]
+    },
+    "actual_index_no_service_worker": {
+      "passed": 4,
+      "failed": 0,
+      "cases": [
+        {
+          "name": "coherent actual .42 index executes complete runtime and accepts current models",
+          "pass": true,
+          "executed_runtime_scripts": 15,
+          "runtime_files_verified": 30,
+          "model_guard": "accepted-current-models",
+          "served_local_files": [
+            "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
+            "DEPLOYMENT_MANIFEST.json",
+            "FLEET_COMMAND_MODEL.json",
+            "FLEET_DOCTRINE_REGISTRY.json",
+            "GOLDEN_VOYAGES.json",
+            "IKE_STYLE_FOUNDRY.json",
+            "RELEASE_INVENTORY.json",
+            "RELEASE_SEAL.json",
+            "app.js",
+            "black_flag_platform_icon.png",
+            "black_flag_primary_lockup.png",
+            "bootstrap_build_horizontal.png",
+            "business_deck.css",
+            "business_deck.js",
+            "captain.js",
+            "captains_quarters_command_center_v578.png",
+            "fleet_supabase.js",
+            "fleet_viewport.css",
+            "fleet_viewport.js",
+            "fun_core.js",
+            "fun_player.html",
+            "fun_program.css",
+            "fun_program.js",
+            "headway_contracts.js",
+            "ike_character.png",
+            "ike_style_registry.js",
+            "index.html",
+            "input_hygiene.js",
+            "manifest.webmanifest",
+            "owner.html",
+            "platform_core.js",
+            "platform_identity.js",
+            "platform_v4.js",
+            "simple_books.css",
+            "simple_books.js",
+            "stormwake_core.js",
+            "styles.css",
+            "sw.js",
+            "woodwright_fit.js"
+          ],
+          "blocked_requests": []
+        },
+        {
+          "name": "altered required runtime body fails before execution",
+          "pass": true,
+          "hold_reason": "Runtime checksum mismatch: input_hygiene.js",
+          "served_local_files": [
+            "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
+            "DEPLOYMENT_MANIFEST.json",
+            "FLEET_COMMAND_MODEL.json",
+            "FLEET_DOCTRINE_REGISTRY.json",
+            "GOLDEN_VOYAGES.json",
+            "IKE_STYLE_FOUNDRY.json",
+            "RELEASE_INVENTORY.json",
+            "RELEASE_SEAL.json",
+            "app.js",
+            "black_flag_platform_icon.png",
+            "black_flag_primary_lockup.png",
+            "business_deck.css",
+            "business_deck.js",
+            "captain.js",
+            "fleet_supabase.js",
+            "fleet_viewport.css",
+            "fleet_viewport.js",
+            "fun_core.js",
+            "fun_player.html",
+            "fun_program.css",
+            "fun_program.js",
+            "headway_contracts.js",
+            "ike_character.png",
+            "ike_style_registry.js",
+            "index.html",
+            "input_hygiene.js",
+            "manifest.webmanifest",
+            "owner.html",
+            "platform_core.js",
+            "platform_identity.js",
+            "platform_v4.js",
+            "simple_books.css",
+            "simple_books.js",
+            "stormwake_core.js",
+            "styles.css",
+            "sw.js",
+            "woodwright_fit.js"
+          ],
+          "blocked_requests": []
+        },
+        {
+          "name": "mismatched required runtime hash declaration fails before execution",
+          "pass": true,
+          "hold_reason": "Runtime checksum mismatch: input_hygiene.js",
+          "served_local_files": [
+            "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
+            "DEPLOYMENT_MANIFEST.json",
+            "FLEET_COMMAND_MODEL.json",
+            "FLEET_DOCTRINE_REGISTRY.json",
+            "GOLDEN_VOYAGES.json",
+            "IKE_STYLE_FOUNDRY.json",
+            "RELEASE_INVENTORY.json",
+            "RELEASE_SEAL.json",
+            "app.js",
+            "black_flag_platform_icon.png",
+            "black_flag_primary_lockup.png",
+            "business_deck.css",
+            "business_deck.js",
+            "captain.js",
+            "fleet_supabase.js",
+            "fleet_viewport.css",
+            "fleet_viewport.js",
+            "fun_core.js",
+            "fun_player.html",
+            "fun_program.css",
+            "fun_program.js",
+            "headway_contracts.js",
+            "ike_character.png",
+            "ike_style_registry.js",
+            "index.html",
+            "input_hygiene.js",
+            "manifest.webmanifest",
+            "owner.html",
+            "platform_core.js",
+            "platform_identity.js",
+            "platform_v4.js",
+            "simple_books.css",
+            "simple_books.js",
+            "stormwake_core.js",
+            "styles.css",
+            "sw.js",
+            "woodwright_fit.js"
+          ],
+          "blocked_requests": []
+        },
+        {
+          "name": "real boot followed by production KeelGuard rejects reproduced stale model declarations",
+          "pass": true,
+          "executed_runtime_scripts": 15,
+          "runtime_files_verified": 30,
+          "model_guard": "rejected-stale-declarations",
+          "served_local_files": [
+            "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
+            "DEPLOYMENT_MANIFEST.json",
+            "FLEET_COMMAND_MODEL.json",
+            "FLEET_DOCTRINE_REGISTRY.json",
+            "GOLDEN_VOYAGES.json",
+            "IKE_STYLE_FOUNDRY.json",
+            "RELEASE_INVENTORY.json",
+            "RELEASE_SEAL.json",
+            "app.js",
+            "black_flag_platform_icon.png",
+            "black_flag_primary_lockup.png",
+            "bootstrap_build_horizontal.png",
+            "business_deck.css",
+            "business_deck.js",
+            "captain.js",
+            "captains_quarters_command_center_v578.png",
+            "fleet_supabase.js",
+            "fleet_viewport.css",
+            "fleet_viewport.js",
+            "fun_core.js",
+            "fun_player.html",
+            "fun_program.css",
+            "fun_program.js",
+            "headway_contracts.js",
+            "ike_character.png",
+            "ike_style_registry.js",
+            "index.html",
+            "input_hygiene.js",
+            "manifest.webmanifest",
+            "owner.html",
+            "platform_core.js",
+            "platform_identity.js",
+            "platform_v4.js",
+            "simple_books.css",
+            "simple_books.js",
+            "stormwake_core.js",
+            "styles.css",
+            "sw.js",
+            "woodwright_fit.js"
+          ],
+          "blocked_requests": []
+        }
+      ]
+    }
+  },
+  "offline": {
+    "node_contract_files": {
+      "passed_files": 8,
+      "failed_files": 0,
+      "files": [
+        "VERIFY_BLACKTIDE_IDENTITY.cjs",
+        "VERIFY_BLACKTIDE_RENDER.cjs",
+        "VERIFY_FUN.cjs",
+        "VERIFY_FUN_GATE.cjs",
+        "VERIFY_STORMWAKE_CORE.cjs",
+        "VERIFY_STORMWAKE_GATE.cjs",
+        "VERIFY_STORMWAKE_RENDER.cjs",
+        "VERIFY_STORMWAKE_WORLD.cjs"
+      ]
+    },
+    "production_model_loader": {
+      "passed": 10,
+      "failed": 0,
+      "retained_reference_models": 39
+    },
+    "package_and_sealing_unit_cases": {
+      "passed": 31,
+      "failed": 0
+    },
+    "shared_client_identity": {
+      "passed": 4,
+      "failed": 0,
+      "included_in_node_contract_files": true
+    }
+  },
+  "reproduction_history": {
+    "player_previous_contract": {
+      "passed": 8,
+      "failed": 2,
+      "cases": [
+        {
+          "name": "actual WebGL harbor, articulated character and visible controls",
+          "pass": true
+        },
+        {
+          "name": "direct player remains locked without parent handshake",
+          "pass": true
+        },
+        {
+          "name": "walk with real keyboard controls, meet Bootstrap and collect one physical repair",
+          "pass": true
+        },
+        {
+          "name": "pause cancels held movement and does not simulate catch-up",
+          "pass": true
+        },
+        {
+          "name": "interactive functions slider moves launch and graph before practice; lesson distinct from rescue",
+          "pass": true
+        },
+        {
+          "name": "original First Light remains playable in a second opaque frame without changing rescue",
+          "pass": true
+        },
+        {
+          "name": "opaque child cannot read parent; self-forged restore ignored",
+          "pass": true
+        },
+        {
+          "name": "complete Broken Passage through actual movement, jump, mechanism, boat, rescue and return",
+          "pass": true
+        },
+        {
+          "name": "pause or cancelled import before entering still resumes with usable controls",
+          "pass": false,
+          "error": "Locator.wait_for: Timeout 12000ms exceeded.\nCall log:\n  - waiting for locator(\"#swResume\") to be visible\n"
+        },
+        {
+          "name": "resize and lost focus pause movement without stuck keys or catch-up",
+          "pass": false,
+          "error": "Frame.wait_for_selector: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"#swResume\") to be visible\n"
+        }
+      ]
+    },
+    "player_resolution": "The first current-player run used two obsolete assertions: title hold must create Resume, and resize must force pause. The eight other cases passed. The two assertions were revised to the deliberately changed contract and individually rerun successfully against the identical player digest; no game-source change was made to satisfy them.",
+    "comfort_before_fix": "Four new behavior regressions failed against baseline and passed after the change.",
+    "host_before_fix": "The new save-state and visible-return cases failed before their fixes and passed in the full current 12-case run.",
+    "client_identity_before_fix": "Three of four real-module cases reproduced the stale .41 default; all four passed after the one-line .42 correction.",
+    "touch_retry": "An initial concurrent software-GPU screenshot timed out. The unchanged suite passed 8/8 when run sequentially.",
+    "boot_preseal_hold": "Initial actual-index attempt stopped at the still-.41 inventory. After full sealing the actual source passed all four cases."
+  },
+  "review": {
+    "important_findings": 1,
+    "resolved": 1,
+    "resolution": "Corrected shared Supabase client default and verified public client plus saved-session identity with the complete actual module."
+  },
+  "render_profile": {
+    "baseline_main_draws": 96,
+    "current_main_draws": 106,
+    "baseline_shadow_draws": 84,
+    "current_shadow_draws": 92,
+    "baseline_main_triangles": 66082,
+    "current_main_triangles": 81202,
+    "native_fps_measured": false
+  },
+  "responsive_sizes": [
+    "1024x560",
+    "1024x640",
+    "1366x900",
+    "390x700",
+    "430x800"
+  ],
+  "remaining_field_gates": [
+    "Native iPad/Safari visual and control acceptance",
+    "Native frame-time, thermal and memory behavior",
+    "Real service-worker update and live Pages deployment",
+    "Remaining fleet readiness, server authority, quota and business-operation gates"
+  ],
+  "final_archive_proof": "Run after final documentation, sealing and ZIP creation; reported with the delivered archive rather than asserting a self-hash here."
+}

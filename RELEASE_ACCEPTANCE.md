@@ -1,3 +1,9 @@
+# Blacktide 8.8.20.42 TEST
+
+Current isolated evidence covers the full rescue, touch/responsive play, host/save boundaries, strict current model loading and actual no-service-worker startup. Native iPad/Safari appearance, performance and update acceptance remain PENDING. Live readiness, server authority, quota recovery, stock service and production handoff are not certified by this package. Start with the three upload steps in START_HERE_BLACKTIDE.md; do not replay old commissioning or clearing instructions.
+
+## Preserved earlier release documentation — historical, not current instructions
+
 # Stormwake 8.8.20.41 TEST
 
 Current instructions: START_HERE_STORMWAKE.md. One original 3D FUN rescue, separate Admiral access, explicit compatible game saves. Business workflows unchanged. No production, multiplayer, cloud-save or native-frame-rate certification.

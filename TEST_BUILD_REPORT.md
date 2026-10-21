@@ -1,3 +1,9 @@
+# Blacktide 8.8.20.42 TEST
+
+The current observed report is BLACKTIDE_TEST_REPORT.md and its structured evidence is BLACKTIDE_TEST_RESULTS.json. The final ZIP is checked after sealing and exact incremental reconstruction. This build does not reuse historical test counts as current passes. Native device and live production checks remain pending.
+
+## Preserved earlier release documentation — historical, not current instructions
+
 # Stormwake 8.8.20.41 TEST
 
 Current instructions: START_HERE_STORMWAKE.md. One original 3D FUN rescue, separate Admiral access, explicit compatible game saves. Business workflows unchanged. No production, multiplayer, cloud-save or native-frame-rate certification.

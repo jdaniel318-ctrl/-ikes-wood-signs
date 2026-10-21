@@ -1,7 +1,7 @@
-# Upload This One Build
+# Blacktide 8.8.20.42 TEST — current upload
 
-**Dark Sky 8.2.5 — Ike Fit**
+**DarkSky882042-Blacktide-Upload53-TEST.zip — 53 files.** Use this single upload over complete Stormwake 8.8.20.41. The ZIP and internal folder share the same name.
 
-Upload all 99 files from this folder to the repository root using the iPad GitHub uploader. Do not split the build or mix it with an older release.
+Follow the three steps in START_HERE_BLACKTIDE.md. Upload the files inside the folder to the existing repository root, not the folder itself. Retain all other repository files. This patch is not a standalone site.
 
-This pass is deliberately narrow: Ike’s sign preview composition only.
+Older upload filenames and test counts in preserved historical notes are not instructions for this build.

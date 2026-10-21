@@ -1,3 +1,14 @@
+# Blacktide 8.8.20.42 TEST
+
+- Added procedural harbor materials, atmospheric lighting, water detail and more shaped pirate/harbor geometry in the existing playable renderer.
+- Added named salvage and six-stage mission progress, keeping the complete Broken Passage and original game.
+- Preserved dialogs during background holds; resizing no longer forces a pause; corrected premature all-materials pickup text.
+- Added explicit unsaved/prepared/loaded game-file status without claiming automatic persistence.
+- Repaired four current-model declarations and the shared-client build default; strengthened package, real-loader and actual-index regressions.
+- Kept all baseline files and historical references. Engine migration, native device performance and remaining live readiness gates are pending.
+
+## Preserved earlier change log
+
 # Fairwind 8.8.20.40 TEST
 
 FUN first solo adventure and guided Chart Room; Admiral-gated sandbox, memory-only game state with small deliberate JSON export/import. First-photo suggestion handoff and matching full-frame camera presentation repaired. Other business data, authority and manufacturing holds retained.

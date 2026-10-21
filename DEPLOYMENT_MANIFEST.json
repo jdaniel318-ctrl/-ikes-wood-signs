@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.20.41",
-  "version": "8.8.20.41",
-  "release_name": "Stormwake TEST",
-  "releaseName": "Stormwake TEST",
-  "release_seal": "stormwake-882041",
+  "build": "8.8.20.42",
+  "version": "8.8.20.42",
+  "release_name": "Blacktide TEST",
+  "releaseName": "Blacktide TEST",
+  "release_seal": "blacktide-882042",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -104,12 +104,13 @@
     "project_data_boundary": "exact-project-id"
   },
   "release_focus": [
-    "Separate third-person FUN adventure",
-    "Original 3D harbor movement, bridge and rescue launch",
-    "Legacy save and six Chart Room lessons preserved",
-    "Lazy verified opaque player; real fleet unchanged"
+    "Blacktide harbor materials, water, lighting and character art",
+    "Mission stage and named salvage presentation",
+    "Dialogue-preserving background pause; uninterrupted resize",
+    "Four current fleet model declarations and shared-client identity repaired",
+    "Explicit game-file save status with unchanged isolated access"
   ],
-  "release_note": "Stormwake SW-1 first 3D playable. Current report and extracted-byte proof disclose tested and untested boundaries. No production or community activation.",
+  "release_note": "Blacktide BT-1: first playable art and comfort upgrade over exact Stormwake .41, plus current fleet release-identity repairs. Existing self-contained WebGL renderer retained. Native-device performance, engine migration and remaining live readiness gates are pending.",
   "tax_ledger_upgrade": {
     "schema": "dark-sky-fleet-tax-ledger-v1",
     "model": "TAX_LEDGER_MODEL.json",
@@ -231,8 +232,8 @@
     "algorithm": "SHA-256",
     "files": {
       "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": {
-        "sha256": "7ad544c38df5976a8dd75f0a049a71716dea6c6f13de2f633f2b19f116f796d3",
-        "build": "8.8.20.40",
+        "sha256": "d6594392ce69a211625c2cd58dd852aee187472f1dd1cc4de85fb0600a7c04b2",
+        "build": "8.8.20.42",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -279,14 +280,14 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_COMMAND_MODEL.json": {
-        "sha256": "bbe47617b760950118e7e128c37d0f5654d43b11bd52cfbf6b2bb8bd17040a81",
-        "build": "8.8.20.40",
+        "sha256": "da3df6c5b388d4e17205e0e354532ef9159199caf3e9f02725719a82045975fc",
+        "build": "8.8.20.42",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
       "FLEET_DOCTRINE_REGISTRY.json": {
-        "sha256": "545a0b2a0965401dc80f4dc6310e4376dad5da0f40e7e956232136ef67542943",
-        "build": "8.8.20.40",
+        "sha256": "af96fd5125c3660b398404cc6d4c52e00f2a9eacd53d822d0fcf56682cdf8fee",
+        "build": "8.8.20.42",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -345,8 +346,8 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "GOLDEN_VOYAGES.json": {
-        "sha256": "1096f196238ff541275dc9589a6dbb3a93cde0de80c6e311cf9d6a318f99dd9c",
-        "build": "8.8.20.40",
+        "sha256": "b061c2b689877c294207d3dd015cf09b3cbb0ada4620d1b6e945dc052ff59cfd",
+        "build": "8.8.20.42",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -499,30 +500,30 @@
       "simple_books.css": "5939590021ef2d3738d5f5f7249d72f8da64cc274bf287ef8183958517b0ba46",
       "platform_core.js": "7f797bc382a73eb9ec4365a7458e8329da60c50561e3ac751ca3fb9d7cd5ec49",
       "platform_v4.js": "21daf7777150d654467042893298147374318fdfc7ac38faf9260f874522019b",
-      "platform_identity.js": "269bb669b1793884abd1e6be8c6cb2cd3de5776f5435faa2dd80e03ee52ae223",
-      "fleet_supabase.js": "433222a4b166ff8cb6473f6fde7854a93e2bfc5759f66a64c09f5cb9bab6a974",
+      "platform_identity.js": "7c4d3e7109b1e46229b6999e2d6bd2c0b272687c73b89409b8aec7d14a7895d4",
+      "fleet_supabase.js": "38ce2644ffa3d8e8d590e6bf83214f990961ea7c24353746b0d4832796e179e3",
       "ike_style_registry.js": "6b348ebceb47e172e6676f46252b19c1c6bb7532baf76febfa8dd81760a76ab7",
-      "app.js": "404d8cdccbbc82c33745f35ceb5242e00a5146152689058a3a61893511abdf3c",
-      "captain.js": "57b96f98973e26219b99f22d743c88436c1e9de1b9300244203200c53d6eaa53",
-      "simple_books.js": "67f3f79c4c4ec1f3f93b4fe727d3b548d1404ef98c693f4b3b627a0815d0d527",
-      "owner.html": "663bcd8a5c9202026b608287ae8795882add8cc198c41fe046d633ca49bef1a6",
-      "manifest.webmanifest": "f47258515d797ea571f05180b7cfbfcf5d5aae53e86e9b989d2dc215c187bc40",
+      "app.js": "9c8608595807f0bc58c43984eb3653f59fdd7eff257c9c4fe56528f018459521",
+      "captain.js": "9a0c66681675150c55bc571773e4242ca5304ec62f9e94bb8311dbfbf4f9dd2b",
+      "simple_books.js": "377b6637b8407ad0825496ae5d1c135bfd778f302e0ea551904daf804ed3aa6b",
+      "owner.html": "7cbf63916caab3ef44dca7f9b4e5929507e2aad6662425f4af86f75eca837832",
+      "manifest.webmanifest": "fc2cea548f182e2b603a92998a23578cf7dc28451376963cdc02add17ac9a6fc",
       "IKE_STYLE_FOUNDRY.json": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
-      "sw.js": "13d97ee8790e71a3a4553239f48a3b609e7cf4b3013df771cd2360e3f664ad58",
-      "FLEET_DOCTRINE_REGISTRY.json": "545a0b2a0965401dc80f4dc6310e4376dad5da0f40e7e956232136ef67542943",
-      "GOLDEN_VOYAGES.json": "1096f196238ff541275dc9589a6dbb3a93cde0de80c6e311cf9d6a318f99dd9c",
-      "FLEET_COMMAND_MODEL.json": "bbe47617b760950118e7e128c37d0f5654d43b11bd52cfbf6b2bb8bd17040a81",
-      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "7ad544c38df5976a8dd75f0a049a71716dea6c6f13de2f633f2b19f116f796d3",
-      "input_hygiene.js": "ae250795bde81d101a6e94c9540e2f701cfa60f53f2e31c76e74efd0d6e66333",
-      "business_deck.js": "73eefd69b95f1c7d6d39131e94f2317d93dab744e133b76db1cc2734dcdd2a9e",
+      "sw.js": "1ac9380d1215371775bda013bd9ac0f5064726fd7da93116e87779577726ee76",
+      "FLEET_DOCTRINE_REGISTRY.json": "af96fd5125c3660b398404cc6d4c52e00f2a9eacd53d822d0fcf56682cdf8fee",
+      "GOLDEN_VOYAGES.json": "b061c2b689877c294207d3dd015cf09b3cbb0ada4620d1b6e945dc052ff59cfd",
+      "FLEET_COMMAND_MODEL.json": "da3df6c5b388d4e17205e0e354532ef9159199caf3e9f02725719a82045975fc",
+      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "d6594392ce69a211625c2cd58dd852aee187472f1dd1cc4de85fb0600a7c04b2",
+      "input_hygiene.js": "61ddc67a00395eb658da8ba13d659b680ade10117bb5c3a88343cdeb41d206ac",
+      "business_deck.js": "dfdffc427da906ebf225c4a7f1c786fb60424c651aa47bf692ee63ad05ae0265",
       "business_deck.css": "445fa81fff307d41cdd9a7d181ec86f9daae6843d24ac0d9fe14f939a25b6289",
       "fleet_viewport.js": "14ea8ff7d2c834014d8661a743c9408f9556141e7c81d32b590bd6988d0cfa55",
       "fleet_viewport.css": "36db59f3ef4061631d2fc67aac7b33aed4fff4120453560012413200e0e9bdad",
-      "headway_contracts.js": "977ae37a30a93255e569ff92152e62c705e43ddb9e3728d54db13ecbba4d6c71",
+      "headway_contracts.js": "c3172b6b6f45ba2453320436b571a670293ee2385769e4183b9d99c03ec501f0",
       "woodwright_fit.js": "a4efdadf635608419a2bd82f12a701fd2991ec5dc3d14d282fd846680d40606f",
       "fun_core.js": "b21a909fa3dccf44b2d02d4a8243a91fd260b70db2edfc35338f3fd330c810e4",
-      "fun_program.js": "7bd2e1e875935f5ee442520d0758d4336a6d85aab7fb99639c56d94dec305c9f",
-      "fun_program.css": "a62a0dc98d47ef92fef7aeb15299edb8e7b2c4626d0f831921cb6c5fe1b49e8b",
+      "fun_program.js": "8f4e496d6e9930181b0b626cdc8d9a472c5e3562a3867a6b013ee806e5be7c02",
+      "fun_program.css": "3bed37f2d02e156c0f88ac82bc87c7726b96a6eb7929b9b2250ec56eac3b1b23",
       "fun_player.html": "fcfc2d06cdf204f4591a9717968a027facf170e6e0be32d9151ef847870a0fb7",
       "stormwake_core.js": "539f05db315eb1e5140107da0a42fcb0a6caad07b665be8674524c4fac0db868"
     }
@@ -813,7 +814,7 @@
     "scope": "project-owned canonical logo routing and Fleet Mission presentation",
     "logo_source": "existing projectGraphics/projectLogo exact-vessel store",
     "fleet_mission_display": true,
-    "quick_route": "Fleet Mission LOGO \u2192 exact vessel Project Control \u2192 Marketing \u2192 Project Logo / Mark",
+    "quick_route": "Fleet Mission LOGO → exact vessel Project Control → Marketing → Project Logo / Mark",
     "cross_vessel_copy": false,
     "authority_changes": false,
     "business_record_changes": false,
@@ -1152,9 +1153,32 @@
   },
   "lazy_program_assets": {
     "stormwake_player.html": {
-      "sha256": "4224599ba84c7e1eed5ec25875388c6ab4595ea09ccbace720b9e399654c7c5f",
+      "sha256": "ebc0c2bc43d55a4cfbf6e38cff5696fd0d2a064db54cdb8fbe9bdd9f14a842a2",
       "load": "after existing verified Admiral entry",
-      "bytes": 138687
+      "bytes": 151259
     }
+  },
+  "blacktide_upgrade": {
+    "base_build": "8.8.20.41",
+    "stage": "BT-1 playable art and comfort",
+    "renderer": "Existing Stormwake GL 1 / WebGL 1",
+    "engine_migration": "pending",
+    "external_runtime_dependencies": false,
+    "graphics": [
+      "material-aware batching",
+      "procedural wood, stone, cloth, roof and metal",
+      "warmer harbor light and atmospheric depth",
+      "layered water, foam and glints",
+      "shaped pirate costumes and harbor detail"
+    ],
+    "pause_policy": "clear input on resize without interruption; background pauses active play while preserving existing dialogs",
+    "save_indicator": "compares in-memory progress with last prepared or loaded game file; download completion is not asserted",
+    "mission_schema_changed": false,
+    "business_authority_changed": false,
+    "fleet_model_declarations_repaired": 4,
+    "retained_reference_models": 39,
+    "native_safari_status": "pending",
+    "iPad_fps_claim": false,
+    "production_activation": false
   }
 }

@@ -9,7 +9,7 @@ import sys,json,traceback,hashlib,os
 r=Path(sys.argv[1]);out=Path(sys.argv[2]);out.mkdir(parents=True,exist_ok=True);results=[]
 legacy={'schema':'fun-solo-v1','stage':6,'history':['shore','hull','cargo','channel','sail','gate'],'help':0,'mistakes':1,'completed':True,'lessons':[],'pennant':'gold'}
 with sync_playwright() as pw:
- b=pw.chromium.launch(executable_path='/usr/bin/chromium',headless=True,args=['--no-sandbox','--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader'])
+ b=pw.chromium.launch(executable_path=os.environ.get('BLACKFLAG_CHROMIUM','/usr/bin/chromium'),headless=True,args=['--no-sandbox','--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader'])
  def setup(ok=True):
   p=b.new_page(viewport={'width':1280,'height':840});p.set_default_timeout(12000);errors=[];p.on('pageerror',lambda e:errors.append(str(e)));p.route('**/*',lambda x:x.abort());p.expose_function('__qaDigest',lambda values:list(hashlib.sha256(bytes(values)).digest()));p.set_content('<section id="admiralDeck"><h1>Admiral workspace fixture</h1><button id="funProgramLaunch">OPEN STORMWAKE</button></section>');p.add_style_tag(content=(r/'fun_program.css').read_text());p.add_script_tag(content=(r/'fun_core.js').read_text());p.add_script_tag(content=(r/'stormwake_core.js').read_text());p.evaluate('''v=>{window.__funVerifiedPlayerHtml=v.legacy;window.fixture={ok:v.ok,id:'admiral-test',reusable:true,stamp:100,checks:0,fetches:0,writes:0,html:v.html};Object.defineProperty(crypto,'subtle',{value:{digest:async(_,bytes)=>(new Uint8Array(await __qaDigest(Array.from(new Uint8Array(bytes))))).buffer}});if(!crypto.randomUUID)crypto.randomUUID=()=>String(Math.random()).slice(2)+'-qa-channel';window.DarkSkyAdmiralSession={status:()=>({reusable:fixture.reusable,startedAt:fixture.stamp})};window.BlackFlagV3Identity={productionAuth:{readClientConfig:()=>({url:'https://invalid.test',publishableKey:'synthetic-public-key'})}};window.DarkSkySupabase={create:()=>({readSession:()=>({user:{id:fixture.id},access_token:'NEVER-SEND-TOKEN'}),verifyAdmiralAuthority:async()=>{fixture.checks++;if(fixture.wait)await new Promise(r=>fixture.release=r);return fixture.ok}})};window.fetch=async(url,opt)=>{fixture.fetches++;fixture.request={url:String(url),credentials:opt.credentials};if(fixture.fetchWait)await new Promise(r=>fixture.fetchRelease=r);return new Response(fixture.corrupt?fixture.html+'changed':fixture.html,{status:200});};Storage.prototype.setItem=function(){fixture.writes++;throw Error('No site storage allowed')};}''',{'ok':ok,'legacy':(r/'fun_player.html').read_text(),'html':(r/'stormwake_player.html').read_text()});p.add_script_tag(content=(r/'fun_program.js').read_text());return p,errors
  def open_player():
@@ -84,5 +84,31 @@ with sync_playwright() as pw:
    path=out/'forged-unchanged.json';d.value.save_as(path);assert not json.loads(path.read_text())['mission']['complete'];p.locator('#funExit').click();assert p.locator('#admiralDeck h1').is_visible();assert not p.locator('#funFrame').count();assert p.evaluate('fixture.writes')==0
   finally:p.close()
  case('forged outer messages cannot award progress; return preserves Admiral workspace',forged)
+ def save_indicator():
+  p,f,e=open_player()
+  try:
+   assert p.locator('#funSaveState').count()==1,'No visible save-state indicator'
+   assert p.locator('#funSaveState').get_attribute('data-state')=='unsaved'
+   with p.expect_download() as d:p.locator('#funSaveFile').click()
+   d.value.save_as(out/'indicator-synthetic-save.json')
+   assert p.locator('#funSaveState').get_attribute('data-state')=='prepared'
+   assert 'confirm' in p.locator('#funProgramStatus').inner_text().lower()
+   f.locator('#swTitleSettings').dispatch_event('click');f.locator('#swQuality').select_option('low')
+   p.wait_for_function("()=>document.querySelector('#funSaveState').dataset.state==='unsaved'")
+   assert 'NEW PROGRESS' in p.locator('#funProgramStatus').inner_text()
+   assert p.evaluate('fixture.writes')==0;assert not e,e
+  finally:p.close()
+ case('save indicator becomes unsaved again after new game progress',save_indicator)
+ def visible_return():
+  p,f,e=open_player()
+  try:
+   f.locator('#swStart').dispatch_event('click');assert f.evaluate('StormwakeSnapshot().modal')==''
+   p.evaluate("document.dispatchEvent(new Event('visibilitychange'))");p.wait_for_timeout(150)
+   assert f.evaluate('StormwakeSnapshot().modal')=='','Visible return injected another pause'
+   p.evaluate('fixture.reusable=false;document.dispatchEvent(new Event("visibilitychange"))')
+   assert not p.locator('#funFrame').count(),'Visible return failed to check expired authority'
+   assert not e,e
+  finally:p.close()
+ case('visible return avoids duplicate pause and still checks authority',visible_return)
  b.close()
 (out/'results.json').write_text(json.dumps(results,indent=2));print(json.dumps({'passed':sum(x['pass'] for x in results),'failed':sum(not x['pass'] for x in results)}));sys.exit(any(not x['pass'] for x in results))
