@@ -1,18 +1,18 @@
 {
   "schema": "blackflag-patch-contract-v1",
-  "target_build": "8.8.20.45",
-  "target_seal": "dreadwater-882045",
+  "target_build": "8.8.20.46",
+  "target_seal": "saltglass-882046",
   "supported_bases": [
     {
-      "build": "8.8.20.44",
+      "build": "8.8.20.45",
       "content_digest_algorithm": "release-content-sha256-v1",
-      "content_sha256": "fcbddaeec8def5cad6c16eb364885b6a1c1e07b4c88c83c4c714f14b241efaaa",
-      "file_count": 241,
-      "description": "Exact 241-file Lanternwake TEST release previously delivered; ZIP envelope can differ while filenames and file bytes must match."
+      "content_sha256": "8ddb1c3c19bdb19e5eb9d46ec3c263c1219a8c382018dd9756dbc56565e8c14d",
+      "file_count": 266,
+      "description": "Exact 266-file Dreadwater TEST release previously delivered; the ZIP envelope may differ but all filenames and bytes must match."
     }
   ],
   "requires_deletions": false,
   "max_upload_files": 85,
   "database_actions": "none",
-  "rule": "Keep the downloaded voyage. Upload all files inside the Dreadwater update folder over the complete Lanternwake 8.8.20.44 repository root. Keep all other files. No SQL or browser-data clearing. This patch is not a standalone site."
+  "rule": "Keep the downloaded voyage. Upload every file inside the Saltglass update folder over the complete Dreadwater 8.8.20.45 repository root. Retain all other files. No SQL or browser-data clearing. This update is not a standalone site."
 }

@@ -1,0 +1,2139 @@
+{
+  "schema": "saltglass-final-source-verification-v1",
+  "build": "8.8.20.46",
+  "release": "Saltglass TEST",
+  "pass": true,
+  "status": "OFFLINE_FINAL_SOURCE_AND_COMPILED_PLAYER_VERIFIED",
+  "created_at_utc": "2026-10-21T19:16:16+00:00",
+  "pass_scope": "Final matching offline source, 20 compiled-player cases validated across combined runs, host DOM/crypto/import 12/12 (child animation frames held), seven CPU suites and staged visual 8/8 checks, with root visual review. Strict archive reconstruction and extracted browser BOOT are recorded separately after sealing; native .46 acceptance remains pending. Combined evidence: 20 cases validated across the preserved interrupted original cohort (9 unchanged passing cases), 10 isolated passing retries on the reviewed capture-only revision, and 1 passing resize retry on the final native-event-wait revision. Every selected earlier case and its helper dependencies are AST-identical to the final case; the final revision adds only a bounded wait for the actual native resize event before the unchanged assertion. Every originally failed, not-completed or changed case passed a fresh retry, and both earlier resize failures are preserved. This is not a single clean 20-case execution of the final harness. Actual compiled opaque iframe/WebGL, synthetic parent/clock; same-task canvas PNGs plus real DOM bounds, not full-page UI screenshots. No native Safari/device performance claim.",
+  "final_build": {
+    "compiled_html_sha256": "2e5a605a00d3490c2be9266f163f9f7d149aa3cf8585bfcb7fb8b0e5e368124d",
+    "compiled_html_bytes": 5004919,
+    "maximum_player_bytes": 8388608,
+    "build_report_sha256": "90ce887f316dfc338a349e1b391c41edf5ec3a1b0d6162e01fb94add04b2d473",
+    "inputs_sha256": {
+      "fun_core.js": "b21a909fa3dccf44b2d02d4a8243a91fd260b70db2edfc35338f3fd330c810e4",
+      "stormwake_core.js": "53bc3070f55feceeff08ac5743f3220d70e0c3dda901b0b107092b2e3da16cc9",
+      "stormwake_comfort.js": "7ec7d00de112b327f31c0a904f0e438cfc7ab1399cf0974a824dac44ddc21800",
+      "stormwake_three_vendor.js": "6e40e410c97c908254aa41dcbeba4bb57de69c7d37b1a33d72def3d0d0f884c6",
+      "stormwake_gl.js": "d55f0b2d4f8a0e9a1f203a153b15eec347efe0ed247f2c8b4c72a526bd4c3ed8",
+      "stormwake_cast.js": "fada22aa79430218ab348ae0b2396c55cff0a76eea467fcdad37f576262123c6",
+      "stormwake_three.js": "02cf5ab5bae449441bf8ed2be3a92c4d6d8e7a44172e913c275dd95c3b3e3957",
+      "stormwake_world.js": "7bfaae6b9fa976748e872eb05295f9007d6fd955170c5f9247082983d42a7f87",
+      "stormwake_game.js": "9d7aa9893cec52ab2a8ca8add7e7a0072bd8dc710981f6dfd6c4c45ecfc57dcb",
+      "stormwake_assets.json": "b93916ab71d73d4b1bc48a63852834729a27f10610234466adf98b3dd673c3d8",
+      "STORMWAKE_VENDOR.json": "cc9adf42e577db463cc7d2dc4bed3f78da9075549b6cd2b20207f807d75a5664",
+      "fun_player.html": "fcfc2d06cdf204f4591a9717968a027facf170e6e0be32d9151ef847870a0fb7",
+      "stormwake_game.css": "3bed7033f10e8791a15819dfb86e60dbbca9d2d9cf062169a047c8443fe6fee0",
+      "BUILD_STORMWAKE_PLAYER.py": "61b5dac14d7634c6be35f1c06af564e7853cfe4a8bbe29b250342165c096044a",
+      "STORMWAKE_BUILD_RULES.py": "3f1ee32949d598f11e65b2ccc19e85ce941207b95a6d6a26b132f34833663a02"
+    },
+    "all_input_hashes_match": true,
+    "host_declared_player_digest_matches": true
+  },
+  "checks": {
+    "core": {
+      "status": "PASS",
+      "passed": 32,
+      "failed": 0,
+      "evidence": {
+        "file": "qa/final-core.log",
+        "sha256": "af96151b38a101412c68d3c7f9516179f99636c1ffcab7f45d334fcb5f509414"
+      }
+    },
+    "bridge": {
+      "status": "PASS",
+      "passed": 14,
+      "failed": 0,
+      "evidence": {
+        "file": "qa/final-bridge.log",
+        "sha256": "3adb56ae768066deaa31d9f6e4e5bd7be9c14a783852e938940129b1a41da713"
+      }
+    },
+    "boat": {
+      "status": "PASS",
+      "passed": 4,
+      "failed": 0,
+      "evidence": {
+        "file": "qa/final-boat.log",
+        "sha256": "e6513f1d0119d1e15084a1066e6950c2b13fc1b31b40d1e4289606d08ece16db"
+      }
+    },
+    "comfort": {
+      "status": "PASS",
+      "passed": 8,
+      "failed": 0,
+      "evidence": {
+        "file": "qa/final-comfort.log",
+        "sha256": "076efae1dd8096bc3ac8e98faaebbbe8d5199408681a912f15a6808a6616fbdb"
+      }
+    },
+    "assets": {
+      "status": "PASS",
+      "passed": 8,
+      "failed": 0,
+      "evidence": {
+        "file": "qa/final-assets.log",
+        "sha256": "a05587ef6ed1b944aab8aff7a43ae8c16651ef933d50af4b5a172dd1a2a81f30"
+      }
+    },
+    "renderer": {
+      "status": "PASS",
+      "passed": null,
+      "failed": 0,
+      "evidence": {
+        "file": "qa/final-renderer.log",
+        "sha256": "f91e9955538a47ba673166f2ce4899f6d4d3b416864d364eaa4ba252ceb2c4d1"
+      }
+    },
+    "cast_world": {
+      "status": "PASS",
+      "passed": null,
+      "failed": 0,
+      "evidence": {
+        "file": "qa/final-cast_world.log",
+        "sha256": "a9ada4319a60796a0c5162aec68f15851e3ad094945c8160db9de92d6608e062"
+      }
+    },
+    "actual_compiled_player": {
+      "status": "PASS",
+      "passed": 20,
+      "failed": 0,
+      "evidence": {
+        "file": "qa/player-recovered/results.json",
+        "sha256": "8de823fa4291c4f34e23d00b30ca9ca3aea2e647146557b11c70d4103d0bf43f"
+      },
+      "input_snapshot": {
+        "file": "qa/player-recovered/inputs.json",
+        "sha256": "1c357026c19e6b0e2711c392dbc9635fa714538e92a25e505d8c70871843c162"
+      },
+      "source_sha256": {
+        "VERIFY_SALTGLASS_PLAYER.py": "56133e6005958edab34ef728b562e44e0bfa05908215ecbbe76ecfbadd6054c2",
+        "stormwake_player.html": "2e5a605a00d3490c2be9266f163f9f7d149aa3cf8585bfcb7fb8b0e5e368124d",
+        "STORMWAKE_PLAYER_BUILD.json": "90ce887f316dfc338a349e1b391c41edf5ec3a1b0d6162e01fb94add04b2d473"
+      },
+      "scope": "Combined evidence: 20 cases validated across the preserved interrupted original cohort (9 unchanged passing cases), 10 isolated passing retries on the reviewed capture-only revision, and 1 passing resize retry on the final native-event-wait revision. Every selected earlier case and its helper dependencies are AST-identical to the final case; the final revision adds only a bounded wait for the actual native resize event before the unchanged assertion. Every originally failed, not-completed or changed case passed a fresh retry, and both earlier resize failures are preserved. This is not a single clean 20-case execution of the final harness. Actual compiled opaque iframe/WebGL, synthetic parent/clock; same-task canvas PNGs plus real DOM bounds, not full-page UI screenshots. No native Safari/device performance claim.",
+      "recovery": {
+        "schema": "saltglass-player-recovery-v2",
+        "original_cohort": {
+          "directory": "qa/player-original",
+          "files_sha256": {
+            ".Saltglass-winch-1280x820.png.srpPx8": "5c25afee1fd31d32e31d82411e11c5c2d665fd898dc6ecac14fc6807dd28aa09",
+            "Saltglass-winch-1280x820.png": "f659b66cbfe55954a0eaf35b50a6fcdf6f55a3471af622c86ade2c40a53641f0",
+            "VERIFY_SALTGLASS_PLAYER.py": "c391468848d01749e76624cba3440db3b9cb9b98735baa42f20bead4a58095cd",
+            "complete-state.json": "4ee3c433ec9445acb97bb8cab243634e9a018425aad45226d14cf460eba80367",
+            "inputs.json": "429e5cbaba7731b00be93edf75ec2a9e92b84f2432bf345ef6c84c391d8c0644",
+            "interruption.json": "5bae12f31373aa295a5482b7af5b9344310e24916bf64cfc67e0c55b0a4b2ff7",
+            "raw.log": "4d776b2d0a3b3d8c5ec81d0fcfaece49774e97c41e297918248ec73f2d01c809",
+            "results.json": "27c0118e65b03ec19b7c7332bc02ba6b2e291a3323e704c2ba93423ad8395411"
+          },
+          "files_digest_sha256": "d4b6ad9148b0fab7e7abaa5d61e8c4899644dc8c086090d9f064e52b91d62e35",
+          "execution_status": "interrupted"
+        },
+        "original_results": {
+          "file": "qa/player-original/results.json",
+          "sha256": "27c0118e65b03ec19b7c7332bc02ba6b2e291a3323e704c2ba93423ad8395411"
+        },
+        "original_inputs": {
+          "file": "qa/player-original/inputs.json",
+          "sha256": "429e5cbaba7731b00be93edf75ec2a9e92b84f2432bf345ef6c84c391d8c0644"
+        },
+        "original_log": {
+          "file": "qa/player-original/raw.log",
+          "sha256": "4d776b2d0a3b3d8c5ec81d0fcfaece49774e97c41e297918248ec73f2d01c809"
+        },
+        "original_execution_status": "interrupted",
+        "original_terminal_totals": {
+          "passed": 9,
+          "failed": 3,
+          "not_completed": 8
+        },
+        "original_interruption": {
+          "time_utc": "2026-10-21T18:44:38+00:00",
+          "reason": "Stop cohort after compositor capture timeout and repeated subsequent setup timeouts; retain passed evidence and rerun every changed, failed or unfinished case in isolated browsers.",
+          "source_sha256": {
+            "VERIFY_SALTGLASS_PLAYER.py": "c391468848d01749e76624cba3440db3b9cb9b98735baa42f20bead4a58095cd",
+            "stormwake_player.html": "2e5a605a00d3490c2be9266f163f9f7d149aa3cf8585bfcb7fb8b0e5e368124d",
+            "STORMWAKE_PLAYER_BUILD.json": "90ce887f316dfc338a349e1b391c41edf5ec3a1b0d6162e01fb94add04b2d473"
+          },
+          "owned_processes": [
+            {
+              "pid": 6405,
+              "name": "python",
+              "state": "S",
+              "starttime": "1922578"
+            }
+          ],
+          "source_hashes_unchanged": true
+        },
+        "original_failures": [
+          {
+            "name": "actual WebGL harbor, articulated character and visible controls",
+            "status": "failed",
+            "pass": false,
+            "error": "Page.screenshot: Timeout 40000ms exceeded."
+          },
+          {
+            "name": "focus and parent background pause stop winch work until another deliberate touch",
+            "status": "failed",
+            "pass": false,
+            "error": "Locator.element_handle: Timeout 30000ms exceeded."
+          },
+          {
+            "name": "repair controls fit landscape and portrait touch viewports with actual WebGL screenshots",
+            "status": "failed",
+            "pass": false,
+            "error": "Frame.wait_for_selector: Timeout 30000ms exceeded."
+          }
+        ],
+        "original_not_completed": [
+          "complete Broken Passage through actual movement, jump, mechanism, boat, rescue and return",
+          "title hold preserves entry and usable controls",
+          "resize preserves play while lost focus pauses without stuck keys or catch-up",
+          "known pier-save fixture restores mission and preferences exactly; actual production camera canvas",
+          "actual held walking cannot pass through Bootstrap and talk still works",
+          "actual WebGL context loss and deliberate rebuild retain the saved mission and reload artwork",
+          "when WebGL2 capability is unavailable the real WebGL1 harbor and walking remain usable",
+          "all three quality modes resize and render the actual modern scene with the saved preference"
+        ],
+        "required_retry_functions": [
+          "boot",
+          "bridge_layout",
+          "context_recovery",
+          "crew_clearance",
+          "full_mission",
+          "legacy_graphics",
+          "pause_title",
+          "quality_modes",
+          "resize_blur",
+          "saved_voyage_picture",
+          "winch_interruption"
+        ],
+        "retained_passes": 9,
+        "fresh_retry_passes": 11,
+        "intermediate_harness_passes": 10,
+        "final_harness_passes": 1,
+        "harness_revisions": {
+          "original": "c391468848d01749e76624cba3440db3b9cb9b98735baa42f20bead4a58095cd",
+          "capture_only": "9d28fcc9eb1b2a99e69c53e787664ba86263b3bd614afce1e15f86d5ff0c23b3",
+          "final_native_resize_wait": "56133e6005958edab34ef728b562e44e0bfa05908215ecbbe76ecfbadd6054c2"
+        },
+        "capture_source_snapshot": {
+          "file": "qa/player-capture-candidate.py",
+          "sha256": "9d28fcc9eb1b2a99e69c53e787664ba86263b3bd614afce1e15f86d5ff0c23b3"
+        },
+        "resize_wait_review": {
+          "review": {
+            "file": "qa/resize-wait-review.json",
+            "sha256": "5de91608880dce22c227bae5c582c768bb694f4dc89f364b909a32d031f22b5f"
+          },
+          "diagnostic": {
+            "observations.jsonl": {
+              "file": "qa/resize-observation-manualpoll/observations.jsonl",
+              "sha256": "3d894cf279a9b52d0990d024a00bf95a4b495f55cbf611e8ac9eadde5bd022c4"
+            },
+            "results.json": {
+              "file": "qa/resize-observation-manualpoll/results.json",
+              "sha256": "6588e8fc4263785dd754de3c8c35f073348f8c45d1bf6a519df1c3b853ae40af"
+            },
+            "inputs.json": {
+              "file": "qa/resize-observation-manualpoll/inputs.json",
+              "sha256": "eb0015a8b097bc0114744c87d1bce5ae3c6bcc7b5dec80f5a882db5cdd3b216e"
+            },
+            "VERIFY_PLAYER_OBSERVE.py": {
+              "file": "qa/resize-observation-manualpoll/VERIFY_PLAYER_OBSERVE.py",
+              "sha256": "e8550a1c6272361757581938701839fecc9cc7015e3718fb94461dc8a2ff3b5f"
+            }
+          },
+          "preserved_validator_scripts": {
+            "recover_player_evidence.py": {
+              "file": "qa/player-recovery-v1-scripts/recover_player_evidence.py",
+              "sha256": "97b2fee3508efd58c52b0a42ef1f67817b4315c099a3c5fac465b756d62e6e9d"
+            },
+            "finalize_release_evidence.py": {
+              "file": "qa/player-recovery-v1-scripts/finalize_release_evidence.py",
+              "sha256": "23da6f330d88963b2a2f787d66fd9e24e4844308e01c8c2d9651bde041438316"
+            },
+            "finish_delivery.py": {
+              "file": "qa/player-recovery-v1-scripts/finish_delivery.py",
+              "sha256": "9953cb47e047b429e62ef39e0c61a8386615f3eac1e9828d631eb7451a39b0e6"
+            }
+          },
+          "scope": "Observation-only diagnosis of the late trusted native event; acceptance comes from final resize attempt-003."
+        },
+        "ast_comparison": {
+          "before_sha256": "c391468848d01749e76624cba3440db3b9cb9b98735baa42f20bead4a58095cd",
+          "after_sha256": "56133e6005958edab34ef728b562e44e0bfa05908215ecbbe76ecfbadd6054c2",
+          "changed_functions": [
+            "boot",
+            "bridge_layout",
+            "resize_blur",
+            "saved_voyage_picture"
+          ],
+          "new_helper": "capture_canvas",
+          "preserved_assertion_counts": {
+            "boot": 4,
+            "bridge_layout": 4,
+            "saved_voyage_picture": 4
+          },
+          "unchanged_module_skeleton_sha256": "d160d51dc74fe5538a6e526e6508c2933d0d690c2bcd40a6fc336d289a7ed35a",
+          "case_dependencies_ast_sha256": {
+            "boot": {
+              "boot": "8ae543ec4bfdc111d8dc048805ae90761a25b6689a63654c657a460bb449f1ef",
+              "capture_canvas": "c638e3b5c10f5f08916e0b4fc7901ba0cac23577df9490e05ccf94ad05d3f4e7",
+              "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970"
+            },
+            "direct": {
+              "direct": "591cbc6179a837904fe71a2c0cbb4853fa2d70dc74e18a92daddb68dda96e353",
+              "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970"
+            },
+            "walking": {
+              "accelerate": "324eb36cdfb26afb15d75e28dbfc2deec642a2b3d21e5f34e295b04a094c94b7",
+              "click_act": "6758e25869a4d44e2dc90bd64b2c3d28b19113d54fa65bb1b064be8b46ce769c",
+              "drive": "b6e3e633dbafbfba773c5a191b52fb1828fbe05a025d74d11c2ceed5c1c92637",
+              "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+              "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970",
+              "start_play": "1c5d9ce807b0b38e5c4d4fbe2ff2be09581297067cb20c3552a58e2be9433ac6",
+              "walking": "e18379ab3a30c653dedd852756a1782736824c6d3235bf1dd50a72479450d752"
+            },
+            "pause_input": {
+              "accelerate": "324eb36cdfb26afb15d75e28dbfc2deec642a2b3d21e5f34e295b04a094c94b7",
+              "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+              "pause_input": "a43f175d518288fcf8b01cd22ba1d38d5bdb8d29f2189c7d9b6a418305805d6b",
+              "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970",
+              "start_play": "1c5d9ce807b0b38e5c4d4fbe2ff2be09581297067cb20c3552a58e2be9433ac6"
+            },
+            "lessons": {
+              "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+              "lessons": "1305e6a7bb37d22909f2f6f550970f7cfe35d7beb98a22a49a5524f106539ab5",
+              "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970",
+              "start_play": "1c5d9ce807b0b38e5c4d4fbe2ff2be09581297067cb20c3552a58e2be9433ac6"
+            },
+            "legacy": {
+              "legacy": "86cc49380d36b8d5b64952dbd0262bc7a53d93eb4dea3e7240320340dab02ff3",
+              "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970"
+            },
+            "wrong_parent": {
+              "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+              "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970",
+              "start_play": "1c5d9ce807b0b38e5c4d4fbe2ff2be09581297067cb20c3552a58e2be9433ac6",
+              "wrong_parent": "d35ecf54067a69743ab466de3bc9d520d5eaab21d1885d0a0ea14906c46c1047"
+            },
+            "winch_release": {
+              "accelerate": "324eb36cdfb26afb15d75e28dbfc2deec642a2b3d21e5f34e295b04a094c94b7",
+              "bridge_checkpoint": "27698e8f26c291ce97bc09b879567e9d3873aa97ccfef3522dffae892669a9da",
+              "click_act": "6758e25869a4d44e2dc90bd64b2c3d28b19113d54fa65bb1b064be8b46ce769c",
+              "drive": "b6e3e633dbafbfba773c5a191b52fb1828fbe05a025d74d11c2ceed5c1c92637",
+              "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+              "hold_winch": "41a1da0f845db515f87037cc9648f67f07b9a695f41986f2a67644226641afe3",
+              "open_mechanism": "52ad2d940e167b60dc28aaf8ed7edad966e3547750bbfeb4ccdf60ed615764d7",
+              "poll": "e4877f7ca9b2eb63610be4f9f98fe0fe7185ccd11458da021d53d131e31ec2dd",
+              "repaired_mechanism": "79db6e1ac5cc46c030a9f2e69b186f4e7d0ce15b7502f2a85d293d1ebacabdd6",
+              "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970",
+              "start_play": "1c5d9ce807b0b38e5c4d4fbe2ff2be09581297067cb20c3552a58e2be9433ac6",
+              "touch_button": "b7c696104633d2aae4177d81f3f4cc51f6f374686a95c9c243f93184f26d4e12",
+              "winch_release": "b09e9a9898d9f02d317055380b5f0d89a59e18514e201a0bbe7939b8b7cf35b3"
+            },
+            "winch_interruption": {
+              "accelerate": "324eb36cdfb26afb15d75e28dbfc2deec642a2b3d21e5f34e295b04a094c94b7",
+              "bridge_checkpoint": "27698e8f26c291ce97bc09b879567e9d3873aa97ccfef3522dffae892669a9da",
+              "click_act": "6758e25869a4d44e2dc90bd64b2c3d28b19113d54fa65bb1b064be8b46ce769c",
+              "drive": "b6e3e633dbafbfba773c5a191b52fb1828fbe05a025d74d11c2ceed5c1c92637",
+              "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+              "hold_winch": "41a1da0f845db515f87037cc9648f67f07b9a695f41986f2a67644226641afe3",
+              "open_mechanism": "52ad2d940e167b60dc28aaf8ed7edad966e3547750bbfeb4ccdf60ed615764d7",
+              "poll": "e4877f7ca9b2eb63610be4f9f98fe0fe7185ccd11458da021d53d131e31ec2dd",
+              "repaired_mechanism": "79db6e1ac5cc46c030a9f2e69b186f4e7d0ce15b7502f2a85d293d1ebacabdd6",
+              "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970",
+              "start_play": "1c5d9ce807b0b38e5c4d4fbe2ff2be09581297067cb20c3552a58e2be9433ac6",
+              "touch_button": "b7c696104633d2aae4177d81f3f4cc51f6f374686a95c9c243f93184f26d4e12",
+              "winch_interruption": "e1e60473acb50024533cee55c66afd694dfd7c575b66109ef62d831dfafbd616"
+            },
+            "bridge_layout": {
+              "accelerate": "324eb36cdfb26afb15d75e28dbfc2deec642a2b3d21e5f34e295b04a094c94b7",
+              "bridge_checkpoint": "27698e8f26c291ce97bc09b879567e9d3873aa97ccfef3522dffae892669a9da",
+              "bridge_layout": "a345bd7970ea3997bcc02b6069165025dd25bea6f10e3f20576b80e004a8d869",
+              "capture_canvas": "c638e3b5c10f5f08916e0b4fc7901ba0cac23577df9490e05ccf94ad05d3f4e7",
+              "click_act": "6758e25869a4d44e2dc90bd64b2c3d28b19113d54fa65bb1b064be8b46ce769c",
+              "drive": "b6e3e633dbafbfba773c5a191b52fb1828fbe05a025d74d11c2ceed5c1c92637",
+              "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+              "open_mechanism": "52ad2d940e167b60dc28aaf8ed7edad966e3547750bbfeb4ccdf60ed615764d7",
+              "poll": "e4877f7ca9b2eb63610be4f9f98fe0fe7185ccd11458da021d53d131e31ec2dd",
+              "repaired_mechanism": "79db6e1ac5cc46c030a9f2e69b186f4e7d0ce15b7502f2a85d293d1ebacabdd6",
+              "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970",
+              "start_play": "1c5d9ce807b0b38e5c4d4fbe2ff2be09581297067cb20c3552a58e2be9433ac6",
+              "touch_button": "b7c696104633d2aae4177d81f3f4cc51f6f374686a95c9c243f93184f26d4e12"
+            },
+            "interrupted_pointer_recovery": {
+              "accelerate": "324eb36cdfb26afb15d75e28dbfc2deec642a2b3d21e5f34e295b04a094c94b7",
+              "bridge_checkpoint": "27698e8f26c291ce97bc09b879567e9d3873aa97ccfef3522dffae892669a9da",
+              "click_act": "6758e25869a4d44e2dc90bd64b2c3d28b19113d54fa65bb1b064be8b46ce769c",
+              "drive": "b6e3e633dbafbfba773c5a191b52fb1828fbe05a025d74d11c2ceed5c1c92637",
+              "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+              "hold_winch": "41a1da0f845db515f87037cc9648f67f07b9a695f41986f2a67644226641afe3",
+              "interrupted_pointer_recovery": "57794f58f4fd9579469e2f350d139926baf5039d57f037343ba2ce7ce1f9ae19",
+              "open_mechanism": "52ad2d940e167b60dc28aaf8ed7edad966e3547750bbfeb4ccdf60ed615764d7",
+              "poll": "e4877f7ca9b2eb63610be4f9f98fe0fe7185ccd11458da021d53d131e31ec2dd",
+              "repaired_mechanism": "79db6e1ac5cc46c030a9f2e69b186f4e7d0ce15b7502f2a85d293d1ebacabdd6",
+              "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970",
+              "start_play": "1c5d9ce807b0b38e5c4d4fbe2ff2be09581297067cb20c3552a58e2be9433ac6",
+              "touch_button": "b7c696104633d2aae4177d81f3f4cc51f6f374686a95c9c243f93184f26d4e12"
+            },
+            "activity_from_real_input": {
+              "activity_from_real_input": "fc88c10db992deb133bda7c3639f1d652ab201830512ae0473d3e10e2221767c",
+              "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+              "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970",
+              "touch_button": "b7c696104633d2aae4177d81f3f4cc51f6f374686a95c9c243f93184f26d4e12"
+            },
+            "full_mission": {
+              "accelerate": "324eb36cdfb26afb15d75e28dbfc2deec642a2b3d21e5f34e295b04a094c94b7",
+              "click_act": "6758e25869a4d44e2dc90bd64b2c3d28b19113d54fa65bb1b064be8b46ce769c",
+              "drive": "b6e3e633dbafbfba773c5a191b52fb1828fbe05a025d74d11c2ceed5c1c92637",
+              "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+              "full_mission": "e440e783fad38996c424c15a78fa6f6c0e2bc18dd322465263857eec5aa01710",
+              "hold_winch": "41a1da0f845db515f87037cc9648f67f07b9a695f41986f2a67644226641afe3",
+              "poll": "e4877f7ca9b2eb63610be4f9f98fe0fe7185ccd11458da021d53d131e31ec2dd",
+              "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970",
+              "start_play": "1c5d9ce807b0b38e5c4d4fbe2ff2be09581297067cb20c3552a58e2be9433ac6",
+              "touch_button": "b7c696104633d2aae4177d81f3f4cc51f6f374686a95c9c243f93184f26d4e12"
+            },
+            "pause_title": {
+              "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+              "pause_title": "12813e69e0f7767891b4e15370a8c98b90b2b6b1fed057fbc664fd9bc2944ba6",
+              "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970",
+              "start_play": "1c5d9ce807b0b38e5c4d4fbe2ff2be09581297067cb20c3552a58e2be9433ac6"
+            },
+            "resize_blur": {
+              "accelerate": "324eb36cdfb26afb15d75e28dbfc2deec642a2b3d21e5f34e295b04a094c94b7",
+              "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+              "resize_blur": "173cfef560c7e27892591381ef5981fb5b69e56713412143ef028f9cd8acf5d5",
+              "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970",
+              "start_play": "1c5d9ce807b0b38e5c4d4fbe2ff2be09581297067cb20c3552a58e2be9433ac6"
+            },
+            "saved_voyage_picture": {
+              "bridge_checkpoint": "27698e8f26c291ce97bc09b879567e9d3873aa97ccfef3522dffae892669a9da",
+              "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+              "saved_voyage_picture": "cd1ed11ddd8245346d81559b0efa5d8953eb7f128557e97d0cb2b28ae2a9e9bf",
+              "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970",
+              "start_play": "1c5d9ce807b0b38e5c4d4fbe2ff2be09581297067cb20c3552a58e2be9433ac6"
+            },
+            "crew_clearance": {
+              "accelerate": "324eb36cdfb26afb15d75e28dbfc2deec642a2b3d21e5f34e295b04a094c94b7",
+              "click_act": "6758e25869a4d44e2dc90bd64b2c3d28b19113d54fa65bb1b064be8b46ce769c",
+              "crew_clearance": "74311e6726be7567b2ce123de753131f8c8b04489aa244a1b21ef5266bd10c0b",
+              "drive": "b6e3e633dbafbfba773c5a191b52fb1828fbe05a025d74d11c2ceed5c1c92637",
+              "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+              "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970",
+              "start_play": "1c5d9ce807b0b38e5c4d4fbe2ff2be09581297067cb20c3552a58e2be9433ac6"
+            },
+            "context_recovery": {
+              "bridge_checkpoint": "27698e8f26c291ce97bc09b879567e9d3873aa97ccfef3522dffae892669a9da",
+              "context_recovery": "6f5e9d664411a88d9652abfe1f6d6bbcfb0117812c29fa73ceee7c9f08548177",
+              "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+              "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970",
+              "start_play": "1c5d9ce807b0b38e5c4d4fbe2ff2be09581297067cb20c3552a58e2be9433ac6"
+            },
+            "legacy_graphics": {
+              "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+              "legacy_graphics": "ca237ebd24adebfe8050ce4733c997d3480424122843ad4ea11497e3f0772ba7",
+              "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970",
+              "start_play": "1c5d9ce807b0b38e5c4d4fbe2ff2be09581297067cb20c3552a58e2be9433ac6"
+            },
+            "quality_modes": {
+              "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+              "quality_modes": "a97a0848e70c7a7fac6ccc6abd1a7508685c1f2e9ad90c2ef332968404de9f92",
+              "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970"
+            }
+          },
+          "old_cases": [
+            {
+              "name": "actual WebGL harbor, articulated character and visible controls",
+              "function": "boot"
+            },
+            {
+              "name": "direct player remains locked without parent handshake",
+              "function": "direct"
+            },
+            {
+              "name": "walk with real keyboard controls, meet Bootstrap and collect one physical repair",
+              "function": "walking"
+            },
+            {
+              "name": "pause cancels held movement and does not simulate catch-up",
+              "function": "pause_input"
+            },
+            {
+              "name": "interactive functions slider moves launch and graph before practice; lesson distinct from rescue",
+              "function": "lessons"
+            },
+            {
+              "name": "original First Light remains playable in a second opaque frame without changing rescue",
+              "function": "legacy"
+            },
+            {
+              "name": "opaque child cannot read parent; self-forged restore ignored",
+              "function": "wrong_parent"
+            },
+            {
+              "name": "trusted touch repairs and raises the real bridge; release stops work and completion saves compatibly",
+              "function": "winch_release"
+            },
+            {
+              "name": "focus and parent background pause stop winch work until another deliberate touch",
+              "function": "winch_interruption"
+            },
+            {
+              "name": "repair controls fit landscape and portrait touch viewports with actual WebGL screenshots",
+              "function": "bridge_layout"
+            },
+            {
+              "name": "a fresh actual finger can resume winching after interruption loses the first terminal event",
+              "function": "interrupted_pointer_recovery"
+            },
+            {
+              "name": "compiled game reports actual trusted visible input only, never animation or progress",
+              "function": "activity_from_real_input"
+            },
+            {
+              "name": "complete Broken Passage through actual movement, jump, mechanism, boat, rescue and return",
+              "function": "full_mission"
+            },
+            {
+              "name": "title hold preserves entry and usable controls",
+              "function": "pause_title"
+            },
+            {
+              "name": "resize preserves play while lost focus pauses without stuck keys or catch-up",
+              "function": "resize_blur"
+            },
+            {
+              "name": "known pier-save fixture restores mission and preferences exactly; actual production camera canvas",
+              "function": "saved_voyage_picture"
+            },
+            {
+              "name": "actual held walking cannot pass through Bootstrap and talk still works",
+              "function": "crew_clearance"
+            },
+            {
+              "name": "actual WebGL context loss and deliberate rebuild retain the saved mission and reload artwork",
+              "function": "context_recovery"
+            },
+            {
+              "name": "when WebGL2 capability is unavailable the real WebGL1 harbor and walking remain usable",
+              "function": "legacy_graphics"
+            },
+            {
+              "name": "all three quality modes resize and render the actual modern scene with the saved preference",
+              "function": "quality_modes"
+            }
+          ],
+          "current_cases": [
+            {
+              "name": "actual WebGL harbor, articulated character and visible controls",
+              "function": "boot"
+            },
+            {
+              "name": "direct player remains locked without parent handshake",
+              "function": "direct"
+            },
+            {
+              "name": "walk with real keyboard controls, meet Bootstrap and collect one physical repair",
+              "function": "walking"
+            },
+            {
+              "name": "pause cancels held movement and does not simulate catch-up",
+              "function": "pause_input"
+            },
+            {
+              "name": "interactive functions slider moves launch and graph before practice; lesson distinct from rescue",
+              "function": "lessons"
+            },
+            {
+              "name": "original First Light remains playable in a second opaque frame without changing rescue",
+              "function": "legacy"
+            },
+            {
+              "name": "opaque child cannot read parent; self-forged restore ignored",
+              "function": "wrong_parent"
+            },
+            {
+              "name": "trusted touch repairs and raises the real bridge; release stops work and completion saves compatibly",
+              "function": "winch_release"
+            },
+            {
+              "name": "focus and parent background pause stop winch work until another deliberate touch",
+              "function": "winch_interruption"
+            },
+            {
+              "name": "repair controls fit landscape and portrait touch viewports with actual WebGL canvas captures",
+              "function": "bridge_layout"
+            },
+            {
+              "name": "a fresh actual finger can resume winching after interruption loses the first terminal event",
+              "function": "interrupted_pointer_recovery"
+            },
+            {
+              "name": "compiled game reports actual trusted visible input only, never animation or progress",
+              "function": "activity_from_real_input"
+            },
+            {
+              "name": "complete Broken Passage through actual movement, jump, mechanism, boat, rescue and return",
+              "function": "full_mission"
+            },
+            {
+              "name": "title hold preserves entry and usable controls",
+              "function": "pause_title"
+            },
+            {
+              "name": "resize preserves play while lost focus pauses without stuck keys or catch-up",
+              "function": "resize_blur"
+            },
+            {
+              "name": "known pier-save fixture restores mission and preferences exactly; actual production camera canvas",
+              "function": "saved_voyage_picture"
+            },
+            {
+              "name": "actual held walking cannot pass through Bootstrap and talk still works",
+              "function": "crew_clearance"
+            },
+            {
+              "name": "actual WebGL context loss and deliberate rebuild retain the saved mission and reload artwork",
+              "function": "context_recovery"
+            },
+            {
+              "name": "when WebGL2 capability is unavailable the real WebGL1 harbor and walking remain usable",
+              "function": "legacy_graphics"
+            },
+            {
+              "name": "all three quality modes resize and render the actual modern scene with the saved preference",
+              "function": "quality_modes"
+            }
+          ],
+          "capture_revision_sha256": "9d28fcc9eb1b2a99e69c53e787664ba86263b3bd614afce1e15f86d5ff0c23b3",
+          "resize_wait_transition": {
+            "before_sha256": "9d28fcc9eb1b2a99e69c53e787664ba86263b3bd614afce1e15f86d5ff0c23b3",
+            "after_sha256": "56133e6005958edab34ef728b562e44e0bfa05908215ecbbe76ecfbadd6054c2",
+            "changed_function": "resize_blur",
+            "added_loop_ast_sha256": "a0c33746e41114b4d167cfa73bd3939161dd83dc621e6888af0308d8285b58f0",
+            "module_ast_sha256_after_removing_only_loop": "e4f53d69524981599aea28b4be653de89897c796b4e7410f8df570a8f2897a3c",
+            "preserved_assertions": 129,
+            "unchanged_case_count": 19,
+            "unchanged_case_dependencies_ast_sha256": {
+              "boot": {
+                "boot": "8ae543ec4bfdc111d8dc048805ae90761a25b6689a63654c657a460bb449f1ef",
+                "capture_canvas": "c638e3b5c10f5f08916e0b4fc7901ba0cac23577df9490e05ccf94ad05d3f4e7",
+                "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970"
+              },
+              "direct": {
+                "direct": "591cbc6179a837904fe71a2c0cbb4853fa2d70dc74e18a92daddb68dda96e353",
+                "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970"
+              },
+              "walking": {
+                "accelerate": "324eb36cdfb26afb15d75e28dbfc2deec642a2b3d21e5f34e295b04a094c94b7",
+                "click_act": "6758e25869a4d44e2dc90bd64b2c3d28b19113d54fa65bb1b064be8b46ce769c",
+                "drive": "b6e3e633dbafbfba773c5a191b52fb1828fbe05a025d74d11c2ceed5c1c92637",
+                "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+                "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970",
+                "start_play": "1c5d9ce807b0b38e5c4d4fbe2ff2be09581297067cb20c3552a58e2be9433ac6",
+                "walking": "e18379ab3a30c653dedd852756a1782736824c6d3235bf1dd50a72479450d752"
+              },
+              "pause_input": {
+                "accelerate": "324eb36cdfb26afb15d75e28dbfc2deec642a2b3d21e5f34e295b04a094c94b7",
+                "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+                "pause_input": "a43f175d518288fcf8b01cd22ba1d38d5bdb8d29f2189c7d9b6a418305805d6b",
+                "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970",
+                "start_play": "1c5d9ce807b0b38e5c4d4fbe2ff2be09581297067cb20c3552a58e2be9433ac6"
+              },
+              "lessons": {
+                "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+                "lessons": "1305e6a7bb37d22909f2f6f550970f7cfe35d7beb98a22a49a5524f106539ab5",
+                "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970",
+                "start_play": "1c5d9ce807b0b38e5c4d4fbe2ff2be09581297067cb20c3552a58e2be9433ac6"
+              },
+              "legacy": {
+                "legacy": "86cc49380d36b8d5b64952dbd0262bc7a53d93eb4dea3e7240320340dab02ff3",
+                "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970"
+              },
+              "wrong_parent": {
+                "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+                "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970",
+                "start_play": "1c5d9ce807b0b38e5c4d4fbe2ff2be09581297067cb20c3552a58e2be9433ac6",
+                "wrong_parent": "d35ecf54067a69743ab466de3bc9d520d5eaab21d1885d0a0ea14906c46c1047"
+              },
+              "winch_release": {
+                "accelerate": "324eb36cdfb26afb15d75e28dbfc2deec642a2b3d21e5f34e295b04a094c94b7",
+                "bridge_checkpoint": "27698e8f26c291ce97bc09b879567e9d3873aa97ccfef3522dffae892669a9da",
+                "click_act": "6758e25869a4d44e2dc90bd64b2c3d28b19113d54fa65bb1b064be8b46ce769c",
+                "drive": "b6e3e633dbafbfba773c5a191b52fb1828fbe05a025d74d11c2ceed5c1c92637",
+                "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+                "hold_winch": "41a1da0f845db515f87037cc9648f67f07b9a695f41986f2a67644226641afe3",
+                "open_mechanism": "52ad2d940e167b60dc28aaf8ed7edad966e3547750bbfeb4ccdf60ed615764d7",
+                "poll": "e4877f7ca9b2eb63610be4f9f98fe0fe7185ccd11458da021d53d131e31ec2dd",
+                "repaired_mechanism": "79db6e1ac5cc46c030a9f2e69b186f4e7d0ce15b7502f2a85d293d1ebacabdd6",
+                "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970",
+                "start_play": "1c5d9ce807b0b38e5c4d4fbe2ff2be09581297067cb20c3552a58e2be9433ac6",
+                "touch_button": "b7c696104633d2aae4177d81f3f4cc51f6f374686a95c9c243f93184f26d4e12",
+                "winch_release": "b09e9a9898d9f02d317055380b5f0d89a59e18514e201a0bbe7939b8b7cf35b3"
+              },
+              "winch_interruption": {
+                "accelerate": "324eb36cdfb26afb15d75e28dbfc2deec642a2b3d21e5f34e295b04a094c94b7",
+                "bridge_checkpoint": "27698e8f26c291ce97bc09b879567e9d3873aa97ccfef3522dffae892669a9da",
+                "click_act": "6758e25869a4d44e2dc90bd64b2c3d28b19113d54fa65bb1b064be8b46ce769c",
+                "drive": "b6e3e633dbafbfba773c5a191b52fb1828fbe05a025d74d11c2ceed5c1c92637",
+                "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+                "hold_winch": "41a1da0f845db515f87037cc9648f67f07b9a695f41986f2a67644226641afe3",
+                "open_mechanism": "52ad2d940e167b60dc28aaf8ed7edad966e3547750bbfeb4ccdf60ed615764d7",
+                "poll": "e4877f7ca9b2eb63610be4f9f98fe0fe7185ccd11458da021d53d131e31ec2dd",
+                "repaired_mechanism": "79db6e1ac5cc46c030a9f2e69b186f4e7d0ce15b7502f2a85d293d1ebacabdd6",
+                "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970",
+                "start_play": "1c5d9ce807b0b38e5c4d4fbe2ff2be09581297067cb20c3552a58e2be9433ac6",
+                "touch_button": "b7c696104633d2aae4177d81f3f4cc51f6f374686a95c9c243f93184f26d4e12",
+                "winch_interruption": "e1e60473acb50024533cee55c66afd694dfd7c575b66109ef62d831dfafbd616"
+              },
+              "bridge_layout": {
+                "accelerate": "324eb36cdfb26afb15d75e28dbfc2deec642a2b3d21e5f34e295b04a094c94b7",
+                "bridge_checkpoint": "27698e8f26c291ce97bc09b879567e9d3873aa97ccfef3522dffae892669a9da",
+                "bridge_layout": "a345bd7970ea3997bcc02b6069165025dd25bea6f10e3f20576b80e004a8d869",
+                "capture_canvas": "c638e3b5c10f5f08916e0b4fc7901ba0cac23577df9490e05ccf94ad05d3f4e7",
+                "click_act": "6758e25869a4d44e2dc90bd64b2c3d28b19113d54fa65bb1b064be8b46ce769c",
+                "drive": "b6e3e633dbafbfba773c5a191b52fb1828fbe05a025d74d11c2ceed5c1c92637",
+                "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+                "open_mechanism": "52ad2d940e167b60dc28aaf8ed7edad966e3547750bbfeb4ccdf60ed615764d7",
+                "poll": "e4877f7ca9b2eb63610be4f9f98fe0fe7185ccd11458da021d53d131e31ec2dd",
+                "repaired_mechanism": "79db6e1ac5cc46c030a9f2e69b186f4e7d0ce15b7502f2a85d293d1ebacabdd6",
+                "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970",
+                "start_play": "1c5d9ce807b0b38e5c4d4fbe2ff2be09581297067cb20c3552a58e2be9433ac6",
+                "touch_button": "b7c696104633d2aae4177d81f3f4cc51f6f374686a95c9c243f93184f26d4e12"
+              },
+              "interrupted_pointer_recovery": {
+                "accelerate": "324eb36cdfb26afb15d75e28dbfc2deec642a2b3d21e5f34e295b04a094c94b7",
+                "bridge_checkpoint": "27698e8f26c291ce97bc09b879567e9d3873aa97ccfef3522dffae892669a9da",
+                "click_act": "6758e25869a4d44e2dc90bd64b2c3d28b19113d54fa65bb1b064be8b46ce769c",
+                "drive": "b6e3e633dbafbfba773c5a191b52fb1828fbe05a025d74d11c2ceed5c1c92637",
+                "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+                "hold_winch": "41a1da0f845db515f87037cc9648f67f07b9a695f41986f2a67644226641afe3",
+                "interrupted_pointer_recovery": "57794f58f4fd9579469e2f350d139926baf5039d57f037343ba2ce7ce1f9ae19",
+                "open_mechanism": "52ad2d940e167b60dc28aaf8ed7edad966e3547750bbfeb4ccdf60ed615764d7",
+                "poll": "e4877f7ca9b2eb63610be4f9f98fe0fe7185ccd11458da021d53d131e31ec2dd",
+                "repaired_mechanism": "79db6e1ac5cc46c030a9f2e69b186f4e7d0ce15b7502f2a85d293d1ebacabdd6",
+                "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970",
+                "start_play": "1c5d9ce807b0b38e5c4d4fbe2ff2be09581297067cb20c3552a58e2be9433ac6",
+                "touch_button": "b7c696104633d2aae4177d81f3f4cc51f6f374686a95c9c243f93184f26d4e12"
+              },
+              "activity_from_real_input": {
+                "activity_from_real_input": "fc88c10db992deb133bda7c3639f1d652ab201830512ae0473d3e10e2221767c",
+                "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+                "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970",
+                "touch_button": "b7c696104633d2aae4177d81f3f4cc51f6f374686a95c9c243f93184f26d4e12"
+              },
+              "full_mission": {
+                "accelerate": "324eb36cdfb26afb15d75e28dbfc2deec642a2b3d21e5f34e295b04a094c94b7",
+                "click_act": "6758e25869a4d44e2dc90bd64b2c3d28b19113d54fa65bb1b064be8b46ce769c",
+                "drive": "b6e3e633dbafbfba773c5a191b52fb1828fbe05a025d74d11c2ceed5c1c92637",
+                "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+                "full_mission": "e440e783fad38996c424c15a78fa6f6c0e2bc18dd322465263857eec5aa01710",
+                "hold_winch": "41a1da0f845db515f87037cc9648f67f07b9a695f41986f2a67644226641afe3",
+                "poll": "e4877f7ca9b2eb63610be4f9f98fe0fe7185ccd11458da021d53d131e31ec2dd",
+                "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970",
+                "start_play": "1c5d9ce807b0b38e5c4d4fbe2ff2be09581297067cb20c3552a58e2be9433ac6",
+                "touch_button": "b7c696104633d2aae4177d81f3f4cc51f6f374686a95c9c243f93184f26d4e12"
+              },
+              "pause_title": {
+                "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+                "pause_title": "12813e69e0f7767891b4e15370a8c98b90b2b6b1fed057fbc664fd9bc2944ba6",
+                "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970",
+                "start_play": "1c5d9ce807b0b38e5c4d4fbe2ff2be09581297067cb20c3552a58e2be9433ac6"
+              },
+              "saved_voyage_picture": {
+                "bridge_checkpoint": "27698e8f26c291ce97bc09b879567e9d3873aa97ccfef3522dffae892669a9da",
+                "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+                "saved_voyage_picture": "cd1ed11ddd8245346d81559b0efa5d8953eb7f128557e97d0cb2b28ae2a9e9bf",
+                "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970",
+                "start_play": "1c5d9ce807b0b38e5c4d4fbe2ff2be09581297067cb20c3552a58e2be9433ac6"
+              },
+              "crew_clearance": {
+                "accelerate": "324eb36cdfb26afb15d75e28dbfc2deec642a2b3d21e5f34e295b04a094c94b7",
+                "click_act": "6758e25869a4d44e2dc90bd64b2c3d28b19113d54fa65bb1b064be8b46ce769c",
+                "crew_clearance": "74311e6726be7567b2ce123de753131f8c8b04489aa244a1b21ef5266bd10c0b",
+                "drive": "b6e3e633dbafbfba773c5a191b52fb1828fbe05a025d74d11c2ceed5c1c92637",
+                "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+                "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970",
+                "start_play": "1c5d9ce807b0b38e5c4d4fbe2ff2be09581297067cb20c3552a58e2be9433ac6"
+              },
+              "context_recovery": {
+                "bridge_checkpoint": "27698e8f26c291ce97bc09b879567e9d3873aa97ccfef3522dffae892669a9da",
+                "context_recovery": "6f5e9d664411a88d9652abfe1f6d6bbcfb0117812c29fa73ceee7c9f08548177",
+                "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+                "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970",
+                "start_play": "1c5d9ce807b0b38e5c4d4fbe2ff2be09581297067cb20c3552a58e2be9433ac6"
+              },
+              "legacy_graphics": {
+                "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+                "legacy_graphics": "ca237ebd24adebfe8050ce4733c997d3480424122843ad4ea11497e3f0772ba7",
+                "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970",
+                "start_play": "1c5d9ce807b0b38e5c4d4fbe2ff2be09581297067cb20c3552a58e2be9433ac6"
+              },
+              "quality_modes": {
+                "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+                "quality_modes": "a97a0848e70c7a7fac6ccc6abd1a7508685c1f2e9ad90c2ef332968404de9f92",
+                "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970"
+              }
+            }
+          }
+        },
+        "retry_history": {
+          "boot": [
+            {
+              "evidence": {
+                "file": "qa/player-retries/boot/run.json",
+                "sha256": "9d23945a47f1bfc76909c3060597f681f42334eeb989a7444e0a9d14e7e770e7"
+              },
+              "pass": true,
+              "harness_sha256": "9d28fcc9eb1b2a99e69c53e787664ba86263b3bd614afce1e15f86d5ff0c23b3"
+            }
+          ],
+          "bridge_layout": [
+            {
+              "evidence": {
+                "file": "qa/player-retries/bridge_layout/run.json",
+                "sha256": "dda9f5d5b563b842b85d1b51b9fa4b7b9f31371d938ec7fec71c1a71f01ee6fa"
+              },
+              "pass": true,
+              "harness_sha256": "9d28fcc9eb1b2a99e69c53e787664ba86263b3bd614afce1e15f86d5ff0c23b3"
+            }
+          ],
+          "context_recovery": [
+            {
+              "evidence": {
+                "file": "qa/player-retries/context_recovery/run.json",
+                "sha256": "8ca7a9ba754886c1d308508cbb194818a330735197f8325e50e18a083025d77c"
+              },
+              "pass": true,
+              "harness_sha256": "9d28fcc9eb1b2a99e69c53e787664ba86263b3bd614afce1e15f86d5ff0c23b3"
+            }
+          ],
+          "crew_clearance": [
+            {
+              "evidence": {
+                "file": "qa/player-retries/crew_clearance/run.json",
+                "sha256": "b4a2fd862c400d8ac24c9c3d39a0a7ec93c79cbf6673174d8481b3b2a9a3427b"
+              },
+              "pass": true,
+              "harness_sha256": "9d28fcc9eb1b2a99e69c53e787664ba86263b3bd614afce1e15f86d5ff0c23b3"
+            }
+          ],
+          "full_mission": [
+            {
+              "evidence": {
+                "file": "qa/player-retries/full_mission/run.json",
+                "sha256": "cb85c661d7996eb7eb961c7de5b5d49784885f061d8a8ac80492fc2ae3508ec4"
+              },
+              "pass": true,
+              "harness_sha256": "9d28fcc9eb1b2a99e69c53e787664ba86263b3bd614afce1e15f86d5ff0c23b3"
+            }
+          ],
+          "legacy_graphics": [
+            {
+              "evidence": {
+                "file": "qa/player-retries/legacy_graphics/run.json",
+                "sha256": "298944ea879e1a344b76704b90d4ae86d446e6fe766f149c14ce49f210277601"
+              },
+              "pass": true,
+              "harness_sha256": "9d28fcc9eb1b2a99e69c53e787664ba86263b3bd614afce1e15f86d5ff0c23b3"
+            }
+          ],
+          "pause_title": [
+            {
+              "evidence": {
+                "file": "qa/player-retries/pause_title/run.json",
+                "sha256": "d6d2d64beaa371ab51041dde0f7cacd39a6a9a7c02b07119975ac9d3859398df"
+              },
+              "pass": true,
+              "harness_sha256": "9d28fcc9eb1b2a99e69c53e787664ba86263b3bd614afce1e15f86d5ff0c23b3"
+            }
+          ],
+          "quality_modes": [
+            {
+              "evidence": {
+                "file": "qa/player-retries/quality_modes/run.json",
+                "sha256": "e7dbdc392f4e15d861479977275472919605a75a8be6e2d3b65d6cfeff9295c4"
+              },
+              "pass": true,
+              "harness_sha256": "9d28fcc9eb1b2a99e69c53e787664ba86263b3bd614afce1e15f86d5ff0c23b3"
+            }
+          ],
+          "resize_blur": [
+            {
+              "evidence": {
+                "file": "qa/player-retries/resize_blur/attempt-001/run.json",
+                "sha256": "dd42acf7692c2fa1fda70792c7e1622dde17e3077cf656248900eede0895e8c5"
+              },
+              "pass": false,
+              "harness_sha256": "9d28fcc9eb1b2a99e69c53e787664ba86263b3bd614afce1e15f86d5ff0c23b3"
+            },
+            {
+              "evidence": {
+                "file": "qa/player-retries/resize_blur/attempt-002/run.json",
+                "sha256": "4fbcb780f7d44323a922d7e315b41a65af31c9b18b8174026c8d86ad3614ea7e"
+              },
+              "pass": false,
+              "harness_sha256": "9d28fcc9eb1b2a99e69c53e787664ba86263b3bd614afce1e15f86d5ff0c23b3"
+            },
+            {
+              "evidence": {
+                "file": "qa/player-retries/resize_blur/attempt-003/run.json",
+                "sha256": "5d52bf14fe410a260015cf6894da4f72ba9112ac8a87320ee6a590e0630dcbc3"
+              },
+              "pass": true,
+              "harness_sha256": "56133e6005958edab34ef728b562e44e0bfa05908215ecbbe76ecfbadd6054c2"
+            }
+          ],
+          "saved_voyage_picture": [
+            {
+              "evidence": {
+                "file": "qa/player-retries/saved_voyage_picture/run.json",
+                "sha256": "9324bd6f846e3c1976059afc378709a10196807f6aadd8218e3b4795e704b4d2"
+              },
+              "pass": true,
+              "harness_sha256": "9d28fcc9eb1b2a99e69c53e787664ba86263b3bd614afce1e15f86d5ff0c23b3"
+            }
+          ],
+          "winch_interruption": [
+            {
+              "evidence": {
+                "file": "qa/player-retries/winch_interruption/run.json",
+                "sha256": "11b51c84ea13eacdea9c07677b3855d9f4bf033c929b2e7fbcf0c2ee79bfa165"
+              },
+              "pass": true,
+              "harness_sha256": "9d28fcc9eb1b2a99e69c53e787664ba86263b3bd614afce1e15f86d5ff0c23b3"
+            }
+          ]
+        },
+        "case_provenance": [
+          {
+            "function": "boot",
+            "name": "actual WebGL harbor, articulated character and visible controls",
+            "selected_from": "fresh-isolated-retry",
+            "results": {
+              "file": "qa/player-retries/boot/results.json",
+              "sha256": "05f393f7411b6c8e542f1372cbb5e97723cf45597405d295790383c793bf3506"
+            },
+            "harness_sha256": "9d28fcc9eb1b2a99e69c53e787664ba86263b3bd614afce1e15f86d5ff0c23b3",
+            "original_name": "actual WebGL harbor, articulated character and visible controls",
+            "original_pass": false,
+            "final_harness_sha256": "56133e6005958edab34ef728b562e44e0bfa05908215ecbbe76ecfbadd6054c2",
+            "selected_case_and_dependencies_ast_equal_final": true,
+            "dependency_ast_sha256": {
+              "boot": "8ae543ec4bfdc111d8dc048805ae90761a25b6689a63654c657a460bb449f1ef",
+              "capture_canvas": "c638e3b5c10f5f08916e0b4fc7901ba0cac23577df9490e05ccf94ad05d3f4e7",
+              "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970"
+            }
+          },
+          {
+            "function": "direct",
+            "name": "direct player remains locked without parent handshake",
+            "selected_from": "retained-unchanged-cohort-pass",
+            "results": {
+              "file": "qa/player-original/results.json",
+              "sha256": "27c0118e65b03ec19b7c7332bc02ba6b2e291a3323e704c2ba93423ad8395411"
+            },
+            "harness_sha256": "c391468848d01749e76624cba3440db3b9cb9b98735baa42f20bead4a58095cd",
+            "original_name": "direct player remains locked without parent handshake",
+            "original_pass": true,
+            "final_harness_sha256": "56133e6005958edab34ef728b562e44e0bfa05908215ecbbe76ecfbadd6054c2",
+            "selected_case_and_dependencies_ast_equal_final": true,
+            "dependency_ast_sha256": {
+              "direct": "591cbc6179a837904fe71a2c0cbb4853fa2d70dc74e18a92daddb68dda96e353",
+              "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970"
+            }
+          },
+          {
+            "function": "walking",
+            "name": "walk with real keyboard controls, meet Bootstrap and collect one physical repair",
+            "selected_from": "retained-unchanged-cohort-pass",
+            "results": {
+              "file": "qa/player-original/results.json",
+              "sha256": "27c0118e65b03ec19b7c7332bc02ba6b2e291a3323e704c2ba93423ad8395411"
+            },
+            "harness_sha256": "c391468848d01749e76624cba3440db3b9cb9b98735baa42f20bead4a58095cd",
+            "original_name": "walk with real keyboard controls, meet Bootstrap and collect one physical repair",
+            "original_pass": true,
+            "final_harness_sha256": "56133e6005958edab34ef728b562e44e0bfa05908215ecbbe76ecfbadd6054c2",
+            "selected_case_and_dependencies_ast_equal_final": true,
+            "dependency_ast_sha256": {
+              "accelerate": "324eb36cdfb26afb15d75e28dbfc2deec642a2b3d21e5f34e295b04a094c94b7",
+              "click_act": "6758e25869a4d44e2dc90bd64b2c3d28b19113d54fa65bb1b064be8b46ce769c",
+              "drive": "b6e3e633dbafbfba773c5a191b52fb1828fbe05a025d74d11c2ceed5c1c92637",
+              "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+              "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970",
+              "start_play": "1c5d9ce807b0b38e5c4d4fbe2ff2be09581297067cb20c3552a58e2be9433ac6",
+              "walking": "e18379ab3a30c653dedd852756a1782736824c6d3235bf1dd50a72479450d752"
+            }
+          },
+          {
+            "function": "pause_input",
+            "name": "pause cancels held movement and does not simulate catch-up",
+            "selected_from": "retained-unchanged-cohort-pass",
+            "results": {
+              "file": "qa/player-original/results.json",
+              "sha256": "27c0118e65b03ec19b7c7332bc02ba6b2e291a3323e704c2ba93423ad8395411"
+            },
+            "harness_sha256": "c391468848d01749e76624cba3440db3b9cb9b98735baa42f20bead4a58095cd",
+            "original_name": "pause cancels held movement and does not simulate catch-up",
+            "original_pass": true,
+            "final_harness_sha256": "56133e6005958edab34ef728b562e44e0bfa05908215ecbbe76ecfbadd6054c2",
+            "selected_case_and_dependencies_ast_equal_final": true,
+            "dependency_ast_sha256": {
+              "accelerate": "324eb36cdfb26afb15d75e28dbfc2deec642a2b3d21e5f34e295b04a094c94b7",
+              "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+              "pause_input": "a43f175d518288fcf8b01cd22ba1d38d5bdb8d29f2189c7d9b6a418305805d6b",
+              "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970",
+              "start_play": "1c5d9ce807b0b38e5c4d4fbe2ff2be09581297067cb20c3552a58e2be9433ac6"
+            }
+          },
+          {
+            "function": "lessons",
+            "name": "interactive functions slider moves launch and graph before practice; lesson distinct from rescue",
+            "selected_from": "retained-unchanged-cohort-pass",
+            "results": {
+              "file": "qa/player-original/results.json",
+              "sha256": "27c0118e65b03ec19b7c7332bc02ba6b2e291a3323e704c2ba93423ad8395411"
+            },
+            "harness_sha256": "c391468848d01749e76624cba3440db3b9cb9b98735baa42f20bead4a58095cd",
+            "original_name": "interactive functions slider moves launch and graph before practice; lesson distinct from rescue",
+            "original_pass": true,
+            "final_harness_sha256": "56133e6005958edab34ef728b562e44e0bfa05908215ecbbe76ecfbadd6054c2",
+            "selected_case_and_dependencies_ast_equal_final": true,
+            "dependency_ast_sha256": {
+              "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+              "lessons": "1305e6a7bb37d22909f2f6f550970f7cfe35d7beb98a22a49a5524f106539ab5",
+              "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970",
+              "start_play": "1c5d9ce807b0b38e5c4d4fbe2ff2be09581297067cb20c3552a58e2be9433ac6"
+            }
+          },
+          {
+            "function": "legacy",
+            "name": "original First Light remains playable in a second opaque frame without changing rescue",
+            "selected_from": "retained-unchanged-cohort-pass",
+            "results": {
+              "file": "qa/player-original/results.json",
+              "sha256": "27c0118e65b03ec19b7c7332bc02ba6b2e291a3323e704c2ba93423ad8395411"
+            },
+            "harness_sha256": "c391468848d01749e76624cba3440db3b9cb9b98735baa42f20bead4a58095cd",
+            "original_name": "original First Light remains playable in a second opaque frame without changing rescue",
+            "original_pass": true,
+            "final_harness_sha256": "56133e6005958edab34ef728b562e44e0bfa05908215ecbbe76ecfbadd6054c2",
+            "selected_case_and_dependencies_ast_equal_final": true,
+            "dependency_ast_sha256": {
+              "legacy": "86cc49380d36b8d5b64952dbd0262bc7a53d93eb4dea3e7240320340dab02ff3",
+              "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970"
+            }
+          },
+          {
+            "function": "wrong_parent",
+            "name": "opaque child cannot read parent; self-forged restore ignored",
+            "selected_from": "retained-unchanged-cohort-pass",
+            "results": {
+              "file": "qa/player-original/results.json",
+              "sha256": "27c0118e65b03ec19b7c7332bc02ba6b2e291a3323e704c2ba93423ad8395411"
+            },
+            "harness_sha256": "c391468848d01749e76624cba3440db3b9cb9b98735baa42f20bead4a58095cd",
+            "original_name": "opaque child cannot read parent; self-forged restore ignored",
+            "original_pass": true,
+            "final_harness_sha256": "56133e6005958edab34ef728b562e44e0bfa05908215ecbbe76ecfbadd6054c2",
+            "selected_case_and_dependencies_ast_equal_final": true,
+            "dependency_ast_sha256": {
+              "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+              "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970",
+              "start_play": "1c5d9ce807b0b38e5c4d4fbe2ff2be09581297067cb20c3552a58e2be9433ac6",
+              "wrong_parent": "d35ecf54067a69743ab466de3bc9d520d5eaab21d1885d0a0ea14906c46c1047"
+            }
+          },
+          {
+            "function": "winch_release",
+            "name": "trusted touch repairs and raises the real bridge; release stops work and completion saves compatibly",
+            "selected_from": "retained-unchanged-cohort-pass",
+            "results": {
+              "file": "qa/player-original/results.json",
+              "sha256": "27c0118e65b03ec19b7c7332bc02ba6b2e291a3323e704c2ba93423ad8395411"
+            },
+            "harness_sha256": "c391468848d01749e76624cba3440db3b9cb9b98735baa42f20bead4a58095cd",
+            "original_name": "trusted touch repairs and raises the real bridge; release stops work and completion saves compatibly",
+            "original_pass": true,
+            "final_harness_sha256": "56133e6005958edab34ef728b562e44e0bfa05908215ecbbe76ecfbadd6054c2",
+            "selected_case_and_dependencies_ast_equal_final": true,
+            "dependency_ast_sha256": {
+              "accelerate": "324eb36cdfb26afb15d75e28dbfc2deec642a2b3d21e5f34e295b04a094c94b7",
+              "bridge_checkpoint": "27698e8f26c291ce97bc09b879567e9d3873aa97ccfef3522dffae892669a9da",
+              "click_act": "6758e25869a4d44e2dc90bd64b2c3d28b19113d54fa65bb1b064be8b46ce769c",
+              "drive": "b6e3e633dbafbfba773c5a191b52fb1828fbe05a025d74d11c2ceed5c1c92637",
+              "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+              "hold_winch": "41a1da0f845db515f87037cc9648f67f07b9a695f41986f2a67644226641afe3",
+              "open_mechanism": "52ad2d940e167b60dc28aaf8ed7edad966e3547750bbfeb4ccdf60ed615764d7",
+              "poll": "e4877f7ca9b2eb63610be4f9f98fe0fe7185ccd11458da021d53d131e31ec2dd",
+              "repaired_mechanism": "79db6e1ac5cc46c030a9f2e69b186f4e7d0ce15b7502f2a85d293d1ebacabdd6",
+              "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970",
+              "start_play": "1c5d9ce807b0b38e5c4d4fbe2ff2be09581297067cb20c3552a58e2be9433ac6",
+              "touch_button": "b7c696104633d2aae4177d81f3f4cc51f6f374686a95c9c243f93184f26d4e12",
+              "winch_release": "b09e9a9898d9f02d317055380b5f0d89a59e18514e201a0bbe7939b8b7cf35b3"
+            }
+          },
+          {
+            "function": "winch_interruption",
+            "name": "focus and parent background pause stop winch work until another deliberate touch",
+            "selected_from": "fresh-isolated-retry",
+            "results": {
+              "file": "qa/player-retries/winch_interruption/results.json",
+              "sha256": "67e4e0d2d1b0d38331ade9ce1d14c4c24f33010aa634edee86ca63ebe1220115"
+            },
+            "harness_sha256": "9d28fcc9eb1b2a99e69c53e787664ba86263b3bd614afce1e15f86d5ff0c23b3",
+            "original_name": "focus and parent background pause stop winch work until another deliberate touch",
+            "original_pass": false,
+            "final_harness_sha256": "56133e6005958edab34ef728b562e44e0bfa05908215ecbbe76ecfbadd6054c2",
+            "selected_case_and_dependencies_ast_equal_final": true,
+            "dependency_ast_sha256": {
+              "accelerate": "324eb36cdfb26afb15d75e28dbfc2deec642a2b3d21e5f34e295b04a094c94b7",
+              "bridge_checkpoint": "27698e8f26c291ce97bc09b879567e9d3873aa97ccfef3522dffae892669a9da",
+              "click_act": "6758e25869a4d44e2dc90bd64b2c3d28b19113d54fa65bb1b064be8b46ce769c",
+              "drive": "b6e3e633dbafbfba773c5a191b52fb1828fbe05a025d74d11c2ceed5c1c92637",
+              "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+              "hold_winch": "41a1da0f845db515f87037cc9648f67f07b9a695f41986f2a67644226641afe3",
+              "open_mechanism": "52ad2d940e167b60dc28aaf8ed7edad966e3547750bbfeb4ccdf60ed615764d7",
+              "poll": "e4877f7ca9b2eb63610be4f9f98fe0fe7185ccd11458da021d53d131e31ec2dd",
+              "repaired_mechanism": "79db6e1ac5cc46c030a9f2e69b186f4e7d0ce15b7502f2a85d293d1ebacabdd6",
+              "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970",
+              "start_play": "1c5d9ce807b0b38e5c4d4fbe2ff2be09581297067cb20c3552a58e2be9433ac6",
+              "touch_button": "b7c696104633d2aae4177d81f3f4cc51f6f374686a95c9c243f93184f26d4e12",
+              "winch_interruption": "e1e60473acb50024533cee55c66afd694dfd7c575b66109ef62d831dfafbd616"
+            }
+          },
+          {
+            "function": "bridge_layout",
+            "name": "repair controls fit landscape and portrait touch viewports with actual WebGL canvas captures",
+            "selected_from": "fresh-isolated-retry",
+            "results": {
+              "file": "qa/player-retries/bridge_layout/results.json",
+              "sha256": "2a34b38eb8a5a734c7caa838127342d3e79aea29eab4f49f89c64218931d753d"
+            },
+            "harness_sha256": "9d28fcc9eb1b2a99e69c53e787664ba86263b3bd614afce1e15f86d5ff0c23b3",
+            "original_name": "repair controls fit landscape and portrait touch viewports with actual WebGL screenshots",
+            "original_pass": false,
+            "final_harness_sha256": "56133e6005958edab34ef728b562e44e0bfa05908215ecbbe76ecfbadd6054c2",
+            "selected_case_and_dependencies_ast_equal_final": true,
+            "dependency_ast_sha256": {
+              "accelerate": "324eb36cdfb26afb15d75e28dbfc2deec642a2b3d21e5f34e295b04a094c94b7",
+              "bridge_checkpoint": "27698e8f26c291ce97bc09b879567e9d3873aa97ccfef3522dffae892669a9da",
+              "bridge_layout": "a345bd7970ea3997bcc02b6069165025dd25bea6f10e3f20576b80e004a8d869",
+              "capture_canvas": "c638e3b5c10f5f08916e0b4fc7901ba0cac23577df9490e05ccf94ad05d3f4e7",
+              "click_act": "6758e25869a4d44e2dc90bd64b2c3d28b19113d54fa65bb1b064be8b46ce769c",
+              "drive": "b6e3e633dbafbfba773c5a191b52fb1828fbe05a025d74d11c2ceed5c1c92637",
+              "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+              "open_mechanism": "52ad2d940e167b60dc28aaf8ed7edad966e3547750bbfeb4ccdf60ed615764d7",
+              "poll": "e4877f7ca9b2eb63610be4f9f98fe0fe7185ccd11458da021d53d131e31ec2dd",
+              "repaired_mechanism": "79db6e1ac5cc46c030a9f2e69b186f4e7d0ce15b7502f2a85d293d1ebacabdd6",
+              "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970",
+              "start_play": "1c5d9ce807b0b38e5c4d4fbe2ff2be09581297067cb20c3552a58e2be9433ac6",
+              "touch_button": "b7c696104633d2aae4177d81f3f4cc51f6f374686a95c9c243f93184f26d4e12"
+            }
+          },
+          {
+            "function": "interrupted_pointer_recovery",
+            "name": "a fresh actual finger can resume winching after interruption loses the first terminal event",
+            "selected_from": "retained-unchanged-cohort-pass",
+            "results": {
+              "file": "qa/player-original/results.json",
+              "sha256": "27c0118e65b03ec19b7c7332bc02ba6b2e291a3323e704c2ba93423ad8395411"
+            },
+            "harness_sha256": "c391468848d01749e76624cba3440db3b9cb9b98735baa42f20bead4a58095cd",
+            "original_name": "a fresh actual finger can resume winching after interruption loses the first terminal event",
+            "original_pass": true,
+            "final_harness_sha256": "56133e6005958edab34ef728b562e44e0bfa05908215ecbbe76ecfbadd6054c2",
+            "selected_case_and_dependencies_ast_equal_final": true,
+            "dependency_ast_sha256": {
+              "accelerate": "324eb36cdfb26afb15d75e28dbfc2deec642a2b3d21e5f34e295b04a094c94b7",
+              "bridge_checkpoint": "27698e8f26c291ce97bc09b879567e9d3873aa97ccfef3522dffae892669a9da",
+              "click_act": "6758e25869a4d44e2dc90bd64b2c3d28b19113d54fa65bb1b064be8b46ce769c",
+              "drive": "b6e3e633dbafbfba773c5a191b52fb1828fbe05a025d74d11c2ceed5c1c92637",
+              "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+              "hold_winch": "41a1da0f845db515f87037cc9648f67f07b9a695f41986f2a67644226641afe3",
+              "interrupted_pointer_recovery": "57794f58f4fd9579469e2f350d139926baf5039d57f037343ba2ce7ce1f9ae19",
+              "open_mechanism": "52ad2d940e167b60dc28aaf8ed7edad966e3547750bbfeb4ccdf60ed615764d7",
+              "poll": "e4877f7ca9b2eb63610be4f9f98fe0fe7185ccd11458da021d53d131e31ec2dd",
+              "repaired_mechanism": "79db6e1ac5cc46c030a9f2e69b186f4e7d0ce15b7502f2a85d293d1ebacabdd6",
+              "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970",
+              "start_play": "1c5d9ce807b0b38e5c4d4fbe2ff2be09581297067cb20c3552a58e2be9433ac6",
+              "touch_button": "b7c696104633d2aae4177d81f3f4cc51f6f374686a95c9c243f93184f26d4e12"
+            }
+          },
+          {
+            "function": "activity_from_real_input",
+            "name": "compiled game reports actual trusted visible input only, never animation or progress",
+            "selected_from": "retained-unchanged-cohort-pass",
+            "results": {
+              "file": "qa/player-original/results.json",
+              "sha256": "27c0118e65b03ec19b7c7332bc02ba6b2e291a3323e704c2ba93423ad8395411"
+            },
+            "harness_sha256": "c391468848d01749e76624cba3440db3b9cb9b98735baa42f20bead4a58095cd",
+            "original_name": "compiled game reports actual trusted visible input only, never animation or progress",
+            "original_pass": true,
+            "final_harness_sha256": "56133e6005958edab34ef728b562e44e0bfa05908215ecbbe76ecfbadd6054c2",
+            "selected_case_and_dependencies_ast_equal_final": true,
+            "dependency_ast_sha256": {
+              "activity_from_real_input": "fc88c10db992deb133bda7c3639f1d652ab201830512ae0473d3e10e2221767c",
+              "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+              "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970",
+              "touch_button": "b7c696104633d2aae4177d81f3f4cc51f6f374686a95c9c243f93184f26d4e12"
+            }
+          },
+          {
+            "function": "full_mission",
+            "name": "complete Broken Passage through actual movement, jump, mechanism, boat, rescue and return",
+            "selected_from": "fresh-isolated-retry",
+            "results": {
+              "file": "qa/player-retries/full_mission/results.json",
+              "sha256": "2327139b9d785105834d852389ae564c237e84e1052c9f2f7457ffeab3180ab7"
+            },
+            "harness_sha256": "9d28fcc9eb1b2a99e69c53e787664ba86263b3bd614afce1e15f86d5ff0c23b3",
+            "original_name": "complete Broken Passage through actual movement, jump, mechanism, boat, rescue and return",
+            "original_pass": null,
+            "final_harness_sha256": "56133e6005958edab34ef728b562e44e0bfa05908215ecbbe76ecfbadd6054c2",
+            "selected_case_and_dependencies_ast_equal_final": true,
+            "dependency_ast_sha256": {
+              "accelerate": "324eb36cdfb26afb15d75e28dbfc2deec642a2b3d21e5f34e295b04a094c94b7",
+              "click_act": "6758e25869a4d44e2dc90bd64b2c3d28b19113d54fa65bb1b064be8b46ce769c",
+              "drive": "b6e3e633dbafbfba773c5a191b52fb1828fbe05a025d74d11c2ceed5c1c92637",
+              "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+              "full_mission": "e440e783fad38996c424c15a78fa6f6c0e2bc18dd322465263857eec5aa01710",
+              "hold_winch": "41a1da0f845db515f87037cc9648f67f07b9a695f41986f2a67644226641afe3",
+              "poll": "e4877f7ca9b2eb63610be4f9f98fe0fe7185ccd11458da021d53d131e31ec2dd",
+              "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970",
+              "start_play": "1c5d9ce807b0b38e5c4d4fbe2ff2be09581297067cb20c3552a58e2be9433ac6",
+              "touch_button": "b7c696104633d2aae4177d81f3f4cc51f6f374686a95c9c243f93184f26d4e12"
+            }
+          },
+          {
+            "function": "pause_title",
+            "name": "title hold preserves entry and usable controls",
+            "selected_from": "fresh-isolated-retry",
+            "results": {
+              "file": "qa/player-retries/pause_title/results.json",
+              "sha256": "e2194fe9787e9b0f0489b936670a96dfe3f6267aa974ac3e3a76a2f7e764e01b"
+            },
+            "harness_sha256": "9d28fcc9eb1b2a99e69c53e787664ba86263b3bd614afce1e15f86d5ff0c23b3",
+            "original_name": "title hold preserves entry and usable controls",
+            "original_pass": null,
+            "final_harness_sha256": "56133e6005958edab34ef728b562e44e0bfa05908215ecbbe76ecfbadd6054c2",
+            "selected_case_and_dependencies_ast_equal_final": true,
+            "dependency_ast_sha256": {
+              "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+              "pause_title": "12813e69e0f7767891b4e15370a8c98b90b2b6b1fed057fbc664fd9bc2944ba6",
+              "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970",
+              "start_play": "1c5d9ce807b0b38e5c4d4fbe2ff2be09581297067cb20c3552a58e2be9433ac6"
+            }
+          },
+          {
+            "function": "resize_blur",
+            "name": "resize preserves play while lost focus pauses without stuck keys or catch-up",
+            "selected_from": "fresh-isolated-retry",
+            "results": {
+              "file": "qa/player-retries/resize_blur/attempt-003/results.json",
+              "sha256": "6588e8fc4263785dd754de3c8c35f073348f8c45d1bf6a519df1c3b853ae40af"
+            },
+            "harness_sha256": "56133e6005958edab34ef728b562e44e0bfa05908215ecbbe76ecfbadd6054c2",
+            "original_name": "resize preserves play while lost focus pauses without stuck keys or catch-up",
+            "original_pass": null,
+            "final_harness_sha256": "56133e6005958edab34ef728b562e44e0bfa05908215ecbbe76ecfbadd6054c2",
+            "selected_case_and_dependencies_ast_equal_final": true,
+            "dependency_ast_sha256": {
+              "accelerate": "324eb36cdfb26afb15d75e28dbfc2deec642a2b3d21e5f34e295b04a094c94b7",
+              "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+              "resize_blur": "173cfef560c7e27892591381ef5981fb5b69e56713412143ef028f9cd8acf5d5",
+              "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970",
+              "start_play": "1c5d9ce807b0b38e5c4d4fbe2ff2be09581297067cb20c3552a58e2be9433ac6"
+            }
+          },
+          {
+            "function": "saved_voyage_picture",
+            "name": "known pier-save fixture restores mission and preferences exactly; actual production camera canvas",
+            "selected_from": "fresh-isolated-retry",
+            "results": {
+              "file": "qa/player-retries/saved_voyage_picture/results.json",
+              "sha256": "08d62df32fffc638cdbca53d62a6e22c71c71c411b7c1ae7b7d878268da441f6"
+            },
+            "harness_sha256": "9d28fcc9eb1b2a99e69c53e787664ba86263b3bd614afce1e15f86d5ff0c23b3",
+            "original_name": "known pier-save fixture restores mission and preferences exactly; actual production camera canvas",
+            "original_pass": null,
+            "final_harness_sha256": "56133e6005958edab34ef728b562e44e0bfa05908215ecbbe76ecfbadd6054c2",
+            "selected_case_and_dependencies_ast_equal_final": true,
+            "dependency_ast_sha256": {
+              "bridge_checkpoint": "27698e8f26c291ce97bc09b879567e9d3873aa97ccfef3522dffae892669a9da",
+              "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+              "saved_voyage_picture": "cd1ed11ddd8245346d81559b0efa5d8953eb7f128557e97d0cb2b28ae2a9e9bf",
+              "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970",
+              "start_play": "1c5d9ce807b0b38e5c4d4fbe2ff2be09581297067cb20c3552a58e2be9433ac6"
+            }
+          },
+          {
+            "function": "crew_clearance",
+            "name": "actual held walking cannot pass through Bootstrap and talk still works",
+            "selected_from": "fresh-isolated-retry",
+            "results": {
+              "file": "qa/player-retries/crew_clearance/results.json",
+              "sha256": "d19f3f30328ac916d1c6e2473e1b89d7fd25d28ecfeae659d03c6fdd5c9dbfa5"
+            },
+            "harness_sha256": "9d28fcc9eb1b2a99e69c53e787664ba86263b3bd614afce1e15f86d5ff0c23b3",
+            "original_name": "actual held walking cannot pass through Bootstrap and talk still works",
+            "original_pass": null,
+            "final_harness_sha256": "56133e6005958edab34ef728b562e44e0bfa05908215ecbbe76ecfbadd6054c2",
+            "selected_case_and_dependencies_ast_equal_final": true,
+            "dependency_ast_sha256": {
+              "accelerate": "324eb36cdfb26afb15d75e28dbfc2deec642a2b3d21e5f34e295b04a094c94b7",
+              "click_act": "6758e25869a4d44e2dc90bd64b2c3d28b19113d54fa65bb1b064be8b46ce769c",
+              "crew_clearance": "74311e6726be7567b2ce123de753131f8c8b04489aa244a1b21ef5266bd10c0b",
+              "drive": "b6e3e633dbafbfba773c5a191b52fb1828fbe05a025d74d11c2ceed5c1c92637",
+              "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+              "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970",
+              "start_play": "1c5d9ce807b0b38e5c4d4fbe2ff2be09581297067cb20c3552a58e2be9433ac6"
+            }
+          },
+          {
+            "function": "context_recovery",
+            "name": "actual WebGL context loss and deliberate rebuild retain the saved mission and reload artwork",
+            "selected_from": "fresh-isolated-retry",
+            "results": {
+              "file": "qa/player-retries/context_recovery/results.json",
+              "sha256": "66edc70a54b55eea75cada1a3bee221905f0468a2881f5477061c206ff7821fe"
+            },
+            "harness_sha256": "9d28fcc9eb1b2a99e69c53e787664ba86263b3bd614afce1e15f86d5ff0c23b3",
+            "original_name": "actual WebGL context loss and deliberate rebuild retain the saved mission and reload artwork",
+            "original_pass": null,
+            "final_harness_sha256": "56133e6005958edab34ef728b562e44e0bfa05908215ecbbe76ecfbadd6054c2",
+            "selected_case_and_dependencies_ast_equal_final": true,
+            "dependency_ast_sha256": {
+              "bridge_checkpoint": "27698e8f26c291ce97bc09b879567e9d3873aa97ccfef3522dffae892669a9da",
+              "context_recovery": "6f5e9d664411a88d9652abfe1f6d6bbcfb0117812c29fa73ceee7c9f08548177",
+              "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+              "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970",
+              "start_play": "1c5d9ce807b0b38e5c4d4fbe2ff2be09581297067cb20c3552a58e2be9433ac6"
+            }
+          },
+          {
+            "function": "legacy_graphics",
+            "name": "when WebGL2 capability is unavailable the real WebGL1 harbor and walking remain usable",
+            "selected_from": "fresh-isolated-retry",
+            "results": {
+              "file": "qa/player-retries/legacy_graphics/results.json",
+              "sha256": "a2de5285dc25df4deffb84ba46bc14d9005a44177abb5a1c08acaf2d6f8d0398"
+            },
+            "harness_sha256": "9d28fcc9eb1b2a99e69c53e787664ba86263b3bd614afce1e15f86d5ff0c23b3",
+            "original_name": "when WebGL2 capability is unavailable the real WebGL1 harbor and walking remain usable",
+            "original_pass": null,
+            "final_harness_sha256": "56133e6005958edab34ef728b562e44e0bfa05908215ecbbe76ecfbadd6054c2",
+            "selected_case_and_dependencies_ast_equal_final": true,
+            "dependency_ast_sha256": {
+              "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+              "legacy_graphics": "ca237ebd24adebfe8050ce4733c997d3480424122843ad4ea11497e3f0772ba7",
+              "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970",
+              "start_play": "1c5d9ce807b0b38e5c4d4fbe2ff2be09581297067cb20c3552a58e2be9433ac6"
+            }
+          },
+          {
+            "function": "quality_modes",
+            "name": "all three quality modes resize and render the actual modern scene with the saved preference",
+            "selected_from": "fresh-isolated-retry",
+            "results": {
+              "file": "qa/player-retries/quality_modes/results.json",
+              "sha256": "de10b38e918711356915aeb6028fba9934dac1adb0480f16791f8fdaddaf5551"
+            },
+            "harness_sha256": "9d28fcc9eb1b2a99e69c53e787664ba86263b3bd614afce1e15f86d5ff0c23b3",
+            "original_name": "all three quality modes resize and render the actual modern scene with the saved preference",
+            "original_pass": null,
+            "final_harness_sha256": "56133e6005958edab34ef728b562e44e0bfa05908215ecbbe76ecfbadd6054c2",
+            "selected_case_and_dependencies_ast_equal_final": true,
+            "dependency_ast_sha256": {
+              "frame_steps": "24f2310e3c5257ee942830dfb376d9f362a4674da1daa75621212151676088c6",
+              "quality_modes": "a97a0848e70c7a7fac6ccc6abd1a7508685c1f2e9ad90c2ef332968404de9f92",
+              "setup": "4ceaf773fe016032a8bfc441a743e9ed249620cd04a9e246f82b83ffee8de970"
+            }
+          }
+        ],
+        "artifacts": {
+          "Saltglass-arrival-canvas.png": {
+            "source": {
+              "file": "qa/player-retries/boot/Saltglass-arrival-canvas.png",
+              "sha256": "c5a39daf59e5c3be8b9b2f304f9cd0ebcce75025cef1347eca22f5099530d422"
+            },
+            "case_function": "boot",
+            "bytes": 2119943,
+            "size": [
+              1280,
+              820
+            ]
+          },
+          "Saltglass-winch-1280x820-canvas.png": {
+            "source": {
+              "file": "qa/player-retries/bridge_layout/Saltglass-winch-1280x820-canvas.png",
+              "sha256": "6be3a6274139e8d8b62ebf38d5cfd7709362b94424b5f993266f1f112af85924"
+            },
+            "case_function": "bridge_layout",
+            "bytes": 1283497,
+            "size": [
+              1280,
+              820
+            ]
+          },
+          "Saltglass-winch-768x1024-canvas.png": {
+            "source": {
+              "file": "qa/player-retries/bridge_layout/Saltglass-winch-768x1024-canvas.png",
+              "sha256": "98fdf956b133c76b778db29fe49231f8f46cdccb7c8f7d2b9cae3d79c4661da1"
+            },
+            "case_function": "bridge_layout",
+            "bytes": 875344,
+            "size": [
+              768,
+              1024
+            ]
+          },
+          "Saltglass-winch-1280x820-layout.json": {
+            "source": {
+              "file": "qa/player-retries/bridge_layout/Saltglass-winch-1280x820-layout.json",
+              "sha256": "7bdf73cc6d124627c23d8551d0385508850ff7a2f6ec502060f0e0cae72b3e33"
+            },
+            "case_function": "bridge_layout",
+            "bytes": 674
+          },
+          "Saltglass-winch-768x1024-layout.json": {
+            "source": {
+              "file": "qa/player-retries/bridge_layout/Saltglass-winch-768x1024-layout.json",
+              "sha256": "f706957195260357db63607d3f2f17e899756106495df547e39cdbe9aa516be8"
+            },
+            "case_function": "bridge_layout",
+            "bytes": 668
+          },
+          "Saltglass-saved-voyage-canvas.png": {
+            "source": {
+              "file": "qa/player-retries/saved_voyage_picture/Saltglass-saved-voyage-canvas.png",
+              "sha256": "4d44e0e4aa86a4b812a32bed115f30040b4803de399f1854dfc6939c55fd8998"
+            },
+            "case_function": "saved_voyage_picture",
+            "bytes": 1416303,
+            "size": [
+              1280,
+              820
+            ]
+          },
+          "saved-voyage-observed.json": {
+            "source": {
+              "file": "qa/player-retries/saved_voyage_picture/saved-voyage-observed.json",
+              "sha256": "a41dbec8dec9a700441b19b1afac72e2e1f04eae87624579a7376eeb42953317"
+            },
+            "case_function": "saved_voyage_picture",
+            "bytes": 1287
+          }
+        },
+        "production_sha256": {
+          "fun_core.js": "b21a909fa3dccf44b2d02d4a8243a91fd260b70db2edfc35338f3fd330c810e4",
+          "stormwake_core.js": "53bc3070f55feceeff08ac5743f3220d70e0c3dda901b0b107092b2e3da16cc9",
+          "stormwake_comfort.js": "7ec7d00de112b327f31c0a904f0e438cfc7ab1399cf0974a824dac44ddc21800",
+          "stormwake_three_vendor.js": "6e40e410c97c908254aa41dcbeba4bb57de69c7d37b1a33d72def3d0d0f884c6",
+          "stormwake_gl.js": "d55f0b2d4f8a0e9a1f203a153b15eec347efe0ed247f2c8b4c72a526bd4c3ed8",
+          "stormwake_cast.js": "fada22aa79430218ab348ae0b2396c55cff0a76eea467fcdad37f576262123c6",
+          "stormwake_three.js": "02cf5ab5bae449441bf8ed2be3a92c4d6d8e7a44172e913c275dd95c3b3e3957",
+          "stormwake_world.js": "7bfaae6b9fa976748e872eb05295f9007d6fd955170c5f9247082983d42a7f87",
+          "stormwake_game.js": "9d7aa9893cec52ab2a8ca8add7e7a0072bd8dc710981f6dfd6c4c45ecfc57dcb",
+          "stormwake_assets.json": "b93916ab71d73d4b1bc48a63852834729a27f10610234466adf98b3dd673c3d8",
+          "STORMWAKE_VENDOR.json": "cc9adf42e577db463cc7d2dc4bed3f78da9075549b6cd2b20207f807d75a5664",
+          "fun_player.html": "fcfc2d06cdf204f4591a9717968a027facf170e6e0be32d9151ef847870a0fb7",
+          "stormwake_game.css": "3bed7033f10e8791a15819dfb86e60dbbca9d2d9cf062169a047c8443fe6fee0",
+          "BUILD_STORMWAKE_PLAYER.py": "61b5dac14d7634c6be35f1c06af564e7853cfe4a8bbe29b250342165c096044a",
+          "STORMWAKE_BUILD_RULES.py": "3f1ee32949d598f11e65b2ccc19e85ce941207b95a6d6a26b132f34833663a02",
+          "stormwake_player.html": "2e5a605a00d3490c2be9266f163f9f7d149aa3cf8585bfcb7fb8b0e5e368124d",
+          "STORMWAKE_PLAYER_BUILD.json": "90ce887f316dfc338a349e1b391c41edf5ec3a1b0d6162e01fb94add04b2d473"
+        },
+        "validator": {
+          "file": "qa/recover_player_evidence.py",
+          "sha256": "b6d86dba691e64a08acbbbae111ec3643ff73465512cf9ff0ce8b2445aec095f"
+        }
+      },
+      "evidence_selection": {
+        "file": "qa/player-evidence-selection.json",
+        "sha256": "18360bbc3222f5da6712ca7cae0b0da4596cf06c8f633ecf6f46d597e8e027da"
+      }
+    },
+    "host": {
+      "status": "PASS",
+      "passed": 12,
+      "failed": 0,
+      "evidence": {
+        "file": "qa/host-release/results.json",
+        "sha256": "a4766ca83ce630e9363cb208a2e1067efe2d3009bd7fa9d98da63efccce5d0a2"
+      },
+      "input_snapshot": {
+        "file": "qa/host-release/inputs.json",
+        "sha256": "84ac1afd03389a9fa046cae7b8de7e2391474e47821ea2e1fa185cb1f5854e21"
+      },
+      "source_sha256": {
+        "VERIFY_SALTGLASS_HOST.py": "1ce886d58a41300eebd51baedc49dcaa0b286350771b274c7f14179467d8b9b1",
+        "fun_program.js": "0f3857534e84e30f91436acfff17db9b58d1fa1b8ec0e7384cc0a3c723ea0ecc",
+        "fun_program.css": "3bed37f2d02e156c0f88ac82bc87c7726b96a6eb7929b9b2250ec56eac3b1b23",
+        "fun_core.js": "b21a909fa3dccf44b2d02d4a8243a91fd260b70db2edfc35338f3fd330c810e4",
+        "stormwake_core.js": "53bc3070f55feceeff08ac5743f3220d70e0c3dda901b0b107092b2e3da16cc9",
+        "fun_player.html": "fcfc2d06cdf204f4591a9717968a027facf170e6e0be32d9151ef847870a0fb7",
+        "stormwake_player.html": "2e5a605a00d3490c2be9266f163f9f7d149aa3cf8585bfcb7fb8b0e5e368124d"
+      },
+      "scope": "Deterministic offline host DOM, native WebCrypto, synthetic account/fetch fixtures, postMessage and file import/export checks. Child requestAnimationFrame callbacks are held before child code runs; top-level host animation frames remain active. Fetched compiled HTML bytes and digest are unchanged. Rendering and gameplay are checked separately by the compiled-player and visual suites."
+    }
+  },
+  "cpu_aggregate": {
+    "file": "qa/final-checks.json",
+    "sha256": "6ebf3a9fc8390c08419381a19d5ff3c873856ca73d8f86409f71197538dbf7ad",
+    "source_sha256": {
+      "fun_core.js": "b21a909fa3dccf44b2d02d4a8243a91fd260b70db2edfc35338f3fd330c810e4",
+      "stormwake_core.js": "53bc3070f55feceeff08ac5743f3220d70e0c3dda901b0b107092b2e3da16cc9",
+      "stormwake_comfort.js": "7ec7d00de112b327f31c0a904f0e438cfc7ab1399cf0974a824dac44ddc21800",
+      "stormwake_three.js": "02cf5ab5bae449441bf8ed2be3a92c4d6d8e7a44172e913c275dd95c3b3e3957",
+      "stormwake_three_vendor.js": "6e40e410c97c908254aa41dcbeba4bb57de69c7d37b1a33d72def3d0d0f884c6",
+      "stormwake_cast.js": "fada22aa79430218ab348ae0b2396c55cff0a76eea467fcdad37f576262123c6",
+      "stormwake_world.js": "7bfaae6b9fa976748e872eb05295f9007d6fd955170c5f9247082983d42a7f87",
+      "stormwake_gl.js": "d55f0b2d4f8a0e9a1f203a153b15eec347efe0ed247f2c8b4c72a526bd4c3ed8",
+      "stormwake_game.js": "9d7aa9893cec52ab2a8ca8add7e7a0072bd8dc710981f6dfd6c4c45ecfc57dcb",
+      "stormwake_game.css": "3bed7033f10e8791a15819dfb86e60dbbca9d2d9cf062169a047c8443fe6fee0",
+      "fun_program.js": "0f3857534e84e30f91436acfff17db9b58d1fa1b8ec0e7384cc0a3c723ea0ecc",
+      "stormwake_player.html": "2e5a605a00d3490c2be9266f163f9f7d149aa3cf8585bfcb7fb8b0e5e368124d",
+      "stormwake_assets.json": "b93916ab71d73d4b1bc48a63852834729a27f10610234466adf98b3dd673c3d8",
+      "BUILD_STORMWAKE_PLAYER.py": "61b5dac14d7634c6be35f1c06af564e7853cfe4a8bbe29b250342165c096044a",
+      "STORMWAKE_BUILD_RULES.py": "3f1ee32949d598f11e65b2ccc19e85ce941207b95a6d6a26b132f34833663a02",
+      "VERIFY_STORMWAKE_CORE.cjs": "7c0bbf0f5a1f4bf19de7d3d8c80f4bd7e467edf904974ca63071b3145636b56c",
+      "VERIFY_HELMSMAN_BRIDGE.cjs": "4ed4382cdd30bd4c44e7bc4558a1250b74f82297a867884686de397d3b7f9634",
+      "VERIFY_HELMSMAN_BOAT.cjs": "29052da0198aa598eff39fc63ecae3f4206a1cc54ebbdee143217e214cbd47a9",
+      "VERIFY_DREADWATER_COMFORT.cjs": "b46241c22a81b5525f324e6145c405873448ffe616af1c88c6bf8c5fd6c1348a",
+      "VERIFY_DREADWATER_ASSETS.py": "decabf6616d268360070cd0553db12c6acc54dfb54fb2b99e4e33c0b0d2be0f3",
+      "VERIFY_DREADWATER_RENDERER.mjs": "9f5f85410741d09dcfda304a8167677d95c2a80302731f0ecccf81cc5e802615",
+      "VERIFY_DREADWATER_CAST_WORLD.cjs": "cf397a8081afbdbf08bd9c55ee8df3fc921de49c2dc9e40a816fce944a86747d"
+    }
+  },
+  "visual_rig": {
+    "status": "PASS",
+    "passed": 8,
+    "failed": 0,
+    "scope": "Actual unmodified renderer/world in an offline camera rig; staged camera and character positions; not player/UI/gameplay verification.",
+    "evidence": {
+      "file": "qa/visual-release/results.json",
+      "sha256": "ba98a43a9692e14b7c5c124f060b6d713f0fa66486ee4487ebd7555c89d235d8"
+    },
+    "source_sha256": {
+      "fun_core.js": "b21a909fa3dccf44b2d02d4a8243a91fd260b70db2edfc35338f3fd330c810e4",
+      "stormwake_core.js": "53bc3070f55feceeff08ac5743f3220d70e0c3dda901b0b107092b2e3da16cc9",
+      "stormwake_three_vendor.js": "6e40e410c97c908254aa41dcbeba4bb57de69c7d37b1a33d72def3d0d0f884c6",
+      "stormwake_assets.json": "b93916ab71d73d4b1bc48a63852834729a27f10610234466adf98b3dd673c3d8",
+      "stormwake_gl.js": "d55f0b2d4f8a0e9a1f203a153b15eec347efe0ed247f2c8b4c72a526bd4c3ed8",
+      "stormwake_cast.js": "fada22aa79430218ab348ae0b2396c55cff0a76eea467fcdad37f576262123c6",
+      "stormwake_three.js": "02cf5ab5bae449441bf8ed2be3a92c4d6d8e7a44172e913c275dd95c3b3e3957",
+      "stormwake_world.js": "7bfaae6b9fa976748e872eb05295f9007d6fd955170c5f9247082983d42a7f87"
+    },
+    "root_review": {
+      "file": "qa/visual-review.json",
+      "sha256": "5781e962a0064d9e5ef60a413b9e97d343b18d0adbdc4138386c8ad24ade45d0"
+    },
+    "comparison_budgets": {
+      "pass": true,
+      "maximum_allowed_triangle_increase_percent": 12,
+      "maximum_observed_triangle_increase_percent": 7.4505,
+      "draw_calls_do_not_increase": true,
+      "views": [
+        {
+          "name": "01-harbor-introduction",
+          "baseline_triangles": 418760,
+          "current_triangles": 439676,
+          "triangle_increase_percent": 4.9947,
+          "baseline_draws": 88,
+          "current_draws": 82
+        },
+        {
+          "name": "02-lighthouse-crew-home",
+          "baseline_triangles": 425916,
+          "current_triangles": 457020,
+          "triangle_increase_percent": 7.3028,
+          "baseline_draws": 121,
+          "current_draws": 117
+        },
+        {
+          "name": "03-cast-face-proportions",
+          "baseline_triangles": 418520,
+          "current_triangles": 439436,
+          "triangle_increase_percent": 4.9976,
+          "baseline_draws": 85,
+          "current_draws": 79
+        },
+        {
+          "name": "04-repaired-bridge-pose",
+          "baseline_triangles": 434116,
+          "current_triangles": 465104,
+          "triangle_increase_percent": 7.1382,
+          "baseline_draws": 157,
+          "current_draws": 153
+        },
+        {
+          "name": "05-harbor-portrait-low",
+          "baseline_triangles": 209650,
+          "current_triangles": 225270,
+          "triangle_increase_percent": 7.4505,
+          "baseline_draws": 42,
+          "current_draws": 42
+        },
+        {
+          "name": "06-production-resting-pier",
+          "baseline_triangles": 434120,
+          "current_triangles": 465260,
+          "triangle_increase_percent": 7.1731,
+          "baseline_draws": 130,
+          "current_draws": 129
+        },
+        {
+          "name": "07-cast-walk-pose-a",
+          "baseline_triangles": 418520,
+          "current_triangles": 439436,
+          "triangle_increase_percent": 4.9976,
+          "baseline_draws": 85,
+          "current_draws": 79
+        },
+        {
+          "name": "08-cast-walk-pose-b",
+          "baseline_triangles": 418520,
+          "current_triangles": 439436,
+          "triangle_increase_percent": 4.9976,
+          "baseline_draws": 85,
+          "current_draws": 79
+        }
+      ],
+      "note": "Actual submitted triangles include shadow passes; these are workload counts, not native frame-rate measurements."
+    },
+    "review_notes": [
+      "Root visually inspected all eight final unaltered canvas PNGs; lighthouse and cast views were also independently inspected by the lighting reviewer.",
+      "Faces have modeled sockets, eyelids, noses, lips and ears; clothing panels now shade smoothly and hands have defined fingers. The result remains stylized 3D art.",
+      "Worn sandy routes, muted turf and sparse grass replace uniform story-island green slabs; coast edges and nearby foam read at the normal pier camera.",
+      "First-pass shadow grid on ground, paving and character details is absent after restoring the proven depth/normal bias offsets.",
+      "Both staged walking poses retain the prior silhouette, foot motion and separate crew; normal camera and portrait Low views remain readable.",
+      "The lighthouse beam is softer and less solid; warm lanterns and cool dusk remain distinct.",
+      "All eight embedded textures loaded with no GL, console or page errors and no attempted network requests.",
+      "Native iPad Safari appearance and sustained performance of .46 remain pending; .45 smoothness was user-reported and is not an FPS measurement."
+    ],
+    "views": [
+      {
+        "name": "01-harbor-introduction",
+        "purpose": "Original harbor, player and Bootstrap, windows and lantern mood.",
+        "screenshot": "01-harbor-introduction.png",
+        "png_sha256": "a3a263d4c22ef6c513c4a02c0bf86a64ec1db9ea55e3399f53aed76e5db7ea22",
+        "textures": {
+          "expected": 8,
+          "ready": 8,
+          "errors": 0
+        },
+        "stats": {
+          "backend": "three-webgl2",
+          "frames": 1,
+          "draws": 82,
+          "triangles": 439676,
+          "ms": 5842.199999999255,
+          "texturesReady": 8,
+          "texturesExpected": 8,
+          "textureErrors": 0,
+          "nativeAvatars": 3
+        },
+        "rendered": {
+          "backend": "three-webgl2",
+          "drawCalls": 82,
+          "triangles": 439676,
+          "nativeAvatars": 3
+        },
+        "geometry": {
+          "facadeVisibleMeshes": 109,
+          "facadeShadowEligible": 95,
+          "facadeTriangles": 182152,
+          "facadeGeometryValues": 4918104,
+          "finite": true
+        }
+      },
+      {
+        "name": "02-lighthouse-crew-home",
+        "purpose": "Validated completed mission, actual reunited crew, lighthouse masonry.",
+        "screenshot": "02-lighthouse-crew-home.png",
+        "png_sha256": "f18a71474ca26e545a52ba40d83ecf97d7f23da69ac51c3cc0c4d236de2835a5",
+        "textures": {
+          "expected": 8,
+          "ready": 8,
+          "errors": 0
+        },
+        "stats": {
+          "backend": "three-webgl2",
+          "frames": 1,
+          "draws": 117,
+          "triangles": 457020,
+          "ms": 6681.599999997765,
+          "texturesReady": 8,
+          "texturesExpected": 8,
+          "textureErrors": 0,
+          "nativeAvatars": 3
+        },
+        "rendered": {
+          "backend": "three-webgl2",
+          "drawCalls": 117,
+          "triangles": 457020,
+          "nativeAvatars": 3
+        },
+        "geometry": {
+          "facadeVisibleMeshes": 114,
+          "facadeShadowEligible": 101,
+          "facadeTriangles": 184276,
+          "facadeGeometryValues": 4975452,
+          "finite": true
+        }
+      },
+      {
+        "name": "03-cast-face-proportions",
+        "purpose": "Real person() player, Bootstrap and chartmaker in the original harbor; full figures and faces.",
+        "screenshot": "03-cast-face-proportions.png",
+        "png_sha256": "6fa3c68e4f593b1088e8e2ad41b93b0ace14a04e1fc4575589cf38e5d8554385",
+        "textures": {
+          "expected": 8,
+          "ready": 8,
+          "errors": 0
+        },
+        "stats": {
+          "backend": "three-webgl2",
+          "frames": 1,
+          "draws": 79,
+          "triangles": 439436,
+          "ms": 5730.300000000745,
+          "texturesReady": 8,
+          "texturesExpected": 8,
+          "textureErrors": 0,
+          "nativeAvatars": 3
+        },
+        "rendered": {
+          "backend": "three-webgl2",
+          "drawCalls": 79,
+          "triangles": 439436,
+          "nativeAvatars": 3
+        },
+        "geometry": {
+          "facadeVisibleMeshes": 108,
+          "facadeShadowEligible": 95,
+          "facadeTriangles": 182144,
+          "facadeGeometryValues": 4917888,
+          "finite": true
+        }
+      },
+      {
+        "name": "04-repaired-bridge-pose",
+        "purpose": "Core-completed physical repair, raised bridge, winch and interacting character pose.",
+        "screenshot": "04-repaired-bridge-pose.png",
+        "png_sha256": "aa19077f6ba2f097f90f1fbb9c3dde810b98c93c9df94d83ee5d6e4e8eff65d5",
+        "textures": {
+          "expected": 8,
+          "ready": 8,
+          "errors": 0
+        },
+        "stats": {
+          "backend": "three-webgl2",
+          "frames": 1,
+          "draws": 153,
+          "triangles": 465104,
+          "ms": 4373,
+          "texturesReady": 8,
+          "texturesExpected": 8,
+          "textureErrors": 0,
+          "nativeAvatars": 3
+        },
+        "rendered": {
+          "backend": "three-webgl2",
+          "drawCalls": 153,
+          "triangles": 465104,
+          "nativeAvatars": 3
+        },
+        "geometry": {
+          "facadeVisibleMeshes": 115,
+          "facadeShadowEligible": 101,
+          "facadeTriangles": 184284,
+          "facadeGeometryValues": 4975668,
+          "finite": true
+        }
+      },
+      {
+        "name": "05-harbor-portrait-low",
+        "purpose": "Same harbor camera at portrait aspect with the actual low-quality renderer path.",
+        "screenshot": "05-harbor-portrait-low.png",
+        "png_sha256": "76038b6069a63b1b244d9b5098cdf6ecec3cae624f3f8425384dae1be969189c",
+        "textures": {
+          "expected": 8,
+          "ready": 8,
+          "errors": 0
+        },
+        "stats": {
+          "backend": "three-webgl2",
+          "frames": 1,
+          "draws": 42,
+          "triangles": 225270,
+          "ms": 2875.5,
+          "texturesReady": 8,
+          "texturesExpected": 8,
+          "textureErrors": 0,
+          "nativeAvatars": 3
+        },
+        "rendered": {
+          "backend": "three-webgl2",
+          "drawCalls": 42,
+          "triangles": 225270,
+          "nativeAvatars": 3
+        },
+        "geometry": {
+          "facadeVisibleMeshes": 109,
+          "facadeShadowEligible": 95,
+          "facadeTriangles": 182152,
+          "facadeGeometryValues": 4918104,
+          "finite": true
+        }
+      },
+      {
+        "name": "06-production-resting-pier",
+        "purpose": "Actual user's reported mission condition: briefed, three repairs, weight 1, bridge closed, pier checkpoint; derived production resting camera.",
+        "screenshot": "06-production-resting-pier.png",
+        "png_sha256": "8146ecb8f1b7c9626d09a2abc2847f07e1962a010991bef737d235e9d79076c0",
+        "textures": {
+          "expected": 8,
+          "ready": 8,
+          "errors": 0
+        },
+        "stats": {
+          "backend": "three-webgl2",
+          "frames": 1,
+          "draws": 129,
+          "triangles": 465260,
+          "ms": 5854.400000002235,
+          "texturesReady": 8,
+          "texturesExpected": 8,
+          "textureErrors": 0,
+          "nativeAvatars": 3
+        },
+        "rendered": {
+          "backend": "three-webgl2",
+          "drawCalls": 129,
+          "triangles": 465260,
+          "nativeAvatars": 3
+        },
+        "geometry": {
+          "facadeVisibleMeshes": 109,
+          "facadeShadowEligible": 95,
+          "facadeTriangles": 182152,
+          "facadeGeometryValues": 4918104,
+          "finite": true
+        }
+      },
+      {
+        "name": "07-cast-walk-pose-a",
+        "purpose": "Staged real person() cast with actual production animator, run=1 and gait phase .75; first opposite arm/leg pose.",
+        "screenshot": "07-cast-walk-pose-a.png",
+        "png_sha256": "beaeb1d88996e516031f4fe08bb62f02a9247245e421b5cf8d5d861c620e061b",
+        "textures": {
+          "expected": 8,
+          "ready": 8,
+          "errors": 0
+        },
+        "stats": {
+          "backend": "three-webgl2",
+          "frames": 1,
+          "draws": 79,
+          "triangles": 439436,
+          "ms": 5960.39999999851,
+          "texturesReady": 8,
+          "texturesExpected": 8,
+          "textureErrors": 0,
+          "nativeAvatars": 3
+        },
+        "rendered": {
+          "backend": "three-webgl2",
+          "drawCalls": 79,
+          "triangles": 439436,
+          "nativeAvatars": 3
+        },
+        "geometry": {
+          "facadeVisibleMeshes": 108,
+          "facadeShadowEligible": 95,
+          "facadeTriangles": 182144,
+          "facadeGeometryValues": 4917888,
+          "finite": true
+        }
+      },
+      {
+        "name": "08-cast-walk-pose-b",
+        "purpose": "Same staged cast and camera with gait advanced pi radians using production Character phase rate; opposite stride.",
+        "screenshot": "08-cast-walk-pose-b.png",
+        "png_sha256": "5261d5bba221e002f3bbcc8ef75b82d8e57157ad70a6515a98965346dbb1e7f6",
+        "textures": {
+          "expected": 8,
+          "ready": 8,
+          "errors": 0
+        },
+        "stats": {
+          "backend": "three-webgl2",
+          "frames": 1,
+          "draws": 79,
+          "triangles": 439436,
+          "ms": 5880.39999999851,
+          "texturesReady": 8,
+          "texturesExpected": 8,
+          "textureErrors": 0,
+          "nativeAvatars": 3
+        },
+        "rendered": {
+          "backend": "three-webgl2",
+          "drawCalls": 79,
+          "triangles": 439436,
+          "nativeAvatars": 3
+        },
+        "geometry": {
+          "facadeVisibleMeshes": 108,
+          "facadeShadowEligible": 95,
+          "facadeTriangles": 182144,
+          "facadeGeometryValues": 4917888,
+          "finite": true
+        }
+      }
+    ]
+  },
+  "completed_voyage_roundtrip": {
+    "pass": true,
+    "fixture": {
+      "file": "qa/host-release/synthetic-completed-voyage.json",
+      "sha256": "b4e482a75a3bf53fa98adb2dafa410164f947b24677c3e57f26494ebcf558085"
+    },
+    "export": {
+      "file": "qa/host-release/synthetic-completed-roundtrip.json",
+      "sha256": "32fe65d48679ed4b5d4ca9103a18e0c69e0000107bbc7c4956e0bad87064a41f"
+    },
+    "scope": "Synthetic completed-voyage fixture; confirmation, mission/preferences/legacy equality and exported JSON roundtrip. The user's latest completed save was not supplied or inspected."
+  },
+  "playable_canvas": {
+    "bytes": 1416303,
+    "sha256": "4d44e0e4aa86a4b812a32bed115f30040b4803de399f1854dfc6939c55fd8998",
+    "size": [
+      1280,
+      820
+    ],
+    "file": "qa/player-recovered/Saltglass-saved-voyage-canvas.png",
+    "scope": "Actual compiled-player canvas at a synthetic known pier-save fixture, using the production camera; not the user's newest completed save."
+  },
+  "art": {
+    "existing_maps": 8,
+    "embedded_art_bytes": 4063325,
+    "compressed_payload_bytes_after_base64_decode": 3044280,
+    "new_external_assets": false,
+    "source_sha256": {
+      "stormwake_cast.js": "fada22aa79430218ab348ae0b2396c55cff0a76eea467fcdad37f576262123c6",
+      "stormwake_world.js": "7bfaae6b9fa976748e872eb05295f9007d6fd955170c5f9247082983d42a7f87",
+      "stormwake_three.js": "02cf5ab5bae449441bf8ed2be3a92c4d6d8e7a44172e913c275dd95c3b3e3957"
+    },
+    "world_cpu": {
+      "nodes": 218,
+      "triangles": 188220,
+      "cameraOccluders": 8,
+      "crewRockTops": [
+        0.7029621084100581,
+        0.7382623285542322
+      ]
+    },
+    "cast_cpu": [
+      {
+        "role": "player",
+        "vertices": 72072,
+        "triangles": 24024,
+        "bones": 19,
+        "blendedVertices": 7832
+      },
+      {
+        "role": "bootstrap",
+        "vertices": 74328,
+        "triangles": 24776,
+        "bones": 19,
+        "blendedVertices": 7832
+      },
+      {
+        "role": "chartmaker",
+        "vertices": 70104,
+        "triangles": 23368,
+        "bones": 19,
+        "blendedVertices": 7832
+      }
+    ]
+  },
+  "preservation": {
+    "exact_baseline_content_sha256": "8ddb1c3c19bdb19e5eb9d46ec3c263c1219a8c382018dd9756dbc56565e8c14d",
+    "baseline_files": 266,
+    "all_baseline_filenames_retained": true,
+    "protected_files_identical": [
+      "fun_core.js",
+      "stormwake_core.js",
+      "stormwake_comfort.js",
+      "stormwake_gl.js",
+      "stormwake_game.css",
+      "stormwake_assets.json",
+      "stormwake_three_vendor.js",
+      "STORMWAKE_VENDOR.json",
+      "fun_player.html",
+      "fun_player.js",
+      "fun_player.css"
+    ],
+    "runtime_files_identical_after_reversing_current_labels_and_player_digest": [
+      "app.js",
+      "index.html",
+      "owner.html",
+      "captain.js",
+      "platform_identity.js",
+      "input_hygiene.js",
+      "fleet_supabase.js",
+      "simple_books.js",
+      "business_deck.js",
+      "headway_contracts.js",
+      "fun_program.js",
+      "sw.js",
+      "manifest.webmanifest",
+      "stormwake_game.js"
+    ],
+    "historical_document_bodies_retained_as_exact_suffixes": [
+      "README.md",
+      "README.txt",
+      "UPLOAD_THIS_ONE_BUILD.md",
+      "RELEASE_ACCEPTANCE.md",
+      "TEST_BUILD_REPORT.md",
+      "CURRENT_ARCHITECTURE.md",
+      "CHANGELOG.md"
+    ],
+    "prior_gate_structurally_exact": true,
+    "historical_manifest_upgrade_keys_preserved": [
+      "tax_ledger_upgrade",
+      "authority_ledger_upgrade",
+      "fleet_core_upgrade",
+      "ledger_recovery_upgrade",
+      "ledger_closeout_upgrade",
+      "ledger_touchsafe_upgrade",
+      "keelguard_upgrade",
+      "watchbeacon_upgrade",
+      "clearpassage_upgrade",
+      "watchkeeper_upgrade",
+      "harbormaster_upgrade",
+      "quarterdeck_upgrade",
+      "helmdeck_upgrade",
+      "truebearing_upgrade",
+      "charterguard_upgrade",
+      "admiral_keel_upgrade",
+      "draftwatch_upgrade",
+      "bloomfit_upgrade",
+      "bloomprivacy_upgrade",
+      "fleetmission_upgrade",
+      "fleetidentity_upgrade",
+      "fleetpolish_upgrade",
+      "missiontruth_upgrade",
+      "househull_forge_upgrade",
+      "forgemind_upgrade",
+      "proofkeel_upgrade",
+      "voyageguard_upgrade",
+      "harborpass_upgrade",
+      "passageline_upgrade",
+      "voyagekeeper_upgrade",
+      "truthbridge_upgrade",
+      "hashlock_upgrade",
+      "clearbearing_upgrade",
+      "release_integrity_root_cause_upgrade",
+      "forgeseal_upgrade",
+      "blackwake_upgrade",
+      "ironbound_upgrade",
+      "workhorse_upgrade",
+      "headway_upgrade",
+      "wayfinder_upgrade",
+      "woodwright_upgrade",
+      "fairwind_upgrade",
+      "stormwake_upgrade",
+      "blacktide_upgrade",
+      "helmsman_upgrade",
+      "lanternwake_upgrade",
+      "dreadwater_upgrade"
+    ]
+  },
+  "previous_user_observation": {
+    "build": "8.8.20.45",
+    "device": "iPad Safari",
+    "observed": "User reports smooth play and confirms the JSON download; screenshot shows 6/6 complete, crew home and channel reopened.",
+    "scope": "User observation, not measured FPS. Latest completed-save contents were not supplied or inspected."
+  },
+  "package": {
+    "build": "8.8.20.46",
+    "seal": "saltglass-882046",
+    "zip": "DarkSky882046-Saltglass-Upload49-TEST.zip",
+    "upload_file_count": 49,
+    "maximum_upload_files": 85,
+    "target_file_count": 276,
+    "baseline_build": "8.8.20.45",
+    "baseline_file_count": 266,
+    "baseline_content_sha256": "8ddb1c3c19bdb19e5eb9d46ec3c263c1219a8c382018dd9756dbc56565e8c14d",
+    "changed_files": [
+      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
+      "BUILD_STORMWAKE_PLAYER.py",
+      "CHANGELOG.md",
+      "CHECKSUMS.sha256",
+      "CURRENT_ARCHITECTURE.md",
+      "DEPLOYMENT_MANIFEST.json",
+      "FLEET_COMMAND_MODEL.json",
+      "FLEET_DOCTRINE_REGISTRY.json",
+      "GOLDEN_VOYAGES.json",
+      "PATCH_CONTRACT.json",
+      "README.md",
+      "README.txt",
+      "RELEASE_ACCEPTANCE.md",
+      "RELEASE_CHECKSUMS.sha256",
+      "RELEASE_GATE.json",
+      "RELEASE_INVENTORY.json",
+      "RELEASE_SEAL.json",
+      "SALTGLASS_ART_NOTES.md",
+      "SALTGLASS_TEST_REPORT.md",
+      "SALTGLASS_TEST_RESULTS.json",
+      "SEAL_SALTGLASS.py",
+      "SHA256SUMS.txt",
+      "START_HERE_SALTGLASS.md",
+      "STORMWAKE_PLAYER_BUILD.json",
+      "TEST_BUILD_REPORT.md",
+      "UPLOAD_THIS_ONE_BUILD.md",
+      "VERIFY_SALTGLASS_BOOT.py",
+      "VERIFY_SALTGLASS_HOST.py",
+      "VERIFY_SALTGLASS_PLAYER.py",
+      "VERIFY_SALTGLASS_RELEASE.cjs",
+      "VERIFY_SALTGLASS_VISUAL.py",
+      "app.js",
+      "business_deck.js",
+      "captain.js",
+      "fleet_supabase.js",
+      "fun_program.js",
+      "headway_contracts.js",
+      "index.html",
+      "input_hygiene.js",
+      "manifest.webmanifest",
+      "owner.html",
+      "platform_identity.js",
+      "simple_books.js",
+      "stormwake_cast.js",
+      "stormwake_game.js",
+      "stormwake_player.html",
+      "stormwake_three.js",
+      "stormwake_world.js",
+      "sw.js"
+    ],
+    "scope": "Planned final delta. Final seal/archive/extraction checks remain separate.",
+    "status": "PENDING_POST_SEAL_ARCHIVE_AND_EXTRACTED_BOOT",
+    "external_proof": "qa/SALTGLASS_FINAL_PACKAGE_PROOF.json"
+  },
+  "native_field_acceptance": "PENDING",
+  "native_fps_claim": false,
+  "live_database_writes": false,
+  "server_authority_certification": "NOT_CLAIMED",
+  "production_activation": false,
+  "finalization_snapshot": "qa/finalization-inputs.json"
+}

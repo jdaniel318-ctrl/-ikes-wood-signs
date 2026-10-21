@@ -1,3 +1,17 @@
+# Saltglass 8.8.20.46 TEST — current release
+
+Current update: **DarkSky882046-Saltglass-Upload49-TEST.zip** (49 changed/new files) over exact Dreadwater 8.8.20.45. Every previous filename is retained. Follow START_HERE_SALTGLASS.md.
+
+This pass refines crew faces, hands and clothing; worn harbor ground and coastal edges; and lighting readability. It keeps the existing renderer, embedded artwork, mission, movement/camera, save format and fleet permissions. The user reported smooth .45 play and a received JSON download. Current .46 native iPad appearance and sustained performance remain a device check.
+
+Current measured results are in SALTGLASS_TEST_REPORT.md and SALTGLASS_TEST_RESULTS.json. Keep the downloaded voyage; no replay is required. No database action or remote publication is performed by this ZIP.
+
+---
+
+## Earlier release records
+
+The retained sections below document earlier builds. Use the Saltglass 8.8.20.46 instructions above for this update.
+
 # Dreadwater 8.8.20.45 TEST — current release
 
 Current update: **DarkSky882045-Dreadwater-Upload61-TEST.zip** (61 changed/new files) over exact Lanternwake 8.8.20.44, with all previous filenames retained. Follow START_HERE_DREADWATER.md.
