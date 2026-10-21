@@ -122,6 +122,17 @@
     lastReceipt = 'Commissioned Admiral office reverified. No additional password entry was needed.';
     scheduleWindow(); emitWindow(); return true;
   }
+  // The verified, opaque program host validates the frame/channel before this call.
+  // Renew idle only: activity is not a new sign-in or a server authority check.
+  function noteProgramActivity({userId, startedAt} = {}) {
+    if (!windowState().reusable || document.visibilityState !== 'visible') return false;
+    const deck = document.getElementById('admiralDeck'), session = safeSessionRead(ADMIRAL_KEY);
+    if (!deck || deck.hidden || deck.inert || deck.classList.contains('hidden') || deck.getAttribute('aria-hidden') === 'true') return false;
+    if (admiralWindow.userId !== userId || admiralWindow.startedAt !== startedAt || !session?.access_token || session.user?.id !== userId) return false;
+    admiralWindow.lastActivityAt = windowNow();
+    scheduleWindow();
+    return true;
+  }
   function cancelSignIn() {
     // Invalidate late login/verification responses without extending a live window.
     authGeneration++;
@@ -148,7 +159,7 @@
   window.addEventListener('pagehide', () => endWindow('document-left'));
   window.addEventListener('pageshow', e => { if (e.persisted) endWindow('document-restored'); });
   window.DarkSkyAdmiralSession = Object.freeze({
-    status: windowState, end: endWindow, cancelSignIn, noteResumed,
+    status: windowState, end: endWindow, cancelSignIn, noteResumed, noteProgramActivity,
     receipt: message => { lastReceipt = String(message || ''); emitWindow(); }
   });
 
@@ -156,7 +167,7 @@
     const url = String(options.url || '').replace(/\/$/, '');
     const publishableKey = String(options.publishableKey || options.key || '');
     const sessionKey = String(options.sessionKey || 'darkSkySupabaseSessionV1');
-    const build = String(options.build || '8.8.20.42');
+    const build = String(options.build || '8.8.20.43');
     const admiral = sessionKey === ADMIRAL_KEY;
     // Opt-in cancellation for the separate Vessel Captain route. Owner and
     // Admiral policies are untouched. Generation prevents late session writes.

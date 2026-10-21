@@ -1,3 +1,13 @@
+# Helmsman 8.8.20.43 TEST
+
+- Fixed the boat collision trap by keeping rejected turns from committing a blocked bow pose, retaining reverse escape.
+- Replaced arithmetic bridge repair with mission-linked fitting of gear, rope and timber and a physical winch that raises the bridge.
+- Counted validated active play toward the existing Admiral idle window while keeping the 15-minute idle / 60-minute maximum and security boundaries.
+- Preserved saved/completed .42 progress, manual game-file saving, unrelated business behavior, all 39 retained references and historical evidence.
+- Kept native iPad .43 acceptance pending and the cinematic art milestone as future work.
+
+## Preserved Blacktide and earlier release record — historical, not current instructions
+
 # Blacktide 8.8.20.42 TEST
 
 - Added procedural harbor materials, atmospheric lighting, water detail and more shaped pirate/harbor geometry in the existing playable renderer.

@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.20.42",
-  "version": "8.8.20.42",
-  "release_name": "Blacktide TEST",
-  "releaseName": "Blacktide TEST",
-  "release_seal": "blacktide-882042",
+  "build": "8.8.20.43",
+  "version": "8.8.20.43",
+  "release_name": "Helmsman TEST",
+  "releaseName": "Helmsman TEST",
+  "release_seal": "helmsman-882043",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -104,13 +104,12 @@
     "project_data_boundary": "exact-project-id"
   },
   "release_focus": [
-    "Blacktide harbor materials, water, lighting and character art",
-    "Mission stage and named salvage presentation",
-    "Dialogue-preserving background pause; uninterrupted resize",
-    "Four current fleet model declarations and shared-client identity repaired",
-    "Explicit game-file save status with unchanged isolated access"
+    "Safe boat collision pose and reverse escape",
+    "Mission-linked salvaged part fitting and visible bridge winch",
+    "Validated trusted gameplay activity within existing Admiral idle/maximum limits",
+    "Preserved unrelated business behavior, historical references and deliberate game-file boundaries"
   ],
-  "release_note": "Blacktide BT-1: first playable art and comfort upgrade over exact Stormwake .41, plus current fleet release-identity repairs. Existing self-contained WebGL renderer retained. Native-device performance, engine migration and remaining live readiness gates are pending.",
+  "release_note": "Helmsman .43 candidate: scoped boat escape, meaningful bridge repair/winch and trusted gameplay activity relay over exact Blacktide .42. Current final compiled behavior, save compatibility, security and archive evidence remain pending; native iPad acceptance remains pending user retest.",
   "tax_ledger_upgrade": {
     "schema": "dark-sky-fleet-tax-ledger-v1",
     "model": "TAX_LEDGER_MODEL.json",
@@ -232,8 +231,8 @@
     "algorithm": "SHA-256",
     "files": {
       "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": {
-        "sha256": "d6594392ce69a211625c2cd58dd852aee187472f1dd1cc4de85fb0600a7c04b2",
-        "build": "8.8.20.42",
+        "sha256": "95dd34263dc16176921573f3b72391c76cc294b08db3f9b00c8ae2ee35a248f1",
+        "build": "8.8.20.43",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -280,14 +279,14 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_COMMAND_MODEL.json": {
-        "sha256": "da3df6c5b388d4e17205e0e354532ef9159199caf3e9f02725719a82045975fc",
-        "build": "8.8.20.42",
+        "sha256": "f39fc4fada58f1b0ab078d8867c96671abc848727408726957746786b5dae4c7",
+        "build": "8.8.20.43",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
       "FLEET_DOCTRINE_REGISTRY.json": {
-        "sha256": "af96fd5125c3660b398404cc6d4c52e00f2a9eacd53d822d0fcf56682cdf8fee",
-        "build": "8.8.20.42",
+        "sha256": "bd8594de42dca4396188c75a4a6a00722be240fbeacfe3922cf76a1aa82e63ee",
+        "build": "8.8.20.43",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -346,8 +345,8 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "GOLDEN_VOYAGES.json": {
-        "sha256": "b061c2b689877c294207d3dd015cf09b3cbb0ada4620d1b6e945dc052ff59cfd",
-        "build": "8.8.20.42",
+        "sha256": "b642b72ffcbff54b3359d5bba90bfd9374c14224a4b18f7b9519b2a64d27812a",
+        "build": "8.8.20.43",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -500,32 +499,32 @@
       "simple_books.css": "5939590021ef2d3738d5f5f7249d72f8da64cc274bf287ef8183958517b0ba46",
       "platform_core.js": "7f797bc382a73eb9ec4365a7458e8329da60c50561e3ac751ca3fb9d7cd5ec49",
       "platform_v4.js": "21daf7777150d654467042893298147374318fdfc7ac38faf9260f874522019b",
-      "platform_identity.js": "7c4d3e7109b1e46229b6999e2d6bd2c0b272687c73b89409b8aec7d14a7895d4",
-      "fleet_supabase.js": "38ce2644ffa3d8e8d590e6bf83214f990961ea7c24353746b0d4832796e179e3",
+      "platform_identity.js": "5e338b28f421605f1da7c1483341594ddcb0d2c8ed02909c9bb7c44ceff42519",
+      "fleet_supabase.js": "d6b4d3a35da30f75ae3f5daffbe3430232c378d9fca8aa6982947524c5d89eca",
       "ike_style_registry.js": "6b348ebceb47e172e6676f46252b19c1c6bb7532baf76febfa8dd81760a76ab7",
-      "app.js": "9c8608595807f0bc58c43984eb3653f59fdd7eff257c9c4fe56528f018459521",
-      "captain.js": "9a0c66681675150c55bc571773e4242ca5304ec62f9e94bb8311dbfbf4f9dd2b",
-      "simple_books.js": "377b6637b8407ad0825496ae5d1c135bfd778f302e0ea551904daf804ed3aa6b",
-      "owner.html": "7cbf63916caab3ef44dca7f9b4e5929507e2aad6662425f4af86f75eca837832",
-      "manifest.webmanifest": "fc2cea548f182e2b603a92998a23578cf7dc28451376963cdc02add17ac9a6fc",
+      "app.js": "fb7caab19baf8433a6ce6aa769e412f3916b9c5dcd522adfaeb2ec365e551a05",
+      "captain.js": "c250e42be34120aaea964fbd8dfd1c0c5c563e2da567970d94a3cdadd8b28d91",
+      "simple_books.js": "377892e60f8139b82e6e1657642a052a42a1a7183d63efbc2a1d9046574cfb72",
+      "owner.html": "9daa6a3397c2e1ed68ee9e1cd2f4632e13af597325ffdaa2411abe5d2e36530a",
+      "manifest.webmanifest": "4c2cebb8b0d9ea36449ff0d96c13ac6705d2d0a3426e37e9923825adbb101890",
       "IKE_STYLE_FOUNDRY.json": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
-      "sw.js": "1ac9380d1215371775bda013bd9ac0f5064726fd7da93116e87779577726ee76",
-      "FLEET_DOCTRINE_REGISTRY.json": "af96fd5125c3660b398404cc6d4c52e00f2a9eacd53d822d0fcf56682cdf8fee",
-      "GOLDEN_VOYAGES.json": "b061c2b689877c294207d3dd015cf09b3cbb0ada4620d1b6e945dc052ff59cfd",
-      "FLEET_COMMAND_MODEL.json": "da3df6c5b388d4e17205e0e354532ef9159199caf3e9f02725719a82045975fc",
-      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "d6594392ce69a211625c2cd58dd852aee187472f1dd1cc4de85fb0600a7c04b2",
-      "input_hygiene.js": "61ddc67a00395eb658da8ba13d659b680ade10117bb5c3a88343cdeb41d206ac",
-      "business_deck.js": "dfdffc427da906ebf225c4a7f1c786fb60424c651aa47bf692ee63ad05ae0265",
+      "sw.js": "c042f60ae3bb6c3300ae75d8625219c69e7553f9ca077da7cabb2460ae534e04",
+      "FLEET_DOCTRINE_REGISTRY.json": "bd8594de42dca4396188c75a4a6a00722be240fbeacfe3922cf76a1aa82e63ee",
+      "GOLDEN_VOYAGES.json": "b642b72ffcbff54b3359d5bba90bfd9374c14224a4b18f7b9519b2a64d27812a",
+      "FLEET_COMMAND_MODEL.json": "f39fc4fada58f1b0ab078d8867c96671abc848727408726957746786b5dae4c7",
+      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "95dd34263dc16176921573f3b72391c76cc294b08db3f9b00c8ae2ee35a248f1",
+      "input_hygiene.js": "98d6e667689fda3b8623897a3bf608c23546a7aa7be0bc7748daf7dea0ed55b4",
+      "business_deck.js": "12a6f75c2b986f8608e257a19a7c534b61e8c4d2c6f05dcf308f07d834c91f4d",
       "business_deck.css": "445fa81fff307d41cdd9a7d181ec86f9daae6843d24ac0d9fe14f939a25b6289",
       "fleet_viewport.js": "14ea8ff7d2c834014d8661a743c9408f9556141e7c81d32b590bd6988d0cfa55",
       "fleet_viewport.css": "36db59f3ef4061631d2fc67aac7b33aed4fff4120453560012413200e0e9bdad",
-      "headway_contracts.js": "c3172b6b6f45ba2453320436b571a670293ee2385769e4183b9d99c03ec501f0",
+      "headway_contracts.js": "91a7193224ff74180739ee8ed25b2909dd15152c376c16266a647c44de2db022",
       "woodwright_fit.js": "a4efdadf635608419a2bd82f12a701fd2991ec5dc3d14d282fd846680d40606f",
       "fun_core.js": "b21a909fa3dccf44b2d02d4a8243a91fd260b70db2edfc35338f3fd330c810e4",
-      "fun_program.js": "8f4e496d6e9930181b0b626cdc8d9a472c5e3562a3867a6b013ee806e5be7c02",
+      "fun_program.js": "a4c81bbb0caa630f40fdafdea63ef019ea5c5ba2ebdfc1775c2a101092cdfc7d",
       "fun_program.css": "3bed37f2d02e156c0f88ac82bc87c7726b96a6eb7929b9b2250ec56eac3b1b23",
       "fun_player.html": "fcfc2d06cdf204f4591a9717968a027facf170e6e0be32d9151ef847870a0fb7",
-      "stormwake_core.js": "539f05db315eb1e5140107da0a42fcb0a6caad07b665be8674524c4fac0db868"
+      "stormwake_core.js": "53bc3070f55feceeff08ac5743f3220d70e0c3dda901b0b107092b2e3da16cc9"
     }
   },
   "watchbeacon_upgrade": {
@@ -960,7 +959,7 @@
     "project_data_mutation": false,
     "field_failure_proof": "8.8.20.13 held on styles.css because packaged DEPLOYMENT_MANIFEST runtime hash did not match packaged styles.css bytes"
   },
-  "release": "Stormwake TEST",
+  "release": "Helmsman TEST",
   "clearbearing_upgrade": {
     "build": "8.8.20.22",
     "baseline": "8.8.20.14 HashLock",
@@ -1153,9 +1152,9 @@
   },
   "lazy_program_assets": {
     "stormwake_player.html": {
-      "sha256": "ebc0c2bc43d55a4cfbf6e38cff5696fd0d2a064db54cdb8fbe9bdd9f14a842a2",
+      "sha256": "4b83692572d37646c7be778fa813ff4f12ad6e6d1479fa83526f0f91958f5382",
       "load": "after existing verified Admiral entry",
-      "bytes": 151259
+      "bytes": 160324
     }
   },
   "blacktide_upgrade": {
@@ -1179,6 +1178,26 @@
     "retained_reference_models": 39,
     "native_safari_status": "pending",
     "iPad_fps_claim": false,
+    "production_activation": false
+  },
+  "helmsman_upgrade": {
+    "base_build": "8.8.20.42",
+    "scope": [
+      "safe boat turning/reverse escape",
+      "fit salvaged gear/rope/timber and operate visible bridge winch",
+      "strict trusted game-activity relay"
+    ],
+    "game_behavior_changed": true,
+    "activity_transport_changed": true,
+    "unrelated_business_changes": "release-label-only",
+    "server_authority_changed": false,
+    "admiral_idle_minutes": 15,
+    "admiral_maximum_minutes": 60,
+    "save_compatibility": "existing .42 saved/completed progress must pass current verification",
+    "game_file_persistence": "deliberate JSON file; no autosave/cloud save",
+    "retained_reference_models": 39,
+    "native_safari_status": "pending-user-retest",
+    "verification_status": "pending-final-integration",
     "production_activation": false
   }
 }

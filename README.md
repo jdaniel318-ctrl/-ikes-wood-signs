@@ -1,3 +1,9 @@
+# Helmsman 8.8.20.43 TEST
+
+**Current upload: DarkSky882043-Helmsman-Upload49-TEST.zip — 49 files.** Follow START_HERE_HELMSMAN.md and install over the complete Blacktide 8.8.20.42 site. Helmsman repairs the launch collision trap, replaces arithmetic bridge repair with fitting salvaged parts and operating a physical winch, and lets validated active play count toward the existing Admiral idle window. The 15-minute idle / 60-minute maximum limits remain. Save a GAME FILE before refresh and preserve completed .42 progress. Current evidence and limits are in HELMSMAN_TEST_REPORT.md; native iPad .43 acceptance remains pending. The cinematic art milestone in STORMWAKE_VISUAL_AND_MISSION_PLAN.md is future work.
+
+## Preserved Blacktide and earlier release record — historical, not current instructions
+
 # Blacktide 8.8.20.42 TEST
 
 The current upload is **DarkSky882042-Blacktide-Upload53-TEST.zip**, containing **53 files**. Follow START_HERE_BLACKTIDE.md. Install over the complete Stormwake 8.8.20.41 site and keep other repository files. This build adds playable harbor art and comfort improvements, four fleet-model declaration repairs and coherent shared-client identity. It remains TEST. See BLACKTIDE_TEST_REPORT.md for current evidence and native/live limits.

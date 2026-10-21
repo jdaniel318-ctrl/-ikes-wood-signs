@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.42",
-  "release": "Blacktide TEST",
-  "seal": "blacktide-882042",
+  "build": "8.8.20.43",
+  "release": "Helmsman TEST",
+  "seal": "helmsman-882043",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Blacktide TEST",
-  "name": "Blacktide TEST",
-  "releaseName": "Blacktide TEST"
+  "release_name": "Helmsman TEST",
+  "name": "Helmsman TEST",
+  "releaseName": "Helmsman TEST"
 }

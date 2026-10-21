@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.20.42';
+  const BUILD_VERSION='8.8.20.43';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -9401,7 +9401,7 @@
     const state=commissionProofState(),proof=state.proof,receipt=state.receipt||commissionDraft?._serverReceipt;
     const ready=state.phase==='prepared',held=commissionOperationFrozen()&&!ready&&!proof;
     return `<div class="commission-panel sea-trial-review ironbound-proof">
-      <div class="eyebrow">07 • FLEET CORE PROOF · BLACKTIDE TEST BUILD</div>
+      <div class="eyebrow">07 • FLEET CORE PROOF · HELMSMAN TEST BUILD</div>
       <h2>${proof?'Vessel and blueprint verified':ready?'Review the server-owned operation':held?'Read the preserved operation':'Prepare a new private test vessel'}</h2>
       <p>${proof?'Fleet Core confirmed this exact operation, its canonical vessel, and the saved blueprint in a separate read. Captain handoff and isolation are not yet proven.':ready?'Preparation created no vessel. The next tap issues this one operation once. A reload requires reconciliation, not replay.':'The server creates the vessel and blueprint together. Browser storage is an optional cache, never commissioning authority.'}</p>
       ${!proof&&!ready&&!held&&commissionPhotoBriefConflict(commissionDraft)?`<div class="commission-callout warning"><b>SAVED BRIEF CORRECTION</b><span>Your brief says “No photo required.” The older Forge Plan still requires a photo. This action changes that requirement only, preserves the prior plan as evidence, and saves the same voyage. It does not create or retry an operation.</span><button type="button" class="primary-btn" data-apply-photo-brief ${commissionCommandBusy||commissionDraft?._serverRecoveryPending?'disabled':''}>APPLY SAVED BRIEF: NO PHOTO</button></div>`:''}

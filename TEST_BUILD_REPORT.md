@@ -1,3 +1,9 @@
+# Helmsman 8.8.20.43 TEST — current verification
+
+The current observed report is HELMSMAN_TEST_REPORT.md with structured evidence in HELMSMAN_TEST_RESULTS.json. Confirmed source results are core **32/32**, boat **4/4**, bridge **14/14** and activity **11/11**. Final compiled player/touch/host/boot/archive results: Final touch 3/3, host 12/12 and rendered landscape/portrait camera 1/1 passed. Full player/rescue 15/15 passed immediately before a camera-only change; independent byte comparison confirms unchanged non-camera logic. Exact archive and extracted startup checks run after sealing and are recorded in the separate package proof.. Use actual final-byte results; earlier candidate counts and historical Blacktide evidence are not substituted. Native iPad .43 acceptance remains **PENDING**.
+
+## Preserved Blacktide and earlier release record — historical, not current instructions
+
 # Blacktide 8.8.20.42 TEST
 
 The current observed report is BLACKTIDE_TEST_REPORT.md and its structured evidence is BLACKTIDE_TEST_RESULTS.json. The final ZIP is checked after sealing and exact incremental reconstruction. This build does not reuse historical test counts as current passes. Native device and live production checks remain pending.

@@ -1,3 +1,9 @@
+# Helmsman 8.8.20.43 TEST
+
+The existing atomic loader, identity worker, lazy opaque game and deliberate memory/JSON-file saving remain. Scoped game changes fix blocked boat-pose commitment and replace arithmetic repair with fitting salvaged gear/rope/timber and a visible winch raising the bridge. The checked gameplay-activity relay preserves exact frame/channel/account and server-authority boundaries, 15-minute idle and 60-minute maximum. Other business modules change release labels only; all 39 retained references, SQL and named .42 evidence remain exact. Existing completed progress should be preserved, with manual game-file saving before refresh. Current evidence: HELMSMAN_TEST_REPORT.md. STORMWAKE_VISUAL_AND_MISSION_PLAN.md describes the future cinematic art milestone; native iPad .43 acceptance remains pending.
+
+## Preserved Blacktide and earlier release record — historical, not current instructions
+
 # Blacktide 8.8.20.42 TEST
 
 The existing atomic loader, identity worker and lazy opaque game boundary remain in place. Business modules differ only in release labels. The game remains self-contained WebGL 1 with unchanged core/save schema. Material-aware batches and procedural surfaces improve the harbor; the maintained-engine migration is pending. Background holds preserve open dialogs, resize clears input without pausing, and file-state indicators distinguish current memory from prepared/loaded files. Current instructions: START_HERE_BLACKTIDE.md. Current evidence: BLACKTIDE_TEST_REPORT.md.

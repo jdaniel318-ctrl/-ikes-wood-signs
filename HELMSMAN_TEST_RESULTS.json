@@ -1,0 +1,569 @@
+{
+  "player_before_camera": {
+    "compiled_html_sha256": "5fbcf3f8f88b363e148ab595763d08166acb2c0f5e9711f7cb211156af1a60fc",
+    "results": [
+      {
+        "name": "actual WebGL harbor, articulated character and visible controls",
+        "pass": true
+      },
+      {
+        "name": "direct player remains locked without parent handshake",
+        "pass": true
+      },
+      {
+        "name": "walk with real keyboard controls, meet Bootstrap and collect one physical repair",
+        "pass": true
+      },
+      {
+        "name": "pause cancels held movement and does not simulate catch-up",
+        "pass": true
+      },
+      {
+        "name": "interactive functions slider moves launch and graph before practice; lesson distinct from rescue",
+        "pass": true
+      },
+      {
+        "name": "original First Light remains playable in a second opaque frame without changing rescue",
+        "pass": true
+      },
+      {
+        "name": "opaque child cannot read parent; self-forged restore ignored",
+        "pass": true
+      },
+      {
+        "name": "trusted touch repairs and raises the real bridge; release stops work and completion saves compatibly",
+        "pass": true
+      },
+      {
+        "name": "focus and parent background pause stop winch work until another deliberate touch",
+        "pass": true
+      },
+      {
+        "name": "repair controls fit landscape and portrait touch viewports with actual WebGL screenshots",
+        "pass": true
+      },
+      {
+        "name": "a fresh actual finger can resume winching after interruption loses the first terminal event",
+        "pass": true
+      },
+      {
+        "name": "compiled game reports actual trusted visible input only, never animation or progress",
+        "pass": true
+      },
+      {
+        "name": "complete Broken Passage through actual movement, jump, mechanism, boat, rescue and return",
+        "pass": true
+      },
+      {
+        "name": "title hold preserves entry and usable controls",
+        "pass": true
+      },
+      {
+        "name": "resize preserves play while lost focus pauses without stuck keys or catch-up",
+        "pass": true
+      }
+    ],
+    "passed": 15,
+    "failed": 0,
+    "scope": "Actual compiled opaque iframe and WebGL; synthetic parent/clock, actual movement, trusted CDP bridge touches; no native Safari or device performance claim"
+  },
+  "final_camera": {
+    "compiled_html_sha256": "4b83692572d37646c7be778fa813ff4f12ad6e6d1479fa83526f0f91958f5382",
+    "results": [
+      {
+        "name": "repair controls fit landscape and portrait touch viewports with actual WebGL screenshots",
+        "pass": true
+      }
+    ],
+    "passed": 1,
+    "failed": 0,
+    "scope": "Actual compiled opaque iframe and WebGL; synthetic parent/clock, actual movement, trusted CDP bridge touches; no native Safari or device performance claim"
+  },
+  "final_touch": {
+    "compiled_html_sha256": "4b83692572d37646c7be778fa813ff4f12ad6e6d1479fa83526f0f91958f5382",
+    "results": [
+      {
+        "name": "real touch boards launch and drives forward and reverse",
+        "pass": true
+      },
+      {
+        "name": "simultaneous brake release and cancellation do not latch boat inputs",
+        "pass": true
+      },
+      {
+        "name": "real thumbstick collision path keeps a valid pose and can reverse away",
+        "pass": true
+      }
+    ],
+    "passed": 3,
+    "failed": 0,
+    "evidence": {
+      "propulsion": {
+        "start": {
+          "x": 6.4,
+          "z": 20,
+          "yaw": 0,
+          "speed": 0
+        },
+        "forward": {
+          "x": 6.4,
+          "z": 23.071250000000084,
+          "yaw": 0,
+          "speed": 4.050000000000013
+        },
+        "reverse": {
+          "x": 6.4,
+          "z": 22.435501356621884,
+          "yaw": 0,
+          "speed": -2.2999988203289123
+        },
+        "actual_step_count": 301
+      },
+      "brake_release_diagnostic": {
+        "events": [
+          {
+            "type": "pointerdown",
+            "id": 2,
+            "target": "swStart"
+          },
+          {
+            "type": "pointerup",
+            "id": 2,
+            "target": "swStart"
+          },
+          {
+            "type": "lostpointercapture",
+            "id": 2,
+            "target": "swStart"
+          },
+          {
+            "type": "pointerdown",
+            "id": 3,
+            "target": "swStick"
+          },
+          {
+            "type": "pointercancel",
+            "id": 3,
+            "target": "swStick"
+          },
+          {
+            "type": "lostpointercapture",
+            "id": 3,
+            "target": "swStick"
+          },
+          {
+            "type": "pointerdown",
+            "id": 4,
+            "target": "swInteract"
+          },
+          {
+            "type": "pointerup",
+            "id": 4,
+            "target": "swInteract"
+          },
+          {
+            "type": "lostpointercapture",
+            "id": 4,
+            "target": "swInteract"
+          },
+          {
+            "type": "pointerdown",
+            "id": 5,
+            "target": "swStick"
+          },
+          {
+            "type": "pointerdown",
+            "id": 6,
+            "target": "swJump"
+          },
+          {
+            "type": "pointerup",
+            "id": 6,
+            "target": "swJump"
+          },
+          {
+            "type": "lostpointercapture",
+            "id": 6,
+            "target": "swJump"
+          }
+        ],
+        "last_steps": [
+          {
+            "dt": 0.016666666666666514,
+            "input": {
+              "throttle": 0,
+              "steer": -0.0
+            },
+            "before": {
+              "x": 6.4,
+              "z": 22.271611111111167,
+              "yaw": 0,
+              "speed": 1.2066666666666688
+            },
+            "after": {
+              "x": 6.4,
+              "z": 22.29083333333339,
+              "yaw": 0,
+              "speed": 1.153333333333336
+            },
+            "bumped": false,
+            "centerBlocked": false,
+            "frontBlocked": false
+          },
+          {
+            "dt": 0.016666666666666514,
+            "input": {
+              "throttle": 0,
+              "steer": -0.0
+            },
+            "before": {
+              "x": 6.4,
+              "z": 22.29083333333339,
+              "yaw": 0,
+              "speed": 1.153333333333336
+            },
+            "after": {
+              "x": 6.4,
+              "z": 22.309166666666723,
+              "yaw": 0,
+              "speed": 1.1000000000000032
+            },
+            "bumped": false,
+            "centerBlocked": false,
+            "frontBlocked": false
+          },
+          {
+            "dt": 0.016666666666666514,
+            "input": {
+              "throttle": 0.9999994870995272,
+              "steer": -0.0
+            },
+            "before": {
+              "x": 6.4,
+              "z": 22.309166666666723,
+              "yaw": 0,
+              "speed": 1.1000000000000032
+            },
+            "after": {
+              "x": 6.4,
+              "z": 22.328250000000057,
+              "yaw": 0,
+              "speed": 1.1450000000000027
+            },
+            "bumped": false,
+            "centerBlocked": false,
+            "frontBlocked": false
+          },
+          {
+            "dt": 0.016666666666666514,
+            "input": {
+              "throttle": 0.9999994870995272,
+              "steer": -0.0
+            },
+            "before": {
+              "x": 6.4,
+              "z": 22.328250000000057,
+              "yaw": 0,
+              "speed": 1.1450000000000027
+            },
+            "after": {
+              "x": 6.4,
+              "z": 22.348083333333392,
+              "yaw": 0,
+              "speed": 1.1900000000000022
+            },
+            "bumped": false,
+            "centerBlocked": false,
+            "frontBlocked": false
+          },
+          {
+            "dt": 0.016666666666666514,
+            "input": {
+              "throttle": 0.9999994870995272,
+              "steer": -0.0
+            },
+            "before": {
+              "x": 6.4,
+              "z": 22.348083333333392,
+              "yaw": 0,
+              "speed": 1.1900000000000022
+            },
+            "after": {
+              "x": 6.4,
+              "z": 22.368666666666726,
+              "yaw": 0,
+              "speed": 1.2350000000000017
+            },
+            "bumped": false,
+            "centerBlocked": false,
+            "frontBlocked": false
+          },
+          {
+            "dt": 0.016666666666666514,
+            "input": {
+              "throttle": 0.9999994870995272,
+              "steer": -0.0
+            },
+            "before": {
+              "x": 6.4,
+              "z": 22.368666666666726,
+              "yaw": 0,
+              "speed": 1.2350000000000017
+            },
+            "after": {
+              "x": 6.4,
+              "z": 22.39000000000006,
+              "yaw": 0,
+              "speed": 1.2800000000000011
+            },
+            "bumped": false,
+            "centerBlocked": false,
+            "frontBlocked": false
+          },
+          {
+            "dt": 0.016666666666666514,
+            "input": {
+              "throttle": 0.9999994870995272,
+              "steer": -0.0
+            },
+            "before": {
+              "x": 6.4,
+              "z": 22.39000000000006,
+              "yaw": 0,
+              "speed": 1.2800000000000011
+            },
+            "after": {
+              "x": 6.4,
+              "z": 22.412083333333396,
+              "yaw": 0,
+              "speed": 1.3250000000000006
+            },
+            "bumped": false,
+            "centerBlocked": false,
+            "frontBlocked": false
+          },
+          {
+            "dt": 0.016666666666666514,
+            "input": {
+              "throttle": 0.9999994870995272,
+              "steer": -0.0
+            },
+            "before": {
+              "x": 6.4,
+              "z": 22.412083333333396,
+              "yaw": 0,
+              "speed": 1.3250000000000006
+            },
+            "after": {
+              "x": 6.4,
+              "z": 22.43491666666673,
+              "yaw": 0,
+              "speed": 1.37
+            },
+            "bumped": false,
+            "centerBlocked": false,
+            "frontBlocked": false
+          }
+        ],
+        "thumb": "translate(0px, -47.6px)"
+      },
+      "brake": {
+        "before_brake_speed": 2.7000000000000073,
+        "held_samples": 30,
+        "released_brake_throttle": 0.9999994870995272,
+        "final_input": {
+          "throttle": 0,
+          "steer": -0.0
+        },
+        "actual_step_count": 121
+      },
+      "collision": {
+        "actions": [
+          {
+            "joyX": 0,
+            "joyZ": 1,
+            "frames": 100
+          },
+          {
+            "joyX": 1,
+            "joyZ": 1,
+            "frames": 295
+          },
+          {
+            "joyX": -1,
+            "joyZ": 1,
+            "frames": 1
+          }
+        ],
+        "contact": {
+          "x": -4.674610862428444,
+          "z": 20.89950603311572,
+          "yaw": -3.633354324631355,
+          "speed": 0.5710872765586706
+        },
+        "reverse_after_10_simulated_seconds": {
+          "x": -7.749914283143681,
+          "z": 26.640727618576634,
+          "yaw": -3.633354324631355,
+          "speed": -0.0061363636363640835
+        },
+        "reverse_distance": 6.512995963673335,
+        "invalid_committed_poses": 0,
+        "first_invalid_pose": null,
+        "actual_step_count": 997
+      }
+    },
+    "scope": "Actual compiled iframe and Boat.step; real CDP touch; synthetic parent/checkpoint/60Hz clock; sparse actual WebGL draws; all page network blocked; no native performance claim"
+  },
+  "final_host": [
+    {
+      "name": "verified lazy launch checks actual player digest and keeps opaque isolation",
+      "pass": true
+    },
+    {
+      "name": "denied Admiral never fetches or opens 3D player",
+      "pass": true
+    },
+    {
+      "name": "corrupt or mixed-release player remains held with original-game recovery route",
+      "pass": true
+    },
+    {
+      "name": "identity changes during delayed graphics download cannot open prior session",
+      "pass": true
+    },
+    {
+      "name": "cancelled pending authorization cannot reopen the game",
+      "pass": true
+    },
+    {
+      "name": "legacy save needs confirmation, preserves pennant and roundtrips new envelope",
+      "pass": true
+    },
+    {
+      "name": "malformed unknown and business-shaped imports cannot replace active game",
+      "pass": true
+    },
+    {
+      "name": "expired Admiral session removes player and disables saves",
+      "pass": true
+    },
+    {
+      "name": "account change during final import confirmation does not replace retained run",
+      "pass": true
+    },
+    {
+      "name": "forged outer messages cannot award progress; return preserves Admiral workspace",
+      "pass": true
+    },
+    {
+      "name": "save indicator becomes unsaved again after new game progress",
+      "pass": true
+    },
+    {
+      "name": "visible return avoids duplicate pause and still checks authority",
+      "pass": true
+    }
+  ],
+  "activity": {
+    "passed": 11,
+    "failed": 0,
+    "results": [
+      {
+        "name": "trusted game tap renews only idle and survives original fifteen-minute deadline",
+        "pass": true
+      },
+      {
+        "name": "synthetic child input and automatic progress or ready do not renew idle",
+        "pass": true
+      },
+      {
+        "name": "wrong channel source and nonopaque origin cannot renew idle",
+        "pass": true
+      },
+      {
+        "name": "hidden dialog and hidden parent document ignore child activity",
+        "pass": true
+      },
+      {
+        "name": "CSS-hidden dialog cannot renew idle",
+        "pass": true
+      },
+      {
+        "name": "session API rejects stale identity stamp and inert workspace",
+        "pass": true
+      },
+      {
+        "name": "changed stored account cannot extend or retain the prior game frame",
+        "pass": true
+      },
+      {
+        "name": "late activity cannot revive an expired fifteen-minute session",
+        "pass": true
+      },
+      {
+        "name": "continuous accepted game activity cannot extend sixty-minute absolute window",
+        "pass": true
+      },
+      {
+        "name": "save still requires fresh authority verification after activity renewal",
+        "pass": true
+      },
+      {
+        "name": "same-document same-account reauthentication retains accepted memory progress",
+        "pass": true
+      }
+    ]
+  },
+  "schema": "helmsman-test-results-v1",
+  "build": "8.8.20.43",
+  "generated_at_utc": "2026-10-21T02:06:20+00:00",
+  "pass_scope": "Observed isolated checks. Fifteen-case full player suite preceded a verified camera-only change; exact hashes are retained.",
+  "player": {
+    "bytes": 160324,
+    "sha256": "4b83692572d37646c7be778fa813ff4f12ad6e6d1479fa83526f0f91958f5382"
+  },
+  "source_checks": {
+    "core": {
+      "passed": 32,
+      "failed": 0
+    },
+    "boat": {
+      "passed": 4,
+      "failed": 0
+    },
+    "bridge": {
+      "passed": 14,
+      "failed": 0
+    },
+    "package_unit": {
+      "passed": 31,
+      "failed": 0
+    }
+  },
+  "independent_review": {
+    "status": "No remaining Critical or Important production findings",
+    "exact_42_save_roundtrips": {
+      "passed": 7,
+      "failed": 0
+    },
+    "camera_byte_proof": "Reversing only the final camera clause reconstructs exact prior player SHA256 5fbcf3f8f88b363e148ab595763d08166acb2c0f5e9711f7cb211156af1a60fc. All input, mission, saving and activity code is unchanged."
+  },
+  "historical_world": {
+    "passed": 6,
+    "failed": 1,
+    "reason": "Preserved .42 assertion expects removed eleven-unit counterweight geometry; current bridge/world verifier is 14/14."
+  },
+  "post_seal_verification": {
+    "procedure": "Strict baseline/update/full reconstruction, fresh exact extraction, release/model/boat/bridge checks and actual extracted index startup. Recorded after sealing in external HELMSMAN_FINAL_PACKAGE_PROOF.json; no pre-execution pass claimed."
+  },
+  "native_acceptance": "PENDING USER IPAD RETEST",
+  "limitations": [
+    "No native FPS or Safari certification",
+    "Manual game-file saving still required before full reload",
+    "Partial winch work is session-local; completed repair uses unchanged v2 save",
+    "Cinematic character/material/lighting milestone remains future work",
+    "No live account, database, role or deployment changes"
+  ],
+  "pass": true
+}
