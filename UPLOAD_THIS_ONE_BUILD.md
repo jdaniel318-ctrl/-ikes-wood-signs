@@ -1,3 +1,9 @@
+# Lanternwake 8.8.20.44 TEST — current upload
+
+**DarkSky882044-Lanternwake-Upload44-TEST.zip — 44 files.** Install this single bounded update over complete **Helmsman 8.8.20.43**. Its ZIP and single internal folder share a name. Follow the three steps in START_HERE_LANTERNWAKE.md: preserve the completed game with SAVE GAME FILE before refresh; extract and upload all inner files; confirm .44, load the saved completed game and inspect the art. No replay is required. Replace matching names at the existing repository root and retain all other files. This update is not a standalone site. Do not run SQL or clear browser data. The listed final-source and compiled-player checks passed; native .44 acceptance remains pending.
+
+## Preserved Helmsman and earlier release record — historical, not current instructions
+
 # Helmsman 8.8.20.43 TEST — current upload
 
 **DarkSky882043-Helmsman-Upload49-TEST.zip — 49 files.** Install this single update over complete **Blacktide 8.8.20.42**. Its ZIP and single internal folder share a name. Follow the three steps in START_HERE_HELMSMAN.md: save old progress; upload/check .43; test available winch/reverse/rescue behavior and save again. Upload every file inside the folder to the existing repository root, replacing matching names and retaining all other files. This update is not a standalone site. Preserve completed progress.

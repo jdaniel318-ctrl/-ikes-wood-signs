@@ -1,3 +1,9 @@
+# Lanternwake 8.8.20.44 TEST — current verification
+
+Current .44 observations belong in LANTERNWAKE_TEST_REPORT.md. Final-source, compiled rescue, save/load and visual checks passed. Final archive reconstruction and extracted startup are checked after sealing; no historical pass count is reused as a .44 result. The user has shown the .43 rescue complete on iPad, so preserve that completed game for the art inspection. Native iPad/Safari .44 acceptance remains **PENDING**. Existing .43 and earlier named test reports retain their original bytes and historical scope.
+
+## Preserved Helmsman and earlier release record — historical, not current instructions
+
 # Helmsman 8.8.20.43 TEST — current verification
 
 The current observed report is HELMSMAN_TEST_REPORT.md with structured evidence in HELMSMAN_TEST_RESULTS.json. Confirmed source results are core **32/32**, boat **4/4**, bridge **14/14** and activity **11/11**. Final compiled player/touch/host/boot/archive results: Final touch 3/3, host 12/12 and rendered landscape/portrait camera 1/1 passed. Full player/rescue 15/15 passed immediately before a camera-only change; independent byte comparison confirms unchanged non-camera logic. Exact archive and extracted startup checks run after sealing and are recorded in the separate package proof.. Use actual final-byte results; earlier candidate counts and historical Blacktide evidence are not substituted. Native iPad .43 acceptance remains **PENDING**.

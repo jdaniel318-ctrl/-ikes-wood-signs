@@ -1,3 +1,11 @@
+# Lanternwake 8.8.20.44 TEST
+
+The atomic loader, identity worker, opaque lazy game, .43 mission/input/save behavior and checked gameplay activity relay remain. The visual pass is confined to stormwake_gl.js and stormwake_world.js; game and host sources otherwise change only release labels and the compiled-player digest. Admiral authority, the 15-minute idle / 60-minute maximum and deliberate memory/JSON-file save boundaries remain. The self-contained WebGL 1 renderer gains presentation work without adding external runtime dependencies or image bytes from the reference clip.
+
+All 39 retained reference models, historical named evidence, SQL and existing filenames are preserved. General documents retain their complete previous bodies below this header. The user has shown .43 rescue completion on iPad; the saved completed game is the .44 art-inspection starting point. Current instructions: START_HERE_LANTERNWAKE.md. Current evidence: LANTERNWAKE_TEST_REPORT.md. Final-source and compiled-player integration checks passed. Native .44 acceptance remains pending.
+
+## Preserved Helmsman and earlier release record — historical, not current instructions
+
 # Helmsman 8.8.20.43 TEST
 
 The existing atomic loader, identity worker, lazy opaque game and deliberate memory/JSON-file saving remain. Scoped game changes fix blocked boat-pose commitment and replace arithmetic repair with fitting salvaged gear/rope/timber and a visible winch raising the bridge. The checked gameplay-activity relay preserves exact frame/channel/account and server-authority boundaries, 15-minute idle and 60-minute maximum. Other business modules change release labels only; all 39 retained references, SQL and named .42 evidence remain exact. Existing completed progress should be preserved, with manual game-file saving before refresh. Current evidence: HELMSMAN_TEST_REPORT.md. STORMWAKE_VISUAL_AND_MISSION_PLAN.md describes the future cinematic art milestone; native iPad .43 acceptance remains pending.

@@ -1,0 +1,752 @@
+{
+  "schema": "lanternwake-final-source-evidence-v1",
+  "build": "8.8.20.44",
+  "release": "Lanternwake TEST",
+  "observed_at_utc": "2026-10-21T02:47:00+00:00",
+  "pass": true,
+  "pass_scope": "Listed offline final-source/compiled-player checks only; archive and extracted startup are independently checked after sealing.",
+  "source_sha256": {
+    "stormwake_gl.js": "d55f0b2d4f8a0e9a1f203a153b15eec347efe0ed247f2c8b4c72a526bd4c3ed8",
+    "stormwake_world.js": "452df1e9f43b968aa734d1b6be87af95168f13936a144d499382bc3936bb1a75",
+    "stormwake_core.js": "53bc3070f55feceeff08ac5743f3220d70e0c3dda901b0b107092b2e3da16cc9",
+    "stormwake_game.js": "1344816026b775c63c6d13f7f4bcc133efd3a10ecaa0b171a8e7d3565df6e3ef",
+    "stormwake_player.html": "7bb9f57c5a0746c5519d5b0d894c03da7066f17e47c2e77f9021b533f5508ad1",
+    "fun_program.js": "616c43d335322d808d633198533c8a853b9b907820876c3f743095530788d1bb"
+  },
+  "compiled_player_bytes": 172000,
+  "checks": {
+    "core": {
+      "exit_code": 0,
+      "passed": 32,
+      "failed": 0,
+      "verifier": "VERIFY_STORMWAKE_CORE.cjs"
+    },
+    "renderer": {
+      "exit_code": 0,
+      "passed": 7,
+      "failed": 0,
+      "verifier": "VERIFY_STORMWAKE_RENDER.cjs"
+    },
+    "render_budget": {
+      "exit_code": 0,
+      "passed": 6,
+      "failed": 0,
+      "verifier": "VERIFY_BLACKTIDE_RENDER.cjs"
+    },
+    "bridge": {
+      "exit_code": 0,
+      "passed": 14,
+      "failed": 0,
+      "verifier": "VERIFY_HELMSMAN_BRIDGE.cjs"
+    },
+    "boat": {
+      "exit_code": 0,
+      "passed": 4,
+      "failed": 0,
+      "verifier": "VERIFY_HELMSMAN_BOAT.cjs"
+    },
+    "smooth_normals": {
+      "exit_code": 0,
+      "passed": 2,
+      "failed": 0,
+      "verifier": "VERIFY_LANTERNWAKE_RENDER.cjs"
+    },
+    "player": {
+      "exit_code": 0,
+      "passed": 15,
+      "failed": 0,
+      "verifier": "VERIFY_HELMSMAN_PLAYER.py"
+    },
+    "host": {
+      "exit_code": 0,
+      "passed": 12,
+      "failed": 0,
+      "verifier": "VERIFY_STORMWAKE_HOST.py"
+    }
+  },
+  "player": {
+    "compiled_html_sha256": "7bb9f57c5a0746c5519d5b0d894c03da7066f17e47c2e77f9021b533f5508ad1",
+    "results": [
+      {
+        "name": "actual WebGL harbor, articulated character and visible controls",
+        "pass": true
+      },
+      {
+        "name": "direct player remains locked without parent handshake",
+        "pass": true
+      },
+      {
+        "name": "walk with real keyboard controls, meet Bootstrap and collect one physical repair",
+        "pass": true
+      },
+      {
+        "name": "pause cancels held movement and does not simulate catch-up",
+        "pass": true
+      },
+      {
+        "name": "interactive functions slider moves launch and graph before practice; lesson distinct from rescue",
+        "pass": true
+      },
+      {
+        "name": "original First Light remains playable in a second opaque frame without changing rescue",
+        "pass": true
+      },
+      {
+        "name": "opaque child cannot read parent; self-forged restore ignored",
+        "pass": true
+      },
+      {
+        "name": "trusted touch repairs and raises the real bridge; release stops work and completion saves compatibly",
+        "pass": true
+      },
+      {
+        "name": "focus and parent background pause stop winch work until another deliberate touch",
+        "pass": true
+      },
+      {
+        "name": "repair controls fit landscape and portrait touch viewports with actual WebGL screenshots",
+        "pass": true
+      },
+      {
+        "name": "a fresh actual finger can resume winching after interruption loses the first terminal event",
+        "pass": true
+      },
+      {
+        "name": "compiled game reports actual trusted visible input only, never animation or progress",
+        "pass": true
+      },
+      {
+        "name": "complete Broken Passage through actual movement, jump, mechanism, boat, rescue and return",
+        "pass": true
+      },
+      {
+        "name": "title hold preserves entry and usable controls",
+        "pass": true
+      },
+      {
+        "name": "resize preserves play while lost focus pauses without stuck keys or catch-up",
+        "pass": true
+      }
+    ],
+    "passed": 15,
+    "failed": 0,
+    "scope": "Actual compiled opaque iframe and WebGL; synthetic parent/clock, actual movement, trusted CDP bridge touches; no native Safari or device performance claim"
+  },
+  "host": [
+    {
+      "name": "verified lazy launch checks actual player digest and keeps opaque isolation",
+      "pass": true
+    },
+    {
+      "name": "denied Admiral never fetches or opens 3D player",
+      "pass": true
+    },
+    {
+      "name": "corrupt or mixed-release player remains held with original-game recovery route",
+      "pass": true
+    },
+    {
+      "name": "identity changes during delayed graphics download cannot open prior session",
+      "pass": true
+    },
+    {
+      "name": "cancelled pending authorization cannot reopen the game",
+      "pass": true
+    },
+    {
+      "name": "legacy save needs confirmation, preserves pennant and roundtrips new envelope",
+      "pass": true
+    },
+    {
+      "name": "malformed unknown and business-shaped imports cannot replace active game",
+      "pass": true
+    },
+    {
+      "name": "expired Admiral session removes player and disables saves",
+      "pass": true
+    },
+    {
+      "name": "account change during final import confirmation does not replace retained run",
+      "pass": true
+    },
+    {
+      "name": "forged outer messages cannot award progress; return preserves Admiral workspace",
+      "pass": true
+    },
+    {
+      "name": "save indicator becomes unsaved again after new game progress",
+      "pass": true
+    },
+    {
+      "name": "visible return avoids duplicate pause and still checks authority",
+      "pass": true
+    }
+  ],
+  "visual": {
+    "schema": "stormwake-offline-art-camera-v1",
+    "scope": "Actual unmodified renderer/world in an offline camera rig; staged camera and character positions; not player/UI/gameplay verification.",
+    "capture": "Synchronous actual WebGL canvas PNG after Renderer.draw and gl.finish; one GPU frame per view.",
+    "source_sha256": {
+      "fun_core.js": "b21a909fa3dccf44b2d02d4a8243a91fd260b70db2edfc35338f3fd330c810e4",
+      "stormwake_core.js": "53bc3070f55feceeff08ac5743f3220d70e0c3dda901b0b107092b2e3da16cc9",
+      "stormwake_gl.js": "d55f0b2d4f8a0e9a1f203a153b15eec347efe0ed247f2c8b4c72a526bd4c3ed8",
+      "stormwake_world.js": "452df1e9f43b968aa734d1b6be87af95168f13936a144d499382bc3936bb1a75"
+    },
+    "harness_sha256": "c14a9af824a8b6b922a5dcddde7c59485b2755c0d2a66e32c98a88cb08768bb2",
+    "release_directory": "/workspace/scratch/64e449e0a25a/stormwake-work/lanternwake-work/release",
+    "stats_note": "Renderer.stats.draws includes shadow passes; geometry.visibleMeshes counts color-pass scene meshes. Triangle totals are the actual visible scene geometry, independent of camera culling.",
+    "limitations": [
+      "Art quality and framing require visual review of the PNGs.",
+      "No gameplay, UI, native Safari, device input, sustained performance, or native-device FPS claim."
+    ],
+    "views": [
+      {
+        "name": "01-harbor-introduction",
+        "purpose": "Original harbor, player and Bootstrap, windows and lantern mood.",
+        "pass": true,
+        "camera": {
+          "eye": [
+            3.7,
+            4.6,
+            -6
+          ],
+          "target": [
+            -1,
+            3.4,
+            -16
+          ]
+        },
+        "viewport": [
+          1280,
+          820
+        ],
+        "bufferSize": [
+          1280,
+          820
+        ],
+        "quality": "balanced",
+        "sceneTime": 2.4,
+        "mission": {
+          "briefed": false,
+          "parts": [],
+          "weight": 1,
+          "bridgeOpen": false,
+          "passenger": false,
+          "complete": false,
+          "chart": false,
+          "checkpoint": "arrival"
+        },
+        "goal": "bootstrap",
+        "coreValidation": true,
+        "coreTransitions": [
+          {
+            "type": "prefs",
+            "prefs": {
+              "quality": "balanced",
+              "sound": false,
+              "reducedMotion": false
+            }
+          }
+        ],
+        "stagedFactoryCast": [],
+        "characterPose": {
+          "position": [
+            1.4,
+            1.6,
+            -13.8
+          ],
+          "yaw": 0.65,
+          "interacting": 0
+        },
+        "bridgeAngle": 0,
+        "stats": {
+          "frames": 1,
+          "draws": 200,
+          "triangles": 86236,
+          "ms": 14.400000000372529
+        },
+        "geometry": {
+          "visibleMeshes": 107,
+          "shadowEligible": 93,
+          "triangles": 86236,
+          "geometryValues": 2328372,
+          "finite": true
+        },
+        "glErrors": [],
+        "contextLost": false,
+        "shadowFramebufferComplete": true,
+        "framebuffer": {
+          "minimum": 4,
+          "maximum": 249,
+          "sampledColors": 4431
+        },
+        "screenshot": "01-harbor-introduction.png",
+        "png_sha256": "c69791fdba32c3e667bddbd1b6314a498e68bd59d36affe6afd1a7d28b167cc6",
+        "png_bytes": 1219015,
+        "intro_budget": {
+          "max_visible_meshes": 115,
+          "max_triangles": 90000,
+          "met": true
+        },
+        "pageErrors": [],
+        "consoleErrors": [],
+        "attemptedRequests": [],
+        "elapsedSeconds": 1.198
+      },
+      {
+        "name": "02-lighthouse-crew-home",
+        "purpose": "Validated completed mission, actual reunited crew, lighthouse masonry.",
+        "pass": true,
+        "camera": {
+          "eye": [
+            -14.8,
+            4.7,
+            38.3
+          ],
+          "target": [
+            -16.1,
+            3.9,
+            31.4
+          ]
+        },
+        "viewport": [
+          1280,
+          820
+        ],
+        "bufferSize": [
+          1280,
+          820
+        ],
+        "quality": "balanced",
+        "sceneTime": 2.4,
+        "mission": {
+          "briefed": true,
+          "parts": [
+            "timber",
+            "rope",
+            "gear"
+          ],
+          "weight": 4,
+          "bridgeOpen": true,
+          "passenger": true,
+          "complete": true,
+          "chart": false,
+          "checkpoint": "lighthouse"
+        },
+        "goal": "complete",
+        "coreValidation": true,
+        "coreTransitions": [
+          {
+            "type": "talk"
+          },
+          {
+            "type": "collect",
+            "id": "timber"
+          },
+          {
+            "type": "collect",
+            "id": "rope"
+          },
+          {
+            "type": "collect",
+            "id": "gear"
+          },
+          {
+            "type": "BridgeWork",
+            "fitGear": true,
+            "secureBrace": true,
+            "heldSeconds": 6.05
+          },
+          {
+            "type": "rescue"
+          },
+          {
+            "type": "finish"
+          },
+          {
+            "type": "prefs",
+            "prefs": {
+              "quality": "balanced",
+              "sound": false,
+              "reducedMotion": false
+            }
+          }
+        ],
+        "stagedFactoryCast": [],
+        "characterPose": {
+          "position": [
+            -14.7,
+            1.6,
+            31.8
+          ],
+          "yaw": 0.65,
+          "interacting": 0
+        },
+        "bridgeAngle": 1.3299999982221233,
+        "stats": {
+          "frames": 1,
+          "draws": 211,
+          "triangles": 88360,
+          "ms": 18.199999999254942
+        },
+        "geometry": {
+          "visibleMeshes": 112,
+          "shadowEligible": 99,
+          "triangles": 88360,
+          "geometryValues": 2385720,
+          "finite": true
+        },
+        "glErrors": [],
+        "contextLost": false,
+        "shadowFramebufferComplete": true,
+        "framebuffer": {
+          "minimum": 4,
+          "maximum": 249,
+          "sampledColors": 4463
+        },
+        "screenshot": "02-lighthouse-crew-home.png",
+        "png_sha256": "33bd34af33dab1847cd903c68aab9d2ed36c03e87a8396b9a9e40fa1b0fcdb89",
+        "png_bytes": 946870,
+        "pageErrors": [],
+        "consoleErrors": [],
+        "attemptedRequests": [],
+        "elapsedSeconds": 1.407
+      },
+      {
+        "name": "03-cast-face-proportions",
+        "purpose": "Real person() player, Bootstrap and chartmaker in the original harbor; full figures and faces.",
+        "pass": true,
+        "camera": {
+          "eye": [
+            0.1,
+            3.1,
+            -12.25
+          ],
+          "target": [
+            0,
+            2.75,
+            -15.5
+          ]
+        },
+        "viewport": [
+          1280,
+          820
+        ],
+        "bufferSize": [
+          1280,
+          820
+        ],
+        "quality": "balanced",
+        "sceneTime": 2.4,
+        "mission": {
+          "briefed": false,
+          "parts": [],
+          "weight": 1,
+          "bridgeOpen": false,
+          "passenger": false,
+          "complete": false,
+          "chart": false,
+          "checkpoint": "arrival"
+        },
+        "goal": "bootstrap",
+        "coreValidation": true,
+        "coreTransitions": [
+          {
+            "type": "prefs",
+            "prefs": {
+              "quality": "balanced",
+              "sound": false,
+              "reducedMotion": false
+            }
+          }
+        ],
+        "stagedFactoryCast": [
+          {
+            "role": "player",
+            "position": [
+              -1.25,
+              1.6,
+              -15.5
+            ],
+            "yaw": 0
+          },
+          {
+            "role": "bootstrap",
+            "position": [
+              0,
+              1.6,
+              -15.5
+            ],
+            "yaw": 0
+          },
+          {
+            "role": "chartmaker",
+            "position": [
+              1.25,
+              1.6,
+              -15.5
+            ],
+            "yaw": 0
+          }
+        ],
+        "characterPose": {
+          "position": [
+            1.4,
+            1.6,
+            -13.8
+          ],
+          "yaw": 0.65,
+          "interacting": 0
+        },
+        "bridgeAngle": 0,
+        "stats": {
+          "frames": 1,
+          "draws": 199,
+          "triangles": 86228,
+          "ms": 12.300000000745058
+        },
+        "geometry": {
+          "visibleMeshes": 106,
+          "shadowEligible": 93,
+          "triangles": 86228,
+          "geometryValues": 2328156,
+          "finite": true
+        },
+        "glErrors": [],
+        "contextLost": false,
+        "shadowFramebufferComplete": true,
+        "framebuffer": {
+          "minimum": 3,
+          "maximum": 249,
+          "sampledColors": 5074
+        },
+        "screenshot": "03-cast-face-proportions.png",
+        "png_sha256": "3c6d2043f9fcddc2fdf1de2181633408e6e2421eac7b042def5486416c1e31ed",
+        "png_bytes": 1031964,
+        "pageErrors": [],
+        "consoleErrors": [],
+        "attemptedRequests": [],
+        "elapsedSeconds": 1.179
+      },
+      {
+        "name": "04-repaired-bridge-pose",
+        "purpose": "Core-completed physical repair, raised bridge, winch and interacting character pose.",
+        "pass": true,
+        "camera": {
+          "eye": [
+            9,
+            6,
+            15
+          ],
+          "target": [
+            -3,
+            7.4,
+            28
+          ]
+        },
+        "viewport": [
+          1280,
+          820
+        ],
+        "bufferSize": [
+          1280,
+          820
+        ],
+        "quality": "balanced",
+        "sceneTime": 2.4,
+        "mission": {
+          "briefed": true,
+          "parts": [
+            "timber",
+            "rope",
+            "gear"
+          ],
+          "weight": 4,
+          "bridgeOpen": true,
+          "passenger": false,
+          "complete": false,
+          "chart": false,
+          "checkpoint": "pier"
+        },
+        "goal": "chartmaker",
+        "coreValidation": true,
+        "coreTransitions": [
+          {
+            "type": "talk"
+          },
+          {
+            "type": "collect",
+            "id": "timber"
+          },
+          {
+            "type": "collect",
+            "id": "rope"
+          },
+          {
+            "type": "collect",
+            "id": "gear"
+          },
+          {
+            "type": "BridgeWork",
+            "fitGear": true,
+            "secureBrace": true,
+            "heldSeconds": 6.05
+          },
+          {
+            "type": "prefs",
+            "prefs": {
+              "quality": "balanced",
+              "sound": false,
+              "reducedMotion": false
+            }
+          }
+        ],
+        "stagedFactoryCast": [],
+        "characterPose": {
+          "position": [
+            -1.8,
+            1.6,
+            21.8
+          ],
+          "yaw": 3.141592653589793,
+          "interacting": 1
+        },
+        "bridgeAngle": 1.3299999982221233,
+        "stats": {
+          "frames": 1,
+          "draws": 212,
+          "triangles": 88368,
+          "ms": 17.59999999962747
+        },
+        "geometry": {
+          "visibleMeshes": 113,
+          "shadowEligible": 99,
+          "triangles": 88368,
+          "geometryValues": 2385936,
+          "finite": true
+        },
+        "glErrors": [],
+        "contextLost": false,
+        "shadowFramebufferComplete": true,
+        "framebuffer": {
+          "minimum": 4,
+          "maximum": 249,
+          "sampledColors": 3756
+        },
+        "screenshot": "04-repaired-bridge-pose.png",
+        "png_sha256": "c6d2bfead8d9b0ddf55f6d2b24884fdc949182d7715ec706b82b0f14606a0645",
+        "png_bytes": 971198,
+        "pageErrors": [],
+        "consoleErrors": [],
+        "attemptedRequests": [],
+        "elapsedSeconds": 0.945
+      },
+      {
+        "name": "05-harbor-portrait-low",
+        "purpose": "Same harbor camera at portrait aspect with the actual low-quality renderer path.",
+        "pass": true,
+        "camera": {
+          "eye": [
+            3.7,
+            4.6,
+            -6
+          ],
+          "target": [
+            -1,
+            3.4,
+            -16
+          ]
+        },
+        "viewport": [
+          768,
+          1024
+        ],
+        "bufferSize": [
+          768,
+          1024
+        ],
+        "quality": "low",
+        "sceneTime": 2.4,
+        "mission": {
+          "briefed": false,
+          "parts": [],
+          "weight": 1,
+          "bridgeOpen": false,
+          "passenger": false,
+          "complete": false,
+          "chart": false,
+          "checkpoint": "arrival"
+        },
+        "goal": "bootstrap",
+        "coreValidation": true,
+        "coreTransitions": [
+          {
+            "type": "prefs",
+            "prefs": {
+              "quality": "low",
+              "sound": false,
+              "reducedMotion": false
+            }
+          }
+        ],
+        "stagedFactoryCast": [],
+        "characterPose": {
+          "position": [
+            1.4,
+            1.6,
+            -13.8
+          ],
+          "yaw": 0.65,
+          "interacting": 0
+        },
+        "bridgeAngle": 0,
+        "stats": {
+          "frames": 1,
+          "draws": 107,
+          "triangles": 86236,
+          "ms": 15.400000000372529
+        },
+        "geometry": {
+          "visibleMeshes": 107,
+          "shadowEligible": 93,
+          "triangles": 86236,
+          "geometryValues": 2328372,
+          "finite": true
+        },
+        "glErrors": [],
+        "contextLost": false,
+        "shadowFramebufferComplete": true,
+        "framebuffer": {
+          "minimum": 4,
+          "maximum": 249,
+          "sampledColors": 3140
+        },
+        "screenshot": "05-harbor-portrait-low.png",
+        "png_sha256": "89e916db9c29805db3083eeea5e0621bdf525b7bc406e4fd2629b89cd24a687b",
+        "png_bytes": 742240,
+        "pageErrors": [],
+        "consoleErrors": [],
+        "attemptedRequests": [],
+        "elapsedSeconds": 0.853
+      }
+    ],
+    "pass": true
+  },
+  "ground_regression": "Actual generated geometry: baseline has two coincident top surfaces at three island probes; current has one. Visible/collision top remains 1.6.",
+  "animation_scope": "World update and all person animate bodies remain exact .43; public handles preserved.48 role/motion comparisons passed in source review.",
+  "independent_review": "No Critical/Important findings. Minor mirrored clothing-panel normal issue corrected before final capture and compilation.",
+  "historical_world_test": {
+    "passed": 6,
+    "failed": 1,
+    "reason": "Unchanged obsolete balance-weight geometry assertion fails equally in baseline and current after the earlier physical winch redesign; not counted as a passing suite."
+  },
+  "visual_limitations": [
+    "Staged art cameras show actual renderer and model geometry, not game UI.",
+    "Software Chromium/WebGL does not certify native Safari appearance or sustained iPad FPS.",
+    "Introduction budget only: 115 visible meshes / 90,000 triangles; active wake rings can exceed it."
+  ],
+  "native_ipad_acceptance": "PENDING",
+  "live_database_writes": false,
+  "production_activation": false,
+  "saved_progress": "Existing v2 completed saves supported; user must confirm their downloaded save. Prior screenshots showed UNSAVED PROGRESS."
+}

@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.43",
-  "release": "Helmsman TEST",
-  "seal": "helmsman-882043",
+  "build": "8.8.20.44",
+  "release": "Lanternwake TEST",
+  "seal": "lanternwake-882044",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Helmsman TEST",
-  "name": "Helmsman TEST",
-  "releaseName": "Helmsman TEST"
+  "release_name": "Lanternwake TEST",
+  "name": "Lanternwake TEST",
+  "releaseName": "Lanternwake TEST"
 }

@@ -1,3 +1,11 @@
+# Lanternwake 8.8.20.44 TEST — acceptance boundaries
+
+This release is scoped to visual presentation in stormwake_gl.js and stormwake_world.js, plus current release labels, compiled-player digest and release metadata. Exact .43 mission, input, save and authority behavior must remain, including the Admiral 15-minute idle / 60-minute maximum. The completed rescue shown by the user on iPad is .43 evidence; preserve that saved game and use it to inspect .44 art without replay.
+
+Observed final-source, compiled-player and visual results are in LANTERNWAKE_TEST_REPORT.md. Final archives and extracted startup are checked independently after sealing. Native .44 acceptance remains **PENDING**. The upload is bounded to 85 changed/new files over the exact 233-file .43 baseline, with no deletion or database action. No live permission, quota recovery, cloud save, business handoff, production activation, native frame-rate or cinematic-completion certification is made.
+
+## Preserved Helmsman and earlier release record — historical, not current instructions
+
 # Helmsman 8.8.20.43 TEST — acceptance boundaries
 
 The current scope is safe boat turning/reverse escape, fitting salvaged gear/rope/timber, a physical winch raising the bridge, and validated gameplay activity within the unchanged Admiral 15-minute idle / 60-minute maximum. Preserve existing saved/completed .42 progress and the deliberate game-file save boundary. Unrelated business modules, SQL, server authority and retained reference models remain outside the behavior changes.

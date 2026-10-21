@@ -1,3 +1,13 @@
+# Lanternwake 8.8.20.44 TEST
+
+- Introduces a bounded visual pass for warm lantern/cool blue harbor lighting, adult character proportions and clearer surface materials.
+- Preserves exact .43 mission, input, save and authority behavior outside release labels and the compiled-player digest, including the Admiral 15-minute idle / 60-minute maximum.
+- Keeps the user's completed .43 rescue as the starting point for inspecting .44 art; no replay is required.
+- Retains all 39 historical reference models, named evidence, SQL and previous filenames; current general documents prepend this record to their unchanged historical bodies.
+- Records observed final-source, compiled-player and visual checks; native iPad .44 acceptance remains pending.
+
+## Preserved Helmsman and earlier release record — historical, not current instructions
+
 # Helmsman 8.8.20.43 TEST
 
 - Fixed the boat collision trap by keeping rejected turns from committing a blocked bow pose, retaining reverse escape.
