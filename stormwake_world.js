@@ -77,7 +77,56 @@ const l=box(emit,C.gold,x,cy,z,.235,.47,.235);l.emission=1;l.castShadow=false;
 make(p,shape.cylinder(.25,.045,.23,8),C.metal,[x,cy+.43,z]);
 }
 function windowFrame(p,e,x,y,z,w=1,side=false){const rot=side==='back'?[0,Math.PI,0]:side?[0,Math.PI/2,0]:[0,0,0],g=p.add(new Node());g.pos=[x,y,z];g.rot=rot;box(g,C.wood,0,0,0,w+.24,1.42,.12);const h=box(e,C.gold,x,y,z+(side==='back'?-.075:side?0:.075),w,1.15,.04,rot);if(side&&side!=='back')h.pos[0]+=.075;h.emission=.7;h.castShadow=false;box(g,C.wood,0,0,.10,.07,1.18,.06);box(g,C.wood,0,0,.10,w,.07,.06);for(const k of[-1,1])box(g,C.roof,k*(w*.7),0,-.01,.28,1.28,.13,[0,k*.25,0]).material=MAT.wood;}
-function house(p,e,x,z,w,d,h,col=C.cream){const y=1.6;cameraOccluders.push([x-w/2-.55,x+w/2+.55,y+h-.22,y+h*1.38,z-d/2-.55,z+d/2+.55],[x-1,x+1,y+h+.20,y+h+1.65,z+d*.12-1,z+d*.12+1]);box(p,C.stone,x,y+.25,z,w+.5,.5,d+.5);box(p,col,x,y+h/2,z,w,h,d).material=MAT.plaster;for(const sx of [-1,1])for(const sz of [-1,1])box(p,C.wood,x+sx*w*.49,y+h/2,z+sz*d*.49,.22,h,.22);for(let yy=.2;yy<h;yy+=1.4)box(p,C.wood,x,y+yy,z+d/2+.03,w+.08,.12,.14);make(p,geo.roof,C.roof,[x,y+h,z],[w+1.1,h*.76,d+1.1]);for(let i=-d/2-.4;i<=d/2+.4;i+=.48){beam(p,tint(C.roof,1.2),[x-w/2-.5,y+h,i+z],[x,y+h*1.38,i+z],.035).material=MAT.roof;beam(p,tint(C.roof,1.2),[x,y+h*1.38,i+z],[x+w/2+.5,y+h,i+z],.035).material=MAT.roof;}box(p,C.wood,x,y+1.1,z+d/2+.08,1.35,2.2,.18);for(let i=-.5;i<.6;i+=.25)box(p,tint(C.plank,.8),x+i,y+1.08,z+d/2+.19,.17,2.08,.03).material=MAT.wood;make(p,geo.sphere,C.gold,[x+.4,y+1.1,z+d/2+.25],[.08,.08,.08]);windowFrame(p,e,x-w*.3,y+2.6,z+d/2+.12,1.05);windowFrame(p,e,x+w*.3,y+2.6,z+d/2+.12,1.05);windowFrame(p,e,x+w/2+.09,y+2.4,z,1.1,true);windowFrame(p,e,x-w*.28,y+2.4,z-d/2-.10,1.1,'back');windowFrame(p,e,x+w*.28,y+2.4,z-d/2-.10,1.1,'back');for(let yy=.2;yy<h;yy+=1.4)box(p,C.wood,x,y+yy,z-d/2-.03,w+.08,.12,.14);box(p,C.wood,x,y+1.0,z-d/2-.08,1.2,2,.16);box(p,C.stone,x-w*.3,y+h+.7,z-d*.25,.65,2.4,.7);
+// Layered roof construction stays below the original eave/ridge outline.
+// The former solid wedge hid the gable framing behind its outer end caps.
+function harborRoof(p,x,z,w,d,h,col){
+const eave=1.6+h,rise=h*.38,half=w/2+.55,front=z-d/2-.55,back=z+d/2+.55;
+const roof=[],trim=[],gable=[],under=.085,roofColor=landMix(C.roof,C.stone,.24);
+const point=(side,r,zz,drop=0)=>[x+side*r,eave+rise*(1-r/half)-drop,zz];
+const slope=(mesh,side,a,b,c,d,color)=>R.quad(mesh,...(side>0?[a,b,c,d]:[d,c,b,a]),color);
+const rows=Math.ceil(Math.hypot(half,rise)/.50),columns=Math.ceil((back-front)/.72),step=(back-front)/columns;
+for(const side of[-1,1]){
+ // A continuous dark backing closes the narrow joints and the roof underside.
+ slope(roof,side,point(side,0,front,under),point(side,0,back,under),point(side,half,back,under),point(side,half,front,under),tint(roofColor,.66));
+ for(let row=0;row<rows;row++){
+  const r0=half*row/rows,r1=half*(row+1)/rows;
+  for(let j=0;j<=columns;j++){
+   const start=Math.max(front,front+(j-(row%2)*.5)*step),end=Math.min(back,front+(j+1-(row%2)*.5)*step);
+   if(end-start<.04)continue;
+   const left=start+(start>front?.008:0),right=end-(end<back?.008:0);
+   // This coordinate hash never consumes the shared harbor/prop RNG stream.
+   const wear=landHash(x+side*13+row*1.81,z+j*2.17),color=tint(roofColor,.88+wear*.19);
+   const head=.044+wear*.006,butt=row===rows-1?0:.006+wear*.002;
+   const a=point(side,r0,left,head),b=point(side,r0,right,head),c=point(side,r1,right,butt),d=point(side,r1,left,butt);
+   slope(roof,side,a,b,c,d,color);
+   // The shallow exposed butt gives each overlapping course an actual edge.
+   slope(roof,side,d,c,point(side,r1,right,butt+.038),point(side,r1,left,butt+.038),tint(color,.67));
+  }
+ }
+ // Narrow ridge covers retain the exact original peak, without round ribs.
+ for(let j=0;j<columns;j++){
+  const left=front+j*step+(j?.006:0),right=front+(j+1)*step-(j<columns-1?.006:0);
+  slope(roof,side,point(side,0,left),point(side,0,right),point(side,.18,right,.006),point(side,.18,left,.006),tint(roofColor,1.03));
+ }
+ slope(trim,side,point(side,half,front),point(side,half,back),point(side,half,back,under),point(side,half,front,under),tint(C.wood,.70));
+}
+for(const sign of[-1,1]){
+ const zz=sign<0?front:back;
+ for(const side of[-1,1]){
+  const a=point(side,0,zz),b=point(side,half,zz),c=point(side,half,zz,under),d=point(side,0,zz,under);
+  R.quad(trim,...(sign*side>0?[d,c,b,a]:[a,b,c,d]),tint(C.wood,.76));
+ }
+ // Infill sits at the wall, behind the retained timber braces, under the roof.
+ const wall=z+sign*(d/2+.015),shoulder=eave+rise*(1-w*.5/half)-under;
+ const outline=[[x-w/2,eave,wall],[x+w/2,eave,wall],[x+w/2,shoulder,wall],[x,eave+rise-under,wall],[x-w/2,shoulder,wall]];
+ const face=sign>0?outline:[outline[0],...outline.slice(1).reverse()];
+ for(let i=1;i<face.length-1;i++)R.tri(gable,face[0],face[i],face[i+1],col);
+}
+make(p,roof,[1,1,1],undefined,undefined,undefined,MAT.roof);
+make(p,trim,[1,1,1],undefined,undefined,undefined,MAT.wood);
+make(p,gable,[1,1,1],undefined,undefined,undefined,MAT.plaster);
+}
+function house(p,e,x,z,w,d,h,col=C.cream){const y=1.6;cameraOccluders.push([x-w/2-.55,x+w/2+.55,y+h-.22,y+h*1.38,z-d/2-.55,z+d/2+.55],[x-1,x+1,y+h+.20,y+h+1.65,z+d*.12-1,z+d*.12+1]);box(p,C.stone,x,y+.25,z,w+.5,.5,d+.5);box(p,col,x,y+h/2,z,w,h,d).material=MAT.plaster;for(const sx of [-1,1])for(const sz of [-1,1])box(p,C.wood,x+sx*w*.49,y+h/2,z+sz*d*.49,.22,h,.22);for(let yy=.2;yy<h;yy+=1.4)box(p,C.wood,x,y+yy,z+d/2+.03,w+.08,.12,.14);harborRoof(p,x,z,w,d,h,col);box(p,C.wood,x,y+1.1,z+d/2+.08,1.35,2.2,.18);for(let i=-.5;i<.6;i+=.25)box(p,tint(C.plank,.8),x+i,y+1.08,z+d/2+.19,.17,2.08,.03).material=MAT.wood;make(p,geo.sphere,C.gold,[x+.4,y+1.1,z+d/2+.25],[.08,.08,.08]);windowFrame(p,e,x-w*.3,y+2.6,z+d/2+.12,1.05);windowFrame(p,e,x+w*.3,y+2.6,z+d/2+.12,1.05);windowFrame(p,e,x+w/2+.09,y+2.4,z,1.1,true);windowFrame(p,e,x-w*.28,y+2.4,z-d/2-.10,1.1,'back');windowFrame(p,e,x+w*.28,y+2.4,z-d/2-.10,1.1,'back');for(let yy=.2;yy<h;yy+=1.4)box(p,C.wood,x,y+yy,z-d/2-.03,w+.08,.12,.14);box(p,C.wood,x,y+1.0,z-d/2-.08,1.2,2,.16);box(p,C.stone,x-w*.3,y+h+.7,z-d*.25,.65,2.4,.7);
 // Deep eaves and exposed rafters cast legible roof shadows.
 for(const side of[-1,1]){box(p,tint(C.wood,.74),x+side*(w/2+.26),y+h-.08,z,.23,.22,d+.9);for(let zz=-d/2-.3;zz<d/2+.4;zz+=.62)beam(p,C.wood,[x+side*(w/2-.35),y+h-.20,z+zz],[x+side*(w/2+.48),y+h-.05,z+zz],.065);}
 // Weathered half-timber gables, a dormer and hanging guild crest distinguish each inn.

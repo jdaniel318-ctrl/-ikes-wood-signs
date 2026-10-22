@@ -1,3 +1,15 @@
+# Breakwater 8.8.20.47 TEST — current release
+
+Current upload: **DarkSky882047-Breakwater-Upload49-TEST.zip** — **49 changed/new files** over exact Saltglass 8.8.20.46. Every previous filename is retained. Follow START_HERE_BREAKWATER.md.
+
+This bounded follow-up adds harbor roof/gable artwork, a validated save-file preview and title-screen mission status. A pure voyage-summary helper presents existing state; mission rules, save format and movement remain unchanged.
+
+Selected final .47 checks passed: summary 7/7, title 3/3, host preview/import/layout 8/8, roofs 8/8, three rendered views and two actual compiled-player cases, with independent source review. Historical failure and evidence limits are recorded separately; final package/extracted startup and native .47 acceptance are not claimed here. Exact current scope and evidence are in BREAKWATER_TEST_REPORT.md and BREAKWATER_TEST_RESULTS.json. Archive reconstruction and extracted boot are recorded separately after sealing. Native iPad Safari appearance and sustained performance remain a device check. Keep the downloaded voyage; no replay is required.
+
+The user reports that Saltglass .46 runs smoothly on iPad Safari; supplied screenshots show the imported voyage at 6/6, crew home and channel reopened. This is user-reported .46 acceptance, not a native .47 result or an FPS measurement.
+
+## Preserved Saltglass and earlier record — historical
+
 # Saltglass 8.8.20.46 TEST — current release
 
 Current update: **DarkSky882046-Saltglass-Upload49-TEST.zip** (49 changed/new files) over exact Dreadwater 8.8.20.45. Every previous filename is retained. Follow START_HERE_SALTGLASS.md.

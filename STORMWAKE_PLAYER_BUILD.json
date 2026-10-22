@@ -1,21 +1,21 @@
 {
   "schema": "stormwake-player-build-v1",
-  "build": "8.8.20.46",
+  "build": "8.8.20.47",
   "inputs_sha256": {
     "fun_core.js": "b21a909fa3dccf44b2d02d4a8243a91fd260b70db2edfc35338f3fd330c810e4",
-    "stormwake_core.js": "53bc3070f55feceeff08ac5743f3220d70e0c3dda901b0b107092b2e3da16cc9",
+    "stormwake_core.js": "b0193108053c9ddd067dc100bb9d820292e970ad2c316512b8456e359820b405",
     "stormwake_comfort.js": "7ec7d00de112b327f31c0a904f0e438cfc7ab1399cf0974a824dac44ddc21800",
     "stormwake_three_vendor.js": "6e40e410c97c908254aa41dcbeba4bb57de69c7d37b1a33d72def3d0d0f884c6",
     "stormwake_gl.js": "d55f0b2d4f8a0e9a1f203a153b15eec347efe0ed247f2c8b4c72a526bd4c3ed8",
     "stormwake_cast.js": "fada22aa79430218ab348ae0b2396c55cff0a76eea467fcdad37f576262123c6",
     "stormwake_three.js": "02cf5ab5bae449441bf8ed2be3a92c4d6d8e7a44172e913c275dd95c3b3e3957",
-    "stormwake_world.js": "7bfaae6b9fa976748e872eb05295f9007d6fd955170c5f9247082983d42a7f87",
-    "stormwake_game.js": "9d7aa9893cec52ab2a8ca8add7e7a0072bd8dc710981f6dfd6c4c45ecfc57dcb",
+    "stormwake_world.js": "1b20a2026df84c8317ff28995faaead6de48336d1b0529524a1027de68546b60",
+    "stormwake_game.js": "fc4eabbf8711b98aeb9d99bb4fe9c389c4e7fc5a6c08b2c29833a755ade58a3c",
     "stormwake_assets.json": "b93916ab71d73d4b1bc48a63852834729a27f10610234466adf98b3dd673c3d8",
     "STORMWAKE_VENDOR.json": "cc9adf42e577db463cc7d2dc4bed3f78da9075549b6cd2b20207f807d75a5664",
     "fun_player.html": "fcfc2d06cdf204f4591a9717968a027facf170e6e0be32d9151ef847870a0fb7",
     "stormwake_game.css": "3bed7033f10e8791a15819dfb86e60dbbca9d2d9cf062169a047c8443fe6fee0",
-    "BUILD_STORMWAKE_PLAYER.py": "61b5dac14d7634c6be35f1c06af564e7853cfe4a8bbe29b250342165c096044a",
+    "BUILD_STORMWAKE_PLAYER.py": "9bbd613a9c5ad2b328c175debc47a86d114a5eeeb02d3eabbf10b5ce4d4ffdd3",
     "STORMWAKE_BUILD_RULES.py": "3f1ee32949d598f11e65b2ccc19e85ce941207b95a6d6a26b132f34833663a02"
   },
   "art": {
@@ -41,8 +41,8 @@
     "runtimeNetwork": false
   },
   "player": {
-    "bytes": 5004919,
-    "sha256": "2e5a605a00d3490c2be9266f163f9f7d149aa3cf8585bfcb7fb8b0e5e368124d",
+    "bytes": 5008354,
+    "sha256": "5d3d30ac9cecf1300de21368e238976b1408541576bfd5b64a34316f36dcd101",
     "limit_bytes": 8388608
   },
   "runtime_network": false

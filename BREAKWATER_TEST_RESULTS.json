@@ -1,0 +1,339 @@
+{
+  "schema": "breakwater-bounded-evidence-v1",
+  "build": "8.8.20.47",
+  "release": "Breakwater TEST",
+  "pass": true,
+  "status": "OFFLINE_TARGETED_CHECKS_PASSED",
+  "assembled_at_utc": "2026-10-22T01:06:04+00:00",
+  "scope": "Selected final .47 checks passed: summary 7/7, title 3/3, host preview/import/layout 8/8, roofs 8/8, three rendered views and two actual compiled-player cases, with independent source review. Historical failure and evidence limits are recorded separately; final package/extracted startup and native .47 acceptance are not claimed here.",
+  "source_sha256": {
+    "fun_core.js": "b21a909fa3dccf44b2d02d4a8243a91fd260b70db2edfc35338f3fd330c810e4",
+    "stormwake_core.js": "b0193108053c9ddd067dc100bb9d820292e970ad2c316512b8456e359820b405",
+    "stormwake_comfort.js": "7ec7d00de112b327f31c0a904f0e438cfc7ab1399cf0974a824dac44ddc21800",
+    "stormwake_three_vendor.js": "6e40e410c97c908254aa41dcbeba4bb57de69c7d37b1a33d72def3d0d0f884c6",
+    "stormwake_gl.js": "d55f0b2d4f8a0e9a1f203a153b15eec347efe0ed247f2c8b4c72a526bd4c3ed8",
+    "stormwake_cast.js": "fada22aa79430218ab348ae0b2396c55cff0a76eea467fcdad37f576262123c6",
+    "stormwake_three.js": "02cf5ab5bae449441bf8ed2be3a92c4d6d8e7a44172e913c275dd95c3b3e3957",
+    "stormwake_world.js": "1b20a2026df84c8317ff28995faaead6de48336d1b0529524a1027de68546b60",
+    "stormwake_game.js": "fc4eabbf8711b98aeb9d99bb4fe9c389c4e7fc5a6c08b2c29833a755ade58a3c",
+    "stormwake_assets.json": "b93916ab71d73d4b1bc48a63852834729a27f10610234466adf98b3dd673c3d8",
+    "STORMWAKE_VENDOR.json": "cc9adf42e577db463cc7d2dc4bed3f78da9075549b6cd2b20207f807d75a5664",
+    "fun_player.html": "fcfc2d06cdf204f4591a9717968a027facf170e6e0be32d9151ef847870a0fb7",
+    "stormwake_game.css": "3bed7033f10e8791a15819dfb86e60dbbca9d2d9cf062169a047c8443fe6fee0",
+    "BUILD_STORMWAKE_PLAYER.py": "9bbd613a9c5ad2b328c175debc47a86d114a5eeeb02d3eabbf10b5ce4d4ffdd3",
+    "STORMWAKE_BUILD_RULES.py": "3f1ee32949d598f11e65b2ccc19e85ce941207b95a6d6a26b132f34833663a02",
+    "fun_program.js": "a58051eebb6677d6f8a7c3986f0493bb81317c7b2c92278dce4b73b73fc5c4e7",
+    "fun_program.css": "716c49a333a3defe973d4f5ea4c3f94a33c8459884c138b2844771634c5cfac5",
+    "stormwake_player.html": "5d3d30ac9cecf1300de21368e238976b1408541576bfd5b64a34316f36dcd101",
+    "STORMWAKE_PLAYER_BUILD.json": "a085a87f4e7ced1e9231ce0d8018cc8a30f6a82592369b6a9e4f94d1ecd360a7"
+  },
+  "checks": [
+    {
+      "id": "voyage-summary",
+      "kind": "summary",
+      "pass": true,
+      "passed": 7,
+      "failed": 0,
+      "scope": "7/7 CPU cases for validated mission/checkpoint summaries, legacy compatibility and immutability; tested core/helper hashes match final sources.",
+      "evidence": [
+        {
+          "file": "qa/summary/green.tap",
+          "sha256": "068db23ca2523c132441290c60936f9cf7ae58b313199890024bdec40f4aa6da"
+        },
+        {
+          "file": "qa/summary/evidence.json",
+          "sha256": "b9e331aab5702d146657e4f01695fc386bbf5b3ee5fb08894af7c75a4620c07f"
+        }
+      ]
+    },
+    {
+      "id": "title-mission-status",
+      "kind": "summary",
+      "pass": true,
+      "passed": 3,
+      "failed": 0,
+      "scope": "3/3 CPU cases for the actual title builder, real core state and contained title panel; tested game/core hashes match final sources.",
+      "evidence": [
+        {
+          "file": "qa/summary/title-green.tap",
+          "sha256": "8afc0026b8ee5ab09475b3c1f5bfb4e7b18233535dd82b13de762f8500f696a3"
+        },
+        {
+          "file": "qa/summary/evidence.json",
+          "sha256": "b9e331aab5702d146657e4f01695fc386bbf5b3ee5fb08894af7c75a4620c07f"
+        }
+      ]
+    },
+    {
+      "id": "retained-core-regressions",
+      "kind": "summary",
+      "pass": true,
+      "scope": "Eight selected CPU test files passed, including summary/title, existing core/bridge/boat and original FUN gates. This is the file count reported by Node, not a summed inner-case count.",
+      "evidence": [
+        {
+          "file": "qa/summary/regression.tap",
+          "sha256": "08ae286ca14f4a924d8531296f105c62fcd0c134f86ed0676ce21c68e62e0344"
+        },
+        {
+          "file": "qa/summary/commands.txt",
+          "sha256": "a11f22b9d1bf40cd995ad15583048854fffe92559ecb443d11b1db574145761e"
+        },
+        {
+          "file": "qa/summary/evidence.json",
+          "sha256": "b9e331aab5702d146657e4f01695fc386bbf5b3ee5fb08894af7c75a4620c07f"
+        }
+      ]
+    },
+    {
+      "id": "scoped-preseal",
+      "kind": "release",
+      "pass": true,
+      "passed": 10,
+      "failed": 0,
+      "skipped": 3,
+      "scope": "10 source/compiled preservation checks passed; three pending final-evidence/instruction/ledger checks were intentionally skipped and remain separate post-finalization gates.",
+      "evidence": [
+        {
+          "file": "qa/preseal.log",
+          "sha256": "ed13c5e0e33c10034efcf15485849285ae4018ae2e0a81fb9516d1145565245d"
+        },
+        {
+          "file": "qa/compiled-inputs.json",
+          "sha256": "7dd477360f6a98f09bf0306472684517ba58094150edc6e165d5b0f0e47aa250"
+        }
+      ]
+    },
+    {
+      "id": "actual-host-save-preview",
+      "kind": "host",
+      "pass": true,
+      "passed": 8,
+      "failed": 0,
+      "scope": "8/8 actual host DOM, WebCrypto, preview/cancel/confirm, completed/legacy roundtrip, short/portrait layout and boundary cases; synthetic account/fetch with child animation held. Final player/host inputs match.",
+      "evidence": [
+        {
+          "file": "qa/host-preview/results.json",
+          "sha256": "0bcc5107061dfdabf6e8453cbba41256897f3d857e5d5b0db0282ad603de39ec"
+        },
+        {
+          "file": "qa/host-preview/inputs.json",
+          "sha256": "bf0180cc7bf1ec9d089727d40b34fd78b6f8212fb4b850bec1a697f4debed19c"
+        },
+        {
+          "file": "qa/host-preview/voyage-layout-bounds.json",
+          "sha256": "e7a650e4af2a759c256862ccf3f038304c3987fc5694523e5e0be0a2663884d6"
+        }
+      ]
+    },
+    {
+      "id": "roof-geometry",
+      "kind": "art",
+      "pass": true,
+      "passed": 8,
+      "failed": 0,
+      "scope": "8/8 CPU roof geometry/preservation checks. Four replacements total 4,692 triangles versus 6,944 removed, with existing camera bounds, RNG, draw buckets and unrelated scene geometry preserved.",
+      "evidence": [
+        {
+          "file": "qa/roof-results.json",
+          "sha256": "39fc62b76d904bfb7445022e75d8a6fd52b99c1261a544dd54ce181ad6d46ac1"
+        },
+        {
+          "file": "qa/VERIFY_BREAKWATER_ROOFS.cjs",
+          "sha256": "b65dc96e2a6d389728b406a13437c080e5ece2fb1f952208d9e723f3189c6964"
+        }
+      ]
+    },
+    {
+      "id": "selected-rendered-views",
+      "kind": "art",
+      "pass": true,
+      "passed": 3,
+      "failed": 0,
+      "scope": "3/3 final fixed-camera WebGL views: roof overview, normal harbor and portrait Low. All eight maps loaded without reported GL/page/console errors or attempted network; comparison and root visual review recorded.",
+      "evidence": [
+        {
+          "file": "qa/visual-after/results.json",
+          "sha256": "97a259b6f59a5fb74b613bd349e7712b407f8bab7bf068aab688b3f7628b23ea"
+        },
+        {
+          "file": "qa/visual-before/results.json",
+          "sha256": "35977258a5f1a7ffff1a9cb68404d0df44f5fea57aff65ffa9c233e1a015ef1f"
+        },
+        {
+          "file": "qa/visual-comparison.json",
+          "sha256": "9badefda5d583c7781d3f1c19035a6df43e9370ab34983ef8b8cd630bff74f77"
+        },
+        {
+          "file": "qa/check_visual.py",
+          "sha256": "bde059ecc7130a35864a71a2bf96b3b4393ed0ec2693fdf4112645a062c8868d"
+        }
+      ]
+    },
+    {
+      "id": "renderer-cpu-prior-observation",
+      "kind": "art",
+      "pass": true,
+      "scope": "Earlier renderer CPU assertion run was observed PASS. Supporting record is a prior-run attestation with transcript excerpts; no original full raw output or contemporaneous complete input manifest was retained. It is not a new run or GPU claim.",
+      "evidence": [
+        {
+          "file": "qa/PRIOR_ROOF_CPU_ATTESTATION.json",
+          "sha256": "fc200d423eef48fc32fa2ebd05d135addc7d19029a45c51530c52252a176a226"
+        },
+        {
+          "file": "qa/PRIOR_ROOF_CPU_ATTESTATION.txt",
+          "sha256": "09308a592bcc23848bd365280e074f60f11c556a6efb465f12eec0c0a3785187"
+        }
+      ]
+    },
+    {
+      "id": "player-boot",
+      "kind": "player",
+      "pass": true,
+      "passed": 1,
+      "failed": 0,
+      "scope": "actual WebGL harbor, articulated character and visible controls; actual compiled opaque iframe, synthetic parent/clock and software WebGL.",
+      "evidence": [
+        {
+          "file": "qa/player-boot/results.json",
+          "sha256": "8121c5738df9a9f2a0cc9534a25ef9c252a41e816f73fc63dfd88081a08b6bd6"
+        },
+        {
+          "file": "qa/player-boot/inputs.json",
+          "sha256": "f077dc26d83b3a53d82a55b4d70b791669c8aa05c3b53597140235c18ff527fe"
+        },
+        {
+          "file": "qa/player-boot/inputs-wrapper-format-error.json",
+          "sha256": "493d0cb1cea1c09e563af2d59b0687725446f73195219b68240f3b9e2c95fd40"
+        }
+      ],
+      "binding_correction": {
+        "reason": "The QA wrapper expected a result list; the unchanged retained verifier emits an object containing results, passed, failed and compiled_html_sha256. The browser case passed. This correction reads that documented object and checks its compiled hash and the original unchanged before/after input snapshot.",
+        "original_binding_file": "inputs-wrapper-format-error.json",
+        "original_binding_sha256": "493d0cb1cea1c09e563af2d59b0687725446f73195219b68240f3b9e2c95fd40",
+        "results_sha256": "8121c5738df9a9f2a0cc9534a25ef9c252a41e816f73fc63dfd88081a08b6bd6",
+        "gpu_case_rerun": false
+      }
+    },
+    {
+      "id": "player-save",
+      "kind": "player",
+      "pass": true,
+      "passed": 1,
+      "failed": 0,
+      "scope": "known pier-save fixture restores mission and preferences exactly; actual production camera canvas; actual compiled opaque iframe, synthetic parent/clock and software WebGL.",
+      "evidence": [
+        {
+          "file": "qa/player-save/results.json",
+          "sha256": "f173bfb67b53eb9ec1c611720539b3852ede8461e780cd0f1cc6b3672cfd26e5"
+        },
+        {
+          "file": "qa/player-save/inputs.json",
+          "sha256": "08d46d2ae21d426cc2530609f82751b44b048c0130fbfb57e2ba48402484c4c6"
+        }
+      ]
+    },
+    {
+      "id": "independent-source-review",
+      "kind": "review",
+      "pass": true,
+      "scope": "Independent read-only source/spec/release-contract review: PASS, no critical or important issues. The reviewer did not execute tests or claim final package/device acceptance.",
+      "evidence": [
+        {
+          "file": "qa/independent-review.md",
+          "sha256": "38d98b116b27a9d96caac73ca78a2c748662b68611d67363e72bec262d623cdd"
+        }
+      ]
+    }
+  ],
+  "visual_review": {
+    "pass": true,
+    "notes": [
+      "Root inspected all three actual PNGs. Overview shows visible plaster gables and timber braces beneath deep eaves, separate staggered shingle courses. Normal and portrait Low views retain crew, street, windows and lantern readability. Artwork remains stylized; character meshes and island footprints are unchanged.",
+      "Compared submitted triangles decrease from 465,364 to 460,860 in the roof overview, 439,676 to 435,172 in the normal harbor view, and 225,270 to 223,018 in portrait Low. Draw calls remain 141, 82 and 42 respectively; these are workload counts, not FPS measurements."
+    ],
+    "evidence": [
+      {
+        "file": "qa/visual-comparison.json",
+        "sha256": "9badefda5d583c7781d3f1c19035a6df43e9370ab34983ef8b8cd630bff74f77"
+      },
+      {
+        "file": "qa/visual-after/results.json",
+        "sha256": "97a259b6f59a5fb74b613bd349e7712b407f8bab7bf068aab688b3f7628b23ea"
+      },
+      {
+        "file": "qa/visual-after/00-harbor-roof-overview.png",
+        "sha256": "6e6fee3475f236d656689d4250e997325b1837efa19d5a9fd9ff4f360ebb42db"
+      },
+      {
+        "file": "qa/visual-after/01-harbor-introduction.png",
+        "sha256": "56bebc969e54700bd879c0e3e0ebe96ac5bf1c604941895135385cebe2cf5ec9"
+      },
+      {
+        "file": "qa/visual-after/05-harbor-portrait-low.png",
+        "sha256": "69ff4acb89526d3bcbd1a95275239bf911bd7620b3e2a9493b96c1b4571d5968"
+      }
+    ]
+  },
+  "art_notes": [
+    "Four opaque roof caps and dense raised ribs are replaced with layered staggered shingles, physical butt edges and recessed plaster gable infill beneath the preserved timber framing and eaves. Existing material families are reused.",
+    "Replacement roof geometry totals 4,692 triangles against 6,944 removed, a net reduction of 2,252 geometry triangles. Existing camera occluders, roof outline, house lighting, prop RNG and unrelated scene geometry are retained.",
+    "Root inspected all three actual PNGs. Overview shows visible plaster gables and timber braces beneath deep eaves, separate staggered shingle courses. Normal and portrait Low views retain crew, street, windows and lantern readability. Artwork remains stylized; character meshes and island footprints are unchanged.",
+    "The original stylized cast and island footprints remain. Broader realism and external asset/model workflows are future work."
+  ],
+  "known_limitations": [
+    "The artwork remains stylized. This release corrects four house roofs/gables and voyage-status presentation; it does not replace the character meshes or island footprints or deliver the larger realism/asset workflow.",
+    "Native .47 iPad Safari appearance and sustained performance remain pending. The user-reported smooth .46 experience and imported 6/6, crew-home/channel-reopened screenshots are prior-build observations, not measured FPS or .47 proof.",
+    "Only two selected actual compiled-player cases were rerun for .47: harbor startup and known pier-save restoration. No complete mission replay or fresh all-historical-tests pass is claimed.",
+    "The unchanged historical VERIFY_STORMWAKE_WORLD.cjs suite reported 6/7 on .47. Its balance-body exposure assertion (weights/targetWeight/chainWeight) also failed when that one case was selected on exact .46. The baseline reproduction was 0/1 selected, not a fresh seven-case baseline suite. Historical failure remains recorded; no verifier or game code was changed to turn it into a pass.",
+    "The renderer CPU pass and historical world failure/reproduction are documented in a prior-run attestation transcribed from observed tool output. Full original raw logs and a contemporaneous all-input manifest were not retained; later hashes are labeled as later measurements.",
+    "The boot case initially received a false QA binding result because its wrapper expected a list while the retained verifier emits an object. The browser case passed. The original false binding is retained, and the corrected receipt checks the existing result plus unchanged before/after inputs; the test and production code were unchanged and no GPU rerun was used.",
+    "The actual completed user JSON was not supplied. Import/restore/export checks use validated synthetic fixtures. Host checks use synthetic authorization/fetch and held child animation; they do not certify live accounts, server authority, service workers or hosted deployment.",
+    "Archive reconstruction, final sealed release checks and fresh extracted startup follow this source evidence and remain separate root gates."
+  ],
+  "known_limitations_evidence": [
+    {
+      "file": "qa/PRIOR_ROOF_CPU_ATTESTATION.json",
+      "sha256": "fc200d423eef48fc32fa2ebd05d135addc7d19029a45c51530c52252a176a226"
+    },
+    {
+      "file": "qa/PRIOR_ROOF_CPU_ATTESTATION.txt",
+      "sha256": "09308a592bcc23848bd365280e074f60f11c556a6efb465f12eec0c0a3785187"
+    },
+    {
+      "file": "qa/player-boot/inputs.json",
+      "sha256": "f077dc26d83b3a53d82a55b4d70b791669c8aa05c3b53597140235c18ff527fe"
+    },
+    {
+      "file": "qa/player-boot/inputs-wrapper-format-error.json",
+      "sha256": "493d0cb1cea1c09e563af2d59b0687725446f73195219b68240f3b9e2c95fd40"
+    },
+    {
+      "file": "qa/progress.md",
+      "sha256": "eefd94985712d5ebba99aba4fe2ab3f321af8b88dca1e47d0787b98ff92acbda"
+    }
+  ],
+  "native_field_acceptance": "PENDING",
+  "latest_user_save_inspected": false,
+  "previous_user_observation": {
+    "build": "8.8.20.46",
+    "device": "iPad Safari",
+    "observed": "User reports smooth play; screenshots show imported 6/6, crew home and channel reopened.",
+    "scope": "User-reported prior-build acceptance; not .47 performance or measured FPS."
+  },
+  "package_verification": "Separate external proof after final seal; not claimed by this source report.",
+  "assembly_scope": "Read existing evidence, check hashes and write this receipt; no tests, browser, finalizer, seal or package executed.",
+  "cpu_handoff_binding_note": "qa/summary/evidence.json includes the handoff host hash before the final compiled-player digest was installed. Its summary/title tested input subset matches the final release; qa/host-preview/inputs.json binds actual host execution to the final host/player hashes.",
+  "finalized_at_utc": "2026-10-22T01:06:39+00:00",
+  "baseline": {
+    "build": "8.8.20.46",
+    "file_count": 276,
+    "content_sha256": "0a32c46a80a86d324ef876a8153057f3091528d53d6cfc9ebd56f00019ad1f8c"
+  },
+  "compiled_player": {
+    "bytes": 5008354,
+    "sha256": "5d3d30ac9cecf1300de21368e238976b1408541576bfd5b64a34316f36dcd101",
+    "limit_bytes": 8388608
+  },
+  "upload_file": "DarkSky882047-Breakwater-Upload49-TEST.zip",
+  "upload_file_count": 49
+}
