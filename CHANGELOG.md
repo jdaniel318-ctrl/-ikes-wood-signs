@@ -1,3 +1,13 @@
+# Homeward 8.8.20.48 TEST — recover the voyage after a timeout
+
+Use **DarkSky882048-Homeward-Upload46-TEST.zip** over the exact **Breakwater 8.8.20.47** site. Follow START_HERE_HOMEWARD.md. Retain all other files; no SQL, browser-data clearing or live publication is part of this update.
+
+Validated game progress now has a device recovery copy scoped to the same verified account, identity backend, configured environment and engine base path. Re-entering after an Admiral timeout or page reload recovers the mission at its safe dock. The JSON format and SAVE GAME FILE backup remain available. Private browsing, cleared website data or unavailable storage can prevent local recovery; the game must show that condition explicitly.
+
+Current scoped checks and limitations are recorded in HOMEWARD_TEST_RESULTS.json and HOMEWARD_TEST_REPORT.md. Existing art, core mission/save rules, business logic, 15-minute idle and 60-minute maximum Admiral session limits remain intact. Native iPad acceptance and live authority certification are separate.
+
+## Preserved previous release record
+
 # Breakwater 8.8.20.47 TEST — current release
 
 Current upload: **DarkSky882047-Breakwater-Upload49-TEST.zip** — **49 changed/new files** over exact Saltglass 8.8.20.46. Every previous filename is retained. Follow START_HERE_BREAKWATER.md.

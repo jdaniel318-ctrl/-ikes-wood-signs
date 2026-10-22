@@ -1,18 +1,18 @@
 {
   "schema": "blackflag-patch-contract-v1",
-  "target_build": "8.8.20.47",
-  "target_seal": "breakwater-882047",
+  "target_build": "8.8.20.48",
+  "target_seal": "homeward-882048",
   "supported_bases": [
     {
-      "build": "8.8.20.46",
-      "file_count": 276,
+      "build": "8.8.20.47",
+      "file_count": 286,
       "content_digest_algorithm": "release-content-sha256-v1",
-      "content_sha256": "0a32c46a80a86d324ef876a8153057f3091528d53d6cfc9ebd56f00019ad1f8c",
-      "description": "Exact 276-file Saltglass TEST release; every filename and byte must match."
+      "content_sha256": "f77147f8684b4492e8d0d4851ed06c9778710650cea464fd10a4c348577a42e6",
+      "description": "Exact 286-file Breakwater TEST release; every filename and byte must match."
     }
   ],
   "requires_deletions": false,
   "max_upload_files": 85,
   "database_actions": "none",
-  "rule": "Keep your downloaded voyage. Upload every file inside the Breakwater update folder over the complete Saltglass 8.8.20.46 repository root. Retain all other files. No SQL or browser-data clearing. This update is not a standalone site."
+  "rule": "Keep your downloaded voyage. Upload every file inside the Homeward update folder over the complete Breakwater 8.8.20.47 repository root. Retain all other files. No SQL or browser-data clearing. This update is not a standalone site."
 }

@@ -1,0 +1,230 @@
+{
+  "schema": "homeward-bounded-evidence-v1",
+  "build": "8.8.20.48",
+  "pass": true,
+  "status": "OFFLINE_TARGETED_CHECKS_PASSED",
+  "scope": "Selected current recovery, compiled Resume/state, core/source, preservation, independent review and responsive UI evidence. Raw failures and the test-only correction remain explicit; final release sealing/package/boot and native acceptance are separate.",
+  "source_sha256": {
+    "fun_core.js": "b21a909fa3dccf44b2d02d4a8243a91fd260b70db2edfc35338f3fd330c810e4",
+    "stormwake_core.js": "b0193108053c9ddd067dc100bb9d820292e970ad2c316512b8456e359820b405",
+    "stormwake_comfort.js": "7ec7d00de112b327f31c0a904f0e438cfc7ab1399cf0974a824dac44ddc21800",
+    "stormwake_three_vendor.js": "6e40e410c97c908254aa41dcbeba4bb57de69c7d37b1a33d72def3d0d0f884c6",
+    "stormwake_gl.js": "d55f0b2d4f8a0e9a1f203a153b15eec347efe0ed247f2c8b4c72a526bd4c3ed8",
+    "stormwake_cast.js": "fada22aa79430218ab348ae0b2396c55cff0a76eea467fcdad37f576262123c6",
+    "stormwake_three.js": "02cf5ab5bae449441bf8ed2be3a92c4d6d8e7a44172e913c275dd95c3b3e3957",
+    "stormwake_world.js": "1b20a2026df84c8317ff28995faaead6de48336d1b0529524a1027de68546b60",
+    "stormwake_game.js": "fc3f7d74836e595f397865d50c9f41fe33dee0f2d9ddadaf7d0583ab74c2cab6",
+    "stormwake_assets.json": "b93916ab71d73d4b1bc48a63852834729a27f10610234466adf98b3dd673c3d8",
+    "STORMWAKE_VENDOR.json": "cc9adf42e577db463cc7d2dc4bed3f78da9075549b6cd2b20207f807d75a5664",
+    "fun_player.html": "fcfc2d06cdf204f4591a9717968a027facf170e6e0be32d9151ef847870a0fb7",
+    "stormwake_game.css": "3bed7033f10e8791a15819dfb86e60dbbca9d2d9cf062169a047c8443fe6fee0",
+    "BUILD_STORMWAKE_PLAYER.py": "469a8d290863b3a6192c029163cf4e0aea69a5b32306a92757efd08f890e29fc",
+    "STORMWAKE_BUILD_RULES.py": "3f1ee32949d598f11e65b2ccc19e85ce941207b95a6d6a26b132f34833663a02",
+    "fun_program.js": "06706297bb995fc8a75aac69d8dba2d00be368021235bb2b49d765b1719b34ab",
+    "fun_program.css": "0be9fb1e66ac0d04bc446b4f0d92d866aaa09848f6de86ce2bfdb83f2b4d55c3",
+    "stormwake_player.html": "560380a583361f6f8ecf61a251236bc0403923182c29d1df4f8f4f26c2b959ff",
+    "STORMWAKE_PLAYER_BUILD.json": "feb978a4fe55d88741593682fd2a9c6794ee96d1102b0bc86359bac895992ff6",
+    "VERIFY_HOMEWARD_RECOVERY.py": "fd40ef12c7be6647982447efa90e5392a551c44dc443082caeeb01ffb7d135b7",
+    "VERIFY_FUN.cjs": "fa477da2e5efa5bbb9e0316b48c3796712e40439a35b040f4edd00c2c813e11c",
+    "VERIFY_STORMWAKE_CORE.cjs": "7c0bbf0f5a1f4bf19de7d3d8c80f4bd7e467edf904974ca63071b3145636b56c",
+    "VERIFY_BREAKWATER_SUMMARY.cjs": "3ed46a3db9699a779a64f7d61a8612fef69b379108e59f163a752780b9f3dee1",
+    "VERIFY_FUN_GATE.cjs": "359620821a7dbef55d4272d99c4382df073289890708d5c2a3cfa7d374796356",
+    "VERIFY_STORMWAKE_GATE.cjs": "365afd9b9ef5644e0226a8ca165572ae0d51cec24897db183be9556b495e82e2",
+    "fun_player.js": "47dcb3088901714bd757c25b3a1d43afae28e85e77020ffd7ccd024708116ae1",
+    "captain.js": "52aedc01a57aef261abad887282b484ca339f5aa0ab202871521bed3d9568884",
+    "app.js": "e6257a939a740363db71555de552f05d7f9b9d5213d826be59c5b8944dd66b56",
+    "fun_player.css": "0131a2b19db9688275801ccc8a55493066cac826f64119c9aa81faebc41cc64c"
+  },
+  "checks": [
+    {
+      "id": "timeout-reload-account-and-storage-recovery",
+      "kind": "recovery",
+      "pass": true,
+      "scope": "14 distinct recovery/isolation/failure scenarios passed across a 13-pass/1-test-assertion-failure full run and one passing targeted recheck after a case-insensitive text assertion correction; product bytes match between runs. See aggregate for per-scenario provenance. Not a single 14/14 full-suite result.",
+      "evidence": [
+        {
+          "file": "recovery-aggregate.json",
+          "sha256": "9b77b08aa9c8229b04124ce7c20e6601ba3350cab4a5f2dd214357bc0b66bcac"
+        },
+        {
+          "file": "recovery-final/results.json",
+          "sha256": "d45435a24d01caa412a20d65cc8dae371fa73215fe1ea56000873cc1f742f578"
+        },
+        {
+          "file": "receipt-final/results.json",
+          "sha256": "ffab30b8374993b9eb7e112ba33f70435bc4f96535ff2c612c90ab80887e7a97"
+        },
+        {
+          "file": "receipt-test-correction.json",
+          "sha256": "a561bcd710810d1d190bb32b31eda51c784d96389b33a0c365146efac9efa200"
+        },
+        {
+          "file": "recovery-final/VERIFY_HOMEWARD_RECOVERY.full-run.py",
+          "sha256": "5b89f82476250a4499a7f41cdda7d3a6603e4cd223a059310b97f2a95858b1e9"
+        }
+      ]
+    },
+    {
+      "id": "completed-recovered-voyage-actual-resume",
+      "kind": "player",
+      "pass": true,
+      "scope": "The first passing recovery case uses the actual compiled opaque frame and touchscreen Resume control after a real document reload. Mission/preferences/legacy remain exact at Lighthouse and the gameplay HUD reads 06 / 06. Child animation is held; this is the same scenario counted in recovery, not an additional rendered/GPU or performance test.",
+      "counted_within_recovery_scenarios": true,
+      "evidence": [
+        {
+          "file": "recovery-final/timeout-reload-observations.json",
+          "sha256": "ff2c4ae4019aa3772f6ebf44bb64a78ec7f143c6558e6d154e55efabc2836f42"
+        },
+        {
+          "file": "recovery-final/results.json",
+          "sha256": "d45435a24d01caa412a20d65cc8dae371fa73215fe1ea56000873cc1f742f578"
+        },
+        {
+          "file": "recovery-final/VERIFY_HOMEWARD_RECOVERY.full-run.py",
+          "sha256": "5b89f82476250a4499a7f41cdda7d3a6603e4cd223a059310b97f2a95858b1e9"
+        }
+      ]
+    },
+    {
+      "id": "selected-core-summary-and-boundary-checks",
+      "kind": "unit-source",
+      "pass": true,
+      "scope": "62 selected unit/source assertions passed: FUN 12, Stormwake core 32, summary 7, FUN gate 7, Stormwake gate 4; zero failures/skips. Source and verifier hashes are bound in the retained report.",
+      "evidence": [
+        {
+          "file": "core-and-boundaries-final.json",
+          "sha256": "be780bd7aba5749636797812983e2a33407bb91980ca9e43a77a994cd4f0a0c9"
+        }
+      ]
+    },
+    {
+      "id": "gameplay-renderer-art-and-legacy-preservation",
+      "kind": "preservation",
+      "pass": true,
+      "scope": "Exact .47-to-.48 source comparison: game script changes only four identified user-facing text passages; all listed gameplay, renderer, art and original-program bytes remain exact.",
+      "evidence": [
+        {
+          "file": "player-source-preservation.json",
+          "sha256": "ed53ae16e9f317f30490d9c1d0d8d3e34f80d977b4e468362980cc59452b69bd"
+        }
+      ]
+    },
+    {
+      "id": "independent-final-source-review",
+      "kind": "review",
+      "pass": true,
+      "scope": "Independent read-only review of host device recovery and final active-context, observer, storage-event and envelope-validation changes; player copy and scoped CSS checked against frozen Breakwater baseline. Result: no blocking findings. Review does not assert runtime/native behavior.",
+      "evidence": [
+        {
+          "file": "review-final.json",
+          "sha256": "ca1524af6281a6e384d30dc1eb722fde7507260433260ead6a8ded080c52fd49"
+        }
+      ]
+    },
+    {
+      "id": "recovery-and-timeout-layout",
+      "kind": "layout",
+      "pass": true,
+      "scope": "One selected layout case passed at 1024x480 and 768x1024 using the actual host/compiled UI with held child animation. Recovered title, import confirmation and timeout hold controls were measured as reachable. Root reviewed all six synthetic screenshots. This is UI layout evidence, not a game-graphics or native Safari test.",
+      "evidence": [
+        {
+          "file": "ui-layout/final/results.json",
+          "sha256": "49d922f47e1a47b830ac071fbaed0b11ef4ff45d2b1cda3323a475e184b67e26"
+        },
+        {
+          "file": "ui-layout/final/layout-binding.json",
+          "sha256": "aea593e586e38807e9b64befc23d695d39e390bbc6ffd4663b18e430dbc80ad3"
+        },
+        {
+          "file": "ui-layout/final/recovery-layout-bounds.json",
+          "sha256": "a3d671e92e3ba108d71913e365e2f5cbc0e70f615d47a1b49e8ca8580313cd64"
+        },
+        {
+          "file": "ui-layout/final/visual-review.json",
+          "sha256": "54c936e5c7941e23663c61b4cf1c9efb9c2a64c232c10885eefb18439e5625fe"
+        },
+        {
+          "file": "ui-layout/VERIFY_HOMEWARD_LAYOUT.py",
+          "sha256": "ddfa62a1ba4c40356f5d4489b9698ae0a68ac49e4bfa36dda5ef0f0011364a0c"
+        },
+        {
+          "file": "ui-layout/final/held-1024x480.png",
+          "sha256": "9c8edc3d97d612f74582a188067156d923bf5d5de7a829c0bbcb81e4c74ea9a1"
+        },
+        {
+          "file": "ui-layout/final/held-768x1024.png",
+          "sha256": "0ce8f648b4e9255aba63714b0bb78554207b49afcdd86afd1fb714116208b2b3"
+        },
+        {
+          "file": "ui-layout/final/import-1024x480.png",
+          "sha256": "7b76e9dbeacfb6fec40a63d2fb1c1e2fe2bbe63eec7084c452cc1a8d70b5e241"
+        },
+        {
+          "file": "ui-layout/final/import-768x1024.png",
+          "sha256": "1d3b113b35fe9e770aa4e39e1804f3677d221ff469638685fa844fd853c06b9e"
+        },
+        {
+          "file": "ui-layout/final/recovered-1024x480.png",
+          "sha256": "2419ca83d71c8d95968a40142e84a2b14130ecd937899787c6e66ffd3223f334"
+        },
+        {
+          "file": "ui-layout/final/recovered-768x1024.png",
+          "sha256": "b3c0112d1c307cd2d3cb5a5045dc341c8f4c05dd3617262b68923ceee88c8e68"
+        }
+      ]
+    }
+  ],
+  "recovery_counting": {
+    "distinct_scenarios": 14,
+    "full_run_passed": 13,
+    "full_run_failed": 1,
+    "targeted_recheck_passed": 1,
+    "single_full_run_all_passed": false,
+    "player_check_overlaps_recovery": true
+  },
+  "pending_checks": [
+    "final source release seal and archive reconstruction",
+    "extracted actual index boot",
+    "native iPad Safari acceptance"
+  ],
+  "native_field_acceptance": "PENDING",
+  "live_fleet_certification": "NOT_CLAIMED",
+  "historical_failures": {
+    "initial_candidate": "Earlier host/test candidate run passed 11/12 with a startup timeout before the forged/expired-message case; isolated fresh-browser recheck passed. These older product bytes are not counted as current final evidence.",
+    "world_weight_assertion": "Prior .46/.47 obsolete weights/targetWeight/chainWeight assertion failure retained in historical records; not rerun for this claim."
+  },
+  "visual_review": {
+    "pass": true,
+    "scope": "Root inspection of six synthetic UI screenshots only; game rendering was held.",
+    "evidence": [
+      {
+        "file": "ui-layout/final/visual-review.json",
+        "sha256": "54c936e5c7941e23663c61b4cf1c9efb9c2a64c232c10885eefb18439e5625fe"
+      },
+      {
+        "file": "ui-layout/final/held-1024x480.png",
+        "sha256": "9c8edc3d97d612f74582a188067156d923bf5d5de7a829c0bbcb81e4c74ea9a1"
+      },
+      {
+        "file": "ui-layout/final/held-768x1024.png",
+        "sha256": "0ce8f648b4e9255aba63714b0bb78554207b49afcdd86afd1fb714116208b2b3"
+      },
+      {
+        "file": "ui-layout/final/import-1024x480.png",
+        "sha256": "7b76e9dbeacfb6fec40a63d2fb1c1e2fe2bbe63eec7084c452cc1a8d70b5e241"
+      },
+      {
+        "file": "ui-layout/final/import-768x1024.png",
+        "sha256": "1d3b113b35fe9e770aa4e39e1804f3677d221ff469638685fa844fd853c06b9e"
+      },
+      {
+        "file": "ui-layout/final/recovered-1024x480.png",
+        "sha256": "2419ca83d71c8d95968a40142e84a2b14130ecd937899787c6e66ffd3223f334"
+      },
+      {
+        "file": "ui-layout/final/recovered-768x1024.png",
+        "sha256": "b3c0112d1c307cd2d3cb5a5045dc341c8f4c05dd3617262b68923ceee88c8e68"
+      }
+    ]
+  }
+}

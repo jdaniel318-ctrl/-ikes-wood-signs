@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.20.47",
-  "version": "8.8.20.47",
-  "release_name": "Breakwater TEST",
-  "releaseName": "Breakwater TEST",
-  "release_seal": "breakwater-882047",
+  "build": "8.8.20.48",
+  "version": "8.8.20.48",
+  "release_name": "Homeward TEST",
+  "releaseName": "Homeward TEST",
+  "release_seal": "homeward-882048",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -104,12 +104,11 @@
     "project_data_boundary": "exact-project-id"
   },
   "release_focus": [
-    "harbor roof and gable artwork",
-    "validated save-file preview",
-    "mission status on the title screen",
-    "pure voyageSummary presentation helper"
+    "game-only device save after validated progress",
+    "verified-account voyage recovery after timeout and reload",
+    "clear saved, recovered and unavailable status"
   ],
-  "release_note": "Breakwater .47 TEST is a bounded follow-up over exact Saltglass .46: harbor roofs/gables, validated save preview and title mission status. Selected current checks are recorded in BREAKWATER_TEST_RESULTS.json; package/extraction proof and native-device acceptance remain separate.",
+  "release_note": "Homeward .48 TEST adds account/backend/site-scoped game recovery on this device over exact Breakwater .47. It retains the existing JSON format, game art, mission rules and Admiral authority/session limits. Current offline evidence is recorded separately from native-device acceptance.",
   "tax_ledger_upgrade": {
     "schema": "dark-sky-fleet-tax-ledger-v1",
     "model": "TAX_LEDGER_MODEL.json",
@@ -231,8 +230,8 @@
     "algorithm": "SHA-256",
     "files": {
       "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": {
-        "sha256": "4e834eef3f725a3df1d2ce0e5ec4d443dfcde13b5d02717b8f80e2a5739e33b1",
-        "build": "8.8.20.47",
+        "sha256": "39887477e9aa9702b1953a11678bf0d0f0c251c4f6a1cd9c33660eefcae631aa",
+        "build": "8.8.20.48",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -279,14 +278,14 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_COMMAND_MODEL.json": {
-        "sha256": "c3b781b4d938d25f6222a56f63d7a09138d06394612a1af883c304efe5cd5ffa",
-        "build": "8.8.20.47",
+        "sha256": "57da69e952fdf7d53cb951640ef8110186c7faa867913f25b3f8f44051894625",
+        "build": "8.8.20.48",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
       "FLEET_DOCTRINE_REGISTRY.json": {
-        "sha256": "986100d9d09587a9146472bc8fcae86e96ef4c9f0f67fd711fb814e9382d0791",
-        "build": "8.8.20.47",
+        "sha256": "56b530feb8faa1e25f79db698b64da3e9fe3904b08829c0c09deed1adf46fa66",
+        "build": "8.8.20.48",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -345,8 +344,8 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "GOLDEN_VOYAGES.json": {
-        "sha256": "2deaa168275824c9a858c5dbea6e1af359f1d8c0b7544c0b6ab3b9e60df4fbe2",
-        "build": "8.8.20.47",
+        "sha256": "f9a82dbc7a1ba569c13fcb4073e7e0aa7a838ecb6de3039c10292a54604cb6f5",
+        "build": "8.8.20.48",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -499,30 +498,30 @@
       "simple_books.css": "5939590021ef2d3738d5f5f7249d72f8da64cc274bf287ef8183958517b0ba46",
       "platform_core.js": "7f797bc382a73eb9ec4365a7458e8329da60c50561e3ac751ca3fb9d7cd5ec49",
       "platform_v4.js": "21daf7777150d654467042893298147374318fdfc7ac38faf9260f874522019b",
-      "platform_identity.js": "b1c841384268d37dd7089bc038896174959c1e0a1176eb70f70adbb21081666e",
-      "fleet_supabase.js": "b0d266a54853dc8609d59aa209f59433446c7907d6c7718a6d1ce3b2e683fbc3",
+      "platform_identity.js": "4444e6b8e18bcd8fb4a132c148c4e61f7914f3c634c7e42f0f3017d2195b9b00",
+      "fleet_supabase.js": "4cfe4228014b3e8ec4fcb577f18d145c880c61ba78459a398e2b75cbb1b206e4",
       "ike_style_registry.js": "6b348ebceb47e172e6676f46252b19c1c6bb7532baf76febfa8dd81760a76ab7",
-      "app.js": "7f8f7be7b6e76ebd853afc550f07ad9d92e7925a67d12ebcc7f969212d6fce84",
-      "captain.js": "719e8281ab6d0796ddfb1158a4713c6caf4b9148677900d4e1aeb264494f9546",
-      "simple_books.js": "ce0e68973dad6a088d2852fca54bf7eb59063924797d8259bae38218ff92a8aa",
-      "owner.html": "45eb7b5cd068023d15d250827e23cf8d93a834bfa290bc2215e5214a469d77de",
-      "manifest.webmanifest": "7819fe044aff94538f98b4d0a04517f39671b8512b87f8ba87f72ebe66f862f3",
+      "app.js": "e6257a939a740363db71555de552f05d7f9b9d5213d826be59c5b8944dd66b56",
+      "captain.js": "52aedc01a57aef261abad887282b484ca339f5aa0ab202871521bed3d9568884",
+      "simple_books.js": "a4027a9dff52130932112c051554b46f072a16d986ab1f1027f24a2ed4fd9dba",
+      "owner.html": "fdb1c08a7eccf8762c434bd16179064a36651761c6700f5a07c14b6924cedbf5",
+      "manifest.webmanifest": "0a7324a533f0d52c7c7a60f0977fd72e5420011ddfc646a0b24e8403f3d4f7f7",
       "IKE_STYLE_FOUNDRY.json": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
-      "sw.js": "d598eefa16d4320fca6f0f162412067ebc7c14fbd12a4f4b39fc810981e655ea",
-      "FLEET_DOCTRINE_REGISTRY.json": "986100d9d09587a9146472bc8fcae86e96ef4c9f0f67fd711fb814e9382d0791",
-      "GOLDEN_VOYAGES.json": "2deaa168275824c9a858c5dbea6e1af359f1d8c0b7544c0b6ab3b9e60df4fbe2",
-      "FLEET_COMMAND_MODEL.json": "c3b781b4d938d25f6222a56f63d7a09138d06394612a1af883c304efe5cd5ffa",
-      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "4e834eef3f725a3df1d2ce0e5ec4d443dfcde13b5d02717b8f80e2a5739e33b1",
-      "input_hygiene.js": "fe236179ff8f8a1aa26b61af41bcc6ea1403f7ff9a171fa5e1043c6f46aed698",
-      "business_deck.js": "055aedd014afba8a2288f2d7bbcdac09641a8b0c7ac9deba7c1978e6814a1f32",
+      "sw.js": "eee4022f42c9644acc5c1d9ea87eb8ee896a84c0f7e977e0afd30f702b30e011",
+      "FLEET_DOCTRINE_REGISTRY.json": "56b530feb8faa1e25f79db698b64da3e9fe3904b08829c0c09deed1adf46fa66",
+      "GOLDEN_VOYAGES.json": "f9a82dbc7a1ba569c13fcb4073e7e0aa7a838ecb6de3039c10292a54604cb6f5",
+      "FLEET_COMMAND_MODEL.json": "57da69e952fdf7d53cb951640ef8110186c7faa867913f25b3f8f44051894625",
+      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "39887477e9aa9702b1953a11678bf0d0f0c251c4f6a1cd9c33660eefcae631aa",
+      "input_hygiene.js": "8e23bb912be53234edce594876eb16a0ece1b3c3898a1b84eef71a730e45a034",
+      "business_deck.js": "9466d3fdff11df9dccbb615bf7cdd0238a3d7310366ecedfa279db0faef1eaf0",
       "business_deck.css": "445fa81fff307d41cdd9a7d181ec86f9daae6843d24ac0d9fe14f939a25b6289",
       "fleet_viewport.js": "14ea8ff7d2c834014d8661a743c9408f9556141e7c81d32b590bd6988d0cfa55",
       "fleet_viewport.css": "36db59f3ef4061631d2fc67aac7b33aed4fff4120453560012413200e0e9bdad",
-      "headway_contracts.js": "e91d13fa0aff719e0333f507cadd14ca24c977f5e46e274697c30149df58d12d",
+      "headway_contracts.js": "355fbb9bf81e25400c7a4d0bf756b89d8f53c845ee3a652dd7d7f4e59cd8ab25",
       "woodwright_fit.js": "a4efdadf635608419a2bd82f12a701fd2991ec5dc3d14d282fd846680d40606f",
       "fun_core.js": "b21a909fa3dccf44b2d02d4a8243a91fd260b70db2edfc35338f3fd330c810e4",
-      "fun_program.js": "a58051eebb6677d6f8a7c3986f0493bb81317c7b2c92278dce4b73b73fc5c4e7",
-      "fun_program.css": "716c49a333a3defe973d4f5ea4c3f94a33c8459884c138b2844771634c5cfac5",
+      "fun_program.js": "06706297bb995fc8a75aac69d8dba2d00be368021235bb2b49d765b1719b34ab",
+      "fun_program.css": "0be9fb1e66ac0d04bc446b4f0d92d866aaa09848f6de86ce2bfdb83f2b4d55c3",
       "fun_player.html": "fcfc2d06cdf204f4591a9717968a027facf170e6e0be32d9151ef847870a0fb7",
       "stormwake_core.js": "b0193108053c9ddd067dc100bb9d820292e970ad2c316512b8456e359820b405"
     }
@@ -959,7 +958,7 @@
     "project_data_mutation": false,
     "field_failure_proof": "8.8.20.13 held on styles.css because packaged DEPLOYMENT_MANIFEST runtime hash did not match packaged styles.css bytes"
   },
-  "release": "Breakwater TEST",
+  "release": "Homeward TEST",
   "clearbearing_upgrade": {
     "build": "8.8.20.22",
     "baseline": "8.8.20.14 HashLock",
@@ -1152,9 +1151,9 @@
   },
   "lazy_program_assets": {
     "stormwake_player.html": {
-      "sha256": "5d3d30ac9cecf1300de21368e238976b1408541576bfd5b64a34316f36dcd101",
+      "sha256": "560380a583361f6f8ecf61a251236bc0403923182c29d1df4f8f4f26c2b959ff",
       "load": "after existing verified Admiral entry",
-      "bytes": 5008354
+      "bytes": 5008481
     }
   },
   "blacktide_upgrade": {
@@ -1313,5 +1312,30 @@
     "production_activation": false,
     "verification_status": "OFFLINE_TARGETED_CHECKS_PASSED",
     "verification_scope": "Selected final .47 checks passed: summary 7/7, title 3/3, host preview/import/layout 8/8, roofs 8/8, three rendered views and two actual compiled-player cases, with independent source review. Historical failure and evidence limits are recorded separately; final package/extracted startup and native .47 acceptance are not claimed here."
+  },
+  "homeward_upgrade": {
+    "build": "8.8.20.48",
+    "base": "8.8.20.47",
+    "scope": "Recover the validated game voyage after timeout and full page reload on this device.",
+    "game_only_local_recovery": true,
+    "recovery_requires_verified_same_account": true,
+    "scope_boundaries": [
+      "authenticated account",
+      "identity backend",
+      "configured environment",
+      "engine base path"
+    ],
+    "save_format_changed": false,
+    "mission_rules_changed": false,
+    "existing_core_function_bodies_changed": false,
+    "movement_camera_controls_changed": false,
+    "renderer_cast_assets_changed": false,
+    "admiral_idle_minutes": 15,
+    "admiral_maximum_minutes": 60,
+    "game_activity_transport_changed": false,
+    "server_authority_changed": false,
+    "production_activation": false,
+    "database_actions": "none",
+    "native_field_acceptance": "PENDING"
   }
 }

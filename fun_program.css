@@ -11,3 +11,8 @@
 /* Keep the saved-voyage review readable and its choices reachable on short screens. */
 #funImportConfirm>div{width:min(620px,100%);min-height:0;max-height:100%;overflow:auto;overscroll-behavior:contain;overflow-wrap:anywhere}#funImportSummary{padding:12px 14px;border-left:3px solid #efd08a;border-radius:3px;background:#092630;white-space:pre-line}
 @media(max-height:500px){#funImportConfirm{padding:12px}#funImportConfirm>div{padding:18px}#funImportConfirm h2{font-size:24px}}
+
+/* Device recovery and explicit failures remain readable on the field device. */
+#funSaveState[data-state=saved],#funSaveState[data-state=recovered]{color:#a6e0c6;border-color:#80b7a8a0;background:#143c39}
+#funSaveState[data-state=unavailable],#funSaveState[data-state=invalid],#funSaveState[data-state=conflict]{color:#ffe0a0;border-color:#e5b65e;background:#483719}
+#funProgram button:active{transform:translateY(1px);background:#306071}
