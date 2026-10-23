@@ -1,6 +1,6 @@
 {
   "release": "Ironbound TEST",
-  "build": "8.8.20.48",
+  "build": "8.8.20.49",
   "name": "VoyageKeeper",
   "purpose": "Give every Fleet feature an independent Off, Free or Paid state for every vessel.",
   "owner_state_precedence": [

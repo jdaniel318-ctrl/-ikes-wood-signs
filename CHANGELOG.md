@@ -1,3 +1,13 @@
+# Harborhold 8.8.20.49 TEST — device save repair
+
+Upload package: **DarkSky882049-Harborhold-Upload45-TEST.zip** — **45 changed/new files** over complete Homeward 8.8.20.48. Retain all other files.
+
+The game uses its own durable IndexedDB save with the existing verified account/backend/environment/site scope. Legacy localStorage game saves remain intact; a validated matching copy can be migrated. Keep your downloaded JSON. No SQL, business-data clearing, live permission change or remote deployment is part of this update.
+
+Current selected offline evidence passed; native iPad Safari acceptance is pending. See START_HERE_HARBORHOLD.md and HARBORHOLD_TEST_REPORT.md.
+
+## Preserved history — unchanged previous document
+
 # Homeward 8.8.20.48 TEST — recover the voyage after a timeout
 
 Use **DarkSky882048-Homeward-Upload46-TEST.zip** over the exact **Breakwater 8.8.20.47** site. Follow START_HERE_HOMEWARD.md. Retain all other files; no SQL, browser-data clearing or live publication is part of this update.

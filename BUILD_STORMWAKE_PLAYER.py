@@ -21,7 +21,7 @@ def compile_player(r):
  raw=html.encode('utf-8');check_player(raw);(r/'stormwake_player.html').write_bytes(raw)
  inputs={name:sha(data) for name,data in source_data.items()}
  for name in ['stormwake_assets.json','STORMWAKE_VENDOR.json','fun_player.html','stormwake_game.css','BUILD_STORMWAKE_PLAYER.py','STORMWAKE_BUILD_RULES.py']:inputs[name]=sha((r/name).read_bytes())
- report={'schema':'stormwake-player-build-v1','build':'8.8.20.48','inputs_sha256':inputs,'art':art_info,'vendor':vendor,'player':{'bytes':len(raw),'sha256':sha(raw),'limit_bytes':PLAYER_LIMIT},'runtime_network':False}
+ report={'schema':'stormwake-player-build-v1','build':'8.8.20.49','inputs_sha256':inputs,'art':art_info,'vendor':vendor,'player':{'bytes':len(raw),'sha256':sha(raw),'limit_bytes':PLAYER_LIMIT},'runtime_network':False}
  (r/'STORMWAKE_PLAYER_BUILD.json').write_text(json.dumps(report,indent=2)+'\n')
  print('Stormwake compiled:',len(raw),'bytes;',art_info['maps'],'embedded maps; pinned Three',vendor['version'],'; no remote runtime.')
  return report

@@ -1,18 +1,19 @@
 {
   "schema": "blackflag-patch-contract-v1",
-  "target_build": "8.8.20.48",
-  "target_seal": "homeward-882048",
+  "target_build": "8.8.20.49",
+  "target_seal": "harborhold-882049",
   "supported_bases": [
     {
-      "build": "8.8.20.47",
-      "file_count": 286,
+      "build": "8.8.20.48",
+      "file_count": 293,
       "content_digest_algorithm": "release-content-sha256-v1",
-      "content_sha256": "f77147f8684b4492e8d0d4851ed06c9778710650cea464fd10a4c348577a42e6",
-      "description": "Exact 286-file Breakwater TEST release; every filename and byte must match."
+      "content_sha256": "77931b0cff9dcd3b1780db36aacff7de51bb22366e6cf68a4a6c8b03d3498a66",
+      "description": "Exact 293-file Homeward TEST release; every filename and byte must match."
     }
   ],
   "requires_deletions": false,
   "max_upload_files": 85,
   "database_actions": "none",
-  "rule": "Keep your downloaded voyage. Upload every file inside the Homeward update folder over the complete Breakwater 8.8.20.47 repository root. Retain all other files. No SQL or browser-data clearing. This update is not a standalone site."
+  "local_game_storage": "Dedicated browser IndexedDB store; existing localStorage game bytes and business data retained.",
+  "rule": "Keep your downloaded voyage. Upload every file inside the Harborhold Upload update folder over the complete Homeward 8.8.20.48 repository root. Retain all other files. No SQL or browser-data clearing. This update is not a standalone site."
 }
