@@ -1,8 +1,8 @@
-/* Quartermaster 8.8.20.53. Local business support under the existing Admiral gate. */
+/* Quartermaster 8.8.20.55. Local business support under the existing Admiral gate. */
 (function(g){
  'use strict';
  if(!g.document||g.BlackFlagQuartermasterUI)return;
- const BUILD='8.8.20.53',SESSION='darkSkySupabaseAdmiralSessionV1';
+ const BUILD='8.8.20.55',SESSION='darkSkySupabaseAdmiralSessionV1';
  const $=id=>document.getElementById(id),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const clone=v=>JSON.parse(JSON.stringify(v));
  const uuid=()=>g.crypto.randomUUID();

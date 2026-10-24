@@ -1,0 +1,30 @@
+Carvewright 8.8.20.55 — independent fleet design workspace
+
+New: independent Home, Jobs, editor and revision-specific artwork handoff; direct Engine/Admiral/My Fleet entrances; separate Carvewright application identity and scoped local store; explicit legacy read/copy/import with unchanged originals; job requester, source reference, brief and requested output. Existing Quotes & invoices no longer owns the design application.
+
+Current build uses the existing Admiral authorization model. My Fleet closes before presenting the gate; cancelled gate intent does not launch later. Session/context loss closes private design surfaces and revokes prepared files. Requests and imported labels do not grant vessel access.
+
+Real vector preview and SVG share the retained exact glyph geometry. Handoff verifies saved revision and layout review, offers native file links, and makes no delivery/approval/machine claim. New metadata resets review. Current and legacy imports are new unreviewed copies.
+
+Release boundary: one cumulative update over complete .53 or .54, at most85 files, zero deletions. Seven new runtime assets. Full target366 files; standalone12 files with no private auth adapter. All original .54 evidence, reference models and guides remain historical records. Current instructions are CARVEWRIGHT_FLEET_GUIDE.md. New evidence is CARVEWRIGHT_FLEET_EVIDENCE.json.
+
+Not included: live canonical commissioning, automatic cross-vessel transactions, cross-device synchronization, cutter libraries, CAM, stock simulation or machine output. Native Firefox, native Safari, installed VCarve compatibility and physical production acceptance are not claimed.
+
+Historical build notes below are retained verbatim.
+
+Carvewright 8.8.20.54
+
+Ike’s Carve Studio adds a physical vector lettering editor, two bundled public reference styles, entered stock dimensions/margins, exact case and spacing, local layout review, isolated device-local saves, validated portable JSON files and lettering-only SVG exports.
+
+The existing authorized Quotes & invoices workspace gains an Ike-only Open Carve Studio entry. A separate carve-studio.html provides a local reference workspace. The editor shares the existing account/business guard while keeping its controls and data store separate from financial records.
+
+Studio Sans Bold and Studio Serif Bold are reference lettering, not Ike’s approved A/B/C geometry. Wood appearance is illustrative. No CAM engine, material-removal simulation, .crv import, machine program, cross-device synchronization, live service write or automatic financial action is included.
+
+The exact complete Quartermaster 8.8.20.53 release is the baseline. Preserve every previous file. Existing runtime behavior is verified through inverse identity/integration comparison, with retained document/PDF regressions. Only release identity changes apply to the compiled game. Historical model/evidence files remain unchanged.
+
+Current byte-bound evidence: CARVEWRIGHT_EVIDENCE.json.
+User guide: CARVEWRIGHT_GUIDE.md.
+Reference sources: CARVEWRIGHT_REFERENCE_SOURCES.md.
+Upload instructions: UPLOAD_THIS_ONE_BUILD.md.
+
+Offline release checks are distinct from native Firefox/iPad Safari, installed VCarve and physical-machine acceptance.

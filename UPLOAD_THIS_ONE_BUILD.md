@@ -1,3 +1,55 @@
+# Upload this one — Carvewright 8.8.20.55
+
+**Current update: `DarkSky882055-Carvewright-Upload55.zip`**
+
+This is the cumulative 55-file update for either the complete **8.8.20.53 Quartermaster** or **8.8.20.54 Carvewright** release. Keep the rest of your existing repository files.
+
+## Three steps
+
+1. Extract `DarkSky882055-Carvewright-Upload55.zip`. Open the single folder with the same name as the ZIP.
+2. Upload **all 55 files inside that folder** to the repository location containing the current `index.html`. Replace matching files and retain every other file. Commit the upload and let the existing Pages deployment finish.
+3. Reopen the site and confirm **8.8.20.55**. Open **Carvewright** from Engine, Admiral or its My Fleet service card. Sign in through the existing Admiral gate when needed, then create or reopen a design.
+
+Carvewright now has its own Home, Jobs, Design studio and Handoff. It no longer opens from inside Quotes & invoices. A requesting business and source reference label each design job without changing that business’s records.
+
+Earlier Ike designs can be copied explicitly using **Bring a design → Find earlier designs**, in the same browser/account/site scope, or by importing an earlier job JSON. Originals are retained. Imported/copied designs start unreviewed.
+
+The service card states **Registration pending**. This ZIP does not perform live vessel commissioning or change protected fleet counts. It preserves existing customer, catalog, quote, invoice, ScheduleJoe and game behavior outside the exact entrance/current-release updates. There are no SQL, database-reset or browser-data-clearing steps.
+
+**For an immediate local look:** extract `DarkSky882055-Carvewright-Standalone.zip`, keep its twelve files together and open `carvewright.html`. This separate local workspace has no sign-in. Keep downloadable editable JSON copies of designs you want to retain or move.
+
+**Full backup:** `DarkSky882055-Carvewright-FullBackup.zip` is the complete software archive. It is not the small browser-upload update and does not contain your private browser-saved designs or business records.
+
+For the current workflow read `CARVEWRIGHT_FLEET_GUIDE.md`. The handoff prepares SVG artwork and editable JSON from a saved reviewed revision. It does not send files, generate cutting paths, operate a machine or create financial transactions. Native Firefox/iPad acceptance and installed VCarve compatibility remain separate from the isolated browser verification recorded in this release.
+
+---
+
+## Historical instructions below — retained verbatim
+
+The following earlier notes describe earlier builds. Use the current filename and directions above for this upload.
+
+# Carvewright 8.8.20.54 — Ike’s Carve Studio
+
+**Website update: DarkSky882054-Carvewright-Upload44.zip — 44 changed/new files over the exact complete Quartermaster 8.8.20.53 release.**
+
+## Install the website update
+
+1. Keep your existing downloaded business/game backups and all repository files. The new design store is separate from existing quotes, invoices and voyage saves.
+2. Extract the update ZIP. Upload all 44 files inside its matching inner folder to the existing repository root, replacing matching names and retaining every other file. Upload the files, not the folder or the complete backup ZIP.
+3. After the site finishes publishing, open the current site and confirm **8.8.20.54 · Carvewright**. In the authorized **Quotes & invoices** workspace, select **Ike’s Wood Signs** and choose **Open Carve Studio** on Overview.
+
+There are no database actions or data-clearing steps. This update was prepared locally; the ZIP does not publish itself. It requires the complete .53 baseline and is not a standalone website.
+
+## Open the studio immediately
+
+`DarkSky882054-Carvewright-Standalone.zip` is a separate nine-file reference workspace. Extract it, keep the files together and open `carve-studio.html` in your browser. No sign-in or web server is required. Use **Download job** and the resulting **Download file** link to retain an editable copy. This standalone copy has its own saved-design scope.
+
+The studio adds physical vector lettering, reference fonts, blank dimensions/margins, local design review, isolated local saves, portable JSON and lettering-only SVG. It does not yet provide CAM, .crv import, material-removal simulation, machine output or automatic quote/order integration.
+
+Full usage: `CARVEWRIGHT_GUIDE.md`. Public references: `CARVEWRIGHT_REFERENCE_SOURCES.md`. Current verification evidence and its stated limits: `CARVEWRIGHT_EVIDENCE.json`.
+
+## Preserved release history — earlier instructions below are historical
+
 # Quartermaster 8.8.20.53 — a clearer operator workspace
 
 Upload: **DarkSky882053-Quartermaster-Upload45.zip** — **45 changed/new files** over complete **Quartermaster 8.8.20.52**. Follow START_HERE_QUARTERMASTER_53.md and retain all other repository files.

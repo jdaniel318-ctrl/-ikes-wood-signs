@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.53",
-  "release": "Quartermaster",
-  "seal": "quartermaster-882053",
+  "build": "8.8.20.55",
+  "release": "Carvewright",
+  "seal": "carvewright-882055",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Quartermaster",
-  "name": "Quartermaster",
-  "releaseName": "Quartermaster"
+  "release_name": "Carvewright",
+  "name": "Carvewright",
+  "releaseName": "Carvewright"
 }

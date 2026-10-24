@@ -1,0 +1,315 @@
+{
+  "schema": "carvewright-fleet-release-evidence-v1",
+  "build": "8.8.20.55",
+  "baseline": "8.8.20.54",
+  "recorded_at": "2026-10-24T22:47:32.846518+00:00",
+  "pass": true,
+  "native_safari_acceptance": "not claimed",
+  "native_firefox_acceptance": "not claimed",
+  "live_commissioning_acceptance": "not claimed",
+  "machine_production_acceptance": "not claimed",
+  "checks": [
+    {
+      "name": "Independent model and packet validation suite",
+      "status": "passed",
+      "groups": 1,
+      "command": "node qa/core.cjs",
+      "scope": "Blank drafts, exact geometry, strict review hash strings, descriptor-safe review access, Unicode metadata, current/legacy imports and packet/path tampering; exit0.",
+      "result_file_sha256": "8cd304571eff03a73864aa3572c28b9f7b241a9a614c5c93546c9aeed21b2b64",
+      "source_sha256": {
+        "carvewright_core.js": "32aaaa33abf54894409f6e7452135933ecc50f937d446f1dcabe485f10669817",
+        "carve_core.js": "1332b534c520f6953750206c73f9c80175b0ea06132739a1145575de8060cc4c",
+        "carve_fonts.js": "f9dba7e80836fa4d702c7599fd9c7e7f99864bb6493c9aae82b1a161c4aaafcf"
+      }
+    },
+    {
+      "name": "Exact scope and real IndexedDB transactions",
+      "status": "passed",
+      "groups": 23,
+      "command": "node qa/store.cjs",
+      "scope": "Captured scope, guards, atomic revisions, quota/error behavior, read-only legacy copying; fresh isolated Chromium; exit0.",
+      "result_file_sha256": "a0600e29f709b59f7e4b9dfdb61a3ddb8a3a7dea49572215332e00f01486f594",
+      "source_sha256": {
+        "carvewright_store.js": "3ab158e100e16b01a5a3a3fb139d961b580bee31ca1cc4f5ff4024f7b2b18df1",
+        "carvewright_core.js": "32aaaa33abf54894409f6e7452135933ecc50f937d446f1dcabe485f10669817",
+        "carve_store.js": "95444741396e68749ecbf67dc15fd4f5f34d58a9f036621f41e6e2e276caa984",
+        "carve_core.js": "1332b534c520f6953750206c73f9c80175b0ea06132739a1145575de8060cc4c"
+      }
+    },
+    {
+      "name": "Independent fleet entrance and real gate overlay regression",
+      "status": "passed",
+      "groups": 22,
+      "command": "node qa/fleet.cjs",
+      "scope": "Synthetic authority, real captain/styles regression, actual PIN hit-testing, canceled intent, actor/context changes, protected-count preservation and fixed integration substitutions; exit0.",
+      "result_names": [
+        "independent launch and exact local scope without accounting",
+        "authority denial does not launch",
+        "pending duplicate launch suppressed",
+        "delayed authority cancelled on account change",
+        "delayed authority cancelled on session ended",
+        "delayed authority cancelled on deck hidden",
+        "delayed authority cancelled on session restarted",
+        "delayed authority cancelled on backend changed",
+        "delayed authority cancelled on environment changed",
+        "delayed authority cancelled on site changed",
+        "active session loss closes and invalidates held guard",
+        "visible app closes when owning deck hides",
+        "pending app open cancelled after context loss",
+        "requester and URL cannot supply authority or scope",
+        "Engine passage waits for verified visible deck",
+        "duplicate Engine requests do not restart passage",
+        "gate cancellation clears pending requested passage",
+        "removed gate cancels intent before unrelated deck opens",
+        "My Fleet service card and Admiral entry preserve vessel counts",
+        "closing Quotes & invoices does not close Carvewright",
+        "real My Fleet closes before actual Admiral gate and exposes PIN",
+        "surgical substitutions and verified loader assets"
+      ],
+      "result_file_sha256": "0cbe9983050264f19265c9cdcc477d1907d6da11f044f4be6912d93b6711b093",
+      "source_sha256": {
+        "carvewright_fleet.js": "c57d25d5b4184e1e077674b352828517719a8f055ed4c7ef8136990cf8cafa87",
+        "index.html": "48327ee232580e1d59280968dd4942687ef141c14f3cb43ca3efe695fc1769c9",
+        "quartermaster.js": "dfbd83f993d78591e32a4c9f31aa422468ff3362f320f47b26e89380e0a5a579",
+        "captain.js": "e8e13a8e16c24245125beb347af5135975bdc86893158fe44a0dad4fa7a35c14",
+        "styles.css": "3af289879bf0256d244fe084d3d9e26c67b277bdaffdd1df8387143d7d077379"
+      }
+    },
+    {
+      "name": "Independent app and editor workflow",
+      "status": "passed",
+      "groups": 20,
+      "scope": "Fresh Chromium profile; all external requests blocked; no live account or machine; actual native downloads",
+      "result_names": [
+        "independent Carvewright home opens with truthful empty counts",
+        "sample becomes an independent unsaved job with editable requester metadata",
+        "own editor opens exact physical outlines without accounting",
+        "blank and unsupported lettering block review and export explicitly",
+        "physical unit switching and overflow controls remain correct",
+        "review and save return the exact design to its job",
+        "request metadata changes reset local review and handoff eligibility",
+        "saved job reopens after reload with all independent job details",
+        "handoff uses a saved reviewed revision and offers separate native downloads",
+        "downloaded SVG has identical physical paths and Carvewright metadata",
+        "navigation revokes prepared URLs",
+        "current job file imports a new unreviewed copy without overwrite",
+        "tampered geometry is rejected and saved jobs are preserved",
+        "legacy job JSON retains source and exactly the same lettering geometry",
+        "explicit legacy lookup copies only same-scope saved designs and leaves originals unchanged",
+        "job search and review filter use actual saved records",
+        "ipad home jobs and editor keep reachable controls and no horizontal overflow",
+        "phone home jobs and editor keep reachable controls and no horizontal overflow",
+        "live guard loss closes job and editor surfaces",
+        "denied browser storage retains portable editor export without false save"
+      ],
+      "result_file_sha256": "ecc08b241e5edb14749652271e7e955d26fcff09a764f5552feeb8c493e7bbc6",
+      "source_sha256": {
+        "carve_fonts.js": "f9dba7e80836fa4d702c7599fd9c7e7f99864bb6493c9aae82b1a161c4aaafcf",
+        "carve_core.js": "1332b534c520f6953750206c73f9c80175b0ea06132739a1145575de8060cc4c",
+        "carve_store.js": "95444741396e68749ecbf67dc15fd4f5f34d58a9f036621f41e6e2e276caa984",
+        "carvewright_core.js": "32aaaa33abf54894409f6e7452135933ecc50f937d446f1dcabe485f10669817",
+        "carvewright_store.js": "3ab158e100e16b01a5a3a3fb139d961b580bee31ca1cc4f5ff4024f7b2b18df1",
+        "carvewright_studio.js": "6d307029cd1127c1a3558766a01478f6deb0205ce8a085da4206ec6f2171f9ba",
+        "carvewright_app.js": "958352a97e264ca059fbe6657d1a9632482d08574e0f8ffe414a9eec7680205e",
+        "carvewright.css": "09e3aca88c6449af94f1051138f36dc5911d33d20bd60d1ba6cbbac6da0e10c7",
+        "carvewright.html": "64edad87a8f0d09f57e69ebb43fc3604ca1b994b331609f28e3a673bdbb83078"
+      }
+    },
+    {
+      "name": "Independent fleet lifetime and financial separation",
+      "status": "passed",
+      "groups": 10,
+      "scope": "Actual fleet adapter, Quartermaster and Carvewright modules plus real host CSS and input hygiene; synthetic authority; real local IndexedDB; all external requests blocked",
+      "result_names": [
+        "independent fleet entries exist and accounting has no nested Carve entry",
+        "authorized independent entry saves own jobs without accounting authority handlers",
+        "accounting business selection and closure do not own Carvewright lifetime",
+        "real host styles preserve reachable job and editor controls on iPad and phone sizes",
+        "reviewed handoff remains separate from commercial records",
+        "server authority denial blocks independent app and database access",
+        "account change while authority is pending cancels independent launch",
+        "new account cannot see previous jobs and deck closure removes both design surfaces",
+        "session end removes independent workspace and prepared file links",
+        "standalone local scope cannot see private integrated jobs"
+      ],
+      "result_file_sha256": "e88b4e8c410e56a43aa545c710d57b4d5ee4c0fd64dc64c0c8f5ef2bece6dd4f",
+      "source_sha256": {
+        "carvewright_core.js": "32aaaa33abf54894409f6e7452135933ecc50f937d446f1dcabe485f10669817",
+        "carvewright_store.js": "3ab158e100e16b01a5a3a3fb139d961b580bee31ca1cc4f5ff4024f7b2b18df1",
+        "carvewright_studio.js": "6d307029cd1127c1a3558766a01478f6deb0205ce8a085da4206ec6f2171f9ba",
+        "carvewright_app.js": "958352a97e264ca059fbe6657d1a9632482d08574e0f8ffe414a9eec7680205e",
+        "carvewright_fleet.js": "c57d25d5b4184e1e077674b352828517719a8f055ed4c7ef8136990cf8cafa87",
+        "carvewright.css": "09e3aca88c6449af94f1051138f36dc5911d33d20bd60d1ba6cbbac6da0e10c7",
+        "carvewright.html": "64edad87a8f0d09f57e69ebb43fc3604ca1b994b331609f28e3a673bdbb83078",
+        "quartermaster.js": "dfbd83f993d78591e32a4c9f31aa422468ff3362f320f47b26e89380e0a5a579",
+        "quartermaster_core.js": "5de2d40cb05eeeafb03855e5a374b7fc451982969d187d71632dd908e1051eed",
+        "quartermaster.css": "12d14a8437936a8a4625dae082c1fc3ca47225c0a391b0a68a4ad94c6902a623",
+        "input_hygiene.js": "3fe575e9536375636a25a7a790d20fcc11a86e05fe3f4c2c332b8c6dd470f96b",
+        "styles.css": "3af289879bf0256d244fe084d3d9e26c67b277bdaffdd1df8387143d7d077379"
+      }
+    },
+    {
+      "name": "Direct local-file workflow and actual native downloads",
+      "status": "passed",
+      "groups": 20,
+      "scope": "Fresh Chromium profile; all external requests blocked; no live account or machine; actual native downloads",
+      "result_names": [
+        "independent Carvewright home opens with truthful empty counts",
+        "sample becomes an independent unsaved job with editable requester metadata",
+        "own editor opens exact physical outlines without accounting",
+        "blank and unsupported lettering block review and export explicitly",
+        "physical unit switching and overflow controls remain correct",
+        "review and save return the exact design to its job",
+        "request metadata changes reset local review and handoff eligibility",
+        "saved job reopens after reload with all independent job details",
+        "handoff uses a saved reviewed revision and offers separate native downloads",
+        "downloaded SVG has identical physical paths and Carvewright metadata",
+        "navigation revokes prepared URLs",
+        "current job file imports a new unreviewed copy without overwrite",
+        "tampered geometry is rejected and saved jobs are preserved",
+        "legacy job JSON retains source and exactly the same lettering geometry",
+        "explicit legacy lookup copies only same-scope saved designs and leaves originals unchanged",
+        "job search and review filter use actual saved records",
+        "ipad home jobs and editor keep reachable controls and no horizontal overflow",
+        "phone home jobs and editor keep reachable controls and no horizontal overflow",
+        "live guard loss closes job and editor surfaces",
+        "denied browser storage retains portable editor export without false save"
+      ],
+      "result_file_sha256": "f71cf1eb1baf6498182610a0d2f6617f29f122d97d4d49d65a9acaecf024aa83",
+      "source_sha256": {
+        "carve_fonts.js": "f9dba7e80836fa4d702c7599fd9c7e7f99864bb6493c9aae82b1a161c4aaafcf",
+        "carve_core.js": "1332b534c520f6953750206c73f9c80175b0ea06132739a1145575de8060cc4c",
+        "carve_store.js": "95444741396e68749ecbf67dc15fd4f5f34d58a9f036621f41e6e2e276caa984",
+        "carvewright_core.js": "32aaaa33abf54894409f6e7452135933ecc50f937d446f1dcabe485f10669817",
+        "carvewright_store.js": "3ab158e100e16b01a5a3a3fb139d961b580bee31ca1cc4f5ff4024f7b2b18df1",
+        "carvewright_studio.js": "6d307029cd1127c1a3558766a01478f6deb0205ce8a085da4206ec6f2171f9ba",
+        "carvewright_app.js": "958352a97e264ca059fbe6657d1a9632482d08574e0f8ffe414a9eec7680205e",
+        "carvewright.css": "09e3aca88c6449af94f1051138f36dc5911d33d20bd60d1ba6cbbac6da0e10c7",
+        "carvewright.html": "64edad87a8f0d09f57e69ebb43fc3604ca1b994b331609f28e3a673bdbb83078"
+      }
+    },
+    {
+      "name": "Retained catalog quote invoice and numbering workflow",
+      "status": "passed",
+      "groups": 11,
+      "scope": "Actual Quartermaster UI and native IndexedDB in isolated offline Chromium with synthetic authority; no live accounts/network or Safari proof",
+      "result_names": [
+        "denied authority never opens durable workspace",
+        "closed Admiral session cannot enter",
+        "authority response discarded after account changes",
+        "real UI catalog quote invoice PDF backup save and reload",
+        "backup restores into empty exact scope and rejects foreign scope",
+        "native storage quota does not claim catalog save",
+        "session revocation removes private UI and prepared download",
+        "delayed side effect revalidates account and leaves database unchanged",
+        "phone layout keeps controls and dialog inside viewport",
+        "iPad layout keeps controls and dialog inside viewport",
+        "rapid repeated action and concurrent tabs keep unique numbers"
+      ],
+      "result_file_sha256": "c3cad483c490463a69014b8dd684c013f2f57be7057463e55add3425e770dc9c",
+      "source_sha256": {
+        "quartermaster.js": "dfbd83f993d78591e32a4c9f31aa422468ff3362f320f47b26e89380e0a5a579",
+        "quartermaster_core.js": "5de2d40cb05eeeafb03855e5a374b7fc451982969d187d71632dd908e1051eed",
+        "quartermaster_pdf.js": "7e1c51fa7d7a4ae4fcd55a2330b15ff87c6b4ec0c9db548ff2b6a72658a453a1",
+        "quartermaster_fonts.js": "69b2f7fbcf0d29731cf6feea6d3f7b57d7633fafc29703123a7213ea861c9df5",
+        "quartermaster.css": "12d14a8437936a8a4625dae082c1fc3ca47225c0a391b0a68a4ad94c6902a623"
+      }
+    },
+    {
+      "name": "Retained separate-tab PDF and native download handoff",
+      "status": "passed",
+      "groups": 13,
+      "scope": "Real Quartermaster modules, native IndexedDB, saved-snapshot PDF generation and native browser tab/download actions; complete styles.css, business_deck.css and quartermaster.css; exact professional Admiral host template and authority fixtures reused from retained .51 verifier utilities. Synthetic authority only; all external requests blocked. Exact built-in PDF extension host and chrome://resources/ are allowed as browser-local dependencies and their exact URLs recorded separately. Original URL, live document/dialog identity, scroll, full local workspace and session counters compared around handoff. Chromium viewport emulation, not native iPad Safari. The fallback case removes the real download attribute in the harness; the dirty case dispatches input to the real hidden document field. No production test hooks.",
+      "result_names": [
+        "open PDF in a native new tab preserves the active workspace",
+        "native PDF download preserves filename bytes and workspace",
+        "download preview fallback opens separately when download is ignored",
+        "stale session blocks PDF open at click time",
+        "stale session blocks PDF download at click time",
+        "dirty document input clears and revokes prepared PDF",
+        "changing documents removes and revokes the previous PDF",
+        "changing business removes and revokes the previous PDF",
+        "closing workspace removes and revokes prepared PDF",
+        "JSON backup remains a single unchanged native download",
+        "PDF actions are reachable at tablet-landscape viewport",
+        "PDF actions are reachable at tablet-portrait viewport",
+        "PDF actions are reachable at phone viewport"
+      ],
+      "result_file_sha256": "95f26dc9f1f0362033dacc9ca93a63c6a4e336af3ffc4d03b20855554b15fa68",
+      "source_sha256": {
+        "quartermaster.js": "dfbd83f993d78591e32a4c9f31aa422468ff3362f320f47b26e89380e0a5a579",
+        "quartermaster_core.js": "5de2d40cb05eeeafb03855e5a374b7fc451982969d187d71632dd908e1051eed",
+        "quartermaster_pdf.js": "7e1c51fa7d7a4ae4fcd55a2330b15ff87c6b4ec0c9db548ff2b6a72658a453a1",
+        "quartermaster_fonts.js": "69b2f7fbcf0d29731cf6feea6d3f7b57d7633fafc29703123a7213ea861c9df5",
+        "quartermaster.css": "12d14a8437936a8a4625dae082c1fc3ca47225c0a391b0a68a4ad94c6902a623"
+      }
+    },
+    {
+      "name": "Actual atomic loader and altered-byte rejection",
+      "status": "passed",
+      "groups": 4,
+      "scope": "Actual release index loader with all response bytes routed locally; fresh Chromium contexts; no service worker capability, live network, user identity, hosted authentication or Safari proof",
+      "result_names": [
+        "actual index coherent release boots",
+        "actual index rejects changed required runtime bytes",
+        "actual index rejects changed independent Carvewright geometry bytes",
+        "actual index rejects changed runtime checksum declaration"
+      ],
+      "result_file_sha256": "9654600cf500e71638c2a5964eb78b50147fe0f620abcf5afee21aec41b5ac22",
+      "source_sha256": {
+        "index.html": "48327ee232580e1d59280968dd4942687ef141c14f3cb43ca3efe695fc1769c9",
+        "quartermaster.js": "dfbd83f993d78591e32a4c9f31aa422468ff3362f320f47b26e89380e0a5a579",
+        "fun_program.js": "38350bf94d69e15c258e93c841a5eeb17ecb17664b917ccf24fe086b0cac9374",
+        "stormwake_player.html": "a107b20318894172506351a346ebed62ab494b19cb1e7efc6c1a3bef6548cfce",
+        "carvewright_core.js": "32aaaa33abf54894409f6e7452135933ecc50f937d446f1dcabe485f10669817",
+        "carvewright_store.js": "3ab158e100e16b01a5a3a3fb139d961b580bee31ca1cc4f5ff4024f7b2b18df1",
+        "carvewright_studio.js": "6d307029cd1127c1a3558766a01478f6deb0205ce8a085da4206ec6f2171f9ba",
+        "carvewright_app.js": "958352a97e264ca059fbe6657d1a9632482d08574e0f8ffe414a9eec7680205e",
+        "carvewright_fleet.js": "c57d25d5b4184e1e077674b352828517719a8f055ed4c7ef8136990cf8cafa87",
+        "carvewright.css": "09e3aca88c6449af94f1051138f36dc5911d33d20bd60d1ba6cbbac6da0e10c7",
+        "carvewright.html": "64edad87a8f0d09f57e69ebb43fc3604ca1b994b331609f28e3a673bdbb83078"
+      }
+    },
+    {
+      "name": "Compiled player identity preservation and actual host digest",
+      "status": "passed",
+      "scope": "Current compiler executed; exact inverse identity comparison to immutable .54, all input hashes and actual host SHA agree. No new game behavior claim.",
+      "source_sha256": {
+        "fun_program.js": "38350bf94d69e15c258e93c841a5eeb17ecb17664b917ccf24fe086b0cac9374",
+        "stormwake_player.html": "a107b20318894172506351a346ebed62ab494b19cb1e7efc6c1a3bef6548cfce",
+        "BUILD_STORMWAKE_PLAYER.py": "3d44c3a2656e1b8b4269aee7648e261ff52af95a689a02db0017b9d22b938d43",
+        "STORMWAKE_PLAYER_BUILD.json": "82342ea1548e1fd5b72d8a979efa1822f726041eedef154c909d80740987278a"
+      }
+    },
+    {
+      "name": "Independent component and final whole-change source reviews",
+      "status": "passed",
+      "scope": "Core review hash/getter and My Fleet overlay findings corrected and scoped rereviews approved; title limit/phone accessible-label corrections approved. Final source review approved before packaging. Compact core formatting is a nonblocking maintainability deferral.",
+      "review_report_sha256": {
+        "task1-review.md": "d4cfa57affc3c38a5e4768d66e555c299b4ea25125b0adfb9dc41f10dd9f25b0",
+        "task2-review.md": "62d3fafd1fc9079bb8e01fb914d6da18eecc802f3a205714c051c4ab953708cf",
+        "task3-review.md": "ca1bdf71b39c5d758fb8f4185ea8eed8ff5489d055cdf7c7514e09085c37c3c6",
+        "task4-review.md": "22da9859f28ee680322e8ff690bf88d71cbdfe551be0e674b28791f68271a7f7",
+        "final-review.md": "2067c42e98f000335571f67cb1f7633d0e5b8382fc07d24d0132ddb2e0c9cebd"
+      },
+      "source_sha256": {
+        "carvewright_core.js": "32aaaa33abf54894409f6e7452135933ecc50f937d446f1dcabe485f10669817",
+        "carvewright_store.js": "3ab158e100e16b01a5a3a3fb139d961b580bee31ca1cc4f5ff4024f7b2b18df1",
+        "carvewright_studio.js": "6d307029cd1127c1a3558766a01478f6deb0205ce8a085da4206ec6f2171f9ba",
+        "carvewright_app.js": "958352a97e264ca059fbe6657d1a9632482d08574e0f8ffe414a9eec7680205e",
+        "carvewright_fleet.js": "c57d25d5b4184e1e077674b352828517719a8f055ed4c7ef8136990cf8cafa87",
+        "carvewright.css": "09e3aca88c6449af94f1051138f36dc5911d33d20bd60d1ba6cbbac6da0e10c7",
+        "carvewright.html": "64edad87a8f0d09f57e69ebb43fc3604ca1b994b331609f28e3a673bdbb83078",
+        "index.html": "48327ee232580e1d59280968dd4942687ef141c14f3cb43ca3efe695fc1769c9",
+        "quartermaster.js": "dfbd83f993d78591e32a4c9f31aa422468ff3362f320f47b26e89380e0a5a579",
+        "VERIFY_CARVEWRIGHT_FLEET_RELEASE.py": "690c9028cbab22521642a0a643bdba3d47dbc64ffacf09c48757d3d79aacdd57"
+      }
+    }
+  ],
+  "automated_groups_recorded": 124,
+  "interpretation": "Offline source and isolated Chromium evidence, with synthetic authority where stated. Not a live deployment, machine release, native-device acceptance or cryptographic authenticity claim.",
+  "package_acceptance": "Exact archive reconstruction and freshly extracted boot/file-entry checks are recorded separately after packaging.",
+  "installed_vcarve_compatibility": "not claimed",
+  "cam_execution": "not implemented",
+  "cross_device_sync": false
+}

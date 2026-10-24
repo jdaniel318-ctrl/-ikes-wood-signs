@@ -1,0 +1,238 @@
+{
+  "schema": "carvewright-release-evidence-v1",
+  "build": "8.8.20.54",
+  "baseline": "8.8.20.53",
+  "recorded_at": "2026-10-24T21:38:11.560672+00:00",
+  "pass": true,
+  "checks": [
+    {
+      "name": "Physical vector geometry and portable job validation",
+      "status": "passed",
+      "groups": 12,
+      "command": "node qa/core.cjs",
+      "scope": "Mixed case, whitespace and blank lines, counters, bounds, physical transforms, XML metadata, review fingerprints and tampered packets. Fresh root run completed with exit 0.",
+      "source_sha256": {
+        "carve_core.js": "1332b534c520f6953750206c73f9c80175b0ea06132739a1145575de8060cc4c",
+        "carve_fonts.js": "f9dba7e80836fa4d702c7599fd9c7e7f99864bb6493c9aae82b1a161c4aaafcf",
+        "carve_font_license.txt": "0fe4abc1e9ccaa94b64840c75dff6dda89ba7fd369aaf292417ead85b5bed529"
+      }
+    },
+    {
+      "name": "Exact scoped storage with real IndexedDB",
+      "status": "passed",
+      "groups": 19,
+      "command": "node qa/store.cjs",
+      "scope": "Five-field scope including accessor rejection, atomic revision conflicts, deep snapshots, delayed guard loss, close/abort, quota/provider errors and denied IndexedDB getter. Fresh root run completed with exit 0.",
+      "source_sha256": {
+        "carve_store.js": "95444741396e68749ecbf67dc15fd4f5f34d58a9f036621f41e6e2e276caa984"
+      }
+    },
+    {
+      "name": "Editor behavior and responsive layouts",
+      "status": "passed",
+      "groups": 16,
+      "scope": "Isolated local Chromium; external requests blocked; no live account or machine.",
+      "result_names": [
+        "standalone opens with actual vector outlines",
+        "literal mixed case spaces and line breaks survive input",
+        "local review invalidates after any wording edit",
+        "blank wording leaves blank wood and blocks geometry actions",
+        "unsupported glyph is explicit with no font fallback",
+        "reference serif updates real geometry",
+        "invalid dimensions and overflow block export",
+        "unit switching preserves physical sizes",
+        "save and reload recovers exact design and review",
+        "SVG download contains exact on-screen letter paths in mm",
+        "portable job import opens a new unreviewed copy",
+        "tampered import is refused without replacing current design",
+        "ipad layout has reachable controls and no horizontal overflow",
+        "phone layout has reachable controls and no horizontal overflow",
+        "live guard loss closes editor and leaves saved scope private",
+        "denied browser storage keeps portable design tools available without claiming a save"
+      ],
+      "result_file_sha256": "5a1f9afc2e0ae03221c7c3a07486e8629a2c27d5e4c2643de1adea2e5bf9ffcf",
+      "source_sha256": {
+        "carve_fonts.js": "f9dba7e80836fa4d702c7599fd9c7e7f99864bb6493c9aae82b1a161c4aaafcf",
+        "carve_core.js": "1332b534c520f6953750206c73f9c80175b0ea06132739a1145575de8060cc4c",
+        "carve_store.js": "95444741396e68749ecbf67dc15fd4f5f34d58a9f036621f41e6e2e276caa984",
+        "carve_studio.js": "bfc7b76c8cfaae075c62c1d399dd03f342a54e8a749d25e3ba728133265e6a44",
+        "carve_studio.css": "f1f085f31ea7b8a72e111e91ad91c3f3fbee25a00800959954ea12f53b275091",
+        "carve-studio.html": "c68567a21e42d9e75ecfc1b46be7550b14addc9cd7b9fe3cb890592567fc3005",
+        "carve_font_license.txt": "0fe4abc1e9ccaa94b64840c75dff6dda89ba7fd369aaf292417ead85b5bed529"
+      }
+    },
+    {
+      "name": "Existing authorized business integration",
+      "status": "passed",
+      "groups": 8,
+      "scope": "Actual Quartermaster and Carve Studio modules; synthetic authority; real local IndexedDB; all external requests blocked",
+      "result_names": [
+        "Carve Studio entry is limited to the exact Ike business",
+        "authorized host opens studio without leaking design actions to financial controls",
+        "denied server authority prevents studio entry",
+        "saved Ike layout reopens and host styles do not cause overflow",
+        "changing host business closes the old scoped studio",
+        "account change during authority check cancels launch",
+        "another account has no private saved designs",
+        "standalone reference scope cannot see private integrated designs"
+      ],
+      "result_file_sha256": "982301bdd1479ebe29eae3907b6c2f320b9a6f718488ac3e39a748318f4fc9e9",
+      "source_sha256": {
+        "carve_fonts.js": "f9dba7e80836fa4d702c7599fd9c7e7f99864bb6493c9aae82b1a161c4aaafcf",
+        "carve_core.js": "1332b534c520f6953750206c73f9c80175b0ea06132739a1145575de8060cc4c",
+        "carve_store.js": "95444741396e68749ecbf67dc15fd4f5f34d58a9f036621f41e6e2e276caa984",
+        "carve_studio.js": "bfc7b76c8cfaae075c62c1d399dd03f342a54e8a749d25e3ba728133265e6a44",
+        "carve_studio.css": "f1f085f31ea7b8a72e111e91ad91c3f3fbee25a00800959954ea12f53b275091",
+        "carve-studio.html": "c68567a21e42d9e75ecfc1b46be7550b14addc9cd7b9fe3cb890592567fc3005",
+        "carve_font_license.txt": "0fe4abc1e9ccaa94b64840c75dff6dda89ba7fd369aaf292417ead85b5bed529",
+        "quartermaster.js": "1bf301490b33f5a62a0c43f8e045c0201b23c7ce049e94dda5ed8ddde57e739b",
+        "quartermaster.css": "6c9c8dac9bca0044e3202a96497f95625e7b195fd05e68b58d43331071ea5970",
+        "input_hygiene.js": "ddece0d3a757ea8da28d2fb9dec4a038ec966e51b1fc3cafb0f41ba7bf4c7e6e"
+      }
+    },
+    {
+      "name": "Direct local-file entry and real downloads",
+      "status": "passed",
+      "groups": 5,
+      "scope": "Fresh isolated Chromium profile, local file entry, all nonlocal requests blocked; no Firefox/Safari acceptance claim",
+      "result_names": [
+        "file entry opens with real lettering outlines and no web server",
+        "file entry can review and save a local design",
+        "file entry can reload the saved review and exact wording",
+        "file entry downloads actual SVG with exact physical lettering paths",
+        "file entry downloads and reimports an intact portable job"
+      ],
+      "result_file_sha256": "f8763ba8ba12553bdf5a90bc172f37ae4618ab7aa87c1fc47ab4faf33ec953a0",
+      "source_sha256": {
+        "carve_fonts.js": "f9dba7e80836fa4d702c7599fd9c7e7f99864bb6493c9aae82b1a161c4aaafcf",
+        "carve_core.js": "1332b534c520f6953750206c73f9c80175b0ea06132739a1145575de8060cc4c",
+        "carve_store.js": "95444741396e68749ecbf67dc15fd4f5f34d58a9f036621f41e6e2e276caa984",
+        "carve_studio.js": "bfc7b76c8cfaae075c62c1d399dd03f342a54e8a749d25e3ba728133265e6a44",
+        "carve_studio.css": "f1f085f31ea7b8a72e111e91ad91c3f3fbee25a00800959954ea12f53b275091",
+        "carve-studio.html": "c68567a21e42d9e75ecfc1b46be7550b14addc9cd7b9fe3cb890592567fc3005",
+        "carve_font_license.txt": "0fe4abc1e9ccaa94b64840c75dff6dda89ba7fd369aaf292417ead85b5bed529"
+      }
+    },
+    {
+      "name": "Retained catalog quote invoice and numbering workflow",
+      "status": "passed",
+      "groups": 11,
+      "scope": "Actual Quartermaster UI and native IndexedDB in isolated offline Chromium with synthetic authority; no live accounts/network or Safari proof",
+      "result_names": [
+        "denied authority never opens durable workspace",
+        "closed Admiral session cannot enter",
+        "authority response discarded after account changes",
+        "real UI catalog quote invoice PDF backup save and reload",
+        "backup restores into empty exact scope and rejects foreign scope",
+        "native storage quota does not claim catalog save",
+        "session revocation removes private UI and prepared download",
+        "delayed side effect revalidates account and leaves database unchanged",
+        "phone layout keeps controls and dialog inside viewport",
+        "iPad layout keeps controls and dialog inside viewport",
+        "rapid repeated action and concurrent tabs keep unique numbers"
+      ],
+      "result_file_sha256": "b7b9bc4add80045cb192315f38ba077b0d8afd8f7bf02b9ca48e2341fd9277fb",
+      "source_sha256": {
+        "quartermaster.js": "1bf301490b33f5a62a0c43f8e045c0201b23c7ce049e94dda5ed8ddde57e739b",
+        "quartermaster_core.js": "5de2d40cb05eeeafb03855e5a374b7fc451982969d187d71632dd908e1051eed",
+        "quartermaster_pdf.js": "7e1c51fa7d7a4ae4fcd55a2330b15ff87c6b4ec0c9db548ff2b6a72658a453a1",
+        "quartermaster_fonts.js": "69b2f7fbcf0d29731cf6feea6d3f7b57d7633fafc29703123a7213ea861c9df5",
+        "quartermaster.css": "6c9c8dac9bca0044e3202a96497f95625e7b195fd05e68b58d43331071ea5970"
+      }
+    },
+    {
+      "name": "Retained separate-tab PDF and native download handoff",
+      "status": "passed",
+      "groups": 13,
+      "scope": "Real Quartermaster modules, native IndexedDB, saved-snapshot PDF generation and native browser tab/download actions; complete styles.css, business_deck.css and quartermaster.css; exact professional Admiral host template and authority fixtures reused from retained .51 verifier utilities. Synthetic authority only; all external requests blocked. Exact built-in PDF extension host and chrome://resources/ are allowed as browser-local dependencies and their exact URLs recorded separately. Original URL, live document/dialog identity, scroll, full local workspace and session counters compared around handoff. Chromium viewport emulation, not native iPad Safari. The fallback case removes the real download attribute in the harness; the dirty case dispatches input to the real hidden document field. No production test hooks.",
+      "result_names": [
+        "open PDF in a native new tab preserves the active workspace",
+        "native PDF download preserves filename bytes and workspace",
+        "download preview fallback opens separately when download is ignored",
+        "stale session blocks PDF open at click time",
+        "stale session blocks PDF download at click time",
+        "dirty document input clears and revokes prepared PDF",
+        "changing documents removes and revokes the previous PDF",
+        "changing business removes and revokes the previous PDF",
+        "closing workspace removes and revokes prepared PDF",
+        "JSON backup remains a single unchanged native download",
+        "PDF actions are reachable at tablet-landscape viewport",
+        "PDF actions are reachable at tablet-portrait viewport",
+        "PDF actions are reachable at phone viewport"
+      ],
+      "result_file_sha256": "e66be8ae2707b8acf90c027aa69eb5671ef2698fdc30bde62856b46173542b7b",
+      "source_sha256": {
+        "quartermaster.js": "1bf301490b33f5a62a0c43f8e045c0201b23c7ce049e94dda5ed8ddde57e739b",
+        "quartermaster_core.js": "5de2d40cb05eeeafb03855e5a374b7fc451982969d187d71632dd908e1051eed",
+        "quartermaster_pdf.js": "7e1c51fa7d7a4ae4fcd55a2330b15ff87c6b4ec0c9db548ff2b6a72658a453a1",
+        "quartermaster_fonts.js": "69b2f7fbcf0d29731cf6feea6d3f7b57d7633fafc29703123a7213ea861c9df5",
+        "quartermaster.css": "6c9c8dac9bca0044e3202a96497f95625e7b195fd05e68b58d43331071ea5970"
+      }
+    },
+    {
+      "name": "Actual atomic index startup and rejection of changed runtime bytes",
+      "status": "passed",
+      "groups": 4,
+      "scope": "Actual release index loader with all response bytes routed locally; fresh Chromium contexts; no service worker capability, live network, user identity, hosted authentication or Safari proof",
+      "result_names": [
+        "actual index coherent release boots",
+        "actual index rejects changed required runtime bytes",
+        "actual index rejects changed Carve geometry bytes",
+        "actual index rejects changed runtime checksum declaration"
+      ],
+      "result_file_sha256": "938c671c3eb948ca4bcb1ad203373ad4a6c7b35167396ec99377264abc43c5a2",
+      "source_sha256": {
+        "index.html": "34de0ed44a5578ae7a5c5a3fd0e8c8ad2618bde61489d1188d7a6e005cb8543a",
+        "fun_program.js": "3a3cef35f6af5c1321bfc76034526ec117fd1e092715a9968c8477aece19232b",
+        "carve_core.js": "1332b534c520f6953750206c73f9c80175b0ea06132739a1145575de8060cc4c",
+        "carve_store.js": "95444741396e68749ecbf67dc15fd4f5f34d58a9f036621f41e6e2e276caa984",
+        "carve_studio.js": "bfc7b76c8cfaae075c62c1d399dd03f342a54e8a749d25e3ba728133265e6a44",
+        "carve_fonts.js": "f9dba7e80836fa4d702c7599fd9c7e7f99864bb6493c9aae82b1a161c4aaafcf",
+        "carve_studio.css": "f1f085f31ea7b8a72e111e91ad91c3f3fbee25a00800959954ea12f53b275091",
+        "quartermaster.js": "1bf301490b33f5a62a0c43f8e045c0201b23c7ce049e94dda5ed8ddde57e739b"
+      }
+    },
+    {
+      "name": "Compiled player identity preservation and actual host hash",
+      "status": "passed",
+      "scope": "Compiler completed; exact inverse identity comparison to .53 player; all compiler input hashes and actual host digest agree. No new game behavior or native performance claim.",
+      "source_sha256": {
+        "fun_program.js": "3a3cef35f6af5c1321bfc76034526ec117fd1e092715a9968c8477aece19232b",
+        "stormwake_player.html": "85b767e794f0600abf753634aa8f6b072f794dcc7ea0cff5a111678581473b0b",
+        "BUILD_STORMWAKE_PLAYER.py": "59cf9983685272ae3a7991831128ce2cdacf8941b46c49851a41432c2e4eb40d",
+        "STORMWAKE_PLAYER_BUILD.json": "d71a1d2bef84cd8a2bada0c3ae7a11c9b57a1c46f9097a36651fcdbfe9f128d1"
+      }
+    },
+    {
+      "name": "Independent focused source and release-tooling reviews",
+      "status": "passed",
+      "scope": "Initial scope accessor, XML metadata and nested-control findings corrected. Focused rereviews and final UI/tooling reviews passed.",
+      "review_report_sha256": {
+        "core-store-rereview.md": "0caf1a17e01b4db54c94776601935296c0f9107a5c06e01f5e8529d855ba0718",
+        "ui-review.md": "be33464bf24ba9532f6dd9578f672b6df8b86b7367d9930f257c29ea4d17a4a4",
+        "release-review.md": "b97fbd39c8705cc11a0e3ebaf76d4a2e56ead34c2c9c611449c248bd9f902ae5"
+      },
+      "source_sha256": {
+        "carve_fonts.js": "f9dba7e80836fa4d702c7599fd9c7e7f99864bb6493c9aae82b1a161c4aaafcf",
+        "carve_core.js": "1332b534c520f6953750206c73f9c80175b0ea06132739a1145575de8060cc4c",
+        "carve_store.js": "95444741396e68749ecbf67dc15fd4f5f34d58a9f036621f41e6e2e276caa984",
+        "carve_studio.js": "bfc7b76c8cfaae075c62c1d399dd03f342a54e8a749d25e3ba728133265e6a44",
+        "carve_studio.css": "f1f085f31ea7b8a72e111e91ad91c3f3fbee25a00800959954ea12f53b275091",
+        "carve-studio.html": "c68567a21e42d9e75ecfc1b46be7550b14addc9cd7b9fe3cb890592567fc3005",
+        "carve_font_license.txt": "0fe4abc1e9ccaa94b64840c75dff6dda89ba7fd369aaf292417ead85b5bed529",
+        "quartermaster.js": "1bf301490b33f5a62a0c43f8e045c0201b23c7ce049e94dda5ed8ddde57e739b",
+        "index.html": "34de0ed44a5578ae7a5c5a3fd0e8c8ad2618bde61489d1188d7a6e005cb8543a",
+        "VERIFY_CARVEWRIGHT_RELEASE.py": "7ff0dea877e9f5f176a182e21fc6fcad04f0518eb98e18e5119c1291ce1cf3c3"
+      }
+    }
+  ],
+  "automated_group_total": 88,
+  "interpretation": "Offline source and browser evidence, with synthetic authority where used. Not a live deployment, physical machining certification, signature or native device acceptance.",
+  "package_acceptance": "Exact archive reconstruction and freshly extracted browser checks are recorded separately in the package proof after packaging.",
+  "native_safari_acceptance": "not claimed",
+  "native_firefox_acceptance": "not claimed",
+  "machine_production_acceptance": "not claimed",
+  "installed_vcarve_compatibility": "not claimed",
+  "cam_execution": "not implemented; compiled FreeCAD runtime unavailable",
+  "cross_device_sync": false
+}

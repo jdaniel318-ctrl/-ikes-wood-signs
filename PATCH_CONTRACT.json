@@ -1,19 +1,24 @@
 {
   "schema": "blackflag-patch-contract-v1",
-  "target_build": "8.8.20.53",
-  "target_seal": "quartermaster-882053",
+  "target_build": "8.8.20.55",
+  "target_seal": "carvewright-882055",
   "supported_bases": [
     {
-      "build": "8.8.20.52",
-      "file_count": 334,
+      "build": "8.8.20.54",
+      "file_count": 355,
       "content_digest_algorithm": "release-content-sha256-v1",
-      "content_sha256": "08a0144b24078079032245680bab68e793694d72960fb613d7578c9e8e4050a9",
-      "description": "Exact complete 334-file Quartermaster .52 release."
+      "content_sha256": "a763ee9c966e0892f07a4f00a3343a59dd9d783183fb5109a9dd16306769562a"
+    },
+    {
+      "build": "8.8.20.53",
+      "file_count": 343,
+      "content_digest_algorithm": "release-content-sha256-v1",
+      "content_sha256": "25e0df92753fcd1b7519ed6b6df341b25186cc00c9522dd2d1b1373f2da86a13"
     }
   ],
   "requires_deletions": false,
   "max_upload_files": 85,
   "database_actions": "none",
-  "local_business_storage": "Existing .52 catalog and document stores retained exactly; no migration or clearing.",
-  "rule": "Upload all inner .53 Quartermaster files over complete .52, replacing matching names and retaining all other files. No SQL, browser-data clearing or fresh database is required."
+  "local_business_storage": "Existing catalog/documents and legacy Carve Studio saves preserved; isolated device-local Carvewright store only.",
+  "rule": "Upload every inner .55 Carvewright cumulative update file over exact complete .53 OR .54, replacing matching names and retaining every other file. No SQL, browser-data clearing or fresh database."
 }
