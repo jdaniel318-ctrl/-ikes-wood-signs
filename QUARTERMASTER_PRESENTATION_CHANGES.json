@@ -1,0 +1,90 @@
+{
+  "schema": "blackflag.presentation-change-record.v1",
+  "build": "8.8.20.51",
+  "baseline": "8.8.20.50",
+  "normalization": "Release identity only; explicit text/template replacements below. No authority or document-event logic changed.",
+  "replacements": [
+    {
+      "file": "captain.js",
+      "old": "NEUTRAL AUTHORITY SHIELD • FLEET DATA CONCEALED",
+      "new": "Your fleet stays private until access is verified.",
+      "count": 1
+    },
+    {
+      "file": "captain.js",
+      "old": "account?'STEP 2 OF 2 · COMMISSIONED ADMIRAL IDENTITY':resume?'RE-ENTER ADMIRAL OFFICE · PIN + SERVER RECHECK':'STEP 1 OF 2 · SECURE ADMIRAL OFFICE'",
+      "new": "account?'STEP 2 OF 2 · ACCOUNT VERIFICATION':resume?'WELCOME BACK · VERIFY YOUR ACCESS':'STEP 1 OF 2 · PASSAGE PIN'",
+      "count": 1
+    },
+    {
+      "file": "captain.js",
+      "old": "account?'Verify Admiral Office':resume?'Re-enter Admiral Office':'Enter Admiral Office'",
+      "new": "account?'One more step.':resume?'Welcome back.':'Welcome aboard.'",
+      "count": 1
+    },
+    {
+      "file": "captain.js",
+      "old": "account?'Your passage PIN is verified. Sign in to reverify the commissioned Admiral identity and active server authority.':resume?'Your Admiral rank is retained. Enter your PIN to recheck the secure workspace with the server; another password may not be needed.':'Your Admiral office is commissioned. Verify the passage PIN, then the Admiral account, to open a secure session. The PIN alone never grants fleet authority.'",
+      "new": "account?'Your PIN is verified. Sign in with your Admiral account to open the workspace.':resume?'Your Admiral role is retained. Verify your PIN to recheck your account access; another password may not be needed.':'Your Admiral Office brings the fleet together. Verify your PIN and account to begin.'",
+      "count": 1
+    },
+    {
+      "file": "captain.js",
+      "old": "account?'Authenticate your account':resume?'Verify PIN to resume':'Verify your passage PIN'",
+      "new": "account?'Sign in to your account':resume?'Verify your PIN to return':'Enter your passage PIN'",
+      "count": 1
+    },
+    {
+      "file": "captain.js",
+      "old": "account?'The commissioned Admiral identity and its active server role must both verify.':resume?'Server recheck required. The rank is retained while workspace access stays locked.':'Next: dedicated Admiral account verification. Rank and session are separate.'",
+      "new": "account?'Your account and active Admiral authority are checked before access opens.':resume?'We will recheck your account before reopening the workspace.':'First your PIN. Then your Admiral account.'",
+      "count": 1
+    },
+    {
+      "file": "captain.js",
+      "old": "resume?'VERIFY PIN & RECHECK →':'VERIFY PASSAGE PIN →'",
+      "new": "resume?'Verify PIN & return →':'Continue with PIN →'",
+      "count": 1
+    },
+    {
+      "file": "captain.js",
+      "old": "resume?'COMMISSIONED ADMIRAL · SERVER RECHECK PENDING':'COMMISSIONED ADMIRAL · SECURE WORKSPACE LOCKED'",
+      "new": "resume?'Account verification required to resume.':'Your fleet stays private until access is verified.'",
+      "count": 1
+    },
+    {
+      "file": "captain.js",
+      "old": "<span>Fleet command access</span>",
+      "new": "<span>Admiral Office</span>",
+      "count": 1
+    },
+    {
+      "file": "captain.js",
+      "old": "</p><p id=\"admiralSessionReuseNote\" class=\"admiral-reuse-note\"></p>",
+      "new": "</p><details class=\"admiral-session-help\"><summary>Session limits: 15 min idle · 60 min total</summary><p id=\"admiralSessionReuseNote\" class=\"admiral-reuse-note\"></p></details>",
+      "count": 1
+    },
+    {
+      "file": "quartermaster.js",
+      "old": " function shell(){return `<div class=\"qm-shell\"><header class=\"qm-head\"><div><small>ADMIRAL BUSINESS SUPPORT · QUARTERMASTER ${BUILD}</small><h1 id=\"qmTitle\" tabindex=\"-1\">Quotes &amp; invoices</h1><p>Parts, pricing and clear customer documents.</p></div><button id=\"qmClose\" type=\"button\">Back to Command</button></header><div class=\"qm-scope\"><label>Business workspace<select id=\"qmBusiness\"><option value=\"\">Choose a business</option></select></label><div class=\"qm-scope-copy\"><strong>Saved on this device</strong>Local document series. Back up your work before changing devices. Supported backup capacity: 25 MiB compact JSON; changes that exceed it are not saved.<div id=\"qmScopeName\"></div></div></div><nav class=\"qm-tabs\" role=\"tablist\" aria-label=\"Business support\"><button data-qm-tab=\"overview\" role=\"tab\">Overview</button><button data-qm-tab=\"catalog\" role=\"tab\">Parts &amp; services</button><button data-qm-tab=\"documents\" role=\"tab\">Quotes &amp; invoices</button><button data-qm-tab=\"editor\" id=\"qmEditorTab\" role=\"tab\" hidden>Document</button><button data-qm-tab=\"settings\" role=\"tab\">Business &amp; backup</button></nav><p id=\"qmStatus\" role=\"status\" aria-live=\"polite\">Verifying Admiral authority…</p><main id=\"qmContent\"><section id=\"qmOverview\" class=\"qm-panel\"></section><section id=\"qmCatalog\" class=\"qm-panel\" hidden></section><section id=\"qmDocuments\" class=\"qm-panel\" hidden></section><section id=\"qmEditor\" class=\"qm-panel\" hidden></section><section id=\"qmSettings\" class=\"qm-panel\" hidden></section><div id=\"qmDownloadReady\" hidden></div></main><footer class=\"qm-foot\"><span id=\"qmSaveState\">Choose a business to begin.</span><span>USD · Nothing is sent or ordered automatically.</span></footer></div>`;}",
+      "new": " function shell(){return `<div class=\"qm-shell\"><header class=\"qm-head\"><div class=\"qm-head-title\"><div class=\"qm-brand-mark\" aria-hidden=\"true\"><img src=\"black_flag_platform_icon.png\" alt=\"\" width=\"40\" height=\"40\"></div><div><small>BLACK FLAG · ADMIRAL BUSINESS SUPPORT</small><h1 id=\"qmTitle\" tabindex=\"-1\">Quotes &amp; invoices</h1><p>Good work. Clearly quoted.</p></div></div><div class=\"qm-head-actions\"><span class=\"qm-release\">Quartermaster ${BUILD}</span><button id=\"qmClose\" type=\"button\">Back to Command</button></div></header><div class=\"qm-scope\"><label>Business workspace<select id=\"qmBusiness\"><option value=\"\">Choose a business</option></select></label><div class=\"qm-scope-copy\"><strong><span class=\"qm-device-dot\" aria-hidden=\"true\"></span>Saved on this device</strong><span>Local records · 25 MiB backup capacity</span><details class=\"qm-storage-details\"><summary>Storage &amp; backup details</summary><p>Local document series. Back up your work before changing devices. Supported backup capacity: 25 MiB compact JSON; changes that exceed it are not saved.</p><div id=\"qmScopeName\"></div></details></div></div><nav class=\"qm-tabs\" role=\"tablist\" aria-label=\"Business support\"><button data-qm-tab=\"overview\" role=\"tab\">Overview</button><button data-qm-tab=\"catalog\" role=\"tab\">Parts &amp; services</button><button data-qm-tab=\"documents\" role=\"tab\">Quotes &amp; invoices</button><button data-qm-tab=\"editor\" id=\"qmEditorTab\" role=\"tab\" hidden>Document</button><button data-qm-tab=\"settings\" role=\"tab\">Business &amp; backup</button></nav><p id=\"qmStatus\" role=\"status\" aria-live=\"polite\">Verifying Admiral authority…</p><main id=\"qmContent\"><section id=\"qmOverview\" class=\"qm-panel\"></section><section id=\"qmCatalog\" class=\"qm-panel\" hidden></section><section id=\"qmDocuments\" class=\"qm-panel\" hidden></section><section id=\"qmEditor\" class=\"qm-panel\" hidden></section><section id=\"qmSettings\" class=\"qm-panel\" hidden></section><div id=\"qmDownloadReady\" hidden></div></main><footer class=\"qm-foot\"><span id=\"qmSaveState\">Choose a business to begin.</span><span>USD · Nothing is sent or ordered automatically.</span></footer></div>`;}",
+      "count": 1
+    },
+    {
+      "file": "quartermaster.js",
+      "old": " function renderOverview(){const n=$('qmOverview');if(!state){n.innerHTML='<div class=\"qm-empty\"><strong>Start with a business</strong>Choose the business whose catalog and documents you want to work on.</div>';return;}const active=state.catalog.filter(x=>x.active),drafts=state.documents.filter(x=>x.status==='draft'),finalized=state.documents.filter(x=>x.status==='finalized');n.innerHTML=`<div class=\"qm-toolbar\"><div><h2>${esc(state.business.name||selectedBusiness()?.name)}</h2><p class=\"qm-muted\">${isHouseHull()?'For the person measuring and estimating: prepare the work, then give the customer a clear quote.':'Prepare documents from this business’s own products, services and prices.'}</p></div><button id=\"qmOverviewSetup\" type=\"button\">Business setup</button></div><div class=\"qm-stats\"><div class=\"qm-stat\"><strong>${active.length}</strong><span>Active parts &amp; services</span></div><div class=\"qm-stat\"><strong>${drafts.length}</strong><span>Saved drafts</span></div><div class=\"qm-stat\"><strong>${finalized.length}</strong><span>Finalized copies</span></div></div><div class=\"qm-grid\"><article class=\"qm-card\"><h3>1. Build the catalog</h3><p class=\"qm-muted\">Keep your part number, supplier SKU and manufacturer number together. Describe the purchasing unit and package clearly.</p><button id=\"qmOverviewCatalog\" type=\"button\">Open parts &amp; services</button></article><article class=\"qm-card\"><h3>2. Prepare the document</h3><p class=\"qm-muted\">Select items, enter quantities, review pricing and save a quote or invoice. Finalized copies preserve the details.</p><div class=\"qm-actions\"><button id=\"qmNewQuote\" class=\"qm-primary\" type=\"button\">New quote</button><button id=\"qmNewInvoice\" type=\"button\">New invoice</button></div></article></div>${isHouseHull()?'<div class=\"qm-card\"><h3>Explore the approved HouseHull template</h3><p class=\"qm-muted\">Load the clearly marked example catalog and quote. The material quantities, package sizes and prices are illustrative; replace them with verified business data.</p><div class=\"qm-actions\"><button id=\"qmSampleCatalog\" type=\"button\">Load example catalog</button><button id=\"qmExampleQuote\" type=\"button\">Create example quote</button></div></div>':''}<div class=\"qm-callout\">This workspace stores records in this browser for the verified account and selected business. It does not create supplier orders, payments, fees or ledger entries.</div>`;}",
+      "new": " function renderOverview(){const n=$('qmOverview');if(!state){n.innerHTML='<div class=\"qm-empty\"><strong>Start with a business</strong>Choose the business whose catalog and documents you want to work on.</div>';return;}const active=state.catalog.filter(x=>x.active),drafts=state.documents.filter(x=>x.status==='draft'),finalized=state.documents.filter(x=>x.status==='finalized');n.innerHTML=`<div class=\"qm-toolbar qm-overview-heading\"><div><small class=\"qm-eyebrow\">YOUR BUSINESS WORKSPACE</small><h2>${esc(state.business.name||selectedBusiness()?.name)}</h2><p class=\"qm-muted\">${isHouseHull()?'Measure the job. Prepare the work. Give your customer a clear quote.':'Your products, your services, your customer documents.'}</p></div><button id=\"qmOverviewSetup\" type=\"button\">Business setup</button></div><div class=\"qm-stats\"><div class=\"qm-stat\"><strong>${active.length}</strong><span>Active parts &amp; services</span></div><div class=\"qm-stat\"><strong>${drafts.length}</strong><span>Saved drafts</span></div><div class=\"qm-stat\"><strong>${finalized.length}</strong><span>Finalized copies</span></div></div><div class=\"qm-grid qm-overview-actions\"><article class=\"qm-card\"><span class=\"qm-card-step\">01 · YOUR CATALOG</span><h3>Build a reliable parts list</h3><p class=\"qm-muted\">Keep part numbers, supplier references, units and pricing together.</p><button id=\"qmOverviewCatalog\" type=\"button\">Open parts &amp; services <span aria-hidden=\"true\">→</span></button></article><article class=\"qm-card qm-document-card\"><span class=\"qm-card-step\">02 · YOUR CUSTOMER</span><h3>Turn the work into a quote</h3><p class=\"qm-muted\">Add items and quantities, review the price, then prepare the customer PDF.</p><div class=\"qm-actions\"><button id=\"qmNewQuote\" class=\"qm-primary\" type=\"button\">New quote <span aria-hidden=\"true\">→</span></button><button id=\"qmNewInvoice\" type=\"button\">New invoice</button></div></article></div>${isHouseHull()?'<div class=\"qm-card qm-example-card\"><div><span class=\"qm-card-step\">READY TO EXPLORE</span><h3>Your HouseHull example</h3><p class=\"qm-muted\">Open the approved template. Example quantities and prices are illustrative.</p></div><div class=\"qm-actions\"><button id=\"qmSampleCatalog\" type=\"button\">Load example catalog</button><button id=\"qmExampleQuote\" type=\"button\">Create example quote <span aria-hidden=\"true\">→</span></button></div></div>':''}<div class=\"qm-overview-note\">Each business keeps its own records. You decide when to share a PDF; supplier orders, payments and ledger entries are separate.</div>`;}",
+      "count": 1
+    }
+  ],
+  "appended_styles": {
+    "styles.css": {
+      "bytes": 7641,
+      "sha256": "0065d3a93e4742e46e3e626591da89c32d5948747b1dbbea04562f1177a635c8"
+    },
+    "quartermaster.css": {
+      "bytes": 13903,
+      "sha256": "60c3577bb952d6271b36a8f2db37de36c2cd6f7c45ecddb3b94cfcf559810cc5"
+    }
+  }
+}

@@ -1,4 +1,4 @@
-/* Quartermaster 8.8.20.50 — scoped business support. */
+/* Quartermaster 8.8.20.51 — scoped business support. */
 #quartermasterWorkspace{--qm-ink:#17313a;--qm-teal:#126b73;--qm-line:#d7e2e4;--qm-muted:#526b73;box-sizing:border-box;width:min(1220px,calc(100vw - 32px));height:min(900px,calc(100dvh - 28px));max-width:none;max-height:none;margin:auto;padding:0;border:1px solid #8eaeb6;border-radius:18px;background:#f3f7f7;color:var(--qm-ink);font:16px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow:hidden;box-shadow:0 24px 80px #0008}
 #quartermasterWorkspace::backdrop{background:#041b25cc;backdrop-filter:blur(3px)}
 #quartermasterWorkspace *,#quartermasterWorkspace *::before,#quartermasterWorkspace *::after{box-sizing:border-box}
@@ -85,3 +85,150 @@
 .qm-engine-entry button{min-height:46px;border-radius:8px;border:1px solid #66b2bd;background:#15586a;color:#fff;font:700 13px/1.25 system-ui,sans-serif;padding:12px 18px;cursor:pointer;flex-shrink:0}
 .qm-engine-entry button:active{background:#238093;transform:translateY(1px)}
 @media(max-width:760px){#quartermasterWorkspace{width:calc(100vw - 12px);height:calc(100dvh - 12px);border-radius:12px}#quartermasterWorkspace .qm-head{padding:15px;gap:12px}#quartermasterWorkspace h1{font-size:23px}#quartermasterWorkspace .qm-head button{font-size:11px;padding:8px;min-width:82px;max-width:118px}#quartermasterWorkspace .qm-scope{padding:10px 15px;gap:8px;align-items:flex-start;flex-direction:column}#quartermasterWorkspace .qm-scope label{width:100%;max-width:none}#quartermasterWorkspace .qm-scope-copy{font-size:11px}#quartermasterWorkspace .qm-scope-copy strong{display:inline;font-size:11px;margin-right:6px}#quartermasterWorkspace .qm-tabs{padding:6px 10px}#quartermasterWorkspace #qmStatus{padding:8px 15px;font-size:12px}#quartermasterWorkspace #qmContent{padding:18px 15px}#quartermasterWorkspace .qm-grid,#quartermasterWorkspace .qm-grid-three{grid-template-columns:1fr}#quartermasterWorkspace .qm-stats{gap:8px}#quartermasterWorkspace .qm-stat{padding:12px}#quartermasterWorkspace .qm-stat strong{font-size:25px}#quartermasterWorkspace .qm-stat span{font-size:11px}#quartermasterWorkspace .qm-card{padding:15px}#quartermasterWorkspace .qm-review{padding:15px}#quartermasterWorkspace .qm-review-head{gap:12px}#quartermasterWorkspace .qm-review-head h3{font-size:19px}#quartermasterWorkspace .qm-review-number b{font-size:20px}#quartermasterWorkspace .qm-doc-head{flex-direction:column}#quartermasterWorkspace .qm-foot{padding:9px 15px;flex-wrap:wrap}.qm-engine-entry{align-items:flex-start;flex-direction:column;gap:12px}.qm-engine-entry button{width:100%}}
+
+/* Quartermaster visual refinement — isolate the operator workspace from legacy command-button rules. */
+#quartermasterWorkspace{--qm-ink:#19343c;--qm-teal:#176a68;--qm-line:#dce5e4;--qm-muted:#5b7178;border-color:#95acae80;border-radius:20px;background:#f4f7f6;box-shadow:0 28px 100px #0007}
+#quartermasterWorkspace::backdrop{background:#041b25c4;backdrop-filter:blur(5px)}
+#quartermasterWorkspace .qm-head{padding:19px 28px;background:linear-gradient(112deg,#123b44,#0a2934);gap:18px;border-bottom:1px solid #bfaa6e44}
+#quartermasterWorkspace .qm-head-title{display:flex;gap:15px;align-items:center;min-width:0}
+#quartermasterWorkspace .qm-brand-mark{display:grid;place-items:center;width:46px;height:46px;flex:none;border-right:1px solid #bfd6d433;padding-right:13px;box-sizing:content-box}
+#quartermasterWorkspace .qm-brand-mark img{width:40px;height:40px;object-fit:contain}
+#quartermasterWorkspace .qm-head small{font-size:9px;letter-spacing:.16em;font-weight:700;color:#b5cbca}
+#quartermasterWorkspace h1{font-size:27px;letter-spacing:-.035em;font-weight:650;margin:5px 0 3px}
+#quartermasterWorkspace #qmTitle:focus{outline:none}
+#quartermasterWorkspace .qm-head p{font-size:12px;color:#acc8ca}
+#quartermasterWorkspace .qm-head-actions{display:flex;gap:14px;align-items:center;flex:none}
+#quartermasterWorkspace .qm-release{font-size:10px;color:#adc7c8;white-space:nowrap}
+#quartermasterWorkspace button,#quartermasterWorkspace .qm-download{
+  --qm-button-bg:#fff;--qm-button-fg:#31555c;--qm-button-border:#c8d8d9;
+  background:var(--qm-button-bg)!important;color:var(--qm-button-fg)!important;border:1px solid var(--qm-button-border)!important;
+  box-shadow:none!important;opacity:1!important;border-radius:8px;font-weight:650;font-size:13px;min-height:44px;line-height:1.3;padding:10px 14px;letter-spacing:0;
+}
+#quartermasterWorkspace button:hover,#quartermasterWorkspace .qm-download:hover{--qm-button-bg:#eef5f3;--qm-button-border:#81aaa7}
+#quartermasterWorkspace button:active{transform:none!important;--qm-button-bg:#dfeeea;--qm-button-fg:#224d52}
+#quartermasterWorkspace button:focus-visible,#quartermasterWorkspace a:focus-visible,#quartermasterWorkspace summary:focus-visible,#quartermasterWorkspace input:focus-visible,#quartermasterWorkspace select:focus-visible,#quartermasterWorkspace textarea:focus-visible{outline:3px solid #9b742e!important;outline-offset:3px!important}
+#quartermasterWorkspace button.qm-primary,#quartermasterWorkspace .qm-download{--qm-button-bg:#176a68;--qm-button-fg:#fff;--qm-button-border:#176a68;font-weight:700}
+#quartermasterWorkspace button.qm-primary:hover,#quartermasterWorkspace .qm-download:hover{--qm-button-bg:#115855;--qm-button-border:#115855}
+#quartermasterWorkspace button.qm-primary:active,#quartermasterWorkspace .qm-download:active{--qm-button-bg:#0d4846;--qm-button-border:#0d4846;--qm-button-fg:#fff}
+#quartermasterWorkspace button:disabled{--qm-button-bg:#ecf0ef;--qm-button-fg:#78888c;--qm-button-border:#d2dedc;opacity:.7!important;cursor:not-allowed;transform:none!important}
+#quartermasterWorkspace .qm-head button{--qm-button-bg:#ffffff08;--qm-button-fg:#e8f1ed;--qm-button-border:#5a798080;font-size:12px;min-height:44px}
+#quartermasterWorkspace .qm-head button:hover{--qm-button-bg:#ffffff15;--qm-button-border:#99b9bd}
+#quartermasterWorkspace .qm-head button:active{--qm-button-bg:#2c5058;--qm-button-fg:#fff}
+#quartermasterWorkspace .qm-scope{padding:14px 28px;gap:28px;background:#fff;align-items:center}
+#quartermasterWorkspace .qm-scope label{font-size:11px;gap:5px;max-width:400px;min-width:210px}
+#quartermasterWorkspace .qm-scope select{min-height:44px;padding:8px 12px;font-size:16px;font-weight:500;background:#f8faf9;border-color:#cbdcda}
+#quartermasterWorkspace .qm-scope-copy{font-size:11px;line-height:1.55}
+#quartermasterWorkspace .qm-scope-copy strong{font-size:12px;font-weight:650;display:flex;gap:6px;align-items:center;color:#365c5b}
+#quartermasterWorkspace .qm-device-dot{width:6px;height:6px;display:inline-block;border-radius:50%;background:#408477;flex:none}
+#quartermasterWorkspace .qm-storage-details{margin-top:0;font-size:11px}
+#quartermasterWorkspace .qm-storage-details summary{color:#446e72;cursor:pointer;min-height:44px;display:list-item;line-height:20px;padding:12px 0;max-width:max-content}
+#quartermasterWorkspace .qm-storage-details[open]{max-width:480px}
+#quartermasterWorkspace .qm-storage-details p{font-size:12px;line-height:1.5;margin:5px 0;color:#567178}
+#quartermasterWorkspace .qm-tabs{padding:0 24px;gap:10px;border-top:0;border-bottom:1px solid #d5e2df;min-height:53px;align-items:stretch;background:#fff}
+#quartermasterWorkspace .qm-tabs button{--qm-button-bg:transparent;--qm-button-border:transparent;--qm-button-fg:#577078;min-height:52px;border-radius:0;font-size:12px;padding:10px 12px;position:relative}
+#quartermasterWorkspace .qm-tabs button:hover{--qm-button-bg:#f2f7f5;--qm-button-fg:#1e5d61}
+#quartermasterWorkspace .qm-tabs button[aria-selected=true]{--qm-button-bg:#f0f7f4;--qm-button-border:transparent;--qm-button-fg:#155d5d;box-shadow:inset 0 -3px #277d75!important;font-weight:750}
+#quartermasterWorkspace #qmStatus{font-size:12px;line-height:1.45;padding:9px 28px;background:#edf4f1;color:#416862;border-bottom:1px solid #e1ebe6}
+#quartermasterWorkspace #qmStatus[data-tone=success]{background:#eef6f0;color:#416b53}
+#quartermasterWorkspace #qmStatus[data-tone=error]{background:#fff1e9;color:#883a24;border-bottom-color:#edd9cc}
+#quartermasterWorkspace #qmContent{padding:24px 28px 28px;background:#f5f8f6;scrollbar-gutter:stable}
+#quartermasterWorkspace h2{font-size:24px;font-weight:650;letter-spacing:-.035em;margin-bottom:6px}
+#quartermasterWorkspace h3{font-size:18px;font-weight:650;letter-spacing:-.02em}
+#quartermasterWorkspace .qm-eyebrow{display:block;font-size:9px;letter-spacing:.13em;color:#778e91;font-weight:750;margin-bottom:6px}
+#quartermasterWorkspace .qm-overview-heading{margin-bottom:15px}
+#quartermasterWorkspace .qm-muted{font-size:13px;line-height:1.6;color:#60767c}
+#quartermasterWorkspace .qm-overview-heading p{margin:3px 0 0}
+#quartermasterWorkspace .qm-stats{gap:12px;margin:16px 0 20px}
+#quartermasterWorkspace .qm-stat{padding:14px 18px;border-color:#dce6e2;border-radius:11px;display:flex;align-items:center;gap:14px;box-shadow:0 1px 3px #143c3303}
+#quartermasterWorkspace .qm-stat strong{font-size:29px;font-weight:550;letter-spacing:-.04em;color:#255e60;line-height:1.1;min-width:22px}
+#quartermasterWorkspace .qm-stat span{font-size:12px;color:#6c7f82;line-height:1.45;max-width:130px}
+#quartermasterWorkspace .qm-card{border-color:#dae5e0;border-radius:12px;padding:20px;box-shadow:0 1px 3px #173c3203}
+#quartermasterWorkspace .qm-overview-actions{gap:16px}
+#quartermasterWorkspace .qm-overview-actions .qm-card{padding:20px;margin-bottom:16px;display:flex;flex-direction:column;align-items:flex-start}
+#quartermasterWorkspace .qm-card-step{display:block;font-size:9px;font-weight:750;letter-spacing:.12em;color:#79918f;margin-bottom:10px}
+#quartermasterWorkspace .qm-overview-actions h3{margin-bottom:5px}
+#quartermasterWorkspace .qm-overview-actions p{margin:0 0 16px;font-size:12px;max-width:40em}
+#quartermasterWorkspace .qm-overview-actions>.qm-card>.qm-actions,#quartermasterWorkspace .qm-overview-actions>.qm-card>button{margin-top:auto}
+#quartermasterWorkspace .qm-document-card{background:linear-gradient(120deg,#f8fcfa,#fff);border-top:2px solid #3b8a7e}
+#quartermasterWorkspace .qm-example-card{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:18px 20px;background:#faf9f2;border-color:#e6e1cb;margin-bottom:12px}
+#quartermasterWorkspace .qm-example-card h3{font-size:16px;margin:0 0 4px;color:#5a573c}
+#quartermasterWorkspace .qm-example-card .qm-card-step{color:#918056;margin-bottom:6px}
+#quartermasterWorkspace .qm-example-card p{font-size:12px;margin:0;max-width:390px;color:#7a7d6b}
+#quartermasterWorkspace .qm-example-card .qm-actions{flex-shrink:0;gap:7px}
+#quartermasterWorkspace .qm-example-card button{--qm-button-bg:transparent;--qm-button-border:#d6cfaf;--qm-button-fg:#666040;font-size:12px}
+#quartermasterWorkspace .qm-example-card button:hover{--qm-button-bg:#eeecd9;--qm-button-border:#b4a46e}
+#quartermasterWorkspace .qm-overview-note{font-size:11px;line-height:1.6;color:#718581;padding:3px 1px 0;max-width:850px}
+#quartermasterWorkspace .qm-empty{padding:38px 24px;border-style:solid;border-color:#e1e9e4;background:#ffffffb3}
+#quartermasterWorkspace .qm-empty strong{font-size:20px;font-weight:600;letter-spacing:-.025em;margin-bottom:7px}
+#quartermasterWorkspace .qm-table-scroll{border-color:#dce6e2;border-radius:10px}
+#quartermasterWorkspace th{font-size:10px;background:#edf4f0;padding:12px;color:#617c77}
+#quartermasterWorkspace td{border-top-color:#e5ede8;padding:13px 12px}
+#quartermasterWorkspace td button{min-height:44px}
+#quartermasterWorkspace input,#quartermasterWorkspace select,#quartermasterWorkspace textarea{border-color:#c9dbd7;border-radius:8px;font-size:16px;min-height:44px;background:#fff}
+#quartermasterWorkspace label{font-size:12px;font-weight:650;color:#45666c}
+#quartermasterWorkspace .qm-editor-steps button{--qm-button-bg:#fff;--qm-button-border:#d5e1db;--qm-button-fg:#587778;font-size:12px;min-height:44px}
+#quartermasterWorkspace .qm-editor-steps button[aria-selected=true]{--qm-button-bg:#176a68;--qm-button-border:#176a68;--qm-button-fg:#fff}
+#quartermasterWorkspace .qm-foot{font-size:10px;padding:10px 28px;color:#7c8e8f;border-color:#dde7e2;background:#fff}
+@media(max-width:1050px){
+  #quartermasterWorkspace .qm-release{display:none}
+  #quartermasterWorkspace .qm-example-card{align-items:flex-start;flex-wrap:wrap;gap:12px}
+  #quartermasterWorkspace .qm-example-card p{max-width:none}
+}
+@media(max-width:760px){
+  #quartermasterWorkspace{border-radius:14px;width:calc(100vw - 12px);height:calc(100dvh - 12px)}
+  #quartermasterWorkspace .qm-head{padding:14px 16px;gap:10px}
+  #quartermasterWorkspace .qm-head-title{gap:10px}
+  #quartermasterWorkspace .qm-brand-mark{display:none}
+  #quartermasterWorkspace .qm-head small{font-size:8px;letter-spacing:.1em;display:block;max-width:180px}
+  #quartermasterWorkspace h1{font-size:23px;margin-top:5px}
+  #quartermasterWorkspace .qm-head p{display:none}
+  #quartermasterWorkspace .qm-head button{font-size:11px;padding:8px 10px;max-width:92px;min-width:82px}
+  #quartermasterWorkspace .qm-scope{padding:11px 16px 7px;gap:8px;flex-direction:column;align-items:stretch}
+  #quartermasterWorkspace .qm-scope label{max-width:none;min-width:0;width:100%;font-size:11px}
+  #quartermasterWorkspace .qm-scope-copy{display:flex;gap:4px 10px;align-items:center;flex-wrap:wrap;font-size:10px}
+  #quartermasterWorkspace .qm-scope-copy strong{font-size:11px;display:inline-flex;margin:0}
+  #quartermasterWorkspace .qm-storage-details{width:100%;font-size:10px}
+  #quartermasterWorkspace .qm-storage-details summary{padding:12px 0;min-height:44px;line-height:20px}
+  #quartermasterWorkspace .qm-tabs{padding:0 8px;gap:2px;min-height:48px}
+  #quartermasterWorkspace .qm-tabs button{min-height:48px;font-size:12px;padding:8px 10px}
+  #quartermasterWorkspace #qmStatus{padding:8px 16px;font-size:11px}
+  #quartermasterWorkspace #qmContent{padding:18px 16px 22px;scrollbar-gutter:auto}
+  #quartermasterWorkspace .qm-overview-heading{gap:10px;align-items:flex-start}
+  #quartermasterWorkspace h2{font-size:24px}
+  #quartermasterWorkspace .qm-overview-heading .qm-muted{font-size:12px}
+  #quartermasterWorkspace .qm-overview-heading>button{font-size:11px}
+  #quartermasterWorkspace .qm-stats{gap:7px;margin:14px 0 16px}
+  #quartermasterWorkspace .qm-stat{padding:12px 10px;display:block;border-radius:9px}
+  #quartermasterWorkspace .qm-stat strong{font-size:27px;margin-bottom:5px}
+  #quartermasterWorkspace .qm-stat span{font-size:10px;display:block;min-height:29px}
+  #quartermasterWorkspace .qm-card{padding:17px}
+  #quartermasterWorkspace .qm-overview-actions{gap:0}
+  #quartermasterWorkspace .qm-overview-actions .qm-card{padding:18px;margin-bottom:13px}
+  #quartermasterWorkspace .qm-example-card{padding:18px;gap:13px}
+  #quartermasterWorkspace .qm-example-card .qm-actions{flex-shrink:1}
+  #quartermasterWorkspace .qm-example-card button{font-size:11px;padding:9px 11px}
+  #quartermasterWorkspace .qm-foot{padding:8px 16px;font-size:9px;gap:4px}
+}
+@media(prefers-reduced-motion:reduce){#quartermasterWorkspace *,#quartermasterWorkspace *::before,#quartermasterWorkspace *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+@media(min-width:761px){
+  #quartermasterWorkspace .qm-scope-copy{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:0 16px;align-items:center}
+  #quartermasterWorkspace .qm-scope-copy>strong{grid-column:1;grid-row:1}
+  #quartermasterWorkspace .qm-scope-copy>span{grid-column:1;grid-row:2}
+  #quartermasterWorkspace .qm-storage-details{grid-column:2;grid-row:1 / 3}
+  #quartermasterWorkspace .qm-storage-details[open]{grid-column:1 / -1;grid-row:3}
+}
+@media(max-height:620px){
+  #quartermasterWorkspace .qm-head{padding:10px 18px}
+  #quartermasterWorkspace .qm-head small{font-size:8px}
+  #quartermasterWorkspace .qm-head h1{font-size:22px;margin:3px 0 0}
+  #quartermasterWorkspace .qm-head p,#quartermasterWorkspace .qm-release{display:none}
+  #quartermasterWorkspace .qm-brand-mark{height:34px;width:34px;padding-right:10px}
+  #quartermasterWorkspace .qm-brand-mark img{width:32px;height:32px}
+  #quartermasterWorkspace .qm-scope{padding:8px 18px}
+  #quartermasterWorkspace .qm-tabs{min-height:44px;padding-inline:12px}
+  #quartermasterWorkspace .qm-tabs button{min-height:44px}
+  #quartermasterWorkspace #qmStatus{padding:6px 18px;font-size:11px}
+  #quartermasterWorkspace .qm-foot{padding:7px 18px;font-size:9px}
+  #quartermasterWorkspace #qmContent{padding:17px 18px}
+}
+/* End Quartermaster workspace refinement. */

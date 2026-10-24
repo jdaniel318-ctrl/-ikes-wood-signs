@@ -1,3 +1,15 @@
+# Quartermaster 8.8.20.51 — a clearer Admiral workspace
+
+Upload: **DarkSky882051-Quartermaster-Upload45.zip** — **45 changed/new files** over complete **Quartermaster 8.8.20.50**. Follow START_HERE_QUARTERMASTER_51.md and retain all other repository files.
+
+This update refines the Admiral entry and the business-support workspace. It corrects inherited command styles that made every button look alike, adds a clear selected-tab marker, gives primary actions a teal emphasis, simplifies the gate instructions and makes better use of the available screen height. Session and storage details remain available without dominating the work area.
+
+Existing catalogs, quotes, invoices, numbers, PDFs and authority behavior are preserved. Device records remain in their original store; no reset or migration is required. Keep downloading private backup files through Business & backup.
+
+35 presentation checks, 8 disclosure/current-identity checks and 11 existing workflow scenarios passed. Independent review approved the bounded presentation changes. The actual sealed index passed all 3 startup/integrity cases. Exact scope and limits are in QUARTERMASTER_POLISH_VALIDATION.md.
+
+## Preserved release history — earlier instructions below are historical
+
 # Quartermaster 8.8.20.50 — Admiral business support
 
 Upload package: **DarkSky882050-Quartermaster-Upload54.zip** — **54 changed/new files** over complete **Harborhold 8.8.20.49**. Upload the inner files to the existing repository root, replace matching names and retain the rest. Follow START_HERE_QUARTERMASTER.md.

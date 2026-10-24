@@ -16299,3 +16299,79 @@ dialog.cg-workspace::backdrop{background:#061c24;}
  .ikes-project .ike-design-preview-pane{padding:12px;}
  .ikes-project .ike-design-preview-pane .error-text:empty{display:none;}
 }
+
+/* Quartermaster visual refinement — gate presentation only. */
+#admiralGateOverlay[data-entrance="clearpassage"]{
+  background:radial-gradient(ellipse at 14% 8%,#153c46 0%,#091e27 45%,#06161e 100%)!important;
+}
+#admiralGateOverlay[data-entrance="clearpassage"] .admiral-gate-shell{
+  width:min(1000px,100%)!important;margin:clamp(0px,5vh,48px) auto 0!important;
+  border:1px solid #af9b664d!important;border-radius:24px!important;
+  background:#0c2630!important;box-shadow:0 28px 90px #0006!important;
+}
+#admiralGateOverlay[data-entrance="clearpassage"] .admiral-gate-card{
+  grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);border-radius:24px!important;animation:none!important;
+}
+#admiralGateOverlay[data-entrance="clearpassage"] .admiral-entrance-intro{
+  padding:38px 38px 32px;background:linear-gradient(150deg,#133b44,#0d2933 72%);
+  border-radius:24px 0 0 24px;border-right:1px solid #a8c6c71a;
+}
+#admiralGateOverlay[data-entrance="clearpassage"] .admiral-entrance-brand{gap:12px;margin-bottom:38px}
+#admiralGateOverlay[data-entrance="clearpassage"] .admiral-entrance-brand img{width:52px;height:52px}
+#admiralGateOverlay[data-entrance="clearpassage"] .admiral-entrance-brand small{font-size:13px;letter-spacing:.19em;color:#e7d4a2}
+#admiralGateOverlay[data-entrance="clearpassage"] .admiral-entrance-brand span{font-size:12px;color:#a8c6cb}
+#admiralGateOverlay[data-entrance="clearpassage"] #admiralEntranceStep{font-size:10px;letter-spacing:.14em;color:#91b9bd}
+#admiralGateOverlay[data-entrance="clearpassage"] #admiralGateTitle{
+  font:500 clamp(34px,3.4vw,44px)/1.1 Georgia,serif;letter-spacing:-.025em;color:#f1e5c6;margin:12px 0 14px;
+}
+#admiralGateOverlay[data-entrance="clearpassage"] #admiralGateDescription{font-size:15px;line-height:1.65;color:#b9cdd0;margin-bottom:26px}
+#admiralGateOverlay[data-entrance="clearpassage"] .admiral-entrance-progress{gap:8px}
+#admiralGateOverlay[data-entrance="clearpassage"] .admiral-entrance-progress li{padding:12px;border-color:#6f929b33;border-radius:10px;background:#0a253088}
+#admiralGateOverlay[data-entrance="clearpassage"] .admiral-entrance-progress li>span{width:30px;height:30px;border-color:#6d92997a;color:#b0c8cb;font-size:11px}
+#admiralGateOverlay[data-entrance="clearpassage"] .admiral-entrance-progress b{font-size:14px;font-weight:600}
+#admiralGateOverlay[data-entrance="clearpassage"] .admiral-entrance-progress small{font-size:10px;letter-spacing:.05em}
+#admiralGateOverlay[data-entrance="clearpassage"] .admiral-entrance-progress [aria-current="step"]{border-color:#c5a86399;background:#c7aa5912}
+#admiralGateOverlay[data-entrance="clearpassage"] .admiral-entrance-progress [aria-current="step"]>span{background:#d7bd78;color:#122b30;border-color:#d7bd78;font-weight:750}
+#admiralGateOverlay[data-entrance="clearpassage"] .admiral-entrance-progress .is-complete>span{background:#193f37;border-color:#4b9a7b;color:#b0e2c9}
+#admiralGateOverlay[data-entrance="clearpassage"] .admiral-entrance-boundary{margin-top:23px;padding-left:11px;border-color:#788c6977;color:#a9c5c8;font-size:12px;line-height:1.5}
+#admiralGateOverlay[data-entrance="clearpassage"] .admiral-session-help{margin-top:8px;color:#a9c5c8;font-size:11px}
+#admiralGateOverlay[data-entrance="clearpassage"] .admiral-session-help summary{display:list-item;min-height:44px;padding:13px 0;cursor:pointer;color:#a9c5c8;line-height:1.55}
+#admiralGateOverlay[data-entrance="clearpassage"] .admiral-session-help summary:focus-visible{outline:2px solid #9acbd7;outline-offset:3px;border-radius:4px}
+#admiralGateOverlay[data-entrance="clearpassage"] .admiral-session-help .admiral-reuse-note{font-size:12px;line-height:1.6;margin:3px 0 0;padding-top:12px;border-top:1px solid #a5bdbb26}
+#admiralGateOverlay[data-entrance="clearpassage"] .admiral-entrance-form{padding:44px 40px 36px;background:#091f28aa;border-radius:0 24px 24px 0;align-self:stretch}
+#admiralGateOverlay[data-entrance="clearpassage"] .admiral-entrance-form-head{gap:8px;margin-bottom:28px}
+#admiralGateOverlay[data-entrance="clearpassage"] .admiral-entrance-form-head b{font-size:23px;font-weight:650;letter-spacing:-.025em;color:#f0f5f2}
+#admiralGateOverlay[data-entrance="clearpassage"] .admiral-entrance-form-head span{font-size:14px;color:#a5c0c7;line-height:1.55}
+#admiralGateOverlay[data-entrance="clearpassage"] .admiral-entrance-form label{font-size:13px;font-weight:600;color:#b7d0d4;letter-spacing:.015em}
+#admiralGateOverlay[data-entrance="clearpassage"] .admiral-entrance-form input{min-height:56px;background:#061923;border-color:#527680;border-radius:10px;font-size:17px;color:#f7f6ed}
+#admiralGateOverlay[data-entrance="clearpassage"] #admiralPinInput{font-size:23px;letter-spacing:.25em}
+#admiralGateOverlay[data-entrance="clearpassage"] .admiral-primary{min-height:52px;background:#d9bd77;border-color:#dfc58e;border-radius:10px;font-size:14px;letter-spacing:.01em;color:#0d252c}
+#admiralGateOverlay[data-entrance="clearpassage"] .admiral-primary:hover{background:#e8ce91}
+#admiralGateOverlay[data-entrance="clearpassage"] .admiral-primary:active{background:#c5a55c}
+#admiralGateOverlay[data-entrance="clearpassage"] .admiral-secondary{border-color:#365660;background:transparent;color:#aec6cb;margin-top:14px;min-height:48px;font-size:12px;border-radius:10px}
+#admiralGateOverlay[data-entrance="clearpassage"] .admiral-secondary:hover{background:#13353f}
+#admiralGateOverlay[data-entrance="clearpassage"] .captain-error{font-size:13px;margin:12px 0;min-height:22px}
+@media(max-width:760px){
+  #admiralGateOverlay[data-entrance="clearpassage"] .admiral-gate-shell{margin:0 auto!important;border-radius:18px!important}
+  #admiralGateOverlay[data-entrance="clearpassage"] .admiral-gate-card{grid-template-columns:1fr!important;border-radius:18px!important}
+  #admiralGateOverlay[data-entrance="clearpassage"] .admiral-entrance-intro{padding:23px 24px 17px;border-radius:18px 18px 0 0;border-right:0}
+  #admiralGateOverlay[data-entrance="clearpassage"] .admiral-entrance-brand{margin-bottom:20px}
+  #admiralGateOverlay[data-entrance="clearpassage"] .admiral-entrance-brand img{width:42px;height:42px}
+  #admiralGateOverlay[data-entrance="clearpassage"] #admiralGateTitle{font-size:34px;margin:10px 0}
+  #admiralGateOverlay[data-entrance="clearpassage"] #admiralGateDescription{font-size:14px;margin-bottom:18px}
+  #admiralGateOverlay[data-entrance="clearpassage"] .admiral-entrance-progress li{padding:10px;gap:8px}
+  #admiralGateOverlay[data-entrance="clearpassage"] .admiral-entrance-progress b{font-size:12px}
+  #admiralGateOverlay[data-entrance="clearpassage"] .admiral-entrance-progress li>span{width:27px;height:27px}
+  #admiralGateOverlay[data-entrance="clearpassage"] .admiral-entrance-boundary{margin-top:18px;font-size:11px}
+  #admiralGateOverlay[data-entrance="clearpassage"] .admiral-session-help{margin-top:0}
+  #admiralGateOverlay[data-entrance="clearpassage"] .admiral-entrance-form{padding:25px 24px 24px;border-radius:0 0 18px 18px}
+  #admiralGateOverlay[data-entrance="clearpassage"] .admiral-entrance-form-head{margin-bottom:22px}
+  #admiralGateOverlay[data-entrance="clearpassage"] .admiral-entrance-form-head b{font-size:21px}
+}
+@media(max-height:620px) and (min-width:761px){
+  #admiralGateOverlay[data-entrance="clearpassage"] .admiral-gate-shell{margin:0 auto!important}
+  #admiralGateOverlay[data-entrance="clearpassage"] .admiral-entrance-intro{padding:26px 30px 20px}
+  #admiralGateOverlay[data-entrance="clearpassage"] .admiral-entrance-brand{margin-bottom:23px}
+  #admiralGateOverlay[data-entrance="clearpassage"] .admiral-entrance-form{padding:30px}
+}
+/* End Quartermaster gate refinement. */

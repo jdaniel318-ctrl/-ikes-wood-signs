@@ -1,0 +1,193 @@
+{
+  "schema": "blackflag.quartermaster.visual-validation.v1",
+  "build": "8.8.20.51",
+  "release": "Quartermaster",
+  "recorded_at": "2026-10-23T22:03:24.191868-04:00",
+  "status": "OFFLINE_RELEASE_CHECKS_PASSED",
+  "baseline": "8.8.20.50",
+  "presentation": {
+    "passed": 35,
+    "failed": 0,
+    "scope": "Exact extracted gate presentation/template and state writers plus complete host CSS; actual Quartermaster UI/native IndexedDB in professional Admiral host; isolated synthetic account; all external requests blocked. No actual authentication or Safari proof.",
+    "initial_build_label": "8.8.20.50 before final version/seal stamp"
+  },
+  "final_disclosures_and_identity": {
+    "passed": 8,
+    "failed": 0,
+    "source_hashes": {
+      "captain.js": "75e82cd99a479b592a1c80f5ee315a47069c396a62f5767a191ddbcaaff58449",
+      "styles.css": "3af289879bf0256d244fe084d3d9e26c67b277bdaffdd1df8387143d7d077379",
+      "business_deck.css": "445fa81fff307d41cdd9a7d181ec86f9daae6843d24ac0d9fe14f939a25b6289",
+      "quartermaster.js": "4863933bc1e56310a317a5299b62123cc952c720eca511896f051230ac0fd8f9",
+      "quartermaster.css": "fe76937ddb7b6be42c37788badf192775fa633f56b7a6e7b75d2d58b1a1d6374",
+      "quartermaster_core.js": "5de2d40cb05eeeafb03855e5a374b7fc451982969d187d71632dd908e1051eed",
+      "quartermaster_fonts.js": "69b2f7fbcf0d29731cf6feea6d3f7b57d7633fafc29703123a7213ea861c9df5",
+      "quartermaster_pdf.js": "7e1c51fa7d7a4ae4fcd55a2330b15ff87c6b4ec0c9db548ff2b6a72658a453a1"
+    }
+  },
+  "identity_equivalence": {
+    "pass": true,
+    "from_build": "8.8.20.50",
+    "to_build": "8.8.20.51",
+    "normalization": "Only build8.8.20.51→8.8.20.50 and sealquartermaster-882051→quartermaster-882050; every tested source matches after normalization.",
+    "files": [
+      {
+        "file": "captain.js",
+        "initial_hash": "1744301e16bcc1cd8765c1d6a21258c161971899bececcacbc068611949cb0af",
+        "final_hash": "75e82cd99a479b592a1c80f5ee315a47069c396a62f5767a191ddbcaaff58449",
+        "exact_or_identity_only": true
+      },
+      {
+        "file": "styles.css",
+        "initial_hash": "3af289879bf0256d244fe084d3d9e26c67b277bdaffdd1df8387143d7d077379",
+        "final_hash": "3af289879bf0256d244fe084d3d9e26c67b277bdaffdd1df8387143d7d077379",
+        "exact_or_identity_only": true
+      },
+      {
+        "file": "business_deck.css",
+        "initial_hash": "445fa81fff307d41cdd9a7d181ec86f9daae6843d24ac0d9fe14f939a25b6289",
+        "final_hash": "445fa81fff307d41cdd9a7d181ec86f9daae6843d24ac0d9fe14f939a25b6289",
+        "exact_or_identity_only": true
+      },
+      {
+        "file": "quartermaster.js",
+        "initial_hash": "3e3887d7bc4253fff50c417b52a92f375ded753d37e7f8b6cfe4c45ef100e701",
+        "final_hash": "4863933bc1e56310a317a5299b62123cc952c720eca511896f051230ac0fd8f9",
+        "exact_or_identity_only": true
+      },
+      {
+        "file": "quartermaster.css",
+        "initial_hash": "94cfbb5358194e2ee26fc07746245ff2d11b24ffb5418d42a9ab413b7b62655b",
+        "final_hash": "fe76937ddb7b6be42c37788badf192775fa633f56b7a6e7b75d2d58b1a1d6374",
+        "exact_or_identity_only": true
+      },
+      {
+        "file": "quartermaster_core.js",
+        "initial_hash": "5de2d40cb05eeeafb03855e5a374b7fc451982969d187d71632dd908e1051eed",
+        "final_hash": "5de2d40cb05eeeafb03855e5a374b7fc451982969d187d71632dd908e1051eed",
+        "exact_or_identity_only": true
+      },
+      {
+        "file": "quartermaster_fonts.js",
+        "initial_hash": "69b2f7fbcf0d29731cf6feea6d3f7b57d7633fafc29703123a7213ea861c9df5",
+        "final_hash": "69b2f7fbcf0d29731cf6feea6d3f7b57d7633fafc29703123a7213ea861c9df5",
+        "exact_or_identity_only": true
+      },
+      {
+        "file": "quartermaster_pdf.js",
+        "initial_hash": "7e1c51fa7d7a4ae4fcd55a2330b15ff87c6b4ec0c9db548ff2b6a72658a453a1",
+        "final_hash": "7e1c51fa7d7a4ae4fcd55a2330b15ff87c6b4ec0c9db548ff2b6a72658a453a1",
+        "exact_or_identity_only": true
+      }
+    ]
+  },
+  "workflow": {
+    "passed": 11,
+    "failed": 0,
+    "scope": "Actual Quartermaster UI and native IndexedDB in isolated offline Chromium with synthetic authority; no live accounts/network or Safari proof",
+    "source_hashes": {
+      "quartermaster_core.js": "5de2d40cb05eeeafb03855e5a374b7fc451982969d187d71632dd908e1051eed",
+      "quartermaster_pdf.js": "7e1c51fa7d7a4ae4fcd55a2330b15ff87c6b4ec0c9db548ff2b6a72658a453a1",
+      "quartermaster.js": "4863933bc1e56310a317a5299b62123cc952c720eca511896f051230ac0fd8f9",
+      "quartermaster.css": "fe76937ddb7b6be42c37788badf192775fa633f56b7a6e7b75d2d58b1a1d6374"
+    },
+    "results": [
+      {
+        "name": "denied authority never opens durable workspace",
+        "pass": true
+      },
+      {
+        "name": "closed Admiral session cannot enter",
+        "pass": true
+      },
+      {
+        "name": "authority response discarded after account changes",
+        "pass": true
+      },
+      {
+        "name": "real UI catalog quote invoice PDF backup save and reload",
+        "pass": true
+      },
+      {
+        "name": "backup restores into empty exact scope and rejects foreign scope",
+        "pass": true
+      },
+      {
+        "name": "native storage quota does not claim catalog save",
+        "pass": true
+      },
+      {
+        "name": "session revocation removes private UI and prepared download",
+        "pass": true
+      },
+      {
+        "name": "delayed side effect revalidates account and leaves database unchanged",
+        "pass": true
+      },
+      {
+        "name": "phone layout keeps controls and dialog inside viewport",
+        "pass": true
+      },
+      {
+        "name": "iPad layout keeps controls and dialog inside viewport",
+        "pass": true
+      },
+      {
+        "name": "rapid repeated action and concurrent tabs keep unique numbers",
+        "pass": true
+      }
+    ]
+  },
+  "independent_review": {
+    "verdict": "APPROVED",
+    "report": "QUARTERMASTER_POLISH_REVIEW.md"
+  },
+  "actual_index": {
+    "passed": 3,
+    "failed": 0,
+    "pending": false,
+    "results": [
+      {
+        "name": "actual index coherent release boots",
+        "pass": true
+      },
+      {
+        "name": "actual index rejects changed required runtime bytes",
+        "pass": true
+      },
+      {
+        "name": "actual index rejects changed runtime checksum declaration",
+        "pass": true
+      }
+    ]
+  },
+  "workspace_content_height_pixels": [
+    {
+      "viewport": "1024x768",
+      "before": 354,
+      "after": 376
+    },
+    {
+      "viewport": "768x1024",
+      "before": 514,
+      "after": 536
+    },
+    {
+      "viewport": "390x844",
+      "before": 298,
+      "after": 398
+    },
+    {
+      "viewport": "768x480",
+      "before": 66,
+      "after": 170
+    }
+  ],
+  "behavior_preservation": "Exact source comparison after reversing declared presentation replacements and normalizing only version/seal/player digest. Core, PDF, font, schema and capability bytes remain .50.",
+  "limits": [
+    "Synthetic offline Chromium geometry and authority only; no new live authentication claim.",
+    "Physical iPad/Safari keyboard and rendering remain a device observation.",
+    "Catalogs and documents remain device-local, with the existing 25 MiB compact backup limit.",
+    "Archive reconstruction and extracted startup are separate final artifact gates."
+  ]
+}
