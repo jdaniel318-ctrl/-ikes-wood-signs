@@ -1,3 +1,15 @@
+# Quartermaster 8.8.20.53 — a clearer operator workspace
+
+Upload: **DarkSky882053-Quartermaster-Upload45.zip** — **45 changed/new files** over complete **Quartermaster 8.8.20.52**. Follow START_HERE_QUARTERMASTER_53.md and retain all other repository files.
+
+This release gives the business-support workspace a stronger visual identity: compact navy toolbar, clear navigation and actions, a HouseHull architectural illustration, true workspace counts, direct access to Recent documents, and a smaller example section. Each business retains its own identity and saved work.
+
+The existing guarded handlers, catalogs, quote/invoice numbers, amounts, customer PDF rendering and .52 separate-tab/download behavior are preserved. No data migration, browser-data clearing, backend action or live publication is required.
+
+12 focused workspace checks, 11 document workflow cases and 13 PDF handoff cases passed with independent review approval. All three actual-index startup/integrity checks passed. Native .53 iPad Safari appearance remains the next device observation.
+
+## Preserved release history — earlier instructions below are historical
+
 # Quartermaster 8.8.20.52 — PDFs keep your workspace open
 
 Upload: **DarkSky882052-Quartermaster-Upload44.zip** — **44 changed/new files** over complete **Quartermaster 8.8.20.51**. Follow START_HERE_QUARTERMASTER_52.md and retain all other repository files.

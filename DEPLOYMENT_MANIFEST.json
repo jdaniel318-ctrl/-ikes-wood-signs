@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.20.52",
-  "version": "8.8.20.52",
+  "build": "8.8.20.53",
+  "version": "8.8.20.53",
   "release_name": "Quartermaster",
   "releaseName": "Quartermaster",
-  "release_seal": "quartermaster-882052",
+  "release_seal": "quartermaster-882053",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -108,8 +108,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "Open customer PDFs in a new tab or download without leaving the workspace",
-  "release_note": "PDF handoff update over .51: explicit new-tab and download links share the prepared saved-snapshot PDF. The HouseHull workspace stays in place; existing authority, document bytes, local records and backup behavior are preserved.",
+  "release_focus": "A focused business workspace with visible saved work and direct document actions",
+  "release_note": "Workspace design update over .52: a compact toolbar, business-specific overview, truthful local counts and recent saved documents. Existing authority, catalog and document records, numbering, PDF handoff, backup behavior and unrelated runtime behavior are preserved.",
   "tax_ledger_upgrade": {
     "schema": "dark-sky-fleet-tax-ledger-v1",
     "model": "TAX_LEDGER_MODEL.json",
@@ -231,8 +231,8 @@
     "algorithm": "SHA-256",
     "files": {
       "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": {
-        "sha256": "57c56eb2f3d44f26fc3756b3ca4154a2b37009507f3b4afc9736af0ac90a46f4",
-        "build": "8.8.20.52",
+        "sha256": "4aa12c03d8cbcbbf1ff22c91f9218a1d734e57994d3c0352ecb96f994dd92aaa",
+        "build": "8.8.20.53",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -279,14 +279,14 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_COMMAND_MODEL.json": {
-        "sha256": "adaa75ffbed2a01999a4192e9f0b1b025948e11b02676cad020c6782289f363a",
-        "build": "8.8.20.52",
+        "sha256": "6fdccb4990ba61230d14258774e60140da1b407791f8fbacc072ebb82f45810a",
+        "build": "8.8.20.53",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
       "FLEET_DOCTRINE_REGISTRY.json": {
-        "sha256": "cd8420fc6868d59c934160ee48197de62eff526c431f8303d425d5d416cab321",
-        "build": "8.8.20.52",
+        "sha256": "0b6aa1ca9c6ade1b5cf7752baec113132f164842f157becf5a903e88488527c4",
+        "build": "8.8.20.53",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -345,8 +345,8 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "GOLDEN_VOYAGES.json": {
-        "sha256": "9eae7ea3cd4b5fa56704df35ad56c56aa837b52cfa968795ec0e5cdd6ed9865c",
-        "build": "8.8.20.52",
+        "sha256": "377bb213f4fdf3b2e61391584a390d6253f11bcd95bd5c1402432c7c8bd3baed",
+        "build": "8.8.20.53",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -499,37 +499,37 @@
       "simple_books.css": "5939590021ef2d3738d5f5f7249d72f8da64cc274bf287ef8183958517b0ba46",
       "platform_core.js": "7f797bc382a73eb9ec4365a7458e8329da60c50561e3ac751ca3fb9d7cd5ec49",
       "platform_v4.js": "21daf7777150d654467042893298147374318fdfc7ac38faf9260f874522019b",
-      "platform_identity.js": "2f2d3e70909d263f305eeb4c17992d29ea934a3804fc9b16799bfe9d82c8a029",
-      "fleet_supabase.js": "7305f5d548a5279432aa88e27849d81ae5d5acf579dcfa5d9a2534b8217db943",
+      "platform_identity.js": "c8cda86e71409063fb84eeadd8cb5d4d21d1c3066d4c8888f4cd345f34e7a938",
+      "fleet_supabase.js": "2cf24387fae40628c02c3cac42c64fe15c6825a8c14c292bf58ddb4e7df034c7",
       "ike_style_registry.js": "6b348ebceb47e172e6676f46252b19c1c6bb7532baf76febfa8dd81760a76ab7",
-      "app.js": "15bf3e0ac1cc9d247653a64d8cce3df86c2ac090dcf71c43e6389fa9ff9b8549",
-      "captain.js": "c0a5fe3284ff30af88b68ed630a7e326f5174622c4edabe5ad145fefc54800d4",
-      "simple_books.js": "1e862b53bb527e7adaf88c8f1d9ee0abc2bc4a472a300af94acf012096e15be6",
-      "owner.html": "f80ec8b6b82cf604419c1faad68ecab6c9579d894196fdcd73a1d77000e2ea8f",
-      "manifest.webmanifest": "d686987ebc6ea0ec9fb015234111b3f924ca88f0debe2f3da29cefd4ffd4fb5a",
+      "app.js": "28512a1f7828f690884c1aee02a6d2ecfc2725d4dc2ee4cc3ffad553008d6bf8",
+      "captain.js": "30924a972d309002081a737714af1ae65c1d88fb1c82570f0b7fa5f5bd0ed641",
+      "simple_books.js": "70696a40efbf91f63be1973880a8c2a8f4d17c7dff4e72cd0b3a816e9f102347",
+      "owner.html": "bd11758cb56b1f111650eaaedf83d34afc2b6f42ce40427e1afb69896c934352",
+      "manifest.webmanifest": "785ad7fafbc9e928e129aee3965aee725b9f8358b68d76d80ba903a8865611dc",
       "IKE_STYLE_FOUNDRY.json": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
-      "sw.js": "74236931587558f5f0bbe00b3403367e328c4de80ac4a171f9dce62d9c4b444d",
-      "FLEET_DOCTRINE_REGISTRY.json": "cd8420fc6868d59c934160ee48197de62eff526c431f8303d425d5d416cab321",
-      "GOLDEN_VOYAGES.json": "9eae7ea3cd4b5fa56704df35ad56c56aa837b52cfa968795ec0e5cdd6ed9865c",
-      "FLEET_COMMAND_MODEL.json": "adaa75ffbed2a01999a4192e9f0b1b025948e11b02676cad020c6782289f363a",
-      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "57c56eb2f3d44f26fc3756b3ca4154a2b37009507f3b4afc9736af0ac90a46f4",
-      "input_hygiene.js": "9f38213c39517194dfb50dbe55f6283ac7f328030af2a2d599abddd7b91fb1c9",
-      "business_deck.js": "cdebdd93a2e2e8645ee04078236001f788c423d32067b7cd6a8197ef853cdef3",
+      "sw.js": "4232e5d2387ad360d03181925e9a7d5bca3102fe7034132898ef74d8174dea3f",
+      "FLEET_DOCTRINE_REGISTRY.json": "0b6aa1ca9c6ade1b5cf7752baec113132f164842f157becf5a903e88488527c4",
+      "GOLDEN_VOYAGES.json": "377bb213f4fdf3b2e61391584a390d6253f11bcd95bd5c1402432c7c8bd3baed",
+      "FLEET_COMMAND_MODEL.json": "6fdccb4990ba61230d14258774e60140da1b407791f8fbacc072ebb82f45810a",
+      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "4aa12c03d8cbcbbf1ff22c91f9218a1d734e57994d3c0352ecb96f994dd92aaa",
+      "input_hygiene.js": "997c87841f2c9253093950c06c77b0a31b597a2310c9d61d9765d6da1a2a9c9a",
+      "business_deck.js": "a3d762e09004f0f81b738468a527fd805f708d09de3822f1d5f8ade8cfe276e7",
       "business_deck.css": "445fa81fff307d41cdd9a7d181ec86f9daae6843d24ac0d9fe14f939a25b6289",
       "fleet_viewport.js": "14ea8ff7d2c834014d8661a743c9408f9556141e7c81d32b590bd6988d0cfa55",
       "fleet_viewport.css": "36db59f3ef4061631d2fc67aac7b33aed4fff4120453560012413200e0e9bdad",
-      "headway_contracts.js": "1403dedff9007f816b542a29af93341680257f20fa0621845d431384c90fb23d",
+      "headway_contracts.js": "e20c9ce65cd406ffdacb2f53da6874c9c8d23cfa6fc435b2be582c5309109073",
       "woodwright_fit.js": "a4efdadf635608419a2bd82f12a701fd2991ec5dc3d14d282fd846680d40606f",
       "fun_core.js": "b21a909fa3dccf44b2d02d4a8243a91fd260b70db2edfc35338f3fd330c810e4",
-      "fun_program.js": "cff47b93e67834adc9ac026d5d1a95c79b2c4a5a0e95785b2662fb411978fb6f",
+      "fun_program.js": "cc9ec0228b45ac5b9c6cda6143ad4141f864ac3511581a002b7c9bbbde676c2f",
       "fun_program.css": "0be9fb1e66ac0d04bc446b4f0d92d866aaa09848f6de86ce2bfdb83f2b4d55c3",
       "fun_player.html": "fcfc2d06cdf204f4591a9717968a027facf170e6e0be32d9151ef847870a0fb7",
       "stormwake_core.js": "b0193108053c9ddd067dc100bb9d820292e970ad2c316512b8456e359820b405",
       "quartermaster_core.js": "5de2d40cb05eeeafb03855e5a374b7fc451982969d187d71632dd908e1051eed",
       "quartermaster_fonts.js": "69b2f7fbcf0d29731cf6feea6d3f7b57d7633fafc29703123a7213ea861c9df5",
       "quartermaster_pdf.js": "7e1c51fa7d7a4ae4fcd55a2330b15ff87c6b4ec0c9db548ff2b6a72658a453a1",
-      "quartermaster.js": "3590fec00297d6ebfc8df08037e73e3b17430a1ddc77de56257af02e55b15192",
-      "quartermaster.css": "1fcec444169dec5fb94a976e8aa0be2fe1a163ed89a46015c3d1aad7ccae3a57"
+      "quartermaster.js": "c161426540ab968a21403307d4836c52a03c236363bdc314b8963c768b905c02",
+      "quartermaster.css": "567e3bf3fe41e0f9c38fc9cfe33fd7f1eaaedacb5b7c1a344173b960980d4dbb"
     }
   },
   "watchbeacon_upgrade": {
@@ -1157,7 +1157,7 @@
   },
   "lazy_program_assets": {
     "stormwake_player.html": {
-      "sha256": "b8e34e048177306835ce39f333affc7b1bdc671ab1134ffd4326324f9ec756a6",
+      "sha256": "70b856ed0c2d1e0b871e812d79c06672c0bada43df705fe3b6cb97a195465755",
       "load": "after existing verified Admiral entry",
       "bytes": 5008483
     }
@@ -1461,6 +1461,28 @@
     "document_numbering_or_money_changed": false,
     "backup_download_changed": false,
     "customer_routes_changed": false,
+    "live_service_actions": false,
+    "data_migration_required": false
+  },
+  "quartermaster_workspace_design": {
+    "build": "8.8.20.53",
+    "base": "8.8.20.52",
+    "base_file_count": 334,
+    "scope": [
+      "Quartermaster shell and overview",
+      "read-only recent saved documents",
+      "scoped workspace styles and decorative inline vector artwork"
+    ],
+    "authority_changed": false,
+    "storage_schema_changed": false,
+    "document_numbering_or_money_changed": false,
+    "prepared_pdf_bytes_changed": false,
+    "pdf_handoff_changed": false,
+    "backup_download_changed": false,
+    "customer_routes_changed": false,
+    "session_limits_changed": false,
+    "game_behavior_changed": false,
+    "new_network_assets": false,
     "live_service_actions": false,
     "data_migration_required": false
   }
