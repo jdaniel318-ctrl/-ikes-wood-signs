@@ -1,0 +1,197 @@
+{
+  "schema": "blackflag.quartermaster.validation.v1",
+  "build": "8.8.20.50",
+  "release": "Quartermaster",
+  "recorded_at": "2026-10-24T01:22:13.564053+00:00",
+  "status": "OFFLINE_RELEASE_CHECKS_PASSED",
+  "environment": {
+    "browser": "151.0.7922.34",
+    "native_indexeddb": true,
+    "accounts": "synthetic isolated contexts",
+    "external_requests": "blocked",
+    "live_accounts_or_backends_accessed": false
+  },
+  "sources_sha256": {
+    "quartermaster_core.js": "5de2d40cb05eeeafb03855e5a374b7fc451982969d187d71632dd908e1051eed",
+    "quartermaster_fonts.js": "69b2f7fbcf0d29731cf6feea6d3f7b57d7633fafc29703123a7213ea861c9df5",
+    "quartermaster_pdf.js": "7e1c51fa7d7a4ae4fcd55a2330b15ff87c6b4ec0c9db548ff2b6a72658a453a1",
+    "quartermaster.js": "a4c426422da8371765fe6d8c957485334a60e902d85d834995fb63d603399148",
+    "quartermaster.css": "73b39c7f1f44d8d9a5fa35bd5b8e0a532064e547ddfdefd6f53f2773d60f4809",
+    "index.html": "80c6cd15638d68f7ae5e95672e4c9f61cb9b3dd996b994ba492d6b6f5ac64a6a",
+    "app.js": "0209debe86068ad8283b5a9a5d907e1c6faf9c760b77d46365037d015c4f8ca2",
+    "captain.js": "60980cb9960e43d38f80b7e6514be9de8079946b3437a591acc03870eb2fd96d",
+    "fun_program.js": "262335a0ba16bec94520afcb33b611b826c1d13a5167bc763066265758b3584c",
+    "stormwake_player.html": "969a78df0194ceaec7a66621fdf047b1fe48cdf1d42ff03cee7588d0f7036ea6"
+  },
+  "checks": {
+    "core": {
+      "pass": true,
+      "native_checks": 44,
+      "strict_transactions": 57,
+      "decimal_validation": "passed",
+      "verifier": "VERIFY_QUARTERMASTER_CORE.cjs"
+    },
+    "pdf": {
+      "pass": true,
+      "checks": 37,
+      "ordinary_quote_pages": 1,
+      "ordinary_invoice_pages": 1,
+      "long_terms_paginate": true,
+      "verifier": "VERIFY_QUARTERMASTER_PDF.cjs"
+    },
+    "workflow": {
+      "pass": true,
+      "scenarios": 11,
+      "results": [
+        {
+          "name": "denied authority never opens durable workspace",
+          "pass": true
+        },
+        {
+          "name": "closed Admiral session cannot enter",
+          "pass": true
+        },
+        {
+          "name": "authority response discarded after account changes",
+          "pass": true
+        },
+        {
+          "name": "real UI catalog quote invoice PDF backup save and reload",
+          "pass": true
+        },
+        {
+          "name": "backup restores into empty exact scope and rejects foreign scope",
+          "pass": true
+        },
+        {
+          "name": "native storage quota does not claim catalog save",
+          "pass": true
+        },
+        {
+          "name": "session revocation removes private UI and prepared download",
+          "pass": true
+        },
+        {
+          "name": "delayed side effect revalidates account and leaves database unchanged",
+          "pass": true
+        },
+        {
+          "name": "phone layout keeps controls and dialog inside viewport",
+          "pass": true
+        },
+        {
+          "name": "iPad layout keeps controls and dialog inside viewport",
+          "pass": true
+        },
+        {
+          "name": "rapid repeated action and concurrent tabs keep unique numbers",
+          "pass": true
+        }
+      ],
+      "verifier": "VERIFY_QUARTERMASTER_UI.cjs"
+    },
+    "review_corrections": {
+      "pass": true,
+      "scenarios": 10,
+      "results": [
+        {
+          "name": "long terms finalize and paginate customer PDF",
+          "pass": true
+        },
+        {
+          "name": "unsupported customer text leaves durable draft editable",
+          "pass": true
+        },
+        {
+          "name": "preflight uses current business snapshot core will freeze",
+          "pass": true
+        },
+        {
+          "name": "revision change during PDF preflight prevents immutable freeze",
+          "pass": true
+        },
+        {
+          "name": "conflict reopen reloads durable revision without unsaved loss",
+          "pass": true
+        },
+        {
+          "name": "retiring B prompts before discarding unsaved catalog A",
+          "pass": true
+        },
+        {
+          "name": "primary tabs support arrows Home End and skip hidden editor",
+          "pass": true
+        },
+        {
+          "name": "document open and example creation reset content scroll",
+          "pass": true
+        },
+        {
+          "name": "shared compact backup capacity supports restore beyond former 5 MiB",
+          "pass": true
+        },
+        {
+          "name": "capacity overflow aborts commits and rejects oversized recovery",
+          "pass": true
+        }
+      ],
+      "verifier": "VERIFY_QUARTERMASTER_REVIEW.cjs"
+    },
+    "househull_field_save": {
+      "pass": true,
+      "checks": 3,
+      "scope": "quota failure, failed readback and actual durable success",
+      "verifier": "VERIFY_QUARTERMASTER_FIELD.cjs"
+    },
+    "preserved_suites": [
+      {
+        "verifier": "VERIFY_FUN.cjs",
+        "pass": true,
+        "checks": 12
+      },
+      {
+        "verifier": "VERIFY_STORMWAKE_CORE.cjs",
+        "pass": true,
+        "checks": 32
+      },
+      {
+        "verifier": "VERIFY_HEADWAY.cjs",
+        "pass": true,
+        "checks": 49
+      }
+    ],
+    "actual_index_boot": {
+      "pass": true,
+      "scenarios": 3,
+      "results": [
+        {
+          "name": "actual index coherent release boots",
+          "pass": true
+        },
+        {
+          "name": "actual index rejects changed required runtime bytes",
+          "pass": true
+        },
+        {
+          "name": "actual index rejects changed runtime checksum declaration",
+          "pass": true
+        }
+      ],
+      "verifier": "VERIFY_QUARTERMASTER_BOOT.cjs",
+      "scope": "real atomic loader with local response bytes; service workers disabled"
+    },
+    "independent_review": {
+      "status": "ACCEPTED_WITH_ALL_FIVE_FINDINGS_ADDRESSED",
+      "report": "QUARTERMASTER_REVIEW.md"
+    }
+  },
+  "artifact_gate": "Exact baseline-plus-upload reconstruction, file budget, final checksums and extracted-index boot are checked after sealing. This record does not self-certify its ZIP.",
+  "limitations": [
+    "Native iPad/Safari operation of the new workflow is not certified by these Chromium runs.",
+    "Live hosted authentication, backend permissions and service-worker deployment were not exercised.",
+    "Catalogs and documents are local to the exact verified account/backend/environment/site/business on this device.",
+    "Document numbers use a local installation series; no central registry or multi-device synchronization is implemented.",
+    "Compact private backup capacity is 25 MiB; writes that exceed recoverable capacity are rejected.",
+    "Measurement takeoff, supplier ordering, messages, payments, ledger posting and production activation are not introduced."
+  ]
+}

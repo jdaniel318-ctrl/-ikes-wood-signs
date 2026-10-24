@@ -1,19 +1,19 @@
 {
   "schema": "blackflag-patch-contract-v1",
-  "target_build": "8.8.20.49",
-  "target_seal": "harborhold-882049",
+  "target_build": "8.8.20.50",
+  "target_seal": "quartermaster-882050",
   "supported_bases": [
     {
-      "build": "8.8.20.48",
-      "file_count": 293,
+      "build": "8.8.20.49",
+      "file_count": 300,
       "content_digest_algorithm": "release-content-sha256-v1",
-      "content_sha256": "77931b0cff9dcd3b1780db36aacff7de51bb22366e6cf68a4a6c8b03d3498a66",
-      "description": "Exact 293-file Homeward TEST release; every filename and byte must match."
+      "content_sha256": "a8dc6c91319210ae2134e302806cd9212f933ce3178d99cd490808203a5c478f",
+      "description": "Exact complete 300-file Harborhold .49 source."
     }
   ],
   "requires_deletions": false,
   "max_upload_files": 85,
   "database_actions": "none",
-  "local_game_storage": "Dedicated browser IndexedDB store; existing localStorage game bytes and business data retained.",
-  "rule": "Keep your downloaded voyage. Upload every file inside the Harborhold Upload update folder over the complete Homeward 8.8.20.48 repository root. Retain all other files. No SQL or browser-data clearing. This update is not a standalone site."
+  "local_business_storage": "New scoped IndexedDB business-support workspace; no existing store cleared.",
+  "rule": "Upload all inner Quartermaster files over the complete Harborhold 8.8.20.49 root, replacing matching filenames and retaining other files. No SQL or browser-data clearing. This patch is not a standalone website."
 }

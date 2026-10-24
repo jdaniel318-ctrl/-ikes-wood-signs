@@ -1,3 +1,15 @@
+# HouseHull · Quartermaster document milestone
+
+**8.8.20.50 · operator-led measuring and estimating with local catalog-backed quotes and invoices.**
+
+The Captain approved the normal itemized document template and directed that quote/invoice support sit at Admiral level. HouseHull is operated by the person measuring and estimating; the customer receives the reviewed document. The estimator may create the job directly. A customer quote-request form is not a prerequisite. Other businesses retain their appropriate customer journeys.
+
+Quartermaster implements the business catalog, separate part/manufacturer/supplier references, explicit quantities/units, pricing, local document numbers, frozen finalized copies, source-quote-linked invoices, customer PDF generation and private backup/recovery. Open the new Admiral Business Support entry. Local HouseHull planning identity is not a commissioned vessel. See START_HERE_QUARTERMASTER.md and QUARTERMASTER_CAPABILITY.json.
+
+Four-side measurements, opening/trim rules, photo evidence, product coverage/fastening rules and calibrated scale remain required estimating work. This document milestone does not pretend those rules have been implemented. Unknown rules cannot be replaced by fabricated automatic quantities. The earlier field-draft save button now reports storage failure honestly and verifies saved readback.
+
+## Preserved prior design — superseded where the direction above differs
+
 # HouseHull — exterior estimating ship plan
 **Keelmark 8.8.20.35 · HH-DESIGN-2 · Planning only, not an implemented estimator**
 

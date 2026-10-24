@@ -1,0 +1,55 @@
+{
+  "schema": "blackflag.business-support-capability.v1",
+  "build": "8.8.20.50",
+  "release": "Quartermaster",
+  "capability_id": "business.quotes-invoices",
+  "administrative_home": "Admiral Business Support",
+  "implemented_scope": "authenticated local device workspace; no remote business writes",
+  "storage": "IndexedDB blackflag-quartermaster-v1 / workspaces",
+  "scope_dimensions": [
+    "verified account",
+    "identity backend",
+    "configured environment",
+    "site",
+    "exact business"
+  ],
+  "features": [
+    "business details",
+    "material and service catalog",
+    "internal part numbers",
+    "supplier and manufacturer references",
+    "explicit units and package descriptions",
+    "retired-item history",
+    "numbered quote drafts",
+    "numbered invoice drafts",
+    "exact decimal totals",
+    "reviewed tax",
+    "finalized immutable copies",
+    "quote-linked invoice",
+    "offline customer PDF",
+    "private backup and matching empty-workspace restore"
+  ],
+  "numbering": "Atomic local series includes installation identifier; not reserved in a shared production registry.",
+  "authority": "Existing strict Admiral PIN/account/server authority gate; local side effects require current verified scope. No new Captain or owner permissions are granted.",
+  "customer_experience": "Existing customer journeys retain their branding and behavior. Internal costs and support controls do not enter customer PDFs.",
+  "househull": "Estimator-operated. Planned HouseHull workspace is explicitly local and does not commission a vessel. Product conversion and measurement rules require future verified implementation.",
+  "automatic_actions": {
+    "send": false,
+    "supplier_order": false,
+    "payment": false,
+    "ledger_posting": false,
+    "fee": false,
+    "commissioning": false,
+    "permission_grant": false
+  },
+  "not_implemented": [
+    "cloud invoice registry",
+    "multi-device synchronization",
+    "shared staff writes",
+    "automatic supplier purchase orders",
+    "automatic takeoff from photos",
+    "production role or entitlement activation"
+  ],
+  "backup_capacity_bytes": 26214400,
+  "finalization": "Exact customer PDF is prepared before the guarded immutable snapshot is committed."
+}

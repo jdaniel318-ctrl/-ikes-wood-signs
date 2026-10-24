@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.49",
-  "release": "Harborhold TEST",
-  "seal": "harborhold-882049",
+  "build": "8.8.20.50",
+  "release": "Quartermaster",
+  "seal": "quartermaster-882050",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Harborhold TEST",
-  "name": "Harborhold TEST",
-  "releaseName": "Harborhold TEST"
+  "release_name": "Quartermaster",
+  "name": "Quartermaster",
+  "releaseName": "Quartermaster"
 }

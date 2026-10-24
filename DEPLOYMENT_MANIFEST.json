@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.20.49",
-  "version": "8.8.20.49",
-  "release_name": "Harborhold TEST",
-  "releaseName": "Harborhold TEST",
-  "release_seal": "harborhold-882049",
+  "build": "8.8.20.50",
+  "version": "8.8.20.50",
+  "release_name": "Quartermaster",
+  "releaseName": "Quartermaster",
+  "release_seal": "quartermaster-882050",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -65,7 +65,12 @@
     "fun_program.js",
     "fun_program.css",
     "fun_player.html",
-    "stormwake_core.js"
+    "stormwake_core.js",
+    "quartermaster_core.js",
+    "quartermaster_fonts.js",
+    "quartermaster_pdf.js",
+    "quartermaster.js",
+    "quartermaster.css"
   ],
   "atomic_release_contract": {
     "manifest_runtime_agreement": "required-before-execution",
@@ -103,12 +108,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": [
-    "durable game-only save independent of legacy localStorage writes",
-    "verified-account recovery and preserved old JSON saves",
-    "committed save status and explicit unavailable-state reporting"
-  ],
-  "release_note": "Harborhold .49 TEST repairs the Homeward device-save path when legacy localStorage is full. A dedicated game-only IndexedDB store preserves the existing verified account/backend/environment/site scope. No business record migration, SQL or permission change is required. Current evidence is recorded separately from native-device acceptance.",
+  "release_focus": "Admiral business support: scoped device catalogs, quotes, invoices and customer PDFs",
+  "release_note": "Quartermaster adds local business-support workflow while preserving existing customer journeys and Fleet authority. Shared server numbering and synchronization are not activated.",
   "tax_ledger_upgrade": {
     "schema": "dark-sky-fleet-tax-ledger-v1",
     "model": "TAX_LEDGER_MODEL.json",
@@ -230,8 +231,8 @@
     "algorithm": "SHA-256",
     "files": {
       "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": {
-        "sha256": "1e5d03e618727520325f9c454e6be9ce66968c1a4511714313d20517f5d88b7e",
-        "build": "8.8.20.49",
+        "sha256": "c6385bda9901ca0ca8f0fbe2852b7d6dbb49057263c6a7693d2cd0ffcbc9a04a",
+        "build": "8.8.20.50",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -278,14 +279,14 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_COMMAND_MODEL.json": {
-        "sha256": "9d8434dce6b1b57ff69c3cfca4f09cb8ebf4aa8315d32fc1a895a61fa6593979",
-        "build": "8.8.20.49",
+        "sha256": "e6595772018b62a9fa7a835185bacb0750f26189623ac9d137af050e2122cafd",
+        "build": "8.8.20.50",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
       "FLEET_DOCTRINE_REGISTRY.json": {
-        "sha256": "34bf37c185dd7f5a25498340bb6049061b74b7e283d88a3f8c5edfc623a873af",
-        "build": "8.8.20.49",
+        "sha256": "7e056fe8e7818804d9589209ca892eedc757a6684c27d4032be1a9d00ac6ef1f",
+        "build": "8.8.20.50",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -344,8 +345,8 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "GOLDEN_VOYAGES.json": {
-        "sha256": "4192a02ba2272c849125529beeb0663831a8b16daee59bf3636c5e9b3ad10d1d",
-        "build": "8.8.20.49",
+        "sha256": "f8c3acce5962ef65c265cc21eb57182c73480113ab5b59454f236aab71ae8756",
+        "build": "8.8.20.50",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -498,32 +499,37 @@
       "simple_books.css": "5939590021ef2d3738d5f5f7249d72f8da64cc274bf287ef8183958517b0ba46",
       "platform_core.js": "7f797bc382a73eb9ec4365a7458e8329da60c50561e3ac751ca3fb9d7cd5ec49",
       "platform_v4.js": "21daf7777150d654467042893298147374318fdfc7ac38faf9260f874522019b",
-      "platform_identity.js": "7996c9a689bed357bd0e0a4833235acdd9aec39c4044be795106b3cf978213cf",
-      "fleet_supabase.js": "b9a77513562c33bb63a2af69dec6a33c3fac13168521540034cc9ecb205a02b2",
+      "platform_identity.js": "58579ec1bb013358b72e4500f4dea9c643de66d5cae2c6d8c41b3a329ddd3112",
+      "fleet_supabase.js": "1593b9b1d6d3ffae9bfd6ccb36029f89770c5c88806e7aa129bdeca6e1a2231c",
       "ike_style_registry.js": "6b348ebceb47e172e6676f46252b19c1c6bb7532baf76febfa8dd81760a76ab7",
-      "app.js": "e97b5635a99ec4871d157d461be951c017c8f3774d88c453153b93eb207818e3",
-      "captain.js": "53efad67e9ac3905f7bb151ef048f1f9826a9362282d28c41cdc106717277a59",
-      "simple_books.js": "d6c5ccada287893cad56a56d36e107e5805e964bbfa3b135d92ad9590e846b02",
-      "owner.html": "59c83488723c762b6518d7ec55c49a0cd537ea39b55e4a72f832a4906e615cbc",
-      "manifest.webmanifest": "aec703c49dc0db001c21236919a12bbe3289e5b9f2801a78b125327b4b854294",
+      "app.js": "0209debe86068ad8283b5a9a5d907e1c6faf9c760b77d46365037d015c4f8ca2",
+      "captain.js": "60980cb9960e43d38f80b7e6514be9de8079946b3437a591acc03870eb2fd96d",
+      "simple_books.js": "108e37dbdd15e9ce034de047a137ec13b19500c068021e03059ec57df47bcc0b",
+      "owner.html": "da42a29226ec52e34ce26b92eb75b708a407b6b4e1f8d601feae515b25d2030a",
+      "manifest.webmanifest": "c18ee38e1dc18f7b0d1f229747492d4226afa1bdee261aecbed99de98e1b64ee",
       "IKE_STYLE_FOUNDRY.json": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
-      "sw.js": "c2374b3f5384cb5946402cf91d64629d46cfa9ed1609459b839fc76e568e73e6",
-      "FLEET_DOCTRINE_REGISTRY.json": "34bf37c185dd7f5a25498340bb6049061b74b7e283d88a3f8c5edfc623a873af",
-      "GOLDEN_VOYAGES.json": "4192a02ba2272c849125529beeb0663831a8b16daee59bf3636c5e9b3ad10d1d",
-      "FLEET_COMMAND_MODEL.json": "9d8434dce6b1b57ff69c3cfca4f09cb8ebf4aa8315d32fc1a895a61fa6593979",
-      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "1e5d03e618727520325f9c454e6be9ce66968c1a4511714313d20517f5d88b7e",
-      "input_hygiene.js": "27fb531f93c2f744d12dcc26ee7c958d07c1c3dc1428b4c850530d5e134629c8",
-      "business_deck.js": "0117be32ca470c015090755dc6378891a89f8d32c4a6aa2e0e28b4cc1e428ab3",
+      "sw.js": "412c8bd68966254acfbeff03114427ff8f6c11b95acb7706bc610765430951fb",
+      "FLEET_DOCTRINE_REGISTRY.json": "7e056fe8e7818804d9589209ca892eedc757a6684c27d4032be1a9d00ac6ef1f",
+      "GOLDEN_VOYAGES.json": "f8c3acce5962ef65c265cc21eb57182c73480113ab5b59454f236aab71ae8756",
+      "FLEET_COMMAND_MODEL.json": "e6595772018b62a9fa7a835185bacb0750f26189623ac9d137af050e2122cafd",
+      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "c6385bda9901ca0ca8f0fbe2852b7d6dbb49057263c6a7693d2cd0ffcbc9a04a",
+      "input_hygiene.js": "47ac430338a05acd6012827bec30be8b6cded0aba3bb96754e0aecdb637aafad",
+      "business_deck.js": "06c36a57d2bafab1b7cedaf8cedfe85308f94dc499a06ecc2679287699a2e2b2",
       "business_deck.css": "445fa81fff307d41cdd9a7d181ec86f9daae6843d24ac0d9fe14f939a25b6289",
       "fleet_viewport.js": "14ea8ff7d2c834014d8661a743c9408f9556141e7c81d32b590bd6988d0cfa55",
       "fleet_viewport.css": "36db59f3ef4061631d2fc67aac7b33aed4fff4120453560012413200e0e9bdad",
-      "headway_contracts.js": "14574058c40e7fca4f82bc083576131d56f8080bf2ef0d2044b88b2159520be9",
+      "headway_contracts.js": "fe59318686f225839dbe6cccecd905b474350da1294e2b93527f26dfd7df4a66",
       "woodwright_fit.js": "a4efdadf635608419a2bd82f12a701fd2991ec5dc3d14d282fd846680d40606f",
       "fun_core.js": "b21a909fa3dccf44b2d02d4a8243a91fd260b70db2edfc35338f3fd330c810e4",
-      "fun_program.js": "9785b866dfa6bca8cfacdf8c05a1a506752bfd4f3f515580d1ac436131274612",
+      "fun_program.js": "262335a0ba16bec94520afcb33b611b826c1d13a5167bc763066265758b3584c",
       "fun_program.css": "0be9fb1e66ac0d04bc446b4f0d92d866aaa09848f6de86ce2bfdb83f2b4d55c3",
       "fun_player.html": "fcfc2d06cdf204f4591a9717968a027facf170e6e0be32d9151ef847870a0fb7",
-      "stormwake_core.js": "b0193108053c9ddd067dc100bb9d820292e970ad2c316512b8456e359820b405"
+      "stormwake_core.js": "b0193108053c9ddd067dc100bb9d820292e970ad2c316512b8456e359820b405",
+      "quartermaster_core.js": "5de2d40cb05eeeafb03855e5a374b7fc451982969d187d71632dd908e1051eed",
+      "quartermaster_fonts.js": "69b2f7fbcf0d29731cf6feea6d3f7b57d7633fafc29703123a7213ea861c9df5",
+      "quartermaster_pdf.js": "7e1c51fa7d7a4ae4fcd55a2330b15ff87c6b4ec0c9db548ff2b6a72658a453a1",
+      "quartermaster.js": "a4c426422da8371765fe6d8c957485334a60e902d85d834995fb63d603399148",
+      "quartermaster.css": "73b39c7f1f44d8d9a5fa35bd5b8e0a532064e547ddfdefd6f53f2773d60f4809"
     }
   },
   "watchbeacon_upgrade": {
@@ -958,7 +964,7 @@
     "project_data_mutation": false,
     "field_failure_proof": "8.8.20.13 held on styles.css because packaged DEPLOYMENT_MANIFEST runtime hash did not match packaged styles.css bytes"
   },
-  "release": "Harborhold TEST",
+  "release": "Quartermaster",
   "clearbearing_upgrade": {
     "build": "8.8.20.22",
     "baseline": "8.8.20.14 HashLock",
@@ -1151,7 +1157,7 @@
   },
   "lazy_program_assets": {
     "stormwake_player.html": {
-      "sha256": "4ca7e738d5c40ef6a329dafd2aee093decdc36b1e6bbe7b05bf84a5325fb9cbd",
+      "sha256": "969a78df0194ceaec7a66621fdf047b1fe48cdf1d42ff03cee7588d0f7036ea6",
       "load": "after existing verified Admiral entry",
       "bytes": 5008483
     }
@@ -1365,5 +1371,60 @@
     "database_actions": "none",
     "local_database_action": "dedicated game-only IndexedDB store",
     "native_field_acceptance": "PENDING"
+  },
+  "quartermaster_upgrade": {
+    "schema": "blackflag.business-support-capability.v1",
+    "build": "8.8.20.50",
+    "release": "Quartermaster",
+    "capability_id": "business.quotes-invoices",
+    "administrative_home": "Admiral Business Support",
+    "implemented_scope": "authenticated local device workspace; no remote business writes",
+    "storage": "IndexedDB blackflag-quartermaster-v1 / workspaces",
+    "scope_dimensions": [
+      "verified account",
+      "identity backend",
+      "configured environment",
+      "site",
+      "exact business"
+    ],
+    "features": [
+      "business details",
+      "material and service catalog",
+      "internal part numbers",
+      "supplier and manufacturer references",
+      "explicit units and package descriptions",
+      "retired-item history",
+      "numbered quote drafts",
+      "numbered invoice drafts",
+      "exact decimal totals",
+      "reviewed tax",
+      "finalized immutable copies",
+      "quote-linked invoice",
+      "offline customer PDF",
+      "private backup and matching empty-workspace restore"
+    ],
+    "numbering": "Atomic local series includes installation identifier; not reserved in a shared production registry.",
+    "authority": "Existing strict Admiral PIN/account/server authority gate; local side effects require current verified scope. No new Captain or owner permissions are granted.",
+    "customer_experience": "Existing customer journeys retain their branding and behavior. Internal costs and support controls do not enter customer PDFs.",
+    "househull": "Estimator-operated. Planned HouseHull workspace is explicitly local and does not commission a vessel. Product conversion and measurement rules require future verified implementation.",
+    "automatic_actions": {
+      "send": false,
+      "supplier_order": false,
+      "payment": false,
+      "ledger_posting": false,
+      "fee": false,
+      "commissioning": false,
+      "permission_grant": false
+    },
+    "not_implemented": [
+      "cloud invoice registry",
+      "multi-device synchronization",
+      "shared staff writes",
+      "automatic supplier purchase orders",
+      "automatic takeoff from photos",
+      "production role or entitlement activation"
+    ],
+    "backup_capacity_bytes": 26214400,
+    "finalization": "Exact customer PDF is prepared before the guarded immutable snapshot is committed."
   }
 }

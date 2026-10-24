@@ -1,6 +1,6 @@
 {
   "schema": "blackflag-vessel-design-plan-v1",
-  "status": "planning_only",
+  "status": "operator_led_with_local_document_milestone",
   "canonical_project_id": null,
   "auto_commission": false,
   "auto_retry": "forbidden",
@@ -9,7 +9,7 @@
   "proposed_ownership": "admiral_owned",
   "bootstrap_build_class": "admiral_program_outside_fleet_core",
   "prior_househull_reconciliation_required": true,
-  "mission": "Help a salesperson produce a traceable siding takeoff after a quote request, using verified dimensions, four-side photos, openings, trim and product-specific material rules.",
+  "mission": "Help the person measuring and estimating prepare verified scope, material quantities and pricing, then give the customer a clear quote PDF.",
   "photo_views": [
     "front",
     "back",
@@ -40,7 +40,7 @@
   "phases": [
     {
       "id": "siding",
-      "scope": "Quote request, salesperson handoff, four-side photos, verified wall/gable dimensions, doors/windows, trim choice, accessories, nails and manual miscellaneous lines; internal takeoff revision."
+      "scope": "Estimator creates the job, records supplied four-side photos and verified dimensions, selects products and quantities, reviews pricing, then prepares the customer quote. Product takeoff rules remain to be implemented."
     },
     {
       "id": "roofing",
@@ -150,8 +150,8 @@
     "iPad Safari field proof",
     "Commercial agreement before paid launch"
   ],
-  "plan_version": "HH-DESIGN-2",
-  "release_build": "8.8.20.35",
+  "plan_version": "HH-DESIGN-3",
+  "release_build": "8.8.20.50",
   "approved_name": "HouseHull",
   "name_provenance": "User accepted HouseHull for exterior/siding sales vessel on October 2, 2026; preserved from project history.",
   "alternative_name": "Iron Square",
@@ -161,7 +161,7 @@
   "identity_reconciliation_required": true,
   "creates_vessel": false,
   "runtime_implemented_by_this_release": false,
-  "photo_delivery_stage": "quote_request",
+  "photo_delivery_stage": "estimator_job",
   "measurement_states": [
     "ai_estimate",
     "field_measured",
@@ -175,5 +175,193 @@
   "approved_revision_policy": "immutable_new_revision_required",
   "salesperson_scope": "exact_vessel_and_assigned_estimates",
   "production_durability": "private_server_storage_with_restore_proof_required",
-  "final_ownership_and_class_gate": "Confirm exact existing identity and administrative classification before any new commission; not a rename or role grant."
+  "final_ownership_and_class_gate": "Confirm exact existing identity and administrative classification before any new commission; not a rename or role grant.",
+  "quartermaster_document_milestone": {
+    "build": "8.8.20.50",
+    "catalog_and_documents": "implemented_local_device_workspace",
+    "authority": "existing_verified_admiral_support",
+    "customer_pdf": true,
+    "measurement_rule_engine": false,
+    "cloud_number_registry": false,
+    "global_customer_self_service_changed": false
+  },
+  "historical_design_2": {
+    "schema": "blackflag-vessel-design-plan-v1",
+    "status": "planning_only",
+    "canonical_project_id": null,
+    "auto_commission": false,
+    "auto_retry": "forbidden",
+    "permissions_changed": false,
+    "proposed_class": "fleet_core_business_vessel",
+    "proposed_ownership": "admiral_owned",
+    "bootstrap_build_class": "admiral_program_outside_fleet_core",
+    "prior_househull_reconciliation_required": true,
+    "mission": "Help a salesperson produce a traceable siding takeoff after a quote request, using verified dimensions, four-side photos, openings, trim and product-specific material rules.",
+    "photo_views": [
+      "front",
+      "back",
+      "left",
+      "right"
+    ],
+    "material_line_types": [
+      "siding",
+      "starter",
+      "inside_corners",
+      "outside_corners",
+      "opening_trim",
+      "finish_trim",
+      "flashing",
+      "fasteners",
+      "miscellaneous"
+    ],
+    "scale_policy": "field_measure_or_verified_reference_required",
+    "complete_takeoff_requires_resolved_material_rules": true,
+    "draft_state_model": [
+      "draft",
+      "needs_measurement",
+      "needs_product_rules",
+      "reviewed_takeoff",
+      "approved_quote",
+      "superseded"
+    ],
+    "phases": [
+      {
+        "id": "siding",
+        "scope": "Quote request, salesperson handoff, four-side photos, verified wall/gable dimensions, doors/windows, trim choice, accessories, nails and manual miscellaneous lines; internal takeoff revision."
+      },
+      {
+        "id": "roofing",
+        "scope": "Roadmap only, after siding acceptance. Independent measured roof planes, pitch/slope basis, ridge/hip/valley/eave/rake lengths and selected-product accessory/fastener coverage; no hidden pitch conversion or double waste."
+      },
+      {
+        "id": "foundation",
+        "scope": "Required expansion including door/window sizes and configurable trim. Brick/block foundation faces, measured wall area and openings, selected unit nominal coverage, waste, trim/finishes; never structural design certification."
+      },
+      {
+        "id": "assisted_measurement",
+        "scope": "Aerial, drone or vision providers only after consent, accuracy and licensing/cost review; suggested numbers require verification."
+      }
+    ],
+    "labor_modes": [
+      "per_square",
+      "per_square_foot",
+      "per_linear_foot",
+      "per_opening",
+      "per_item",
+      "per_crew_day",
+      "manual_line"
+    ],
+    "isolation_contract": {
+      "keys": [
+        "vessel_id",
+        "estimate_id",
+        "revision_id"
+      ],
+      "photos": "private_vessel_scoped_storage",
+      "customer_data_cross_vessel": "denied",
+      "admiral_observation": "read_only_authenticated_and_audited",
+      "writes": "exact_vessel_authenticated_explicit_once_with_readback",
+      "exports": "exact_vessel_revision_scoped_without_other_records"
+    },
+    "existing_operation_policy": "read_and_reconcile_only_never_replay",
+    "protected_operations": [
+      "2d7fc23f-180d-4d61-ae22-f241d096cde5",
+      "5bceb74a-86c6-49e3-a2a1-d9152527d3b0"
+    ],
+    "fixture_scope": "synthetic_specification_examples_not_product_execution",
+    "arithmetic_fixtures": [
+      {
+        "id": "SIDING-RECT-001",
+        "width_ft": 40,
+        "height_ft": 10,
+        "gable_base_ft": 0,
+        "gable_height_ft": 0,
+        "openings": [
+          {
+            "width_ft": 3,
+            "height_ft": 5,
+            "count": 2
+          },
+          {
+            "width_ft": 3,
+            "height_ft": 7,
+            "count": 1
+          }
+        ],
+        "waste_percent": 10,
+        "pack_coverage_sqft": 200,
+        "expected": {
+          "gross_sqft": 400,
+          "net_sqft": 349,
+          "net_squares": 3.49,
+          "with_waste_sqft": 383.9,
+          "packs": 2
+        }
+      },
+      {
+        "id": "SIDING-GABLE-002",
+        "width_ft": 30,
+        "height_ft": 10,
+        "gable_base_ft": 30,
+        "gable_height_ft": 6,
+        "openings": [
+          {
+            "width_ft": 3,
+            "height_ft": 5,
+            "count": 2
+          }
+        ],
+        "waste_percent": 10,
+        "pack_coverage_sqft": 200,
+        "expected": {
+          "gross_sqft": 390,
+          "net_sqft": 360,
+          "net_squares": 3.6,
+          "with_waste_sqft": 396,
+          "packs": 2
+        }
+      }
+    ],
+    "fixture_assumptions": "Opening subtraction, 10 percent waste and 200 sqft per package are chosen arithmetic fixtures only, not product recommendations or verified installation rules.",
+    "release_gates": [
+      "Preserve approved HouseHull name; a rename needs a separate explicit Admiral decision",
+      "Reconcile exact existing HouseHull draft/identity; blocked live read means unknown, not absent",
+      "Private test-only server-first commission once",
+      "Measured example matches hand calculations",
+      "All required product accessory/fastener rules supplied",
+      "Exact-vessel Captain accepts",
+      "Direct backend own/foreign read-write tests",
+      "Revocation and restoration proof",
+      "Private storage and backup restore",
+      "Scoped Admiral exports",
+      "iPad Safari field proof",
+      "Commercial agreement before paid launch"
+    ],
+    "plan_version": "HH-DESIGN-2",
+    "release_build": "8.8.20.35",
+    "approved_name": "HouseHull",
+    "name_provenance": "User accepted HouseHull for exterior/siding sales vessel on October 2, 2026; preserved from project history.",
+    "alternative_name": "Iron Square",
+    "alternative_name_status": "not_approved",
+    "rename_authorized": false,
+    "canonical_record_status": "unverified",
+    "identity_reconciliation_required": true,
+    "creates_vessel": false,
+    "runtime_implemented_by_this_release": false,
+    "photo_delivery_stage": "quote_request",
+    "measurement_states": [
+      "ai_estimate",
+      "field_measured",
+      "verified"
+    ],
+    "photo_is_scale": false,
+    "customer_enters_dimensions": false,
+    "verified_reference_required": true,
+    "missing_fastener_rules_result": "needs_product_rules_not_zero",
+    "opening_trim_rule": "explicit_treatment_per_opening",
+    "approved_revision_policy": "immutable_new_revision_required",
+    "salesperson_scope": "exact_vessel_and_assigned_estimates",
+    "production_durability": "private_server_storage_with_restore_proof_required",
+    "final_ownership_and_class_gate": "Confirm exact existing identity and administrative classification before any new commission; not a rename or role grant."
+  }
 }

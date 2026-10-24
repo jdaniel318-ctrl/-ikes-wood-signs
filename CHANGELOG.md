@@ -1,3 +1,15 @@
+# Quartermaster 8.8.20.50 — Admiral business support
+
+Upload package: **DarkSky882050-Quartermaster-Upload54.zip** — **54 changed/new files** over complete **Harborhold 8.8.20.49**. Upload the inner files to the existing repository root, replace matching names and retain the rest. Follow START_HERE_QUARTERMASTER.md.
+
+The Engine Room now opens a verified Admiral workspace for each business's parts and services, quotes, invoices and customer PDFs. HouseHull is operated by the person measuring and estimating. The approved document layout includes item/part references, quantities, units and prices, with a stable document number at the upper right. Finalized quotes can create separately numbered linked invoices. Business costs remain internal; existing customer journeys keep their branding and behavior.
+
+Records are saved on this device under the verified account and selected business. The local document series is not a central production registry. Download private backups regularly; the supported compact backup size is 25 MiB. No supplier order, message, payment, ledger posting or permission change happens automatically.
+
+The original independent reviewer accepted the scoped corrections to all five findings. Three actual-index checks passed: coherent release starts; altered runtime bytes and an altered checksum declaration both hold before execution. Full measured scope and limitations are in QUARTERMASTER_VALIDATION.md. Native iPad/Safari use of this new workflow remains a device check.
+
+## Preserved release history — earlier instructions below are historical
+
 # Harborhold 8.8.20.49 TEST — device save repair
 
 Upload package: **DarkSky882049-Harborhold-Upload45-TEST.zip** — **45 changed/new files** over complete Homeward 8.8.20.48. Retain all other files.

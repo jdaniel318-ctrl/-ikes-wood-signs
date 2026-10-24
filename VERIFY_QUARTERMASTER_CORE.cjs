@@ -1,0 +1,80 @@
+#!/usr/bin/env node
+'use strict';
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const corePath = path.join(__dirname, 'quartermaster_core.js');
+assert.ok(fs.existsSync(corePath), 'Quartermaster core module must exist');
+const core = require(corePath);
+assert.deepEqual(core.calculateTotals([{ quantity:'0.3333', unitPrice:'0.05' },{quantity:'1',unitPrice:'0.01'}], '7.125'), {subtotalCents:3,taxCents:0,totalCents:3});
+assert.deepEqual(core.calculateTotals([{quantity:'1',unitPrice:'0.05'}], '10'), {subtotalCents:5,taxCents:1,totalCents:6});
+for (const quantity of ['0','-1','1e3','1.00001','NaN',1, ' 1']) assert.throws(()=>core.calculateTotals([{quantity,unitPrice:'1'}],'0'));
+for (const price of ['-1','1.001','Infinity','1e5',1]) assert.throws(()=>core.calculateTotals([{quantity:'1',unitPrice:price}],'0'));
+assert.throws(()=>core.calculateTotals([{quantity:'99999999999999999999',unitPrice:'99999999999999999'}],'0'));
+assert.throws(()=>core.calculateTotals([], '1.0001'));
+assert.throws(()=>core.createStore({scope:{},guard:()=>true,indexedDB:{}}));
+console.log('PASS exact decimal arithmetic, malformed/unsafe rejection and scope validation');
+if (process.argv.includes('--pure')) process.exit(0);
+(async()=>{
+ const {chromium} = require('playwright');
+ const browser = await chromium.launch({headless:true,executablePath:process.env.QUARTERMASTER_CHROMIUM||undefined,args:['--no-sandbox']});
+ try {
+ const page = await browser.newPage();
+ await page.route('https://quartermaster.test/**', r=>r.fulfill({status:200,contentType:'text/html',body:'<!doctype html><title>Native IndexedDB verification</title>'}));
+ await page.goto('https://quartermaster.test/');
+ await page.addScriptTag({path:corePath});
+ const result = await page.evaluate(async()=>{
+  const C=window.BlackFlagQuartermaster; let checks=0;
+  function ok(v,m){if(!v)throw Error(m);checks++;}
+  async function rejects(fn,m){let failed=false;try{await fn();}catch(e){failed=true;}ok(failed,m);}
+  const scope={accountId:'account-a',backend:'offline',environment:'verification',site:'site-a',businessId:'househull'};
+  const opts={scope,indexedDB,guard:()=>true};
+  let strictTransactions=0;const nativeTransaction=IDBDatabase.prototype.transaction;IDBDatabase.prototype.transaction=function(){const tx=nativeTransaction.apply(this,arguments);if(tx.mode==='readwrite'&&tx.durability==='strict')strictTransactions++;return tx;};
+  const a=C.createStore(opts), b=C.createStore(opts);
+  let w=await a.load(); ok(w.revision===0&&w.catalog.length===0,'initial durable empty workspace');
+  w=await a.saveBusiness({id:'househull',name:'HouseHull',prefix:'HH',address:'1 Main',email:'',phone:''},w.revision);
+  const stale=w.revision;
+  w=await a.saveItem({kind:'material',code:'',description:'Panel',specification:'A',unit:'box',packageDescription:'10 pieces per box',unitPrice:'12.35',cost:'9.00',manufacturerPart:'00001-A',supplier:'Vendor',supplierSku:'00007.10'},w.revision);
+  const item=w.catalog[0]; ok(item.manufacturerPart==='00001-A'&&item.supplierSku==='00007.10'&&item.code==='HH-MAT-000001','codes preserve exact identifier strings');
+  await rejects(()=>b.saveBusiness({...w.business,name:'stale'},stale),'stale workspace must reject');
+  await rejects(()=>a.saveItem({...item,id:undefined,code:item.code.toLowerCase()},w.revision),'duplicate code rejects');
+  let q=await a.createDocument({type:'quote',operationId:'create-quote'});
+  const duplicate=await b.createDocument({type:'quote',operationId:'create-quote'});ok(duplicate.id===q.id,'create operation retry returns same draft');
+  await rejects(()=>a.createDocument({type:'invoice',operationId:'create-quote'}),'operation reuse rejects changed request');
+  w=await a.load();
+  await rejects(()=>a.finalizeDocument(q.id,'incomplete',w.revision),'incomplete draft cannot finalize');
+  q.customer.name='Zoë O’Connor';q.issueDate='2026-10-24';q.taxRate='7.125';q.taxConfirmed=true;
+  q.lines=[{id:'line-1',itemId:item.id,itemRevision:item.revision,kind:item.kind,code:item.code,description:item.description,specification:item.specification,packageDescription:item.packageDescription,manufacturerPart:item.manufacturerPart,supplierSku:item.supplierSku,quantity:'2.5',unit:item.unit,unitPrice:item.unitPrice}];
+  w=await a.saveDocument(q,w.revision);q=w.documents[0];ok(q.totals.totalCents===3308,'document calculates rounded totals');
+  const falseBusiness=JSON.parse(JSON.stringify(q));falseBusiness.business.name='Unrelated business';await rejects(()=>a.saveDocument(falseBusiness,w.revision),'draft business snapshot must be saved snapshot or explicit current business refresh');
+  const forged=JSON.parse(JSON.stringify(q));forged.lines[0].supplierSku='bad';await rejects(()=>a.saveDocument(forged,w.revision),'forged line snapshot rejects');
+  w=await a.saveItem({...item,description:'New panel',unitPrice:'14.00'},w.revision);
+  const prepared=await a.prepareFinalization(q.id,w.revision);ok(prepared.status==='finalized'&&prepared.revision===q.revision+1&&prepared.business.name===w.business.name,'preflight snapshot includes exact prospective status revision and business');await rejects(()=>a.prepareFinalization(q.id,w.revision-1),'preflight rejects stale workspace revision');const altered=JSON.parse(JSON.stringify(prepared));altered.customer.name='Forged prepared snapshot';await rejects(()=>a.finalizeDocument(q.id,'altered-candidate',w.revision,altered),'commit refuses a modified prepared snapshot');
+  w=await a.finalizeDocument(q.id,'finalize-quote',w.revision,prepared);q=w.documents.find(d=>d.id===q.id);ok(q.status==='finalized'&&q.lines[0].description==='Panel','finalization keeps selected historical snapshot');ok(JSON.stringify(q)===JSON.stringify(prepared),'durable finalized document exactly matches preflight snapshot');
+  const oldRev=w.revision;w=await a.finalizeDocument(q.id,'finalize-quote',0);ok(w.revision===oldRev,'finalize retry safe despite stale revision');
+  await rejects(()=>a.saveDocument(q,w.revision),'finalized document immutable');
+  const invoice=await a.createDocument({type:'invoice',operationId:'invoice-from-quote',sourceQuoteId:q.id});ok(invoice.quoteReference.id===q.id&&invoice.quoteReference.revision===q.revision&&invoice.lines[0].supplierSku==='00007.10','invoice references exact frozen quote');
+  const numbers=await Promise.all(Array.from({length:8},(_,i)=> (i%2?a:b).createDocument({type:'quote',operationId:'parallel-'+i})));ok(new Set(numbers.map(d=>d.number)).size===8,'native transactions allocate unique numbers across instances');
+  const repeated=await Promise.all([a.createDocument({type:'quote',operationId:'parallel-0'}),b.createDocument({type:'quote',operationId:'parallel-0'})]);ok(repeated[0].id===repeated[1].id,'concurrent retry is idempotent');
+  w=await a.load();const race=await Promise.allSettled([a.saveBusiness({...w.business,phone:'race-a'},w.revision),b.saveBusiness({...w.business,phone:'race-b'},w.revision)]);ok(race.filter(x=>x.status==='fulfilled').length===1&&race.filter(x=>x.status==='rejected'&&x.reason.code==='CONFLICT').length===1,'concurrent edits have exactly one durable winner');
+  w=await a.load();w.catalog[0].description='mutated detached';ok((await b.load()).catalog[0].description==='New panel','returns detached clones');
+  w=await a.load();w=await a.retireItem(item.id,w.revision);await rejects(()=>a.saveItem({...item,id:undefined},w.revision),'retired code never reusable');
+  const beforeAbort=await a.exportBackup(),nativePut=IDBObjectStore.prototype.put;IDBObjectStore.prototype.put=function(){const req=nativePut.apply(this,arguments);this.transaction.abort();return req;};try{await rejects(()=>a.createDocument({type:'invoice',operationId:'aborted-create'}),'aborted native write rejects');}finally{IDBObjectStore.prototype.put=nativePut;}ok(JSON.stringify(await a.exportBackup())===JSON.stringify(beforeAbort),'aborted native transaction preserves counters documents and operation ids atomically');
+  const beforeQuota=await a.exportBackup();IDBObjectStore.prototype.put=function(){throw new DOMException('Verification quota failure','QuotaExceededError');};try{await rejects(()=>a.saveBusiness({...w.business,name:'should not persist'},w.revision),'quota error rejects');}finally{IDBObjectStore.prototype.put=nativePut;}ok(JSON.stringify(await a.exportBackup())===JSON.stringify(beforeQuota),'quota failure has no memory success fallback');
+  const backup=await a.exportBackup(); await a.restoreBackup(backup,w.revision);ok((await a.load()).revision===w.revision,'identical restore no-op');
+  const extra=JSON.parse(JSON.stringify(backup));extra.workspace.documents[0].internalCost='1.00';await rejects(()=>a.restoreBackup(extra,w.revision),'backup rejects unknown document fields rather than silently stripping');
+  const broken=JSON.parse(JSON.stringify(backup));broken.workspace.documents[0].totals.totalCents++;await rejects(()=>a.restoreBackup(broken,w.revision),'tampered backup rejects');
+  const other=C.createStore({...opts,scope:{...scope,accountId:'account-b'}});await rejects(()=>other.restoreBackup(backup,0),'cross-account restore rejects');ok((await other.load()).documents.length===0,'second scope isolated');
+  let calls=0;const revoked=C.createStore({...opts,guard:()=>++calls<3});await rejects(()=>revoked.saveBusiness({...w.business,name:'forbidden'},w.revision),'guard revoked during asynchronous work rejects');ok((await a.load()).business.name==='HouseHull','revoked write not persisted');
+  const failed=C.createStore({...opts,indexedDB:{open(){throw Error('Storage unavailable');}}});await rejects(()=>failed.load(),'unavailable durable storage rejects without memory fallback');
+  let commitChecks=0;const revokedCommit=C.createStore({...opts,guard:()=>++commitChecks<6});await rejects(()=>revokedCommit.saveBusiness({...w.business,name:'revoked-commit'},w.revision),'guard revoked immediately before commit rejects');ok((await a.load()).business.name==='HouseHull','commit guard prevents durable mutation');revokedCommit.close();
+  let returnChecks=0;const revokedReturn=C.createStore({...opts,guard:()=>++returnChecks<7});await rejects(()=>revokedReturn.load(),'guard revoked immediately before returning private data rejects');revokedReturn.close();
+  a.close();b.close();other.close();revoked.close();failed.close();
+  const reopened=C.createStore(opts);ok((await reopened.load()).documents.length===10,'native persistence survives store reopen');reopened.close();
+  await new Promise((resolve,reject)=>{const r=indexedDB.deleteDatabase('blackflag-quartermaster-v1');r.onsuccess=resolve;r.onerror=()=>reject(r.error);r.onblocked=()=>reject(Error('native recovery setup blocked'));});
+  const recovered=C.createStore(opts);const empty=await recovered.load();const incomplete=JSON.parse(JSON.stringify(backup));incomplete.workspace.operations=[];await rejects(()=>recovered.restoreBackup(incomplete,empty.revision),'recovery rejects missing operation history');const collisions=JSON.parse(JSON.stringify(backup));collisions.workspace.documents[1].number=collisions.workspace.documents[0].number;await rejects(()=>recovered.restoreBackup(collisions,empty.revision),'recovery rejects document number collisions');const restored=await recovered.restoreBackup(backup,empty.revision);ok(restored.documents.length===10&&restored.catalog[0].supplierSku==='00007.10','matching empty workspace restores complete durable backup');const afterRecovery=await recovered.createDocument({type:'invoice',operationId:'aborted-create'});ok(!backup.workspace.documents.some(d=>d.number===afterRecovery.number),'restored counters cannot reallocate imported number');recovered.close();
+  ok(strictTransactions>0,'native writes request strict durability before reporting success');IDBDatabase.prototype.transaction=nativeTransaction;return {checks,nativeIndexedDB:true,strictTransactions};
+ });
+ console.log('PASS native Chromium IndexedDB checks:',JSON.stringify(result));
+ }finally{await browser.close();}
+})().catch(e=>{console.error(e);process.exitCode=1;});
