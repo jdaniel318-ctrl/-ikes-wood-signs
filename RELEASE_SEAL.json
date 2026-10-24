@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.51",
+  "build": "8.8.20.52",
   "release": "Quartermaster",
-  "seal": "quartermaster-882051",
+  "seal": "quartermaster-882052",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
   "release_name": "Quartermaster",

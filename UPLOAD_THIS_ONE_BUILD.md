@@ -1,3 +1,15 @@
+# Quartermaster 8.8.20.52 — PDFs keep your workspace open
+
+Upload: **DarkSky882052-Quartermaster-Upload44.zip** — **44 changed/new files** over complete **Quartermaster 8.8.20.51**. Follow START_HERE_QUARTERMASTER_52.md and retain all other repository files.
+
+After Prepare PDF, choose **Open PDF in new tab** or **Download PDF**. Both PDF actions keep the original workspace tab in place. A browser that previews a requested download is directed to a separate tab. The original saved-document snapshot, filename, PDF layout and calculations are retained.
+
+Existing parts, quotes, invoices, unique numbers, storage and Admiral session rules remain intact. There is no data migration, browser-data clearing, SQL update or live service action. JSON backup download behavior is preserved.
+
+13 focused PDF handoff cases and 11 existing workflow scenarios passed, with independent review approval. All three actual-index startup/integrity cases passed. Native iPad Safari behavior of the new controls is not claimed as verified by the offline checks.
+
+## Preserved release history — earlier instructions below are historical
+
 # Quartermaster 8.8.20.51 — a clearer Admiral workspace
 
 Upload: **DarkSky882051-Quartermaster-Upload45.zip** — **45 changed/new files** over complete **Quartermaster 8.8.20.50**. Follow START_HERE_QUARTERMASTER_51.md and retain all other repository files.

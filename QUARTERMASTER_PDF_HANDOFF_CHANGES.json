@@ -1,0 +1,25 @@
+{
+  "schema": "blackflag.quartermaster.pdf-handoff-changes.v1",
+  "build": "8.8.20.52",
+  "baseline": "8.8.20.51",
+  "replacements": [
+    {
+      "file": "quartermaster.js",
+      "old": " function preparedDownload(bytes,type,name,label){clearDownload();const url=URL.createObjectURL(new Blob([bytes],{type}));downloadUrls.push(url);const box=$('qmDownloadReady');box.hidden=false;const copy=document.createElement('span');copy.textContent=label;const a=document.createElement('a');a.href=url;a.download=name;a.className='qm-download';a.textContent=type==='application/pdf'?'Download PDF':'Download backup';a.addEventListener('click',e=>{if(!allowed()){e.preventDefault();close(true,'Sign in again before downloading.');}});box.append(copy,a);box.scrollIntoView({block:'nearest',behavior:'smooth'});}\n",
+      "new": " function preparedDownload(bytes,type,name,label){\n  clearDownload();const url=URL.createObjectURL(new Blob([bytes],{type}));downloadUrls.push(url);\n  const box=$('qmDownloadReady');box.hidden=false;const copy=document.createElement('span');copy.textContent=label;\n  const pdf=type==='application/pdf',checkAccess=e=>{if(!allowed()){e.preventDefault();close(true,pdf?'Sign in again before opening or downloading this PDF.':'Sign in again before downloading.');}};\n  const a=document.createElement('a');a.href=url;a.download=name;a.className='qm-download';a.textContent=pdf?'Download PDF':'Download backup';a.addEventListener('click',checkAccess);\n  if(pdf){\n   a.target='_blank';a.rel='noopener noreferrer';\n   const open=document.createElement('a');open.href=url;open.target='_blank';open.rel='noopener noreferrer';open.className='qm-open-pdf';open.textContent='Open PDF in new tab';open.addEventListener('click',checkAccess);\n   const actions=document.createElement('div');actions.className='qm-actions';actions.append(open,a);box.append(copy,actions);\n  }else box.append(copy,a);\n  box.scrollIntoView({block:'nearest',behavior:'smooth'});\n }\n",
+      "count": 1
+    },
+    {
+      "file": "quartermaster.js",
+      "old": "PDF is ready. Tap Download PDF to open or save it.",
+      "new": "PDF is ready. Open it in a new tab or download a copy. Your workspace stays open.",
+      "count": 1
+    }
+  ],
+  "appended_styles": {
+    "quartermaster.css": {
+      "bytes": 632,
+      "sha256": "9200099d709987075b63953b4614cc91edc7f82d4fb2e873bdeddbdc5c244758"
+    }
+  }
+}

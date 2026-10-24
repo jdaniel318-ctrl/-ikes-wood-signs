@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.20.51';
-const RELEASE_SEAL='quartermaster-882051';
+const RELEASE_BUILD='8.8.20.52';
+const RELEASE_SEAL='quartermaster-882052';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.

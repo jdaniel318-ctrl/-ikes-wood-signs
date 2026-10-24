@@ -1,4 +1,4 @@
-/* Black Flag 8.8.20.51 Quartermaster — field-aware boundary whitespace.
+/* Black Flag 8.8.20.52 Quartermaster — field-aware boundary whitespace.
    No network, storage, authority, submission, timer retry, or record migration.
    Unknown fields are preserved. Mark new ordinary fields data-bf-trim="boundary";
    mark production wording, raw imports, credentials and code "preserve". */
@@ -93,5 +93,5 @@
       typeof row.report_id==='string' && row.report_id.length>0 && (!expectedId||row.report_id===expectedId) &&
       typeof row.reported_at==='string' && Number.isFinite(Date.parse(row.reported_at));
   }
-  return Object.freeze({build:'8.8.20.51',boundary,length,eligible,clean,read,install,reportPayload,reportMatches,isComposing:f=>composing.has(f)});
+  return Object.freeze({build:'8.8.20.52',boundary,length,eligible,clean,read,install,reportPayload,reportMatches,isComposing:f=>composing.has(f)});
 });

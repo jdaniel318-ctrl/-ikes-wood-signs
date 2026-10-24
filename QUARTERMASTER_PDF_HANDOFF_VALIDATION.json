@@ -1,0 +1,685 @@
+{
+  "schema": "blackflag.quartermaster.pdf-handoff-validation.v1",
+  "build": "8.8.20.52",
+  "release": "Quartermaster",
+  "baseline": "8.8.20.51",
+  "recorded_at": "2026-10-24T11:58:39.556867-04:00",
+  "status": "OFFLINE_RELEASE_CHECKS_PASSED",
+  "source_sha256": {
+    "quartermaster.js": "3590fec00297d6ebfc8df08037e73e3b17430a1ddc77de56257af02e55b15192",
+    "quartermaster.css": "1fcec444169dec5fb94a976e8aa0be2fe1a163ed89a46015c3d1aad7ccae3a57",
+    "styles.css": "3af289879bf0256d244fe084d3d9e26c67b277bdaffdd1df8387143d7d077379",
+    "business_deck.css": "445fa81fff307d41cdd9a7d181ec86f9daae6843d24ac0d9fe14f939a25b6289",
+    "quartermaster_core.js": "5de2d40cb05eeeafb03855e5a374b7fc451982969d187d71632dd908e1051eed",
+    "quartermaster_fonts.js": "69b2f7fbcf0d29731cf6feea6d3f7b57d7633fafc29703123a7213ea861c9df5",
+    "quartermaster_pdf.js": "7e1c51fa7d7a4ae4fcd55a2330b15ff87c6b4ec0c9db548ff2b6a72658a453a1",
+    "VERIFY_QUARTERMASTER_UI.cjs": "705af8b22bd6eb77e07dad266d521bf1227d5ab09f267d0c43d4a57c061389cd",
+    "VERIFY_QUARTERMASTER_PRESENTATION.cjs": "8146d3f9e97d2680c243a371f4d0bd870c7bf2f0b0f1ff1b26dd81d7e3cc3053"
+  },
+  "baseline_reproduction": {
+    "expected_missing_action_failure": true,
+    "build": "8.8.20.51",
+    "name": "prepared PDF has a separate native open action",
+    "missing": "Open PDF in new tab"
+  },
+  "pdf_handoff": {
+    "passed": 13,
+    "failed": 0,
+    "scope": "Real Quartermaster modules, native IndexedDB, saved-snapshot PDF generation and native browser tab/download actions; complete styles.css, business_deck.css and quartermaster.css; exact professional Admiral host template and authority fixtures reused from retained .51 verifier utilities. Synthetic authority only; all external requests blocked. Exact built-in PDF extension host and chrome://resources/ are allowed as browser-local dependencies and their exact URLs recorded separately. Original URL, live document/dialog identity, scroll, full local workspace and session counters compared around handoff. Chromium viewport emulation, not native iPad Safari. The fallback case removes the real download attribute in the harness; the dirty case dispatches input to the real hidden document field. No production test hooks.",
+    "browser": "151.0.7922.34",
+    "results": [
+      {
+        "name": "open PDF in a native new tab preserves the active workspace",
+        "pass": true,
+        "actions": [
+          {
+            "label": "Open PDF in new tab",
+            "href": "blob:https://quartermaster-pdf-handoff.invalid/6804909c-8890-4ad9-ae7f-3128436338d6",
+            "target": "_blank",
+            "download": null,
+            "rel": "noopener noreferrer",
+            "actionRow": true
+          },
+          {
+            "label": "Download PDF",
+            "href": "blob:https://quartermaster-pdf-handoff.invalid/6804909c-8890-4ad9-ae7f-3128436338d6",
+            "target": "_blank",
+            "download": "HH-QTE-2026-L21D796053A934B22928E5D4328236100-000001.pdf",
+            "rel": "noopener noreferrer",
+            "actionRow": true
+          }
+        ],
+        "pdf": {
+          "type": "application/pdf",
+          "bytes": 346496,
+          "header": "%PDF-1.7",
+          "sha256": "97a971d7809857b10ab71b009e5cea4e04d31f63072cda14111e32028f5abafe"
+        },
+        "view": {
+          "url": "blob:https://quartermaster-pdf-handoff.invalid/6804909c-8890-4ad9-ae7f-3128436338d6",
+          "contentType": "application/pdf",
+          "embeddedPdf": false,
+          "openerIsNull": true
+        },
+        "continuity": {
+          "url": "https://quartermaster-pdf-handoff.invalid/index.html",
+          "documentNumber": "HH-QTE-2026-L21D796053A934B22928E5D4328236100-000001",
+          "business": "househull",
+          "scroll": {
+            "x": 0,
+            "y": 0,
+            "content": 1326
+          },
+          "session": {
+            "account": "synthetic-admiral-a",
+            "stamp": 100,
+            "reusable": true,
+            "checks": 4,
+            "completedChecks": 4
+          },
+          "workspaceRevision": 15,
+          "catalogItems": 12,
+          "documents": 1,
+          "workspaceSha256": "f49b22238ca4784cc9c9f07746507281ed0398fefd4f62e6217d780f935b40fa",
+          "writes": 17,
+          "sameDocument": true,
+          "sameDialog": true
+        },
+        "served": [
+          "black_flag_platform_icon.png",
+          "business_deck.css",
+          "index.html",
+          "quartermaster.css",
+          "quartermaster.js",
+          "quartermaster_core.js",
+          "quartermaster_fonts.js",
+          "quartermaster_pdf.js",
+          "styles.css"
+        ],
+        "browserInternalResources": [
+          "chrome-extension://mhjfbmdgcfjbbpaeojofohoefgiehjai/browser_api.js",
+          "chrome-extension://mhjfbmdgcfjbbpaeojofohoefgiehjai/index.css",
+          "chrome-extension://mhjfbmdgcfjbbpaeojofohoefgiehjai/main.js",
+          "chrome-extension://mhjfbmdgcfjbbpaeojofohoefgiehjai/pdf_embedder.css",
+          "chrome-extension://mhjfbmdgcfjbbpaeojofohoefgiehjai/pdf_scripting_api.js",
+          "chrome-extension://mhjfbmdgcfjbbpaeojofohoefgiehjai/pdf_viewer_wrapper.js",
+          "chrome-extension://mhjfbmdgcfjbbpaeojofohoefgiehjai/shared.rollup.js",
+          "chrome://resources/css/roboto.css",
+          "chrome://resources/css/text_defaults_md.css",
+          "chrome://resources/js/assert.js",
+          "chrome://resources/js/load_time_data.js",
+          "chrome://resources/lit/v3_0/lit.rollup.js",
+          "chrome://resources/mojo/mojo/public/js/bindings.js",
+          "chrome://resources/roboto/roboto-medium.woff2",
+          "chrome://resources/roboto/roboto-regular.woff2"
+        ],
+        "blockedRequests": []
+      },
+      {
+        "name": "native PDF download preserves filename bytes and workspace",
+        "pass": true,
+        "download": {
+          "filename": "HH-QTE-2026-L51E4D9B2513C423B9050878F44C1C09E-000001.pdf",
+          "bytes": 346496,
+          "sha256": "930db163b64ddd7d2340089b1d951aa364c2b5c5632eefec1b392d2760b4faf2",
+          "savedSnapshotTextVerified": true
+        },
+        "continuity": {
+          "url": "https://quartermaster-pdf-handoff.invalid/index.html",
+          "documentNumber": "HH-QTE-2026-L51E4D9B2513C423B9050878F44C1C09E-000001",
+          "business": "househull",
+          "scroll": {
+            "x": 0,
+            "y": 0,
+            "content": 1326
+          },
+          "session": {
+            "account": "synthetic-admiral-a",
+            "stamp": 100,
+            "reusable": true,
+            "checks": 4,
+            "completedChecks": 4
+          },
+          "workspaceRevision": 15,
+          "catalogItems": 12,
+          "documents": 1,
+          "workspaceSha256": "a6db3a6978acc9cb378a454e7ba091054e96bb3957c999d9cf57b760116bbf64",
+          "writes": 17,
+          "sameDocument": true,
+          "sameDialog": true
+        },
+        "served": [
+          "black_flag_platform_icon.png",
+          "business_deck.css",
+          "index.html",
+          "quartermaster.css",
+          "quartermaster.js",
+          "quartermaster_core.js",
+          "quartermaster_fonts.js",
+          "quartermaster_pdf.js",
+          "styles.css"
+        ],
+        "browserInternalResources": [],
+        "blockedRequests": []
+      },
+      {
+        "name": "download preview fallback opens separately when download is ignored",
+        "pass": true,
+        "view": {
+          "url": "blob:https://quartermaster-pdf-handoff.invalid/2a66ca90-01d8-41a0-b248-f8773c4b3113",
+          "contentType": "application/pdf",
+          "embeddedPdf": false,
+          "openerIsNull": true
+        },
+        "continuity": {
+          "url": "https://quartermaster-pdf-handoff.invalid/index.html",
+          "documentNumber": "HH-QTE-2026-L50B5692D4279437EA262D53011B388CA-000001",
+          "business": "househull",
+          "scroll": {
+            "x": 0,
+            "y": 0,
+            "content": 1326
+          },
+          "session": {
+            "account": "synthetic-admiral-a",
+            "stamp": 100,
+            "reusable": true,
+            "checks": 4,
+            "completedChecks": 4
+          },
+          "workspaceRevision": 15,
+          "catalogItems": 12,
+          "documents": 1,
+          "workspaceSha256": "543db715ac75e4ce32287c964c05bb0536bc42910fe24b77ed53d2e4bc0b04a0",
+          "writes": 17,
+          "sameDocument": true,
+          "sameDialog": true
+        },
+        "simulation": "Harness removes only the download attribute from the real anchor to exercise its native target fallback; this is not native Safari evidence.",
+        "served": [
+          "black_flag_platform_icon.png",
+          "business_deck.css",
+          "index.html",
+          "quartermaster.css",
+          "quartermaster.js",
+          "quartermaster_core.js",
+          "quartermaster_fonts.js",
+          "quartermaster_pdf.js",
+          "styles.css"
+        ],
+        "browserInternalResources": [
+          "chrome-extension://mhjfbmdgcfjbbpaeojofohoefgiehjai/browser_api.js",
+          "chrome-extension://mhjfbmdgcfjbbpaeojofohoefgiehjai/index.css",
+          "chrome-extension://mhjfbmdgcfjbbpaeojofohoefgiehjai/main.js",
+          "chrome-extension://mhjfbmdgcfjbbpaeojofohoefgiehjai/pdf_embedder.css",
+          "chrome-extension://mhjfbmdgcfjbbpaeojofohoefgiehjai/pdf_scripting_api.js",
+          "chrome-extension://mhjfbmdgcfjbbpaeojofohoefgiehjai/pdf_viewer_wrapper.js",
+          "chrome-extension://mhjfbmdgcfjbbpaeojofohoefgiehjai/shared.rollup.js",
+          "chrome://resources/css/roboto.css",
+          "chrome://resources/css/text_defaults_md.css",
+          "chrome://resources/js/assert.js",
+          "chrome://resources/js/load_time_data.js",
+          "chrome://resources/lit/v3_0/lit.rollup.js",
+          "chrome://resources/mojo/mojo/public/js/bindings.js",
+          "chrome://resources/roboto/roboto-medium.woff2",
+          "chrome://resources/roboto/roboto-regular.woff2"
+        ],
+        "blockedRequests": []
+      },
+      {
+        "name": "stale session blocks PDF open at click time",
+        "pass": true,
+        "noTabs": true,
+        "noDownloads": true,
+        "closed": true,
+        "revoked": true,
+        "staleTiming": "Synthetic session stamp changes in the real anchor capture phase immediately before its production click guard, before the periodic timer can intervene.",
+        "served": [
+          "black_flag_platform_icon.png",
+          "business_deck.css",
+          "index.html",
+          "quartermaster.css",
+          "quartermaster.js",
+          "quartermaster_core.js",
+          "quartermaster_fonts.js",
+          "quartermaster_pdf.js",
+          "styles.css"
+        ],
+        "browserInternalResources": [],
+        "blockedRequests": []
+      },
+      {
+        "name": "stale session blocks PDF download at click time",
+        "pass": true,
+        "noTabs": true,
+        "noDownloads": true,
+        "closed": true,
+        "revoked": true,
+        "staleTiming": "Synthetic session stamp changes in the real anchor capture phase immediately before its production click guard, before the periodic timer can intervene.",
+        "served": [
+          "black_flag_platform_icon.png",
+          "business_deck.css",
+          "index.html",
+          "quartermaster.css",
+          "quartermaster.js",
+          "quartermaster_core.js",
+          "quartermaster_fonts.js",
+          "quartermaster_pdf.js",
+          "styles.css"
+        ],
+        "browserInternalResources": [],
+        "blockedRequests": []
+      },
+      {
+        "name": "dirty document input clears and revokes prepared PDF",
+        "pass": true,
+        "revoked": true,
+        "savedRecordsUnchanged": true,
+        "inputScope": "Real document field and production input handler; the harness dispatches input because the field is hidden while Review and PDF is active.",
+        "served": [
+          "black_flag_platform_icon.png",
+          "business_deck.css",
+          "index.html",
+          "quartermaster.css",
+          "quartermaster.js",
+          "quartermaster_core.js",
+          "quartermaster_fonts.js",
+          "quartermaster_pdf.js",
+          "styles.css"
+        ],
+        "browserInternalResources": [],
+        "blockedRequests": []
+      },
+      {
+        "name": "changing documents removes and revokes the previous PDF",
+        "pass": true,
+        "revoked": true,
+        "openDocument": "HH-QTE-2026-LE1DC355645FB4EA3AD38719CB10C78C2-000001",
+        "served": [
+          "black_flag_platform_icon.png",
+          "business_deck.css",
+          "index.html",
+          "quartermaster.css",
+          "quartermaster.js",
+          "quartermaster_core.js",
+          "quartermaster_fonts.js",
+          "quartermaster_pdf.js",
+          "styles.css"
+        ],
+        "browserInternalResources": [],
+        "blockedRequests": []
+      },
+      {
+        "name": "changing business removes and revokes the previous PDF",
+        "pass": true,
+        "revoked": true,
+        "originalBusinessRecordsUnchanged": true,
+        "served": [
+          "black_flag_platform_icon.png",
+          "business_deck.css",
+          "index.html",
+          "quartermaster.css",
+          "quartermaster.js",
+          "quartermaster_core.js",
+          "quartermaster_fonts.js",
+          "quartermaster_pdf.js",
+          "styles.css"
+        ],
+        "browserInternalResources": [],
+        "blockedRequests": []
+      },
+      {
+        "name": "closing workspace removes and revokes prepared PDF",
+        "pass": true,
+        "revoked": true,
+        "savedRecordsUnchanged": true,
+        "served": [
+          "black_flag_platform_icon.png",
+          "business_deck.css",
+          "index.html",
+          "quartermaster.css",
+          "quartermaster.js",
+          "quartermaster_core.js",
+          "quartermaster_fonts.js",
+          "quartermaster_pdf.js",
+          "styles.css"
+        ],
+        "browserInternalResources": [],
+        "blockedRequests": []
+      },
+      {
+        "name": "JSON backup remains a single unchanged native download",
+        "pass": true,
+        "download": {
+          "filename": "Quartermaster-HH-2026-10-24.json",
+          "bytes": 10935,
+          "sha256": "23d589aceac5165e90bb0ab28e2606e7ed373b5e9f743cc90a557f26fa6a33d7"
+        },
+        "continuity": {
+          "url": "https://quartermaster-pdf-handoff.invalid/index.html",
+          "documentNumber": "HH-QTE-2026-LA43C576C9AF341DC96106B2C79955DC0-000001",
+          "business": "househull",
+          "scroll": {
+            "x": 0,
+            "y": 0,
+            "content": 521
+          },
+          "session": {
+            "account": "synthetic-admiral-a",
+            "stamp": 100,
+            "reusable": true,
+            "checks": 4,
+            "completedChecks": 4
+          },
+          "workspaceRevision": 15,
+          "catalogItems": 12,
+          "documents": 1,
+          "workspaceSha256": "447e8d86f2b00f84fe4066541bcfc27bda92da25dc01b20db3aa13fd7241f1fa",
+          "writes": 17,
+          "sameDocument": true,
+          "sameDialog": true
+        },
+        "served": [
+          "black_flag_platform_icon.png",
+          "business_deck.css",
+          "index.html",
+          "quartermaster.css",
+          "quartermaster.js",
+          "quartermaster_core.js",
+          "quartermaster_fonts.js",
+          "quartermaster_pdf.js",
+          "styles.css"
+        ],
+        "browserInternalResources": [],
+        "blockedRequests": []
+      },
+      {
+        "name": "PDF actions are reachable at tablet-landscape viewport",
+        "pass": true,
+        "reachability": [
+          {
+            "label": "Open PDF in new tab",
+            "focused": true,
+            "width": 197.65625,
+            "height": 44,
+            "visibleWidth": 197.65625,
+            "visibleHeight": 44,
+            "hit": true
+          },
+          {
+            "label": "Download PDF",
+            "focused": true,
+            "width": 136.1875,
+            "height": 44,
+            "visibleWidth": 136.1875,
+            "visibleHeight": 44,
+            "hit": true
+          }
+        ],
+        "geometry": {
+          "width": 1024,
+          "height": 768,
+          "documentWidth": 1024,
+          "dialog": {
+            "left": 16,
+            "right": 1008
+          },
+          "links": [
+            {
+              "label": "Open PDF in new tab",
+              "width": 197.65625,
+              "height": 44,
+              "left": 61,
+              "right": 258.65625,
+              "top": 657.78125,
+              "bottom": 701.78125
+            },
+            {
+              "label": "Download PDF",
+              "width": 136.1875,
+              "height": 44,
+              "left": 266.65625,
+              "right": 402.84375,
+              "top": 657.78125,
+              "bottom": 701.78125
+            }
+          ]
+        },
+        "served": [
+          "black_flag_platform_icon.png",
+          "business_deck.css",
+          "index.html",
+          "quartermaster.css",
+          "quartermaster.js",
+          "quartermaster_core.js",
+          "quartermaster_fonts.js",
+          "quartermaster_pdf.js",
+          "styles.css"
+        ],
+        "browserInternalResources": [],
+        "blockedRequests": []
+      },
+      {
+        "name": "PDF actions are reachable at tablet-portrait viewport",
+        "pass": true,
+        "reachability": [
+          {
+            "label": "Open PDF in new tab",
+            "focused": true,
+            "width": 197.65625,
+            "height": 44,
+            "visibleWidth": 197.65625,
+            "visibleHeight": 44,
+            "hit": true
+          },
+          {
+            "label": "Download PDF",
+            "focused": true,
+            "width": 136.1875,
+            "height": 44,
+            "visibleWidth": 136.1875,
+            "visibleHeight": 44,
+            "hit": true
+          }
+        ],
+        "geometry": {
+          "width": 768,
+          "height": 1024,
+          "documentWidth": 768,
+          "dialog": {
+            "left": 16,
+            "right": 752
+          },
+          "links": [
+            {
+              "label": "Open PDF in new tab",
+              "width": 197.65625,
+              "height": 44,
+              "left": 61,
+              "right": 258.65625,
+              "top": 865.34375,
+              "bottom": 909.34375
+            },
+            {
+              "label": "Download PDF",
+              "width": 136.1875,
+              "height": 44,
+              "left": 266.65625,
+              "right": 402.84375,
+              "top": 865.34375,
+              "bottom": 909.34375
+            }
+          ]
+        },
+        "served": [
+          "black_flag_platform_icon.png",
+          "business_deck.css",
+          "index.html",
+          "quartermaster.css",
+          "quartermaster.js",
+          "quartermaster_core.js",
+          "quartermaster_fonts.js",
+          "quartermaster_pdf.js",
+          "styles.css"
+        ],
+        "browserInternalResources": [],
+        "blockedRequests": []
+      },
+      {
+        "name": "PDF actions are reachable at phone viewport",
+        "pass": true,
+        "reachability": [
+          {
+            "label": "Open PDF in new tab",
+            "focused": true,
+            "width": 197.65625,
+            "height": 44,
+            "visibleWidth": 197.65625,
+            "visibleHeight": 44,
+            "hit": true
+          },
+          {
+            "label": "Download PDF",
+            "focused": true,
+            "width": 136.1875,
+            "height": 44,
+            "visibleWidth": 136.1875,
+            "visibleHeight": 44,
+            "hit": true
+          }
+        ],
+        "geometry": {
+          "width": 390,
+          "height": 844,
+          "documentWidth": 390,
+          "dialog": {
+            "left": 6,
+            "right": 384
+          },
+          "links": [
+            {
+              "label": "Open PDF in new tab",
+              "width": 197.65625,
+              "height": 44,
+              "left": 39,
+              "right": 236.65625,
+              "top": 662.203125,
+              "bottom": 706.203125
+            },
+            {
+              "label": "Download PDF",
+              "width": 136.1875,
+              "height": 44,
+              "left": 39,
+              "right": 175.1875,
+              "top": 714.203125,
+              "bottom": 758.203125
+            }
+          ]
+        },
+        "served": [
+          "black_flag_platform_icon.png",
+          "business_deck.css",
+          "index.html",
+          "quartermaster.css",
+          "quartermaster.js",
+          "quartermaster_core.js",
+          "quartermaster_fonts.js",
+          "quartermaster_pdf.js",
+          "styles.css"
+        ],
+        "browserInternalResources": [],
+        "blockedRequests": []
+      }
+    ]
+  },
+  "workflow": {
+    "passed": 11,
+    "failed": 0,
+    "scope": "Actual Quartermaster UI and native IndexedDB in isolated offline Chromium with synthetic authority; no live accounts/network or Safari proof",
+    "runner": "VERIFY_QUARTERMASTER_WORKFLOW_52.cjs",
+    "runner_adaptation": "Only the prepare helper download selector was narrowed to a[download] in two places to distinguish the new Open PDF action; all original scenario assertions are retained.",
+    "source_sha256": {
+      "quartermaster_core.js": "5de2d40cb05eeeafb03855e5a374b7fc451982969d187d71632dd908e1051eed",
+      "quartermaster_pdf.js": "7e1c51fa7d7a4ae4fcd55a2330b15ff87c6b4ec0c9db548ff2b6a72658a453a1",
+      "quartermaster.js": "3590fec00297d6ebfc8df08037e73e3b17430a1ddc77de56257af02e55b15192",
+      "quartermaster.css": "1fcec444169dec5fb94a976e8aa0be2fe1a163ed89a46015c3d1aad7ccae3a57"
+    },
+    "results": [
+      {
+        "name": "denied authority never opens durable workspace",
+        "pass": true
+      },
+      {
+        "name": "closed Admiral session cannot enter",
+        "pass": true
+      },
+      {
+        "name": "authority response discarded after account changes",
+        "pass": true
+      },
+      {
+        "name": "real UI catalog quote invoice PDF backup save and reload",
+        "pass": true
+      },
+      {
+        "name": "backup restores into empty exact scope and rejects foreign scope",
+        "pass": true
+      },
+      {
+        "name": "native storage quota does not claim catalog save",
+        "pass": true
+      },
+      {
+        "name": "session revocation removes private UI and prepared download",
+        "pass": true
+      },
+      {
+        "name": "delayed side effect revalidates account and leaves database unchanged",
+        "pass": true
+      },
+      {
+        "name": "phone layout keeps controls and dialog inside viewport",
+        "pass": true
+      },
+      {
+        "name": "iPad layout keeps controls and dialog inside viewport",
+        "pass": true
+      },
+      {
+        "name": "rapid repeated action and concurrent tabs keep unique numbers",
+        "pass": true
+      }
+    ]
+  },
+  "independent_review": {
+    "verdict": "APPROVED",
+    "report": "QUARTERMASTER_PDF_HANDOFF_REVIEW.md"
+  },
+  "actual_index": {
+    "passed": 3,
+    "failed": 0,
+    "pending": false,
+    "results": [
+      {
+        "name": "actual index coherent release boots",
+        "pass": true
+      },
+      {
+        "name": "actual index rejects changed required runtime bytes",
+        "pass": true
+      },
+      {
+        "name": "actual index rejects changed runtime checksum declaration",
+        "pass": true
+      }
+    ]
+  },
+  "behavior_preservation": "Exact inverse replacement map and .52 identity normalization against complete .51. Core calculations, PDF rendering bytes, fonts, storage, authority logic, session limits and other vessel/game behavior retained.",
+  "limits": [
+    "Offline Chromium and synthetic authority; no new native iPad Safari or live-authentication certification.",
+    "The browser controls final tab/download presentation; both PDF links target a separate browsing context.",
+    "Keeping the app tab avoids PDF-triggered navigation, but does not extend the existing Admiral session limits.",
+    "Final archive reconstruction and extracted actual-index startup are separate artifact gates."
+  ]
+}
