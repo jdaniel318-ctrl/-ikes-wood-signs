@@ -1,0 +1,207 @@
+{
+  "schema": "carvewright-session-release-evidence-v1",
+  "build": "8.8.20.56",
+  "baseline": "8.8.20.55",
+  "pass": true,
+  "recorded_at": "2026-10-24T23:28:24.691634+00:00",
+  "native_safari_acceptance": "not claimed",
+  "native_firefox_acceptance": "not claimed",
+  "live_commissioning_acceptance": "not claimed",
+  "machine_production_acceptance": "not claimed",
+  "checks": [
+    {
+      "name": "Real bundled session manager and current Carvewright lifecycle",
+      "status": "passed",
+      "groups": 26,
+      "command": "node qa/session.cjs release qa/session-final all",
+      "scope": "Actual bundled session manager, adapter, app, editor and storage; every HTTP response intercepted locally with synthetic account/authority responses. One real wall-clock multi-heartbeat observation; long expiry checks use controlled clocks. Focus/visibility DOM notifications exercise actual transport handlers, not OS-level device switching.",
+      "result_file_sha256": "333662298d2b9022ecfdee35e1f3473aad11bb5f6152be0b208f04c874c2efbd",
+      "heartbeat_file_sha256": "b89f01445a48daf9ab714917587675f37fd965d10d853792fe139c3fd0a502aa",
+      "result_names": [
+        "wall-clock real transport heartbeat preserves unsaved app and editor over three heartbeats",
+        "trusted app input renews only idle clock",
+        "trusted editor input renews only idle clock",
+        "transport focus visibility authority refresh receipt handlers preserve app editor and links without activity",
+        "saved handoff links preserve href content and usability across heartbeat",
+        "trusted pointerdown in current app renews activity",
+        "trusted wheel in current app renews activity",
+        "trusted touchstart in current app renews activity",
+        "trusted pointerdown in current editor renews activity",
+        "trusted wheel in current editor renews activity",
+        "trusted touchstart in current editor renews activity",
+        "synthetic workspace outside trusted activity status renders and save do not renew idle",
+        "idle expires at fifteen minutes and late input cannot revive",
+        "genuine ongoing work renews idle but maximum expires at sixty minutes",
+        "real ended loss closes both surfaces and revokes prepared URLs",
+        "real unavailable loss closes both surfaces and revokes prepared URLs",
+        "real account loss closes both surfaces and revokes prepared URLs",
+        "real start loss closes both surfaces and revokes prepared URLs",
+        "real backend loss closes both surfaces and revokes prepared URLs",
+        "real environment loss closes both surfaces and revokes prepared URLs",
+        "real site loss closes both surfaces and revokes prepared URLs",
+        "real deck loss closes both surfaces and revokes prepared URLs",
+        "real deckReplaced loss closes both surfaces and revokes prepared URLs",
+        "real token loss closes both surfaces and revokes prepared URLs",
+        "real authority loss closes both surfaces and revokes prepared URLs",
+        "reference workspace ignores fleet events while preserving its own live guard"
+      ],
+      "real_heartbeat_case_elapsed_ms": 17223,
+      "source_sha256": {
+        "fleet_supabase.js": "4355d72b1e294404144b64749a300838ddd8c90ae99bdbf29ea5c6b259f53a6b",
+        "carve_fonts.js": "f9dba7e80836fa4d702c7599fd9c7e7f99864bb6493c9aae82b1a161c4aaafcf",
+        "carve_core.js": "1332b534c520f6953750206c73f9c80175b0ea06132739a1145575de8060cc4c",
+        "carve_store.js": "95444741396e68749ecbf67dc15fd4f5f34d58a9f036621f41e6e2e276caa984",
+        "carvewright_core.js": "32aaaa33abf54894409f6e7452135933ecc50f937d446f1dcabe485f10669817",
+        "carvewright_store.js": "3ab158e100e16b01a5a3a3fb139d961b580bee31ca1cc4f5ff4024f7b2b18df1",
+        "carvewright_studio.js": "4c3024a22a6fbf7a0e5d6360b26187f00af58212a7d7e3d3a3a06e62762d9142",
+        "carvewright_app.js": "a6c42fb8665779de6ab1063cb9eebce43cf2e0dbad81f9a80f635aa779687ce7",
+        "carvewright_fleet.js": "673120338d2b5deabda2f91e91d641fa2b70cc698ec5fa1cc7d7ffbe54f17ed3",
+        "carvewright.css": "cce1c63a50f185cfd9d71d3842bccecc26a5c7c66f5e79ea0f4a099f42057fc4"
+      }
+    },
+    {
+      "name": "Retained current app/editor save import and download workflow",
+      "status": "passed",
+      "groups": 20,
+      "scope": "Fresh Chromium profile; all external requests blocked; no live account or machine; actual native downloads",
+      "result_names": [
+        "independent Carvewright home opens with truthful empty counts",
+        "sample becomes an independent unsaved job with editable requester metadata",
+        "own editor opens exact physical outlines without accounting",
+        "blank and unsupported lettering block review and export explicitly",
+        "physical unit switching and overflow controls remain correct",
+        "review and save return the exact design to its job",
+        "request metadata changes reset local review and handoff eligibility",
+        "saved job reopens after reload with all independent job details",
+        "handoff uses a saved reviewed revision and offers separate native downloads",
+        "downloaded SVG has identical physical paths and Carvewright metadata",
+        "navigation revokes prepared URLs",
+        "current job file imports a new unreviewed copy without overwrite",
+        "tampered geometry is rejected and saved jobs are preserved",
+        "legacy job JSON retains source and exactly the same lettering geometry",
+        "explicit legacy lookup copies only same-scope saved designs and leaves originals unchanged",
+        "job search and review filter use actual saved records",
+        "ipad home jobs and editor keep reachable controls and no horizontal overflow",
+        "phone home jobs and editor keep reachable controls and no horizontal overflow",
+        "live guard loss closes job and editor surfaces",
+        "denied browser storage retains portable editor export without false save"
+      ],
+      "result_file_sha256": "cd10a23aee11da65f3a68828374ac4051437381b40bf0b117efd9d22c85d511c",
+      "source_sha256": {
+        "carve_fonts.js": "f9dba7e80836fa4d702c7599fd9c7e7f99864bb6493c9aae82b1a161c4aaafcf",
+        "carve_core.js": "1332b534c520f6953750206c73f9c80175b0ea06132739a1145575de8060cc4c",
+        "carve_store.js": "95444741396e68749ecbf67dc15fd4f5f34d58a9f036621f41e6e2e276caa984",
+        "carvewright_core.js": "32aaaa33abf54894409f6e7452135933ecc50f937d446f1dcabe485f10669817",
+        "carvewright_store.js": "3ab158e100e16b01a5a3a3fb139d961b580bee31ca1cc4f5ff4024f7b2b18df1",
+        "carvewright_studio.js": "4c3024a22a6fbf7a0e5d6360b26187f00af58212a7d7e3d3a3a06e62762d9142",
+        "carvewright_app.js": "a6c42fb8665779de6ab1063cb9eebce43cf2e0dbad81f9a80f635aa779687ce7",
+        "carvewright.css": "cce1c63a50f185cfd9d71d3842bccecc26a5c7c66f5e79ea0f4a099f42057fc4",
+        "carvewright.html": "4b2d498e50a181f66ac622dbdad76a2dd09f8efb4c2120db1d79e59f7bf968fa"
+      }
+    },
+    {
+      "name": "Direct local-file workflow and actual native downloads",
+      "status": "passed",
+      "groups": 20,
+      "scope": "Fresh Chromium profile; all external requests blocked; no live account or machine; actual native downloads",
+      "result_names": [
+        "independent Carvewright home opens with truthful empty counts",
+        "sample becomes an independent unsaved job with editable requester metadata",
+        "own editor opens exact physical outlines without accounting",
+        "blank and unsupported lettering block review and export explicitly",
+        "physical unit switching and overflow controls remain correct",
+        "review and save return the exact design to its job",
+        "request metadata changes reset local review and handoff eligibility",
+        "saved job reopens after reload with all independent job details",
+        "handoff uses a saved reviewed revision and offers separate native downloads",
+        "downloaded SVG has identical physical paths and Carvewright metadata",
+        "navigation revokes prepared URLs",
+        "current job file imports a new unreviewed copy without overwrite",
+        "tampered geometry is rejected and saved jobs are preserved",
+        "legacy job JSON retains source and exactly the same lettering geometry",
+        "explicit legacy lookup copies only same-scope saved designs and leaves originals unchanged",
+        "job search and review filter use actual saved records",
+        "ipad home jobs and editor keep reachable controls and no horizontal overflow",
+        "phone home jobs and editor keep reachable controls and no horizontal overflow",
+        "live guard loss closes job and editor surfaces",
+        "denied browser storage retains portable editor export without false save"
+      ],
+      "result_file_sha256": "68bde0ff74237e89c0de6410ebbdcaabf2a938dfa567739e4905b39404b54423",
+      "source_sha256": {
+        "carve_fonts.js": "f9dba7e80836fa4d702c7599fd9c7e7f99864bb6493c9aae82b1a161c4aaafcf",
+        "carve_core.js": "1332b534c520f6953750206c73f9c80175b0ea06132739a1145575de8060cc4c",
+        "carve_store.js": "95444741396e68749ecbf67dc15fd4f5f34d58a9f036621f41e6e2e276caa984",
+        "carvewright_core.js": "32aaaa33abf54894409f6e7452135933ecc50f937d446f1dcabe485f10669817",
+        "carvewright_store.js": "3ab158e100e16b01a5a3a3fb139d961b580bee31ca1cc4f5ff4024f7b2b18df1",
+        "carvewright_studio.js": "4c3024a22a6fbf7a0e5d6360b26187f00af58212a7d7e3d3a3a06e62762d9142",
+        "carvewright_app.js": "a6c42fb8665779de6ab1063cb9eebce43cf2e0dbad81f9a80f635aa779687ce7",
+        "carvewright.css": "cce1c63a50f185cfd9d71d3842bccecc26a5c7c66f5e79ea0f4a099f42057fc4",
+        "carvewright.html": "4b2d498e50a181f66ac622dbdad76a2dd09f8efb4c2120db1d79e59f7bf968fa"
+      }
+    },
+    {
+      "name": "Actual release startup and altered-byte rejection",
+      "status": "passed",
+      "groups": 4,
+      "scope": "Actual release index loader with all response bytes routed locally; fresh Chromium contexts; no service worker capability, live network, user identity, hosted authentication or Safari proof",
+      "result_names": [
+        "actual index coherent release boots",
+        "actual index rejects changed required runtime bytes",
+        "actual index rejects changed independent Carvewright geometry bytes",
+        "actual index rejects changed runtime checksum declaration"
+      ],
+      "result_file_sha256": "6d4c05b8a2daf778f5ae99c884afaefb4e9457ae428b853df43e0c72285e0fb2",
+      "source_sha256": {
+        "index.html": "12f41a306d287818410138ae2c18d5c993a5883ebd7017cc245c07bd5cf4c5bc",
+        "quartermaster.js": "46e35c9448b52c45fee5ae729ebeba75bb8df2dd3634b90acb2fef035e15d238",
+        "fun_program.js": "debe530f343026e9f3364591c917f28439e786490e0dbb410783abfd17698b13",
+        "stormwake_player.html": "069e369723a5fbd92fe51b6499214fbc60fb9d92861a19f67b320b8b4e5fee30",
+        "carvewright_app.js": "a6c42fb8665779de6ab1063cb9eebce43cf2e0dbad81f9a80f635aa779687ce7",
+        "carvewright_studio.js": "4c3024a22a6fbf7a0e5d6360b26187f00af58212a7d7e3d3a3a06e62762d9142",
+        "carvewright_fleet.js": "673120338d2b5deabda2f91e91d641fa2b70cc698ec5fa1cc7d7ffbe54f17ed3"
+      }
+    },
+    {
+      "name": "Baseline defect reproduced before repair",
+      "status": "passed",
+      "scope": "Immutable .55 closes app/editor on the real first five-second status event while its Admiral session remains reusable. Expected baseline failure is not a passing .55 lifecycle claim.",
+      "baseline_build": "8.8.20.55",
+      "baseline_expected_failure": true,
+      "result_file_sha256": "8f6092cb47d57b4772a86879074ec066511523b62629a7c85f5c1780794fe48c",
+      "heartbeat_file_sha256": "bbdf0a5a6d95afbae776458b97bdcfc1402831b2b89fc543ea7e6863c39ee664"
+    },
+    {
+      "name": "Preserved compiled-player behavior and actual host digest",
+      "status": "passed",
+      "scope": "Actual compiler completed; complete player is identical to .55 after reversing current identity; actual output and input hashes agree.",
+      "source_sha256": {
+        "fun_program.js": "debe530f343026e9f3364591c917f28439e786490e0dbb410783abfd17698b13",
+        "stormwake_player.html": "069e369723a5fbd92fe51b6499214fbc60fb9d92861a19f67b320b8b4e5fee30",
+        "BUILD_STORMWAKE_PLAYER.py": "b330a4a773969e03293660da4bceff6266b9c45d6cb37da9f584aa9b19b436f9",
+        "STORMWAKE_PLAYER_BUILD.json": "7128a770fd1e652277c0a4ddf68df1ca21b313202ef4fcde20e665d9dd9c0837"
+      }
+    },
+    {
+      "name": "Independent repair and release-tooling review",
+      "status": "passed",
+      "scope": "Exact four substitutions approved; forward whole-file preservation and fixed embedded snapshot reviewed. No change to server policy, session limits, data scopes, geometry, stored schemas or protected fleet counts.",
+      "approved_substitution_sha256": "1b9d2f7214390f9436e2df80ce85ac8b2cfc848845e78c01f65b16b92a90b4e4",
+      "review_report_sha256": {
+        "session-review.md": "00e272395b2624303e6af24583b1b98b01bedf3d4a90b9b0e6230b8de6594a5a",
+        "tooling-review.md": "5356e692af3e2cb30ce47b96c351d6198c2411ea8dbf047564e20b41c7ab4b97"
+      },
+      "source_sha256": {
+        "carvewright_app.js": "a6c42fb8665779de6ab1063cb9eebce43cf2e0dbad81f9a80f635aa779687ce7",
+        "carvewright_studio.js": "4c3024a22a6fbf7a0e5d6360b26187f00af58212a7d7e3d3a3a06e62762d9142",
+        "carvewright_fleet.js": "673120338d2b5deabda2f91e91d641fa2b70cc698ec5fa1cc7d7ffbe54f17ed3",
+        "fleet_supabase.js": "4355d72b1e294404144b64749a300838ddd8c90ae99bdbf29ea5c6b259f53a6b",
+        "VERIFY_CARVEWRIGHT_SESSION_RELEASE.py": "2d7807c82f0e02499a23b3d5918b94e2b04325baa8651294db2b5023db073322"
+      }
+    }
+  ],
+  "automated_groups_recorded": 70,
+  "prior_coverage_gap": "The .55 integration fixture used a synthetic session facade and did not emit the actual five-second status heartbeat. This release adds direct actual-manager regression coverage.",
+  "package_acceptance": "Archive reconstruction and extracted boot/session/file-entry results are recorded separately after packaging.",
+  "cross_device_sync": false,
+  "server_policy_changed": false
+}

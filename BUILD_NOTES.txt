@@ -1,3 +1,17 @@
+Carvewright 8.8.20.56 — five-second session repair
+
+Corrected the app/editor's unconditional response to routine session-changed events. Valid same-context status, focus and authority-refresh notifications preserve current work and links. Ended/unavailable sessions and invalid guards still close private surfaces.
+
+Added an adapter-only trusted activity bridge from the independent body-level job/editor dialogs to the existing noteProgramActivity API using the captured actor and session start. Synthetic/outside/background/status activity does not renew idle. Existing idle 15 minutes, maximum 60 minutes, sign-in and server verification are preserved.
+
+Three runtime behavior files changed. All other existing runtime is preserved outside current release identity and the actual rebuilt player SHA. Current data schemas, geometry/fonts/stores and business/fleet policies are unchanged. Full 369 files; one cumulative update for complete .53/.54/.55; standalone 12. No deletions or database actions.
+
+Current evidence: CARVEWRIGHT_SESSION_EVIDENCE.json. Current guide: CARVEWRIGHT_SESSION_GUIDE.md. Earlier evidence and guides are retained as historical records. New verification exercises the real bundled session manager instead of only a synthetic session facade.
+
+Native Safari, native Firefox, live commissioning and physical machine acceptance remain not claimed.
+
+Historical notes below are retained verbatim.
+
 Carvewright 8.8.20.55 — independent fleet design workspace
 
 New: independent Home, Jobs, editor and revision-specific artwork handoff; direct Engine/Admiral/My Fleet entrances; separate Carvewright application identity and scoped local store; explicit legacy read/copy/import with unchanged originals; job requester, source reference, brief and requested output. Existing Quotes & invoices no longer owns the design application.

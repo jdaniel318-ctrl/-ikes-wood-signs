@@ -1,3 +1,33 @@
+# Carvewright 8.8.20.56 — keep the workspace open
+
+**Current update: `DarkSky882056-Carvewright-Upload58.zip` — 58 files.**
+
+This cumulative repair supports complete 8.8.20.55, 8.8.20.54 or 8.8.20.53. It includes the independent Carvewright application and corrects the five-second closure seen in .55.
+
+## Three steps
+
+1. Extract `DarkSky882056-Carvewright-Upload58.zip` and open its matching folder.
+2. Upload all 58 files inside that folder beside the current index.html, replacing matching filenames and keeping every other existing file. Commit the upload and let the existing Pages deployment finish.
+3. Reopen the site, confirm 8.8.20.56, and open Carvewright. Leave it open for 20 seconds, then open a sample design and change the wording. It should remain open while the secure session is valid.
+
+## What changed
+
+A routine five-second session-status notification was incorrectly closing the app and editor. The subscribers now check the current authorized context; a routine valid status update keeps the current job, editor and prepared links intact. Trusted app/editor interaction now reaches the existing activity tracker. Sign-out, actual context loss and the existing 15-minute idle/60-minute maximum sign-in limits still close private work. The authentication transport and server policy are unchanged.
+
+Earlier .55 integration checks used a synthetic session facade and missed the real heartbeat. The new focused regression uses the actual bundled session manager and timer with isolated synthetic server responses, including a real multi-heartbeat observation and controlled-clock expiry checks.
+
+Existing saved designs, catalogs, quotes, invoices, customer data scopes, fleet identities and counts are retained. There are no SQL, database-reset or browser-data-clearing steps. Keep downloaded design JSON files as portable backups.
+
+`DarkSky882056-Carvewright-Standalone.zip` contains twelve files. Extract them together and open carvewright.html for a local workspace without fleet sign-in. Its current guide is CARVEWRIGHT_SESSION_GUIDE.md; the retained fleet-source document provides geometry/font attribution. The full software backup is DarkSky882056-Carvewright-FullBackup.zip and is not the small browser-upload update.
+
+Fleet commissioning remains pending. No new CAM, machine output, cloud synchronization or automatic cross-business transaction is included. Native Firefox and iPad Safari acceptance are not claimed by the isolated Chromium checks.
+
+---
+
+## Historical instructions below — retained verbatim
+
+Use the current filename and directions above for this repair. Earlier instructions describe earlier releases.
+
 # Upload this one — Carvewright 8.8.20.55
 
 **Current update: `DarkSky882055-Carvewright-Upload55.zip`**

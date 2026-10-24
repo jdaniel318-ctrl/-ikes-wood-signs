@@ -1,8 +1,8 @@
-/* Carvewright 8.8.20.55 — independent local jobs and design workspace. */
+/* Carvewright 8.8.20.56 — independent local jobs and design workspace. */
 (function(g){
  'use strict';
  if(!g.document||g.CarvewrightApp)return;
- const BUILD='8.8.20.55',clone=v=>JSON.parse(JSON.stringify(v));
+ const BUILD='8.8.20.56',clone=v=>JSON.parse(JSON.stringify(v));
  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const icon=(p,cls='')=>`<svg class="cw-icon ${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
  const mark=icon('<path d="m12 3 9 5-9 5-9-5 9-5Zm-9 9 9 5 9-5M3 16l9 5 9-5"/>','cw-mark');
@@ -54,7 +54,8 @@
  function close(force=false){const s=current;if(!s)return true;if(!force&&!discard(s))return false;s.closed=true;s.generation++;clearInterval(s.timer);s.store?.close();g.CarvewrightStudio?.close(true);revoke(s);current=null;if(s.root.open)s.root.close();s.root.remove();if(s.origin?.isConnected)s.origin.focus({preventScroll:true});if(typeof s.options.onClose==='function')s.options.onClose();return true;}
  function open(options){if(current&&alive(current)){node(current,'cwTitle').focus({preventScroll:true});return true;}if(current&&!close())return false;if(!options||typeof options.guard!=='function'||options.guard()!==true||options.scope?.businessId!=='carvewright')throw Error('Open the correct Carvewright workspace.');if(!core()||!fonts()||!g.CarvewrightStore||!g.CarvewrightStudio)throw Error('Carvewright files are incomplete. Open the complete release.');const parent=options.parent||document.body;if(!parent.isConnected)throw Error('The owning workspace is closed.');const root=document.createElement('dialog');root.id='carvewrightApp';root.className='cw-app';root.setAttribute('aria-labelledby','cwTitle');root.innerHTML=shell(!!options.referenceOnly);document.body.appendChild(root);const s={root,parent,options:{...options,scope:clone(options.scope)},origin:document.activeElement,store:null,rows:[],reviewed:new Map(),loaded:false,legacy:null,draft:null,dirty:false,panel:'home',query:'',filter:'all',handoff:null,prepared:null,urls:[],busy:false,closed:false,generation:0,timer:null};current=s;root.showModal();try{s.store=g.CarvewrightStore.create({scope:clone(s.options.scope),guard:()=>{guard(s);return true;}});}catch(e){close(true);throw e;}root.addEventListener('click',e=>{e.stopPropagation();click(s,e);});root.addEventListener('input',e=>{e.stopPropagation();input(s,e);});root.addEventListener('change',e=>{e.stopPropagation();change(s,e);});root.addEventListener('cancel',e=>{e.preventDefault();e.stopPropagation();close();});root.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();e.stopPropagation();close();}});root.addEventListener('close',()=>{if(current===s)close(true);});render(s);node(s,'cwTitle').focus({preventScroll:true});s.timer=setInterval(()=>{if(!alive(s))close(true);},500);run(s,async valid=>{await refreshRows(s,valid);render(s);status(s,'Your Carvewright workspace is ready. Download job files to keep portable copies.');});return true;}
  g.addEventListener('beforeunload',e=>{if(current?.dirty){e.preventDefault();e.returnValue='';}});
- for(const event of ['darksky:admiral-session-ended','darksky:admiral-session-unavailable','darksky:admiral-session-changed'])g.addEventListener(event,()=>{if(current&&!current.options.referenceOnly)close(true);});
+ for(const event of ['darksky:admiral-session-ended','darksky:admiral-session-unavailable'])g.addEventListener(event,()=>{if(current&&!current.options.referenceOnly)close(true);});
+ g.addEventListener('darksky:admiral-session-changed',()=>{if(current&&!current.options.referenceOnly&&!alive(current))close(true);});
  g.addEventListener('focus',()=>{if(current&&!alive(current))close(true);});
  g.CarvewrightApp=Object.freeze({build:BUILD,open,close,isOpen:()=>!!current&&alive(current)});
 })(typeof window!=='undefined'?window:globalThis);

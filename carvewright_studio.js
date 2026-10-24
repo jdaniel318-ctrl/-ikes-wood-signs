@@ -1,8 +1,8 @@
-/* Carvewright 8.8.20.55 — independent design editor. No network or machining output. */
+/* Carvewright 8.8.20.56 — independent design editor. No network or machining output. */
 (function (g) {
   'use strict';
   if (!g.document || g.CarvewrightStudio) return;
-  const BUILD = '8.8.20.55';
+  const BUILD = '8.8.20.56';
   const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const clone = v => JSON.parse(JSON.stringify(v));
   const icon = (body, extra='') => `<svg viewBox="0 0 24 24" aria-hidden="true" ${extra}>${body}</svg>`;
@@ -192,7 +192,8 @@
     return true;
   }
   g.addEventListener('beforeunload',e=>{if(current?.dirty){e.preventDefault();e.returnValue='';}});
-  for(const event of ['darksky:admiral-session-ended','darksky:admiral-session-unavailable','darksky:admiral-session-changed'])g.addEventListener(event,()=>{if(current&&!current.options.referenceOnly)close(true);});
+  for(const event of ['darksky:admiral-session-ended','darksky:admiral-session-unavailable'])g.addEventListener(event,()=>{if(current&&!current.options.referenceOnly)close(true);});
+  g.addEventListener('darksky:admiral-session-changed',()=>{if(current&&!current.options.referenceOnly&&!alive(current))close(true);});
   g.addEventListener('focus',()=>{if(current&&!alive(current))close(true);});
   g.CarvewrightStudio=Object.freeze({build:BUILD,open,close,isOpen:()=>!!current&&alive(current)});
 })(typeof window!=='undefined'?window:globalThis);
