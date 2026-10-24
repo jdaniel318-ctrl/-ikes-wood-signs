@@ -1,0 +1,52 @@
+{
+  "status": "passed for these two review samples",
+  "prepared_on": "2026-10-23",
+  "timezone": "America/New_York",
+  "checks": [
+    {
+      "type": "invoice",
+      "number": "HH-INV-2026-000001",
+      "pages": 1,
+      "number_position": "top right",
+      "number_bbox": {
+        "x0": 462.21,
+        "top": 53.02,
+        "x1": 576.0,
+        "bottom": 63.52
+      },
+      "material_lines": 10,
+      "service_lines": 2,
+      "line_units_and_amounts_verified": 12,
+      "materials": "2721.00",
+      "services": "3550.00",
+      "tax": "0.00",
+      "total": "6271.00",
+      "bytes": 65391,
+      "sha256": "4bffd950959a428b0b3a16512185e97932fa8a74f65da27c4790a5aec4a6dce7"
+    },
+    {
+      "type": "quote",
+      "number": "HH-QTE-2026-000001",
+      "pages": 1,
+      "number_position": "top right",
+      "number_bbox": {
+        "x0": 462.21,
+        "top": 53.02,
+        "x1": 576.0,
+        "bottom": 63.52
+      },
+      "material_lines": 10,
+      "service_lines": 2,
+      "line_units_and_amounts_verified": 12,
+      "materials": "2721.00",
+      "services": "3550.00",
+      "tax": "0.00",
+      "total": "6271.00",
+      "bytes": 65317,
+      "sha256": "34aa4646b9e5a321270c6e9da4b78b1057e452bcec45cd0578f87df7eb50920e"
+    }
+  ],
+  "quote_invoice_reference": "exact ID, number, revision and matching item data verified",
+  "visual_review": "both final page images reviewed by root and an independent reviewer; no clipping or overlap found",
+  "scope": "offline sample documents only; production numbering, app integration, sending and supplier ordering are not implemented"
+}

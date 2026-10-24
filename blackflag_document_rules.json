@@ -1,0 +1,48 @@
+{
+  "schema": "blackflag.document_pattern.requirements.v1",
+  "status": "working requirements and offline sample; not a deployed engine",
+  "recorded_on": "2026-10-23",
+  "timezone": "America/New_York",
+  "source": "Captain's explicit HouseHull quote and invoice direction",
+  "househull_operator": "person measuring and estimating the work",
+  "househull_customer_output": "reviewed customer quote PDF; invoice when explicitly issued for the appropriate business event",
+  "customer_self_service": false,
+  "document_types": ["quote", "invoice"],
+  "shared_pattern": {
+    "header": ["business identity", "document type", "unique readable number at top right", "issue date", "revision"],
+    "parties": ["customer / bill-to", "job or property reference", "business contact information"],
+    "line_fields": ["stable line ID", "material or service kind", "part or service number", "description", "product specification", "quantity", "unit", "unit selling price", "line amount"],
+    "totals": ["subtotal", "configured tax and other explicit adjustments", "document total", "invoice payments applied and remaining balance where applicable"],
+    "quote_only": ["validity or expiry terms", "scope", "selected assumptions and exclusions"],
+    "invoice_only": ["due date or payment terms", "related quote document ID and exact revision when applicable"],
+    "currency_rule": "Currency is explicit per document; decimal calculations and a documented rounding rule. Never silently assume a tax rate or jurisdiction.",
+    "sample_decimal_rule": "Quantities times unit selling prices are rounded to currency cents with ROUND_HALF_UP at each line; line amounts sum to subtotal. The sample tax is then rounded to cents."
+  },
+  "parts_and_ordering": {
+    "ordering_quantity": "Physical material quantity is expressed in its purchasable unit: carton, piece, roll, box, tube or each.",
+    "measured_quantity": "Retain measured/required quantity separately from ordering quantity and package conversion.",
+    "part_identity": "Actual manufacturer/supplier part numbers, vendor and catalog revision must be stored exactly. Internal item ID, supplier SKU and manufacturer part number are distinct fields when needed.",
+    "specification": "Show the variant, color, profile, size, stock length or pack coverage needed to identify the item unambiguously.",
+    "unit_price": "The displayed unit price multiplies the displayed ordering or billing unit.",
+    "service_codes": "Service references identify labor or other billed work; they are not physical manufacturer part numbers.",
+    "invoice_vs_order": "A quoted or invoiced quantity does not itself establish a supplier order, delivery, installation or payment. Ordering is a separate explicit workflow."
+  },
+  "numbering": {
+    "internal_identity": "globally unique immutable document ID plus immutable business ID",
+    "readable_examples": {"quote": "HH-QTE-2026-000001", "invoice": "HH-INV-2026-000001"},
+    "position": "top right on every PDF page",
+    "uniqueness": "business-scoped type/year/sequence policy backed by atomic allocation; business prefix resolves unambiguously; internal UUID is independent of display code",
+    "idempotency": "Repeated submission of the same issuance operation returns the same document and number.",
+    "reuse": "Do not reuse canceled or voided numbers.",
+    "revision": "Issued snapshots remain fixed. The document number and visible revision identify the version; re-export of that version retains both.",
+    "quote_to_invoice": "Explicit action creates a separately numbered invoice referencing the exact source quote ID and revision; never mutate the quote into an invoice.",
+    "implementation_status": "Requirements recorded. The offline renderer accepts supplied sample numbers; production allocation and issuance are not implemented."
+  },
+  "business_scope": {
+    "reuse": ["layout patterns", "field validation", "decimal calculation behavior", "number placement", "quote/invoice distinctions", "revision and reference rules"],
+    "business_owned": ["branding", "scope of work", "catalog", "supplier mappings", "units and package conversions", "costs", "selling prices", "tax settings", "customer records", "payment and validity terms", "approval authority"],
+    "optional_fields": "Part number may be a supplier SKU, manufacturer part, internal item reference or service code depending on the business. Use an appropriate label and show only relevant fields.",
+    "privacy": "Sharing a document pattern does not copy another business's customer details, prices, margins, rates, photos or scope-specific rules.",
+    "activation": "No automatic quote approval, invoice issuance, sending, ordering, ledger entry or Fleet authority grant."
+  }
+}
