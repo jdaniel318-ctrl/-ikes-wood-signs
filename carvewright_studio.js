@@ -1,8 +1,8 @@
-/* Carvewright 8.8.20.57 — independent design editor with a separate local machining workspace. */
+/* Carvewright 8.8.20.58 — independent design editor with a separate local machining workspace. */
 (function (g) {
   'use strict';
   if (!g.document || g.CarvewrightStudio) return;
-  const BUILD = '8.8.20.57';
+  const BUILD = '8.8.20.58';
   const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const clone = v => JSON.parse(JSON.stringify(v));
   const icon = (body, extra='') => `<svg viewBox="0 0 24 24" aria-hidden="true" ${extra}>${body}</svg>`;
