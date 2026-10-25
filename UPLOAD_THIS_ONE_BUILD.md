@@ -1,3 +1,29 @@
+# Carvewright controller-preview downloads — 8.8.20.58
+
+## Upload this update
+
+**DarkSky882058-Carvewright-Preview-Upload70.zip**
+
+1. Extract this ZIP and open its single matching folder.
+2. Upload every file inside over your existing complete .53, .54, .55, .56 or .57 repository, replacing matching filenames and retaining other files.
+3. Open your saved sign in Carvewright, enter machining, calculate its paths, then use **Export → Prepare preview files**.
+
+The preview action prepares files without claiming that the physical machine setup has been checked. Filenames include PREVIEW, program comments state that setup is unverified, and the machining record contains no setup confirmation. The existing cutting-file action still requires the intended setup confirmation. Preview files contain actual CNC instructions: inspect them in the controller's preview mode, and verify workshop setup before cutting.
+
+Existing saved artwork and machining setup remain in place. There are no SQL, browser-data-clearing or database-reset steps. The underlying CAM engine, controller posts, design schemas, scoped stores, account/business isolation and session policy are unchanged.
+
+**DarkSky882058-Carvewright-Preview-Standalone.zip** contains 20 files. Extract them together and open **carvewright.html** for an independent local workspace. Its saved jobs remain separate from fleet storage; use the existing design JSON to carry a job between them.
+
+Current guide: **CARVEWRIGHT_PREVIEW_GUIDE.md**. Current software evidence: **CARVEWRIGHT_PREVIEW_EVIDENCE.json**. The full backup is **DarkSky882058-Carvewright-Preview-FullBackup.zip**; it is not the small repository upload.
+
+No native-device or physical-machine acceptance is inferred from isolated Chromium checks. The user has separately shown .57 setup, calculation, preview and local setup-save screens on an iPad; .58 preview downloads remain subject to device observation.
+
+---
+
+## Historical instructions below — retained verbatim
+
+Use the current filename and directions above. Earlier notes describe earlier releases.
+
 # Carvewright First Cut — 8.8.20.57
 
 ## Upload this update

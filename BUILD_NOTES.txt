@@ -1,3 +1,11 @@
+Carvewright 8.8.20.58 — controller-preview downloads
+
+Adds a separate preview-file preparation action for work away from the machine, with explicit unverified-setup filenames/comments and purpose metadata. Keeps the original setup-confirmed cutting export, exact source checks, identity/generation guards, native downloads and stale-link revocation. Delivered program bytes are rechecked after the preview header is added, and their exact SHA is recorded.
+
+Corrects outdated Home capability text. The CAM engine, all six controller exporters, original design/geometry stores and unrelated customer/business behavior remain unchanged. No database change, machine connection or physical acceptance claim. Current guide: CARVEWRIGHT_PREVIEW_GUIDE.md. Current evidence: CARVEWRIGHT_PREVIEW_EVIDENCE.json.
+
+Historical notes below are retained verbatim.
+
 Carvewright 8.8.20.57 — First Cut
 
 Adds bounded polygon CAM for fixed-depth flat-endmill letter pockets; independent mm toolpaths; ShopBot OpenSBP, GRBL1.1 and LinuxCNC inch/mm exporters with validated readback; Setup/Preview/Export workspace; actual 2D cutter footprint; isolated locally saved setups; portable machining records and exact editable artwork downloads.

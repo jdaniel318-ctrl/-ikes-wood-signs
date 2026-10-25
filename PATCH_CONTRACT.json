@@ -1,8 +1,14 @@
 {
   "schema": "blackflag-patch-contract-v1",
-  "target_build": "8.8.20.57",
-  "target_seal": "firstcut-882057",
+  "target_build": "8.8.20.58",
+  "target_seal": "firstcut-882058",
   "supported_bases": [
+    {
+      "build": "8.8.20.57",
+      "file_count": 378,
+      "content_sha256": "0a786bbf866b97bfee3bdd9f4acca3b01306d2977b73ea5a823754f77ea917da",
+      "content_digest_algorithm": "release-content-sha256-v1"
+    },
     {
       "build": "8.8.20.56",
       "file_count": 369,
@@ -32,5 +38,5 @@
   "max_upload_files": 85,
   "database_actions": "none",
   "local_business_storage": "Existing designs, catalog/documents and scoped stores retained. Machining setup uses its own local database.",
-  "rule": "Upload all files from the current inner folder over exact complete .53, .54, .55 or .56. Replace matching filenames and retain every other file. No SQL, database reset or browser-data clearing."
+  "rule": "Upload all files from the current inner folder over exact complete .53, .54, .55, .56 or .57. Replace matching filenames and retain every other file. No SQL, database reset or browser-data clearing."
 }
