@@ -1,0 +1,15 @@
+{
+  "schema": "blackflag-addon-build-evidence",
+  "base": "8.8.20.64",
+  "changes_to_existing_runtime_files": 0,
+  "checks_passed": 20,
+  "archive_contents": {
+    "fleetguard_core.js": "98fc72861b3954f1b12bd30d9661316f1ae9fa804ce5fef59e2aa8bb61c591de",
+    "fleetguard.html": "d784597f603d7138c2fa64b2326eb7b5e112b8368a24be376400238816366520",
+    "VERIFY_FLEETGUARD.cjs": "3d6e31a5275430b71399fc2036d248605039b3654d9d79df58bb3d6c09930b3f",
+    "VERIFY_RELEASE_DIRECTORY.cjs": "23140edc0a824b299a955f9cbc534ec55bc33010e180525d340ccc96eb5c42d1",
+    "HANDOFF_EVIDENCE_TEMPLATE.json": "b4b5fae9af528d9e2f6316c1c729703635c76d5a70b0159a5af225600fcee391",
+    "START_HERE.md": "dda040aaecdb113a79edab270d59aca4e61ec6242bb500c0b2065545a6de8fb8"
+  },
+  "full_backup_exact": false
+}
