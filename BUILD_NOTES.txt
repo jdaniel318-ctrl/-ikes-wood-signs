@@ -1,3 +1,7 @@
+Lettercraft 8.8.20.61 — Retroline and Orchard Swash lettering trials.
+Read LETTERCRAFT_GUIDE.md and LETTERCRAFT_EVIDENCE.json for trial and verification scope.
+Prior release records remain below as historical evidence.
+
 Shopcraft 8.8.20.60 — Ike reviews sign requests before production.
 Read SHOPCRAFT_GUIDE.md and SHOPCRAFT_EVIDENCE.json for the exact workflow and test scope.
 Prior release records remain below as historical evidence.

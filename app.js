@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.20.60';
+  const BUILD_VERSION='8.8.20.61';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -13598,6 +13598,7 @@ The full order and approved media remain stored with this project.`;
       [$('ikeDesignPreviewText'),...$$('.ikes-project [data-preview-text]')].filter(Boolean).forEach(ikeApplyDetectedTextPlacementTo);
     });
   }
+  window.addEventListener('resize',scheduleIkeDetectedTextPlacement);
 
   function ikeVisualSpeciesEvidence(img,analysis){
     // 8.0.7 Rangefinder: confidence is evidence-weighted, not merely threshold-lowered.
@@ -17771,5 +17772,4 @@ document.addEventListener('click', (event) => {
   if($('addProjectBtn')) $('addProjectBtn').addEventListener('click',(e)=>{e.stopImmediatePropagation();e.preventDefault();openProjectCommissioning();},true);
 
 
-  window.addEventListener('resize',()=>{if(activeProjectId==='ikes-wood-signs')scheduleIkeDetectedTextPlacement();});
 })();

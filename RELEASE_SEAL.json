@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.60",
-  "release": "Shopcraft",
-  "seal": "shopcraft-882060",
+  "build": "8.8.20.61",
+  "release": "Lettercraft",
+  "seal": "lettercraft-882061",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Shopcraft",
-  "name": "Shopcraft",
-  "releaseName": "Shopcraft"
+  "release_name": "Lettercraft",
+  "name": "Lettercraft",
+  "releaseName": "Lettercraft"
 }

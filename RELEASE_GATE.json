@@ -1,12 +1,10 @@
 {
-  "schema": "shopcraft-release-gate-v1",
-  "build": "8.8.20.60",
-  "release": "Shopcraft",
+  "schema": "lettercraft-release-gate-v1",
+  "build": "8.8.20.61",
+  "release": "Lettercraft",
   "pass": true,
-  "verification_status": "OFFLINE_SHOPCRAFT_CHECKS_PASSED",
-  "evidence_file": "SHOPCRAFT_EVIDENCE.json",
+  "verification_status": "OFFLINE_LETTERCRAFT_CHECKS_PASSED",
+  "evidence_file": "LETTERCRAFT_EVIDENCE.json",
   "native_safari_acceptance": "pending user test",
-  "provider_attachment_acceptance": "not tested live",
-  "inbox_delivery": "not verified",
   "machine_production_acceptance": "not claimed"
 }

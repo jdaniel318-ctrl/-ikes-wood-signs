@@ -1,3 +1,24 @@
+# Lettercraft 8.8.20.61
+
+**Upload: DarkSky882061-Lettercraft-Upload49.zip**
+
+Extract the ZIP and open its one matching folder. Upload every file inside over
+the current Shopcraft .60 release. Replace matching filenames and retain all
+other files. No SQL, deletion, database reset or browser-data clearing is needed.
+
+The update was checked against the exact previously delivered
+**DarkSky882060-Shopcraft-FullBackup.zip**. The matching complete software backup is
+**DarkSky882061-Lettercraft-FullBackup.zip**. Browser-saved private jobs are separate; keep their exported
+editable files. The two-board trial package is a separate delivery.
+
+Read **LETTERCRAFT_GUIDE.md** to try Retroline and Orchard Swash. The two trial
+starters use provisional reference canvases; confirm actual board dimensions
+and the machine setup before production.
+
+---
+
+## Historical instructions below — retained verbatim
+
 # Shopcraft 8.8.20.60
 
 **Upload: DarkSky882060-Shopcraft-Upload55.zip**

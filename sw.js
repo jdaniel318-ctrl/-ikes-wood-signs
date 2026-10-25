@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.20.60';
-const RELEASE_SEAL='shopcraft-882060';
+const RELEASE_BUILD='8.8.20.61';
+const RELEASE_SEAL='lettercraft-882061';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.

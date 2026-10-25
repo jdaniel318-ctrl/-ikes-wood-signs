@@ -1,0 +1,719 @@
+{
+  "schema": "lettercraft-release-evidence-v1",
+  "build": "8.8.20.61",
+  "seal": "lettercraft-882061",
+  "pass": true,
+  "verifiedAt": "2026-10-25T14:53:44.572595+00:00",
+  "scope": "Exact .61 candidate; isolated Chromium customer store/editor; native ZIP downloads; independent ZIP/DXF/font-curve reads. No real email, native Safari, commercial CAM import or physical cutting asserted.",
+  "primaryAcceptance": "User types their own two distinct signs through Ike store and downloads separate exact Carvewright handoff files. Optional example words are not required.",
+  "tested_runtime_sha256": {
+    "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "df23b8bf21e83cba82715d7dccdfc384fa033d77f087b50fd39006f5e5081a0f",
+    "BOOTSTRAP_IGNITION_MODEL.json": "9cb3c319dd1c511be99b46fb39816656b451c02478dc129df61d39fcd0eb4258",
+    "CAPABILITY_ADOPTION_MAP.json": "5c036b4c126ce41ed3d2464195bbf0febbfff2b1be61a3851d224b1ffb2863cb",
+    "DOCK_SOURCE_TRACE_MODEL.json": "6cd53b3bb5ea12be70f70bb43e7f3b726c71b111960467ab60abbdebc075314f",
+    "EVIDENCE_RECONCILIATION_MODEL.json": "1cb3bdeb5fa11deb3a3fc329872192b967e5ba1a20ace69476aebddebc0fbe39",
+    "FLEET_COMMAND_MODEL.json": "a6afb1539f1ea200d6c4bb8c2d3db47e13c45fe8198d10366d0e01ef9a5d20f8",
+    "FLEET_DOCTRINE_REGISTRY.json": "5fbd8facd277fcb3a9dbe126ed430f971b30258ba97edb2a4c8c3c4b667ab6d6",
+    "FLEET_INTELLIGENCE_MODEL.json": "303f21ff1683636b5558ad35825047d19e982c80c9d872fd288a1984aa0c2a14",
+    "FLEET_MUSTER_SEED.json": "1ec644aa2b77446814e15591890c3b6014d79a03799f3bcd46658826c215be2a",
+    "FLEET_SERVICES_FRAMEWORK.json": "3d2107e3005a9fa8ef15278137ce45349d0baedd7173164d2ea4a9c649049ac4",
+    "FLEET_STEWARD_MODEL.json": "cf08bb0cb43ff1bf3b796ce5bcc1680ca8b4deff49a42152b06d15a69bc3a198",
+    "GENERATION_RELAY_MODEL.json": "9cb05762348145d10b141de4a930d671ea928d90d541579a8eead79e11498fdb",
+    "GOLDEN_VOYAGES.json": "c92fcbd9398187a352fea15b5da8836f1b65e5464725a8e7a7002252c0d312b5",
+    "IDENTITY_KEEL_MODEL.json": "ced9516ccbe494008607017cf85b845c1a8f37b6a3432407a2b59e57e669566c",
+    "IGNITION_WITNESS_MODEL.json": "bd2fac149feea48f0be74e6deb4a500aca995b965118bf07962fcb161164d42f",
+    "IKE_STYLE_FOUNDRY.json": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
+    "MEMORY_MUSTER_MODEL.json": "6bd9430827a73131bb944358f66d5545301b97424ee18462a57e3fa27497a605",
+    "MUSTER_TRACE_MODEL.json": "65f8043db0b446378ed0dc95dd3ceb4fbfebfb33597e69980ab782537d477a4a",
+    "OWNER_AUTHORITY_MODEL.json": "a62aaaba274919cad8794b096d2be3e19220274d61a665ecf574c86569128a98",
+    "PROOF_SIGNER_TRACE_MODEL.json": "6d0a6cf2c610e405af9ff3ffd1e7362c396a9339a60fb5843960198b35d5cb7e",
+    "REGISTRY_LEDGER_MODEL.json": "7666458b9a3d8768f04bc16dd1cd00ca21bc0a53f302e7baec9bdf39174d6276",
+    "RELEASE_INVENTORY.json": "140949f59d05a941f4e9614de7a8bb37882a11dc8d6a5221a6d0d7fadd642615",
+    "RELEASE_SEAL.json": "8b92c1a097f9b6976d8568a2c33681d1953487ab5f1587fe9cfff19e1a2c00ec",
+    "RESOLVER_LIFELINE_MODEL.json": "59e8e20ee2aab686d15f7436a83f6ec1d6f755fad36d650f7293d0b0e80b69d1",
+    "RUNTIME_ENTRY_TRACE_MODEL.json": "7a54584fbfdce44c0c00942b28b8d41886fcf6c6e0bc3b721294e100ab543f34",
+    "WITNESS_TRUTH_MODEL.json": "7cad06fff0014c09e2045178fb51cf88bbf2455058fea72af68af922c63a42df",
+    "app.js": "1ebc28a26cb16da20254f699350227cb8fbde20cedf8b0fb9ca62cc81cfb6f76",
+    "bootstrap_build_horizontal.png": "a934aa244bc6e8af726f1d3a15d58a954093ce9e2a4f192d93583808309ee2e2",
+    "bootstrap_build_icon.png": "66d616f58b5067a04516de418c65f7dbf85e8d0d9292f2f157da8fd841a6b7ea",
+    "bootstrap_build_logo.png": "88f2722a079b716d8e51de0aa4ba1da15e651466e6e6f0c7225f8ba332f8ba21",
+    "business_deck.css": "445fa81fff307d41cdd9a7d181ec86f9daae6843d24ac0d9fe14f939a25b6289",
+    "business_deck.js": "eb2987aa233388ae5b9842d4c7267ab61bf3bbdd7d2f378d9298d89824e48b66",
+    "captain.js": "8dc2f08b738de138d0b4d66b860833d683e2940a40b008e9d29e4375a3f36ebc",
+    "carve-studio.html": "be69346f351517a2d8eb57e610815e2fc9da0ab19f331257e8bb4c23b8b110f4",
+    "carve_core.js": "1332b534c520f6953750206c73f9c80175b0ea06132739a1145575de8060cc4c",
+    "carve_font_license.txt": "af106c9b258eb3caa9bbb3bd1f6076b5ce30ac5499801e860ab55dcc03eea4ef",
+    "carve_fonts.js": "8eff084fd386b9fe63cac51924de2cef24f3af3bfeee98572c2929a7adb8fcc4",
+    "carve_store.js": "95444741396e68749ecbf67dc15fd4f5f34d58a9f036621f41e6e2e276caa984",
+    "carve_studio.css": "16d4ca0091b8578e038a6dd79ce2fecf624691e2079314091df36e5298dfc303",
+    "carve_studio.js": "33f24da7eb998df7a5fdff1c382302d415d0a8f020179b11e8e5dacaa94e6d66",
+    "carvewright.css": "4b1a1c369ae6aff5ce1639ec03792ed965ccfd0052cf9c52a03dc67fbb829892",
+    "carvewright.html": "2ec57aa589f94dc6253f857dee2a1a0ddcc89cb3887324602bba3c834fefe2b2",
+    "carvewright_app.js": "00ac5dd9825ead70c7c9aa5ce8a04067159968ee356eaa716aee9b9f5210b514",
+    "carvewright_cam.js": "870ec15d1061e6b94f6fe004c8d3d7f4152d5c85ef0d4f1c1bb7934bdc28d71f",
+    "carvewright_clipper.js": "a650c6946682edc1a64016f6553eeb5c32ce45eb7ca0ad5d8221961af011d97c",
+    "carvewright_core.js": "a187227e9356b562a3620d474ee3ab9e66103b54ae9738b148de4924abdb93b9",
+    "carvewright_fleet.js": "77420cf6539cc8dacf1e17095df04acbc87fcb58718dcea50bd7003dff7810d4",
+    "carvewright_machining.css": "f4b881189196d7fdd8c639298bf7f5fd87d33f7e86177dbd0215995882aabf98",
+    "carvewright_machining.js": "43111901d080f08d9041351dc5777418b58e5ea18cdfc8f66ae5d07684e0d72f",
+    "carvewright_portable.js": "9c57c9dd69835a6fc271fd596085ceaae92adbcb46527af44e335cff6192f9bf",
+    "carvewright_posts.js": "dd7a6a82b6ec5e6f5bcdb1d9b60e04c3d03a034d632af901a290015ab5c427c2",
+    "carvewright_store.js": "3ab158e100e16b01a5a3a3fb139d961b580bee31ca1cc4f5ff4024f7b2b18df1",
+    "carvewright_studio.js": "8fd03d92304b4195be29ae5be7985e631588158dace937dfe52b7d91547a5675",
+    "fleet_design_assets.js": "b12dfc85b6932232ab3031d38639c8895b034e1af9055a47aba54af8a2e5b4dd",
+    "fleet_supabase.js": "f5bdf421fc4f6d934831641cb70a3d04e6b7b98b04bba7997b9cec8122126918",
+    "fleet_viewport.css": "36db59f3ef4061631d2fc67aac7b33aed4fff4120453560012413200e0e9bdad",
+    "fleet_viewport.js": "14ea8ff7d2c834014d8661a743c9408f9556141e7c81d32b590bd6988d0cfa55",
+    "fun_core.js": "b21a909fa3dccf44b2d02d4a8243a91fd260b70db2edfc35338f3fd330c810e4",
+    "fun_player.html": "fcfc2d06cdf204f4591a9717968a027facf170e6e0be32d9151ef847870a0fb7",
+    "fun_program.css": "0be9fb1e66ac0d04bc446b4f0d92d866aaa09848f6de86ce2bfdb83f2b4d55c3",
+    "fun_program.js": "b6d7f4ffebca7d282d792941dd346de926bd18cf081958a1ae2ae974f7f597ac",
+    "headway_contracts.js": "99562cfadd3741960f9682ac7ff736356f45de197ed157f8fb291d8290217874",
+    "ike_shop.css": "6b20647ddb80afac05c1c308973aff1c530c46eaab7f77b0039330405a7e3a47",
+    "ike_shop.js": "91d33ee47fc2094edcd2044239cd16a8dcae9c211ad423c2ab87c06ffb05daf3",
+    "ike_shop_core.js": "b57c9799d632ddfd48727d39684c67a7af2e883241d18601081f12e6ec08a0ad",
+    "ike_shop_delivery.js": "f9d070c254671266638d8a24f02920feb1eab248bea9acbdd34613262456825c",
+    "ike_shop_store.js": "6b732daa94302acb886525a62ae016e4eaf65db0d3dc69086a29e2cfea211867",
+    "ike_style_a_ramjet_reference.jpg": "b26e0ba1e63e4b2c4568af44d1e3dd876b992781ca0a355ba404270c3a318599",
+    "ike_style_b_smoke_hole_reference.jpg": "861394f624ec4b96da21ec4c43e3bfe42a8c6810f2470f62194390a065d6d857",
+    "ike_style_registry.js": "6b348ebceb47e172e6676f46252b19c1c6bb7532baf76febfa8dd81760a76ab7",
+    "index.html": "ba3833b3cf15bce5a0730ac545314b1df6d9d236f3a664d08b586bb7cfff28d6",
+    "input_hygiene.js": "c4c22788a61c88a150e1030d08610c7efcdafc202271da07c01f4227ed410b2a",
+    "manifest.webmanifest": "7dab936989d5a66a65151cdfe7f2a6faf6af90e8def40e0680ab8549ecc48089",
+    "owner.html": "3585c7c73984f8c4726dda686ef94f3fc3352db05ad6a69e12c920326e58d874",
+    "platform_core.js": "7f797bc382a73eb9ec4365a7458e8329da60c50561e3ac751ca3fb9d7cd5ec49",
+    "platform_identity.js": "c980858c4211c5bebc7e23927e1bc686e1749b2ad00ceb6783693beb88099c63",
+    "platform_v4.js": "21daf7777150d654467042893298147374318fdfc7ac38faf9260f874522019b",
+    "quartermaster.css": "256697796ca9837ade03debd7a003241f5e303ed02c48ffd695a8e8c09d34048",
+    "quartermaster.js": "fc9a4b3be2a567d497c98cfc9ad2c6febbe8dc7a54f37f47d0df3f8769f26ef9",
+    "quartermaster_core.js": "5de2d40cb05eeeafb03855e5a374b7fc451982969d187d71632dd908e1051eed",
+    "quartermaster_fonts.js": "69b2f7fbcf0d29731cf6feea6d3f7b57d7633fafc29703123a7213ea861c9df5",
+    "quartermaster_pdf.js": "7e1c51fa7d7a4ae4fcd55a2330b15ff87c6b4ec0c9db548ff2b6a72658a453a1",
+    "simple_books.css": "5939590021ef2d3738d5f5f7249d72f8da64cc274bf287ef8183958517b0ba46",
+    "simple_books.js": "8c42a3391fdd98bc6f203355d9736e0d9f4bccd1f90e949bb5a692bf03bf5495",
+    "stormwake_core.js": "b0193108053c9ddd067dc100bb9d820292e970ad2c316512b8456e359820b405",
+    "styles.css": "3af289879bf0256d244fe084d3d9e26c67b277bdaffdd1df8387143d7d077379",
+    "sw.js": "d6ef27c59f3a6cb5e3d135b2b915096f9cefed116d1ec66e736a95d76a1c47b1",
+    "woodwright_fit.js": "a4efdadf635608419a2bd82f12a701fd2991ec5dc3d14d282fd846680d40606f"
+  },
+  "fontCatalog": {
+    "ok": true,
+    "trials": [
+      {
+        "id": "monoton",
+        "wording": "NIGHT TIDE",
+        "glyphCount": 196,
+        "kerningPairs": 67,
+        "sourceSha256": "951c4cea65ffede784a7c9672feec5d329a7e1e12216c42d53ecf36c90d04dea",
+        "dxfContours": 49,
+        "counters": 6,
+        "roundTrip": true
+      },
+      {
+        "id": "berkshire-swash",
+        "wording": "Cedar & Ember",
+        "glyphCount": 198,
+        "kerningPairs": 1573,
+        "sourceSha256": "f0c80837dc6f32b89b10894a7e39295db4a00ab697cada682a3f5942c342fe00",
+        "dxfContours": 16,
+        "counters": 5,
+        "roundTrip": true
+      }
+    ],
+    "previousFontsUnchanged": 8,
+    "previousGraphicsUnchanged": 16
+  },
+  "sourceCurveAudit": {
+    "ok": true,
+    "method": "fontTools source TTF versus exported SVG exact-curve nonzero-fill probes; no generator/Clipper/CAM code",
+    "fonts": [
+      {
+        "font": "monoton",
+        "glyphs": 196,
+        "visibleGlyphs": 193,
+        "exactCurveFillProbes": 28035,
+        "sourceFillMismatches": 0,
+        "contours": 1378,
+        "positiveCounterContours": 105,
+        "sourceBoundsAndAdvancesIdentical": true,
+        "allLargestOuterContoursClockwise": true,
+        "OcenterCounterPreserved": true,
+        "sourceSha256": "951c4cea65ffede784a7c9672feec5d329a7e1e12216c42d53ecf36c90d04dea"
+      },
+      {
+        "font": "berkshire-swash",
+        "glyphs": 198,
+        "visibleGlyphs": 196,
+        "exactCurveFillProbes": 19089,
+        "sourceFillMismatches": 0,
+        "contours": 357,
+        "positiveCounterContours": 68,
+        "sourceBoundsAndAdvancesIdentical": true,
+        "allLargestOuterContoursClockwise": true,
+        "OcenterCounterPreserved": true,
+        "sourceSha256": "f0c80837dc6f32b89b10894a7e39295db4a00ab697cada682a3f5942c342fe00"
+      }
+    ]
+  },
+  "editor": {
+    "schema": "lettercraft-ui-verification-v1",
+    "scope": "Real isolated Chromium, iPad viewport, IndexedDB and embedded Ike editor; no live session or external requests",
+    "pass": true,
+    "checks": [
+      {
+        "name": "iPad font picker, save and reopen preserve both new styles",
+        "pass": true,
+        "newFonts": [
+          "monoton",
+          "berkshire-swash"
+        ],
+        "wording": "Cedar & Ember"
+      },
+      {
+        "name": "Ike embedded editor returns new mixed-case style",
+        "pass": true,
+        "newFonts": [
+          "monoton",
+          "berkshire-swash"
+        ],
+        "wording": "Cedar & Ember"
+      }
+    ]
+  },
+  "customerStorefront": {
+    "schema": "lettercraft-customer-verification-v1",
+    "scope": "Actual sealed index, real local client-preview PIN gate, storefront/editor controls and native downloads. All names, contacts, photos and dimensions are synthetic verification fixtures. No send action, live inbox, native Safari or machine acceptance is claimed.",
+    "build": "8.8.20.61",
+    "seal": "lettercraft-882061",
+    "passed": 2,
+    "failed": 0,
+    "expectedRequests": 2,
+    "completedRequests": 2,
+    "privatePreview": true,
+    "pageErrors": [],
+    "blockedExternalAttempts": [],
+    "served": [
+      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
+      "DEPLOYMENT_MANIFEST.json",
+      "FLEET_COMMAND_MODEL.json",
+      "FLEET_DOCTRINE_REGISTRY.json",
+      "GOLDEN_VOYAGES.json",
+      "IKE_STYLE_FOUNDRY.json",
+      "RELEASE_INVENTORY.json",
+      "RELEASE_SEAL.json",
+      "app.js",
+      "black_flag_platform_icon.png",
+      "black_flag_primary_lockup.png",
+      "bootstrap_build_horizontal.png",
+      "business_deck.css",
+      "business_deck.js",
+      "captain.js",
+      "captains_quarters_command_center_v578.png",
+      "carve_core.js",
+      "carve_fonts.js",
+      "carve_store.js",
+      "carve_studio.css",
+      "carve_studio.js",
+      "carvewright.css",
+      "carvewright.html",
+      "carvewright_app.js",
+      "carvewright_cam.js",
+      "carvewright_clipper.js",
+      "carvewright_core.js",
+      "carvewright_fleet.js",
+      "carvewright_machining.css",
+      "carvewright_machining.js",
+      "carvewright_portable.js",
+      "carvewright_posts.js",
+      "carvewright_store.js",
+      "carvewright_studio.js",
+      "fleet_design_assets.js",
+      "fleet_supabase.js",
+      "fleet_viewport.css",
+      "fleet_viewport.js",
+      "fun_core.js",
+      "fun_player.html",
+      "fun_program.css",
+      "fun_program.js",
+      "headway_contracts.js",
+      "ike_character.png",
+      "ike_shop.css",
+      "ike_shop.js",
+      "ike_shop_core.js",
+      "ike_shop_delivery.js",
+      "ike_shop_store.js",
+      "ike_style_registry.js",
+      "index.html",
+      "input_hygiene.js",
+      "manifest.webmanifest",
+      "owner.html",
+      "platform_core.js",
+      "platform_identity.js",
+      "platform_v4.js",
+      "quartermaster.css",
+      "quartermaster.js",
+      "quartermaster_core.js",
+      "quartermaster_fonts.js",
+      "quartermaster_pdf.js",
+      "simple_books.css",
+      "simple_books.js",
+      "stormwake_core.js",
+      "styles.css",
+      "sw.js",
+      "woodwright_fit.js"
+    ],
+    "results": [
+      {
+        "name": "Ike storefront exports customer-typed Retroline wording",
+        "pass": true,
+        "storefrontResizeExercised": true,
+        "wording": "Wild  Current 27",
+        "font": "monoton",
+        "quantity": 1,
+        "requestId": "915da551-4677-4bfe-9b0b-fa1e546e58be",
+        "designId": "4cbd8cab-1cfe-44a7-8dea-37b66df74725",
+        "zipFile": "customer-01-synthetic-request.zip",
+        "suggestedFilename": "ike-sign-915da551-4677-4bfe-9b0b-fa1e546e58be-r1.zip",
+        "zipBytes": 211020,
+        "archiveSha256": "45b69c2e939eec0dd667808be5ddf12dfd3c573e4bc23798759f031e0fc35e56",
+        "files": [
+          "README.txt",
+          "artwork.dxf",
+          "artwork.svg",
+          "editable-design.json",
+          "manifest.json",
+          "photos/reference-01.jpg",
+          "preview.png",
+          "request-brief.html",
+          "request-brief.txt",
+          "request.json"
+        ],
+        "crcAndManifestVerified": true,
+        "dxfClosedPolylines": 78,
+        "productionApproved": false,
+        "sendDisabled": true,
+        "typedThroughStorefront": true
+      },
+      {
+        "name": "New request clears the first customer and exports fresh Orchard Swash wording",
+        "pass": true,
+        "previousCustomerCleared": true,
+        "independentRequestsAndDesigns": true,
+        "wording": "Moss & Moon",
+        "font": "berkshire-swash",
+        "quantity": 1,
+        "requestId": "75ec6fca-1e4b-4168-9b5a-88afa5f3f316",
+        "designId": "8b3baa3e-4119-4faf-b8e4-79c2ee69d782",
+        "zipFile": "customer-02-synthetic-request.zip",
+        "suggestedFilename": "ike-sign-75ec6fca-1e4b-4168-9b5a-88afa5f3f316-r1.zip",
+        "zipBytes": 198058,
+        "archiveSha256": "7f2105c9aec8234d0aa2af134da108adc27e51ce279e2bcb530ce28233430760",
+        "files": [
+          "README.txt",
+          "artwork.dxf",
+          "artwork.svg",
+          "editable-design.json",
+          "manifest.json",
+          "photos/reference-01.jpg",
+          "preview.png",
+          "request-brief.html",
+          "request-brief.txt",
+          "request.json"
+        ],
+        "crcAndManifestVerified": true,
+        "dxfClosedPolylines": 12,
+        "productionApproved": false,
+        "sendDisabled": true,
+        "typedThroughStorefront": true
+      }
+    ]
+  },
+  "coreRegression": {
+    "suite": "Fleetcraft model",
+    "passed": 17,
+    "total": 17,
+    "failures": []
+  },
+  "camRegression": {
+    "suite": "Lettercraft geometry to controller",
+    "passed": 28,
+    "total": 28,
+    "results": [
+      {
+        "name": "mixed-case studio-sans through pocket CAM and all six controller profiles",
+        "pass": true,
+        "moves": 13992,
+        "profiles": 6,
+        "exampleToolRejected": false,
+        "testDiameterMm": 3.175
+      },
+      {
+        "name": "mixed-case studio-serif through pocket CAM and all six controller profiles",
+        "pass": true,
+        "moves": 11320,
+        "profiles": 6,
+        "exampleToolRejected": false,
+        "testDiameterMm": 3.175
+      },
+      {
+        "name": "mixed-case rye through pocket CAM and all six controller profiles",
+        "pass": true,
+        "moves": 20226,
+        "profiles": 6,
+        "exampleToolRejected": false,
+        "testDiameterMm": 3.175
+      },
+      {
+        "name": "mixed-case cinzel-bold through pocket CAM and all six controller profiles",
+        "pass": true,
+        "moves": 7204,
+        "profiles": 6,
+        "exampleToolRejected": false,
+        "testDiameterMm": 3.175
+      },
+      {
+        "name": "mixed-case lobster through pocket CAM and all six controller profiles",
+        "pass": true,
+        "moves": 21512,
+        "profiles": 6,
+        "exampleToolRejected": false,
+        "testDiameterMm": 3.175
+      },
+      {
+        "name": "mixed-case stardos-stencil through pocket CAM and all six controller profiles",
+        "pass": true,
+        "moves": 14368,
+        "profiles": 6,
+        "exampleToolRejected": false,
+        "testDiameterMm": 3.175
+      },
+      {
+        "name": "mixed-case bree-serif through pocket CAM and all six controller profiles",
+        "pass": true,
+        "moves": 18298,
+        "profiles": 6,
+        "exampleToolRejected": false,
+        "testDiameterMm": 3.175
+      },
+      {
+        "name": "mixed-case black-ops-one through pocket CAM and all six controller profiles",
+        "pass": true,
+        "moves": 3358,
+        "profiles": 6,
+        "exampleToolRejected": false,
+        "testDiameterMm": 3.175
+      },
+      {
+        "name": "mixed-case monoton through pocket CAM and all six controller profiles",
+        "pass": true,
+        "moves": 12808,
+        "profiles": 6,
+        "exampleToolRejected": true,
+        "testDiameterMm": 1.5875
+      },
+      {
+        "name": "mixed-case berkshire-swash through pocket CAM and all six controller profiles",
+        "pass": true,
+        "moves": 19406,
+        "profiles": 6,
+        "exampleToolRejected": false,
+        "testDiameterMm": 3.175
+      },
+      {
+        "name": "rotated 100 mm anchor has real contours and validated machine output",
+        "pass": true,
+        "moves": 3118,
+        "contours": 2
+      },
+      {
+        "name": "rotated 100 mm compass has real contours and validated machine output",
+        "pass": true,
+        "moves": 2272,
+        "contours": 5
+      },
+      {
+        "name": "rotated 100 mm pine has real contours and validated machine output",
+        "pass": true,
+        "moves": 1814,
+        "contours": 1
+      },
+      {
+        "name": "rotated 100 mm mountains has real contours and validated machine output",
+        "pass": true,
+        "moves": 2164,
+        "contours": 4
+      },
+      {
+        "name": "rotated 100 mm oak-leaf has real contours and validated machine output",
+        "pass": true,
+        "moves": 6610,
+        "contours": 2
+      },
+      {
+        "name": "rotated 100 mm antlers has real contours and validated machine output",
+        "pass": true,
+        "moves": 2326,
+        "contours": 3
+      },
+      {
+        "name": "rotated 100 mm fish has real contours and validated machine output",
+        "pass": true,
+        "moves": 5592,
+        "contours": 4
+      },
+      {
+        "name": "rotated 100 mm paw has real contours and validated machine output",
+        "pass": true,
+        "moves": 12058,
+        "contours": 5
+      },
+      {
+        "name": "rotated 100 mm cabin has real contours and validated machine output",
+        "pass": true,
+        "moves": 2382,
+        "contours": 7
+      },
+      {
+        "name": "rotated 100 mm campfire has real contours and validated machine output",
+        "pass": true,
+        "moves": 4804,
+        "contours": 3
+      },
+      {
+        "name": "rotated 100 mm wave has real contours and validated machine output",
+        "pass": true,
+        "moves": 4220,
+        "contours": 4
+      },
+      {
+        "name": "rotated 100 mm sun has real contours and validated machine output",
+        "pass": true,
+        "moves": 5170,
+        "contours": 13
+      },
+      {
+        "name": "rotated 100 mm heart has real contours and validated machine output",
+        "pass": true,
+        "moves": 7958,
+        "contours": 2
+      },
+      {
+        "name": "rotated 100 mm star has real contours and validated machine output",
+        "pass": true,
+        "moves": 1492,
+        "contours": 1
+      },
+      {
+        "name": "rotated 100 mm crossed-tools has real contours and validated machine output",
+        "pass": true,
+        "moves": 2660,
+        "contours": 1
+      },
+      {
+        "name": "rotated 100 mm ribbon has real contours and validated machine output",
+        "pass": true,
+        "moves": 1814,
+        "contours": 2
+      },
+      {
+        "name": "small compass keeps the oversized-tool rejection",
+        "pass": true,
+        "guard": "Small disconnected regions require a smaller cutter or larger artwork."
+      },
+      {
+        "name": "overlapping text and emblem union preserves both filled regions",
+        "pass": true,
+        "textArea": 7464.535235115,
+        "graphicArea": 5793.04093241,
+        "unionArea": 10768.971241475
+      }
+    ]
+  },
+  "atomicLoader": {
+    "passed": 3,
+    "failed": 0,
+    "browser": "156.0.8078.47",
+    "checks": [
+      {
+        "name": "actual index coherent release boots",
+        "pass": true
+      },
+      {
+        "name": "actual index rejects changed required runtime bytes",
+        "pass": true
+      },
+      {
+        "name": "actual index rejects changed runtime checksum declaration",
+        "pass": true
+      }
+    ]
+  },
+  "optionalTrialPack": {
+    "pass": true,
+    "files": 15,
+    "bytes": 585532,
+    "sha256": "52e95bdba0c1a4f24f6122a89a8154a8c368eadac13bdaac55bbbc8a90c05b2f",
+    "matchingRoot": true,
+    "timestampTimezone": "America/New_York",
+    "timestamp": "2026-10-25T10:53:44.572595-04:00",
+    "independentDxf": [
+      {
+        "board": "Board-01-NIGHT-TIDE-Retroline",
+        "closedContours": 53,
+        "units": "mm",
+        "auditErrors": 0,
+        "repairs": 0
+      },
+      {
+        "board": "Board-02-Cedar-and-Ember-Orchard-Swash",
+        "closedContours": 20,
+        "units": "mm",
+        "auditErrors": 0,
+        "repairs": 0
+      }
+    ],
+    "designs": [
+      {
+        "board": "Board 01",
+        "folder": "Board-01-NIGHT-TIDE-Retroline",
+        "title": "Night Tide - striped lettering trial",
+        "wording": "NIGHT TIDE",
+        "fontId": "monoton",
+        "fontName": "Retroline",
+        "sizePercent": 85,
+        "offsetYmm": -17,
+        "style": "Striped retro lettering with a wave accent",
+        "focus": "Parallel channels, enclosed counters, small isolated details and consistent spacing.",
+        "graphics": [
+          {
+            "assetId": "wave",
+            "centerXmm": 304.8,
+            "centerYmm": 157,
+            "widthMm": 125,
+            "heightMm": 26,
+            "rotationDeg": 0
+          }
+        ],
+        "designFingerprint": "0890d8f5937d9b3ae31184e00e57f53c98f9e7af687fff951bf5b03412162725",
+        "svgSha256": "7e3647ce5d9c5e22e6ff5547968ac1567ac2ac030561c2d40ba2ab047b79c708",
+        "dxfSha256": "77f885616c44d26c938042f47ef19fccf11ef8c968b292fb3fbf810f2175d591",
+        "jsonSha256": "7479d65644e559f5ab691ac00c06825eee99b5703643a80fb3b442ae10667535",
+        "layoutBounds": {
+          "xMin": 60.12345522737928,
+          "yMin": 49.67946554149084,
+          "xMax": 549.8257501172059,
+          "yMax": 169.9999998849513,
+          "width": 489.7022948898266,
+          "height": 120.32053434346047
+        },
+        "dxfBounds": {
+          "minX": 60.1235,
+          "minY": 33.2011,
+          "maxX": 549.8258,
+          "maxY": 153.5205
+        },
+        "contours": 53,
+        "holes": 6,
+        "points": 2100,
+        "roundTripPassed": true,
+        "preview": {
+          "sha256": "ebac826f434a200ed349938a47874ad0c5258937c8452ca9e031bb62bc5510ef",
+          "width": 1600,
+          "height": 533
+        }
+      },
+      {
+        "board": "Board 02",
+        "folder": "Board-02-Cedar-and-Ember-Orchard-Swash",
+        "title": "Cedar & Ember - swash lettering trial",
+        "wording": "Cedar & Ember",
+        "fontId": "berkshire-swash",
+        "fontName": "Orchard Swash",
+        "sizePercent": 80,
+        "offsetYmm": -15,
+        "rotationDeg": -3,
+        "style": "Mixed-case swash lettering with paired oak leaves",
+        "focus": "Thick-to-thin strokes, swashes, the ampersand, open counters and the rotated lettering baseline.",
+        "graphics": [
+          {
+            "assetId": "oak-leaf",
+            "centerXmm": 273,
+            "centerYmm": 161,
+            "widthMm": 20,
+            "heightMm": 35,
+            "rotationDeg": -70
+          },
+          {
+            "assetId": "oak-leaf",
+            "centerXmm": 337,
+            "centerYmm": 161,
+            "widthMm": 20,
+            "heightMm": 35,
+            "rotationDeg": 70
+          }
+        ],
+        "designFingerprint": "2c2ae5f848244cb73181dabd5532687e663aa069aaa040a991019f60da1db09d",
+        "svgSha256": "5bbc9bda03bb9920ab21b49ef8cd53faf11dfabdedfac1dc545601154f713f6e",
+        "dxfSha256": "35f025e5ac7f0731594b0e1e65451d7ae40c41bd9a7780da26b955a588f7c97b",
+        "jsonSha256": "2b8aeb6cdeac99bb110f9922a1e04e87d3880193b5333e487fdca78031515c4a",
+        "layoutBounds": {
+          "xMin": 74.31986715970064,
+          "yMin": 47.30520736904902,
+          "xMax": 537.6130211324653,
+          "yMax": 171.9799370868308,
+          "width": 463.2931539727647,
+          "height": 124.67472971778179
+        },
+        "dxfBounds": {
+          "minX": 74.3222,
+          "minY": 31.2259,
+          "maxX": 537.6121,
+          "maxY": 155.8939
+        },
+        "contours": 20,
+        "holes": 7,
+        "points": 3413,
+        "roundTripPassed": true,
+        "preview": {
+          "sha256": "736a318536b036189bd49f15810af22f98fc851ca16552fbbcfb69b7c1b8d535",
+          "width": 1600,
+          "height": 533
+        }
+      }
+    ],
+    "notes": "Optional example drafts only. Customer acceptance uses user-typed words through Ike store."
+  },
+  "fixes": [
+    {
+      "issue": "Converted font variants reused reserved source-family primary names",
+      "change": "Primary/menu names are Retroline and Orchard Swash; original attribution, full notices, internal IDs and exact outlines retained.",
+      "verification": "Final font verifier asserts asset/menu names; source audit preserves outlines."
+    },
+    {
+      "issue": "Existing .60 resize listener referenced private state from the wrong IIFE",
+      "change": "Listener registered beside its owning scheduler; project guard retained.",
+      "verification": "Actual storefront resizing and both complete custom-word downloads pass with zero browser errors."
+    }
+  ],
+  "testContractUpdate": {
+    "historicalCamRun": {
+      "passed": 27,
+      "total": 28,
+      "failure": "New Retroline detail exceeds the historical 3.175 mm exemplar cutter; intentional rejection."
+    },
+    "updatedContract": "Current verifier asserts that refusal then uses a 1.5875 mm offline fixture for all six controller posts. Updated CAM suite passes28/28; fixture is not a physical cutting recommendation."
+  },
+  "workshopPending": [
+    "User-selected actual words and board photographs",
+    "Measured stock and selected cutter/setup",
+    "Ike approval of each final design revision",
+    "Live attachment provider/inbox receipt",
+    "Ike CAM import and two physical board results"
+  ],
+  "remoteWrites": {
+    "emailSent": false,
+    "published": false,
+    "repositoryPushed": false,
+    "databaseChanged": false
+  }
+}

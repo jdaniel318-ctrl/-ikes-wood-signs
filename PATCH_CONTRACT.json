@@ -1,25 +1,26 @@
 {
   "schema": "blackflag-patch-contract-v1",
-  "target_build": "8.8.20.60",
-  "target_seal": "shopcraft-882060",
+  "target_build": "8.8.20.61",
+  "target_seal": "lettercraft-882061",
   "supported_bases": [
     {
-      "build": "8.8.20.59",
-      "seal": "fleetcraft-882059",
-      "content_digest_algorithm": "release-content-sha256-v1",
-      "content_sha256": "bbce3a54e25c0bdfc4750f6917d3ab051f8e45bfaa8b876f602d47d2b3f4ab1f"
+      "build": "8.8.20.60",
+      "seal": "shopcraft-882060",
+      "sha256": "826144a7c004ee19074d03b7b873aa2c1d0b7a088c66e02d7c66efa17d27f6fb",
+      "content_sha256": "591ff5270f2708b2cf3fa859409aa6ccba88b1ebacfd310f503b5933d2ccc57e",
+      "content_digest_algorithm": "release-content-sha256-v1"
     }
   ],
-  "repository_baseline": {
-    "repository": "jdaniel318-ctrl/-ikes-wood-signs",
-    "commit": "355afe648910bb944ffc83504ece4bb8d79575ab",
-    "build": "8.8.20.59",
-    "file_count": 390,
-    "content_sha256": "bbce3a54e25c0bdfc4750f6917d3ab051f8e45bfaa8b876f602d47d2b3f4ab1f",
-    "record": "SHOPCRAFT_BASELINE.json"
+  "delivered_baseline": {
+    "archive": "DarkSky882060-Shopcraft-FullBackup.zip",
+    "archive_sha256": "826144a7c004ee19074d03b7b873aa2c1d0b7a088c66e02d7c66efa17d27f6fb",
+    "build": "8.8.20.60",
+    "file_count": 406,
+    "content_sha256": "591ff5270f2708b2cf3fa859409aa6ccba88b1ebacfd310f503b5933d2ccc57e",
+    "record": "LETTERCRAFT_BASELINE.json"
   },
   "requires_deletions": false,
   "max_upload_files": 85,
   "database_actions": "none",
-  "rule": "Apply all update files over the verified .59 release. Replace matching filenames and retain all other files. No SQL, browser-data clearing or data reset. Other baselines are not verified."
+  "rule": "Apply every update file over the verified Shopcraft .60 release. Replace matching filenames and retain all other files. No SQL, browser-data clearing or data reset."
 }
