@@ -1,3 +1,7 @@
+Fleetcare 8.8.20.63 — bounded fleet controls cleanup over 8.8.20.62.
+Read FLEETCARE_GUIDE.md and FLEETCARE_EVIDENCE.json for workflow and verification scope.
+Prior release records remain below as historical evidence.
+
 Boardcraft 8.8.20.62 — Ike customer board-photo design and complete-package delivery.
 Read BOARDCRAFT_GUIDE.md and BOARDCRAFT_EVIDENCE.json for workflow and verification scope.
 Prior release records remain below as historical evidence.

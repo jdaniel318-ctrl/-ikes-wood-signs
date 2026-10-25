@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.62",
-  "release": "Boardcraft",
-  "seal": "boardcraft-882062",
+  "build": "8.8.20.63",
+  "release": "Fleetcare",
+  "seal": "fleetcare-882063",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Boardcraft",
-  "name": "Boardcraft",
-  "releaseName": "Boardcraft"
+  "release_name": "Fleetcare",
+  "name": "Fleetcare",
+  "releaseName": "Fleetcare"
 }

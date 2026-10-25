@@ -1,3 +1,29 @@
+# Fleetcare 8.8.20.63
+
+**Upload: DarkSky882063-Fleetcare-Upload49.zip** — **49 changed/new files** over **Boardcraft 8.8.20.62**.
+Matching complete software backup: **DarkSky882063-Fleetcare-FullBackup.zip**.
+
+Extract the ZIP and open its one filename-matching folder. Upload every file
+inside over the exact delivered Boardcraft .62 release. Replace matching names
+and retain every other file. No SQL, deletion, data reset or browser-data clearing.
+Reload and check Engine/Bootstrap build **8.8.20.63**, seal **fleetcare-882063**.
+
+Customers opens the selected vessel's retained history and totals. Fleet status
+separates identity, local setup, experience, deployment records and available
+recovery tools. Local approval is not server authority; tools are not a verified
+backup or restore. Attention includes a ready vessel awaiting a Captain order.
+Fleet Compass returns preserve a current search/filter and useful position.
+Readiness shares static reads within one run and reads fresh on the next run.
+
+Read **FLEETCARE_GUIDE.md** and **FLEETCARE_EVIDENCE.json** for exact verification
+scope and three device checks. Software ZIPs do not export private browser jobs;
+retain your editable job/request downloads. Native iPad, live inbox delivery and
+physical CNC acceptance remain user checks. Preview and Sea Trial remain guarded.
+
+---
+
+## Historical instructions below — retained verbatim
+
 # Boardcraft 8.8.20.62
 
 **Upload: DarkSky882062-Boardcraft-Upload52.zip**

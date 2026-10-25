@@ -6,7 +6,7 @@ const Legacy=window.BlackFlagFUN,SW=window.BlackFlagStormwake,G=SW||Legacy,STORM
 const $=id=>document.getElementById(id),memo=new Map(),fileCopies=new Map(),deviceCopies=new Map();
 const DEVICE_PREFIX='blackflag.stormwake.voyage.v1:';let voyageKey='',voyageScope=null;let dialog=null,frame=null,actor='',startedAt=0,channel='',epoch=0,pending=false,op=false,priorFocus=null,timer=0,observer=null,legacyMode=false,importPending=null;
 const text=(id,v)=>{if($(id))$(id).textContent=v;};
-function client(){const c=window.BlackFlagV3Identity?.productionAuth?.readClientConfig?.();if(!c?.url||!c?.publishableKey||!window.DarkSkySupabase?.create)throw Error('Admiral identity service is unavailable. Return to the existing Admiral sign-in.');return window.DarkSkySupabase.create({url:c.url,publishableKey:c.publishableKey,sessionKey:'darkSkySupabaseAdmiralSessionV1',build:'8.8.20.62'});}
+function client(){const c=window.BlackFlagV3Identity?.productionAuth?.readClientConfig?.();if(!c?.url||!c?.publishableKey||!window.DarkSkySupabase?.create)throw Error('Admiral identity service is unavailable. Return to the existing Admiral sign-in.');return window.DarkSkySupabase.create({url:c.url,publishableKey:c.publishableKey,sessionKey:'darkSkySupabaseAdmiralSessionV1',build:'8.8.20.63'});}
 function deckVisible(){const d=$('admiralDeck');return !!d&&!d.hidden&&!d.classList.contains('hidden')&&d.getAttribute('aria-hidden')!=='true';}
 function scopeFor(id){
  const cfg=window.BlackFlagV3Identity?.productionAuth?.readClientConfig?.();
@@ -180,6 +180,6 @@ document.addEventListener('visibilitychange',()=>{if(!frame||!dialog||dialog.hid
 window.addEventListener('focus',checkDeviceChange);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkDeviceChange();});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&dialog&&!dialog.hidden){e.preventDefault();e.stopImmediatePropagation();close();}},true);
-window.BlackFlagFUNProgram=Object.freeze({open,openLegacy:()=>open(true),close,isOpen:()=>!!frame&&!!dialog&&!dialog.hidden,build:'8.8.20.62',mode:'admiral-solo-prototype'});
+window.BlackFlagFUNProgram=Object.freeze({open,openLegacy:()=>open(true),close,isOpen:()=>!!frame&&!!dialog&&!dialog.hidden,build:'8.8.20.63',mode:'admiral-solo-prototype'});
 document.addEventListener('click',e=>{if(e.target instanceof Element&&e.target.closest('#funProgramLaunch')){e.preventDefault();open();}});
 })();

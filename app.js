@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.20.62';
+  const BUILD_VERSION='8.8.20.63';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -1477,6 +1477,7 @@
   let pendingCaptainCommandRoute = null;
   window.__darkSkyBootStage = 'app-declarations';
   function lockEngineSession(){
+    invalidateEngineWorkspaceNavigation();
     engineSessionUnlocked = false;
     if($('enginePinInput')) $('enginePinInput').value='';
     if($('blackFlagEntryPin')) $('blackFlagEntryPin').value='';
@@ -2020,15 +2021,7 @@
   // Give iPad/Safari a direct activation path and name the action for what it actually does.
   window.BlackFlagCloseStorageTelemetry=function(event){
     try{event?.preventDefault?.();event?.stopPropagation?.();}catch(_){}
-    const dock=$('engineConfigurationDock');
-    if(dock) dock.classList.add('hidden');
-    $('enginePanel')?.classList.remove('hidden');
-    document.body.classList.remove('engine-workspace-open');
-    const restoreY=Number(engineWorkspaceReturnScrollY||0);
-    requestAnimationFrame(()=>{
-      try{window.scrollTo({top:restoreY,left:0,behavior:'instant'});}catch(_){window.scrollTo(0,restoreY);}
-      try{$('engineStorageKpi')?.focus?.({preventScroll:true});}catch(_){}
-    });
+    closeEngineWorkspace($('engineConfigurationDock'),{storageReturn:true});
     return false;
   };
 
@@ -4594,10 +4587,14 @@
     return {code,logo,source};
   }
 
-  async function applyProjectControlBrand(p){
+  async function applyProjectControlBrand(p,navigation=engineWorkspaceNavigationToken()){
+    const current=()=>engineActiveProjectId===p.id && engineWorkspaceNavigationCurrent(navigation);
     const visual=await projectBrandVisual(p);
+    if(!current())return;
     let assets={};try{assets=await readProjectAssets(p.id)||{};}catch(_){}
-    if(engineActiveProjectId!==p.id)return;
+    // Same-vessel identity alone cannot distinguish an old reader from a fresh
+    // session. Both asynchronous reads must settle in the invoking navigation.
+    if(!current())return;
     const control=$('projectEngineControl');
     if(control){
       const type=String(p.businessIntake?.businessType||p.businessType||p.type||'other').toLowerCase().replace(/[^a-z0-9_-]+/g,'-');
@@ -4689,8 +4686,8 @@
       else if(a==='watch'){await renderFirstMateWatch();$('firstMateWatch')?.scrollIntoView({behavior:'smooth',block:'start'});}
       else if(a==='projects')$('fleetCommissioningDock')?.scrollIntoView({behavior:'smooth',block:'start'});
       else if(a==='admiral'){await renderAdmiralReadiness({announce:true});$('admiralReadiness')?.scrollIntoView({behavior:'smooth',block:'start'});}
-      else if(a==='configure')openEngineConfiguration('top');
-      else if(a==='storage')await openStorageTelemetry({inspect:true});
+      else if(a==='configure'){rememberEngineWorkspaceOrigin(btn);openEngineConfiguration('top');}
+      else if(a==='storage'){rememberEngineWorkspaceOrigin(btn);await openStorageTelemetry({inspect:true});}
       else if(a==='captain')$('captainModeAccessBtn')?.click();
     });
   }
@@ -5631,10 +5628,19 @@
     const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(text));
     return Array.from(new Uint8Array(digest),x=>x.toString(16).padStart(2,'0')).join('');
   }
-  async function keelGuardLoadModels(){
+  function keelGuardSourceReader(){
+    // One observation of each static source per readiness run. Sharing the
+    // promise also shares failures; a later run creates a fresh reader.
+    const reads=new Map();
+    return path=>{
+      if(!reads.has(path))reads.set(path,keelGuardFetchText(path));
+      return reads.get(path);
+    };
+  }
+  async function keelGuardLoadModels(readText=keelGuardFetchText){
     const models={},evidence={};let manifest=null,manifestError='';
     try{
-      manifest=JSON.parse(await keelGuardFetchText('DEPLOYMENT_MANIFEST.json'));
+      manifest=JSON.parse(await readText('DEPLOYMENT_MANIFEST.json'));
       if(manifest.build!==BUILD_VERSION||manifest.release_seal!==window.__darkSkyExpectedRelease?.seal)throw new Error('Deployment manifest build or seal does not match this runtime.');
       if(manifest.model_integrity?.algorithm!=='SHA-256')throw new Error('Release model integrity manifest missing.');
     }catch(err){manifestError=String(err?.message||err);}
@@ -5643,7 +5649,7 @@
       if(!error)try{
         const expected=manifest.model_integrity.files?.[file];expectedSha256=expected?.sha256||null;
         if(expected?.policy!=='current-runtime-build'||expected?.build!==BUILD_VERSION||!/^[a-f0-9]{64}$/.test(expectedSha256||''))throw new Error('Current-build model checksum declaration missing.');
-        const text=await keelGuardFetchText(file);actualSha256=await keelGuardDigest(text);parsed=JSON.parse(text);
+        const text=await readText(file);actualSha256=await keelGuardDigest(text);parsed=JSON.parse(text);
         if(actualSha256!==expectedSha256)throw new Error('Model checksum mismatch; file differs from the deployment manifest.');
       }catch(err){error=String(err?.message||err);}
       const assessed=keelGuardModelAssessment(file,parsed);
@@ -5711,6 +5717,7 @@
   function admiralLastRecovery(){try{return JSON.parse(localStorage.getItem('darkSkyLastRecovery')||'null');}catch(_){return null;}}
 
   async function runAdmiralReadinessChecks(source='manual'){
+    const readSource=keelGuardSourceReader();
     // Keelbound: readiness must hydrate the durable command ledger before
     // evaluating it. A render-time fallback may already exist in memory, but it
     // must never mask a later IndexedDB read after a reload or authority gate.
@@ -5813,7 +5820,7 @@
     const captainRoom=document.getElementById('captainQuarters');
     const professionalCaptain=!!document.getElementById('captainProfessionalSurface') && captainRoom?.dataset?.defaultCommandMode==='professional' && !!document.getElementById('captainCommandModeToggle');
     add('professional-first-command','Professional-first Captain command',professionalCaptain?'pass':'warn',professionalCaptain?'Captain Professional Command is configured as the default operational surface; the currently selected view does not alter that contract.':'Captain professional default contract or its deliberate view switch could not be verified.');
-    const keelGuardModels=await keelGuardLoadModels();
+    const keelGuardModels=await keelGuardLoadModels(readSource);
     const doctrineRegistry=keelGuardModels.models['FLEET_DOCTRINE_REGISTRY.json'];
     const courseAuthorityOk=doctrineRegistry?.governance?.courseAuthority?.holder==='admiral' && doctrineRegistry?.governance?.courseAuthority?.admiralMayChangeCourse===true && doctrineRegistry?.governance?.courseAuthority?.historyIsAppendOnly===true && doctrineRegistry?.governance?.courseAuthority?.rollbackSupported===true;
     const doctrineOk=doctrineRegistry?.build===BUILD_VERSION && Array.isArray(doctrineRegistry?.principles) && doctrineRegistry.principles.length>=10 && courseAuthorityOk;
@@ -5826,7 +5833,7 @@
     const watchtower=commandModel?.fleetWatchtower;
     const watchtowerOk=watchtower?.readAuthority==='active-server-side-admiral-only'&&watchtower?.writeAuthority==='exact-vessel-active-owner-membership-only'&&watchtower?.readFunction==='admiral_read_fleet_watch'&&watchtower?.writeFunction==='vessel_publish_watch_report'&&watchtower?.ownerReadFunction==='vessel_read_own_watch_report'&&watchtower?.admiralWriteControls===false&&watchtower?.registryActivityIsOperationalTruth===false&&watchtower?.failureMode==='explicit-unavailable-no-registry-substitution';
     add('fleet-truth-signal','Fleet Watchtower truth boundary',watchtowerOk?'pass':'fail',watchtowerOk?'Vessels publish only through exact active owner membership; Admiral reads the server-attested fleet view without write controls or registry-time substitution.':'Fleet Watchtower authority, freshness, or fail-closed contract is incomplete.');
-    const ownerRecoverySource=await safe(async()=>{const r=await fetch(`owner.html?readiness=${Date.now()}`,{cache:'no-store'});return r.ok?await r.text():'';},()=>'');
+    const ownerRecoverySource=await safe(()=>readSource('owner.html'),()=>'');
     const recoveryHelmOk=ownerRecoverySource.includes('id="forgotPassword"')&&ownerRecoverySource.includes('id="localRecovery"')&&ownerRecoverySource.includes('LOCAL_RECOVERY_MAX_FAILURES=5')&&ownerRecoverySource.includes("DEFAULT_PROJECT_ADMIN_RECOVERY_PIN='4353'")&&ownerRecoverySource.includes('usesSupabaseOwner()')&&ownerRecoverySource.includes('resetLocalOwnerCredential')&&ownerRecoverySource.includes('localRecoveryAttempt')&&ownerRecoverySource.includes('Local recovery cannot report to Fleet Watch');
     add('owner-recovery-helm','Owner password recovery boundary',recoveryHelmOk?'pass':'fail',recoveryHelmOk?'Every Owner Entrance exposes recovery; Supabase and provisional identities follow separate exact-vessel paths, local retry lockout is present, and local recovery still cannot publish Fleet Watch truth.':'Owner recovery is missing, stale, crosses identity modes, or weakens the Fleet Watch boundary.');
     const commandOk=commandModel?.build===BUILD_VERSION && commandModel?.views?.operational==='professional-default' && commandModel?.views?.presentation==='cinematic-secondary' && Array.isArray(commandModel?.layers)&&commandModel.layers.length===3 && commandModel?.admiralCourseAuthority?.enabled===true && commandModel?.admiralCourseAuthority?.authority==='admiral'&&watchtowerOk;
@@ -5920,14 +5927,11 @@
 
     let manifestState='warn',manifestDetail='Deployment manifest could not be read; runtime checks remain valid.';
     try{
-      const r=await fetch(`DEPLOYMENT_MANIFEST.json?readiness=${Date.now()}`,{cache:'no-store'});
-      if(r.ok){
-        const m=await r.json();
-        const pins=m?.authority_contracts||{};
-        const ok=String(m.build)===BUILD_VERSION && String(pins.black_flag_engine_pin)==='5615' && String(pins.project_admin_default_recovery_pin)==='4353' && String(pins.captains_quarters_pin)==='19613';
-        manifestState=ok?'pass':'fail';
-        manifestDetail=ok?`Deployment manifest, build ${BUILD_VERSION}, and authority contracts agree.`:`Manifest/runtime disagreement detected (manifest build ${m?.build||'unknown'}, runtime ${BUILD_VERSION}).`;
-      }
+      const m=JSON.parse(await readSource('DEPLOYMENT_MANIFEST.json'));
+      const pins=m?.authority_contracts||{};
+      const ok=String(m.build)===BUILD_VERSION && String(pins.black_flag_engine_pin)==='5615' && String(pins.project_admin_default_recovery_pin)==='4353' && String(pins.captains_quarters_pin)==='19613';
+      manifestState=ok?'pass':'fail';
+      manifestDetail=ok?`Deployment manifest, build ${BUILD_VERSION}, and authority contracts agree.`:`Manifest/runtime disagreement detected (manifest build ${m?.build||'unknown'}, runtime ${BUILD_VERSION}).`;
     }catch(_){ }
     add('release-identity','Release identity / manifest',manifestState,manifestDetail);
 
@@ -5963,8 +5967,8 @@
       state.wording=priorState;trueCaseInput.value=priorValue;updateUi();
     }
     const [trueCaseMarkup,trueCaseCss]=await Promise.all([
-      safe(async()=>{const r=await fetch(`index.html?trueCaseContract=${Date.now()}`,{cache:'no-store'});return r.ok?await r.text():'';},()=> ''),
-      safe(async()=>{const r=await fetch(`styles.css?trueCaseContract=${Date.now()}`,{cache:'no-store'});return r.ok?await r.text():'';},()=> '')
+      safe(()=>readSource('index.html'),()=> ''),
+      safe(()=>readSource('styles.css'),()=> '')
     ]);
     const trueCaseSourceContract=String(trueCaseMarkup).includes('id="ikeWordingInput"')&&String(trueCaseMarkup).includes('autocapitalize="off"')&&String(trueCaseMarkup).includes('autocorrect="off"')&&String(trueCaseMarkup).includes('spellcheck="false"')&&/ikeWordingInput[^}]*text-transform\s*:\s*none|#ikeWordingInput[^}]*text-transform\s*:\s*none/i.test(String(trueCaseCss))&&String(bindCustomerChoiceCore).includes("state.wording=String(e.target.value||'')")&&String(updateUi).includes("iw.value=state.wording");
     const trueCaseContract=trueCaseSourceContract&&(trueCaseRoundTrip!==false);
@@ -5978,16 +5982,16 @@
       && trueCaseContract;
     add('ike-style-b-truth','Ike Style B finished-sign geometry',styleBTruthContract?'pass':'fail',styleBTruthContract?'Style B keeps the proven exact-case input path while applying a tall, narrow SMOKE HOLE!-anchored measurement and visual envelope inside Ike Fit.':'Style B geometry drifted from the tall/narrow finished-sign contract or disturbed the proven TrueCase path.');
     const [appFoundrySource,styleRegistrySource,ownerFoundrySource]=await Promise.all([
-      safe(async()=>{const r=await fetch(`app.js?foundryContract=${Date.now()}`,{cache:'no-store'});return r.ok?await r.text():'';},()=> ''),
-      safe(async()=>{const r=await fetch(`ike_style_registry.js?foundryContract=${Date.now()}`,{cache:'no-store'});return r.ok?await r.text():'';},()=> ''),
-      safe(async()=>{const r=await fetch(`owner.html?foundryContract=${Date.now()}`,{cache:'no-store'});return r.ok?await r.text():'';},()=> '')
+      safe(()=>readSource('app.js'),()=> ''),
+      safe(()=>readSource('ike_style_registry.js'),()=> ''),
+      safe(()=>readSource('owner.html'),()=> '')
     ]);
     const engineFoundryV4=String(appFoundrySource).includes("schema:'dark-sky-ike-style-foundry-project-v4'")&&String(appFoundrySource).includes('glyphCandidates:Array.isArray(p.styleFoundry?.glyphCandidates)?p.styleFoundry.glyphCandidates:[]')&&String(appFoundrySource).includes('data-style-foundry-compile');
     const ownerFoundryV4=String(ownerFoundrySource).includes('data-sf-segment')&&String(ownerFoundrySource).includes('data-cand-canonical')&&String(ownerFoundrySource).includes('data-sf-rollback');
     const registryFoundryV4=String(styleRegistrySource).includes('dark-sky-ike-style-foundry-v4')&&String(styleRegistrySource).includes('IkeGlyphBench')&&String(styleRegistrySource).includes('IkeGlyphForge');
     const styleFoundryContract=engineFoundryV4&&ownerFoundryV4&&registryFoundryV4;
     add('ike-style-foundry','Ike governed Style Foundry',styleFoundryContract?'pass':'fail',styleFoundryContract?'CURRENT BUILD VERIFIED • Engine sync preserves project-scoped v4 GlyphForge evidence/candidates; Owner remains geometry authority with segmentation, canonical selection, and rollback.':'CURRENT BUILD FAILURE • Current source artifacts do not prove non-destructive Engine synchronization plus Owner v4 GlyphForge authority.');
-    const glyphForgeSource=await safe(async()=>{const r=await fetch(`owner.html?glyphForgeCheck=${Date.now()}`,{cache:'no-store',credentials:'same-origin'});return r.ok?await r.text():'';},()=> '');
+    const glyphForgeSource=await safe(()=>readSource('owner.html'),()=> '');
     const glyphForgeContract=String(glyphForgeSource).includes('data-sf-segment')&&String(glyphForgeSource).includes('data-cand-canonical')&&String(glyphForgeSource).includes('Protected benchmark replay')&&String(glyphForgeSource).includes('data-sf-rollback')&&String(glyphForgeSource).includes('Evidence wording corrected')&&String(glyphForgeSource).includes('ANCHOR GEOMETRY CERTIFIED');
     add('ike-glyphforge','Ike GlyphForge geometry governance',glyphForgeContract?'pass':'fail',glyphForgeContract?'Owner GlyphForge includes editable evidence, segmentation candidates, canonical glyph approval, protected benchmark replay, version rollback, anchor-certification clarity, and action-result return.':'GlyphForge geometry governance is incomplete on the actual Owner surface.');
 
@@ -6357,17 +6361,14 @@
       return;
     }
 
-    await openProjectEngineControl(p.id);
-    if(launch.key==='draft'){
-      // `customer` was an old project-tab name removed by the V4 Project Control
-      // redesign. Route incomplete business understanding to the supported Experience
-      // tab so a launch action can never leave the Project Control body blank.
-      if(!launch.brief){await renderProjectTab(p.id,'experience');return;}
-      if(!launch.offers.length){await renderProjectTab(p.id,'products');return;}
-    }
-    await renderProjectTab(p.id,'deployment');
-    if(!launch.deployments.length){
-      setTimeout(()=>document.getElementById('createDeploymentBtn')?.click(),80);
+    // Incomplete business understanding uses the supported Experience tab, not
+    // the removed legacy `customer` tab. Open the destination in one navigation.
+    const tab=launch.key==='draft'&&!launch.brief?'experience':launch.key==='draft'&&!launch.offers.length?'products':'deployment';
+    const navigation=await openProjectEngineControl(p.id,tab);
+    if(!navigation)return;
+    if(tab==='deployment'&&!launch.deployments.length){
+      const renderEpoch=projectTabRenderEpoch;
+      setTimeout(()=>{if(engineWorkspaceNavigationCurrent(navigation)&&renderEpoch===projectTabRenderEpoch)document.getElementById('createDeploymentBtn')?.click();},80);
     }
   }
 
@@ -6425,17 +6426,17 @@
     const identity=!!p?.id&&!!(p.projectCode||p.orderPrefix)&&!!p?.branding?.businessName;
     const experience=experienceApproved(p);
     const sea=!!d&&experienceSeaTrialCurrent(p,d);
-    const recovery=!!window.DarkSkyV4 && Number(db?.version||DB_VERSION)>=DB_VERSION;
+    const recovery=!!window.DarkSkyV4 && !!db && Number(db.version)>=DB_VERSION;
     const live=String(p?.publish?.status||'')==='live'&&deployments.some(x=>x.state==='deployed');
     const captain=!!commissioningApproval(p);
     return [
-      {id:'identity',label:'Identity & ownership',pass:identity,detail:identity?'Project identity is explicit':'Project identity needs attention'},
+      {id:'identity',label:'Identity setup',pass:identity,detail:identity?'Project identity is explicit; ownership authority is separate':'Project identity needs attention'},
       {id:'boundary',label:'Isolation boundary',pass:boundary,detail:boundary?'Project envelope is admitted and sealed':'Admission or governance review required'},
-      {id:'experience',label:'Customer experience approval',pass:experience,detail:experience?'Current configuration approved':'Experience approval is missing or stale'},
+      {id:'experience',label:'Customer experience approval',pass:experience,detail:experience?'Current configuration approval recorded locally':'Experience approval is missing or stale'},
       {id:'sea',label:'Sea Trial evidence',pass:sea,detail:sea?'Current customer submission recorded':'Run a current Sea Trial submission'},
-      {id:'recovery',label:'Durability & recovery posture',pass:recovery,detail:recovery?'V4 storage/recovery layer present':'Recovery posture could not be verified'},
+      {id:'recovery',label:'Recovery tools available',pass:recovery,detail:recovery?'Local V4 storage and recovery tools available; backup and restore not verified':'Local V4 storage/recovery tools unavailable; backup and restore not verified'},
       {id:'live',label:'Live deployment',pass:live,detail:live?'At least one live outpost is sailing':'No live deployment yet'},
-      {id:'captain',label:'Captain commissioning',pass:captain,detail:captain?`Approved ${new Date(commissioningApproval(p).approvedAt).toLocaleString()}`:'Captain approval not yet granted'}
+      {id:'captain',label:'Local Captain commissioning record',pass:captain,detail:captain?`Local approval recorded ${new Date(commissioningApproval(p).approvedAt).toLocaleString()}; server authority is separate`:'Local Captain approval not yet recorded'}
     ];
   }
   function commissioningSnapshot(p){const rows=commissioningGateRows(p);const technical=rows.filter(x=>x.id!=='captain');const ready=technical.every(x=>x.pass);const commissioned=ready&&rows.find(x=>x.id==='captain')?.pass;return {rows,ready,commissioned,passed:rows.filter(x=>x.pass).length,total:rows.length};}
@@ -6461,13 +6462,13 @@
         <div class="commissioning-vessel-copy">
           <span>${snap.commissioned?'COMMISSIONED VESSEL':snap.ready?'READY FOR CAPTAIN':'VESSEL IN DOCK'}</span>
           <strong>${escapeHtml(p.name)}</strong>
-          <p>${snap.commissioned?'The vessel has cleared the current Dark Sky commissioning standard.':snap.ready?'Every technical gate is clear. Captain commissioning is the final deliberate order.':'Structural and operating proof still remains before this vessel is seaworthy.'}</p>
+          <p>${snap.commissioned?'The local commissioning checklist and Captain approval are recorded. Server authority and backup/restore acceptance remain separate.':snap.ready?'Local setup and operating records are present. Captain commissioning is the final local order; server authority and backup/restore acceptance remain separate.':'Complete the local setup and operating checklist before recording Captain commissioning.'}</p>
         </div>
         <div class="commissioning-vessel-score">
           <b>${snap.passed}<i>/</i>${snap.total}</b>
           <span>GATES CLEAR</span>
           <div class="commissioning-progress-track"><i style="width:${percent}%"></i></div>
-          <small>${percent}% verified</small>
+          <small>${percent}% of local checklist</small>
         </div>
       </section>
 
@@ -6495,8 +6496,8 @@
       <section class="commissioning-captain-order ${snap.ready?'armed':'locked'}">
         <div>
           <small>CAPTAIN'S FINAL ORDER</small>
-          <h3>${snap.commissioned?'Vessel commissioned':snap.ready?'Technical gates clear — Captain may commission':'Commissioning authority remains locked'}</h3>
-          <p>${snap.ready?'Dark Sky has cleared the technical fleet gate. Captain approval is a deliberate final act.':'Identity, isolation, current experience approval, Sea Trial evidence, recovery posture, and live deployment must all be verified first.'}</p>
+          <h3>${snap.commissioned?'Local commissioning recorded':snap.ready?'Local checklist clear — record Captain order':'Local commissioning checklist incomplete'}</h3>
+          <p>${snap.ready?'This records local Captain approval only. It grants no server authority and proves no backup or restore.':'Identity, isolation, current experience approval, Sea Trial records, available recovery tools, and live deployment records must be present first.'}</p>
         </div>
         <button id="captainCommissionBtn" type="button" class="${snap.commissioned?'secondary-btn':'primary-btn'}" ${!snap.ready&&!snap.commissioned?'disabled':''}>${snap.commissioned?'REVOKE COMMISSION':'COMMISSION VESSEL'}</button>
       </section>`;
@@ -6518,15 +6519,15 @@
     modal.classList.remove('hidden');
   }
   function commissioningNextMove(snapshot){
-    if(snapshot.commissioned)return {label:'Commissioned',detail:'Keep the vessel healthy and use it as evidence for the fleet standard.',gate:''};
+    if(snapshot.commissioned)return {label:'Local commissioning recorded',detail:'Verify server authority and independent-device backup/restore acceptance separately.',gate:''};
     const next=snapshot.rows.find(r=>!r.pass);
-    if(!next)return {label:'Captain order',detail:'Technical gates are clear. Captain commissioning is the deliberate final act.',gate:'captain'};
+    if(!next)return {label:'Captain order',detail:'The local checklist is clear. Record the deliberate local Captain order.',gate:'captain'};
     const moves={
       identity:'Finish identity',
       boundary:'Seal isolation',
       experience:'Approve experience',
       sea:'Run Sea Trial',
-      recovery:'Verify recovery',
+      recovery:'Check recovery tools',
       live:'Deploy live',
       captain:'Captain order'
     };
@@ -6549,7 +6550,7 @@
     const search=view?.search??fleetDockSearch,filter=view?.filter??fleetDockFilter;
     const q=normalizeBusinessIdentityText(search);
     if(q && !normalizeBusinessIdentityText([p.name,p.id,p.projectCode,p.type,p.businessType,p.tagline].filter(Boolean).join(' ')).includes(q))return false;
-    if(filter==='attention')return !s.commissioned && !s.ready;
+    if(filter==='attention')return !s.commissioned;
     if(filter==='staging')return p?.publish?.status!=='live';
     if(filter==='live')return p?.publish?.status==='live';
     return true;
@@ -6567,13 +6568,15 @@
     const producing=!!byId.live?.pass;
     const recoverable=!!byId.recovery?.pass;
     let next='Review vessel readiness evidence.';
-    if(!commissioned) next='Seal identity and isolation before assigning operating authority.';
-    else if(!authority) next='Establish legitimate owner / Captain authority before operating tests.';
+    if(!commissioned) next='Seal identity and isolation before completing local owner / Captain setup.';
+    else if(!authority) next='Record local owner / Captain setup before operating tests; server authority is verified separately.';
     else if(!operational) next='Complete current customer-experience approval and Sea Trial evidence.';
     else if(!producing) next='Prove a deliberate live production deployment before calling the vessel producing.';
-    else if(!recoverable) next='Prove durable recovery and restore before production handoff.';
-    else next='Run independent-device and restore acceptance before final working-ship handoff.';
-    return {commissioned,authority,operational,producing,recoverable,next,owner,captainApproval};
+    else if(!recoverable) next='Check local storage and recovery tools; backup and restore remain unverified.';
+    else next='Verify server authority and run independent-device backup and restore acceptance before final handoff.';
+    const currentStage=!commissioned?'commissioned':!authority?'authority':!operational?'operational':!producing?'producing':!recoverable?'recovery':'complete';
+    // Compatibility fields describe local checklist stages, never authorization.
+    return {commissioned,authority,operational,producing,recoverable,next,owner,captainApproval,currentStage};
   }
   function renderFleetMissionControl(){
     const host=document.getElementById('fleetMissionRows'),state=document.getElementById('fleetMissionState'),summary=document.getElementById('fleetMissionSummary');
@@ -6584,14 +6587,14 @@
     rows.forEach(({m})=>Object.keys(counts).forEach(k=>{if(m[k])counts[k]++;}));
     state.textContent=`${list.length} VESSELS · ${counts.producing} PRODUCING`;
     state.className=`${counts.producing===list.length&&list.length?'clear':'watch'}`;
-    summary.innerHTML=`<article class="done"><small>COMMISSIONED</small><strong>${counts.commissioned}/${list.length}</strong><span>Vessels sealed</span></article><i aria-hidden="true">→</i><article class="${counts.authority?'active':''}"><small>AUTHORITY</small><strong>${counts.authority}/${list.length}</strong><span>Owner / Captain</span></article><i aria-hidden="true">→</i><article><small>OPERATIONAL</small><strong>${counts.operational}/${list.length}</strong><span>Sea Trial proven</span></article><i aria-hidden="true">→</i><article><small>PRODUCING</small><strong>${counts.producing}/${list.length}</strong><span>Live business</span></article><i aria-hidden="true">→</i><article class="done"><small>STATE PROTECTED</small><strong>${counts.recoverable}/${list.length}</strong><span>Recovery evidence on record</span></article>`;
+    summary.innerHTML=`<article class="${counts.commissioned?'done':''}"><small>IDENTITY & ISOLATION</small><strong>${counts.commissioned}/${list.length}</strong><span>Local setup records</span></article><i aria-hidden="true">→</i><article class="${counts.authority?'active':''}"><small>LOCAL SETUP</small><strong>${counts.authority}/${list.length}</strong><span>Owner / Captain record; server authority separate</span></article><i aria-hidden="true">→</i><article><small>OPERATIONAL</small><strong>${counts.operational}/${list.length}</strong><span>Current Sea Trial records</span></article><i aria-hidden="true">→</i><article><small>PRODUCING</small><strong>${counts.producing}/${list.length}</strong><span>Live deployment records</span></article><i aria-hidden="true">→</i><article class="${counts.recoverable?'done':''}"><small>RECOVERY TOOLS</small><strong>${counts.recoverable}/${list.length}</strong><span>Backup and restore not verified</span></article>`;
     const pill=(label,ok,current=false)=>`<span class="fleet-mission-pill ${ok?'pass':current?'current':'hold'}"><i aria-hidden="true">${ok?'✓':current?'•':'○'}</i>${label}</span>`;
     host.innerHTML=rows.length?rows.map(({p,m})=>{
-      const ownerLabel=m.owner==='active'?'ACTIVE':m.owner==='invited'?'INVITED':'UNASSIGNED';
+      const ownerLabel=m.owner==='active'?'LOCAL ACTIVE':m.owner==='invited'?'INVITED':'UNASSIGNED';
       const captainLabel=m.captainApproval?'LOCAL APPROVAL RECORDED':'NOT PROVEN';
       const code=escapeHtml(p.projectCode||p.orderPrefix||p.id);
-      const currentStage=!m.authority?'authority':!m.operational?'operational':!m.producing?'producing':!m.recoverable?'recovery':'complete';
-      return `<article class="fleet-mission-vessel stage-${currentStage}" data-project-id="${escapeHtml(p.id)}"><header><div class="fleet-mission-identity"><div class="fleet-mission-logo" data-fleet-mission-logo="${escapeHtml(p.id)}"><span>${code.slice(0,3)}</span></div><div class="fleet-mission-title"><small>${code}</small><strong>${escapeHtml(p.name)}</strong><button type="button" class="fleet-mission-logo-action" data-fleet-logo-project="${escapeHtml(p.id)}">EDIT LOGO</button></div></div><span class="fleet-mission-posture">${m.producing?'PRODUCING':m.operational?'SEA TRIAL':'STAGING'}</span></header><div class="fleet-mission-stages">${pill('COMMISSIONED',m.commissioned,currentStage==='commissioned')}${pill('AUTHORITY',m.authority,currentStage==='authority')}${pill('OPERATIONAL',m.operational,currentStage==='operational')}${pill('PRODUCING',m.producing,currentStage==='producing')}${pill('STATE PROTECTED',m.recoverable,currentStage==='recovery')}</div><div class="fleet-mission-authority"><span class="fleet-mission-authority-state ${m.owner==='active'?'verified':m.owner==='invited'?'pending':'unproven'}"><b>OWNER</b><strong>${ownerLabel}</strong></span><i aria-hidden="true"></i><span class="fleet-mission-authority-state ${m.captainApproval?'pending':'unproven'}"><b>CAPTAIN</b><strong>${captainLabel}</strong></span></div><div class="fleet-mission-next"><small>NEXT REQUIRED PROOF</small><strong>${escapeHtml(m.next)}</strong></div></article>`;
+      const currentStage=m.currentStage;
+      return `<article class="fleet-mission-vessel stage-${currentStage}" data-project-id="${escapeHtml(p.id)}"><header><div class="fleet-mission-identity"><div class="fleet-mission-logo" data-fleet-mission-logo="${escapeHtml(p.id)}"><span>${code.slice(0,3)}</span></div><div class="fleet-mission-title"><small>${code}</small><strong>${escapeHtml(p.name)}</strong><button type="button" class="fleet-mission-logo-action" data-fleet-logo-project="${escapeHtml(p.id)}">EDIT LOGO</button></div></div><span class="fleet-mission-posture">${m.producing?'PRODUCING':m.operational?'SEA TRIAL':'STAGING'}</span></header><div class="fleet-mission-stages">${pill('IDENTITY & ISOLATION',m.commissioned,currentStage==='commissioned')}${pill('LOCAL SETUP',m.authority,currentStage==='authority')}${pill('OPERATIONAL',m.operational,currentStage==='operational')}${pill('PRODUCING',m.producing,currentStage==='producing')}${pill('RECOVERY TOOLS',m.recoverable,currentStage==='recovery')}</div><div class="fleet-mission-authority"><span class="fleet-mission-authority-state ${m.owner==='active'?'pending':m.owner==='invited'?'pending':'unproven'}"><b>OWNER</b><strong>${ownerLabel}</strong></span><i aria-hidden="true"></i><span class="fleet-mission-authority-state ${m.captainApproval?'pending':'unproven'}"><b>CAPTAIN</b><strong>${captainLabel}</strong></span></div><div class="fleet-mission-next"><small>NEXT REQUIRED PROOF</small><strong>${escapeHtml(m.next)}</strong></div></article>`;
     }).join(''):'<div class="fleet-mission-loading">No Fleet Core vessels are available.</div>';
     rows.forEach(async({p})=>{
       const mark=host.querySelector(`[data-fleet-mission-logo="${CSS.escape(p.id)}"]`); if(!mark)return;
@@ -6599,8 +6602,11 @@
     });
     host.querySelectorAll('[data-fleet-logo-project]').forEach(btn=>btn.addEventListener('click',async()=>{
       const projectId=btn.dataset.fleetLogoProject; const p=projectById(projectId); if(!p)return;
-      await openProjectEngineControl(projectId); await renderProjectTab(projectId,'marketing');
-      requestAnimationFrame(()=>{focusMarketingGraphicSlot('projectLogo');const el=document.getElementById('graphicsFocusedEditor');el?.scrollIntoView({behavior:'smooth',block:'start'});});
+      rememberEngineWorkspaceOrigin(btn);
+      const navigation=await openProjectEngineControl(projectId,'marketing');
+      if(!navigation)return;
+      const renderEpoch=projectTabRenderEpoch;
+      scheduleEngineWorkspaceFrame(navigation,()=>{if(renderEpoch!==projectTabRenderEpoch)return;focusMarketingGraphicSlot('projectLogo');const el=document.getElementById('graphicsFocusedEditor');el?.scrollIntoView({behavior:'smooth',block:'start'});});
     }));
   }
 
@@ -6713,7 +6719,7 @@
           if(action==='customer'){await openFleetDockCustomerExperience(project);return;}
           if(action==='owner'){
             const owner=ensureProjectGovernance(project).ownerAccess;
-            if(!owner?.enabled){await openProjectEngineControl(projectId);await renderProjectTab(projectId,'owner');return;}
+            if(!owner?.enabled){rememberEngineWorkspaceOrigin(btn);await openProjectEngineControl(projectId,'owner');return;}
             armOwnerRoute(projectId);showFleetActionStatus(`Opening ${project.name} Owner / Partner Control Center…`,{tone:'clear',duration:5200});location.href=ownerPartnerEntryLink(projectId);return;
           }
           if(action==='preview'){await openExperienceTestDeck(projectId);return;}
@@ -7669,16 +7675,15 @@
     }
     if(tab==='customers'){
       const adminVisible=!!p.customerHistory?.adminVisible;
-      const directory=readCustomerDirectory();
-      const rows=Object.values(directory[p.id]||{}).sort((a,b)=>
-        String(b.lastOrderDate||'').localeCompare(String(a.lastOrderDate||''))
-      );
+      const rows=projectCustomerRows(p.id).filter(c=>
+        !c.isolation?.projectId||String(c.isolation.projectId)===String(p.id)
+      ).sort((a,b)=>String(b.lastOrderDate||'').localeCompare(String(a.lastOrderDate||'')));
 
       const directoryHtml=rows.map(c=>{
-        const matches=engineWideCustomerMatches(c.customerKey);
-        const repeatAcross=matches.reduce((s,m)=>s+(m.row.orderCount||0),0);
-        const projectCount=matches.length;
-        const latest=(c.purchases||[])[0];
+        const orderCount=Math.max(0,Math.floor(Number(c.orderCount)||0));
+        const latest=(Array.isArray(c.purchases)?c.purchases:[]).find(x=>x&&
+          (!x.projectId||String(x.projectId)===String(p.id))&&
+          (!x.isolation?.projectId||String(x.isolation.projectId)===String(p.id)));
         return `<article class="customer-directory-card">
           <div class="customer-directory-head">
             <div>
@@ -7686,14 +7691,12 @@
               <span>${escapeHtml(c.phone||'')}</span>
               <span>${escapeHtml(c.email||'')}</span>
             </div>
-            <div class="repeat-customer-badge ${repeatAcross>1?'repeat':''}">
-              ${repeatAcross>1?'REPEAT CUSTOMER':'CUSTOMER'}
+            <div class="repeat-customer-badge ${orderCount>1?'repeat':''}">
+              ${orderCount>1?'REPEAT CUSTOMER':'CUSTOMER'}
             </div>
           </div>
           <div class="customer-directory-stats">
-            <span><strong>${c.orderCount||0}</strong> this project</span>
-            <span><strong>${repeatAcross}</strong> engine-wide orders</span>
-            <span><strong>${projectCount}</strong> project${projectCount===1?'':'s'}</span>
+            <span><strong>${orderCount}</strong> orders in this project</span>
           </div>
           <div class="customer-last-purchase">
             <span>Last purchase</span>
@@ -7934,12 +7937,14 @@
     nav.dataset.openGroup=visibleGroup||'';
   }
 
+  let projectTabRenderEpoch=0;
   async function renderProjectTab(id,tab){
     const p=projectById(id), box=$('projectTabContent');if(!p||!box)return;
+    const renderEpoch=++projectTabRenderEpoch;
     // Backward-compatible tab aliases. Never render a blank Project Control body just
     // because an older launch path names a tab that V4 renamed.
     const requestedTab=String(tab||'overview');
-    const resolvedTab=({customer:'experience',customers:'experience',deployments:'deployment'}[requestedTab]||requestedTab);
+    const resolvedTab=({customer:'experience',deployments:'deployment'}[requestedTab]||requestedTab);
     tab=resolvedTab;
     const html=projectTabsHtml(p,tab);
     box.innerHTML=html || `<section class="pec-card project-route-recovery"><div class="engine-kicker">PROJECT ROUTE RECOVERY</div><h4>That project view is no longer available.</h4><p class="helper">Dark Sky redirected an outdated project route instead of leaving this page blank.</p><button type="button" class="primary-btn small" id="projectRouteRecoveryBtn">OPEN OVERVIEW</button></section>`;
@@ -7954,9 +7959,14 @@
     if(tab==='analytics'){await renderProjectAnalytics(p);return;}
     if(tab==='marketing'){
       if(engineActiveProjectId!==p.id)return;
+      const navigation=engineWorkspaceNavigationToken();
+      const viewCurrent=()=>renderEpoch===projectTabRenderEpoch&&engineActiveProjectId===p.id&&
+        $('projectTabContent')===box&&surfaceVisible('projectEngineControl')&&engineWorkspaceNavigationCurrent(navigation);
       bindProjectAssetEditor();
-      await loadProjectAssetsEditor();
+      await loadProjectAssetsEditor(viewCurrent);
+      if(!viewCurrent())return;
       const visual=await projectBrandVisual(p);
+      if(!viewCurrent())return;
       const brandBox=$('marketingProjectBrandVisual');
       if(brandBox){
         brandBox.innerHTML=visual.logo
@@ -8173,18 +8183,26 @@
       };
     }
     if(tab==='customers'){
-      const savedOrders=await getMergedOrders();
-      rebuildCustomerDirectoryForProject(p.id,savedOrders);
-      $('saveCustomerHistoryTab').onclick=async()=>{
-        if(!requireEngineProjectMutation(p,'customer.history.settings.update'))return;
+      // Reading retained history never rebuilds or mutates the customer directory.
+      const saveButton=$('saveCustomerHistoryTab'),rebuildButton=$('rebuildCustomerHistoryBtn');
+      const navigation=engineWorkspaceNavigationToken();
+      const viewCurrent=()=>renderEpoch===projectTabRenderEpoch&&engineActiveProjectId===p.id&&
+        $('projectTabContent')===box&&$('saveCustomerHistoryTab')===saveButton&&
+        $('rebuildCustomerHistoryBtn')===rebuildButton&&surfaceVisible('projectEngineControl')&&
+        engineWorkspaceNavigationCurrent(navigation);
+      saveButton.onclick=async()=>{
+        if(!viewCurrent()||!requireEngineProjectMutation(p,'customer.history.settings.update'))return;
         p.customerHistory={adminVisible:$('customerHistoryAdminVisible').checked};
         await persistProjectMutation(p,{reason:'customer.history.settings.update'});
         logActivity(p.id,'Project Admin customer history '+(p.customerHistory.adminVisible?'enabled':'disabled'));
+        if(!viewCurrent())return;
         await renderProjectTab(p.id,'customers');
       };
-      $('rebuildCustomerHistoryBtn').onclick=async()=>{
-        if(!requireEngineProjectMutation(p,'customer.history.rebuild'))return;
-        rebuildCustomerDirectoryForProject(p.id,await getMergedOrders());
+      rebuildButton.onclick=async()=>{
+        if(!viewCurrent()||!requireEngineProjectMutation(p,'customer.history.rebuild'))return;
+        const savedOrders=await getMergedOrders();
+        if(!viewCurrent()||!requireEngineProjectMutation(p,'customer.history.rebuild'))return;
+        rebuildCustomerDirectoryForProject(p.id,savedOrders);
         logActivity(p.id,'Customer history rebuilt');
         await renderProjectTab(p.id,'customers');
       };
@@ -9942,8 +9960,10 @@
     if(result)await mirrorVerifiedCommission(result);
   }
 
-  async function openProjectEngineControl(id){
+  async function openProjectEngineControl(id,tab='overview'){
     const p=projectById(id);if(!p)return;
+    const navigation=beginEngineWorkspaceNavigation();
+    if(!engineWorkspaceNavigationCurrent(navigation))return;
     // Engine Project Control is not a customer/project-admin session. Clear any
     // lingering project presentation before selecting this immutable Engine target.
     clearProjectPresentation();
@@ -9952,14 +9972,21 @@
     engineActiveProjectId=p.id;
     $('pecTitle').textContent=p.name;
     $('pecSubtitle').textContent='Business command, operating visibility, and project-scoped controls. Black Flag remains unlocked only while you stay in the Engine.';
-    await applyProjectControlBrand(p);
+    await applyProjectControlBrand(p,navigation);
+    if(!engineWorkspaceNavigationCurrent(navigation))return;
     syncProjectOperatingLanguage(p);
     openEngineWorkspace($('projectEngineControl'));
-    await renderProjectTab(id,'overview');
+    const workspaceNavigation=engineWorkspaceNavigationToken();
+    // The requested tab belongs to this opening, including same-vessel reopens.
+    // Callers must not start an independent render after a canceled opening.
+    const renderEpoch=projectTabRenderEpoch+1;
+    await renderProjectTab(id,tab);
+    if(!engineWorkspaceNavigationCurrent(workspaceNavigation)||engineActiveProjectId!==p.id||renderEpoch!==projectTabRenderEpoch)return;
     const control=$('projectEngineControl');
     if(control)control.scrollTop=0;
     $('projectTabs')?.scrollTo?.({top:0,left:0,behavior:'instant'});
-    requestAnimationFrame(()=>window.scrollTo({top:0,left:0,behavior:'instant'}));
+    scheduleEngineWorkspaceFrame(workspaceNavigation,()=>window.scrollTo({top:0,left:0,behavior:'instant'}));
+    return workspaceNavigation;
   }
 
   async function openCaptainDeploymentRoute(route){
@@ -9982,8 +10009,8 @@
       restoreEngineSurface('captain-deployment-course',++commandRouteGeneration);
       await openEnginePanel();
     }
-    await openProjectEngineControl(p.id);
-    await renderProjectTab(p.id,'deployment');
+    const navigation=await openProjectEngineControl(p.id,'deployment');
+    if(!navigation||!engineWorkspaceNavigationCurrent(navigation))return {ok:false,canceled:true,projectId:p.id};
     window.BlackFlagV3Core?.audit?.({actorRole:'captain',projectId:p.id,category:'navigation',action:'deployment.course.opened',detail:`outpost ${route.outpostId||'(default)'}`});
     return {ok:true,projectId:p.id,outpostId:route.outpostId||''};
   }
@@ -10016,12 +10043,13 @@
     const openInsideEngine=async()=>{
       closeCaptainSurfacesForEngineRoute();
       await openEnginePanel();
-      await openProjectEngineControl(p.id);
+      const navigation=await openProjectEngineControl(p.id);
+      if(!navigation||!engineWorkspaceNavigationCurrent(navigation))return {ok:false,canceled:true,projectId:p.id};
       if(type==='order'){
         commandSelectedOrderTarget=targetId?{projectId:p.id,orderId:targetId}:null;
+        const renderEpoch=projectTabRenderEpoch+1;
         await renderProjectTab(p.id,'orders');
-            }else{
-        await renderProjectTab(p.id,'overview');
+        if(!engineWorkspaceNavigationCurrent(navigation)||renderEpoch!==projectTabRenderEpoch)return {ok:false,canceled:true,projectId:p.id};
       }
       window.BlackFlagV3Core?.audit?.({actorRole:'captain',projectId:p.id,category:'navigation',action:'command_find.opened',detail:`${type} • ${targetId||p.id}`});
       return {ok:true,projectId:p.id,type,id:targetId};
@@ -10288,15 +10316,15 @@
     return true;
   }
 
-  async function renderProjectGraphicsLibrary(){
+  async function renderProjectGraphicsLibrary(viewCurrent=()=>true){
     const p=graphicsProject(); if(!p)return;
     const requestedProjectId=p.id;
     const assets=await readProjectAssets(requestedProjectId);
-    if(engineActiveProjectId!==requestedProjectId)return;
+    if(engineActiveProjectId!==requestedProjectId||!viewCurrent())return;
     const meta=readProjectAssetMeta(requestedProjectId);
     const slots=graphicSlotsForProject(p);
     const verified=await verifyGraphicsNamespace(requestedProjectId);
-    if(engineActiveProjectId!==requestedProjectId)return;
+    if(engineActiveProjectId!==requestedProjectId||!viewCurrent())return;
 
     if($('graphicsProjectIdentity')) $('graphicsProjectIdentity').textContent=`${p.projectCode||p.orderPrefix||'PRJ'} • ${p.name}`;
     if($('graphicsIsolationNote')) $('graphicsIsolationNote').textContent=`SEALED PROJECT ID: ${requestedProjectId} • Reads and writes are restricted to this project.`;
@@ -10412,14 +10440,14 @@
     $('graphicsLibrary')?.scrollIntoView({behavior:'smooth',block:'nearest'});
   }
 
-  async function loadProjectAssetsEditor(){
+  async function loadProjectAssetsEditor(viewCurrent=()=>true){
     const p=graphicsProject(); if(!p)return;
     const requestedProjectId=p.id;
     clearGraphicsTransientUi();
     marketingActiveGraphicSlot=null;
     $('graphicsFocusedEditor')?.classList.add('hidden');
     const assets=await readProjectAssets(requestedProjectId);
-    if(engineActiveProjectId!==requestedProjectId)return;
+    if(engineActiveProjectId!==requestedProjectId||!viewCurrent())return;
     const map={
       projectLogo:'assetProjectLogoPreview',
       heroGraphic:'assetHeroGraphicPreview',
@@ -10438,7 +10466,7 @@
         updatePreviewEmptyState(id,false);
       }
     });
-    await renderProjectGraphicsLibrary();
+    await renderProjectGraphicsLibrary(viewCurrent);
   }
 
   async function collectAndSaveProjectAssets(){
@@ -10921,9 +10949,8 @@
     document.body.classList.add('engine-mode');
     $('enginePanel')?.classList.remove('hidden');
     engineSessionUnlocked=true;
-    await openProjectEngineControl(p.id);
     deploymentSelectionByProject.set(p.id,ctx.deploymentId);
-    await renderProjectTab(p.id,'deployment');
+    await openProjectEngineControl(p.id,'deployment');
   }
   async function submitUniversalCustomerOrder(p){
     const offer=universalSelectedOffer(p); if(!offer){alert('Choose an offer first.');return;}
@@ -11217,6 +11244,7 @@
     }catch(_){}
   }
   function prepareEngineBoundary(){
+    invalidateEngineWorkspaceNavigation();
     normalizeEngineHistoryRoute();
     clearProjectPresentation();
     clearActiveProjectContext();
@@ -11327,6 +11355,7 @@
     clearProjectPresentation();
     const projectId=activateProjectContext(p);
     engineActiveProjectId=null;
+    invalidateEngineWorkspaceNavigation();
     logActivity(projectId,'Project opened');engineSessionUnlocked=false;
     document.body.classList.remove('boot-locked','engine-mode');$('enginePanel')?.classList.add('hidden');$('blackFlagEntryGate')?.classList.add('hidden');document.body.classList.add('project-mode');
     showCustomerShellForProject(p);
@@ -15179,8 +15208,8 @@ The full order and approved media remain stored with this project.`;
         return;
       }
 
-      if(target.matches('[data-fleet-health-project]')){await openProjectEngineControl(target.dataset.fleetHealthProject);return;}
-      if(target.matches('[data-open-project-control]')){await openProjectEngineControl(target.dataset.openProjectControl);return;}
+      if(target.matches('[data-fleet-health-project]')){rememberEngineWorkspaceOrigin(target);await openProjectEngineControl(target.dataset.fleetHealthProject);return;}
+      if(target.matches('[data-open-project-control]')){rememberEngineWorkspaceOrigin(target);await openProjectEngineControl(target.dataset.openProjectControl);return;}
       if(target.matches('[data-project-owner-access]')){
         const p=projectById(target.dataset.projectOwnerAccess);if(!p)return;
         ensureProjectGovernance(p);
@@ -15915,8 +15944,7 @@ The full order and approved media remain stored with this project.`;
 
       if(returnState?.projectId){
         engineActiveProjectId=returnState.projectId;
-        await openProjectEngineControl(returnState.projectId);
-        await renderProjectTab(returnState.projectId,returnState.tab||'owner');
+        await openProjectEngineControl(returnState.projectId,returnState.tab||'owner');
       }
     });
     window.addEventListener('hashchange',()=>routeOwnerAccessFromHash());
@@ -15925,36 +15953,108 @@ The full order and approved media remain stored with this project.`;
 
 
   let engineWorkspaceReturnScrollY=0;
+  let engineWorkspaceNavigationGeneration=0;
+  let engineWorkspaceReturnOrigin=null;
+  function engineWorkspaceNavigationToken(){
+    return {generation:engineWorkspaceNavigationGeneration,routeGeneration:commandRouteGeneration,route:activeCommandRoute,href:location.href};
+  }
+  function engineWorkspaceNavigationCurrent(token){
+    return !!token && token.generation===engineWorkspaceNavigationGeneration &&
+      token.routeGeneration===commandRouteGeneration && token.href===location.href &&
+      engineSessionUnlocked===true && token.route===activeCommandRoute &&
+      document.body.classList.contains('engine-mode') && surfaceVisible('enginePanel');
+  }
+  function invalidateEngineWorkspaceNavigation(){
+    ++engineWorkspaceNavigationGeneration;
+    engineWorkspaceReturnOrigin=null;
+    engineWorkspaceReturnScrollY=0;
+  }
+  function rememberEngineWorkspaceOrigin(source=document.activeElement){
+    if(engineWorkspaceReturnOrigin && engineWorkspaceNavigationCurrent(engineWorkspaceReturnOrigin.navigation))return;
+    const navigation=engineWorkspaceNavigationToken();
+    if(!engineWorkspaceNavigationCurrent(navigation)){engineWorkspaceReturnOrigin=null;return;}
+    const dock=$('fleetCommissioningDock');
+    const fleet=!!dock && surfaceVisible('fleetCommissioningDock') &&
+      document.body.classList.contains('engine-dock-open') && dock.contains(source);
+    const button=fleet?source?.closest?.('[data-open-project-control]'):null;
+    engineWorkspaceReturnScrollY=window.scrollY||0;
+    engineWorkspaceReturnOrigin={kind:fleet?'fleet-compass':'clear-deck',navigation,
+      scrollY:engineWorkspaceReturnScrollY,scrollX:window.scrollX||0,
+      search:fleet?fleetDockSearch:'',filter:fleet?fleetDockFilter:'all',
+      focus:fleet?source:null,projectId:button?.dataset.openProjectControl||''};
+  }
+  function beginEngineWorkspaceNavigation(){
+    rememberEngineWorkspaceOrigin();
+    ++engineWorkspaceNavigationGeneration;
+    const token=engineWorkspaceNavigationToken();
+    // The origin belongs to the session/route, while this generation owns pending
+    // workspace work. Nested switches preserve the first origin, never workspace scroll.
+    if(engineWorkspaceReturnOrigin)engineWorkspaceReturnOrigin.navigation=token;
+    return token;
+  }
+  function scheduleEngineWorkspaceFrame(token,callback){
+    requestAnimationFrame(()=>{if(engineWorkspaceNavigationCurrent(token))callback();});
+  }
+  // URL navigation may leave and return without a command-router generation change.
+  window.addEventListener('hashchange',invalidateEngineWorkspaceNavigation);
+  window.addEventListener('popstate',invalidateEngineWorkspaceNavigation);
   function openEngineWorkspace(el){
     if(!el)return;
-    // Dedicated workspace navigation: park the command deck instead of placing a
-    // fixed overlay above it. This is intentionally iPad/Safari-safe.
-    engineWorkspaceReturnScrollY=window.scrollY||0;
+    const navigation=beginEngineWorkspaceNavigation();
+    if(!engineWorkspaceNavigationCurrent(navigation))return;
+    // Dedicated workspace navigation parks the command deck (iPad/Safari-safe).
     ['projectEngineControl','engineConfigurationDock'].forEach(id=>{
       const workspace=$(id);
       if(workspace && workspace!==el) workspace.classList.add('hidden');
     });
     el.classList.remove('hidden');
     document.body.classList.add('engine-workspace-open');
-    requestAnimationFrame(()=>window.scrollTo({top:0,left:0,behavior:'instant'}));
+    scheduleEngineWorkspaceFrame(navigation,()=>window.scrollTo({top:0,left:0,behavior:'instant'}));
   }
-  function closeEngineWorkspace(el){
-    if(!el)return;
+  function closeEngineWorkspace(el,{storageReturn=false}={}){
+    if(!el || el.classList.contains('hidden'))return;
     el.classList.add('hidden');
     const stillOpen=document.querySelector('#projectEngineControl:not(.hidden),#engineConfigurationDock:not(.hidden)');
-    if(!stillOpen){
-      document.body.classList.remove('engine-workspace-open');
-      document.body.classList.remove('engine-dock-open');
-      const status=$('clearDeckStatus');if(status)status.textContent='Returned to Clear Deck. Choose one command.';
-      requestAnimationFrame(()=>window.scrollTo({top:0,left:0,behavior:'instant'}));
-    }
+    if(stillOpen)return;
+    const origin=engineWorkspaceReturnOrigin;
+    const validOrigin=origin && engineWorkspaceNavigationCurrent(origin.navigation);
+    engineWorkspaceReturnOrigin=null;
+    ++engineWorkspaceNavigationGeneration;
+    const navigation=engineWorkspaceNavigationToken();
+    document.body.classList.remove('engine-workspace-open','engine-dock-open');
+    if(!engineWorkspaceNavigationCurrent(navigation) || (origin && !validOrigin))return;
+    scheduleEngineWorkspaceFrame(navigation,()=>{
+      // The closed dock is hidden by engine-dock-open CSS until restored.
+      const fleet=validOrigin && origin.kind==='fleet-compass' && $('fleetCommissioningDock')?.isConnected &&
+        !$('fleetCommissioningDock').classList.contains('hidden');
+      const status=$('clearDeckStatus');
+      if(fleet){
+        document.body.classList.add('engine-dock-open');
+        fleetDockSearch=origin.search;fleetDockFilter=origin.filter;
+        if(typeof bindFleetDockControls8838==='function')bindFleetDockControls8838();
+        if(status)status.textContent='Returned to Fleet Compass. Choose one vessel, then one exact surface.';
+        const dock=$('fleetCommissioningDock');
+        const original=origin.focus;
+        const replacement=origin.projectId?[...dock.querySelectorAll('[data-open-project-control]')].find(button=>button.dataset.openProjectControl===origin.projectId && !button.disabled):null;
+        const focus=original?.isConnected && dock.contains(original) && !original.disabled?original:replacement||$('fleetDockSearch');
+        try{focus?.focus?.({preventScroll:true});}catch(_){}
+        window.scrollTo({top:origin.scrollY,left:origin.scrollX,behavior:'instant'});
+      }else if(validOrigin && storageReturn){
+        try{$('engineStorageKpi')?.focus?.({preventScroll:true});}catch(_){}
+        window.scrollTo({top:origin.scrollY,left:origin.scrollX,behavior:'instant'});
+      }else{
+        if(status)status.textContent='Returned to Clear Deck. Choose one command.';
+        window.scrollTo({top:0,left:0,behavior:'instant'});
+      }
+    });
   }
   function openEngineConfiguration(target='top'){
     const dock=$('engineConfigurationDock');if(!dock)return;
     openEngineWorkspace(dock);
-    if(target==='economics') requestAnimationFrame(()=>$('engineFixedCost30')?.focus({preventScroll:false}));
-    if(target==='integrity') requestAnimationFrame(()=>$('shipIntegritySummary')?.scrollIntoView({behavior:'smooth',block:'center'}));
-    if(target==='storage') requestAnimationFrame(()=>{const station=$('engineStorageTelemetryStation');station?.scrollIntoView({behavior:'instant',block:'start'});});
+    const navigation=engineWorkspaceNavigationToken();
+    if(target==='economics') scheduleEngineWorkspaceFrame(navigation,()=>$('engineFixedCost30')?.focus({preventScroll:false}));
+    if(target==='integrity') scheduleEngineWorkspaceFrame(navigation,()=>$('shipIntegritySummary')?.scrollIntoView({behavior:'smooth',block:'center'}));
+    if(target==='storage') scheduleEngineWorkspaceFrame(navigation,()=>{const station=$('engineStorageTelemetryStation');station?.scrollIntoView({behavior:'instant',block:'start'});});
   }
 
   function v3LifecycleLabel(state){
@@ -16215,6 +16315,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   async function routeFirstMateAction(action,projectId='',button=null){
+    if(button && ['integrity','results','economics','project-owner','project-deployment','project-launch'].includes(action))rememberEngineWorkspaceOrigin(button);
     const original=button?.textContent||'';
     if(button){button.disabled=true;button.dataset.commandBusy='1';button.textContent='OPENING…';}
     setFirstMateActionStatus('Opening the recommended command…','working');
@@ -16235,14 +16336,16 @@ The full order and approved media remain stored with this project.`;
         });
         setFirstMateActionStatus('Engine Economics is open. Enter only costs you want included in performance telemetry.','success');
       }else if(action==='project-owner'&&projectId){
-        await openProjectEngineControl(projectId);
-        await renderProjectTab(projectId,'owner');
-        requestAnimationFrame(()=>pulseCommandTarget($('projectTabContent')));
+        const navigation=await openProjectEngineControl(projectId,'owner');
+        if(!navigation||!engineWorkspaceNavigationCurrent(navigation))return false;
+        const renderEpoch=projectTabRenderEpoch;
+        scheduleEngineWorkspaceFrame(navigation,()=>{if(renderEpoch===projectTabRenderEpoch)pulseCommandTarget($('projectTabContent'));});
         setFirstMateActionStatus('Owner Access is open for the selected project.','success');
       }else if(action==='project-deployment'&&projectId){
-        await openProjectEngineControl(projectId);
-        await renderProjectTab(projectId,'deployment');
-        requestAnimationFrame(()=>pulseCommandTarget($('projectTabContent')));
+        const navigation=await openProjectEngineControl(projectId,'deployment');
+        if(!navigation||!engineWorkspaceNavigationCurrent(navigation))return false;
+        const renderEpoch=projectTabRenderEpoch;
+        scheduleEngineWorkspaceFrame(navigation,()=>{if(renderEpoch===projectTabRenderEpoch)pulseCommandTarget($('projectTabContent'));});
         setFirstMateActionStatus('Deployment command is open for the selected project.','success');
       }else if(action==='project-launch'&&projectId){
         const target=projectById(projectId);
@@ -16260,10 +16363,10 @@ The full order and approved media remain stored with this project.`;
     }catch(err){
       console.error('First Mate command route failed',action,projectId,err);
       setFirstMateActionStatus(`Command route interrupted: ${String(err?.message||err)}`,'error');
-      if(button){button.disabled=false;button.textContent=original||'TRY AGAIN';delete button.dataset.commandBusy;}
       return false;
+    }finally{
+      if(button){button.disabled=false;button.textContent=original||'OPEN';delete button.dataset.commandBusy;}
     }
-    if(button){button.disabled=false;button.textContent=original||'OPEN';delete button.dataset.commandBusy;}
     return true;
   }
 
@@ -16417,12 +16520,10 @@ The full order and approved media remain stored with this project.`;
             return;
           }
           if(action==='live'){
-            await openProjectEngineControl(p.id);
-            await renderProjectTab(p.id,'deployment');
+            await openProjectEngineControl(p.id,'deployment');
             return;
           }
           await openProjectEngineControl(p.id);
-          await renderProjectTab(p.id,'overview');
         }
       }catch(err){
         seaworthyCommandFailure(target.textContent?.trim()||'Command',err);
@@ -16449,7 +16550,7 @@ The full order and approved media remain stored with this project.`;
         if(command==='fleet'){reveal('engineFleetHealth','Fleet picture opened. Choose a vessel to go directly to Project Control.');return;}
         if(command==='watch'){Promise.resolve(renderFirstMateWatch()).finally(()=>reveal('firstMateWatch','Fleet Watch refreshed. No vessel state was changed.'));return;}
         if(command==='commission'){$('commissionNewProjectBtn')?.click();return;}
-        if(command==='configure'){openEngineConfiguration('top');return;}
+        if(command==='configure'){rememberEngineWorkspaceOrigin(target);openEngineConfiguration('top');return;}
         if(command==='systems'){const opening=!document.body.classList.contains('engine-systems-expanded');document.body.classList.toggle('engine-systems-expanded',opening);target.setAttribute('aria-expanded',opening?'true':'false');target.innerHTML=`<i aria-hidden="true"></i><span><strong>${opening?'HIDE ENGINEERING SYSTEMS':'ENGINEERING SYSTEMS'}</strong><small>Diagnostics, proof, learning &amp; recovery</small></span><em>${opening?'OPENED':'OPEN'}</em>`;if(status)status.textContent=opening?'Engineering Systems opened: performance, maintenance, release proof, Fleet Intelligence, learning, recovery, and evidence are available below.':'Engineering Systems closed. Daily command remains forward.';if(!opening)requestAnimationFrame(()=>$('clearDeckLaunchpad')?.scrollIntoView({behavior:'smooth',block:'start'}));return;}
       }
 
@@ -16487,6 +16588,7 @@ The full order and approved media remain stored with this project.`;
       if(target.id==='engineConfigureBtn'||target.matches('[data-full-sail="configure"]')){
         event.preventDefault();
         event.stopPropagation();
+        rememberEngineWorkspaceOrigin(target);
         openEngineConfiguration('top');
         return;
       }
@@ -16542,8 +16644,8 @@ The full order and approved media remain stored with this project.`;
         catch(err){alert(`Experience approval could not be saved: ${String(err?.message||err)}`);}
         return;
       }
-      if(target.id==='experienceEditConfiguration'){closeExperienceTestDeck();await openProjectEngineControl(p.id);await renderProjectTab(p.id,'experience');return;}
-      if(target.id==='experienceOpenShipwright'){closeExperienceTestDeck();await openProjectEngineControl(p.id);await renderProjectTab(p.id,'deployment');return;}
+      if(target.id==='experienceEditConfiguration'){closeExperienceTestDeck();await openProjectEngineControl(p.id,'experience');return;}
+      if(target.id==='experienceOpenShipwright'){closeExperienceTestDeck();await openProjectEngineControl(p.id,'deployment');return;}
     },true);
   }
 
@@ -17082,7 +17184,7 @@ The full order and approved media remain stored with this project.`;
     const launch=$('engineTelemetryLaunchBtn');
     const kpi=$('engineStorageKpi');
     const inspect=$('storageTelemetryInspectBtn');
-    const handler=()=>openStorageTelemetry({inspect:true});
+    const handler=event=>{rememberEngineWorkspaceOrigin(event?.currentTarget);return openStorageTelemetry({inspect:true});};
     if(launch)launch.addEventListener('click',handler);
     if(kpi)kpi.addEventListener('click',handler);
     if(inspect)inspect.addEventListener('click',handler);

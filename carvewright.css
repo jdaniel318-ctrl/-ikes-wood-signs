@@ -1,4 +1,4 @@
-/* Carvewright 8.8.20.62 — all editor styles stay inside its modal. */
+/* Carvewright 8.8.20.63 — all editor styles stay inside its modal. */
 .cwe-modal{--cwe-navy:#15333e;--cwe-teal:#087c70;--cwe-muted:#60767d;--cwe-line:#dce5e6;box-sizing:border-box;width:min(1440px,calc(100vw - 28px));height:calc(100dvh - 28px);max-width:none;max-height:none;margin:auto;padding:0;border:1px solid #afc3c7;border-radius:16px;background:#f3f6f5;color:#1e3740;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:14px;line-height:1.45;box-shadow:0 24px 100px #071e3655;overflow:hidden;text-align:left}
 .cwe-modal::backdrop{background:#0a2138b8;backdrop-filter:blur(5px)}
 .cwe-modal *{box-sizing:border-box}.cwe-modal [hidden]{display:none!important}.cwe-modal h1,.cwe-modal h2,.cwe-modal h3,.cwe-modal p,.cwe-modal fieldset{margin:0}
