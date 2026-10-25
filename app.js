@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.20.63';
+  const BUILD_VERSION='8.8.20.64';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -6440,6 +6440,42 @@
     ];
   }
   function commissioningSnapshot(p){const rows=commissioningGateRows(p);const technical=rows.filter(x=>x.id!=='captain');const ready=technical.every(x=>x.pass);const commissioned=ready&&rows.find(x=>x.id==='captain')?.pass;return {rows,ready,commissioned,passed:rows.filter(x=>x.pass).length,total:rows.length};}
+  // Display only: saved publication and owner setup are separate from local
+  // commissioning evidence. Never normalize, persist or infer gates from launch.
+  function projectStatusPresentation(p,snapshot){
+    const savedPublication=p?.publish?.status;
+    const publication=savedPublication==='live'
+      ?{key:'published',label:'PUBLISHED',detail:'Saved publication setting: live. Availability and commissioning are checked separately.'}
+      :savedPublication==='test'
+        ?{key:'test',label:'TEST',detail:'Saved publication setting: test. This is not live publication or commissioning proof.'}
+        :savedPublication==='development'
+          ?{key:'development',label:'DEVELOPMENT',detail:'Saved publication setting: development. This is not live publication.'}
+          :{key:'unknown',label:'UNVERIFIED',detail:'Saved publication setting is missing or unrecognized. Availability is unverified.'};
+    const access=p?.ownerAccess;
+    const ownerKey=access?.enabled===false?'disabled':access?.enabled===true&&['not_claimed','invited','active'].includes(access.status)?access.status:'unknown';
+    const owner={
+      disabled:{key:'disabled',label:'DISABLED',detail:'Owner access is disabled in saved setup.',routeLabel:'Owner Access Setup',routeDetail:'Owner access disabled. Open existing access configuration.'},
+      not_claimed:{key:'not_claimed',label:'NOT CLAIMED',detail:'Owner access is enabled; the owner has not claimed it locally.',routeLabel:'Owner Sign-In',routeDetail:'Owner not claimed. Sign in for this business only; setup is pending.'},
+      invited:{key:'invited',label:'INVITED',detail:'Owner invited in saved setup; a completed local claim is not recorded.',routeLabel:'Owner Sign-In',routeDetail:'Owner invited. Sign in for this business only; claim is pending.'},
+      active:{key:'active',label:'LOCAL ACTIVE',detail:'Owner claim is active in local setup. Server authority is checked at sign-in.',routeLabel:'Owner Workspace',routeDetail:'Local owner claim active. Sign in for this business only; existing access checks apply.'},
+      unknown:{key:'unknown',label:'UNVERIFIED',detail:'Saved owner setup is missing or unrecognized. Access is unverified.',routeLabel:'Owner Sign-In',routeDetail:'Owner setup unverified. Existing access checks apply.'}
+    }[ownerKey];
+    const gates=[['identity','Identity setup'],['boundary','Isolation boundary'],['experience','Customer experience approval'],['sea','Sea Trial evidence'],['recovery','Recovery tools available'],['live','Live deployment'],['captain','Local Captain commissioning record']];
+    const supplied=Array.isArray(snapshot?.rows)?snapshot.rows:[];
+    const rows=gates.map(([id,label])=>{
+      const row=supplied.find(x=>x?.id===id);
+      return row?{...row,pass:row.pass===true}:{id,label,pass:false,detail:'Evidence unverified: this gate was not supplied.'};
+    });
+    const passed=rows.filter(row=>row.pass).length,total=rows.length;
+    const nextGate=rows.find(row=>!row.pass)||null;
+    const completeSnapshot=gates.every(([id])=>supplied.some(row=>row?.id===id));
+    const key=!completeSnapshot?'incomplete':passed===total?'recorded':rows.filter(row=>row.id!=='captain').every(row=>row.pass)?'ready':'incomplete';
+    const commissioning={key,label:key==='recorded'?'LOCAL RECORD COMPLETE':key==='ready'?'READY FOR LOCAL CAPTAIN REVIEW':'LOCAL CHECKLIST INCOMPLETE',
+      detail:key==='recorded'?'All local gates and the Captain record are present. Server authority and backup/restore acceptance remain separate.':key==='ready'?'Technical gates are clear; the local Captain record is still open. Server authority and backup/restore acceptance remain separate.':'Review each local gate. Publication or a Captain record alone does not establish commissioning; server authority and backup/restore acceptance remain separate.',
+      rows,nextGate,passed,total};
+    return {publication,owner,commissioning};
+  }
+
   function ensureFleetCommissioningModal(){let modal=document.getElementById('fleetCommissioningModal');if(modal)return modal;modal=document.createElement('section');modal.id='fleetCommissioningModal';modal.className='fleet-commissioning-modal hidden';modal.innerHTML='<div class="fleet-commissioning-shell"><header class="commissioning-dock-head"><div><span>BLACK FLAG • FLEET COMMISSIONING</span><h2 id="fleetCommissioningTitle">Commissioning Dock</h2><p id="fleetCommissioningSubtitle">Prove the vessel before declaring it seaworthy.</p></div><button id="closeFleetCommissioning" class="secondary-btn small commissioning-return" type="button">← RETURN TO ENGINE</button></header><main id="fleetCommissioningBody"></main></div>';document.body.appendChild(modal);return modal;}
   async function openFleetCommissioning(projectId){
     const p=projectById(projectId);
@@ -6610,6 +6646,24 @@
     }));
   }
 
+  function fleetCompassVesselMarkup(p,snapshot){
+    const presentation=projectStatusPresentation(p,snapshot);
+    return `<article class="fleet-proof-card fleet-dock-card wayfinder-vessel" data-project-id="${escapeHtml(p.id)}">
+          <header><div class="wayfinder-vessel-identity"><span class="wayfinder-logo" data-compass-logo="${escapeHtml(p.id)}" aria-hidden="true">${escapeHtml(fleetStableCallsign(p))}</span><div><small>EXACT VESSEL · ${escapeHtml(fleetStableCallsign(p))}</small><strong>${escapeHtml(p.name)}</strong></div></div><span class="wayfinder-local-state">Saved publication: ${escapeHtml(presentation.publication.label)}</span></header>
+          <p class="wayfinder-publication">${escapeHtml(presentation.publication.detail)}</p>
+          <p class="wayfinder-choose">Choose where you are going. Each entrance keeps its existing access check.</p>
+          <div class="fleet-dock-actions" aria-label="${escapeHtml(p.name)} vessel routes">
+            <div class="wayfinder-route-grid">
+              <button type="button" data-fleet-dock-action="preview" data-project-id="${escapeHtml(p.id)}" class="wayfinder-route wayfinder-preview"><span class="wayfinder-route-number">01 · LOOK ONLY</span><strong>Private Preview →</strong><small>Open the test deck, then choose Preview.</small></button>
+              <button type="button" data-fleet-dock-action="owner" data-project-id="${escapeHtml(p.id)}" class="wayfinder-route"><span class="wayfinder-route-number">02 · BUSINESS</span><strong>${escapeHtml(presentation.owner.routeLabel)} →</strong><small>${escapeHtml(presentation.owner.routeDetail)}</small></button>
+              <button type="button" data-open-project-control="${escapeHtml(p.id)}" class="wayfinder-route"><span class="wayfinder-route-number">03 · BLACK FLAG</span><strong>Project Control →</strong><small>Existing authorized configuration route.</small></button>
+            </div>
+            <div class="wayfinder-not-checked"><span><b>Owner authority</b> · Not checked here</span><span><b>Order backup</b> · Not checked here</span></div>
+            <details class="wayfinder-customer-route"><summary>Customer Experience — separate from Preview</summary><p>This is the existing customer route. Local setup labels are not proof of publication or production readiness.</p><button type="button" data-fleet-dock-action="customer" data-project-id="${escapeHtml(p.id)}" class="secondary-btn small">OPEN CUSTOMER EXPERIENCE →</button></details>
+          </div>
+        </article>`;
+  }
+
   let fleetDockRenderEpoch8838=0;
   function bindFleetDockControls8838(){
     const search=$('fleetDockSearch'),clear=$('fleetDockClearSearch');
@@ -6653,7 +6707,7 @@
         }
       }
       const list=projects().map(p=>structuredClone(p));
-      const snaps=list.map(p=>({p,s:commissioningSnapshot(p)}));
+      const snaps=list.map(p=>({p,s:commissioningSnapshot(structuredClone(p))}));
       const visibleSnaps=snaps.filter(({p,s})=>fleetDockMatches(p,s,query)).sort((a,b)=>fleetDockPriority(b.p,b.s)-fleetDockPriority(a.p,a.s)||String(a.p.name).localeCompare(String(b.p.name)));
       const view={...query,rows:list,memoryRows:list,visibleRows:visibleSnaps.map(x=>x.p)};
       const sourceTrace868=await collectDockSourceTrace868({includeRendered:false,view,publish:false});
@@ -6676,24 +6730,7 @@
       const commissioned=snaps.filter(x=>x.s.commissioned).length,ready=snaps.filter(x=>x.s.ready&&!x.s.commissioned).length;
       summary.innerHTML=`<article><small>LOCAL COMMISSION CHECKS</small><strong>${commissioned}</strong><span>Not an owner permission check</span></article><article><small>LOCAL READY CHECKS</small><strong>${ready}</strong><span>Not live business certification</span></article><article><small>WORK REMAINS</small><strong>${snaps.length-commissioned-ready}</strong><span>Local setup evidence</span></article>`;
       fleet.classList.toggle('wayfinder-focused',visibleSnaps.length===1);
-      fleet.innerHTML=visibleSnaps.length?visibleSnaps.map(({p})=>{
-        const deployments=migrateLegacyDeployment(p),trial=deployments.some(d=>d.state==='sea_trial');
-        const status=p?.publish?.status==='live'?'LIVE':trial?'SEA TRIAL':'STAGING';
-        const ownerEnabled=!!ensureProjectGovernance(p).ownerAccess?.enabled;
-        return `<article class="fleet-proof-card fleet-dock-card wayfinder-vessel" data-project-id="${escapeHtml(p.id)}">
-          <header><div class="wayfinder-vessel-identity"><span class="wayfinder-logo" data-compass-logo="${escapeHtml(p.id)}" aria-hidden="true">${escapeHtml(fleetStableCallsign(p))}</span><div><small>EXACT VESSEL · ${escapeHtml(fleetStableCallsign(p))}</small><strong>${escapeHtml(p.name)}</strong></div></div><span class="wayfinder-local-state">Local setup: ${status}</span></header>
-          <p class="wayfinder-choose">Choose where you are going. Each entrance keeps its existing access check.</p>
-          <div class="fleet-dock-actions" aria-label="${escapeHtml(p.name)} vessel routes">
-            <div class="wayfinder-route-grid">
-              <button type="button" data-fleet-dock-action="preview" data-project-id="${escapeHtml(p.id)}" class="wayfinder-route wayfinder-preview"><span class="wayfinder-route-number">01 · LOOK ONLY</span><strong>Private Preview →</strong><small>Open the test deck, then choose Preview.</small></button>
-              <button type="button" data-fleet-dock-action="owner" data-project-id="${escapeHtml(p.id)}" class="wayfinder-route"><span class="wayfinder-route-number">02 · BUSINESS</span><strong>${ownerEnabled?'Owner Workspace':'Owner Access Setup'} →</strong><small>${ownerEnabled?'Sign in for this business only.':'Open existing access configuration.'}</small></button>
-              <button type="button" data-open-project-control="${escapeHtml(p.id)}" class="wayfinder-route"><span class="wayfinder-route-number">03 · BLACK FLAG</span><strong>Project Control →</strong><small>Existing authorized configuration route.</small></button>
-            </div>
-            <div class="wayfinder-not-checked"><span><b>Owner authority</b> · Not checked here</span><span><b>Order backup</b> · Not checked here</span></div>
-            <details class="wayfinder-customer-route"><summary>Customer Experience — separate from Preview</summary><p>This is the existing customer route. Local setup labels are not proof of publication or production readiness.</p><button type="button" data-fleet-dock-action="customer" data-project-id="${escapeHtml(p.id)}" class="secondary-btn small">OPEN CUSTOMER EXPERIENCE →</button></details>
-          </div>
-        </article>`;
-      }).join(''):`<div class="fleet-proof-empty wayfinder-empty"><strong>No vessels match this view.</strong><p>The full roster is still loaded. Clear the search or change the filter.</p><button type="button" data-fleet-dock-reset class="secondary-btn">CLEAR SEARCH & FILTERS</button></div>`;
+      fleet.innerHTML=visibleSnaps.length?visibleSnaps.map(({p,s})=>fleetCompassVesselMarkup(p,s)).join(''):`<div class="fleet-proof-empty wayfinder-empty"><strong>No vessels match this view.</strong><p>The full roster is still loaded. Clear the search or change the filter.</p><button type="button" data-fleet-dock-reset class="secondary-btn">CLEAR SEARCH & FILTERS</button></div>`;
       // Validate exactly the expected card set against the SAME source snapshot.
       // Avoid a second asynchronous source read per keystroke and stale final paint.
       const renderedIds=[...fleet.querySelectorAll('.fleet-dock-card[data-project-id]')].map(el=>String(el.dataset.projectId||''));
@@ -7070,6 +7107,7 @@
       const attention=deployments.filter(d=>d.state==='sea_trial'||d.state==='paused'||(d.state==='deployed'&&deploymentReadiness(d).score<100));
       const launch=projectFleetLaunchState(p);
       const ownerState=p.ownerAccess?.status==='active'?'claimed':p.ownerAccess?.invitation?'invited':'not_claimed';
+      const statusPresentation=projectStatusPresentation(p,commissioningSnapshot(structuredClone(p)));
       return {
         projectId:p.id,
         code:p.projectCode||p.orderPrefix||'PRJ',
@@ -7078,6 +7116,7 @@
         launchLabel:launch.label,
         launchStep:launch.step,
         launchDetail:launch.detail,
+        statusPresentation,
         ownerState,
         totalOutposts:deployments.filter(d=>d.state!=='retired').length,
         activeOutposts:active.length,
@@ -7171,12 +7210,12 @@
       if(d.state==='deployed'&&readiness.score<100) attention.push({level:'watch',title:'Deployment readiness needs attention',detail:`${d.name||d.id} • ${readiness.score}%`,tab:'deployment'});
       if(d.state==='paused') attention.push({level:'info',title:'Deployment paused',detail:d.name||d.id,tab:'deployment'});
     });
-    const ownerState=ensureProjectGovernance(p).ownerAccess.status;
-    if(p.ownerAccess?.enabled && ownerState!=='active') attention.push({level:'info',title:'Owner access not active',detail:p.ownerAccess?.ownerEmail||'Invitation not completed',tab:'owner'});
+    const owner=projectStatusPresentation(p,null).owner;
+    if(p.ownerAccess?.enabled && owner.key!=='active') attention.push({level:'info',title:`Owner setup: ${owner.label.toLowerCase()}`,detail:owner.detail,tab:'owner'});
     if(!(p.products||[]).length) attention.push({level:'setup',title:'No products or services configured',detail:'Add the first offer before launch.',tab:'products'});
     if((p.products||[]).length && !(p.products||[]).some(x=>x.published)) attention.push({level:'info',title:'No customer-ready offers',detail:'Products exist, but none are published.',tab:'products'});
     if(['test','live'].includes(p.publish?.status) && !deployments.length) attention.push({level:'watch',title:'No deployment commissioned',detail:'This project is exposed beyond development without an outpost record.',tab:'deployment'});
-    if(p.publish?.status==='live' && !activeDeployments.length) attention.push({level:'watch',title:'Live project has no active deployment',detail:'Review publishing and deployment state.',tab:'deployment'});
+    else if(p.publish?.status==='live' && deployments.length && !activeDeployments.length) attention.push({level:'watch',title:'Live project has no active deployment',detail:'Review publishing and deployment state.',tab:'deployment'});
     if(p.payments?.enabled && (!p.payments?.provider || p.payments.provider==='not_configured')) attention.push({level:'watch',title:'Payments enabled without provider',detail:'Select a payment provider or disable payment capability.',tab:'payments'});
     if(!Array.isArray(p.workflow)||p.workflow.length<2) attention.push({level:'info',title:'Using suggested workflow',detail:`Dark Sky is using the ${customerRelationshipForProject(p).label} operating model. Customize it only if this business works differently.`,tab:'workflow'});
 
@@ -7235,6 +7274,8 @@
     const s=await projectControlSnapshot(p);
     if(engineActiveProjectId!==p.id)return;
     const revenueTrend=s.revenueTrend, orderTrend=s.orderTrend;
+    const presentation=projectStatusPresentation(p,commissioningSnapshot(structuredClone(p)));
+    const launch=projectFleetLaunchState(p);
     const attention=s.attention.length?s.attention.slice(0,6).map(x=>`<button class="pc-attention-row ${escapeHtml(x.level)}" data-project-jump="${escapeHtml(x.tab)}" type="button"><span><strong>${escapeHtml(x.title)}</strong><small>${escapeHtml(x.detail)}</small></span><b>VIEW →</b></button>`).join(''):
       `<div class="pc-clear-state"><strong>NO IMMEDIATE FLAGS</strong><span>Dark Sky has no rule-based attention items for this project right now.</span></div>`;
     const recentActivity=s.activity.length?s.activity.map(x=>`<div class="pc-activity-row"><span><strong>${escapeHtml(x.action||'Activity')}</strong><small>${escapeHtml(x.detail||'')}</small></span><time>${escapeHtml(projectControlTime(x.at))}</time></div>`).join(''):
@@ -7253,7 +7294,7 @@
         <div class="pc-operational-state ${s.status.toLowerCase()}"><span>PROJECT HEALTH</span><strong>${s.status}</strong><small>${s.attention.length?`${s.attention.length} item${s.attention.length===1?'':'s'} need review`:'No immediate flags'}</small></div>
       </section>
 
-      ${(()=>{const launch=projectFleetLaunchState(p);const approval=experienceApproved(p)?'APPROVED':'ACTION NEEDED';const deployment=launch.key==='live'?'LIVE':launch.key==='sea_trial'?'SEA TRIAL':launch.key==='fleet_ready'?'FLEET READY':launch.key==='preparing'?'PREPARING':'DRAFT';return `<section class="pc-state-matrix" aria-label="Project state clarity"><article><small>PUBLICATION</small><strong>${deployment}</strong><span>Customer-facing state</span></article><article><small>OPERATING HEALTH</small><strong>${s.status}</strong><span>${s.attention.length?`${s.attention.length} items to review`:'No immediate flags'}</span></article><article><small>CUSTOMER EXPERIENCE</small><strong>${approval}</strong><span>${approval==='APPROVED'?'Current experience approved':'Approval is missing or stale'}</span></article><article><small>YOUR SESSION</small><strong>ADMIN CONTROL</strong><span>Project-scoped authority</span></article></section>`})()}
+      ${(()=>{const approval=experienceApproved(p)?'APPROVED':'ACTION NEEDED';return `<section class="pc-state-matrix" aria-label="Project state clarity"><article><small>PUBLICATION</small><strong>${escapeHtml(presentation.publication.label)}</strong><span>${escapeHtml(presentation.publication.detail)}</span></article><article><small>OPERATING HEALTH</small><strong>${s.status}</strong><span>${s.attention.length?`${s.attention.length} items to review`:'No immediate flags'}</span></article><article><small>CUSTOMER EXPERIENCE</small><strong>${approval}</strong><span>${approval==='APPROVED'?'Current experience approved':'Approval is missing or stale'}</span></article><article><small>YOUR SESSION</small><strong>ADMIN CONTROL</strong><span>Project-scoped authority</span></article></section>`})()}
 
       ${isHouseHullProject(p)?houseHullFieldStationMarkup(p):''}
 
@@ -7262,11 +7303,16 @@
         <div class="pc-priority-list">${attention}</div>
       </section>
 
-      ${(()=>{const launch=projectFleetLaunchState(p);return `<section class="pc-fleet-launch-lane ${launch.key}">
-        <div class="pc-fleet-launch-copy"><span>FLEET COMMISSIONING LANE</span><h4>${escapeHtml(launch.label)}</h4><p>${escapeHtml(launch.detail)}</p></div>
-        <div class="pc-fleet-launch-progress" aria-label="Fleet launch progress">${['Create','Prepare','Sea Trial','Fleet Ready','Live'].map((label,i)=>`<span class="${launch.step>i+1?'done':''} ${launch.step===i+1?'current':''}"><b>${i+1}</b>${label}</span>`).join('')}</div>
+      <section class="pc-commissioning-evidence ${presentation.commissioning.key}" aria-label="Local commissioning evidence">
+        <header><div><span>LOCAL COMMISSIONING</span><h4>${escapeHtml(presentation.commissioning.label)}</h4><p>${escapeHtml(presentation.commissioning.detail)}</p></div><strong>${presentation.commissioning.passed} / ${presentation.commissioning.total} GATES CLEAR</strong></header>
+        <ul class="pc-commissioning-rows">${presentation.commissioning.rows.map(row=>`<li data-commissioning-gate="${escapeHtml(row.id)}" class="${row.pass?'pass':'open'}"><span><strong>${escapeHtml(row.label)}</strong><small>${escapeHtml(row.detail)}</small></span><b>${row.pass?'CLEAR':'OPEN'}</b></li>`).join('')}</ul>
+        <p class="pc-commissioning-next">${presentation.commissioning.nextGate?`NEXT OPEN GATE: ${escapeHtml(presentation.commissioning.nextGate.label)}. ${escapeHtml(presentation.commissioning.nextGate.detail)}`:'All local gates are clear. Review their evidence in the Commissioning Dock.'}</p>
+        <button type="button" data-open-fleet-commissioning="${escapeHtml(p.id)}" class="secondary-btn">REVIEW COMMISSIONING DOCK</button>
+      </section>
+      <section class="pc-operational-action" aria-label="Existing launch action">
+        <div><strong>PROJECT LAUNCH ACTION</strong><p>${escapeHtml(launch.detail)}</p></div>
         <button type="button" data-project-launch-action="${escapeHtml(p.id)}" class="primary-btn pc-fleet-launch-action">${escapeHtml(launch.actionLabel)}</button>
-      </section>`})()}
+      </section>
 
       <section class="pc-kpi-grid" aria-label="Project operating indicators">
         ${projectControlKpi('Revenue · 30 days',projectControlMoney(s.revenue30),revenueTrend.label)}
@@ -7295,7 +7341,7 @@
             <div><dt>Business</dt><dd>${escapeHtml(p.name)}</dd></div>
             <div><dt>Project ID</dt><dd>${escapeHtml(p.id)}</dd></div>
             <div><dt>State</dt><dd>${escapeHtml(p.lifecycle?.state||p.status||'draft')} · ${escapeHtml(p.publish?.status||'development')}</dd></div>
-            <div><dt>Owner</dt><dd>${escapeHtml(ownerAccessLabel(p))}</dd></div>
+            <div><dt>Owner setup</dt><dd>${escapeHtml(presentation.owner.label)}</dd></div>
           </dl>
         </article>
       </section>

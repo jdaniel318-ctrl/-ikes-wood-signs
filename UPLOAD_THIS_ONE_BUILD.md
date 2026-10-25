@@ -1,3 +1,28 @@
+# Fleetclarity 8.8.20.64
+
+**Upload: DarkSky882064-Fleetclarity-Upload47.zip** — **47 changed/new files** over **Fleetcare 8.8.20.63**.
+Matching complete software backup: **DarkSky882064-Fleetclarity-FullBackup.zip**.
+
+Extract the ZIP and open its one filename-matching folder. Upload every file
+inside over the exact delivered Fleetcare .63 release. Replace matching names
+and retain every other file. No SQL, deletion, data reset or browser-data clearing.
+Reload and check Engine/Bootstrap build **8.8.20.64**, seal **fleetclarity-882064**.
+
+Saved publication is labeled PUBLISHED without implying availability or completed
+commissioning. Owner setup keeps disabled, unclaimed, invited and locally active
+states distinct. Overview and Captain show individual local commissioning gates;
+missing evidence remains unverified. Review opens the existing Commissioning Dock.
+Existing Customers, customer-opening routes and sign workflow stay familiar.
+
+Read **FLEETCLARITY_GUIDE.md** and **FLEETCLARITY_EVIDENCE.json** for exact verification
+scope and three device checks. Software ZIPs do not export private browser jobs;
+retain your editable job/request downloads. Native iPad, live inbox delivery and
+physical CNC acceptance remain user checks. Preview and Sea Trial remain guarded.
+
+---
+
+## Historical instructions below — retained verbatim
+
 # Fleetcare 8.8.20.63
 
 **Upload: DarkSky882063-Fleetcare-Upload49.zip** — **49 changed/new files** over **Boardcraft 8.8.20.62**.

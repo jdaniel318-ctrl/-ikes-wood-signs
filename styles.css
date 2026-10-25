@@ -16381,3 +16381,35 @@ dialog.cg-workspace::backdrop{background:#061c24;}
 
 /* Fleetcare: full evidence labels stay inside their cells at tablet widths. */
 .fleet-mission-pill{white-space:normal;text-align:center;line-height:1.3;min-height:30px}
+
+/* Fleetclarity: local evidence stays independent of publication and launch. */
+#projectEngineControl .pc-commissioning-evidence{margin:0 0 14px;padding:16px;border:1px solid #36505a;border-radius:14px;background:#0b1a21;min-width:0}
+#projectEngineControl .pc-commissioning-evidence>header{display:flex;justify-content:space-between;align-items:start;gap:14px;margin-bottom:12px}
+#projectEngineControl .pc-commissioning-evidence>header>div{min-width:0}
+#projectEngineControl .pc-commissioning-evidence>header span{color:#a5bec6;font-size:11px;font-weight:900;letter-spacing:.1em}
+#projectEngineControl .pc-commissioning-evidence h4{margin:5px 0;color:#eef5f3;font-size:18px}
+#projectEngineControl .pc-commissioning-evidence p{margin:5px 0;color:#b3c4c6;font-size:13px;line-height:1.45;overflow-wrap:anywhere}
+#projectEngineControl .pc-commissioning-evidence>header>strong{color:#d8e7e7;font-size:12px;flex-shrink:0}
+#projectEngineControl .pc-commissioning-rows,.cq-commissioning-rows{list-style:none;margin:0 0 12px;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+#projectEngineControl .pc-commissioning-rows li,.cq-commissioning-rows li{display:flex;justify-content:space-between;align-items:start;gap:10px;padding:10px;border:1px solid #31434b;border-radius:8px;min-width:0;background:#07151b}
+#projectEngineControl .pc-commissioning-rows li>span,.cq-commissioning-rows li>span{min-width:0;overflow-wrap:anywhere}
+#projectEngineControl .pc-commissioning-rows strong,.cq-commissioning-rows strong{display:block;color:#e5efed;font-size:12px;line-height:1.35}
+#projectEngineControl .pc-commissioning-rows small,.cq-commissioning-rows small{display:block;margin-top:3px;color:#a9bcbc;font-size:11px;line-height:1.4}
+#projectEngineControl .pc-commissioning-rows b,.cq-commissioning-rows b{color:#e6c77e;font-size:10px;flex-shrink:0;padding-top:2px}
+#projectEngineControl .pc-commissioning-rows .pass b,.cq-commissioning-rows .pass b{color:#a2d7b9}
+#projectEngineControl .pc-commissioning-next{margin:10px 0 12px}
+#projectEngineControl .pc-operational-action{display:flex;justify-content:space-between;align-items:center;gap:14px;margin:0 0 14px;padding:14px;border:1px solid #304854;border-radius:12px;min-width:0}
+#projectEngineControl .pc-operational-action>div{min-width:0;overflow-wrap:anywhere}
+#projectEngineControl .pc-operational-action strong{color:#dce8e9;font-size:12px}
+#projectEngineControl .pc-operational-action p{color:#a9bcbc;font-size:13px;line-height:1.4;margin:5px 0 0}
+#projectEngineControl .pc-operational-action button{flex-shrink:0}
+.wayfinder-publication{margin:8px 0;color:#b2c3c6;font-size:12px;line-height:1.45;overflow-wrap:anywhere}
+.cq-publication-detail{color:#b3c4c6;font-size:12px;line-height:1.45;overflow-wrap:anywhere}
+.cq-commissioning-rows{grid-template-columns:1fr}
+.cq-fleet-ready-course{min-width:0;overflow-wrap:anywhere}
+@media(max-width:700px){
+  #projectEngineControl .pc-commissioning-rows{grid-template-columns:1fr}
+  #projectEngineControl .pc-commissioning-evidence>header,#projectEngineControl .pc-operational-action{flex-direction:column;align-items:stretch}
+  #projectEngineControl .pc-commissioning-evidence>button,#projectEngineControl .pc-operational-action>button{width:100%;white-space:normal}
+  #projectEngineControl .pc-commissioning-evidence{padding:12px}
+}

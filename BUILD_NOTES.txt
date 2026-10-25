@@ -1,3 +1,7 @@
+Fleetclarity 8.8.20.64 — status presentation cleanup over 8.8.20.63.
+Read FLEETCLARITY_GUIDE.md and FLEETCLARITY_EVIDENCE.json for workflow and verification scope.
+Prior release records remain below as historical evidence.
+
 Fleetcare 8.8.20.63 — bounded fleet controls cleanup over 8.8.20.62.
 Read FLEETCARE_GUIDE.md and FLEETCARE_EVIDENCE.json for workflow and verification scope.
 Prior release records remain below as historical evidence.

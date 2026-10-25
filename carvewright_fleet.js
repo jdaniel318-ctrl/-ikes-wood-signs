@@ -1,8 +1,8 @@
-/* Carvewright 8.8.20.63 — independent, app-local Admiral service passage. */
+/* Carvewright 8.8.20.64 — independent, app-local Admiral service passage. */
 (function(g){
  'use strict';
  if(!g.document||g.CarvewrightFleet)return;
- const BUILD='8.8.20.63',SESSION='darkSkySupabaseAdmiralSessionV1';
+ const BUILD='8.8.20.64',SESSION='darkSkySupabaseAdmiralSessionV1';
  const $=id=>document.getElementById(id);
  let deck=null,gate=null,deckObserver=null,gateObserver=null,generation=0,pending=null,active=null,requested=false,timer=null;
  function message(text){const n=$('carvewrightEntryStatus');if(n)n.textContent=text;}

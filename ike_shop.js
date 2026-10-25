@@ -2,7 +2,7 @@
 (function (g) {
   'use strict';
   if (!g.document || g.IkeShop) return;
-  const BUILD='8.8.20.63',LIMIT=5*1024*1024;
+  const BUILD='8.8.20.64',LIMIT=5*1024*1024;
   const core=()=>g.IkeShopCore,fonts=()=>g.IkeCarveFonts;
   const clone=value=>g.structuredClone?g.structuredClone(value):JSON.parse(JSON.stringify(value));
   const canonical=value=>Array.isArray(value)?'['+value.map(canonical).join(',')+']':value&&typeof value==='object'?'{'+Object.keys(value).sort().map(k=>JSON.stringify(k)+':'+canonical(value[k])).join(',')+'}':JSON.stringify(value);
