@@ -2,7 +2,7 @@
 (function (g) {
   'use strict';
   if (!g.document || g.CarvewrightMachining) return;
-  const BUILD='8.8.20.58', SCOPE_FIELDS=['accountId','backend','environment','site','businessId'];
+  const BUILD='8.8.20.59', SCOPE_FIELDS=['accountId','backend','environment','site','businessId'];
   const clone=v=>JSON.parse(JSON.stringify(v));
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const core=()=>g.CarvewrightCore, fonts=()=>g.IkeCarveFonts, cam=()=>g.CarvewrightCAM, posts=()=>g.CarvewrightPosts;
@@ -68,17 +68,17 @@
   async function sha(text){if(!g.crypto?.subtle)throw Error('Secure hashing is unavailable in this browser. Open Carvewright in a secure browser context.');return [...new Uint8Array(await g.crypto.subtle.digest('SHA-256',new TextEncoder().encode(text)))].map(n=>n.toString(16).padStart(2,'0')).join('');}
   function slug(d){return (d.title.replace(/[^a-z0-9 _-]/gi,'').trim().replace(/\s+/g,'-').slice(0,60)||'Carvewright-sign')+'-r'+d.revision;}
   function addDownload(s,id,label,name,content,type,purpose){
-    guard(s);const url=URL.createObjectURL(new Blob([content],{type}));s.urls.push(url);const a=document.createElement('a');a.id=id;a.href=url;a.download=name;a.target='_blank';a.rel='noopener noreferrer';a.textContent=label;const sub=document.createElement('small');sub.textContent=name;a.append(sub);
-    let delivering=false;
+    guard(s);const url=URL.createObjectURL(new Blob([content],{type}));s.urls.push(url);const a=document.createElement('button');a.id=id;a.type='button';a.dataset.filename=name;a.textContent=label;const sub=document.createElement('small');sub.textContent=name;a.append(sub);
     const available=()=>live(s)&&s.sourceReady&&!!s.job&&(purpose==='controller-preview'||purpose==='cutting'&&s.confirmed)&&s.resultGeneration===s.generation&&s.prepared?.generation===s.generation&&s.prepared?.purpose===purpose&&s.urls.includes(url)&&a.isConnected;
     a.addEventListener('click',e=>{
-      if(delivering){if(!available())e.preventDefault();return;}
       e.preventDefault();if(!available()){if(!live(s))close(true);return;}
       void run(s,async valid=>{
         await checkSource(s,valid);valid();
         if(!available())throw Error('This download is no longer current. Calculate and prepare this job again.');
-        // Re-enter this same native download link only after the current source has been checked.
-        delivering=true;try{a.click();}finally{delivering=false;}
+        // Expose a native download route only after checking the saved revision.
+        // A persistent href would let middle-click or a context menu bypass it.
+        const link=document.createElement('a');link.href=url;link.download=name;link.target='_blank';link.rel='noopener noreferrer';link.hidden=true;node(s,'cwmDownloads').append(link);
+        try{link.click();}finally{link.remove();}
       });
     });node(s,'cwmDownloads').append(a);
   }

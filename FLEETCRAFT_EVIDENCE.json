@@ -1,0 +1,761 @@
+{
+  "schema": "fleetcraft-verification-v1",
+  "build": "8.8.20.59",
+  "release": "Fleetcraft",
+  "pass": true,
+  "scope": "Final implementation and actual sealed-release verification, using local files and isolated Chromium contexts. No live accounts, services or physical machine were used.",
+  "recorded_at_utc": "2026-10-25T13:14:08.322405+00:00",
+  "baseline": {
+    "repository": "jdaniel318-ctrl/-ikes-wood-signs",
+    "commit": "2249bdf63cbbc8db858a7a275382cb3a27481b2d",
+    "build": "8.8.20.58"
+  },
+  "legacy_user_fixture": {
+    "revision": 4,
+    "fingerprint": "ac6efe64af97f005eeb401841f5d3a25b67142745111b5f61e5f30c468ea5283",
+    "moves": 13992,
+    "fingerprint_unchanged": true,
+    "shopbot_preview_byte_exact": true
+  },
+  "checks": {
+    "assets": {
+      "ok": true,
+      "fonts": {
+        "studio-sans": {
+          "glyphs": 198,
+          "kernPairs": 700,
+          "sourceSha256": "5c1247acef7f2b8522a31742c76d6adcb5569bacc0be7ceaa4dc39dd252ce895"
+        },
+        "studio-serif": {
+          "glyphs": 198,
+          "kernPairs": 704,
+          "sourceSha256": "847b33e13925f19ff87e4d934d6b3cf7cac35ce16424f6f670e40c2f377cf2df"
+        },
+        "rye": {
+          "glyphs": 198,
+          "kernPairs": 0,
+          "sourceSha256": "b7edee5e615ae1b6b07e9d030c1309152bf3672a0e8a2a46293e273730f5adba"
+        },
+        "cinzel-bold": {
+          "glyphs": 198,
+          "kernPairs": 9428,
+          "sourceSha256": "f4d83d34d1f6c741193e4acf4b3dff9531e5a67b6aa65228d00a7db72a4e0f34"
+        },
+        "lobster": {
+          "glyphs": 198,
+          "kernPairs": 130,
+          "sourceSha256": "d6568e697fd50cedc0be04d8aae4127fe95add607e7bff954ca88604be80c205"
+        },
+        "stardos-stencil": {
+          "glyphs": 198,
+          "kernPairs": 287,
+          "sourceSha256": "6b15f50b1b358512d922b5f11937af17e90704587e1d7fb009f1715d2d5dfa74"
+        },
+        "bree-serif": {
+          "glyphs": 197,
+          "kernPairs": 680,
+          "sourceSha256": "fd080582d70112ef479ba4ddd72407f9a4fcbcec4caa7d29de259b13eeb5f431"
+        },
+        "black-ops-one": {
+          "glyphs": 198,
+          "kernPairs": 25256,
+          "sourceSha256": "282a825b5f294377387e3969f765408157dbea8da0f5d0aae68c6bc704b145b3"
+        }
+      },
+      "graphics": 16,
+      "legacyFontObjectsUnchanged": true
+    },
+    "core": {
+      "suite": "Fleetcraft model",
+      "passed": 17,
+      "total": 17,
+      "failures": []
+    },
+    "cam": {
+      "suite": "Fleetcraft geometry to controller",
+      "passed": 26,
+      "total": 26,
+      "results": [
+        {
+          "name": "mixed-case studio-sans through pocket CAM and all six controller profiles",
+          "pass": true,
+          "moves": 13992,
+          "profiles": 6
+        },
+        {
+          "name": "mixed-case studio-serif through pocket CAM and all six controller profiles",
+          "pass": true,
+          "moves": 11320,
+          "profiles": 6
+        },
+        {
+          "name": "mixed-case rye through pocket CAM and all six controller profiles",
+          "pass": true,
+          "moves": 20226,
+          "profiles": 6
+        },
+        {
+          "name": "mixed-case cinzel-bold through pocket CAM and all six controller profiles",
+          "pass": true,
+          "moves": 7204,
+          "profiles": 6
+        },
+        {
+          "name": "mixed-case lobster through pocket CAM and all six controller profiles",
+          "pass": true,
+          "moves": 21512,
+          "profiles": 6
+        },
+        {
+          "name": "mixed-case stardos-stencil through pocket CAM and all six controller profiles",
+          "pass": true,
+          "moves": 14368,
+          "profiles": 6
+        },
+        {
+          "name": "mixed-case bree-serif through pocket CAM and all six controller profiles",
+          "pass": true,
+          "moves": 18298,
+          "profiles": 6
+        },
+        {
+          "name": "mixed-case black-ops-one through pocket CAM and all six controller profiles",
+          "pass": true,
+          "moves": 3358,
+          "profiles": 6
+        },
+        {
+          "name": "rotated 100 mm anchor has real contours and validated machine output",
+          "pass": true,
+          "moves": 3118,
+          "contours": 2
+        },
+        {
+          "name": "rotated 100 mm compass has real contours and validated machine output",
+          "pass": true,
+          "moves": 2272,
+          "contours": 5
+        },
+        {
+          "name": "rotated 100 mm pine has real contours and validated machine output",
+          "pass": true,
+          "moves": 1814,
+          "contours": 1
+        },
+        {
+          "name": "rotated 100 mm mountains has real contours and validated machine output",
+          "pass": true,
+          "moves": 2164,
+          "contours": 4
+        },
+        {
+          "name": "rotated 100 mm oak-leaf has real contours and validated machine output",
+          "pass": true,
+          "moves": 6610,
+          "contours": 2
+        },
+        {
+          "name": "rotated 100 mm antlers has real contours and validated machine output",
+          "pass": true,
+          "moves": 2326,
+          "contours": 3
+        },
+        {
+          "name": "rotated 100 mm fish has real contours and validated machine output",
+          "pass": true,
+          "moves": 5592,
+          "contours": 4
+        },
+        {
+          "name": "rotated 100 mm paw has real contours and validated machine output",
+          "pass": true,
+          "moves": 12058,
+          "contours": 5
+        },
+        {
+          "name": "rotated 100 mm cabin has real contours and validated machine output",
+          "pass": true,
+          "moves": 2382,
+          "contours": 7
+        },
+        {
+          "name": "rotated 100 mm campfire has real contours and validated machine output",
+          "pass": true,
+          "moves": 4804,
+          "contours": 3
+        },
+        {
+          "name": "rotated 100 mm wave has real contours and validated machine output",
+          "pass": true,
+          "moves": 4220,
+          "contours": 4
+        },
+        {
+          "name": "rotated 100 mm sun has real contours and validated machine output",
+          "pass": true,
+          "moves": 5170,
+          "contours": 13
+        },
+        {
+          "name": "rotated 100 mm heart has real contours and validated machine output",
+          "pass": true,
+          "moves": 7958,
+          "contours": 2
+        },
+        {
+          "name": "rotated 100 mm star has real contours and validated machine output",
+          "pass": true,
+          "moves": 1492,
+          "contours": 1
+        },
+        {
+          "name": "rotated 100 mm crossed-tools has real contours and validated machine output",
+          "pass": true,
+          "moves": 2660,
+          "contours": 1
+        },
+        {
+          "name": "rotated 100 mm ribbon has real contours and validated machine output",
+          "pass": true,
+          "moves": 1814,
+          "contours": 2
+        },
+        {
+          "name": "small compass keeps the oversized-tool rejection",
+          "pass": true,
+          "guard": "Small disconnected regions require a smaller cutter or larger artwork."
+        },
+        {
+          "name": "overlapping text and emblem union preserves both filled regions",
+          "pass": true,
+          "textArea": 7464.535235115,
+          "graphicArea": 5793.04093241,
+          "unionArea": 10768.971241475
+        }
+      ]
+    },
+    "touch_editor": {
+      "scope": "Isolated Chromium; real Studio, core and IndexedDB. Native Safari and physical CNC are not claimed.",
+      "results": [
+        {
+          "name": "independent text, vector fonts, graphic editing, history, save and reopen",
+          "pass": true,
+          "revision": 1,
+          "objectCount": 3
+        },
+        {
+          "name": "direct drag stays inside margins and supports undo",
+          "pass": true,
+          "dragDeltaMm": 25.4
+        },
+        {
+          "name": "invalid numeric geometry remains editable and blocks review/save/export",
+          "pass": true
+        },
+        {
+          "name": "temporarily empty primary rotation can be repaired without undo",
+          "pass": true
+        },
+        {
+          "name": "phone native touch drag, cancellation and action interlock",
+          "pass": true,
+          "nativeTouchProtocol": true
+        },
+        {
+          "name": "review invalidation, undo after save and revoked authorization",
+          "pass": true
+        },
+        {
+          "name": "phone controls reachable, touch targets and visible preview",
+          "pass": true,
+          "geometry": {
+            "documentWidth": 390,
+            "viewportWidth": 390,
+            "modal": {
+              "x": 0,
+              "right": 390,
+              "y": 0,
+              "bottom": 844
+            },
+            "preview": {
+              "y": 196,
+              "bottom": 337.625,
+              "height": 141.625
+            },
+            "smallButtons": []
+          }
+        },
+        {
+          "name": "ipad controls reachable, touch targets and visible preview",
+          "pass": true,
+          "geometry": {
+            "documentWidth": 1024,
+            "viewportWidth": 1024,
+            "modal": {
+              "x": 10,
+              "right": 1014,
+              "y": 10,
+              "bottom": 758
+            },
+            "preview": {
+              "y": 237.4375,
+              "bottom": 536.953125,
+              "height": 299.515625
+            },
+            "smallButtons": []
+          }
+        },
+        {
+          "name": "desktop controls reachable, touch targets and visible preview",
+          "pass": true,
+          "geometry": {
+            "documentWidth": 1440,
+            "viewportWidth": 1440,
+            "modal": {
+              "x": 14,
+              "right": 1426,
+              "y": 14,
+              "bottom": 886
+            },
+            "preview": {
+              "y": 240.9375,
+              "bottom": 627.9375,
+              "height": 387
+            },
+            "smallButtons": []
+          }
+        }
+      ],
+      "passed": 9,
+      "failed": 0
+    },
+    "handoff": {
+      "scope": "Isolated Chromium with real IndexedDB; no live customer stores",
+      "passed": 4,
+      "total": 4,
+      "results": [
+        {
+          "name": "explicit Ike handoff includes editable artwork and printable order brief",
+          "pass": true
+        },
+        {
+          "name": "newer saved revision blocks an already prepared download",
+          "pass": true
+        },
+        {
+          "name": "middle-click and link navigation cannot bypass saved-revision checks",
+          "pass": true
+        },
+        {
+          "name": "account isolation and revoked authorization release no handoff",
+          "pass": true
+        }
+      ]
+    },
+    "machining_downloads": {
+      "scope": "Isolated Chromium with real IndexedDB, CAM and native downloads; no live stores or external requests",
+      "passed": 5,
+      "total": 5,
+      "results": [
+        {
+          "name": "middle-click cannot download a controller program from a stale revision",
+          "pass": true
+        },
+        {
+          "name": "preview downloads real program, record and v2 artwork without setup confirmation",
+          "pass": true,
+          "programBytes": 28417,
+          "sourceSchema": "carvewright-job-v2"
+        },
+        {
+          "name": "regular download rechecks the latest saved revision and revokes prepared files",
+          "pass": true
+        },
+        {
+          "name": "revoked authorization closes machining before releasing prepared bytes",
+          "pass": true
+        },
+        {
+          "name": "cutting confirmation is retained and every setup edit invalidates its files",
+          "pass": true
+        }
+      ]
+    },
+    "inherited_scope_and_session": {
+      "scope": "Fresh isolated Chromium with real IndexedDB and actual model/store/app/editor. Source hashes unchanged; no live sessions or network. Supplemental read-only agent verification.",
+      "passed": 9,
+      "total": 9,
+      "results": [
+        {
+          "name": "Separate account, backend, environment and site scopes block list and direct-ID reads; foreign application namespace is rejected.",
+          "pass": true
+        },
+        {
+          "name": "Stale revision save returns CONFLICT and preserves the winning revision.",
+          "pass": true
+        },
+        {
+          "name": "Authorization revoked while storage opens cancels the pending save and commits no record.",
+          "pass": true
+        },
+        {
+          "name": "Closing the store during a pending save cancels its write.",
+          "pass": true
+        },
+        {
+          "name": "Explicit legacy copy preserves the original Ike design and creates a new unreviewed revision.",
+          "pass": true
+        },
+        {
+          "name": "Twenty-five valid session-change events keep the app/editor open; revoked authorization closes both.",
+          "pass": true
+        },
+        {
+          "name": "Session-ended and session-unavailable events close both signed-in surfaces.",
+          "pass": true
+        },
+        {
+          "name": "Standalone work survives unrelated fleet-session events.",
+          "pass": true
+        },
+        {
+          "name": "Unsafe accessor and prototype-bearing import payloads are rejected without executing getters.",
+          "pass": true
+        }
+      ]
+    }
+  },
+  "staged_release_loader": {
+    "scope": "Actual release index loader with all response bytes routed locally; fresh Chromium contexts; no service worker capability, live network, user identity, hosted authentication or Safari proof",
+    "browser": "156.0.8078.47",
+    "build": "8.8.20.59",
+    "seal": "fleetcraft-882059",
+    "passed": 3,
+    "failed": 0,
+    "results": [
+      {
+        "name": "actual index coherent release boots",
+        "pass": true,
+        "runtimeScripts": 33,
+        "runtimeIntegrityFiles": 53,
+        "quartermasterInitialState": "available and closed",
+        "served": [
+          "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
+          "DEPLOYMENT_MANIFEST.json",
+          "FLEET_COMMAND_MODEL.json",
+          "FLEET_DOCTRINE_REGISTRY.json",
+          "GOLDEN_VOYAGES.json",
+          "IKE_STYLE_FOUNDRY.json",
+          "RELEASE_INVENTORY.json",
+          "RELEASE_SEAL.json",
+          "app.js",
+          "black_flag_platform_icon.png",
+          "black_flag_primary_lockup.png",
+          "bootstrap_build_horizontal.png",
+          "business_deck.css",
+          "business_deck.js",
+          "captain.js",
+          "captains_quarters_command_center_v578.png",
+          "carve_core.js",
+          "carve_fonts.js",
+          "carve_store.js",
+          "carve_studio.css",
+          "carve_studio.js",
+          "carvewright.css",
+          "carvewright.html",
+          "carvewright_app.js",
+          "carvewright_cam.js",
+          "carvewright_clipper.js",
+          "carvewright_core.js",
+          "carvewright_fleet.js",
+          "carvewright_machining.css",
+          "carvewright_machining.js",
+          "carvewright_posts.js",
+          "carvewright_store.js",
+          "carvewright_studio.js",
+          "fleet_design_assets.js",
+          "fleet_supabase.js",
+          "fleet_viewport.css",
+          "fleet_viewport.js",
+          "fun_core.js",
+          "fun_player.html",
+          "fun_program.css",
+          "fun_program.js",
+          "headway_contracts.js",
+          "ike_character.png",
+          "ike_style_registry.js",
+          "index.html",
+          "input_hygiene.js",
+          "manifest.webmanifest",
+          "owner.html",
+          "platform_core.js",
+          "platform_identity.js",
+          "platform_v4.js",
+          "quartermaster.css",
+          "quartermaster.js",
+          "quartermaster_core.js",
+          "quartermaster_fonts.js",
+          "quartermaster_pdf.js",
+          "simple_books.css",
+          "simple_books.js",
+          "stormwake_core.js",
+          "styles.css",
+          "sw.js",
+          "woodwright_fit.js"
+        ],
+        "blockedRequests": []
+      },
+      {
+        "name": "actual index rejects changed required runtime bytes",
+        "pass": true,
+        "served": [
+          "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
+          "DEPLOYMENT_MANIFEST.json",
+          "FLEET_COMMAND_MODEL.json",
+          "FLEET_DOCTRINE_REGISTRY.json",
+          "GOLDEN_VOYAGES.json",
+          "IKE_STYLE_FOUNDRY.json",
+          "RELEASE_INVENTORY.json",
+          "RELEASE_SEAL.json",
+          "app.js",
+          "black_flag_platform_icon.png",
+          "black_flag_primary_lockup.png",
+          "business_deck.css",
+          "business_deck.js",
+          "captain.js",
+          "carve_core.js",
+          "carve_fonts.js",
+          "carve_store.js",
+          "carve_studio.css",
+          "carve_studio.js",
+          "carvewright.css",
+          "carvewright.html",
+          "carvewright_app.js",
+          "carvewright_cam.js",
+          "carvewright_clipper.js",
+          "carvewright_core.js",
+          "carvewright_fleet.js",
+          "carvewright_machining.css",
+          "carvewright_machining.js",
+          "carvewright_posts.js",
+          "carvewright_store.js",
+          "carvewright_studio.js",
+          "fleet_design_assets.js",
+          "fleet_supabase.js",
+          "fleet_viewport.css",
+          "fleet_viewport.js",
+          "fun_core.js",
+          "fun_player.html",
+          "fun_program.css",
+          "fun_program.js",
+          "headway_contracts.js",
+          "ike_character.png",
+          "ike_style_registry.js",
+          "index.html",
+          "input_hygiene.js",
+          "manifest.webmanifest",
+          "owner.html",
+          "platform_core.js",
+          "platform_identity.js",
+          "platform_v4.js",
+          "quartermaster.css",
+          "quartermaster.js",
+          "quartermaster_core.js",
+          "quartermaster_fonts.js",
+          "quartermaster_pdf.js",
+          "simple_books.css",
+          "simple_books.js",
+          "stormwake_core.js",
+          "styles.css",
+          "sw.js",
+          "woodwright_fit.js"
+        ],
+        "blockedRequests": []
+      },
+      {
+        "name": "actual index rejects changed runtime checksum declaration",
+        "pass": true,
+        "served": [
+          "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
+          "DEPLOYMENT_MANIFEST.json",
+          "FLEET_COMMAND_MODEL.json",
+          "FLEET_DOCTRINE_REGISTRY.json",
+          "GOLDEN_VOYAGES.json",
+          "IKE_STYLE_FOUNDRY.json",
+          "RELEASE_INVENTORY.json",
+          "RELEASE_SEAL.json",
+          "app.js",
+          "black_flag_platform_icon.png",
+          "black_flag_primary_lockup.png",
+          "business_deck.css",
+          "business_deck.js",
+          "captain.js",
+          "carve_core.js",
+          "carve_fonts.js",
+          "carve_store.js",
+          "carve_studio.css",
+          "carve_studio.js",
+          "carvewright.css",
+          "carvewright.html",
+          "carvewright_app.js",
+          "carvewright_cam.js",
+          "carvewright_clipper.js",
+          "carvewright_core.js",
+          "carvewright_fleet.js",
+          "carvewright_machining.css",
+          "carvewright_machining.js",
+          "carvewright_posts.js",
+          "carvewright_store.js",
+          "carvewright_studio.js",
+          "fleet_design_assets.js",
+          "fleet_supabase.js",
+          "fleet_viewport.css",
+          "fleet_viewport.js",
+          "fun_core.js",
+          "fun_player.html",
+          "fun_program.css",
+          "fun_program.js",
+          "headway_contracts.js",
+          "ike_character.png",
+          "ike_style_registry.js",
+          "index.html",
+          "input_hygiene.js",
+          "manifest.webmanifest",
+          "owner.html",
+          "platform_core.js",
+          "platform_identity.js",
+          "platform_v4.js",
+          "quartermaster.css",
+          "quartermaster.js",
+          "quartermaster_core.js",
+          "quartermaster_fonts.js",
+          "quartermaster_pdf.js",
+          "simple_books.css",
+          "simple_books.js",
+          "stormwake_core.js",
+          "styles.css",
+          "sw.js",
+          "woodwright_fit.js"
+        ],
+        "blockedRequests": []
+      }
+    ]
+  },
+  "source_sha256": {
+    "carve_fonts.js": "c98d321b53c174df8eb3aa116066647f59b8623d9d24749b4fd6c922894d529c",
+    "carve_font_license.txt": "05780f0d4dcc44bb13f5b015d95ef50c5d1835aa9d9c83b59720c4e0306a2165",
+    "fleet_design_assets.js": "85bb30a338cf5b711235f165b211ecd1b3cca6c0e270a61d85ba93920f94b7a8",
+    "carvewright_core.js": "a187227e9356b562a3620d474ee3ab9e66103b54ae9738b148de4924abdb93b9",
+    "carvewright_studio.js": "17ea82005c64cd9e4a154a2136a1cd07d8de0d7bcd264fb065e58f721fba2c34",
+    "carvewright.css": "dff6af54a68ffae663138ae2a78601cb1c1c8842246b45d6fca178c1cd2dd8fd",
+    "carvewright_app.js": "d94dfed988dd174dead494766583693a876b6f92bf876ab650a276f27f31621c",
+    "carvewright_cam.js": "46886bcae6f875013251e7a2133aed5a22756817596b47fa543bc06ba119f98b",
+    "carvewright_machining.js": "e5a958587a50070b7a5f4c64ca817d650e2e9b252cfae9f502c7559d665c2a1b",
+    "carvewright_machining.css": "f4b881189196d7fdd8c639298bf7f5fd87d33f7e86177dbd0215995882aabf98",
+    "carvewright.html": "8eaa65d99c580661519f24bc5cc07bd9e577b04f857f08686652cfddaca5cadb"
+  },
+  "limits": {
+    "native_ipad_safari": "not tested",
+    "native_iphone_safari": "not tested",
+    "live_authentication_or_business_services": "not accessed or tested",
+    "physical_cnc_setup_or_cut": "not available; preview only",
+    "production_acceptance": false,
+    "new_business_order_created": false,
+    "external_publication": false
+  },
+  "data_scope": "Private jobs retain the existing account/backend/environment/site/Carvewright scope. A requesting-business label is a handoff destination, not an authorization boundary. No customer or financial data stores were changed.",
+  "review_fixes": [
+    "Near-edge rotated paths use actual curve extrema.",
+    "Nearly degenerate cubic extrema preserve physical ribbon bounds.",
+    "Prepared handoff and machining controls cannot expose stale blobs through middle-click navigation.",
+    "Object-list results are independent copies."
+  ],
+  "license_note": "Bundled license text preserves upstream wording and whitespace; source code whitespace checks exclude that verbatim text.",
+  "sealed_runtime_sha256": {
+    "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "c5c4a7a1a28312ef3d73f6024bd1e0638d56c1b04f89f213acfae5c7f8ce69c9",
+    "DEPLOYMENT_MANIFEST.json": "0088cd5f818c96798b437ee74ee4888198f7b775363b8d93bb20a1f2381d089b",
+    "FLEET_COMMAND_MODEL.json": "14d30d5fa31f256191babd5912d87d6ca109aed339ed36f5bc58d0fafd98edcb",
+    "FLEET_DOCTRINE_REGISTRY.json": "67c541e7d888694f88ab56d880cba9e66661e4409580fcf2be5a8ef336439ea8",
+    "GOLDEN_VOYAGES.json": "8693f024a87e1cb545559e8d01b7ef90d78c7e4ff451a1096421f6be4ac0a2be",
+    "IKE_STYLE_FOUNDRY.json": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
+    "RELEASE_SEAL.json": "2dbb133218eeebbd4c102db416de48c3ccb460ae4601d5461acfd88c80cb973f",
+    "app.js": "4c738df9085f2178ee2a102e8258d1e9e022f9dddb58b731b6cb523cd45c580c",
+    "business_deck.css": "445fa81fff307d41cdd9a7d181ec86f9daae6843d24ac0d9fe14f939a25b6289",
+    "business_deck.js": "baedef5a1f8e7d39fb8fae9fbbed230ee3c13afa4b6f0f6352f9db931d92065c",
+    "captain.js": "920e1b67c4d2172a6665d71c49b10c96424b8c0199ba785b5e9170ca7e5dbd7e",
+    "carve-studio.html": "5991b45b183d32b4bbc5191f981b08485e193d70fc3a12a15075b9be4c425357",
+    "carve_core.js": "1332b534c520f6953750206c73f9c80175b0ea06132739a1145575de8060cc4c",
+    "carve_font_license.txt": "05780f0d4dcc44bb13f5b015d95ef50c5d1835aa9d9c83b59720c4e0306a2165",
+    "carve_fonts.js": "c98d321b53c174df8eb3aa116066647f59b8623d9d24749b4fd6c922894d529c",
+    "carve_store.js": "95444741396e68749ecbf67dc15fd4f5f34d58a9f036621f41e6e2e276caa984",
+    "carve_studio.css": "278e5c340225ef671767668be6fb4a6e85b0b5a0bcfda22e333b3face7acae56",
+    "carve_studio.js": "50b4438a086c93a987920c34722ac5dce500d4e0a8e1302489e2daffc93442fd",
+    "carvewright.css": "dff6af54a68ffae663138ae2a78601cb1c1c8842246b45d6fca178c1cd2dd8fd",
+    "carvewright.html": "ad1fe26cc13ff9d995575dd05c709599134a754d8bf66871f55487db9ac39742",
+    "carvewright_app.js": "cf20ce4b6176531c75cd864066c7af2439c9798aec7573b08a3fa9e42498d5ed",
+    "carvewright_cam.js": "46886bcae6f875013251e7a2133aed5a22756817596b47fa543bc06ba119f98b",
+    "carvewright_clipper.js": "a650c6946682edc1a64016f6553eeb5c32ce45eb7ca0ad5d8221961af011d97c",
+    "carvewright_core.js": "a187227e9356b562a3620d474ee3ab9e66103b54ae9738b148de4924abdb93b9",
+    "carvewright_fleet.js": "b92ed6240786b7e53b2de8a7cad44dfea825dc6a80d0d6c4231c8c19629b8614",
+    "carvewright_machining.css": "f4b881189196d7fdd8c639298bf7f5fd87d33f7e86177dbd0215995882aabf98",
+    "carvewright_machining.js": "c26a9764da29fbd4ee7b293bebf5a3f6d6c322467087c06692fff5e3351b1c99",
+    "carvewright_posts.js": "dd7a6a82b6ec5e6f5bcdb1d9b60e04c3d03a034d632af901a290015ab5c427c2",
+    "carvewright_store.js": "3ab158e100e16b01a5a3a3fb139d961b580bee31ca1cc4f5ff4024f7b2b18df1",
+    "carvewright_studio.js": "17ea82005c64cd9e4a154a2136a1cd07d8de0d7bcd264fb065e58f721fba2c34",
+    "fleet_design_assets.js": "85bb30a338cf5b711235f165b211ecd1b3cca6c0e270a61d85ba93920f94b7a8",
+    "fleet_supabase.js": "39574871bbafee85121d847993c59f19d084a55ed1fd99f3afb9c7521f5262f4",
+    "fleet_viewport.css": "36db59f3ef4061631d2fc67aac7b33aed4fff4120453560012413200e0e9bdad",
+    "fleet_viewport.js": "14ea8ff7d2c834014d8661a743c9408f9556141e7c81d32b590bd6988d0cfa55",
+    "fun_core.js": "b21a909fa3dccf44b2d02d4a8243a91fd260b70db2edfc35338f3fd330c810e4",
+    "fun_player.html": "fcfc2d06cdf204f4591a9717968a027facf170e6e0be32d9151ef847870a0fb7",
+    "fun_program.css": "0be9fb1e66ac0d04bc446b4f0d92d866aaa09848f6de86ce2bfdb83f2b4d55c3",
+    "fun_program.js": "7aab8cd414f65af0619436ddc35a10585a0d9a8269eb98b5896fea9fa85e7ef5",
+    "headway_contracts.js": "2f637493c964d868b6b3fdc337480d34da23efc26d64795fbfa4c5a765801d51",
+    "ike_style_registry.js": "6b348ebceb47e172e6676f46252b19c1c6bb7532baf76febfa8dd81760a76ab7",
+    "index.html": "ed7137821d8d982bb04c5e6926100402c835affdbe7de0d603ddc957442863e7",
+    "input_hygiene.js": "f40f0b6865207f6d31dbc59b4729a84f72336261a46833ca781f4aa417ccc768",
+    "manifest.webmanifest": "832756c2dedde80746d2ef7935df3976ad1d046c184c78483fde21d86d3a7cf9",
+    "owner.html": "4cb8a2860f2f891d28cd6ce83d754c91f53677e619ce1a55d14a189f12e0bd0e",
+    "platform_core.js": "7f797bc382a73eb9ec4365a7458e8329da60c50561e3ac751ca3fb9d7cd5ec49",
+    "platform_identity.js": "7f904776847b1545290e6d5d56f4476cf7699daec904604012b0dae189b3ae57",
+    "platform_v4.js": "21daf7777150d654467042893298147374318fdfc7ac38faf9260f874522019b",
+    "quartermaster.css": "bea4da8c6b5e0ce32064093babc86ac334446680a3bb939d57299a474ba14aeb",
+    "quartermaster.js": "7c2cbf06863bc8618ad32a7797f8df8418007bef22a448791770da135ad1ceb7",
+    "quartermaster_core.js": "5de2d40cb05eeeafb03855e5a374b7fc451982969d187d71632dd908e1051eed",
+    "quartermaster_fonts.js": "69b2f7fbcf0d29731cf6feea6d3f7b57d7633fafc29703123a7213ea861c9df5",
+    "quartermaster_pdf.js": "7e1c51fa7d7a4ae4fcd55a2330b15ff87c6b4ec0c9db548ff2b6a72658a453a1",
+    "simple_books.css": "5939590021ef2d3738d5f5f7249d72f8da64cc274bf287ef8183958517b0ba46",
+    "simple_books.js": "2b7ef5001a5b033587f044aeabd7d5115097be4364a641a47adbdd2b2ba5bc09",
+    "stormwake_core.js": "b0193108053c9ddd067dc100bb9d820292e970ad2c316512b8456e359820b405",
+    "styles.css": "3af289879bf0256d244fe084d3d9e26c67b277bdaffdd1df8387143d7d077379",
+    "sw.js": "b31e2c7cd9e0ed3a1adebbe80c90efefb1f5a0ca1f359654503ef2bf3a968530",
+    "woodwright_fit.js": "a4efdadf635608419a2bd82f12a701fd2991ec5dc3d14d282fd846680d40606f"
+  },
+  "package_verifier": {
+    "command": "python3 -B VERIFY_PACKAGE_TESTS.py",
+    "passed": 31,
+    "failed": 0,
+    "scope": "Verifier regression suite; actual release reconstruction and archive checks are in Fleetcraft-8.8.20.59-package-check.json."
+  },
+  "independent_review": {
+    "verdict": "Ready for packaging; no Critical or Important findings remain open.",
+    "resolved": [
+      "Persistent blob navigation bypass in handoff and machining.",
+      "False rejection from rotated bounding rectangles.",
+      "Nearly degenerate cubic derivative underbounds.",
+      "Object list mutation affecting its source draft."
+    ],
+    "graphics_bound_cases": 128,
+    "lettering_bound_cases": 480,
+    "graphics_max_difference_from_flattened_mm": 0.0004353,
+    "lettering_max_difference_from_flattened_mm": 0.0004266,
+    "underbounds_above_probe_threshold": 0
+  },
+  "known_baseline_reconciliation": {
+    "declared_files": 381,
+    "actually_present_files": 380,
+    "missing_temporary_file_recreated": false,
+    "original_58_full_archive_verified": false,
+    "actual_repository_content_sha256": "04c9a8a2f132804f4c54d38234c4a2a7c5227d40f760448f895fd5f554e3947c"
+  }
+}

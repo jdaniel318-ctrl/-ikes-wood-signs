@@ -189,7 +189,13 @@
   var l=core.layout(design,fonts);if(!l.ok||l.blank)fail((l.errors||[]).join(' ')||'Enter supported lettering before generating a toolpath.');
   var polygons=flattenGlyphs(l.glyphs,{widthMm:setup.stock.widthMm,heightMm:setup.stock.heightMm,origin:setup.origin.xy,toleranceMm:setup.cut.toleranceMm});
   var result=pocketPolygons(polygons,setup),font=fonts.fonts[design.text.fontId];
-  result.schema='carvewright-toolpath-v1';result.units='mm';result.source={designId:design.id,revision:design.revision,title:design.title,fontId:design.text.fontId,fontSourceSha256:font.sourceSha256};result.setup=copy(setup);return result;
+  result.schema='carvewright-toolpath-v1';result.units='mm';result.source={designId:design.id,revision:design.revision,title:design.title,fontId:design.text.fontId,fontSourceSha256:font.sourceSha256};
+  if(design.schema==='carvewright-design-v2'){
+    result.source.artworkSchema=design.schema;
+    result.source.fontAssets=core.fontAssets(design,fonts);
+    result.source.graphicAssets=core.graphicAssets(design);
+  }
+  result.setup=copy(setup);return result;
  }
  return Object.freeze({defaults:defaults,validateSetup:validateSetup,build:build,flattenPath:flattenPath,flattenGlyphs:flattenGlyphs,pocketPolygons:pocketPolygons});
 });

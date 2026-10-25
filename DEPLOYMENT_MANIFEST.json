@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.20.58",
-  "version": "8.8.20.58",
-  "release_name": "First Cut",
-  "releaseName": "First Cut",
-  "release_seal": "firstcut-882058",
+  "build": "8.8.20.59",
+  "version": "8.8.20.59",
+  "release_name": "Fleetcraft",
+  "releaseName": "Fleetcraft",
+  "release_seal": "fleetcraft-882059",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -89,7 +89,8 @@
     "carvewright_cam.js",
     "carvewright_posts.js",
     "carvewright_machining.js",
-    "carvewright_machining.css"
+    "carvewright_machining.css",
+    "fleet_design_assets.js"
   ],
   "atomic_release_contract": {
     "manifest_runtime_agreement": "required-before-execution",
@@ -127,8 +128,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "Carvewright controller-preview downloads before workshop setup confirmation",
-  "release_note": "Separate clearly labelled unverified preview exports from setup-confirmed cutting exports; retain the original machining engine, posts, design stores and session guards. Correct obsolete Home capability copy. Physical controller acceptance remains pending.",
+  "release_focus": "Editable text and vector graphic layers with CNC preview handoff",
+  "release_note": "Fleetcraft design tools retain existing scoped jobs, business data, preview/cutting separation and controller readback checks.",
   "tax_ledger_upgrade": {
     "schema": "dark-sky-fleet-tax-ledger-v1",
     "model": "TAX_LEDGER_MODEL.json",
@@ -250,8 +251,8 @@
     "algorithm": "SHA-256",
     "files": {
       "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": {
-        "sha256": "58a6beafb234bf2a48b647a5cf86f8bd4e3a415dde2f99ac8898c4394e0c08cc",
-        "build": "8.8.20.58",
+        "sha256": "c5c4a7a1a28312ef3d73f6024bd1e0638d56c1b04f89f213acfae5c7f8ce69c9",
+        "build": "8.8.20.59",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -298,14 +299,14 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_COMMAND_MODEL.json": {
-        "sha256": "6989da6d05367208c80e565f8e7a76f7a867351b1edbeb05899c5e5e8076f278",
-        "build": "8.8.20.58",
+        "sha256": "14d30d5fa31f256191babd5912d87d6ca109aed339ed36f5bc58d0fafd98edcb",
+        "build": "8.8.20.59",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
       "FLEET_DOCTRINE_REGISTRY.json": {
-        "sha256": "cdacdd04cafb4e0692b33b9b153afd231a255b771ef7759ed3245b1ead1d73b2",
-        "build": "8.8.20.58",
+        "sha256": "67c541e7d888694f88ab56d880cba9e66661e4409580fcf2be5a8ef336439ea8",
+        "build": "8.8.20.59",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -364,8 +365,8 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "GOLDEN_VOYAGES.json": {
-        "sha256": "0d647336341c211bd2a36428fc0e1359707e127501bdeeb4437de3fca356cdc8",
-        "build": "8.8.20.58",
+        "sha256": "8693f024a87e1cb545559e8d01b7ef90d78c7e4ff451a1096421f6be4ac0a2be",
+        "build": "8.8.20.59",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -518,56 +519,57 @@
       "simple_books.css": "5939590021ef2d3738d5f5f7249d72f8da64cc274bf287ef8183958517b0ba46",
       "platform_core.js": "7f797bc382a73eb9ec4365a7458e8329da60c50561e3ac751ca3fb9d7cd5ec49",
       "platform_v4.js": "21daf7777150d654467042893298147374318fdfc7ac38faf9260f874522019b",
-      "platform_identity.js": "3f677779bd0b41d605073346376b753e6cc9a72d1bcb1801ebbccf5dc40baf8d",
-      "fleet_supabase.js": "5f14a0c8127756680ccf1152298c4d82a4ef0de344fe73db444b110ab692ec6b",
+      "platform_identity.js": "7f904776847b1545290e6d5d56f4476cf7699daec904604012b0dae189b3ae57",
+      "fleet_supabase.js": "39574871bbafee85121d847993c59f19d084a55ed1fd99f3afb9c7521f5262f4",
       "ike_style_registry.js": "6b348ebceb47e172e6676f46252b19c1c6bb7532baf76febfa8dd81760a76ab7",
-      "app.js": "597d940bf7a3a7a8dfcfa9c58ef6268a56bf1fb4645335ddde7f3a7230e49001",
-      "captain.js": "ba4e38228cfe9d4ac256995f7c2a2bc92b5d8c67385269eab18fb4dc222ba267",
-      "simple_books.js": "4624d18136040cf4b33b10b76d7ac99966dfa4a57f928346ff245ffa9f7abf30",
-      "owner.html": "8200aa9a5c93ace4cd22de9034c8e0ee61ca6c4c7d92d4d6161e3a4854f9109b",
-      "manifest.webmanifest": "4e6640626dea62dcfdc28ac78e44facf31e7f8492551e66eb64bfd6744c2fb64",
+      "app.js": "4c738df9085f2178ee2a102e8258d1e9e022f9dddb58b731b6cb523cd45c580c",
+      "captain.js": "920e1b67c4d2172a6665d71c49b10c96424b8c0199ba785b5e9170ca7e5dbd7e",
+      "simple_books.js": "2b7ef5001a5b033587f044aeabd7d5115097be4364a641a47adbdd2b2ba5bc09",
+      "owner.html": "4cb8a2860f2f891d28cd6ce83d754c91f53677e619ce1a55d14a189f12e0bd0e",
+      "manifest.webmanifest": "832756c2dedde80746d2ef7935df3976ad1d046c184c78483fde21d86d3a7cf9",
       "IKE_STYLE_FOUNDRY.json": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
-      "sw.js": "604651078de791310066d947c19e2fc39d31950a878d5dce2c09d27c62de4534",
-      "FLEET_DOCTRINE_REGISTRY.json": "cdacdd04cafb4e0692b33b9b153afd231a255b771ef7759ed3245b1ead1d73b2",
-      "GOLDEN_VOYAGES.json": "0d647336341c211bd2a36428fc0e1359707e127501bdeeb4437de3fca356cdc8",
-      "FLEET_COMMAND_MODEL.json": "6989da6d05367208c80e565f8e7a76f7a867351b1edbeb05899c5e5e8076f278",
-      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "58a6beafb234bf2a48b647a5cf86f8bd4e3a415dde2f99ac8898c4394e0c08cc",
-      "input_hygiene.js": "48c9b4ce5da3a1037f84438cf757e1fcd2c1564fc1040d06581c572c6569be82",
-      "business_deck.js": "40342921d3d32a53a28ec44a202029fe16553f090551cc55644c5893c3b88b2c",
+      "sw.js": "b31e2c7cd9e0ed3a1adebbe80c90efefb1f5a0ca1f359654503ef2bf3a968530",
+      "FLEET_DOCTRINE_REGISTRY.json": "67c541e7d888694f88ab56d880cba9e66661e4409580fcf2be5a8ef336439ea8",
+      "GOLDEN_VOYAGES.json": "8693f024a87e1cb545559e8d01b7ef90d78c7e4ff451a1096421f6be4ac0a2be",
+      "FLEET_COMMAND_MODEL.json": "14d30d5fa31f256191babd5912d87d6ca109aed339ed36f5bc58d0fafd98edcb",
+      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "c5c4a7a1a28312ef3d73f6024bd1e0638d56c1b04f89f213acfae5c7f8ce69c9",
+      "input_hygiene.js": "f40f0b6865207f6d31dbc59b4729a84f72336261a46833ca781f4aa417ccc768",
+      "business_deck.js": "baedef5a1f8e7d39fb8fae9fbbed230ee3c13afa4b6f0f6352f9db931d92065c",
       "business_deck.css": "445fa81fff307d41cdd9a7d181ec86f9daae6843d24ac0d9fe14f939a25b6289",
       "fleet_viewport.js": "14ea8ff7d2c834014d8661a743c9408f9556141e7c81d32b590bd6988d0cfa55",
       "fleet_viewport.css": "36db59f3ef4061631d2fc67aac7b33aed4fff4120453560012413200e0e9bdad",
-      "headway_contracts.js": "52e3fbdb5ae3416febdf60eac51712f365690f2b94466939bf254b4feeaec39a",
+      "headway_contracts.js": "2f637493c964d868b6b3fdc337480d34da23efc26d64795fbfa4c5a765801d51",
       "woodwright_fit.js": "a4efdadf635608419a2bd82f12a701fd2991ec5dc3d14d282fd846680d40606f",
       "fun_core.js": "b21a909fa3dccf44b2d02d4a8243a91fd260b70db2edfc35338f3fd330c810e4",
-      "fun_program.js": "e6b6216229a3849c1045097cbba6df71f510a3ade21899dfd314342801c6e472",
+      "fun_program.js": "7aab8cd414f65af0619436ddc35a10585a0d9a8269eb98b5896fea9fa85e7ef5",
       "fun_program.css": "0be9fb1e66ac0d04bc446b4f0d92d866aaa09848f6de86ce2bfdb83f2b4d55c3",
       "fun_player.html": "fcfc2d06cdf204f4591a9717968a027facf170e6e0be32d9151ef847870a0fb7",
       "stormwake_core.js": "b0193108053c9ddd067dc100bb9d820292e970ad2c316512b8456e359820b405",
       "quartermaster_core.js": "5de2d40cb05eeeafb03855e5a374b7fc451982969d187d71632dd908e1051eed",
       "quartermaster_fonts.js": "69b2f7fbcf0d29731cf6feea6d3f7b57d7633fafc29703123a7213ea861c9df5",
       "quartermaster_pdf.js": "7e1c51fa7d7a4ae4fcd55a2330b15ff87c6b4ec0c9db548ff2b6a72658a453a1",
-      "quartermaster.js": "f4f43a35947ac4b2b7a7a89d44b5a187589a3a5cc6ad399cb82f277ad5eff904",
-      "quartermaster.css": "8e16c1c6423e44b14027597b80091590377f3fcf63c288b066ddf7d9c3ab1fb0",
-      "carve_fonts.js": "f9dba7e80836fa4d702c7599fd9c7e7f99864bb6493c9aae82b1a161c4aaafcf",
+      "quartermaster.js": "7c2cbf06863bc8618ad32a7797f8df8418007bef22a448791770da135ad1ceb7",
+      "quartermaster.css": "bea4da8c6b5e0ce32064093babc86ac334446680a3bb939d57299a474ba14aeb",
+      "carve_fonts.js": "c98d321b53c174df8eb3aa116066647f59b8623d9d24749b4fd6c922894d529c",
       "carve_core.js": "1332b534c520f6953750206c73f9c80175b0ea06132739a1145575de8060cc4c",
       "carve_store.js": "95444741396e68749ecbf67dc15fd4f5f34d58a9f036621f41e6e2e276caa984",
-      "carve_studio.js": "847d77086f5f33618bb49f184a49a88c467f389c48b55e11280ac75ab9eaf059",
-      "carve_studio.css": "1b56c6ed7b38d2a45c921a59618362ca39a07ccdd8423c2ef57a47793af06773",
-      "carve-studio.html": "17d70eba2c06745617238fdd6e55cd110431f6def0cb18eb07614159c0a4231c",
-      "carve_font_license.txt": "0fe4abc1e9ccaa94b64840c75dff6dda89ba7fd369aaf292417ead85b5bed529",
-      "carvewright_core.js": "32aaaa33abf54894409f6e7452135933ecc50f937d446f1dcabe485f10669817",
+      "carve_studio.js": "50b4438a086c93a987920c34722ac5dce500d4e0a8e1302489e2daffc93442fd",
+      "carve_studio.css": "278e5c340225ef671767668be6fb4a6e85b0b5a0bcfda22e333b3face7acae56",
+      "carve-studio.html": "5991b45b183d32b4bbc5191f981b08485e193d70fc3a12a15075b9be4c425357",
+      "carve_font_license.txt": "05780f0d4dcc44bb13f5b015d95ef50c5d1835aa9d9c83b59720c4e0306a2165",
+      "carvewright_core.js": "a187227e9356b562a3620d474ee3ab9e66103b54ae9738b148de4924abdb93b9",
       "carvewright_store.js": "3ab158e100e16b01a5a3a3fb139d961b580bee31ca1cc4f5ff4024f7b2b18df1",
-      "carvewright_studio.js": "32cc2dc47974b540f0a54b10d8f99fca8f7e60ff5a0e392f46d1ea01dddcb5a7",
-      "carvewright_app.js": "5cac228b4363aa27f2fa35b772b93a936dbb347a6017a1da33805ad9472aaeea",
-      "carvewright_fleet.js": "84925ccced2b3eba880d55f854733a7773febef5a6d4fb7010c73228f15c51e2",
-      "carvewright.css": "ec6aefbbf54fdd8967e52ddb4f93c8fcf43c68981bc650aa2514c477370954c6",
-      "carvewright.html": "1c7020ca6ac617fce2086d7431ea9e31463cc4e15b0074e7167398dc5bc67c78",
+      "carvewright_studio.js": "17ea82005c64cd9e4a154a2136a1cd07d8de0d7bcd264fb065e58f721fba2c34",
+      "carvewright_app.js": "cf20ce4b6176531c75cd864066c7af2439c9798aec7573b08a3fa9e42498d5ed",
+      "carvewright_fleet.js": "b92ed6240786b7e53b2de8a7cad44dfea825dc6a80d0d6c4231c8c19629b8614",
+      "carvewright.css": "dff6af54a68ffae663138ae2a78601cb1c1c8842246b45d6fca178c1cd2dd8fd",
+      "carvewright.html": "ad1fe26cc13ff9d995575dd05c709599134a754d8bf66871f55487db9ac39742",
       "carvewright_clipper.js": "a650c6946682edc1a64016f6553eeb5c32ce45eb7ca0ad5d8221961af011d97c",
-      "carvewright_cam.js": "2b0209f760e6958ad655a97a09b7a5f49756b4cc672a069a55615639035f4c49",
+      "carvewright_cam.js": "46886bcae6f875013251e7a2133aed5a22756817596b47fa543bc06ba119f98b",
       "carvewright_posts.js": "dd7a6a82b6ec5e6f5bcdb1d9b60e04c3d03a034d632af901a290015ab5c427c2",
-      "carvewright_machining.js": "b0634b45f2e5b6777518bf660d5c9b4a5fe8cb5b75aa5e90a26896b40f6c7e6a",
-      "carvewright_machining.css": "5e04940956c8d6ac3debfcd8a8296a8432998cb20f490b8abc9e2d93e3c220ce"
+      "carvewright_machining.js": "c26a9764da29fbd4ee7b293bebf5a3f6d6c322467087c06692fff5e3351b1c99",
+      "carvewright_machining.css": "f4b881189196d7fdd8c639298bf7f5fd87d33f7e86177dbd0215995882aabf98",
+      "fleet_design_assets.js": "85bb30a338cf5b711235f165b211ecd1b3cca6c0e270a61d85ba93920f94b7a8"
     }
   },
   "watchbeacon_upgrade": {
@@ -1002,7 +1004,7 @@
     "project_data_mutation": false,
     "field_failure_proof": "8.8.20.13 held on styles.css because packaged DEPLOYMENT_MANIFEST runtime hash did not match packaged styles.css bytes"
   },
-  "release": "Quartermaster",
+  "release": "Fleetcraft",
   "clearbearing_upgrade": {
     "build": "8.8.20.22",
     "baseline": "8.8.20.14 HashLock",
@@ -1630,5 +1632,27 @@
     "machine_acceptance": false,
     "live_service_actions": false,
     "data_migration_required": false
+  },
+  "fleetcraft": {
+    "build": "8.8.20.59",
+    "base_build": "8.8.20.58",
+    "base_repository_commit": "2249bdf63cbbc8db858a7a275382cb3a27481b2d",
+    "browser_local": true,
+    "live_service_actions": false,
+    "data_migration_required": false,
+    "machine_acceptance": false,
+    "assets": [
+      "fleet_design_assets.js"
+    ],
+    "verification_scripts": [
+      "VERIFY_FLEETCRAFT_ASSETS.cjs",
+      "VERIFY_FLEETCRAFT_CAM.cjs",
+      "VERIFY_FLEETCRAFT_CORE.cjs",
+      "VERIFY_FLEETCRAFT_HANDOFF.cjs",
+      "VERIFY_FLEETCRAFT_MACHINING.cjs",
+      "VERIFY_FLEETCRAFT_UI.cjs"
+    ],
+    "evidence_file": "FLEETCRAFT_EVIDENCE.json",
+    "historical_carvewright_evidence_preserved": true
   }
 }

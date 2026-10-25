@@ -1,3 +1,29 @@
+# Fleetcraft 8.8.20.59
+
+**Current update: DarkSky882059-Fleetcraft-Upload53.zip**
+
+Extract the ZIP and open its single matching folder. Upload every file inside
+over the existing Carvewright .58 repository at commit `2249bdf63cbbc8db858a7a275382cb3a27481b2d`. Replace
+matching filenames and retain all other files. No SQL, browser-data clearing,
+database reset, or deletion is required.
+
+This update is checked against the actual files recovered from that repository.
+The earlier inventory names one absent temporary file; it is not fabricated.
+Original .58 archive reconstruction and older cumulative baselines are not claimed.
+See `FLEETCRAFT_BASELINE.json` and the separate package-check report for exact scope.
+
+For an independent local copy, extract **DarkSky882059-Fleetcraft-Standalone.zip**
+and open **carvewright.html**, keeping all extracted files together. The full
+active release is **DarkSky882059-Fleetcraft-FullBackup.zip**. Private browser-saved
+jobs are not inside these software ZIPs; keep their existing editable JSON files.
+
+Use **FLEETCRAFT_GUIDE.md** for the current workflow and
+**FLEETCRAFT_EVIDENCE.json** for tested behavior and device/machine limits.
+
+---
+
+## Historical instructions below — retained verbatim
+
 # Carvewright controller-preview downloads — 8.8.20.58
 
 ## Upload this update

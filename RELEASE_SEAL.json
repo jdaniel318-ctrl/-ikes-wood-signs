@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.58",
-  "release": "First Cut",
-  "seal": "firstcut-882058",
+  "build": "8.8.20.59",
+  "release": "Fleetcraft",
+  "seal": "fleetcraft-882059",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "First Cut",
-  "name": "First Cut",
-  "releaseName": "First Cut"
+  "release_name": "Fleetcraft",
+  "name": "Fleetcraft",
+  "releaseName": "Fleetcraft"
 }

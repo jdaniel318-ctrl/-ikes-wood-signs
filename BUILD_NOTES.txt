@@ -1,3 +1,7 @@
+Fleetcraft 8.8.20.59 — editable text and vector graphic layers.
+Read FLEETCRAFT_GUIDE.md. The new evidence records the actual software checks.
+Prior release records below are retained as historical evidence.
+
 Carvewright 8.8.20.58 — controller-preview downloads
 
 Adds a separate preview-file preparation action for work away from the machine, with explicit unverified-setup filenames/comments and purpose metadata. Keeps the original setup-confirmed cutting export, exact source checks, identity/generation guards, native downloads and stale-link revocation. Delivered program bytes are rechecked after the preview header is added, and their exact SHA is recorded.
