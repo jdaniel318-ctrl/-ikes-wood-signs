@@ -1,30 +1,36 @@
 {
   "schema": "blackflag-patch-contract-v1",
-  "target_build": "8.8.20.56",
-  "target_seal": "carvewright-882056",
+  "target_build": "8.8.20.57",
+  "target_seal": "firstcut-882057",
   "supported_bases": [
+    {
+      "build": "8.8.20.56",
+      "file_count": 369,
+      "content_sha256": "6b4133d126ac08924a53f1491fe3da03013f2a7062a534a6d64c916e124c9fb3",
+      "content_digest_algorithm": "release-content-sha256-v1"
+    },
     {
       "build": "8.8.20.55",
       "file_count": 366,
-      "content_digest_algorithm": "release-content-sha256-v1",
-      "content_sha256": "c2299990eb726302008b589b437a63c12860dc2b0ba8a4afbf703b2b44056333"
+      "content_sha256": "c2299990eb726302008b589b437a63c12860dc2b0ba8a4afbf703b2b44056333",
+      "content_digest_algorithm": "release-content-sha256-v1"
     },
     {
       "build": "8.8.20.54",
       "file_count": 355,
-      "content_digest_algorithm": "release-content-sha256-v1",
-      "content_sha256": "a763ee9c966e0892f07a4f00a3343a59dd9d783183fb5109a9dd16306769562a"
+      "content_sha256": "a763ee9c966e0892f07a4f00a3343a59dd9d783183fb5109a9dd16306769562a",
+      "content_digest_algorithm": "release-content-sha256-v1"
     },
     {
       "build": "8.8.20.53",
       "file_count": 343,
-      "content_digest_algorithm": "release-content-sha256-v1",
-      "content_sha256": "25e0df92753fcd1b7519ed6b6df341b25186cc00c9522dd2d1b1373f2da86a13"
+      "content_sha256": "25e0df92753fcd1b7519ed6b6df341b25186cc00c9522dd2d1b1373f2da86a13",
+      "content_digest_algorithm": "release-content-sha256-v1"
     }
   ],
   "requires_deletions": false,
   "max_upload_files": 85,
   "database_actions": "none",
-  "local_business_storage": "Existing catalog/documents, legacy Carve Studio saves and isolated Carvewright device-local store preserved.",
-  "rule": "Upload every inner .56 Carvewright cumulative update file over exact complete .53 OR .54 OR .55, replacing matching names and retaining every other file. No SQL, browser-data clearing or fresh database."
+  "local_business_storage": "Existing designs, catalog/documents and scoped stores retained. Machining setup uses its own local database.",
+  "rule": "Upload all files from the current inner folder over exact complete .53, .54, .55 or .56. Replace matching filenames and retain every other file. No SQL, database reset or browser-data clearing."
 }

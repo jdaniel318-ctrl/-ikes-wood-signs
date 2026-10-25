@@ -2,11 +2,11 @@
  * Only validated fictional game fields enter the dedicated device save.
  * The opaque player has no storage access. Authority and business stores are unchanged. */
 (()=>{'use strict';
-const Legacy=window.BlackFlagFUN,SW=window.BlackFlagStormwake,G=SW||Legacy,STORMWAKE_SHA='069e369723a5fbd92fe51b6499214fbc60fb9d92861a19f67b320b8b4e5fee30';let cachedStormwake='';const playerHtml=String(window.__funVerifiedPlayerHtml||'');delete window.__funVerifiedPlayerHtml;
+const Legacy=window.BlackFlagFUN,SW=window.BlackFlagStormwake,G=SW||Legacy,STORMWAKE_SHA='7ca30753fd402be0d084f2783970d22a9b9fb0c90aba4eff7ece314363040c9a';let cachedStormwake='';const playerHtml=String(window.__funVerifiedPlayerHtml||'');delete window.__funVerifiedPlayerHtml;
 const $=id=>document.getElementById(id),memo=new Map(),fileCopies=new Map(),deviceCopies=new Map();
 const DEVICE_PREFIX='blackflag.stormwake.voyage.v1:';let voyageKey='',voyageScope=null;let dialog=null,frame=null,actor='',startedAt=0,channel='',epoch=0,pending=false,op=false,priorFocus=null,timer=0,observer=null,legacyMode=false,importPending=null;
 const text=(id,v)=>{if($(id))$(id).textContent=v;};
-function client(){const c=window.BlackFlagV3Identity?.productionAuth?.readClientConfig?.();if(!c?.url||!c?.publishableKey||!window.DarkSkySupabase?.create)throw Error('Admiral identity service is unavailable. Return to the existing Admiral sign-in.');return window.DarkSkySupabase.create({url:c.url,publishableKey:c.publishableKey,sessionKey:'darkSkySupabaseAdmiralSessionV1',build:'8.8.20.56'});}
+function client(){const c=window.BlackFlagV3Identity?.productionAuth?.readClientConfig?.();if(!c?.url||!c?.publishableKey||!window.DarkSkySupabase?.create)throw Error('Admiral identity service is unavailable. Return to the existing Admiral sign-in.');return window.DarkSkySupabase.create({url:c.url,publishableKey:c.publishableKey,sessionKey:'darkSkySupabaseAdmiralSessionV1',build:'8.8.20.57'});}
 function deckVisible(){const d=$('admiralDeck');return !!d&&!d.hidden&&!d.classList.contains('hidden')&&d.getAttribute('aria-hidden')!=='true';}
 function scopeFor(id){
  const cfg=window.BlackFlagV3Identity?.productionAuth?.readClientConfig?.();
@@ -180,6 +180,6 @@ document.addEventListener('visibilitychange',()=>{if(!frame||!dialog||dialog.hid
 window.addEventListener('focus',checkDeviceChange);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkDeviceChange();});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&dialog&&!dialog.hidden){e.preventDefault();e.stopImmediatePropagation();close();}},true);
-window.BlackFlagFUNProgram=Object.freeze({open,openLegacy:()=>open(true),close,isOpen:()=>!!frame&&!!dialog&&!dialog.hidden,build:'8.8.20.56',mode:'admiral-solo-prototype'});
+window.BlackFlagFUNProgram=Object.freeze({open,openLegacy:()=>open(true),close,isOpen:()=>!!frame&&!!dialog&&!dialog.hidden,build:'8.8.20.57',mode:'admiral-solo-prototype'});
 document.addEventListener('click',e=>{if(e.target instanceof Element&&e.target.closest('#funProgramLaunch')){e.preventDefault();open();}});
 })();

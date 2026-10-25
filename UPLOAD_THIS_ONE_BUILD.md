@@ -1,3 +1,31 @@
+# Carvewright First Cut — 8.8.20.57
+
+## Upload this update
+
+**DarkSky882057-Carvewright-FirstCut-Upload67.zip**
+
+1. Extract this ZIP and open its single matching folder.
+2. Upload every file inside over the existing complete .53, .54, .55 or .56 repository, replacing matching filenames. Retain all other existing files.
+3. Open the updated site, enter Carvewright, and open your saved sign. In the design editor select **Prepare machining**.
+
+There are no SQL, database-reset or browser-data-clearing steps. Existing designs, account/business scopes, catalogs, quotes, invoices and customer journeys remain in place. Keep your downloaded design JSON files as portable backups.
+
+The new machining workspace supplies Setup, actual toolpath/2D cut-footprint Preview, and Export. It generates fixed-depth recessed lettering with a center-cutting flat end mill, including multiple depth passes and retained letter openings. Download ShopBot `.sbp`, GRBL 1.1 `.nc`, or LinuxCNC `.nc` files, with a separate machining record and editable design.
+
+The included values are examples. Match the actual material, cutter, work zero, controller and clearance before preparing a cutting program. A ShopBot photo establishes the brand but not the installed control generation. Load output into the intended controller's preview and verify the setup before a physical cut. This release does not claim physical machine acceptance or true variable-depth V-bit carving.
+
+**DarkSky882057-Carvewright-FirstCut-Standalone.zip** contains 19 files for an independent local workspace. Extract them together and open **carvewright.html**. No fleet login is needed. Import your existing design JSON if the job is not in that workspace. Fleet and standalone local storage remain separate.
+
+Current guide: **CARVEWRIGHT_MACHINING_GUIDE.md**. Current software evidence: **CARVEWRIGHT_MACHINING_EVIDENCE.json**. The full software backup is **DarkSky882057-Carvewright-FirstCut-FullBackup.zip**, not the small repository upload update.
+
+The prior five-second-session repair remains included. Existing sign-in, idle and maximum-session policies remain unchanged. Native Firefox and iPad Safari acceptance, live commissioning and physical CNC acceptance are not claimed by offline Chromium and computational checks.
+
+---
+
+## Historical instructions below — retained verbatim
+
+Use the current files and directions above. Earlier notes describe earlier releases.
+
 # Carvewright 8.8.20.56 — keep the workspace open
 
 **Current update: `DarkSky882056-Carvewright-Upload58.zip` — 58 files.**

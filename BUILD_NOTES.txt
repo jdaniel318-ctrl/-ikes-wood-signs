@@ -1,3 +1,13 @@
+Carvewright 8.8.20.57 — First Cut
+
+Adds bounded polygon CAM for fixed-depth flat-endmill letter pockets; independent mm toolpaths; ShopBot OpenSBP, GRBL1.1 and LinuxCNC inch/mm exporters with validated readback; Setup/Preview/Export workspace; actual 2D cutter footprint; isolated locally saved setups; portable machining records and exact editable artwork downloads.
+
+Source review, separate GEOS geometry comparisons, actual revision-3 Smoke Hole! design, controller readback, browser interactions, existing workspace/session regressions and exact archive reconstruction are recorded in current evidence. Software validation does not establish physical machine acceptance.
+
+The original geometry, fonts, design schemas, design stores and unrelated customer/business behavior are retained. No database action, permission change, remote machine operation or file deletion is included. ShopBot uses manual spindle prompts and checks current controller units. GRBL/LinuxCNC use explicit G54 with stock-top Z. Defaults are editable examples; operators must configure the actual setup.
+
+Current guide: CARVEWRIGHT_MACHINING_GUIDE.md. Current evidence: CARVEWRIGHT_MACHINING_EVIDENCE.json. Historical records below are retained verbatim.
+
 Carvewright 8.8.20.56 — five-second session repair
 
 Corrected the app/editor's unconditional response to routine session-changed events. Valid same-context status, focus and authority-refresh notifications preserve current work and links. Ended/unavailable sessions and invalid guards still close private surfaces.

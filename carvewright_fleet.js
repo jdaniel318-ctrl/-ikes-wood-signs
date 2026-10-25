@@ -1,8 +1,8 @@
-/* Carvewright 8.8.20.56 — independent, app-local Admiral service passage. */
+/* Carvewright 8.8.20.57 — independent, app-local Admiral service passage. */
 (function(g){
  'use strict';
  if(!g.document||g.CarvewrightFleet)return;
- const BUILD='8.8.20.56',SESSION='darkSkySupabaseAdmiralSessionV1';
+ const BUILD='8.8.20.57',SESSION='darkSkySupabaseAdmiralSessionV1';
  const $=id=>document.getElementById(id);
  let deck=null,gate=null,deckObserver=null,gateObserver=null,generation=0,pending=null,active=null,requested=false,timer=null;
  function message(text){const n=$('carvewrightEntryStatus');if(n)n.textContent=text;}
@@ -76,16 +76,17 @@
   const actions=deck?.querySelector('.admiral-deck-head-actions');
   if(actions&&!$('carvewrightAdmiralOpen')){const b=document.createElement('button');b.id='carvewrightAdmiralOpen';b.type='button';b.textContent='CARVEWRIGHT';b.addEventListener('click',()=>void open());actions.prepend(b);}
   const fleet=$('watchWorkspace')||$('bootstrapFleet')?.querySelector('.bootstrap-fleet-shell');
-  if(fleet&&!$('carvewrightFleetService')){const card=document.createElement('section');card.id='carvewrightFleetService';card.className='carvewright-fleet-service';card.setAttribute('aria-label','Carvewright local design service');const title=document.createElement('h3');title.textContent='Carvewright';const copy=document.createElement('p');copy.textContent='Local design service · Registration pending. Saved vector layouts and SVG artwork.';const b=document.createElement('button');b.id='carvewrightFleetOpen';b.type='button';b.textContent='OPEN CARVEWRIGHT';b.addEventListener('click',requestOpen);card.append(title,copy,b);fleet.appendChild(card);}
+  if(fleet&&!$('carvewrightFleetService')){const card=document.createElement('section');card.id='carvewrightFleetService';card.className='carvewright-fleet-service';card.setAttribute('aria-label','Carvewright local design service');const title=document.createElement('h3');title.textContent='Carvewright';const copy=document.createElement('p');copy.textContent='Local design service · Registration pending. Saved vector layouts, SVG artwork, lettering pockets and CNC files.';const b=document.createElement('button');b.id='carvewrightFleetOpen';b.type='button';b.textContent='OPEN CARVEWRIGHT';b.addEventListener('click',requestOpen);card.append(title,copy,b);fleet.appendChild(card);}
   const engine=$('carvewrightEngineOpen');if(engine&&!engine.dataset.carvewrightBound){engine.dataset.carvewrightBound='1';engine.addEventListener('click',requestOpen);}
  }
  function activity(event){
   const held=active;
   if(!event.isTrusted||!held||active!==held||!matches(held)||!g.CarvewrightApp?.isOpen?.())return;
   const target=event.target instanceof Element?event.target:null;
-  const root=target?.closest('#carvewrightApp, #carvewrightStudio');
+  const root=target?.closest('#carvewrightApp, #carvewrightStudio, #carvewrightMachining');
   if(!root?.isConnected||!root.open||root!==$(root.id))return;
   if(root.id==='carvewrightStudio'&&!g.CarvewrightStudio?.isOpen?.())return;
+  if(root.id==='carvewrightMachining'&&!g.CarvewrightMachining?.isOpen?.())return;
   g.DarkSkyAdmiralSession?.noteProgramActivity?.(held.activity);
  }
  for(const event of ['pointerdown','keydown','wheel','touchstart'])document.addEventListener(event,activity,{capture:true,passive:true});

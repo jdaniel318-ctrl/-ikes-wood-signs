@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.56",
-  "release": "Carvewright",
-  "seal": "carvewright-882056",
+  "build": "8.8.20.57",
+  "release": "First Cut",
+  "seal": "firstcut-882057",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Carvewright",
-  "name": "Carvewright",
-  "releaseName": "Carvewright"
+  "release_name": "First Cut",
+  "name": "First Cut",
+  "releaseName": "First Cut"
 }

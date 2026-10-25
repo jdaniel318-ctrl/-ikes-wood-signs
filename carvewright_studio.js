@@ -1,8 +1,8 @@
-/* Carvewright 8.8.20.56 — independent design editor. No network or machining output. */
+/* Carvewright 8.8.20.57 — independent design editor with a separate local machining workspace. */
 (function (g) {
   'use strict';
   if (!g.document || g.CarvewrightStudio) return;
-  const BUILD = '8.8.20.56';
+  const BUILD = '8.8.20.57';
   const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const clone = v => JSON.parse(JSON.stringify(v));
   const icon = (body, extra='') => `<svg viewBox="0 0 24 24" aria-hidden="true" ${extra}>${body}</svg>`;
@@ -44,6 +44,7 @@
     node(s,'cweClose').disabled=false;
     for(const id of ['cweReview','cweExportSvg','cweDownloadJob'])node(s,id).disabled=disabled||!validLayout(s);
     node(s,'cweSave').disabled=disabled||!s.layout?.ok;
+    node(s,'cweMachining').disabled=disabled||!validLayout(s)||s.dirty||s.draft.revision<1||!s.draft.review;
     node(s,'cweSaveLabel').textContent=s.busy?'Working…':'Save design';
   }
   async function run(s, action) {
@@ -70,7 +71,7 @@
     <section id="cweStockPanel" class="cwe-control-panel" role="tabpanel" aria-labelledby="cweStockTab" hidden><div class="cwe-label">Display units</div><div class="cwe-segmented"><button data-unit="in" type="button">Inches</button><button data-unit="mm" type="button">Millimeters</button></div><div class="cwe-dimension-grid"><label>Width <span class="cwe-unit"></span><input id="cweWidth" type="number" step="any" inputmode="decimal"></label><label>Height <span class="cwe-unit"></span><input id="cweHeight" type="number" step="any" inputmode="decimal"></label><label>Thickness <span class="cwe-unit"></span><input id="cweThickness" type="number" step="any" inputmode="decimal"></label><label>Edge margin <span class="cwe-unit"></span><input id="cweMargin" type="number" step="any" inputmode="decimal"></label></div><label class="cwe-label" for="cweStockId">Blank identifier</label><input id="cweStockId" maxlength="80" data-bf-trim="preserve" autocomplete="off"><label class="cwe-label" for="cweSpecies">Material appearance</label><select id="cweSpecies"><option value="cedar">Cedar</option><option value="walnut">Walnut</option><option value="oak">Oak</option></select><div class="cwe-dimension-grid cwe-offset-fields"><label>Horizontal offset <span class="cwe-unit"></span><input id="cweOffsetX" type="number" step="any" inputmode="decimal"></label><label>Vertical offset <span class="cwe-unit"></span><input id="cweOffsetY" type="number" step="any" inputmode="decimal"></label></div><button id="cweCenter" class="cwe-full" type="button">Reset position</button><div class="cwe-reference-note"><strong>Reference blank</strong><p>Dimensions are entered here by the operator. Wood appearance is illustrative; it does not measure or identify a physical slab.</p></div></section>
     </aside>
     <section class="cwe-workbench" aria-label="Sign preview"><div class="cwe-view-toolbar"><div><span class="cwe-green-dot"></span><strong>Layout preview</strong><span id="cwePreviewHint">Physical vector outlines</span></div><div class="cwe-view-switch"><button data-view="material" aria-pressed="true" type="button">Material</button><button data-view="outlines" aria-pressed="false" type="button">Outlines</button></div></div><div id="cweViewport" class="cwe-viewport"></div><div class="cwe-preview-meta"><span id="cweBlankSize">24 × 8 in blank</span><span id="cweOutlineCount">Vector lettering</span><button id="cweGuides" type="button" aria-pressed="true">Guides on</button></div><div id="cweGeometryErrors" class="cwe-errors" role="status" hidden></div>
-    <div class="cwe-production-row"><section class="cwe-review-card"><span class="cwe-card-icon">${icons.check}</span><div><small>DESIGN CHECK</small><strong id="cweReviewState">Ready to review</strong><p id="cweReviewDescription">Review this layout before preparing the next step.</p><button id="cweReview" type="button">Mark layout reviewed</button></div></section><section class="cwe-cam-card"><span class="cwe-card-icon">${icons.ruler}</span><div><small>PRODUCTION</small><strong>Prepare a vector handoff</strong><p>SVG contains your lettering at the entered size. Tools, cutting paths and machine settings are a separate step.</p><span class="cwe-stage-tag">DESIGN FOUNDATION · NO TOOLPATHS</span></div></section></div><p id="cweStatus" class="cwe-status" role="status" aria-live="polite">Opening the local design workspace…</p><div id="cweDownloads" class="cwe-downloads" hidden></div></section></main>
+    <div class="cwe-production-row"><section class="cwe-review-card"><span class="cwe-card-icon">${icons.check}</span><div><small>DESIGN CHECK</small><strong id="cweReviewState">Ready to review</strong><p id="cweReviewDescription">Review this layout before preparing the next step.</p><button id="cweReview" type="button">Mark layout reviewed</button></div></section><section class="cwe-cam-card"><span class="cwe-card-icon">${icons.ruler}</span><div><small>PRODUCTION</small><strong>Prepare this sign for cutting</strong><p>Calculate recessed lettering paths and export a controller program from this saved design.</p><button id="cweMachining" type="button">Prepare machining</button><small id="cweMachiningHelp">Save a reviewed design to prepare cutting paths.</small></div></section></div><p id="cweStatus" class="cwe-status" role="status" aria-live="polite">Opening the local design workspace…</p><div id="cweDownloads" class="cwe-downloads" hidden></div></section></main>
     <footer class="cwe-footer"><div><strong id="cweFooterTitle">Reference design</strong><span>Carvewright ${BUILD} · ${reference?'Local workspace':'Carvewright workspace'}</span></div><div><button id="cweDownloadJob" type="button">${icons.save}<span>Download job</span></button><button id="cweExportSvg" class="cwe-primary" type="button">${icons.export}<span>Export SVG</span></button></div></footer></div>`;
   }
   function setForm(s) {
@@ -111,6 +112,7 @@
     node(s,'cweReview').textContent=reviewed?'Review recorded':'Mark layout reviewed';
     node(s,'cweFooterTitle').textContent=reviewed?'Locally reviewed layout':'Reference design';
     node(s,'cweSavedState').textContent=s.dirty?'Unsaved changes':s.draft.revision?`Saved locally · revision ${s.draft.revision}`:'New local design';
+    node(s,'cweMachiningHelp').textContent=!s.dirty&&s.draft.revision>0&&reviewed?'Fixed-depth pockets · ShopBot, GRBL and LinuxCNC':'Review this layout, then save it before machining.';
     scene(s);controls(s);
   }
   function changed(s) {
@@ -142,6 +144,10 @@
         const saved=await s.store.save(clone(s.draft),s.draft.revision);valid();s.draft=saved;s.dirty=false;refresh(s);if(typeof s.options.onSaved==='function')s.options.onSaved(clone(saved));status(s,'Design saved to this Carvewright job. Download a job file to keep a portable copy.','success');
       } else if(b.id==='cweReview'){
         const reviewed=await core().review(s.draft,fonts());valid();s.draft=reviewed;s.dirty=true;revoke(s);refresh(s);status(s,'Local layout review recorded. Save the design to retain it. This does not release a machining job.','success');
+      } else if(b.id==='cweMachining'){
+        if(s.dirty||s.draft.revision<1||!validLayout(s)||!await core().reviewMatches(s.draft,fonts()))throw Error('Save a reviewed design before preparing machining.');
+        valid();if(!g.CarvewrightMachining?.open)throw Error('The machining workspace is unavailable. Open the complete Carvewright release.');
+        g.CarvewrightMachining.open({draft:clone(s.draft),scope:clone(s.options.scope),guard:()=>{assertLive(s);return true;},parent:s.root,referenceOnly:!!s.options.referenceOnly,onClose:()=>{if(alive(s))status(s,'Returned from machining. Your saved artwork is unchanged.');}});
       } else if(b.id==='cweExportSvg'){
         const svg=core().toSvg(s.draft,fonts());valid();download(s,svg,'image/svg+xml',filename(s,'svg'),'SVG artwork prepared');status(s,'Lettering exported in millimeters, at the entered blank size. No cutting paths are included.','success');
       } else if(b.id==='cweDownloadJob'){
@@ -165,7 +171,7 @@
   }
   function close(force=false) {
     const s=current;if(!s)return true;if(!force&&!discard(s))return false;
-    s.closed=true;s.generation++;clearInterval(s.timer);s.store?.close();revoke(s);current=null;
+    s.closed=true;s.generation++;clearInterval(s.timer);g.CarvewrightMachining?.close(true);s.store?.close();revoke(s);current=null;
     if(s.root.open)s.root.close();s.root.remove();
     if(s.origin?.isConnected)s.origin.focus({preventScroll:true});
     if(typeof s.options.onClose==='function')s.options.onClose();return true;

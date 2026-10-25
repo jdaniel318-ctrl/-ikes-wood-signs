@@ -1,6 +1,6 @@
 {
   "schema": "stormwake-player-build-v1",
-  "build": "8.8.20.56",
+  "build": "8.8.20.57",
   "inputs_sha256": {
     "fun_core.js": "b21a909fa3dccf44b2d02d4a8243a91fd260b70db2edfc35338f3fd330c810e4",
     "stormwake_core.js": "b0193108053c9ddd067dc100bb9d820292e970ad2c316512b8456e359820b405",
@@ -10,12 +10,12 @@
     "stormwake_cast.js": "fada22aa79430218ab348ae0b2396c55cff0a76eea467fcdad37f576262123c6",
     "stormwake_three.js": "02cf5ab5bae449441bf8ed2be3a92c4d6d8e7a44172e913c275dd95c3b3e3957",
     "stormwake_world.js": "1b20a2026df84c8317ff28995faaead6de48336d1b0529524a1027de68546b60",
-    "stormwake_game.js": "3364a74db7684f4fd1c4c4758b6bfd4712d4f1eb73abb50ed21fbac7c73af858",
+    "stormwake_game.js": "ae411d6dc757b36adc38e43b0bb630d83e2237233e08356c84e0e905d69ec53d",
     "stormwake_assets.json": "b93916ab71d73d4b1bc48a63852834729a27f10610234466adf98b3dd673c3d8",
     "STORMWAKE_VENDOR.json": "cc9adf42e577db463cc7d2dc4bed3f78da9075549b6cd2b20207f807d75a5664",
     "fun_player.html": "fcfc2d06cdf204f4591a9717968a027facf170e6e0be32d9151ef847870a0fb7",
     "stormwake_game.css": "3bed7033f10e8791a15819dfb86e60dbbca9d2d9cf062169a047c8443fe6fee0",
-    "BUILD_STORMWAKE_PLAYER.py": "b330a4a773969e03293660da4bceff6266b9c45d6cb37da9f584aa9b19b436f9",
+    "BUILD_STORMWAKE_PLAYER.py": "b7c2d5449b9c97977e48516b4e31f259c7296342e6f6f988b4e2250ead69161c",
     "STORMWAKE_BUILD_RULES.py": "3f1ee32949d598f11e65b2ccc19e85ce941207b95a6d6a26b132f34833663a02"
   },
   "art": {
@@ -42,7 +42,7 @@
   },
   "player": {
     "bytes": 5008483,
-    "sha256": "069e369723a5fbd92fe51b6499214fbc60fb9d92861a19f67b320b8b4e5fee30",
+    "sha256": "7ca30753fd402be0d084f2783970d22a9b9fb0c90aba4eff7ece314363040c9a",
     "limit_bytes": 8388608
   },
   "runtime_network": false

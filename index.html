@@ -15,7 +15,7 @@
   </style>
   <script id="darkSkyFirstLightBootstrap">
     // Dark Sky 8.6.23 MEMORY MUSTER — canonical release identity.
-    const DARK_SKY_RELEASE = Object.freeze({build:'8.8.20.56',seal:'carvewright-882056'});
+    const DARK_SKY_RELEASE = Object.freeze({build:'8.8.20.57',seal:'firstcut-882057'});
     const DARK_SKY_EXPECTED_BUILD = DARK_SKY_RELEASE.build;
     const DARK_SKY_RELEASE_SEAL = DARK_SKY_RELEASE.seal;
     // 8.6.23 Storage Safe Harbor — three independent channels, no silent storage failures.
@@ -1326,7 +1326,7 @@
       </nav>
 
       <section id="clearDeckLaunchpad" class="clear-deck-launchpad" aria-label="Engine command launchpad">
-        <div class="clear-deck-brief"><small id="engineReleaseLabel">8.8.20.56 • CARVEWRIGHT</small><h3>Where are we working?</h3><p>Captain and Admiral are established as separate offices. The Admiral rank is durable; every secure session and modifying action still declares its authority source and exact scope.</p><div class="admiral-keel-office-state"><b>ADMIRAL OFFICE · COMMISSIONED</b><span>Rank persists until explicit server revocation. PIN + account verification protect each secure workspace session; session expiry does not demote the Admiral.</span></div></div>
+        <div class="clear-deck-brief"><small id="engineReleaseLabel">8.8.20.57 • CARVEWRIGHT</small><h3>Where are we working?</h3><p>Captain and Admiral are established as separate offices. The Admiral rank is durable; every secure session and modifying action still declares its authority source and exact scope.</p><div class="admiral-keel-office-state"><b>ADMIRAL OFFICE · COMMISSIONED</b><span>Rank persists until explicit server revocation. PIN + account verification protect each secure workspace session; session expiry does not demote the Admiral.</span></div></div>
         <div class="clear-deck-primary-actions">
           <button type="button" class="clear-deck-action primary" data-clear-deck-command="projects"><span class="clear-deck-action-number">01</span><span><strong>OPERATE VESSELS</strong><small>Choose an independent vessel, then enter its exact Project Control or product surface.</small></span></button>
           <button type="button" class="clear-deck-action" data-command-open="captain"><span class="clear-deck-action-number">02</span><span><strong>CAPTAIN WATCH</strong><small>Review signals, decide a course, route deliberate action, and retain the outcome.</small></span></button>
@@ -1338,7 +1338,7 @@
 
         <!-- HEADWAY_PLAN_LINK_START -->
         <div class="qm-engine-entry"><div><strong>ADMIRAL BUSINESS SUPPORT</strong><small>Business catalogs, material quantities, quotes and invoices.</small><small id="qmEntryStatus" role="status" aria-live="polite"></small></div><button id="quartermasterEngineOpen" type="button">QUOTES &amp; INVOICES</button></div>
-        <div class="qm-engine-entry carvewright-engine-entry"><div><strong>CARVEWRIGHT</strong><small>Independent local vector design workspace · registration pending.</small><small id="carvewrightEntryStatus" role="status" aria-live="polite"></small></div><button id="carvewrightEngineOpen" type="button">OPEN CARVEWRIGHT</button></div>
+        <div class="qm-engine-entry carvewright-engine-entry"><div><strong>CARVEWRIGHT</strong><small>Independent sign design and CNC machining workspace · registration pending.</small><small id="carvewrightEntryStatus" role="status" aria-live="polite"></small></div><button id="carvewrightEngineOpen" type="button">OPEN CARVEWRIGHT</button></div>
         <nav aria-label="Release planning brief"><a id="headwayPlanLink" class="tb-assigned-entry" href="headway-brief.html" target="_blank" rel="noopener">HouseHull measuring roadmap · Headway build brief →</a></nav>
         <!-- HEADWAY_PLAN_LINK_END -->
         <div id="clearDeckStatus" class="clear-deck-status" role="status" aria-live="polite">Admiral office commissioned. Readiness warnings remain work to do, not a demotion. Working-ship handoff remains unverified.</div>
@@ -1992,7 +1992,7 @@
     const APP_SCOPE=new URL('./',location.href).href;
     const APP_CACHE=/^(ikes-wood-signs-|workshop-engine-|black-flag-|dark-sky-)/;
     const delay=ms=>new Promise(r=>setTimeout(r,ms));
-    const snapshotPaths=['input_hygiene.js','fun_core.js','stormwake_core.js','fun_program.js','fun_program.css','fun_player.html','fleet_viewport.js','fleet_viewport.css','headway_contracts.js','woodwright_fit.js','styles.css','simple_books.css','platform_core.js','platform_v4.js','platform_identity.js','fleet_supabase.js','ike_style_registry.js','app.js','captain.js','simple_books.js','quartermaster_core.js','quartermaster_fonts.js','quartermaster_pdf.js','carve_fonts.js','carve_core.js','carve_store.js','carve_studio.js','quartermaster.js','quartermaster.css','carve_studio.css','carvewright_core.js','carvewright_store.js','carvewright_studio.js','carvewright_app.js','carvewright_fleet.js','carvewright.css'];
+    const snapshotPaths=['input_hygiene.js','fun_core.js','stormwake_core.js','fun_program.js','fun_program.css','fun_player.html','fleet_viewport.js','fleet_viewport.css','headway_contracts.js','woodwright_fit.js','styles.css','simple_books.css','platform_core.js','platform_v4.js','platform_identity.js','fleet_supabase.js','ike_style_registry.js','app.js','captain.js','simple_books.js','quartermaster_core.js','quartermaster_fonts.js','quartermaster_pdf.js','carve_fonts.js','carve_core.js','carve_store.js','carve_studio.js','quartermaster.js','quartermaster.css','carve_studio.css','carvewright_core.js','carvewright_store.js','carvewright_clipper.js','carvewright_cam.js','carvewright_posts.js','carvewright_machining.js','carvewright_studio.js','carvewright_app.js','carvewright_fleet.js','carvewright.css','carvewright_machining.css'];
     // Manifest, seal and inventory are fetched and verified as the first group;
     // do not download those same documents again in the presence group.
     const presencePaths=['carvewright.html','business_deck.js','business_deck.css','owner.html','manifest.webmanifest','IKE_STYLE_FOUNDRY.json','sw.js','FLEET_DOCTRINE_REGISTRY.json','GOLDEN_VOYAGES.json','FLEET_COMMAND_MODEL.json','ADMIRAL_ENTITLEMENT_STATE_MODEL.json'];
@@ -2040,7 +2040,7 @@
       shield.setAttribute('aria-hidden','false');shield.style.display='flex';
       shield.innerHTML=`<div class="ds-first-light ds-route-recovery ds-release-hold"><div class="ds-first-light-eyebrow">RELEASE HOLD</div><h2>${safe(title||'RELEASE RECOVERY REQUIRED')}</h2><p>Dark Sky stopped before the Engine could paint. Project data was not changed.</p><div class="ds-release-grid"><div class="ds-release-cell"><small>EXPECTED BUILD</small><strong>${EXPECTED}</strong></div><div class="ds-release-cell"><small>DEPLOYMENT MANIFEST</small><strong>${safe(details.manifestBuild)}</strong></div><div class="ds-release-cell"><small>APP RUNTIME</small><strong>${safe(details.runtimeBuild)}</strong></div><div class="ds-release-cell"><small>RELEASE SEAL</small><strong>${SEAL}</strong></div></div><p>${safe(reason)}</p><div id="darkSkyRecoveryProgress" class="ds-release-progress" aria-live="polite"></div><div class="ds-release-actions"><button type="button" id="darkSkyCleanReleaseRetry">CLEAN RELEASE RETRY</button><button type="button" id="darkSkyReleaseReload">RETRY VERIFICATION</button></div></div>`;
       document.getElementById('darkSkyReleaseReload')?.addEventListener('click',()=>location.reload());
-      document.getElementById('darkSkyCleanReleaseRetry')?.addEventListener('click',cleanRetry,{once:true});
+      document.getElementById('darkSkyCleanReleaseRetry')?.addEventListener('click',cleanRetry);
     }
     function step(text,state='working'){
       const box=document.getElementById('darkSkyRecoveryProgress')||document.getElementById('darkSkyAutoRecoveryProgress');if(!box)return;
@@ -2048,17 +2048,18 @@
     }
     function isOurRegistration(reg){try{return String(reg?.scope||'').startsWith(APP_SCOPE);}catch(_){return false;}}
     async function waitForWorker(reg,timeout=12000){
-      const pick=()=>reg?.active||reg?.waiting||reg?.installing;
+      const pick=()=>[reg?.installing,reg?.waiting,reg?.active].find(w=>w&&w.state!=='redundant');
       let worker=pick(); if(!worker)throw new Error('Worker registration did not create a worker.');
       if(worker.state==='activated')return worker;
       return new Promise((resolve,reject)=>{
-        const timer=setTimeout(()=>reject(new Error('Timed out waiting for release worker activation.')),timeout);
-        const listen=w=>{const on=()=>{if(w.state==='activated'){clearTimeout(timer);w.removeEventListener('statechange',on);resolve(w);}else if(w.state==='redundant'){const replacement=pick();if(replacement&&replacement!==w&&replacement.state!=='redundant'){w.removeEventListener('statechange',on);listen(replacement);}else{clearTimeout(timer);reject(new Error('Release worker became redundant before a verified replacement activated.'));}}};w.addEventListener('statechange',on);on();};
+        let cleanup=()=>{};
+        const timer=setTimeout(()=>{cleanup();reject(new Error('Timed out waiting for release worker activation.'));},timeout);
+        const listen=w=>{const on=()=>{if(w.state==='activated'){clearTimeout(timer);cleanup();resolve(w);}else if(w.state==='redundant'){const replacement=pick();cleanup();if(replacement&&replacement!==w){listen(replacement);}else{clearTimeout(timer);reject(new Error('Release worker became redundant before a verified replacement activated.'));}}};cleanup=()=>w.removeEventListener('statechange',on);w.addEventListener('statechange',on);on();};
         listen(worker);
       });
     }
     async function workerIdentity(worker,timeout=3500){
-      return new Promise((resolve,reject)=>{const ch=new MessageChannel();const timer=setTimeout(()=>reject(new Error('Release worker did not return identity.')),timeout);ch.port1.onmessage=e=>{clearTimeout(timer);resolve(e.data||{});};try{worker.postMessage({type:'GET_RELEASE_IDENTITY'},[ch.port2]);}catch(err){clearTimeout(timer);reject(err);}});
+      return new Promise((resolve,reject)=>{const ch=new MessageChannel();let done=false;const finish=(err,value)=>{if(done)return;done=true;clearTimeout(timer);ch.port1.onmessage=null;ch.port1.close();ch.port2.close();if(err)reject(err);else resolve(value);};const timer=setTimeout(()=>finish(new Error('Release worker did not return identity.')),timeout);ch.port1.onmessage=e=>finish(null,e.data||{});try{worker.postMessage({type:'GET_RELEASE_IDENTITY'},[ch.port2]);}catch(err){finish(err);}});
     }
     async function registerAndVerifyWorker(){
       const reg=await navigator.serviceWorker.register('./sw.js',{scope:'./',updateViaCache:'none'});
@@ -2091,7 +2092,7 @@
     }
     function canAutoRecoverWorker(err){
       const msg=String(err?.message||err||'');
-      if(!/Worker identity mismatch/i.test(msg))return false;
+      if(!/Worker identity mismatch|^Release worker did not return identity\.$|^Timed out waiting for release worker activation\.$|^Release worker became redundant before a verified replacement activated\.$/i.test(msg))return false;
       try{
         const key=`darkSkyAutoReleaseRecovery:${EXPECTED}:${SEAL}`;
         if(sessionStorage.getItem(key)==='attempted')return false;
@@ -2291,9 +2292,9 @@
     }
     async function executeVerifiedSnapshot(fetched){
       window.__funVerifiedPlayerHtml=fetched['fun_player.html'];
-      const css=document.createElement('style');css.id='darkSkyVerifiedReleaseStyles';css.dataset.releaseSeal=SEAL;css.textContent=fetched['fun_program.css']+'\n'+fetched['styles.css']+'\n'+fetched['simple_books.css']+'\n'+fetched['fleet_viewport.css']+'\n'+fetched['quartermaster.css']+'\n'+fetched['carve_studio.css']+'\n'+fetched['carvewright.css'];document.head.appendChild(css);
+      const css=document.createElement('style');css.id='darkSkyVerifiedReleaseStyles';css.dataset.releaseSeal=SEAL;css.textContent=fetched['fun_program.css']+'\n'+fetched['styles.css']+'\n'+fetched['simple_books.css']+'\n'+fetched['fleet_viewport.css']+'\n'+fetched['quartermaster.css']+'\n'+fetched['carve_studio.css']+'\n'+fetched['carvewright.css']+'\n'+fetched['carvewright_machining.css'];document.head.appendChild(css);
       window.__darkSkyRuntimeEntryWitness8620?.('verified-styles-installed',{seal:SEAL});
-      for(const path of ['input_hygiene.js','platform_core.js','fleet_viewport.js','headway_contracts.js','woodwright_fit.js','platform_v4.js','platform_identity.js','fleet_supabase.js','ike_style_registry.js','app.js','captain.js','fun_core.js','stormwake_core.js','fun_program.js','simple_books.js','quartermaster_core.js','quartermaster_fonts.js','quartermaster_pdf.js','carve_fonts.js','carve_core.js','carve_store.js','carve_studio.js','quartermaster.js','carvewright_core.js','carvewright_store.js','carvewright_studio.js','carvewright_app.js','carvewright_fleet.js']){
+      for(const path of ['input_hygiene.js','platform_core.js','fleet_viewport.js','headway_contracts.js','woodwright_fit.js','platform_v4.js','platform_identity.js','fleet_supabase.js','ike_style_registry.js','app.js','captain.js','fun_core.js','stormwake_core.js','fun_program.js','simple_books.js','quartermaster_core.js','quartermaster_fonts.js','quartermaster_pdf.js','carve_fonts.js','carve_core.js','carve_store.js','carve_studio.js','quartermaster.js','carvewright_core.js','carvewright_store.js','carvewright_clipper.js','carvewright_cam.js','carvewright_posts.js','carvewright_machining.js','carvewright_studio.js','carvewright_app.js','carvewright_fleet.js']){
         await new Promise((resolve,reject)=>{const blob=new Blob([fetched[path]+`\n//# sourceURL=dark-sky-${SEAL}/${path}`],{type:'text/javascript'});const url=URL.createObjectURL(blob);const el=document.createElement('script');el.async=false;el.dataset.releaseSeal=SEAL;el.onload=()=>{URL.revokeObjectURL(url);window.__darkSkyRuntimeEntryWitness8620?.('runtime-script-executed',{path});resolve();};el.onerror=()=>{URL.revokeObjectURL(url);window.__darkSkyRuntimeEntryWitness8620?.('runtime-script-error',{path});reject(new Error(`Verified ${path} could not execute.`));};el.src=url;document.body.appendChild(el);});
       }
     }
@@ -2368,7 +2369,7 @@
 
   (()=>{
     'use strict';
-    const BUILD='8.8.20.56';
+    const BUILD='8.8.20.57';
     const AUTO_TIMEOUT=2500;
     const COMMAND_TIMEOUT=2600;
     const RECOVERY_TIMEOUT=5200;

@@ -1,0 +1,205 @@
+{
+  "schema": "carvewright-machining-evidence-v1",
+  "build": "8.8.20.57",
+  "seal": "firstcut-882057",
+  "release": "First Cut",
+  "baseline": "8.8.20.56",
+  "pass": true,
+  "recorded_at": "2026-10-25T02:20:55.910211+00:00",
+  "verification_status": "OFFLINE_RELEASE_CHECKS_PASSED",
+  "checks": [
+    {
+      "name": "Bounded CAM geometry, limits and original sign",
+      "status": "passed",
+      "cases": 24,
+      "artifact": "cam-resource-green.log",
+      "artifact_sha256": "2fafe49f8075c7ac9478209b582ce12b70d9eecfac4abe5b4133a2fcef11a8df"
+    },
+    {
+      "name": "Controller exporter and strict readback",
+      "status": "passed",
+      "cases": 24,
+      "artifact": "posts-green.log",
+      "artifact_sha256": "e0f190d22a5d88fe8970f47eb34df3d4e3cb091df43eabb8ddcaf6978a70243a"
+    },
+    {
+      "name": "Independent controller decoding and regression review",
+      "status": "passed",
+      "cases": 15,
+      "artifact": "posts-independent-green.json",
+      "artifact_sha256": "ddf93ca3cafe16972d94faa02ddfb61246703ebf4a12fb201725aa3807dbf1c0"
+    },
+    {
+      "name": "Independent GEOS cutter-envelope containment and coverage",
+      "status": "passed",
+      "cases": 14,
+      "artifact": "geometry-oracle.json",
+      "artifact_sha256": "f28cacdb630bcba0a81c62f7cdedc90e0fa876eaca55d240ebd63fc6fd8601fd"
+    },
+    {
+      "name": "Existing saved-design, SVG, import/export and responsive workflows",
+      "status": "passed",
+      "cases": 20,
+      "artifact": "final-design-browser/results.json",
+      "artifact_sha256": "5bc72414f9792f39300f39a4c105d297b9199e1d2ca49d94621cf8455c826507"
+    },
+    {
+      "name": "Machining workflow in routed local Chromium",
+      "status": "passed",
+      "cases": 15,
+      "artifact": "final-machining-browser/results.json",
+      "artifact_sha256": "730f4be368696f7433d0f3e5b501157aa5ce1633a205cfb1ed9e94321536e335"
+    },
+    {
+      "name": "Machining workflow opened directly from disk",
+      "status": "passed",
+      "cases": 15,
+      "artifact": "final-machining-file/results.json",
+      "artifact_sha256": "9ebf31262f1c46a6f57978a0e7fe4f90689606c532f654dfeb718294edc5ff96"
+    },
+    {
+      "name": "Existing real session transport and identity boundaries",
+      "status": "passed",
+      "cases": 26,
+      "artifact": "final-session/results.json",
+      "artifact_sha256": "453b7c29f02abb4d61bef1ebfec39fd83604c5791a004eddeb4e752d9562e8bf"
+    },
+    {
+      "name": "Actual atomic startup and corrupt-byte rejection",
+      "status": "passed",
+      "cases": 5,
+      "artifact": "final-boot/results.json",
+      "artifact_sha256": "e89aa71f31589562226568752bd0b7436fc6f3d8861dd03852483d0561a73f2f"
+    },
+    {
+      "name": "Worker upgrade race, closed ports and retry handling",
+      "status": "passed",
+      "cases": 7,
+      "artifact": "worker-handoff-green.json",
+      "artifact_sha256": "1d06599cd92162d6155364bac187f721a41488958c82069609c3dfc10936fc87"
+    },
+    {
+      "name": "Independent real-session machining activity and stale-download protection",
+      "status": "passed",
+      "cases": 15,
+      "artifact": "machining-session-independent-green/results.json",
+      "artifact_sha256": "290cfb5a595623acb86624f024f0bf9045f0166a444e245a3bb228c5c8182794"
+    },
+    {
+      "name": "Actual original revision-3 Smoke Hole! design through all six controller profiles",
+      "status": "passed",
+      "profiles": 6,
+      "moves_per_profile": 13992,
+      "artifact": "actual-design-posts.json",
+      "artifact_sha256": "4340b64e47d90f7164d9ad86905d45b9fee427371c8b44e3aa2fab37a4b613e9"
+    }
+  ],
+  "source_sha256": {
+    "app.js": "5d7c7711aae9a0330b1f2ccb0fffef09eeb0efb3415550caff16feb8a1cfffcf",
+    "business_deck.css": "445fa81fff307d41cdd9a7d181ec86f9daae6843d24ac0d9fe14f939a25b6289",
+    "business_deck.js": "55e3412fb539b91eac2f38815777c055803b3cdded1167058f17d103cdeadf05",
+    "captain.js": "ad582541c20096319b6c8cb3978f27f0699cd460355a8c4eb4a0f8a2d614d5a9",
+    "carve-studio.html": "24a05d1827263dfd405b210bd0b81ea86aa243e28a129337dbc04a77eb577796",
+    "carve_core.js": "1332b534c520f6953750206c73f9c80175b0ea06132739a1145575de8060cc4c",
+    "carve_fonts.js": "f9dba7e80836fa4d702c7599fd9c7e7f99864bb6493c9aae82b1a161c4aaafcf",
+    "carve_store.js": "95444741396e68749ecbf67dc15fd4f5f34d58a9f036621f41e6e2e276caa984",
+    "carve_studio.css": "3bf0e31e9a2134f6134373cccd80f30201f9eeaa5940245cc71aaa5217c1b696",
+    "carve_studio.js": "afb142a28268abaa6bd1527c40cad10065ad4a6a0ffd7137ea7c3866ed31c71f",
+    "carvewright.css": "c9202def41208772abc6f954d56bdba1b7a303f8c42b2b5a57d9525c66e8e3a1",
+    "carvewright.html": "a9dc224de7896b8015dc800dc48a383158e84b942cd37ca59bd5b8e732ec8e4b",
+    "carvewright_app.js": "4d4850f68a54925354308aa0bdec14d103b15a12451795e40008ba85505b2874",
+    "carvewright_cam.js": "2b0209f760e6958ad655a97a09b7a5f49756b4cc672a069a55615639035f4c49",
+    "carvewright_clipper.js": "a650c6946682edc1a64016f6553eeb5c32ce45eb7ca0ad5d8221961af011d97c",
+    "carvewright_core.js": "32aaaa33abf54894409f6e7452135933ecc50f937d446f1dcabe485f10669817",
+    "carvewright_fleet.js": "5c459705eec87b9496d173f2256e7353a6e70bebb11780b64ca63f20b1016ec3",
+    "carvewright_machining.css": "5917cd4ca781874b2677c820dcf720b742dc052a35d6ab795caac01d2189ebee",
+    "carvewright_machining.js": "c443e22e8cc8dc62fd7fa16da91bf81ae9d7e363ba769e13e32e72ed710e3517",
+    "carvewright_posts.js": "dd7a6a82b6ec5e6f5bcdb1d9b60e04c3d03a034d632af901a290015ab5c427c2",
+    "carvewright_store.js": "3ab158e100e16b01a5a3a3fb139d961b580bee31ca1cc4f5ff4024f7b2b18df1",
+    "carvewright_studio.js": "fdc012e8b1bfd568d45035db71a4ecbeaab6016dccbaf97c98fc9ee7919be145",
+    "chartwright-brief.html": "ff9270e3c01403fdbaa0e98957321f140eb7a42ac8a085dca392ba483027ea57",
+    "fleet_supabase.js": "22c307e29a1d0d36d1a2ff68dbef0011bac7960d767d68a08c94683201686d3d",
+    "fleet_viewport.css": "36db59f3ef4061631d2fc67aac7b33aed4fff4120453560012413200e0e9bdad",
+    "fleet_viewport.js": "14ea8ff7d2c834014d8661a743c9408f9556141e7c81d32b590bd6988d0cfa55",
+    "fun_core.js": "b21a909fa3dccf44b2d02d4a8243a91fd260b70db2edfc35338f3fd330c810e4",
+    "fun_player.css": "0131a2b19db9688275801ccc8a55493066cac826f64119c9aa81faebc41cc64c",
+    "fun_player.html": "fcfc2d06cdf204f4591a9717968a027facf170e6e0be32d9151ef847870a0fb7",
+    "fun_player.js": "47dcb3088901714bd757c25b3a1d43afae28e85e77020ffd7ccd024708116ae1",
+    "fun_program.css": "0be9fb1e66ac0d04bc446b4f0d92d866aaa09848f6de86ce2bfdb83f2b4d55c3",
+    "fun_program.js": "d516d6a150c7464fb33d9923427769707809172811378317b1e6459277551d84",
+    "headway-brief.html": "a9d148887e2dde80459e57c72c934ff44bac1c613c764f7c97e2a86d5bfdf73a",
+    "headway_contracts.js": "50f8eea347635a141b04e3fcec0d6e04850b5331e28f5f175b871c83fe869f1f",
+    "ike_style_registry.js": "6b348ebceb47e172e6676f46252b19c1c6bb7532baf76febfa8dd81760a76ab7",
+    "index.html": "ec3097bdc23d61cbad2c8db9ed501173830bfebf0bfd48202138f30cbabfa93a",
+    "input_hygiene.js": "b8949000baba2c88d70327e599c725a15915929460bbb7a26b806f75803e3a15",
+    "keelmark-brief.html": "79d54afe6195946eb2aa6d94feb202a1b7958cbd89043a8c752a93c287874224",
+    "ledger_integrity.js": "69410dfd4cf1cc76c62160016084e127507e22745bf935fbd1bd397d4cf03edd",
+    "owner.html": "1d66d1c2cae5951da68927f721bbf7d8dd71c24d93f2c11cf8c300e3bacb790a",
+    "platform_core.js": "7f797bc382a73eb9ec4365a7458e8329da60c50561e3ac751ca3fb9d7cd5ec49",
+    "platform_identity.js": "8fd04635b3a1f7a07c0ce56c9c3ab98b8ecfb965d5dfb5aa899a7b238630885c",
+    "platform_v4.js": "21daf7777150d654467042893298147374318fdfc7ac38faf9260f874522019b",
+    "quartermaster.css": "c55dda7cd0492b15c9b70c49d3203a7ff53f17416e32fb5d64d53c5e400ad974",
+    "quartermaster.js": "ab77780b9145aab1090ea5e9c64af1ceab3cb069d74a89720b8615968beaaba2",
+    "quartermaster_core.js": "5de2d40cb05eeeafb03855e5a374b7fc451982969d187d71632dd908e1051eed",
+    "quartermaster_fonts.js": "69b2f7fbcf0d29731cf6feea6d3f7b57d7633fafc29703123a7213ea861c9df5",
+    "quartermaster_pdf.js": "7e1c51fa7d7a4ae4fcd55a2330b15ff87c6b4ec0c9db548ff2b6a72658a453a1",
+    "simple_books.css": "5939590021ef2d3738d5f5f7249d72f8da64cc274bf287ef8183958517b0ba46",
+    "simple_books.js": "999eb83defc0da32748b3cb1a48e8feaaf5cb784f977803937649b4e9469f190",
+    "stormwake_cast.js": "fada22aa79430218ab348ae0b2396c55cff0a76eea467fcdad37f576262123c6",
+    "stormwake_comfort.js": "7ec7d00de112b327f31c0a904f0e438cfc7ab1399cf0974a824dac44ddc21800",
+    "stormwake_core.js": "b0193108053c9ddd067dc100bb9d820292e970ad2c316512b8456e359820b405",
+    "stormwake_game.css": "3bed7033f10e8791a15819dfb86e60dbbca9d2d9cf062169a047c8443fe6fee0",
+    "stormwake_game.js": "ae411d6dc757b36adc38e43b0bb630d83e2237233e08356c84e0e905d69ec53d",
+    "stormwake_gl.js": "d55f0b2d4f8a0e9a1f203a153b15eec347efe0ed247f2c8b4c72a526bd4c3ed8",
+    "stormwake_player.html": "7ca30753fd402be0d084f2783970d22a9b9fb0c90aba4eff7ece314363040c9a",
+    "stormwake_three.js": "02cf5ab5bae449441bf8ed2be3a92c4d6d8e7a44172e913c275dd95c3b3e3957",
+    "stormwake_three_vendor.js": "6e40e410c97c908254aa41dcbeba4bb57de69c7d37b1a33d72def3d0d0f884c6",
+    "stormwake_world.js": "1b20a2026df84c8317ff28995faaead6de48336d1b0529524a1027de68546b60",
+    "styles.css": "3af289879bf0256d244fe084d3d9e26c67b277bdaffdd1df8387143d7d077379",
+    "sw.js": "f15a5fee2fbd6b47a5ca8fda3a963d49c01c512ed163413a251b36f14a7d78d0",
+    "woodwright_fit.js": "a4efdadf635608419a2bd82f12a701fd2991ec5dc3d14d282fd846680d40606f"
+  },
+  "original_sign": {
+    "json": "7ad0dc1646eb0a358298e35f128ddd31c7293ada112dccb6c61b11974bd2e401",
+    "svg": "c990b31c33e07ac8cc7ad720ee45278a487f8716a8f5c9be425ee649aa9c6be5",
+    "fingerprint": "ac6efe64af97f005eeb401841f5d3a25b67142745111b5f61e5f30c468ea5283",
+    "revision": 3
+  },
+  "operation": "fixed-depth flat-endmill recessed lettering",
+  "geometry_method": {
+    "quad_segs": 128,
+    "area_epsilon_mm2": 1e-07,
+    "curve_subdivisions": 256,
+    "dense_curve_chord_error_bound_mm": 2.723619012233056e-05,
+    "coverage_band": "2*tolerance + 0.0003 + 2*radius*(1-cos(pi/(4*128)))"
+  },
+  "geometry_versions": {
+    "shapely": "2.1.2",
+    "geos": "3.13.1"
+  },
+  "independent_reviews": [
+    {
+      "file": "geometry-review.md",
+      "sha256": "e291f4d5494d5b887dabccf3840c40ec4e1fc4717127c34c600ddab0312f7f47"
+    },
+    {
+      "file": "posts-independent-review.md",
+      "sha256": "98ecf2532a6ccd55ed540642e8caa8b929732e4661040cfe4ece7413850b908e"
+    },
+    {
+      "file": "ui-independent-review.md",
+      "sha256": "c3873f7b1ac366add36be10a3c0437a039feb75d7467704cc90a001e2b1635ae"
+    }
+  ],
+  "release_scope": {
+    "remote_machine_actions": false,
+    "live_service_writes": false,
+    "data_migration": false,
+    "existing_design_schema_change": false,
+    "archive_reconstruction": "verified separately by package proof after sealing"
+  },
+  "native_safari_acceptance": "not claimed",
+  "native_firefox_acceptance": "not claimed",
+  "live_commissioning_acceptance": "not claimed",
+  "machine_production_acceptance": "not claimed"
+}
