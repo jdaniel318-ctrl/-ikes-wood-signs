@@ -1,3 +1,30 @@
+# Boardcraft 8.8.20.62
+
+**Upload: DarkSky882062-Boardcraft-Upload52.zip**
+
+Extract the ZIP and open its one matching folder. Upload every file inside over
+the current Lettercraft .61 release. Replace matching filenames and retain all
+other files. No SQL, deletion, database reset or browser-data clearing is needed.
+
+The update was checked against the exact previously delivered
+**DarkSky882061-Lettercraft-FullBackup.zip**. The matching complete software backup is
+**DarkSky882062-Boardcraft-FullBackup.zip**. Browser-saved private jobs and requests are separate; keep
+their exported editable files and request ZIPs.
+
+Read **BOARDCRAFT_GUIDE.md** for one sign using the customer's own board photo,
+the shared sign editor, and complete-package delivery to Ike. Keep the downloaded
+ZIP when opening a Mail draft and attach that named file. A share or draft does
+not establish email delivery. Confirm real-device camera/Mail behavior and Ike's
+inbox receipt on the live site. Preview and Sea Trial send nothing.
+
+Photo placement is a visual reference. Ike must confirm actual board dimensions
+and the machine setup before production. The previous two-board trial is not a
+customer prerequisite.
+
+---
+
+## Historical instructions below — retained verbatim
+
 # Lettercraft 8.8.20.61
 
 **Upload: DarkSky882061-Lettercraft-Upload49.zip**

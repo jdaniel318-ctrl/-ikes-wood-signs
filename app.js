@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.20.61';
+  const BUILD_VERSION='8.8.20.62';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -4919,7 +4919,11 @@
         }catch(_){return false;}
       };
       if(!guard())throw Error('Return to Ike’s welcome screen before opening the sign request.');
-      const canSend=()=>guard()&&mode==='deployed'&&!!context.deploymentId&&location.protocol==='https:'&&projectExternalContactAllowed(project);
+      // Published web shops can establish a live customer session without a
+      // separate kiosk/device deployment. Use the same contact authority as
+      // Ike's existing email path; the captured session/scope guard still binds
+      // this request and revokes it on navigation, replacement or mode changes.
+      const canSend=()=>guard()&&mode==='deployed'&&location.protocol==='https:'&&projectExternalContactAllowed(project);
       const opened=window.IkeShop.open({scope,guard,canSend,mode,parent,deliveryConfig:{accessKey:LEGACY_IKE_WEB3FORMS_ACCESS_KEY,recipient:LEGACY_IKE_ORDER_EMAIL,maxBytes:5*1024*1024},onClose:()=>{if(note)note.textContent='';}});
       if(opened!==false&&note)note.textContent='';
       return opened;

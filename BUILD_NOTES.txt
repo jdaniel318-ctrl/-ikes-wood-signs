@@ -1,3 +1,7 @@
+Boardcraft 8.8.20.62 — Ike customer board-photo design and complete-package delivery.
+Read BOARDCRAFT_GUIDE.md and BOARDCRAFT_EVIDENCE.json for workflow and verification scope.
+Prior release records remain below as historical evidence.
+
 Lettercraft 8.8.20.61 — Retroline and Orchard Swash lettering trials.
 Read LETTERCRAFT_GUIDE.md and LETTERCRAFT_EVIDENCE.json for trial and verification scope.
 Prior release records remain below as historical evidence.

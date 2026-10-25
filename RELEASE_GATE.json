@@ -1,10 +1,14 @@
 {
-  "schema": "lettercraft-release-gate-v1",
-  "build": "8.8.20.61",
-  "release": "Lettercraft",
+  "schema": "boardcraft-release-gate-v1",
+  "build": "8.8.20.62",
+  "release": "Boardcraft",
   "pass": true,
-  "verification_status": "OFFLINE_LETTERCRAFT_CHECKS_PASSED",
-  "evidence_file": "LETTERCRAFT_EVIDENCE.json",
+  "verification_status": "OFFLINE_BOARDCRAFT_CHECKS_PASSED",
+  "evidence_file": "BOARDCRAFT_EVIDENCE.json",
   "native_safari_acceptance": "pending user test",
+  "native_camera_acceptance": "pending user test",
+  "native_mail_share_acceptance": "pending user test",
+  "provider_attachment_acceptance": "not tested live",
+  "inbox_delivery": "not verified",
   "machine_production_acceptance": "not claimed"
 }

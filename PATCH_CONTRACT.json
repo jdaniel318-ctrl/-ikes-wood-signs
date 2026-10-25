@@ -1,26 +1,26 @@
 {
   "schema": "blackflag-patch-contract-v1",
-  "target_build": "8.8.20.61",
-  "target_seal": "lettercraft-882061",
+  "target_build": "8.8.20.62",
+  "target_seal": "boardcraft-882062",
   "supported_bases": [
     {
-      "build": "8.8.20.60",
-      "seal": "shopcraft-882060",
-      "sha256": "826144a7c004ee19074d03b7b873aa2c1d0b7a088c66e02d7c66efa17d27f6fb",
-      "content_sha256": "591ff5270f2708b2cf3fa859409aa6ccba88b1ebacfd310f503b5933d2ccc57e",
+      "build": "8.8.20.61",
+      "seal": "lettercraft-882061",
+      "sha256": "dad466fe2e191d6671dbf3102e0da918b522a902d1a7492ebc2e1cc5f5d7ad2f",
+      "content_sha256": "48f80c9c14fbd42b70f5c02d51aad7dd07244718a37d50d2505c0c6b7d66a135",
       "content_digest_algorithm": "release-content-sha256-v1"
     }
   ],
   "delivered_baseline": {
-    "archive": "DarkSky882060-Shopcraft-FullBackup.zip",
-    "archive_sha256": "826144a7c004ee19074d03b7b873aa2c1d0b7a088c66e02d7c66efa17d27f6fb",
-    "build": "8.8.20.60",
-    "file_count": 406,
-    "content_sha256": "591ff5270f2708b2cf3fa859409aa6ccba88b1ebacfd310f503b5933d2ccc57e",
-    "record": "LETTERCRAFT_BASELINE.json"
+    "archive": "DarkSky882061-Lettercraft-FullBackup.zip",
+    "archive_sha256": "dad466fe2e191d6671dbf3102e0da918b522a902d1a7492ebc2e1cc5f5d7ad2f",
+    "build": "8.8.20.61",
+    "file_count": 413,
+    "content_sha256": "48f80c9c14fbd42b70f5c02d51aad7dd07244718a37d50d2505c0c6b7d66a135",
+    "record": "BOARDCRAFT_BASELINE.json"
   },
   "requires_deletions": false,
   "max_upload_files": 85,
   "database_actions": "none",
-  "rule": "Apply every update file over the verified Shopcraft .60 release. Replace matching filenames and retain all other files. No SQL, browser-data clearing or data reset."
+  "rule": "Apply every update file over the verified Lettercraft .61 release. Replace matching filenames and retain all other files. No SQL, browser-data clearing or data reset."
 }
