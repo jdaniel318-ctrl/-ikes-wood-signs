@@ -1,20 +1,25 @@
 {
   "schema": "blackflag-patch-contract-v1",
-  "target_build": "8.8.20.59",
-  "target_seal": "fleetcraft-882059",
-  "supported_bases": [],
+  "target_build": "8.8.20.60",
+  "target_seal": "shopcraft-882060",
+  "supported_bases": [
+    {
+      "build": "8.8.20.59",
+      "seal": "fleetcraft-882059",
+      "content_digest_algorithm": "release-content-sha256-v1",
+      "content_sha256": "bbce3a54e25c0bdfc4750f6917d3ab051f8e45bfaa8b876f602d47d2b3f4ab1f"
+    }
+  ],
   "repository_baseline": {
     "repository": "jdaniel318-ctrl/-ikes-wood-signs",
-    "commit": "2249bdf63cbbc8db858a7a275382cb3a27481b2d",
-    "build": "8.8.20.58",
-    "actual_file_count": 380,
-    "actual_content_sha256": "04c9a8a2f132804f4c54d38234c4a2a7c5227d40f760448f895fd5f554e3947c",
-    "content_digest_algorithm": "release-content-sha256-v1",
-    "record": "FLEETCRAFT_BASELINE.json"
+    "commit": "355afe648910bb944ffc83504ece4bb8d79575ab",
+    "build": "8.8.20.59",
+    "file_count": 390,
+    "content_sha256": "bbce3a54e25c0bdfc4750f6917d3ab051f8e45bfaa8b876f602d47d2b3f4ab1f",
+    "record": "SHOPCRAFT_BASELINE.json"
   },
-  "original_archive_delta_compatibility": "not claimed",
   "requires_deletions": false,
   "max_upload_files": 85,
   "database_actions": "none",
-  "rule": "Apply every update file over the stated .58 GitHub repository baseline. Replace matching filenames and retain all other files. No SQL, data reset or browser-data clearing. Other historical archive baselines are unverified."
+  "rule": "Apply all update files over the verified .59 release. Replace matching filenames and retain all other files. No SQL, browser-data clearing or data reset. Other baselines are not verified."
 }

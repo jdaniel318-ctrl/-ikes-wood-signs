@@ -1,8 +1,8 @@
-/* Carvewright 8.8.20.59 — local vector design workspace. No network or machining output. */
+/* Carvewright 8.8.20.60 — local vector design workspace. No network or machining output. */
 (function (g) {
   'use strict';
   if (!g.document || g.IkeCarveStudio) return;
-  const BUILD = '8.8.20.59';
+  const BUILD = '8.8.20.60';
   const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const clone = v => JSON.parse(JSON.stringify(v));
   const icon = (body, extra='') => `<svg viewBox="0 0 24 24" aria-hidden="true" ${extra}>${body}</svg>`;

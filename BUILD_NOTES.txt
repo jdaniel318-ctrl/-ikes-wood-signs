@@ -1,3 +1,7 @@
+Shopcraft 8.8.20.60 — Ike reviews sign requests before production.
+Read SHOPCRAFT_GUIDE.md and SHOPCRAFT_EVIDENCE.json for the exact workflow and test scope.
+Prior release records remain below as historical evidence.
+
 Fleetcraft 8.8.20.59 — editable text and vector graphic layers.
 Read FLEETCRAFT_GUIDE.md. The new evidence records the actual software checks.
 Prior release records below are retained as historical evidence.

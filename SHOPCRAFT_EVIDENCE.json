@@ -1,0 +1,1218 @@
+{
+  "schema": "shopcraft-software-evidence-v1",
+  "build": "8.8.20.60",
+  "seal": "shopcraft-882060",
+  "pass": true,
+  "created_at_utc": "2026-10-25T14:13:47.784564+00:00",
+  "summary": {
+    "new_feature_checks_passed": 61,
+    "existing_regression_checks_passed": 52,
+    "release_loader_checks_passed": 3,
+    "total_targeted_checks_passed": 116,
+    "failed": 0,
+    "asset_audit_passed": true
+  },
+  "scope": "Production modules and exact staged .60 runtime in isolated Chromium, real Canvas/IndexedDB/native downloads, independent DXF/ZIP readers. Provider calls are mocked; no external email, live identity session, publication, commercial CAM execution or machine operation.",
+  "baseline": {
+    "repository": "jdaniel318-ctrl/-ikes-wood-signs",
+    "commit": "355afe648910bb944ffc83504ece4bb8d79575ab",
+    "build": "8.8.20.59",
+    "release_files": 390,
+    "content_sha256": "bbce3a54e25c0bdfc4750f6917d3ab051f8e45bfaa8b876f602d47d2b3f4ab1f"
+  },
+  "authorization": {
+    "workflow": "Ike reviews first, explicitly chosen by user",
+    "accepted_production_order": false,
+    "real_email_sent": false,
+    "provider_configuration_changed": false,
+    "published": false
+  },
+  "tested_runtime_sha256": {
+    "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "d2903725ee3fc363f8526f1c4a51133abb299056c51f8447514a40f0c6c046da",
+    "FLEET_COMMAND_MODEL.json": "b084ced17d8f8ec9091e1d4df849724fa1a4231db43d598ee46b32bab6af0a36",
+    "FLEET_DOCTRINE_REGISTRY.json": "dba0bd64cf111a6441c6ce2c37dc10723cdf8e01a5e9176e1a2edda5fffd1811",
+    "GOLDEN_VOYAGES.json": "fb60465172993919d06b79efbb88a540268410316c05751a0655484e4823a35f",
+    "IKE_STYLE_FOUNDRY.json": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
+    "app.js": "2581a2808ca5836a56c811fb2ce72a33999925e1efe022c1f665bc8135c89e9d",
+    "business_deck.css": "445fa81fff307d41cdd9a7d181ec86f9daae6843d24ac0d9fe14f939a25b6289",
+    "business_deck.js": "a61fd90aa211008f0c620d90d89abddb862be661621905ce075d30afc0dd0bd9",
+    "captain.js": "daca7318fe0d71ae003b094fab8d0ef3c99c00b67e3f2caedb631c46dc769639",
+    "carve-studio.html": "0281d656ce4b11ce14452fc801c7c38eefb1db19aba88a97b5f18bc6810b6dc7",
+    "carve_core.js": "1332b534c520f6953750206c73f9c80175b0ea06132739a1145575de8060cc4c",
+    "carve_font_license.txt": "05780f0d4dcc44bb13f5b015d95ef50c5d1835aa9d9c83b59720c4e0306a2165",
+    "carve_fonts.js": "c98d321b53c174df8eb3aa116066647f59b8623d9d24749b4fd6c922894d529c",
+    "carve_store.js": "95444741396e68749ecbf67dc15fd4f5f34d58a9f036621f41e6e2e276caa984",
+    "carve_studio.css": "6acb32ea7873bada468dbabba77f21394f8a2a1887e11b822dcc3521732ac151",
+    "carve_studio.js": "b610490f5ad6c944621ae55c0b9adcc5175338c7dc9376a06763693d60530eb6",
+    "carvewright.css": "634a0907f88286ebd4e462c0ef70b683d4454cbc6cd573e7595ddf0216ad1467",
+    "carvewright.html": "994d4860081d71f7d7963177808877eb2a45d5312e6913934af156061836a8b2",
+    "carvewright_app.js": "c19677026e8abb486547c1c2337c57b7c975a2e5d0323c56d1a2d9d94c217409",
+    "carvewright_cam.js": "870ec15d1061e6b94f6fe004c8d3d7f4152d5c85ef0d4f1c1bb7934bdc28d71f",
+    "carvewright_clipper.js": "a650c6946682edc1a64016f6553eeb5c32ce45eb7ca0ad5d8221961af011d97c",
+    "carvewright_core.js": "a187227e9356b562a3620d474ee3ab9e66103b54ae9738b148de4924abdb93b9",
+    "carvewright_fleet.js": "9e1386f518c1d2fff243586fcb190bf22ce975d753eb7a6c683dc5320bff33b3",
+    "carvewright_machining.css": "f4b881189196d7fdd8c639298bf7f5fd87d33f7e86177dbd0215995882aabf98",
+    "carvewright_machining.js": "3615ea509edf4b1ca0469a7765e9f5a85ffa327edcfc3e90a16fab25c80e9cb6",
+    "carvewright_portable.js": "9c57c9dd69835a6fc271fd596085ceaae92adbcb46527af44e335cff6192f9bf",
+    "carvewright_posts.js": "dd7a6a82b6ec5e6f5bcdb1d9b60e04c3d03a034d632af901a290015ab5c427c2",
+    "carvewright_store.js": "3ab158e100e16b01a5a3a3fb139d961b580bee31ca1cc4f5ff4024f7b2b18df1",
+    "carvewright_studio.js": "74e958e27886c66795f524ed3d1c5246143f66ff647d3a1b4af13a80e8eacaef",
+    "fleet_design_assets.js": "85bb30a338cf5b711235f165b211ecd1b3cca6c0e270a61d85ba93920f94b7a8",
+    "fleet_supabase.js": "6edf87aa3c699b7be584dd55feaaa7b8242c59fb27b199c12a82d7dd9ec573ea",
+    "fleet_viewport.css": "36db59f3ef4061631d2fc67aac7b33aed4fff4120453560012413200e0e9bdad",
+    "fleet_viewport.js": "14ea8ff7d2c834014d8661a743c9408f9556141e7c81d32b590bd6988d0cfa55",
+    "fun_core.js": "b21a909fa3dccf44b2d02d4a8243a91fd260b70db2edfc35338f3fd330c810e4",
+    "fun_player.html": "fcfc2d06cdf204f4591a9717968a027facf170e6e0be32d9151ef847870a0fb7",
+    "fun_program.css": "0be9fb1e66ac0d04bc446b4f0d92d866aaa09848f6de86ce2bfdb83f2b4d55c3",
+    "fun_program.js": "b75946d85a7a9b37afddc77acdb000c36102ef1241c3d86c0ac1a078070d395c",
+    "headway_contracts.js": "e95fc522a3c49dbbc17cbf1e8ede7c0c1d9eae5bfe8d296b90a5a7dd44cb7bf4",
+    "ike_shop.css": "6b20647ddb80afac05c1c308973aff1c530c46eaab7f77b0039330405a7e3a47",
+    "ike_shop.js": "d417e4f740d9410a82f14e1ea4e75801e71884368cfd287b4841d069be4f9712",
+    "ike_shop_core.js": "b57c9799d632ddfd48727d39684c67a7af2e883241d18601081f12e6ec08a0ad",
+    "ike_shop_delivery.js": "f9d070c254671266638d8a24f02920feb1eab248bea9acbdd34613262456825c",
+    "ike_shop_store.js": "6b732daa94302acb886525a62ae016e4eaf65db0d3dc69086a29e2cfea211867",
+    "ike_style_registry.js": "6b348ebceb47e172e6676f46252b19c1c6bb7532baf76febfa8dd81760a76ab7",
+    "index.html": "795636603ba1dc4fdf733dd471e7f1caa7acfaf33106f56a054eeca32ab58112",
+    "input_hygiene.js": "4cf0abee980c347503277bc450288381bc0da922a26360e51da646b853a89ee0",
+    "manifest.webmanifest": "d7545bcd9d1ed9483c11d506948c53bfae9f1ee57e7ae62c59eeb773c05353e8",
+    "owner.html": "35f38ebb5b915b83be2d8dc388b39e670d3398987d192514fa559fa2c250d26d",
+    "platform_core.js": "7f797bc382a73eb9ec4365a7458e8329da60c50561e3ac751ca3fb9d7cd5ec49",
+    "platform_identity.js": "352aed4a1369bde5a34b0b11b3bd95c73edfe05e59b1268fac5a13acc6acbf2a",
+    "platform_v4.js": "21daf7777150d654467042893298147374318fdfc7ac38faf9260f874522019b",
+    "quartermaster.css": "30581b797f91b78c62585f6de64932abb706c252f99b08a0219129fa77f668f0",
+    "quartermaster.js": "d9dab8e5dcee12c081f66219dca132f096b3c29b701200fca3c06c56c641b4c1",
+    "quartermaster_core.js": "5de2d40cb05eeeafb03855e5a374b7fc451982969d187d71632dd908e1051eed",
+    "quartermaster_fonts.js": "69b2f7fbcf0d29731cf6feea6d3f7b57d7633fafc29703123a7213ea861c9df5",
+    "quartermaster_pdf.js": "7e1c51fa7d7a4ae4fcd55a2330b15ff87c6b4ec0c9db548ff2b6a72658a453a1",
+    "simple_books.css": "5939590021ef2d3738d5f5f7249d72f8da64cc274bf287ef8183958517b0ba46",
+    "simple_books.js": "260cb11a90223b177bcf3789e4ae40d66641ff28ee4765b5d039a5343ad34aa2",
+    "stormwake_core.js": "b0193108053c9ddd067dc100bb9d820292e970ad2c316512b8456e359820b405",
+    "styles.css": "3af289879bf0256d244fe084d3d9e26c67b277bdaffdd1df8387143d7d077379",
+    "sw.js": "4560c68f1bb3dc5020b208352ae70c536343dccdcc4fa8a2f54dee556c7fbad3",
+    "woodwright_fit.js": "a4efdadf635608419a2bd82f12a701fd2991ec5dc3d14d282fd846680d40606f"
+  },
+  "suites": {
+    "store": {
+      "scope": "Production request store in isolated Chromium with real IndexedDB; no external requests or customer data",
+      "passed": 8,
+      "failed": 0,
+      "results": [
+        {
+          "name": "saved request and design revisions advance atomically with detached copies",
+          "pass": true
+        },
+        {
+          "name": "exact Ike project and deployment namespace has no cross-scope reads",
+          "pass": true
+        },
+        {
+          "name": "concurrent stale save conflicts without replacing the winning content",
+          "pass": true
+        },
+        {
+          "name": "guard loss while database opens rejects without a stored request",
+          "pass": true
+        },
+        {
+          "name": "guard loss during a real write aborts the transaction",
+          "pass": true
+        },
+        {
+          "name": "close cancels pending work and mutated scope fails closed",
+          "pass": true
+        },
+        {
+          "name": "preview memory store never opens IndexedDB or leaks into the next request host",
+          "pass": true
+        },
+        {
+          "name": "unsafe accessors, prototypes and invalid revisions are rejected without invoking getters",
+          "pass": true
+        }
+      ]
+    },
+    "host": {
+      "scope": "Unmodified production host functions and real DOM entry binding under isolated customer-context fixtures; no authenticated/live provider test",
+      "passed": 7,
+      "failed": 0,
+      "results": [
+        {
+          "name": "real welcome binding supplies exact live Ike scope and intended recipient",
+          "pass": true
+        },
+        {
+          "name": "foreign project and missing customer context never open the shop",
+          "pass": true
+        },
+        {
+          "name": "Private Preview and Sea Trial can prepare but cannot send",
+          "pass": true
+        },
+        {
+          "name": "lookalike replacement context or mutated deployment revokes captured host",
+          "pass": true
+        },
+        {
+          "name": "backend change, project navigation and hidden owning surface revoke the host",
+          "pass": true
+        },
+        {
+          "name": "client preview cannot inherit live contact authority from copied context fields",
+          "pass": true
+        },
+        {
+          "name": "unlocked client-preview surface opens as preview without requiring project-mode",
+          "pass": true
+        }
+      ]
+    },
+    "index": {
+      "scope": "Actual sealed release index and actual client-preview PIN route with a generated local invitation, unmodified runtime bytes, isolated IndexedDB and all network routed locally; no authenticated production or inbox claim",
+      "build": "8.8.20.60",
+      "seal": "shopcraft-882060",
+      "passed": 2,
+      "failed": 0,
+      "results": [
+        {
+          "name": "actual sealed Ike welcome opens embedded sign design in a contact-blocked preview",
+          "pass": true,
+          "requestDatabasesOpened": 0,
+          "embeddedDesignReturned": true,
+          "served": [
+            "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
+            "DEPLOYMENT_MANIFEST.json",
+            "FLEET_COMMAND_MODEL.json",
+            "FLEET_DOCTRINE_REGISTRY.json",
+            "GOLDEN_VOYAGES.json",
+            "IKE_STYLE_FOUNDRY.json",
+            "RELEASE_INVENTORY.json",
+            "RELEASE_SEAL.json",
+            "app.js",
+            "black_flag_platform_icon.png",
+            "black_flag_primary_lockup.png",
+            "bootstrap_build_horizontal.png",
+            "business_deck.css",
+            "business_deck.js",
+            "captain.js",
+            "captains_quarters_command_center_v578.png",
+            "carve_core.js",
+            "carve_fonts.js",
+            "carve_store.js",
+            "carve_studio.css",
+            "carve_studio.js",
+            "carvewright.css",
+            "carvewright.html",
+            "carvewright_app.js",
+            "carvewright_cam.js",
+            "carvewright_clipper.js",
+            "carvewright_core.js",
+            "carvewright_fleet.js",
+            "carvewright_machining.css",
+            "carvewright_machining.js",
+            "carvewright_portable.js",
+            "carvewright_posts.js",
+            "carvewright_store.js",
+            "carvewright_studio.js",
+            "fleet_design_assets.js",
+            "fleet_supabase.js",
+            "fleet_viewport.css",
+            "fleet_viewport.js",
+            "fun_core.js",
+            "fun_player.html",
+            "fun_program.css",
+            "fun_program.js",
+            "headway_contracts.js",
+            "ike_character.png",
+            "ike_shop.css",
+            "ike_shop.js",
+            "ike_shop_core.js",
+            "ike_shop_delivery.js",
+            "ike_shop_store.js",
+            "ike_style_registry.js",
+            "index.html",
+            "input_hygiene.js",
+            "manifest.webmanifest",
+            "owner.html",
+            "platform_core.js",
+            "platform_identity.js",
+            "platform_v4.js",
+            "quartermaster.css",
+            "quartermaster.js",
+            "quartermaster_core.js",
+            "quartermaster_fonts.js",
+            "quartermaster_pdf.js",
+            "simple_books.css",
+            "simple_books.js",
+            "stormwake_core.js",
+            "styles.css",
+            "sw.js",
+            "woodwright_fit.js"
+          ],
+          "blocked": []
+        },
+        {
+          "name": "another wood-shop preview never exposes Ike’s request entry",
+          "pass": true,
+          "served": [
+            "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
+            "DEPLOYMENT_MANIFEST.json",
+            "FLEET_COMMAND_MODEL.json",
+            "FLEET_DOCTRINE_REGISTRY.json",
+            "GOLDEN_VOYAGES.json",
+            "IKE_STYLE_FOUNDRY.json",
+            "RELEASE_INVENTORY.json",
+            "RELEASE_SEAL.json",
+            "app.js",
+            "black_flag_platform_icon.png",
+            "black_flag_primary_lockup.png",
+            "bootstrap_build_horizontal.png",
+            "business_deck.css",
+            "business_deck.js",
+            "captain.js",
+            "captains_quarters_command_center_v578.png",
+            "carve_core.js",
+            "carve_fonts.js",
+            "carve_store.js",
+            "carve_studio.css",
+            "carve_studio.js",
+            "carvewright.css",
+            "carvewright.html",
+            "carvewright_app.js",
+            "carvewright_cam.js",
+            "carvewright_clipper.js",
+            "carvewright_core.js",
+            "carvewright_fleet.js",
+            "carvewright_machining.css",
+            "carvewright_machining.js",
+            "carvewright_portable.js",
+            "carvewright_posts.js",
+            "carvewright_store.js",
+            "carvewright_studio.js",
+            "fleet_design_assets.js",
+            "fleet_supabase.js",
+            "fleet_viewport.css",
+            "fleet_viewport.js",
+            "fun_core.js",
+            "fun_player.html",
+            "fun_program.css",
+            "fun_program.js",
+            "headway_contracts.js",
+            "ike_character.png",
+            "ike_shop.css",
+            "ike_shop.js",
+            "ike_shop_core.js",
+            "ike_shop_delivery.js",
+            "ike_shop_store.js",
+            "ike_style_registry.js",
+            "index.html",
+            "input_hygiene.js",
+            "manifest.webmanifest",
+            "owner.html",
+            "platform_core.js",
+            "platform_identity.js",
+            "platform_v4.js",
+            "quartermaster.css",
+            "quartermaster.js",
+            "quartermaster_core.js",
+            "quartermaster_fonts.js",
+            "quartermaster_pdf.js",
+            "simple_books.css",
+            "simple_books.js",
+            "stormwake_core.js",
+            "styles.css",
+            "sw.js",
+            "woodwright_fit.js"
+          ],
+          "blocked": []
+        }
+      ]
+    },
+    "boot": {
+      "scope": "Actual release index loader with all response bytes routed locally; fresh Chromium contexts; no service worker capability, live network, user identity, hosted authentication or Safari proof",
+      "browser": "156.0.8078.47",
+      "build": "8.8.20.60",
+      "seal": "shopcraft-882060",
+      "passed": 3,
+      "failed": 0,
+      "results": [
+        {
+          "name": "actual index coherent release boots",
+          "pass": true,
+          "runtimeScripts": 38,
+          "runtimeIntegrityFiles": 59,
+          "quartermasterInitialState": "available and closed",
+          "served": [
+            "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
+            "DEPLOYMENT_MANIFEST.json",
+            "FLEET_COMMAND_MODEL.json",
+            "FLEET_DOCTRINE_REGISTRY.json",
+            "GOLDEN_VOYAGES.json",
+            "IKE_STYLE_FOUNDRY.json",
+            "RELEASE_INVENTORY.json",
+            "RELEASE_SEAL.json",
+            "app.js",
+            "black_flag_platform_icon.png",
+            "black_flag_primary_lockup.png",
+            "bootstrap_build_horizontal.png",
+            "business_deck.css",
+            "business_deck.js",
+            "captain.js",
+            "captains_quarters_command_center_v578.png",
+            "carve_core.js",
+            "carve_fonts.js",
+            "carve_store.js",
+            "carve_studio.css",
+            "carve_studio.js",
+            "carvewright.css",
+            "carvewright.html",
+            "carvewright_app.js",
+            "carvewright_cam.js",
+            "carvewright_clipper.js",
+            "carvewright_core.js",
+            "carvewright_fleet.js",
+            "carvewright_machining.css",
+            "carvewright_machining.js",
+            "carvewright_portable.js",
+            "carvewright_posts.js",
+            "carvewright_store.js",
+            "carvewright_studio.js",
+            "fleet_design_assets.js",
+            "fleet_supabase.js",
+            "fleet_viewport.css",
+            "fleet_viewport.js",
+            "fun_core.js",
+            "fun_player.html",
+            "fun_program.css",
+            "fun_program.js",
+            "headway_contracts.js",
+            "ike_character.png",
+            "ike_shop.css",
+            "ike_shop.js",
+            "ike_shop_core.js",
+            "ike_shop_delivery.js",
+            "ike_shop_store.js",
+            "ike_style_registry.js",
+            "index.html",
+            "input_hygiene.js",
+            "manifest.webmanifest",
+            "owner.html",
+            "platform_core.js",
+            "platform_identity.js",
+            "platform_v4.js",
+            "quartermaster.css",
+            "quartermaster.js",
+            "quartermaster_core.js",
+            "quartermaster_fonts.js",
+            "quartermaster_pdf.js",
+            "simple_books.css",
+            "simple_books.js",
+            "stormwake_core.js",
+            "styles.css",
+            "sw.js",
+            "woodwright_fit.js"
+          ],
+          "blockedRequests": []
+        },
+        {
+          "name": "actual index rejects changed required runtime bytes",
+          "pass": true,
+          "served": [
+            "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
+            "DEPLOYMENT_MANIFEST.json",
+            "FLEET_COMMAND_MODEL.json",
+            "FLEET_DOCTRINE_REGISTRY.json",
+            "GOLDEN_VOYAGES.json",
+            "IKE_STYLE_FOUNDRY.json",
+            "RELEASE_INVENTORY.json",
+            "RELEASE_SEAL.json",
+            "app.js",
+            "black_flag_platform_icon.png",
+            "black_flag_primary_lockup.png",
+            "business_deck.css",
+            "business_deck.js",
+            "captain.js",
+            "carve_core.js",
+            "carve_fonts.js",
+            "carve_store.js",
+            "carve_studio.css",
+            "carve_studio.js",
+            "carvewright.css",
+            "carvewright.html",
+            "carvewright_app.js",
+            "carvewright_cam.js",
+            "carvewright_clipper.js",
+            "carvewright_core.js",
+            "carvewright_fleet.js",
+            "carvewright_machining.css",
+            "carvewright_machining.js",
+            "carvewright_portable.js",
+            "carvewright_posts.js",
+            "carvewright_store.js",
+            "carvewright_studio.js",
+            "fleet_design_assets.js",
+            "fleet_supabase.js",
+            "fleet_viewport.css",
+            "fleet_viewport.js",
+            "fun_core.js",
+            "fun_player.html",
+            "fun_program.css",
+            "fun_program.js",
+            "headway_contracts.js",
+            "ike_character.png",
+            "ike_shop.css",
+            "ike_shop.js",
+            "ike_shop_core.js",
+            "ike_shop_delivery.js",
+            "ike_shop_store.js",
+            "ike_style_registry.js",
+            "index.html",
+            "input_hygiene.js",
+            "manifest.webmanifest",
+            "owner.html",
+            "platform_core.js",
+            "platform_identity.js",
+            "platform_v4.js",
+            "quartermaster.css",
+            "quartermaster.js",
+            "quartermaster_core.js",
+            "quartermaster_fonts.js",
+            "quartermaster_pdf.js",
+            "simple_books.css",
+            "simple_books.js",
+            "stormwake_core.js",
+            "styles.css",
+            "sw.js",
+            "woodwright_fit.js"
+          ],
+          "blockedRequests": []
+        },
+        {
+          "name": "actual index rejects changed runtime checksum declaration",
+          "pass": true,
+          "served": [
+            "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
+            "DEPLOYMENT_MANIFEST.json",
+            "FLEET_COMMAND_MODEL.json",
+            "FLEET_DOCTRINE_REGISTRY.json",
+            "GOLDEN_VOYAGES.json",
+            "IKE_STYLE_FOUNDRY.json",
+            "RELEASE_INVENTORY.json",
+            "RELEASE_SEAL.json",
+            "app.js",
+            "black_flag_platform_icon.png",
+            "black_flag_primary_lockup.png",
+            "business_deck.css",
+            "business_deck.js",
+            "captain.js",
+            "carve_core.js",
+            "carve_fonts.js",
+            "carve_store.js",
+            "carve_studio.css",
+            "carve_studio.js",
+            "carvewright.css",
+            "carvewright.html",
+            "carvewright_app.js",
+            "carvewright_cam.js",
+            "carvewright_clipper.js",
+            "carvewright_core.js",
+            "carvewright_fleet.js",
+            "carvewright_machining.css",
+            "carvewright_machining.js",
+            "carvewright_portable.js",
+            "carvewright_posts.js",
+            "carvewright_store.js",
+            "carvewright_studio.js",
+            "fleet_design_assets.js",
+            "fleet_supabase.js",
+            "fleet_viewport.css",
+            "fleet_viewport.js",
+            "fun_core.js",
+            "fun_player.html",
+            "fun_program.css",
+            "fun_program.js",
+            "headway_contracts.js",
+            "ike_character.png",
+            "ike_shop.css",
+            "ike_shop.js",
+            "ike_shop_core.js",
+            "ike_shop_delivery.js",
+            "ike_shop_store.js",
+            "ike_style_registry.js",
+            "index.html",
+            "input_hygiene.js",
+            "manifest.webmanifest",
+            "owner.html",
+            "platform_core.js",
+            "platform_identity.js",
+            "platform_v4.js",
+            "quartermaster.css",
+            "quartermaster.js",
+            "quartermaster_core.js",
+            "quartermaster_fonts.js",
+            "quartermaster_pdf.js",
+            "simple_books.css",
+            "simple_books.js",
+            "stormwake_core.js",
+            "styles.css",
+            "sw.js",
+            "woodwright_fit.js"
+          ],
+          "blockedRequests": []
+        }
+      ]
+    },
+    "ui": {
+      "scope": "Isolated Chromium; real customer/editor/core/store/package. Only provider network is routed locally. Safari/inbox receipt/physical CNC not claimed.",
+      "results": [
+        {
+          "name": "embedded editor returns validated artwork without private store or Admiral session",
+          "pass": true
+        },
+        {
+          "name": "embedded numeric errors block return and guard loss closes the editor",
+          "pass": true
+        },
+        {
+          "name": "complete request freezes photos and downloads one complete native ZIP",
+          "pass": true,
+          "downloadBytes": 95567
+        },
+        {
+          "name": "content and numeric changes revoke approval and prepared bytes",
+          "pass": true
+        },
+        {
+          "name": "accepted delivery persists attempted state before fetch and never duplicates",
+          "pass": true,
+          "provider": [
+            {
+              "bytes": 98807,
+              "hasZip": true,
+              "attachmentBytes": 95827,
+              "attachmentSha256": "7f75d7b6ac924ce8d8289a2e011bf9ce402e9e6a0fc7fb736668d017ec1ea145",
+              "statusBeforeFetch": "attempted",
+              "attemptIdMatches": true,
+              "requestId": "c966d60a-cfa1-4031-9ce1-cdd8955ad170",
+              "revision": 2
+            }
+          ],
+          "postAcceptedDownloadMatchesSent": true
+        },
+        {
+          "name": "ambiguous network result locks further sends and retains download",
+          "pass": true
+        },
+        {
+          "name": "stale stored revision blocks the exact package before download or send",
+          "pass": true
+        },
+        {
+          "name": "context loss blocks send and a fresh customer sees no previous details",
+          "pass": true
+        },
+        {
+          "name": "preview keeps requests in memory and sends nothing",
+          "pass": true
+        },
+        {
+          "name": "sea_trial keeps requests in memory and sends nothing",
+          "pass": true
+        },
+        {
+          "name": "phone usable request controls and embedded editor",
+          "pass": true,
+          "geometry": {
+            "documentWidth": 390,
+            "viewport": 390,
+            "left": 0,
+            "right": 390,
+            "small": []
+          }
+        },
+        {
+          "name": "ipad usable request controls and embedded editor",
+          "pass": true,
+          "geometry": {
+            "documentWidth": 1024,
+            "viewport": 1024,
+            "left": 14,
+            "right": 1010,
+            "small": []
+          }
+        },
+        {
+          "name": "desktop usable request controls and embedded editor",
+          "pass": true,
+          "geometry": {
+            "documentWidth": 1440,
+            "viewport": 1440,
+            "left": 165,
+            "right": 1275,
+            "small": []
+          }
+        }
+      ],
+      "passed": 13,
+      "failed": 0
+    },
+    "existing-editor": {
+      "scope": "Isolated Chromium; real Studio, core and IndexedDB. Native Safari and physical CNC are not claimed.",
+      "results": [
+        {
+          "name": "independent text, vector fonts, graphic editing, history, save and reopen",
+          "pass": true,
+          "revision": 1,
+          "objectCount": 3
+        },
+        {
+          "name": "direct drag stays inside margins and supports undo",
+          "pass": true,
+          "dragDeltaMm": 25.4
+        },
+        {
+          "name": "invalid numeric geometry remains editable and blocks review/save/export",
+          "pass": true
+        },
+        {
+          "name": "temporarily empty primary rotation can be repaired without undo",
+          "pass": true
+        },
+        {
+          "name": "phone native touch drag, cancellation and action interlock",
+          "pass": true,
+          "nativeTouchProtocol": true
+        },
+        {
+          "name": "review invalidation, undo after save and revoked authorization",
+          "pass": true
+        },
+        {
+          "name": "phone controls reachable, touch targets and visible preview",
+          "pass": true,
+          "geometry": {
+            "documentWidth": 390,
+            "viewportWidth": 390,
+            "modal": {
+              "x": 0,
+              "right": 390,
+              "y": 0,
+              "bottom": 844
+            },
+            "preview": {
+              "y": 196,
+              "bottom": 337.625,
+              "height": 141.625
+            },
+            "smallButtons": []
+          }
+        },
+        {
+          "name": "ipad controls reachable, touch targets and visible preview",
+          "pass": true,
+          "geometry": {
+            "documentWidth": 1024,
+            "viewportWidth": 1024,
+            "modal": {
+              "x": 10,
+              "right": 1014,
+              "y": 10,
+              "bottom": 758
+            },
+            "preview": {
+              "y": 237.4375,
+              "bottom": 536.953125,
+              "height": 299.515625
+            },
+            "smallButtons": []
+          }
+        },
+        {
+          "name": "desktop controls reachable, touch targets and visible preview",
+          "pass": true,
+          "geometry": {
+            "documentWidth": 1440,
+            "viewportWidth": 1440,
+            "modal": {
+              "x": 14,
+              "right": 1426,
+              "y": 14,
+              "bottom": 886
+            },
+            "preview": {
+              "y": 240.9375,
+              "bottom": 627.9375,
+              "height": 387
+            },
+            "smallButtons": []
+          }
+        }
+      ],
+      "passed": 9,
+      "failed": 0
+    },
+    "package": {
+      "scope": "Isolated Chromium Canvas and bundled geometry; independent Python ZIP CRC/hash readback; no provider requests.",
+      "results": [
+        {
+          "name": "Ike request and complete archive APIs exist",
+          "pass": true
+        },
+        {
+          "name": "bounded JSON rejects getters, prototypes, controls and invalid counts without running accessors",
+          "pass": true
+        },
+        {
+          "name": "complete validation returns errors for missing or malformed contact fields without throwing",
+          "pass": true
+        },
+        {
+          "name": "actual raster photo normalization and exact vector proof create a complete request",
+          "pass": true
+        },
+        {
+          "name": "every Studio ink stays legible in the exact frozen PNG extracted from its ZIP",
+          "pass": true
+        },
+        {
+          "name": "content, photo and proof changes invalidate review while saved bookkeeping does not",
+          "pass": true
+        },
+        {
+          "name": "bad media and missing reference photographs block complete requests",
+          "pass": true
+        },
+        {
+          "name": "three detailed photographs remain bounded and all survive the complete archive",
+          "pass": true
+        },
+        {
+          "name": "ZIP contains every real attachment with independent CRC extraction and SHA verification",
+          "pass": true
+        },
+        {
+          "name": "package verifies exact bytes and current saved revision, never only manifest claims",
+          "pass": true
+        }
+      ],
+      "passed": 10,
+      "failed": 0
+    },
+    "delivery": {
+      "scope": "Isolated Chromium with real approval and archive; provider fetch alone mocked; zero live email/network requests.",
+      "results": [
+        {
+          "name": "guarded complete-package transport exists",
+          "pass": true
+        },
+        {
+          "name": "recipient, scope, mandatory attachments, size, stale content and revision fail before fetch",
+          "pass": true
+        },
+        {
+          "name": "only an explicitly true host guard permits a submission",
+          "pass": true
+        },
+        {
+          "name": "authorization and caller bytes are rechecked after async package preparation",
+          "pass": true
+        },
+        {
+          "name": "one multipart attempt includes the intact ZIP and provider acknowledgement is labelled accurately",
+          "pass": true
+        },
+        {
+          "name": "lost response is unconfirmed, sends once, and does not fall back or silently retry",
+          "pass": true
+        },
+        {
+          "name": "explicit provider rejection differs from ambiguous acknowledgement and accepted history blocks resend",
+          "pass": true
+        },
+        {
+          "name": "simultaneous clicks cannot dispatch two complete request submissions",
+          "pass": true
+        },
+        {
+          "name": "a response-body timeout aborts one attempt and stays unconfirmed without retry",
+          "pass": true
+        }
+      ],
+      "passed": 9,
+      "failed": 0
+    },
+    "portable": {
+      "suite": "Shopcraft portable artwork",
+      "passed": 12,
+      "total": 12,
+      "independentParser": "ezdxf + fontTools",
+      "failures": [],
+      "failed": 0
+    },
+    "existing-core": {
+      "suite": "Fleetcraft model",
+      "passed": 17,
+      "total": 17,
+      "failures": [],
+      "failed": 0
+    },
+    "existing-cam": {
+      "suite": "Fleetcraft geometry to controller",
+      "passed": 26,
+      "total": 26,
+      "results": [
+        {
+          "name": "mixed-case studio-sans through pocket CAM and all six controller profiles",
+          "pass": true,
+          "moves": 13992,
+          "profiles": 6
+        },
+        {
+          "name": "mixed-case studio-serif through pocket CAM and all six controller profiles",
+          "pass": true,
+          "moves": 11320,
+          "profiles": 6
+        },
+        {
+          "name": "mixed-case rye through pocket CAM and all six controller profiles",
+          "pass": true,
+          "moves": 20226,
+          "profiles": 6
+        },
+        {
+          "name": "mixed-case cinzel-bold through pocket CAM and all six controller profiles",
+          "pass": true,
+          "moves": 7204,
+          "profiles": 6
+        },
+        {
+          "name": "mixed-case lobster through pocket CAM and all six controller profiles",
+          "pass": true,
+          "moves": 21512,
+          "profiles": 6
+        },
+        {
+          "name": "mixed-case stardos-stencil through pocket CAM and all six controller profiles",
+          "pass": true,
+          "moves": 14368,
+          "profiles": 6
+        },
+        {
+          "name": "mixed-case bree-serif through pocket CAM and all six controller profiles",
+          "pass": true,
+          "moves": 18298,
+          "profiles": 6
+        },
+        {
+          "name": "mixed-case black-ops-one through pocket CAM and all six controller profiles",
+          "pass": true,
+          "moves": 3358,
+          "profiles": 6
+        },
+        {
+          "name": "rotated 100 mm anchor has real contours and validated machine output",
+          "pass": true,
+          "moves": 3118,
+          "contours": 2
+        },
+        {
+          "name": "rotated 100 mm compass has real contours and validated machine output",
+          "pass": true,
+          "moves": 2272,
+          "contours": 5
+        },
+        {
+          "name": "rotated 100 mm pine has real contours and validated machine output",
+          "pass": true,
+          "moves": 1814,
+          "contours": 1
+        },
+        {
+          "name": "rotated 100 mm mountains has real contours and validated machine output",
+          "pass": true,
+          "moves": 2164,
+          "contours": 4
+        },
+        {
+          "name": "rotated 100 mm oak-leaf has real contours and validated machine output",
+          "pass": true,
+          "moves": 6610,
+          "contours": 2
+        },
+        {
+          "name": "rotated 100 mm antlers has real contours and validated machine output",
+          "pass": true,
+          "moves": 2326,
+          "contours": 3
+        },
+        {
+          "name": "rotated 100 mm fish has real contours and validated machine output",
+          "pass": true,
+          "moves": 5592,
+          "contours": 4
+        },
+        {
+          "name": "rotated 100 mm paw has real contours and validated machine output",
+          "pass": true,
+          "moves": 12058,
+          "contours": 5
+        },
+        {
+          "name": "rotated 100 mm cabin has real contours and validated machine output",
+          "pass": true,
+          "moves": 2382,
+          "contours": 7
+        },
+        {
+          "name": "rotated 100 mm campfire has real contours and validated machine output",
+          "pass": true,
+          "moves": 4804,
+          "contours": 3
+        },
+        {
+          "name": "rotated 100 mm wave has real contours and validated machine output",
+          "pass": true,
+          "moves": 4220,
+          "contours": 4
+        },
+        {
+          "name": "rotated 100 mm sun has real contours and validated machine output",
+          "pass": true,
+          "moves": 5170,
+          "contours": 13
+        },
+        {
+          "name": "rotated 100 mm heart has real contours and validated machine output",
+          "pass": true,
+          "moves": 7958,
+          "contours": 2
+        },
+        {
+          "name": "rotated 100 mm star has real contours and validated machine output",
+          "pass": true,
+          "moves": 1492,
+          "contours": 1
+        },
+        {
+          "name": "rotated 100 mm crossed-tools has real contours and validated machine output",
+          "pass": true,
+          "moves": 2660,
+          "contours": 1
+        },
+        {
+          "name": "rotated 100 mm ribbon has real contours and validated machine output",
+          "pass": true,
+          "moves": 1814,
+          "contours": 2
+        },
+        {
+          "name": "small compass keeps the oversized-tool rejection",
+          "pass": true,
+          "guard": "Small disconnected regions require a smaller cutter or larger artwork."
+        },
+        {
+          "name": "overlapping text and emblem union preserves both filled regions",
+          "pass": true,
+          "textArea": 7464.535235115,
+          "graphicArea": 5793.04093241,
+          "unionArea": 10768.971241475
+        }
+      ],
+      "failed": 0
+    }
+  },
+  "asset_audit": {
+    "ok": true,
+    "fonts": {
+      "studio-sans": {
+        "glyphs": 198,
+        "kernPairs": 700,
+        "sourceSha256": "5c1247acef7f2b8522a31742c76d6adcb5569bacc0be7ceaa4dc39dd252ce895"
+      },
+      "studio-serif": {
+        "glyphs": 198,
+        "kernPairs": 704,
+        "sourceSha256": "847b33e13925f19ff87e4d934d6b3cf7cac35ce16424f6f670e40c2f377cf2df"
+      },
+      "rye": {
+        "glyphs": 198,
+        "kernPairs": 0,
+        "sourceSha256": "b7edee5e615ae1b6b07e9d030c1309152bf3672a0e8a2a46293e273730f5adba"
+      },
+      "cinzel-bold": {
+        "glyphs": 198,
+        "kernPairs": 9428,
+        "sourceSha256": "f4d83d34d1f6c741193e4acf4b3dff9531e5a67b6aa65228d00a7db72a4e0f34"
+      },
+      "lobster": {
+        "glyphs": 198,
+        "kernPairs": 130,
+        "sourceSha256": "d6568e697fd50cedc0be04d8aae4127fe95add607e7bff954ca88604be80c205"
+      },
+      "stardos-stencil": {
+        "glyphs": 198,
+        "kernPairs": 287,
+        "sourceSha256": "6b15f50b1b358512d922b5f11937af17e90704587e1d7fb009f1715d2d5dfa74"
+      },
+      "bree-serif": {
+        "glyphs": 197,
+        "kernPairs": 680,
+        "sourceSha256": "fd080582d70112ef479ba4ddd72407f9a4fcbcec4caa7d29de259b13eeb5f431"
+      },
+      "black-ops-one": {
+        "glyphs": 198,
+        "kernPairs": 25256,
+        "sourceSha256": "282a825b5f294377387e3969f765408157dbea8da0f5d0aae68c6bc704b145b3"
+      }
+    },
+    "graphics": 16,
+    "legacyFontObjectsUnchanged": true
+  },
+  "proof_ink_checks": [
+    {
+      "ink": "#20262d",
+      "name": "Charcoal",
+      "background": [
+        214,
+        180,
+        138
+      ],
+      "contrast": 7.812796503165259,
+      "inkPixels": 42951,
+      "geometryUnchanged": true,
+      "svgUnchanged": true,
+      "proofSha256": "18cf74cfdd078bc2099718f173686a285fef0d433f5451b048c2e076a803013a"
+    },
+    {
+      "ink": "#f8f3e8",
+      "name": "Ivory",
+      "background": [
+        126,
+        96,
+        70
+      ],
+      "contrast": 5.200950126602514,
+      "inkPixels": 42932,
+      "geometryUnchanged": true,
+      "svgUnchanged": true,
+      "proofSha256": "31fbdc5474fc1a511fc3e762e33a0328f1ab041a5294ac9522ccac98e823842a"
+    },
+    {
+      "ink": "#284941",
+      "name": "Forest",
+      "background": [
+        214,
+        180,
+        138
+      ],
+      "contrast": 5.0740102630373105,
+      "inkPixels": 42951,
+      "geometryUnchanged": true,
+      "svgUnchanged": true,
+      "proofSha256": "4020c609c9e204c01c48b0cd47a63f985ffa9be3811e2cc094e46f5331d666c5"
+    },
+    {
+      "ink": "#693b30",
+      "name": "Oxide",
+      "background": [
+        214,
+        180,
+        138
+      ],
+      "contrast": 4.74002579696287,
+      "inkPixels": 42976,
+      "geometryUnchanged": true,
+      "svgUnchanged": true,
+      "proofSha256": "49f010051a588ac59afbe076f4a290e0bad5c91acc6f50b0fdf0cee752b2beac"
+    }
+  ],
+  "original_revision4": {
+    "fingerprint": "ac6efe64af97f005eeb401841f5d3a25b67142745111b5f61e5f30c468ea5283",
+    "shopbot_moves": 13992,
+    "shopbot_program_sha256": "1406bec5923a3250a544828e6e7525789980ffed4c3514388a84a3b1fead03a0",
+    "program_byte_exact": true,
+    "neutral_dxf_bytes": 38896,
+    "neutral_dxf_contours": 15,
+    "neutral_dxf_points": 1347,
+    "neutral_dxf_sha256": "12290fd42ecab05ffc0ce1f6dacd89016e1c3ca3f96ac9fea344ddc3a3662660"
+  },
+  "independent_review": {
+    "completed": true,
+    "unresolved_blocking_findings": 0,
+    "fixed": [
+      "Malformed phone fields return validation errors without throwing",
+      "Exact persisted attempt UUID/date bind to transport and package",
+      "Undefined authorization guard is rejected",
+      "Actual client-preview route shows and binds exact-Ike entry without contact authority",
+      "Inherited array serializers are rejected before snapshot",
+      "Ivory proof is legible on its illustrative background"
+    ],
+    "additional_verification": [
+      "Actual transmitted ZIP downloads after acceptance is stored at a later revision",
+      "All 1565 nonblank glyphs and 16 graphics export at default scale with consistent winding"
+    ],
+    "scope_limit": "A whole fish graphic of0.1mm can collapse at the declared0.02mm flattening tolerance and is explicitly rejected. Enlarge below-tolerance detail; no invalid file is emitted."
+  },
+  "delivery": {
+    "intended_recipient": "ikeswoodsigns.orders@yahoo.com",
+    "max_attachment_bytes": 5242880,
+    "one_required_complete_zip": true,
+    "one_network_attempt": true,
+    "text_only_fallback": false,
+    "automatic_retry": false,
+    "attempt_recorded_before_network": true,
+    "provider_acceptance_not_inbox_receipt": true,
+    "provider_account_attachment_plan_verified": false,
+    "actual_provider_destination_verified": false,
+    "zip_acceptance_verified_live": false,
+    "inbox_receipt_verified": false
+  },
+  "storage": {
+    "database": "blackflag-ike-sign-requests-v1",
+    "public_history": false,
+    "exact_scope_fields": [
+      "projectId",
+      "backend",
+      "environment",
+      "site",
+      "deploymentId"
+    ],
+    "preview_and_sea_trial_memory_only": true,
+    "private_carvewright_store_used_by_customer_editor": false,
+    "deployment_sql_or_reset": "none"
+  },
+  "cnc": {
+    "neutral_formats": [
+      "SVG outlined physical-size millimeters",
+      "DXF AC1015 closed LWPOLYLINE millimeters"
+    ],
+    "dxf_curve_tolerance_mm": 0.02,
+    "coordinate_grid_mm": 0.0001,
+    "all_eight_fonts_and_sixteen_graphics_independently_checked": true,
+    "commercial_cam_import_performed": false,
+    "universal_executable_program_claim": false,
+    "physical_machine_acceptance": false,
+    "existing_posts": [
+      "ShopBot OpenSBP inch",
+      "ShopBot OpenSBP millimeter",
+      "GRBL1.1 inch",
+      "GRBL1.1 millimeter",
+      "LinuxCNC inch",
+      "LinuxCNC millimeter"
+    ]
+  },
+  "remaining_acceptance": [
+    "Native iPad Safari .60 request and download flow",
+    "Existing provider account supports required ZIP attachment and routes to intended Ike inbox",
+    "Ike receives and extracts the actual complete ZIP",
+    "SVG or DXF imports at correct units, scale, orientation and holes in Ike’s actual CAM software",
+    "Machine-specific toolpath, post, material, tools and physical setup verified by Ike before cutting"
+  ],
+  "format_reference_urls": [
+    "https://docs.web3forms.com/getting-started/pro-features/file-attachments",
+    "https://docs.vectric.com/docs/V12.5/VCarvePro/ENU/Help/page/user-guide/index.html",
+    "https://carbide3d.com/carbidecreate/",
+    "https://support.easel.com/hc/en-us/articles/360056766513-Can-I-import-files-from-another-program",
+    "https://help.autodesk.com/cloudhelp/ENU/Fusion-Model/files/SLD-INS-SVG.htm",
+    "https://help.autodesk.com/view/fusion360/ENU/?contextId=DESIGN-INSERT-INSERT-DXF-CMD"
+  ]
+}

@@ -1,3 +1,26 @@
+# Shopcraft 8.8.20.60
+
+**Upload: DarkSky882060-Shopcraft-Upload55.zip**
+
+Extract the ZIP and open its one matching folder. Upload every file inside over
+the current Fleetcraft .59 repository. Replace matching filenames and keep all
+other files. No database reset, SQL, deletion or browser-data clearing is needed.
+
+The update was checked against GitHub commit `355afe648910bb944ffc83504ece4bb8d79575ab` and the exact complete
+.59 active release. The matching software backup is
+**DarkSky882060-Shopcraft-FullBackup.zip**. Private browser-saved jobs and requests
+are not contained in these software archives; keep their own exported files.
+
+Open Ike’s customer welcome, choose **Design a sign for Ike**, and follow the
+three test steps in **SHOPCRAFT_GUIDE.md**. The new flow prepares a request for
+Ike’s review; it does not accept a production order or certify any machine setup.
+Preview and Sea Trial send nothing. Live attachment acceptance and Ike’s inbox
+receipt must be confirmed on the real site. Keep the downloaded request ZIP.
+
+---
+
+## Historical instructions below — retained verbatim
+
 # Fleetcraft 8.8.20.59
 
 **Current update: DarkSky882059-Fleetcraft-Upload53.zip**

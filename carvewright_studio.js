@@ -1,8 +1,8 @@
-/* Carvewright 8.8.20.59 — layered, touch-friendly vector design workspace. */
+/* Carvewright 8.8.20.60 — layered editor with an explicit customer embedding port. */
 (function (g) {
   'use strict';
   if (!g.document || g.CarvewrightStudio) return;
-  const BUILD = '8.8.20.59';
+  const BUILD = '8.8.20.60';
   const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const clone = v => g.structuredClone ? g.structuredClone(v) : JSON.parse(JSON.stringify(v));
   const icon = body => `<svg viewBox="0 0 24 24" aria-hidden="true">${body}</svg>`;
@@ -33,9 +33,9 @@
     s.root.querySelectorAll('button,input,select,textarea').forEach(n=>{n.disabled=disabled;});
     node(s,'cweClose').disabled=false;
     for(const id of ['cweReview','cweExportSvg','cweDownloadJob'])node(s,id).disabled=disabled||!validLayout(s);
-    node(s,'cweSave').disabled=disabled||!s.layout?.ok;
-    node(s,'cweMachining').disabled=disabled||!validLayout(s)||s.dirty||s.draft.revision<1||!s.draft.review;
-    node(s,'cweSaveLabel').textContent=s.busy?'Working…':'Save design';
+    node(s,'cweSave').disabled=disabled||(s.embedded?!validLayout(s):!s.layout?.ok);
+    node(s,'cweMachining').disabled=s.embedded||disabled||!validLayout(s)||s.dirty||s.draft.revision<1||!s.draft.review;
+    node(s,'cweSaveLabel').textContent=s.busy?'Working…':s.embedded?'Use this design':'Save design';
     node(s,'cweUndo').disabled=disabled||!s.undo.length;node(s,'cweRedo').disabled=disabled||!s.redo.length;
     for(const id of ['cweAddText','cweAddGraphic','cweDuplicate'])node(s,id).disabled=disabled||count>=12;
     s.root.querySelectorAll('[data-graphic]').forEach(n=>{n.disabled=disabled||count>=12;});
@@ -138,11 +138,11 @@
     node(s,'cweReviewState').textContent=!s.layout.ok?'Check the layout':s.layout.blank?'Add text or a graphic':reviewed?'Layout reviewed locally':'Ready to review';
     node(s,'cweReviewDescription').textContent=reviewed?'Saved review is tied to this exact design. Machining review is still separate.':'Check wording, dimensions and placement. Changes reset this local review.';
     node(s,'cweReview').textContent=reviewed?'Review recorded':'Mark layout reviewed';node(s,'cweFooterTitle').textContent=reviewed?'Locally reviewed layout':'Reference design';
-    node(s,'cweSavedState').textContent=s.dirty?'Unsaved changes':s.draft.revision?`Saved · revision ${s.draft.revision}`:'New local design';
+    node(s,'cweSavedState').textContent=s.embedded?(s.dirty?'Changes ready to use':'Design for your sign request'):s.dirty?'Unsaved changes':s.draft.revision?`Saved · revision ${s.draft.revision}`:'New local design';
     node(s,'cweMachiningHelp').textContent=!s.dirty&&s.draft.revision>0&&reviewed?'Fixed-depth pockets · ShopBot, GRBL and LinuxCNC':'Review this layout, then save it before machining.';
     scene(s);controls(s);
   }
-  function changed(s){s.draft.review=null;s.dirty=true;s.generation++;revoke(s);refresh(s);status(s,s.layout.ok?'Changes are local. Save the design or download a job file.':'Resolve the layout details before review or export.');}
+  function changed(s){s.draft.review=null;s.dirty=true;s.generation++;revoke(s);refresh(s);status(s,s.layout.ok?(s.embedded?'Choose Use this design to return to your sign request.':'Changes are local. Save the design or download a job file.'):'Resolve the layout details before review or export.');}
   const snapshot=s=>({draft:clone(s.draft),selectedId:s.selectedId});
   function remember(s,group=''){if(!group||s.editGroup!==group){s.undo.push(snapshot(s));if(s.undo.length>80)s.undo.shift();}s.editGroup=group;s.redo=[];}
   function applyDraft(s,draft,{selection=s.selectedId,group=''}={}){
@@ -155,7 +155,7 @@
   function setPanel(s,panel){if(!panels.includes(panel))return;const changed=s.panel!==panel;setPicker(s,'',false);s.panel=panel;s.editGroup='';for(const p of panels){const cap=p[0].toUpperCase()+p.slice(1);node(s,'cwe'+cap+'Panel').hidden=p!==panel;node(s,'cwe'+cap+'Tab').setAttribute('aria-selected',String(p===panel));}node(s,'cweSelectionBar').hidden=panel==='stock'||panel==='review';if(changed)s.root.querySelector('.cwe-panel-scroll').scrollTop=0;}
   function selectLayer(s,id){if(!objects(s).some(a=>a.id===id))return;s.selectedId=id;s.editGroup='';setPicker(s,'',false);node(s,'cweTransform').open=selected(s).type==='graphic';syncForm(s,true);scene(s);controls(s);}
   function nudge(s,direction){const step=s.unit==='in'?2.54:1,dx=direction==='left'?-step:direction==='right'?step:0,dy=direction==='up'?-step:direction==='down'?step:0;mutate(s,d=>{const a=writable(d,s.selectedId);if(a.type==='text'){a.text.offsetXmm+=dx;a.text.offsetYmm+=dy;}else{a.centerXmm+=dx;a.centerYmm+=dy;}});}
-  function discard(s){return !s.dirty||g.confirm('Leave these unsaved design changes? Saved copies and downloaded job files stay intact.');}
+  function discard(s){return !s.dirty||g.confirm(s.embedded?'Leave these design changes? Your sign request will keep its previous design.':'Leave these unsaved design changes? Saved copies and downloaded job files stay intact.');}
   function download(s,bytes,type,name,label){
     assertLive(s);revoke(s);const url=URL.createObjectURL(new Blob([bytes],{type}));s.urls.push(url);
     const box=node(s,'cweDownloads'),p=document.createElement('div');p.innerHTML=`<strong>${esc(label)}</strong><span>${esc(name)}</span>`;
@@ -168,6 +168,7 @@
   async function click(s,e){
     const b=e.target.closest('button');if(!b||!s.root.contains(b))return;
     if(b.id==='cweClose'){close();return;}if(s.busy||s.drag)return;if(!alive(s)){close(true);return;}
+    if(s.embedded&&['cweReview','cweMachining','cweExportSvg','cweDownloadJob'].includes(b.id))return;
     if(b.dataset.panel){setPanel(s,b.dataset.panel);return;}
     if(b.dataset.unit){s.unit=b.dataset.unit;dimensions(s,true);scene(s);return;}
     if(b.dataset.view){s.view=b.dataset.view;refresh(s);return;}
@@ -188,6 +189,7 @@
     await run(s,async valid=>{
       if(b.id==='cweSave'){
         if(!s.layout.ok)throw Error('Resolve layout errors before saving.');
+        if(s.embedded){if(!validLayout(s))throw Error('Add lettering or a graphic before using this design.');const used=clone(s.draft),check=core().validate(used,fonts());if(!check.ok)throw Error(check.errors.join(' '));await s.options.onUse(used);valid();s.dirty=false;close(true);return;}
         const saved=await s.store.save(clone(s.draft),s.draft.revision);valid();s.draft=saved;s.dirty=false;s.editGroup='';refresh(s);if(typeof s.options.onSaved==='function')s.options.onSaved(clone(saved));status(s,'Design saved to this Carvewright job. Download a job file to keep a portable copy.','success');
       }else if(b.id==='cweReview'){
         const reviewed=await core().review(s.draft,fonts());valid();remember(s);s.draft=reviewed;s.dirty=true;revoke(s);refresh(s);status(s,'Local layout review recorded. Save the design to retain it. This does not release a machining job.','success');
@@ -241,18 +243,22 @@
   function cancelDrag(s){const drag=s.drag;if(!drag)return;s.drag=null;s.draft=drag.base;s.dirty=drag.dirty;s.undo=drag.undo;s.redo=drag.redo;s.editGroup='';s.generation++;refresh(s);status(s,'Move canceled. The object is back at its previous position.');}
   function close(force=false){
     const s=current;if(!s)return true;if(s.drag)cancelDrag(s);if(!force&&!discard(s))return false;
-    s.closed=true;s.generation++;clearInterval(s.timer);g.CarvewrightMachining?.close(true);s.store?.close();revoke(s);current=null;
+    s.closed=true;s.generation++;clearInterval(s.timer);if(!s.embedded)g.CarvewrightMachining?.close(true);s.store?.close();revoke(s);current=null;
     if(s.root.open)s.root.close();s.root.remove();if(s.origin?.isConnected)s.origin.focus({preventScroll:true});if(typeof s.options.onClose==='function')s.options.onClose();return true;
   }
-  function open(options){
+  function open(options){return launch(options,false);}
+  function openEmbedded(options){return launch(options,true);}
+  function launch(options,embedded){
     if(current&&!close())return false;
-    if(!options||typeof options.guard!=='function'||options.guard()!==true||options.scope?.businessId!=='carvewright')throw Error('Open the editor from the Carvewright workspace.');
-    if(!core()?.layerList||!fonts()||!catalog()||!g.CarvewrightStore)throw Error('Carvewright Studio files are incomplete. Reload the complete release.');
+    if(!options||typeof options.guard!=='function'||options.guard()!==true||(!embedded&&options.scope?.businessId!=='carvewright'))throw Error(embedded?'The sign request is no longer open.':'Open the editor from the Carvewright workspace.');
+    if(embedded&&(!options.parent||!options.draft||typeof options.onUse!=='function'))throw Error('The customer editor needs an open request, design and return action.');
+    if(!core()?.layerList||!fonts()||!catalog()||(!embedded&&!g.CarvewrightStore))throw Error('Carvewright Studio files are incomplete. Reload the complete release.');
     const parent=options.parent||document.body;if(!parent.isConnected)throw Error('The business workspace is closed.');
     const draft=options.draft?clone(options.draft):core().createDraft(),check=core().validate(draft,fonts());if(!check.ok)throw Error(check.errors.join(' '));
     const root=document.createElement('dialog');root.id='carvewrightStudio';root.className='cwe-modal';root.setAttribute('aria-labelledby','cweTitle');root.innerHTML=shell(!!options.referenceOnly);document.body.appendChild(root);
-    const s={root,parent,options,origin:document.activeElement,draft,layout:null,store:null,unit:'in',view:'material',guides:true,panel:'lettering',selectedId:'primary',dirty:false,busy:false,closed:false,generation:0,urls:[],timer:null,undo:[],redo:[],editGroup:'',drag:null,previewFont:null};
-    current=s;root.showModal();try{s.store=g.CarvewrightStore.create({scope:clone(options.scope),guard:()=>{assertLive(s);return true;}});}catch(e){close(true);throw e;}
+    const s={root,parent,options,embedded,origin:document.activeElement,draft,layout:null,store:null,unit:'in',view:'material',guides:true,panel:'lettering',selectedId:'primary',dirty:false,busy:false,closed:false,generation:0,urls:[],timer:null,undo:[],redo:[],editGroup:'',drag:null,previewFont:null};
+    if(embedded){root.classList.add('cwe-embedded');node(s,'cweTitle').innerHTML='Ike’s Sign Studio<span>SHOPCRAFT</span>';root.querySelector('.cwe-brand small').textContent='DESIGN FOR IKE’S REVIEW';node(s,'cweClose').setAttribute('aria-label','Back to sign request');node(s,'cweClose').querySelector('span').textContent='Back to request';node(s,'cweSave').setAttribute('aria-label','Use this design');for(const id of ['cweReviewTab','cweReviewPanel','cweMachining','cweDownloadJob','cweExportSvg'])node(s,id).hidden=true;root.querySelector('.cwe-footer>div>span').textContent='Sign request · Ike confirms wood and machine setup';node(s,'cweStockPanel').querySelector('.cwe-field-note').textContent='Enter your requested blank size. Ike confirms the actual wood and dimensions before production.';}
+    current=s;root.showModal();if(!embedded)try{s.store=g.CarvewrightStore.create({scope:clone(options.scope),guard:()=>{assertLive(s);return true;}});}catch(e){close(true);throw e;}
     root.addEventListener('click',e=>{e.stopPropagation();click(s,e);});root.addEventListener('input',e=>{e.stopPropagation();input(s,e);});root.addEventListener('change',e=>{e.stopPropagation();s.editGroup='';});root.addEventListener('focusout',()=>{s.editGroup='';});
     const viewport=node(s,'cweViewport');viewport.addEventListener('pointerdown',e=>pointerDown(s,e));viewport.addEventListener('pointermove',e=>pointerMove(s,e));viewport.addEventListener('pointerup',e=>pointerUp(s,e));viewport.addEventListener('pointercancel',()=>cancelDrag(s));viewport.addEventListener('lostpointercapture',()=>{if(s.drag)cancelDrag(s);});
     root.addEventListener('cancel',e=>{e.preventDefault();e.stopPropagation();if(s.drag)cancelDrag(s);else close();});
@@ -264,11 +270,11 @@
     });
     root.addEventListener('close',()=>{if(current===s)close(true);});refresh(s);node(s,'cweTitle').focus({preventScroll:true});
     s.timer=setInterval(()=>{if(!alive(s))close(true);},500);
-    run(s,async valid=>{if(s.draft.review&&!await core().reviewMatches(s.draft,fonts())){valid();s.draft.review=null;refresh(s);}valid();status(s,'Tap artwork to select it. Design changes stay local until you save.');});return true;
+    run(s,async valid=>{if(s.draft.review&&!await core().reviewMatches(s.draft,fonts())){valid();s.draft.review=null;refresh(s);}valid();status(s,s.embedded?'Tap artwork to select it. Choose Use this design when you are ready.':'Tap artwork to select it. Design changes stay local until you save.');});return true;
   }
   g.addEventListener('beforeunload',e=>{if(current?.dirty){e.preventDefault();e.returnValue='';}});
-  for(const event of ['darksky:admiral-session-ended','darksky:admiral-session-unavailable'])g.addEventListener(event,()=>{if(current&&!current.options.referenceOnly)close(true);});
-  g.addEventListener('darksky:admiral-session-changed',()=>{if(current&&!current.options.referenceOnly&&!alive(current))close(true);});
+  for(const event of ['darksky:admiral-session-ended','darksky:admiral-session-unavailable'])g.addEventListener(event,()=>{if(current&&!current.embedded&&!current.options.referenceOnly)close(true);});
+  g.addEventListener('darksky:admiral-session-changed',()=>{if(current&&!current.embedded&&!current.options.referenceOnly&&!alive(current))close(true);});
   g.addEventListener('focus',()=>{if(current&&!alive(current))close(true);});
-  g.CarvewrightStudio=Object.freeze({build:BUILD,open,close,isOpen:()=>!!current&&alive(current)});
+  g.CarvewrightStudio=Object.freeze({build:BUILD,open,openEmbedded,close,isOpen:()=>!!current&&alive(current)});
 })(typeof window!=='undefined'?window:globalThis);

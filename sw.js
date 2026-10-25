@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.20.59';
-const RELEASE_SEAL='fleetcraft-882059';
+const RELEASE_BUILD='8.8.20.60';
+const RELEASE_SEAL='shopcraft-882060';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.

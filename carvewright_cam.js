@@ -113,6 +113,20 @@
   });
  }
  function union(paths,tree){var cl=new Clipper.Clipper();cl.StrictlySimple=true;cl.AddPaths(paths,Clipper.PolyType.ptSubject,true);var result=tree?new Clipper.PolyTree():[];if(!cl.Execute(Clipper.ClipType.ctUnion,result,Clipper.PolyFillType.pftNonZero,Clipper.PolyFillType.pftNonZero))fail('Unable to normalize the lettering outlines.');return result;}
+ // Neutral artwork normalization deliberately has no cutter or motion setup.
+ // Keep pocketPolygons/build untouched so legacy motion and post bytes remain
+ // identical. The same nonzero fill rule/grid removes overlaps and keeps holes.
+ function normalizeContours(polygons){
+  if(!Clipper||!Clipper.Clipper)fail('The bundled geometry engine is unavailable.');dataTree(polygons);
+  var normal=Clipper.Clipper.PolyTreeToPaths(union(toInt(polygons),true)),count=0;
+  if(!normal.length)fail('The artwork contains no filled area.');
+  if(normal.length>1000)fail('Normalized artwork exceeds the 1000 contour limit.');
+  return normal.map(function(r){
+   if(r.length<3||Math.abs(Clipper.Clipper.Area(r))<1)fail('Normalized artwork contour is degenerate.');
+   count+=r.length;if(count>MAX_POINTS)fail('Normalized artwork exceeds the 30000 vertex limit.');
+   return {points:r.map(function(p){return {x:p.X/SCALE,y:p.Y/SCALE};}),hole:!Clipper.Clipper.Orientation(r)};
+  });
+ }
  function offset(paths,distance,tol){var co=new Clipper.ClipperOffset(2,tol*SCALE),out=[];co.AddPaths(paths,Clipper.JoinType.jtRound,Clipper.EndType.etClosedPolygon);co.Execute(out,distance*SCALE);return out;}
  function area(paths){return Math.abs(paths.reduce(function(a,p){return a+Clipper.Clipper.Area(p);},0))/(SCALE*SCALE);}
  function stockBounds(s){var c=s.origin.xy==='center';return {minX:c?-s.stock.widthMm/2:0,maxX:c?s.stock.widthMm/2:s.stock.widthMm,minY:c?-s.stock.heightMm/2:0,maxY:c?s.stock.heightMm/2:s.stock.heightMm};}
@@ -197,5 +211,5 @@
   }
   result.setup=copy(setup);return result;
  }
- return Object.freeze({defaults:defaults,validateSetup:validateSetup,build:build,flattenPath:flattenPath,flattenGlyphs:flattenGlyphs,pocketPolygons:pocketPolygons});
+ return Object.freeze({defaults:defaults,validateSetup:validateSetup,build:build,flattenPath:flattenPath,flattenGlyphs:flattenGlyphs,pocketPolygons:pocketPolygons,normalizeContours:normalizeContours});
 });

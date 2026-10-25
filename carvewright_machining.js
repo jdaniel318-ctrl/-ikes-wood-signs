@@ -2,7 +2,7 @@
 (function (g) {
   'use strict';
   if (!g.document || g.CarvewrightMachining) return;
-  const BUILD='8.8.20.59', SCOPE_FIELDS=['accountId','backend','environment','site','businessId'];
+  const BUILD='8.8.20.60', SCOPE_FIELDS=['accountId','backend','environment','site','businessId'];
   const clone=v=>JSON.parse(JSON.stringify(v));
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const core=()=>g.CarvewrightCore, fonts=()=>g.IkeCarveFonts, cam=()=>g.CarvewrightCAM, posts=()=>g.CarvewrightPosts;

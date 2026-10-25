@@ -1,8 +1,8 @@
-/* Carvewright 8.8.20.59 — independent local jobs and design workspace. */
+/* Carvewright 8.8.20.60 — independent local jobs and design workspace. */
 (function(g){
  'use strict';
  if(!g.document||g.CarvewrightApp)return;
- const BUILD='8.8.20.59',clone=v=>JSON.parse(JSON.stringify(v));
+ const BUILD='8.8.20.60',clone=v=>JSON.parse(JSON.stringify(v));
  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const icon=(p,cls='')=>`<svg class="cw-icon ${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
  const mark=icon('<path d="m12 3 9 5-9 5-9-5 9-5Zm-9 9 9 5 9-5M3 16l9 5 9-5"/>','cw-mark');

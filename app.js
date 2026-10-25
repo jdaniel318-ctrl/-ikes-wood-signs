@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.20.59';
+  const BUILD_VERSION='8.8.20.60';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -4838,6 +4838,7 @@
     return 'NON-LIVE';
   }
   function setCustomerSessionContext(p,mode,deployment=null,{source='explicit'}={}){
+    window.IkeShop?.close?.(true);
     const ctx=experienceModeContext(p,mode,deployment);
     ctx.sessionKind=mode==='live'?'live_customer':mode==='sea_trial'?'test_experience':'private_preview';
     ctx.sessionSource=source;
@@ -4850,6 +4851,7 @@
     return ctx;
   }
   function clearCustomerSessionContext(){
+    window.IkeShop?.close?.(true);
     window.__deploymentCustomerContext=null;
     document.body.removeAttribute('data-customer-session');
     document.body.removeAttribute('data-operator-entry');
@@ -4888,6 +4890,54 @@
     const ctx=currentExperienceContext(p);
     return !!ctx && ctx.projectId===p.id && ctx.state==='deployed';
   }
+
+  // Shopcraft customer request host — begin
+  function ikeShopContextMark(ctx){
+    return JSON.stringify([ctx.projectId,ctx.deploymentId||null,ctx.state,ctx.mode,ctx.sessionKind,ctx.sessionSource,ctx.establishedAt,ctx.clientPreview===true]);
+  }
+  function ikeShopScope(ctx){
+    const config=window.BlackFlagV3Identity?.productionAuth?.readClientConfig?.();
+    return Object.freeze({projectId:'ikes-wood-signs',backend:config?.url?new URL(config.url).href.replace(/\/$/,''):'local-device',environment:String(config?.environment||'local'),site:new URL('./',location.href).href,deploymentId:String(ctx.deploymentId||('session-'+(ctx.mode||'preview')))});
+  }
+  function openIkeSignRequest(){
+    const note=$('ikeShopEntryStatus');
+    try{
+      const project=activeProject(),context=currentExperienceContext(project),parent=$('customerApp');
+      if(activeProjectId!=='ikes-wood-signs'||project?.id!=='ikes-wood-signs'||!context)throw Error('Open Ike’s customer experience to design a sign request.');
+      if(!window.IkeShop?.open)throw Error('The sign request files are incomplete. Reload the complete release.');
+      const scope=ikeShopScope(context),scopeMark=JSON.stringify(scope),contextMark=ikeShopContextMark(context);
+      const mode=context.state==='deployed'&&context.mode==='live'&&context.sessionKind==='live_customer'&&!context.clientPreview?'deployed':context.state==='sea_trial'?'sea_trial':'preview';
+      const guard=()=>{
+        try{
+          const current=currentExperienceContext(activeProject());
+          if(activeProjectId!=='ikes-wood-signs'||activeProject()?.id!=='ikes-wood-signs'||current!==context||ikeShopContextMark(current)!==contextMark||JSON.stringify(ikeShopScope(current))!==scopeMark)return false;
+          if(parent!==$('customerApp')||!parent?.isConnected||parent.hidden||parent.classList.contains('hidden')||parent.getAttribute('aria-hidden')==='true'||!parent.getClientRects().length)return false;
+          const style=getComputedStyle(parent);
+          const previewSurface=context.clientPreview===true&&context.state==='preview'&&context.mode==='client_preview'&&document.body.classList.contains('client-preview-mode')&&!document.body.classList.contains('client-preview-locked');
+          const customerSurface=document.body.classList.contains('project-mode')||previewSurface;
+          return style.display!=='none'&&style.visibility!=='hidden'&&state.current==='welcome'&&customerSurface&&!document.body.classList.contains('engine-mode')&&!document.body.classList.contains('boot-locked');
+        }catch(_){return false;}
+      };
+      if(!guard())throw Error('Return to Ike’s welcome screen before opening the sign request.');
+      const canSend=()=>guard()&&mode==='deployed'&&!!context.deploymentId&&location.protocol==='https:'&&projectExternalContactAllowed(project);
+      const opened=window.IkeShop.open({scope,guard,canSend,mode,parent,deliveryConfig:{accessKey:LEGACY_IKE_WEB3FORMS_ACCESS_KEY,recipient:LEGACY_IKE_ORDER_EMAIL,maxBytes:5*1024*1024},onClose:()=>{if(note)note.textContent='';}});
+      if(opened!==false&&note)note.textContent='';
+      return opened;
+    }catch(error){if(note)note.textContent=String(error?.message||'The sign request could not open.');return false;}
+  }
+  function bindIkeShopRequest(){
+    const button=$('ikeShopStart');
+    if(!button||button.dataset.shopcraftBound==='true')return;
+    button.dataset.shopcraftBound='true';
+    button.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();openIkeSignRequest();});
+  }
+  function syncIkeShopEntry(project){
+    const entry=$('ikeShopEntry'),isIke=project?.id==='ikes-wood-signs';
+    if(entry){entry.hidden=!isIke;entry.classList.toggle('hidden',!isIke);}
+    bindIkeShopRequest();
+  }
+  // Shopcraft customer request host — end
+
   function projectIsContactSafeTest(p=activeProject()){
     return !!p && !projectExternalContactAllowed(p);
   }
@@ -11236,6 +11286,7 @@
     // Bind the actual mounted roots before revealing them, including re-mounted
     // template shells. This connects controls only; it changes no authority.
     bindProjectTemplateShells();
+    syncIkeShopEntry(p);
     hideAllCustomerShells();
     document.body.classList.remove('ikes-project','mugs-project','flowers-project','universal-project','bor-project');
     const shell=projectShellFor(p);
@@ -11268,6 +11319,7 @@
     // Navigation contract: project entry is an explicit app transition. Browser
     // Back is not the primary return path; the in-app Black Flag control owns it.
     try{history.pushState({darkSkyRoute:'project',projectId:p.id},'',location.pathname+location.search+`#project=${encodeURIComponent(p.id)}`);}catch(_){}
+    window.IkeShop?.close?.(true);
     clearProjectPresentation();
     const projectId=activateProjectContext(p);
     engineActiveProjectId=null;
@@ -12085,6 +12137,7 @@
 
 
   function setScreen(name){
+    if(name!=='welcome')window.IkeShop?.close?.(true);
     if(state.current==='photo' && name!=='photo') stopCamera();
     state.current=name;
     document.body.classList.toggle('ikes-flow-active',activeProjectId==='ikes-wood-signs'&&!['welcome','done'].includes(name));
@@ -12585,6 +12638,7 @@
 
   function applyProjectCustomerExperience(p){
     const x=customerExperienceForProject(p);
+    syncIkeShopEntry(p);
     document.title=p.name;
     document.body.dataset.activeProject=p.id;
     document.body.dataset.projectTheme=p.projectTheme||p.id||'custom';
@@ -16576,6 +16630,7 @@ The full order and approved media remain stored with this project.`;
   function bindCustomerActionCore(){
     if(window.__darkSkyCustomerActionBound)return;
     window.__darkSkyCustomerActionBound=true;
+    bindIkeShopRequest();
 
     // v4.6.7 recovery seam: bespoke customer CTAs must exist as soon as the
     // customer shell exists. They cannot depend on late bindEvents() completion.
