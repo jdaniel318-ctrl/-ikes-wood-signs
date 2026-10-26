@@ -1,7 +1,7 @@
-# Keelwatch 8.8.20.65 — upload this ZIP only
+# Ironhaven 8.8.20.66 — Upload this ZIP only
 
-Download **DarkSky882065-Keelwatch-Upload42.zip**, extract its single matching folder and upload all enclosed changed/new files over your verified **8.8.20.64** GitHub repository. Keep other files in place. **Do not upload the full backup to the existing repo.**
+Upload `DarkSky882066-Ironhaven-Upload44.zip` (the single internal folder's contents) **over the existing Keelwatch 8.8.20.65 repository**. Replace matching files and keep all others. The full backup is a separate archival ZIP. Do not clear Safari storage or run SQL.
 
-Release checks: `node VERIFY_KEELWATCH_RELEASE.cjs` against this full-source folder. The release is a read-only integration, not proof of production security or server backup/restore. No SQL migration required.
+**What changed:** the appointed Captain account can set/change its own Supabase password even if appointment was revoked; appointed Captains can download and verify an AES-256-GCM encrypted **partial** recovery snapshot for their own vessel. NO restoration to Supabase, no automatic cloud backup, no authority grant.
 
-The former 8.8.20.64 guide and verification results remain intact elsewhere in the repository.
+**Verification:** run `node VERIFY_IRONHAVEN_CORE.cjs` and `node VERIFY_IRONHAVEN_RELEASE.cjs` in a full release directory. iPad password-provider confirmation and native encrypted download remain to be tested. See IRONHAVEN_GUIDE.md.

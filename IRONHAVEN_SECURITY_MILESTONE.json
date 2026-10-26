@@ -1,0 +1,22 @@
+{
+  "schema": "blackflag-security-milestone-v1",
+  "build": "8.8.20.66",
+  "recorded_at": "2026-10-26T05:21:45+00:00",
+  "vessel": "VoyageKeeper Recovery Test",
+  "project_id": "bf-p-fc2816b8254a4845",
+  "sources": "October 26 2026 authenticated iPad screenshots and read-only Fleet Core queries",
+  "verified_observations": [
+    "Accepted vessel-Captain appointment displayed with operator role for the assigned vessel.",
+    "VoyageKeeper Captain route denied access to Ike Wood Signs when authenticated as the same Captain.",
+    "The Admiral revoked the VoyageKeeper appointment and the associated new operator membership was deactivated.",
+    "The former Captain account returned no current appointments in My Assigned Vessels.",
+    "The separate Becca Bloom Shop accepted Captain record remained unchanged."
+  ],
+  "not_verified": [
+    "Direct API access-denial attempt after revocation with real former-Captain token",
+    "Full off-device per-vessel backup or live restore",
+    "Production commissioning completion"
+  ],
+  "authority_changes_this_release": false,
+  "note": "Human-observed and independently read-back evidence, not a cryptographically signed server receipt."
+}

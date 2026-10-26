@@ -1,8 +1,8 @@
-/* Carvewright 8.8.20.65 — shared vector editor with optional board-photo placement. */
+/* Carvewright 8.8.20.66 — shared vector editor with optional board-photo placement. */
 (function (g) {
   'use strict';
   if (!g.document || g.CarvewrightStudio) return;
-  const BUILD = '8.8.20.65';
+  const BUILD = '8.8.20.66';
   const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const clone = v => g.structuredClone ? g.structuredClone(v) : JSON.parse(JSON.stringify(v));
   const icon = body => `<svg viewBox="0 0 24 24" aria-hidden="true">${body}</svg>`;

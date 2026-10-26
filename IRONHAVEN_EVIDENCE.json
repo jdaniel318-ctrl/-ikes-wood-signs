@@ -1,0 +1,35 @@
+{
+  "schema": "blackflag-ironhaven-evidence-v1",
+  "build": "8.8.20.66",
+  "created_at": "2026-10-26T05:21:45+00:00",
+  "tests": {
+    "legacy_keelwatch_before_changes": 31,
+    "crypto_real_webcrypto": 18,
+    "isolated_browser_ui_mock": 9
+  },
+  "protected_behavior": [
+    "fail closed on other-vessel file",
+    "no plaintext contents in encrypted JSON",
+    "server authority reverified for each download",
+    "account password update stays in Auth account",
+    "revoked Captain account can still change own password",
+    "read-only verification makes no server writes"
+  ],
+  "server_actions_this_build": "none",
+  "native_live_acceptance": "pending",
+  "live_password_update": "not executed",
+  "live_encrypted_snapshot": "not executed",
+  "server_restore": "not implemented or claimed",
+  "status": "OFFLINE TESTED \u2014 NATIVE SAFARI AND BACKEND PROOF PENDING",
+  "regression_tests": {
+    "fleetcare_readiness": {
+      "passed": 11,
+      "failed": 0
+    },
+    "fleetcare_navigation": {
+      "passed": 45,
+      "failed": 0
+    },
+    "legacy_node_browser_suites": "NOT RUN \u2014 Node Playwright module unavailable in this runtime; native iPad pending"
+  }
+}

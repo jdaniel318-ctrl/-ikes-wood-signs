@@ -1,4 +1,4 @@
-/* Keelwatch 8.8.20.65 — bounded, read-only Admiral evidence presentation.
+/* Keelwatch 8.8.20.66 — bounded, read-only Admiral evidence presentation.
  * Consumes already-authorized vessel and appointment LIST readbacks.
  * No client-side evidence grants authority; a missing test is never a pass.
  */
@@ -38,7 +38,7 @@
       gate('deployment','Verified live deployment','NOT VERIFIED','A published setting or vessel lifecycle is not a live deployment receipt.')
     ];
     return Object.freeze({
-      schema:'blackflag-keelwatch-server-snapshot-v1',build:'8.8.20.65',scope:'one-vessel',
+      schema:'blackflag-keelwatch-server-snapshot-v1',build:'8.8.20.66',scope:'one-vessel',
       source:'Authenticated Admiral RPC lists: admiral_list_vessels_for_branding and admiral_list_captain_appointments',
       project_id:project,vessel_name:token(vessel.display_name),lifecycle_state:vessel.lifecycle_state,
       operating_model:vessel.operating_model,read_at:at,

@@ -1,0 +1,22 @@
+#!/usr/bin/env node
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),assert=require('node:assert/strict');
+const root=path.resolve(process.argv[2]||__dirname),read=n=>JSON.parse(fs.readFileSync(path.join(root,n),'utf8'));
+const sha=n=>crypto.createHash('sha256').update(fs.readFileSync(path.join(root,n))).digest('hex');
+let passes=0;function check(name,fn){try{fn();passes++;console.log('PASS',name)}catch(error){console.error('FAIL',name,error.message);process.exitCode=1;}}
+const manifest=read('DEPLOYMENT_MANIFEST.json'),seal=read('RELEASE_SEAL.json'),inventory=read('RELEASE_INVENTORY.json');
+const index=fs.readFileSync(path.join(root,'index.html'),'utf8');const owner=fs.readFileSync(path.join(root,'owner.html'),'utf8');
+check('release identity',()=>{assert.equal(manifest.build,'8.8.20.66');assert.equal(manifest.release_seal,'ironhaven-882066');assert.equal(seal.build,manifest.build);assert.equal(seal.seal,manifest.release_seal);assert.equal(inventory.build,manifest.build);});
+check('loader identity and runtime identity',()=>{assert(index.includes("build:'8.8.20.66',seal:'ironhaven-882066'"));assert(/const BUILD_VERSION=['"]8\.8\.20\.66/.test(fs.readFileSync(path.join(root,'app.js'),'utf8')));assert(fs.readFileSync(path.join(root,'sw.js'),'utf8').includes('ironhaven-882066'));});
+check('required fleet recovery core is integrity-bound',()=>{assert(manifest.required_runtime_files.includes('fleet_recovery_core.js'));assert(index.includes("'fleet_recovery_core.js'"));assert.equal(manifest.runtime_integrity.files['fleet_recovery_core.js'],sha('fleet_recovery_core.js'));assert(owner.includes('fleet_recovery_core.js?v=ironhaven-882066'));});
+check('all runtime files match SHA256',()=>{for(const [name,digest] of Object.entries(manifest.runtime_integrity.files)){assert(fs.existsSync(path.join(root,name)),name);assert.equal(sha(name),digest,name);}});
+check('all required files are present',()=>{for(const name of manifest.required_runtime_files)assert(fs.existsSync(path.join(root,name)),name);});
+check('model integrity contracts remain intact',()=>{for(const [name,info] of Object.entries(manifest.model_integrity.files))assert.equal(sha(name),info.sha256,name);});
+check('entire full-source inventory is exact',()=>{function list(dir){return fs.readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?list(path.join(dir,e.name)):[path.relative(root,path.join(dir,e.name)).replaceAll(path.sep,'/')]);}const actual=list(root).sort();assert.equal(inventory.file_count,actual.length);assert.deepEqual(inventory.files,actual);});
+check('only Captain account security has update user endpoint',()=>{assert(owner.includes("securityRequest('/auth/v1/user',payload,'PUT')"));assert(owner.includes('auth/v1/reauthenticate'));assert(owner.includes('bindAccountSecurity()'));});
+check('recovery download requires exact vessel authority before and after encrypt',()=>{const a=owner.slice(owner.indexOf('  function bindRecovery(){'),owner.indexOf('  function bindIdentityActions(){'));assert(a.includes("rpc('vessel_captain_verify_access'"));assert(a.match(/rpc\('vessel_captain_verify_access'/g).length>=3);assert(a.includes("core.snapshotFor"));assert(a.includes("core.encrypt"));});
+check('no restore RPC or metadata access grant in recovery implementation',()=>{const a=owner.slice(owner.indexOf('  function bindRecovery(){'),owner.indexOf('  function bindIdentityActions(){'));for(const risky of ["restore_vessel", "service_role", "admiral_issue_captain_appointment", "fleet_memberships", "uploadToStorage"])assert(!a.includes(risky),risky);});
+check('password route also available after appointment revoked',()=>{const a=owner.slice(owner.indexOf('  function renderRoster(){'),owner.indexOf('  async function showMyVessels(){'));assert(a.includes('accountSecurityMarkup()'));});
+check('release makes no DB changes or claims complete restore',()=>{assert.equal(read('PATCH_CONTRACT.json').database_actions,'none');assert.equal(read('RELEASE_GATE.json').database_actions,'none');assert.equal(read('IRONHAVEN_EVIDENCE.json').server_restore,'not implemented or claimed');});
+check('source proof retains no client secrets',()=>{const ev=JSON.stringify(read('IRONHAVEN_EVIDENCE.json'));assert(!ev.includes('TEST_ACCESS_TOKEN'));assert(!ev.includes('PRIVATE DEMO ONLY'));});
+console.log('IRONHAVEN RELEASE',passes,'checks;',process.exitCode===1?'FAIL':'PASS');

@@ -1,3 +1,4 @@
+IRONHAVEN 8.8.20.66: account password self-service and partial encrypted Captain recovery rehearsal. No migrations, no server restore. Offline crypto 18/18; isolated browser UI 9 checks; native Safari pending.
 Keelwatch 8.8.20.65 — additive Fleetguard read-only Admiral evidence on exact-vessel server list readback. Base is the recovered Oct 25 GitHub snapshot verified to match every 8.8.20.64 update file. Existing appointment and sign workflows retained. No SQL, data reset, or new authority grant. See KEELWATCH_GUIDE.md.
 
 Fleetclarity 8.8.20.64 — status presentation cleanup over 8.8.20.63.

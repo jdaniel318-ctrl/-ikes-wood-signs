@@ -1,3 +1,8 @@
+## Ironhaven 8.8.20.66 — Captain security and encrypted recovery rehearsal
+- Native account-security form for an authenticated Captain even with zero current appointments; Supabase Auth controls password change and reauthentication.
+- Active exact-vessel Captains can export AES-256-GCM encrypted orders/latest-Watch snapshots and verify files locally without restoring any data.
+- Scope and integrity fail closed. No server migration, permission changes or customer record edits. Full cloud backup and server restore remain explicitly unverified.
+
 # Quartermaster 8.8.20.53 — a clearer operator workspace
 
 Upload: **DarkSky882053-Quartermaster-Upload45.zip** — **45 changed/new files** over complete **Quartermaster 8.8.20.52**. Follow START_HERE_QUARTERMASTER_53.md and retain all other repository files.

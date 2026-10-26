@@ -1,16 +1,16 @@
 {
   "schema": "blackflag-patch-contract-v1",
-  "target_build": "8.8.20.65",
-  "target_seal": "keelwatch-882065",
+  "target_build": "8.8.20.66",
+  "target_seal": "ironhaven-882066",
   "supported_bases": [
     {
-      "build": "8.8.20.64",
-      "source": "GitHub repository supplied by Captain Oct 25 2026",
-      "verification": "All 47 delivered Fleetclarity patch files byte-for-byte confirmed in the GitHub archive"
+      "build": "8.8.20.65",
+      "source": "Verified Keelwatch full-source ZIP",
+      "verification": "Exact full 613-file source baseline recovered"
     }
   ],
   "requires_deletions": false,
   "max_upload_files": 85,
   "database_actions": "none",
-  "rule": "Apply changed/new file contents over the verified 8.8.20.64 GitHub repository root. Keep all other files. No SQL, browser-data clearing or data reset."
+  "rule": "Upload changed/new files over the verified .65 repository root. Retain all other files. No SQL, account reset or browser-data clearing."
 }

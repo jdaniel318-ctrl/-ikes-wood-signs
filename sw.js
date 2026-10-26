@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.20.65';
-const RELEASE_SEAL='keelwatch-882065';
+const RELEASE_BUILD='8.8.20.66';
+const RELEASE_SEAL='ironhaven-882066';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.
