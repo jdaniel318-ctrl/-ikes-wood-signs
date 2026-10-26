@@ -1,3 +1,9 @@
+# Keelwatch 8.8.20.65
+
+**Read-only Fleetguard evidence inside Admiral Delegate.** Refer to `KEELWATCH_GUIDE.md` and `KEELWATCH_EVIDENCE.json`. The working 8.8.20.64 source is preserved in the recovered baseline; no production data or authority changes are required.
+
+---
+
 # Fleetclarity 8.8.20.64
 
 **Upload: DarkSky882064-Fleetclarity-Upload47.zip** — **47 changed/new files** over **Fleetcare 8.8.20.63**.

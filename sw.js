@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.20.64';
-const RELEASE_SEAL='fleetclarity-882064';
+const RELEASE_BUILD='8.8.20.65';
+const RELEASE_SEAL='keelwatch-882065';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.

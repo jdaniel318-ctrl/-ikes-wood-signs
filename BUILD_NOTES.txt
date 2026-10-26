@@ -1,3 +1,5 @@
+Keelwatch 8.8.20.65 — additive Fleetguard read-only Admiral evidence on exact-vessel server list readback. Base is the recovered Oct 25 GitHub snapshot verified to match every 8.8.20.64 update file. Existing appointment and sign workflows retained. No SQL, data reset, or new authority grant. See KEELWATCH_GUIDE.md.
+
 Fleetclarity 8.8.20.64 — status presentation cleanup over 8.8.20.63.
 Read FLEETCLARITY_GUIDE.md and FLEETCLARITY_EVIDENCE.json for workflow and verification scope.
 Prior release records remain below as historical evidence.

@@ -16413,3 +16413,27 @@ dialog.cg-workspace::backdrop{background:#061c24;}
   #projectEngineControl .pc-commissioning-evidence>button,#projectEngineControl .pc-operational-action>button{width:100%;white-space:normal}
   #projectEngineControl .pc-commissioning-evidence{padding:12px}
 }
+
+/* Keelwatch · Admiral exact-vessel read-only evidence, not commissioning authority */
+.qd-evidence-report{margin:12px 0 16px;padding:12px;border:1px solid #557583;border-radius:12px;background:rgba(5,23,32,.64);color:#e7eef2;line-height:1.5}
+.qd-evidence-summary{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
+.qd-evidence-summary strong{font-size:1.05rem;overflow-wrap:anywhere}
+.qd-evidence-summary span{color:#f0cf8b;font-size:.85rem;font-weight:700}
+.qd-evidence-gates{display:grid;grid-template-columns:repeat(auto-fit,minmax(225px,1fr));list-style:none;padding:0;margin:10px 0 0;gap:8px}
+.qd-evidence-gates li{border:1px solid #37535c;border-radius:8px;padding:12px;background:#0d2833;display:flex;flex-direction:column;gap:5px;overflow-wrap:anywhere}
+.qd-evidence-gates strong{font-size:.94rem;color:#f0f3f5}
+.qd-evidence-gates span{font-size:.76rem;font-weight:700;color:#eed194}
+.qd-evidence-gates small{color:#bbd0d7;font-size:.8rem;line-height:1.4}
+#harborEvidenceExport{max-width:100%;white-space:normal;min-height:48px}
+@media(max-width:650px){.qd-evidence-gates{grid-template-columns:1fr}.qd-evidence-summary{flex-direction:column;align-items:flex-start}}
+
+/* Four bounded Delegate tasks: full-width evidence panel and legible iPad/phone rows. */
+#admiralDeck .qd-tabs{grid-template-columns:repeat(4,minmax(0,1fr));}
+#admiralDeck #qdPanel-evidence.qd-content:not([hidden]){display:block!important;max-width:100%;}
+#admiralDeck #qdPanel-evidence h5{color:#f1d68c;font-size:1.02rem;margin:12px 0 7px;}
+#admiralDeck #qdPanel-evidence>.qd-muted{color:#c5d6de;line-height:1.5;margin-bottom:14px;}
+#admiralDeck #qdPanel-evidence .qd-evidence-report{display:block!important;width:100%;box-sizing:border-box;background:#102c34!important;border:1px solid #577481;color:#edf6f8;padding:14px;}
+#admiralDeck #qdPanel-evidence .qd-evidence-gates{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:9px;}
+#admiralDeck #qdPanel-evidence .qd-evidence-gates li{background:#082531;min-height:95px;}
+#admiralDeck #qdPanel-evidence button#harborEvidenceExport{display:block;width:100%;min-height:50px;}
+@media(max-width:750px){#admiralDeck .qd-tabs{grid-template-columns:repeat(2,minmax(0,1fr));}#admiralDeck #qdPanel-evidence .qd-evidence-gates{grid-template-columns:1fr;}}

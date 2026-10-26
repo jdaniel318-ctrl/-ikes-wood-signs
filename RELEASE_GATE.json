@@ -1,14 +1,16 @@
 {
-  "schema": "fleetclarity-release-gate-v1",
-  "build": "8.8.20.64",
-  "release": "Fleetclarity",
+  "schema": "keelwatch-release-gate-v1",
+  "build": "8.8.20.65",
+  "release": "Keelwatch",
   "pass": true,
-  "verification_status": "OFFLINE_FLEETCLARITY_CHECKS_PASSED",
-  "evidence_file": "FLEETCLARITY_EVIDENCE.json",
-  "native_safari_acceptance": "pending user test",
-  "native_camera_acceptance": "pending user test",
-  "native_mail_share_acceptance": "pending user test",
-  "provider_attachment_acceptance": "not tested live",
-  "inbox_delivery": "not verified",
-  "machine_production_acceptance": "not claimed"
+  "verification_status": "OFFLINE_STATIC_AND_ISOLATED_UI_PASS",
+  "native_safari_acceptance": "PENDING",
+  "captain_handoff": "server records observed, effectiveness and revocation-denial not fully tested",
+  "backup_restore": "NOT VERIFIED",
+  "customer_data_changes": false,
+  "database_actions": "none",
+  "evidence_file": "KEELWATCH_EVIDENCE.json",
+  "full_engine_network_boot": "unverified - browser navigation restricted",
+  "server_isolation_negative_tests": "NOT VERIFIED",
+  "customer_data_mutations": false
 }

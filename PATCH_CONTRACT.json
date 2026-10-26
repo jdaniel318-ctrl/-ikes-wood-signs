@@ -1,26 +1,16 @@
 {
   "schema": "blackflag-patch-contract-v1",
-  "target_build": "8.8.20.64",
-  "target_seal": "fleetclarity-882064",
+  "target_build": "8.8.20.65",
+  "target_seal": "keelwatch-882065",
   "supported_bases": [
     {
-      "build": "8.8.20.63",
-      "seal": "fleetcare-882063",
-      "sha256": "ca480d35aaed39281e8b6f3b0e22506df64e5a21599ff8f55845ed1a21110a27",
-      "content_sha256": "6b4134fe41065093cc51dcdde4ba69a35bcac13816f5bb464c46d28eb986ef25",
-      "content_digest_algorithm": "release-content-sha256-v1"
+      "build": "8.8.20.64",
+      "source": "GitHub repository supplied by Captain Oct 25 2026",
+      "verification": "All 47 delivered Fleetclarity patch files byte-for-byte confirmed in the GitHub archive"
     }
   ],
-  "delivered_baseline": {
-    "archive": "DarkSky882063-Fleetcare-FullBackup.zip",
-    "archive_sha256": "ca480d35aaed39281e8b6f3b0e22506df64e5a21599ff8f55845ed1a21110a27",
-    "build": "8.8.20.63",
-    "file_count": 430,
-    "content_sha256": "6b4134fe41065093cc51dcdde4ba69a35bcac13816f5bb464c46d28eb986ef25",
-    "record": "FLEETCLARITY_BASELINE.json"
-  },
   "requires_deletions": false,
   "max_upload_files": 85,
   "database_actions": "none",
-  "rule": "Apply every update file over the verified Fleetcare .63 release. Replace matching filenames and retain all other files. No SQL, browser-data clearing or data reset."
+  "rule": "Apply changed/new file contents over the verified 8.8.20.64 GitHub repository root. Keep all other files. No SQL, browser-data clearing or data reset."
 }

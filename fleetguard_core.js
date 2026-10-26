@@ -14,7 +14,7 @@
   const items=[
    ['identity','Identity verified',proof(input.identity,vessel)],
    ['boundary','Isolation negative tests',proof(input.isolation,vessel)&&input.isolation.cross_vessel_denied===true],
-   ['captain_appointment','Captain appointment accepted by intended user',proof(input.captain_appointment,vessel)&&token(input.captain_appointment.role)==='project_owner'&&!!token(input.captain_appointment.subject_id)&&input.captain_appointment.accepted===true],
+   ['captain_appointment','Captain appointment accepted by intended user',proof(input.captain_appointment,vessel)&&token(input.captain_appointment.role)==='operator'&&!!token(input.captain_appointment.subject_id)&&input.captain_appointment.accepted===true],
    ['captain_revocation','Captain revocation path tested',proof(input.captain_revocation,vessel)],
    ['backup','Durable backup independently verified',proof(input.backup,vessel)&&input.backup.retrievable===true],
    ['restore','Restore into same vessel tested',proof(input.restore,vessel)&&input.restore.restored===true&&input.restore.cross_vessel_access===false],

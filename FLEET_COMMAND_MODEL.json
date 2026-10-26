@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-command-model-v1",
-  "build": "8.8.20.64",
+  "build": "8.8.20.65",
   "views": {
     "operational": "professional-default",
     "presentation": "cinematic-secondary"

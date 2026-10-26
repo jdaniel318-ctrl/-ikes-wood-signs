@@ -1,0 +1,65 @@
+{
+  "schema": "blackflag-keelwatch-evidence-v1",
+  "build": "8.8.20.65",
+  "release": "Keelwatch",
+  "status": "OFFLINE_STATIC_AND_ISOLATED_UI_TESTS_PASSED; NATIVE_DEVICE_ACCEPTANCE_PENDING",
+  "scope": "Existing Admiral Delegate now includes per-vessel evidence readback from already-authorized RPC list responses.",
+  "source_recovery": {
+    "file": "-ikes-wood-signs-main 2.zip",
+    "sha256": "c8a0b795e471b499ee836666f9d1a630ec58122f6475ebefb7e1fd87051674da",
+    "complete_repo_files": 609,
+    "release_64_patch_files_identical": 47,
+    "recovered_application_source": true,
+    "production_database_backup": false
+  },
+  "checks": {
+    "static": 30,
+    "isolated_browser_viewports": [
+      {
+        "viewport": "1190x850",
+        "passed": true,
+        "nine_gates": 9,
+        "export_project": "ikes-wood-signs",
+        "session_end_blocks_export": true
+      },
+      {
+        "viewport": "430x850",
+        "passed": true,
+        "nine_gates": 9,
+        "export_project": "ikes-wood-signs",
+        "session_end_blocks_export": true
+      }
+    ],
+    "protected_shop_modules_unchanged": [
+      "boardcraft_photo.js",
+      "ike_shop_core.js",
+      "ike_shop_store.js",
+      "ike_shop_delivery.js",
+      "carvewright_portable.js",
+      "carvewright_cam.js",
+      "carve_fonts.js",
+      "carvewright_clipper.js",
+      "fleet_design_assets.js",
+      "quartermaster_pdf.js"
+    ],
+    "read_only_rpc_names": [
+      "admiral_list_vessels_for_branding",
+      "admiral_list_captain_appointments"
+    ],
+    "controller_appointment_calls_retained": true,
+    "server_schema_migration": false,
+    "session_ended_denies_download": true
+  },
+  "truth_limits": [
+    "Not a real Admiral account login or live RPC read test",
+    "Production startup over HTTPS was not independently verified due to browser network policy",
+    "Node Playwright-based legacy Boardcraft tests could not run in this environment; protected modules unchanged",
+    "Isolated UI tests use synthetic server readbacks; original verified production fixtures remain historical",
+    "Backup and restore of production records are not verified",
+    "Captain authority appointment, revocation denial and actual live deployment are not proven"
+  ],
+  "customer_records_changed": false,
+  "live_email_sent": false,
+  "database_writes": false,
+  "native_ipad_acceptance": "PENDING USER CHECK"
+}
