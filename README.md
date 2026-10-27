@@ -1,3 +1,13 @@
+# Fairlead 8.8.20.68 — Current release
+Current upload: `DarkSky882068-Fairlead-Upload.zip` (also delivered as byte-identical `Fairlead68.zip`).
+Matching complete source: `DarkSky882068-Fairlead-FullBackup.zip`.
+Baseline: Cleardeck 8.8.20.67, 630 files. No deletions, database operations or permission changes.
+Read `FAIRLEAD_GUIDE.md`, `CURRENT_BASELINE.json` and `FAIRLEAD_EVIDENCE.json`.
+Check: `node VERIFY_FAIRLEAD_ALL.cjs . ../fairlead-check-evidence`.
+Package: `python3 -B BUILD_RELEASE.py . --baseline /path/to/DarkSky882067-Cleardeck-FullBackup.zip --out ../new-fairlead-output`.
+
+## Earlier releases — historical evidence only
+
 # Cleardeck 8.8.20.67 — Current release
 
 Current upload: `DarkSky882067-Cleardeck-Upload.zip`.

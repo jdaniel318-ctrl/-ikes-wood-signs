@@ -1,17 +1,15 @@
 {
   "schema": "blackflag-release-gate-v1",
-  "build": "8.8.20.67",
-  "release": "Cleardeck",
+  "build": "8.8.20.68",
+  "release": "Fairlead",
   "pass": true,
-  "verification_status": "OFFLINE_CHECKS_PASS_NATIVE_ACCEPTANCE_PENDING",
+  "verification_status": "SELECTED_OFFLINE_CHECKS_PASS_NATIVE_ACCEPTANCE_PENDING",
   "native_safari_acceptance": "PENDING",
-  "captain_handoff": "Observed and revoked on .65; this release changes no memberships",
-  "backup_restore": "Encrypted partial snapshot and read-only file verification; server restore NOT IMPLEMENTED",
-  "customer_data_changes": false,
   "database_actions": "none",
-  "evidence_file": "CLEARDECK_EVIDENCE.json",
-  "full_engine_network_boot": "Not verified in build environment: browser URL navigation blocked by policy",
-  "server_isolation_negative_tests": "Previously witnessed VoyageKeeper->Ike UI denied; .66 native recheck pending",
-  "customer_data_mutations": false,
-  "production_certification": false
+  "customer_data_changes": false,
+  "production_certification": false,
+  "evidence_file": "FAIRLEAD_EVIDENCE.json",
+  "performance_improvement_claim": false,
+  "backup_restore": "Software archives only. Existing partial encrypted snapshot retained; no server restoration added.",
+  "full_engine_network_boot": "NOT VERIFIED: environment blocked local URL navigation; file-backed loader validation passed"
 }

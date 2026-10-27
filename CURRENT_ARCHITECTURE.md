@@ -1,3 +1,24 @@
+# Fairlead 8.8.20.68 — Current release
+Current upload: `DarkSky882068-Fairlead-Upload.zip` (also delivered as byte-identical `Fairlead68.zip`).
+Matching complete source: `DarkSky882068-Fairlead-FullBackup.zip`.
+Baseline: Cleardeck 8.8.20.67, 630 files. No deletions, database operations or permission changes.
+Read `FAIRLEAD_GUIDE.md`, `CURRENT_BASELINE.json` and `FAIRLEAD_EVIDENCE.json`.
+Check: `node VERIFY_FAIRLEAD_ALL.cjs . ../fairlead-check-evidence`.
+Package: `python3 -B BUILD_RELEASE.py . --baseline /path/to/DarkSky882067-Cleardeck-FullBackup.zip --out ../new-fairlead-output`.
+
+## Current change boundary
+The verified static loader, same-origin route shield, Admiral/owner/Captain session separation, exact-vessel authorization, local drafts, existing remote operations, specialist tools and all 630 baseline files remain.
+Only index.html has runtime behavior additions: a bounded in-memory timing collector, guarded observation calls, and a disclosure within the existing Engineering Systems performance section.
+The collector cannot grant authority, clear storage, change a record, weaken a hash check or send telemetry.
+Root runtime versions still update as required by the existing cross-file identity contract; that contract is not removed in this release.
+`BUILD_RELEASE.py` runs outside the browser and produces validated artifacts without deploying them. It never auto-seals unknown modified content.
+Full startup remains dependent on the same file groups; measurements precede optimization.
+
+## Authoritative records
+Nothing moves between browser and server stores in this build. Source ZIPs are not business-data backups. Existing partial encrypted recovery remains separate from full server restoration.
+See the prior architecture record below for retained historical context, not current upload instructions.
+
+## Historical architecture — do not use older upload instructions
 # Cleardeck 8.8.20.67 — Current release
 
 Current upload: `DarkSky882067-Cleardeck-Upload.zip`.

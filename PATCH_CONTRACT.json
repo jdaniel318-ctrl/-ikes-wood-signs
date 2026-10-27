@@ -1,16 +1,16 @@
 {
   "schema": "blackflag-patch-contract-v1",
-  "target_build": "8.8.20.67",
-  "target_seal": "cleardeck-882067",
+  "target_build": "8.8.20.68",
+  "target_seal": "fairlead-882068",
   "supported_bases": [
     {
-      "build": "8.8.20.66",
-      "source_sha256": "87420afd7d12838348a5dfb93829152c6f8e6be518b6b088399612b17c35ab1e",
-      "file_count": 619
+      "build": "8.8.20.67",
+      "source_sha256": "74ab64a6582a23d50a88711b53d3278620cfbf97da28168cd2dd4d10bdcef410",
+      "file_count": 630
     }
   ],
   "requires_deletions": false,
   "max_upload_files": 85,
   "database_actions": "none",
-  "rule": "Upload ALL changed/new root files over .66. Retain every other file. No SQL, data clearing or permission changes."
+  "rule": "Upload all changed/new root files over complete .67. Keep everything else. No SQL, permission or record changes."
 }

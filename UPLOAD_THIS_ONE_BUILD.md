@@ -1,23 +1,22 @@
-# Cleardeck 8.8.20.67 — Current release
+# Fairlead 8.8.20.68 — Current release
+Current upload: `DarkSky882068-Fairlead-Upload.zip` (also delivered as byte-identical `Fairlead68.zip`).
+Matching complete source: `DarkSky882068-Fairlead-FullBackup.zip`.
+Baseline: Cleardeck 8.8.20.67, 630 files. No deletions, database operations or permission changes.
+Read `FAIRLEAD_GUIDE.md`, `CURRENT_BASELINE.json` and `FAIRLEAD_EVIDENCE.json`.
+Check: `node VERIFY_FAIRLEAD_ALL.cjs . ../fairlead-check-evidence`.
+Package: `python3 -B BUILD_RELEASE.py . --baseline /path/to/DarkSky882067-Cleardeck-FullBackup.zip --out ../new-fairlead-output`.
 
-Current upload: `DarkSky882067-Cleardeck-Upload.zip`.
-Matching full-source archive: `DarkSky882067-Cleardeck-FullBackup.zip`.
-Supported baseline: the supplied Ironhaven 8.8.20.66 source (619 files).
+## iPad upload
+Extract the Upload ZIP, open its one folder, and upload ALL inner files to the EXISTING repository ROOT. Replace matching files; keep everything else.
+Do not upload the ZIP itself, the enclosing folder, or the full backup as the update.
+Do not run scripts, SQL, cleanup, resets or new appointments for this update.
+After GitHub deployment, check Engine **8.8.20.68 · FAIRLEAD**.
+Open **Engineering Systems → STARTUP MEASUREMENT · THIS PAGE** within the existing performance section.
+Download the startup report once. It contains timings and release identity, not personal or business content.
+No old customer-design or password test needs repeating.
 
-Read `UPLOAD_THIS_ONE_BUILD.md`, `CLEARDECK_GUIDE.md`, `CURRENT_BASELINE.json`, and `CLEARDECK_EVIDENCE.json` first.
-Run `node VERIFY_CLEARDECK_ALL.cjs . ../cleardeck-check-evidence` on the complete release.
-This is an incremental cleanup, not a new platform or database migration.
-
-## Upload
-
-Extract the Upload ZIP. Open its single folder and upload EVERY FILE INSIDE into the existing repository ROOT. Replace matching files; keep all others. Do not upload the ZIP itself or nest its folder under the website.
-The patch must be applied to .66, not an arbitrary older release. All patch files, including manifests and checksums, are required together.
-Do not clear Safari data, run SQL or activate the historical dry-dock deletion workflow.
-
-After deployment, reopen the Engine and confirm `8.8.20.67 · CLEARDECK`. The current integrity gate must stay enabled.
-
-## Field acceptance
-
-Use the existing account session where possible. Check that a roster without assignments says no active vessel assignments and Account Security remains available.
-Keep passwords out of screenshots. Do not deliberately change a password merely to test wording. Native AutoFill can be checked during the next normal sign-in.
-No repeat sign-design or two-board trial is required for this cleanup.
+## Source continuity
+The update is generated and reconstructed against the exact .67 archive.
+FullBackup is complete software source, not Supabase business data or media.
+A separate software-only rollback is provided; never restore data or revoked authority to roll back the UI.
+No hosted workflow is activated; your upload routine is unchanged.

@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.67",
-  "release": "Cleardeck",
-  "seal": "cleardeck-882067",
+  "build": "8.8.20.68",
+  "release": "Fairlead",
+  "seal": "fairlead-882068",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Cleardeck",
-  "name": "Cleardeck",
-  "releaseName": "Cleardeck"
+  "release_name": "Fairlead",
+  "name": "Fairlead",
+  "releaseName": "Fairlead"
 }

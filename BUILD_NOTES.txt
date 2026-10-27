@@ -1,3 +1,6 @@
+FAIRLEAD 8.8.20.68: verified software artifact production and page-local startup evidence. Preserve all source names, business workflows, auth/data boundaries and loading protections. See FAIRLEAD_GUIDE.md. No performance-improvement claim.
+
+HISTORICAL NOTES:
 CLEARDECK 8.8.20.67: bounded account-message, release-reference and verification-tool cleanup over Ironhaven .66. No SQL, authority or data changes; no passkeys or loading optimization. Native Safari pending.
 
 HISTORICAL NOTES:

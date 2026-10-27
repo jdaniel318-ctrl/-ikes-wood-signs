@@ -1,15 +1,18 @@
 {
   "schema": "blackflag-current-baseline-v1",
-  "build": "8.8.20.67",
-  "release": "Cleardeck",
-  "seal": "cleardeck-882067",
-  "base": "8.8.20.66",
-  "base_source_files": 619,
-  "base_sha256": "87420afd7d12838348a5dfb93829152c6f8e6be518b6b088399612b17c35ab1e",
-  "upload": "DarkSky882067-Cleardeck-Upload.zip",
-  "full_source_backup": "DarkSky882067-Cleardeck-FullBackup.zip",
+  "build": "8.8.20.68",
+  "release": "Fairlead",
+  "seal": "fairlead-882068",
+  "base": "8.8.20.67",
+  "base_source_files": 630,
+  "base_sha256": "74ab64a6582a23d50a88711b53d3278620cfbf97da28168cd2dd4d10bdcef410",
+  "prepared_at": "2026-10-27T20:38:55+00:00",
+  "upload": "DarkSky882068-Fairlead-Upload.zip",
+  "full_source_backup": "DarkSky882068-Fairlead-FullBackup.zip",
   "database_backup": false,
   "canonical_instructions": "UPLOAD_THIS_ONE_BUILD.md",
-  "check_command": "node VERIFY_CLEARDECK_ALL.cjs . ../cleardeck-check-evidence",
-  "native_acceptance": "pending"
+  "check_command": "node VERIFY_FAIRLEAD_ALL.cjs . ../fairlead-check-evidence",
+  "package_command": "python3 -B BUILD_RELEASE.py . --baseline /path/to/DarkSky882067-Cleardeck-FullBackup.zip --out ../fairlead-release-output",
+  "native_acceptance": "pending",
+  "browser_measurement": "Local/offline observation is not hosted/iPad latency"
 }

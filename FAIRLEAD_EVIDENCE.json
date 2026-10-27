@@ -1,0 +1,48 @@
+{
+  "schema": "blackflag-fairlead-evidence-v1",
+  "build": "8.8.20.68",
+  "release": "Fairlead",
+  "prepared_at": "2026-10-27T20:38:55+00:00",
+  "scope": "local source and offline verification; no live deployment or authority changes",
+  "baseline": "8.8.20.67",
+  "tests": {
+    "offline_suites": "13 selected suites passed; rerun by the artifact builder",
+    "release_pipeline_unit_cases": 20,
+    "startup_collector_cases": 18,
+    "actual_loader_control_flow_cases": 5,
+    "existing_release_integrity_cases": 18,
+    "existing_body_preflight_cases": 8,
+    "account_message_cases": 46,
+    "encrypted_recovery_cases": 18,
+    "account_browser_fixture_checks": 32,
+    "startup_dom_fixture_checks": 18,
+    "test_scope": "Real WebCrypto and file hashes; loader transport/DOM/script-onload fixtures; browser account Auth fixtures; no live API credentials.",
+    "shipped_theme_contrast": "RED observed, scoped correction, GREEN with real stylesheet"
+  },
+  "boundaries": {
+    "deployed": false,
+    "database_mutations": false,
+    "customer_data_mutations": false,
+    "permissions_changed": false,
+    "passkeys_implemented": false,
+    "loading_optimized": false,
+    "native_safari": "pending",
+    "source_backup_only": true
+  },
+  "startup_measurement": {
+    "source_body_count": 62,
+    "uncompressed_required_body_bytes": 7296390,
+    "cold_warm_loopback": "NOT MEASURED: Chromium navigation blocked by administrator in this environment",
+    "native_safari": "PENDING",
+    "no_speed_improvement_claim": true,
+    "new_user_capability": "Current-page device-local verified-loader timing and explicit local JSON download"
+  },
+  "review": {
+    "independent_reviewer": false,
+    "method": "self-review of complete diff, baseline preservation and executable failure-path checks",
+    "loading_sequence_preserved": true,
+    "authoritative_data_or_auth_code_changed": false,
+    "only_behavioral_runtime_change": "index.html bounded startup measurements and existing Engineering Systems disclosure",
+    "note": "Self-review and automated checks only; no independent reviewer was available."
+  }
+}
