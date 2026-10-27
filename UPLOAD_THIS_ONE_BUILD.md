@@ -1,7 +1,23 @@
-# Ironhaven 8.8.20.66 — Upload this ZIP only
+# Cleardeck 8.8.20.67 — Current release
 
-Upload `DarkSky882066-Ironhaven-Upload44.zip` (the single internal folder's contents) **over the existing Keelwatch 8.8.20.65 repository**. Replace matching files and keep all others. The full backup is a separate archival ZIP. Do not clear Safari storage or run SQL.
+Current upload: `DarkSky882067-Cleardeck-Upload.zip`.
+Matching full-source archive: `DarkSky882067-Cleardeck-FullBackup.zip`.
+Supported baseline: the supplied Ironhaven 8.8.20.66 source (619 files).
 
-**What changed:** the appointed Captain account can set/change its own Supabase password even if appointment was revoked; appointed Captains can download and verify an AES-256-GCM encrypted **partial** recovery snapshot for their own vessel. NO restoration to Supabase, no automatic cloud backup, no authority grant.
+Read `UPLOAD_THIS_ONE_BUILD.md`, `CLEARDECK_GUIDE.md`, `CURRENT_BASELINE.json`, and `CLEARDECK_EVIDENCE.json` first.
+Run `node VERIFY_CLEARDECK_ALL.cjs . ../cleardeck-check-evidence` on the complete release.
+This is an incremental cleanup, not a new platform or database migration.
 
-**Verification:** run `node VERIFY_IRONHAVEN_CORE.cjs` and `node VERIFY_IRONHAVEN_RELEASE.cjs` in a full release directory. iPad password-provider confirmation and native encrypted download remain to be tested. See IRONHAVEN_GUIDE.md.
+## Upload
+
+Extract the Upload ZIP. Open its single folder and upload EVERY FILE INSIDE into the existing repository ROOT. Replace matching files; keep all others. Do not upload the ZIP itself or nest its folder under the website.
+The patch must be applied to .66, not an arbitrary older release. All patch files, including manifests and checksums, are required together.
+Do not clear Safari data, run SQL or activate the historical dry-dock deletion workflow.
+
+After deployment, reopen the Engine and confirm `8.8.20.67 · CLEARDECK`. The current integrity gate must stay enabled.
+
+## Field acceptance
+
+Use the existing account session where possible. Check that a roster without assignments says no active vessel assignments and Account Security remains available.
+Keep passwords out of screenshots. Do not deliberately change a password merely to test wording. Native AutoFill can be checked during the next normal sign-in.
+No repeat sign-design or two-board trial is required for this cleanup.

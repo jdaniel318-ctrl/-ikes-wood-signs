@@ -1,16 +1,16 @@
 {
   "schema": "blackflag-patch-contract-v1",
-  "target_build": "8.8.20.66",
-  "target_seal": "ironhaven-882066",
+  "target_build": "8.8.20.67",
+  "target_seal": "cleardeck-882067",
   "supported_bases": [
     {
-      "build": "8.8.20.65",
-      "source": "Verified Keelwatch full-source ZIP",
-      "verification": "Exact full 613-file source baseline recovered"
+      "build": "8.8.20.66",
+      "source_sha256": "87420afd7d12838348a5dfb93829152c6f8e6be518b6b088399612b17c35ab1e",
+      "file_count": 619
     }
   ],
   "requires_deletions": false,
   "max_upload_files": 85,
   "database_actions": "none",
-  "rule": "Upload changed/new files over the verified .65 repository root. Retain all other files. No SQL, account reset or browser-data clearing."
+  "rule": "Upload ALL changed/new root files over .66. Retain every other file. No SQL, data clearing or permission changes."
 }

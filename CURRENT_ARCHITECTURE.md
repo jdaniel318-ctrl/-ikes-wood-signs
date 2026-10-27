@@ -1,3 +1,23 @@
+# Cleardeck 8.8.20.67 — Current release
+
+Current upload: `DarkSky882067-Cleardeck-Upload.zip`.
+Matching full-source archive: `DarkSky882067-Cleardeck-FullBackup.zip`.
+Supported baseline: the supplied Ironhaven 8.8.20.66 source (619 files).
+
+Read `UPLOAD_THIS_ONE_BUILD.md`, `CLEARDECK_GUIDE.md`, `CURRENT_BASELINE.json`, and `CLEARDECK_EVIDENCE.json` first.
+Run `node VERIFY_CLEARDECK_ALL.cjs . ../cleardeck-check-evidence` on the complete release.
+This is an incremental cleanup, not a new platform or database migration.
+
+## Architecture retained
+
+The static verified loader, separate owner/Captain/Admiral authority contexts, exact-vessel checks, local draft stores, server operations, private-preview containment and specialist tools are retained.
+This release changes account labels/error presentation, password-manager HTML metadata, current release references and repeatable verification/measurement tooling only.
+No SQL, data migration, font removal, new server service, authority grant or production restore is included.
+
+## Historical reference — NOT current upload instructions
+
+The earlier architecture narrative below is preserved for traceability. Use the current entrypoint above for this release.
+
 # Fleetclarity 8.8.20.64
 
 **Upload: DarkSky882064-Fleetclarity-Upload47.zip** — **47 changed/new files** over **Fleetcare 8.8.20.63**.

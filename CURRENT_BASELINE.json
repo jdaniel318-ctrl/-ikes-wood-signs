@@ -1,0 +1,15 @@
+{
+  "schema": "blackflag-current-baseline-v1",
+  "build": "8.8.20.67",
+  "release": "Cleardeck",
+  "seal": "cleardeck-882067",
+  "base": "8.8.20.66",
+  "base_source_files": 619,
+  "base_sha256": "87420afd7d12838348a5dfb93829152c6f8e6be518b6b088399612b17c35ab1e",
+  "upload": "DarkSky882067-Cleardeck-Upload.zip",
+  "full_source_backup": "DarkSky882067-Cleardeck-FullBackup.zip",
+  "database_backup": false,
+  "canonical_instructions": "UPLOAD_THIS_ONE_BUILD.md",
+  "check_command": "node VERIFY_CLEARDECK_ALL.cjs . ../cleardeck-check-evidence",
+  "native_acceptance": "pending"
+}

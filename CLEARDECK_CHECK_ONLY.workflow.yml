@@ -1,0 +1,16 @@
+# Inert template. To enable deliberately, copy to .github/workflows/cleardeck-check.yml.
+# This does not deploy, delete source, restore data, or change permissions.
+name: Black Flag Cleardeck check only
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify complete checked-out release
+        run: node VERIFY_CLEARDECK_ALL.cjs . "$RUNNER_TEMP/cleardeck-evidence"
+# After installing the template, its new .github path must be deliberately added
+# to the signed-off inventory by the next build; it is not activated by Upload.zip.

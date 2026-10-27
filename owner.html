@@ -148,11 +148,11 @@
 .tb-recovery-grid .btn{width:100%;min-height:46px;font-size:13px}
 @media(max-width:700px){.tb-security-form,.tb-recovery-grid{grid-template-columns:1fr}.tb-security-form>.captain-handoff-actions{grid-column:auto}}
 </style>
-<link rel="stylesheet" href="business_deck.css?v=ironhaven-882066" onerror="window.__workhorseDeckStylesFailed=true">
-<script src="input_hygiene.js?v=ironhaven-882066"></script>
-<script src="business_deck.js?v=ironhaven-882066"></script>
-<script src="fleet_supabase.js?v=ironhaven-882066"></script>
-<script src="fleet_recovery_core.js?v=ironhaven-882066"></script>
+<link rel="stylesheet" href="business_deck.css?v=cleardeck-882067" onerror="window.__workhorseDeckStylesFailed=true">
+<script src="input_hygiene.js?v=cleardeck-882067"></script>
+<script src="business_deck.js?v=cleardeck-882067"></script>
+<script src="fleet_supabase.js?v=cleardeck-882067"></script>
+<script src="fleet_recovery_core.js?v=cleardeck-882067"></script>
 <link rel="stylesheet" href="fleet_viewport.css?harborhold=882049"><script src="fleet_viewport.js?harborhold=882049"></script><script src="headway_contracts.js?harborhold=882049"></script>
 </head>
 <body>
@@ -218,7 +218,7 @@
   <section id="portal" class="portal hidden">
     <div class="portal-wrap">
       <header class="portal-head">
-        <div class="bd-brand-heading"><div id="businessHeaderLogo" aria-hidden="true"></div><div><div class="eyebrow">8.8.20.66 · QUARTERMASTER</div><h1 id="portalName">Business</h1><span class="owner-badge">● SECURE OWNER SESSION</span><div id="ownerScopeNote" class="owner-scope-note">Verified for this business only</div></div></div>
+        <div class="bd-brand-heading"><div id="businessHeaderLogo" aria-hidden="true"></div><div><div class="eyebrow">8.8.20.67 · QUARTERMASTER</div><h1 id="portalName">Business</h1><span class="owner-badge">● SECURE OWNER SESSION</span><div id="ownerScopeNote" class="owner-scope-note">Verified for this business only</div></div></div>
         <div class="head-actions"><button id="returnEngine" class="btn ghost hidden">RETURN TO BLACK FLAG</button><button id="signOut" class="btn secondary">SIGN OUT</button></div>
       </header>
       <nav id="businessDeckNav" class="bd-owner-nav" aria-label="Business workspace"></nav>
@@ -241,7 +241,7 @@
   const q=new URLSearchParams(location.search);
   if(q.get('surface')!=='vessel-captain')return;
   window.__darkSkyVesselCaptainRouteActive=true;
-  const BUILD='8.8.20.66', input=window.BlackFlagInput;
+  const BUILD='8.8.20.67', input=window.BlackFlagInput;
   let projectId=String(q.get('project')||'').trim().toLowerCase();
   const invalidRoute=q.getAll('project').length>1||q.getAll('surface').length!==1||(projectId&&!/^[a-z0-9][a-z0-9-]{0,95}$/.test(projectId));
   const SUPABASE_URL='https://sjgqqtnuttnkwsoebbqf.supabase.co', SUPABASE_KEY='sb_publishable_gvWfIBQg4ew2RvVr6CpJSg_8y02QmKy', SESSION_KEY='darkSkySupabaseVesselCaptainSessionV1';
@@ -262,30 +262,59 @@
   }
   // Account security is independent of vessel authority: even a former Captain
   // may secure their own authenticated account, without regaining any appointment.
+  // Cleardeck account messages begin — presentation only; never grants authority.
+  function captainAccountLabel(records){
+    const rows=Array.isArray(records)?records:[];
+    if(rows.some(a=>a&&a.status==='accepted'&&!a.revoked_at))return 'Appointed Captain — assigned vessels only';
+    if(rows.some(a=>a&&a.status==='pending'&&!a.revoked_at))return 'Pending Captain appointment — no operating access yet';
+    return 'Signed in — no active vessel assignments';
+  }
+  function accountSecurityFailure(error){
+    const code=String(error?.code||'').toLowerCase(),status=Number(error?.status||0);
+    // Use provider text only to recognize older responses. Never echo arbitrary
+    // backend payloads: an error can contain sensitive values supplied by a caller.
+    const text=String(error?.message||'');
+    if(code==='same_password'||(!code&&/different from the old password|same (?:as the )?(?:old|current) password/i.test(text)))
+      return 'This already matches your current password. No password change was made. Use a different password to change it.';
+    if(code==='weak_password')return 'Choose a stronger, unique password with 12 to 128 characters. The account provider did not accept this password.';
+    if(['reauthentication_needed','reauth_nonce_missing'].includes(code))return 'Recent account verification is required. Tap EMAIL SECURITY CODE once, then enter the code and your new password. No password change is confirmed yet.';
+    if(['reauthentication_not_valid','otp_expired'].includes(code))return 'The security code was not accepted or has expired. Use the newest code for this account; request another only if needed. No password change is confirmed.';
+    if(code==='account_identity_mismatch')return 'The account confirmation did not match the signed-in account. No success is claimed. Sign in again as the intended account before checking its password.';
+    if(['session_expired','session_not_found','bad_jwt','no_authorization','refresh_token_not_found'].includes(code)||status===401||(!code&&/session expired|sign-in is required|identity could not be verified|signed-in account changed/i.test(text)))return 'Sign in again with this account using its password or a new secure email link, then reopen Account Security. The password update is not confirmed.';
+    if(['over_request_rate_limit','over_email_send_rate_limit','over_sms_send_rate_limit'].includes(code)||status===429)return 'Too many requests. Please wait before making another attempt. Do not keep requesting codes or submitting the form.';
+    if(code==='current_password_required')return 'The provider requires your current password. Enter it in Current password, then submit the new password again.';
+    if(['invalid_credentials','invalid_password'].includes(code))return 'Account verification was refused. Check any required current password, or sign in again with the intended account. The new password is not confirmed.';
+    if(error?.name==='AbortError'||error?.name==='TypeError'||/timed? ?out|network|failed to fetch|connection/i.test(text))return 'The password update could not be confirmed because the connection was interrupted. Do not submit repeatedly. Check whether the new password works before trying another change.';
+    const reference=/^[a-z][a-z_]{1,47}$/.test(code)?' Reference: '+code+(status?' (HTTP '+status+')':'')+'.':'';
+    return 'Password update not confirmed. No success was recorded. Keep this page open and report this message without sharing passwords or security codes.'+reference;
+  }
+  // Cleardeck account messages end
   function accountSecurityMarkup(){
     return `<details class="tb-security"><summary>ACCOUNT SECURITY · SET OR CHANGE PASSWORD</summary>
       <p class="muted">Only your signed-in account can change its password. This does not appoint a Captain or restore a revoked vessel.</p>
-      <form id="captainPasswordForm" class="tb-security-form" autocomplete="off">
-        <label>New password<input id="captainNewPassword" type="password" data-bf-trim="preserve" autocomplete="new-password" minlength="12" required></label>
-        <label>Confirm new password<input id="captainConfirmPassword" type="password" data-bf-trim="preserve" autocomplete="new-password" minlength="12" required></label>
-        <label>Current password (only if your account requires it)<input id="captainOldPassword" type="password" data-bf-trim="preserve" autocomplete="current-password"></label>
-        <label>Reauthentication code (only if Supabase requests one)<input id="captainReauthCode" type="text" autocomplete="one-time-code" inputmode="numeric" maxlength="12"></label>
+      <form id="captainPasswordForm" class="tb-security-form" autocomplete="on">
+        <label style="grid-column:1/-1">Account email<input id="captainSecurityEmail" type="email" name="username" autocomplete="username" readonly value="${esc(person?.email||'')}" aria-label="Password change account email"></label>
+        <label>New password<input id="captainNewPassword" name="new_password" type="password" data-bf-trim="preserve" autocomplete="new-password" minlength="12" required></label>
+        <label>Confirm new password<input id="captainConfirmPassword" name="confirm_new_password" type="password" data-bf-trim="preserve" autocomplete="new-password" minlength="12" required></label>
+        <label>Current password (only if your account requires it)<input id="captainOldPassword" name="current_password" type="password" data-bf-trim="preserve" autocomplete="current-password"></label>
+        <label>Reauthentication code (only if Supabase requests one)<input id="captainReauthCode" name="reauthentication_code" type="text" autocomplete="one-time-code" inputmode="numeric" maxlength="12"></label>
         <div class="captain-handoff-actions"><button id="captainSetPassword" type="submit" class="btn primary">SAVE MY NEW PASSWORD</button><button id="captainRequestReauth" type="button" class="btn ghost">EMAIL SECURITY CODE</button></div>
       </form>
       <p id="captainSecurityStatus" role="status" aria-live="polite" class="captain-handoff-status">Use a unique password of at least 12 characters. Nothing is changed until the server confirms it.</p>
+      <p class="muted">Your personal device's password manager can help fill these fields. Do not save credentials on a shared shop device.</p>
     </details>`;
   }
   async function securityRequest(endpoint,body,method='POST'){
     const s=await stationRead(client.currentSession());
-    if(!s?.access_token)throw new Error('Your session expired. Sign in again using your secure email link.');
+    if(!s?.access_token)throw Object.assign(new Error('Your session expired.'),{code:'session_expired'});
     const p=await verifyPerson();
-    if(!person || person.id!==p.id)throw new Error('The account identity changed. No password command was sent.');
+    if(!person || person.id!==p.id)throw Object.assign(new Error('The account identity changed.'),{code:'account_identity_mismatch'});
     const controller=new AbortController();securityController=controller;
     let r;
     try{r=await stationRead(fetch(SUPABASE_URL+endpoint,{method,cache:'no-store',signal:controller.signal,headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+s.access_token,'Content-Type':'application/json'},body:JSON.stringify(body)}));}
     finally{if(securityController===controller)securityController=null;}
     let result={};try{result=await r.json();}catch(_){}
-    if(!r.ok)throw new Error(String(result?.msg||result?.error_description||result?.message||result?.code||'Password change was refused by the account provider.').slice(0,300));
+    if(!r.ok)throw Object.assign(new Error(String(result?.msg||result?.error_description||result?.message||'Account provider refused the request.').slice(0,300)),{code:String(result?.error_code||result?.code||''),status:r.status});
     return result;
   }
   function bindAccountSecurity(){
@@ -307,16 +336,16 @@
         const payload={password};if(previous)payload.current_password=previous;if(nonce)payload.nonce=nonce;
         const result=await securityRequest('/auth/v1/user',payload,'PUT');
         if(epoch!==stationEpoch)return;
-        if(result?.id!==person?.id)throw new Error('Account update readback did not match the signed-in user. Sign in again to check the saved password.');
+        if(result?.id!==person?.id)throw Object.assign(new Error('Account update readback did not match the signed-in user.'),{code:'account_identity_mismatch'});
         // Passwords and reauthentication codes are never retained in any app storage.
         form.reset();client.clearSession();renderLogin('Account password updated. Sign in with the new password to verify it. Vessel permissions were not changed.');
-      }catch(error){if(epoch===stationEpoch)say('Password not confirmed: '+String(error.message||error).slice(0,240)+'. If recent sign-in is required, request a fresh email link or a security code.');}
+      }catch(error){if(epoch===stationEpoch)say(accountSecurityFailure(error));}
       finally{form.reset();busy=false;if(save.isConnected)save.disabled=false;}
     };
     button.onclick=async()=>{
       if(busy)return;busy=true;button.disabled=true;
       try{await securityRequest('/auth/v1/reauthenticate',{});say('A security code has been requested for the signed-in account. Check your email, then enter it above.');}
-      catch(error){say('Security code request not confirmed: '+String(error.message||error).slice(0,220));}
+      catch(error){say('Security code request not confirmed. '+accountSecurityFailure(error));}
       finally{busy=false;if(button.isConnected)button.disabled=false;}
     };
   }
@@ -400,7 +429,7 @@
     projectId='';appointment=null;access=null;orders=[];watch=null;
     history.replaceState({},'',routeUrl());
     document.title='My Assigned Vessels · Captain access';
-    shell(`${header('My Assigned Vessels','Choose your vessel — no hidden default')}${identityStrip('Appointed Captain — assigned vessels only')}<section class="captain-handoff-panel"><h2>Your Captain appointments</h2><p class="muted">Only appointments returned for your signed-in account are listed. Opening a vessel rechecks its current operating authority.</p><div class="tb-roster">${myAppointments.length?myAppointments.map((a,i)=>`<article><div><h3>${esc(a.vessel_name||a.project_id)}</h3><p>${esc(a.project_id)} · ${esc(a.status)}</p></div><button type="button" class="btn primary" data-tb-assignment="${i}" ${!['accepted','pending'].includes(a.status)?'disabled':''}>${a.status==='pending'?'REVIEW APPOINTMENT':a.status==='accepted'?'OPEN CAPTAIN STATION':'UNAVAILABLE'}</button></article>`).join(''):'<p class="captain-handoff-status">No current Captain appointments were returned for this account.</p>'}</div><div class="captain-handoff-actions"><button id="captainRosterRefresh" class="btn ghost">REFRESH MY VESSELS</button><button id="captainDeniedSignOut" class="btn secondary">SIGN OUT</button></div><p class="tb-command-note"><a href="${esc(commandUrl())}">Fleet Command uses the separate Engine entrance</a>. No assignment is created here.</p></section>${accountSecurityMarkup()}`);
+    shell(`${header('My Assigned Vessels','Choose your vessel — no hidden default')}${identityStrip(captainAccountLabel(myAppointments))}<section class="captain-handoff-panel"><h2>Your Captain appointments</h2><p class="muted">Only appointments returned for your signed-in account are listed. Opening a vessel rechecks its current operating authority.</p><div class="tb-roster">${myAppointments.length?myAppointments.map((a,i)=>`<article><div><h3>${esc(a.vessel_name||a.project_id)}</h3><p>${esc(a.project_id)} · ${esc(a.status)}</p></div><button type="button" class="btn primary" data-tb-assignment="${i}" ${!['accepted','pending'].includes(a.status)?'disabled':''}>${a.status==='pending'?'REVIEW APPOINTMENT':a.status==='accepted'?'OPEN CAPTAIN STATION':'UNAVAILABLE'}</button></article>`).join(''):'<p class="captain-handoff-status">No current Captain appointments were returned for this account.</p>'}</div><div class="captain-handoff-actions"><button id="captainRosterRefresh" class="btn ghost">REFRESH MY VESSELS</button><button id="captainDeniedSignOut" class="btn secondary">SIGN OUT</button></div><p class="tb-command-note"><a href="${esc(commandUrl())}">Fleet Command uses the separate Engine entrance</a>. No assignment is created here.</p></section>${accountSecurityMarkup()}`);
     bindIdentityActions();bindAccountSecurity();
     document.getElementById('captainRosterRefresh').onclick=showMyVessels;
     document.querySelectorAll('[data-tb-assignment]').forEach(b=>b.onclick=async()=>{
@@ -417,7 +446,7 @@
   function shell(content,view='handoff'){root.innerHTML=`<main class="captain-handoff" data-view="${esc(view)}"><div class="captain-handoff-shell">${content}</div></main>`;}
   function header(title=destination(),sub='Vessel Captain sign-in'){
     const verified=!!(access?.project_id===projectId||appointment?.project_id===projectId);
-    const note=projectId?(verified?'Vessel identity from your authenticated response.':DIRECTORY[projectId]?'Destination from the release directory. Account authority is checked after sign-in.':'Requested project: '+projectId+'. Identity must be resolved after sign-in.'):'Sign in to list only your assigned vessels.';
+    const note=projectId?(verified?'Vessel identity from your authenticated response.':DIRECTORY[projectId]?'Destination from the release directory. Account authority is checked after sign-in.':'Requested project: '+projectId+'. Identity must be resolved after sign-in.'):(person?'Only assignments returned for your signed-in account are shown.':'Sign in to list only your assigned vessels.');
     document.title=String(title)+' · '+sub;
     return `<header class="captain-handoff-head tb-entry-head"><div class="tb-destination">${projectMark()}<div><div class="eyebrow gold">BLACK FLAG · QUARTERMASTER · ${BUILD}</div><h1>${esc(title)}</h1><p class="muted">${esc(sub)}</p></div></div><span class="captain-handoff-badge">VESSEL ACCOUNT · NOT FLEET COMMAND</span><p class="tb-destination-note">${esc(note)}</p></header>`;
   }
@@ -426,7 +455,7 @@
   function missing(error){return /could not find the function|schema cache|PGRST202/i.test(String(error?.message||error));}
   function renderLogin(message='Use the account named in your vessel appointment. This is not the Admiral sign-in.'){
     ++stationEpoch;person=null;appointment=null;access=null;orders=[];watch=null;myAppointments=[];
-    shell(`${header()}<section class="captain-handoff-panel tb-login"><h2>${projectId?'Sign in for '+esc(destination()):'Sign in to your assigned vessels'}</h2><form id="captainLoginForm"><div class="captain-handoff-grid"><label>Email<input data-bf-trim="boundary" id="captainLoginEmail" type="email" inputmode="email" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="Captain account email" required></label><label>Password<input data-bf-trim="preserve" id="captainLoginPassword" type="password" autocomplete="current-password" placeholder="Fleet account password" required></label></div><div class="captain-handoff-actions"><button id="captainLoginBtn" type="submit" class="btn primary">SIGN IN & CHECK ACCESS</button><button id="captainMagicBtn" type="button" class="btn ghost">EMAIL SIGN-IN LINK</button></div></form><p id="captainLoginStatus" class="captain-handoff-status" role="status">${esc(message)}</p><nav class="tb-entry-nav"><a href="${esc(routeUrl())}">My assigned vessels</a><a href="${esc(commandUrl())}">Fleet Captain / Admiral entrance</a></nav><p class="tb-command-note">Fleet Command can observe unassigned vessels through My Fleet. Its separate operating authorization is not granted by this Captain sign-in.</p></section>`);
+    shell(`${header()}<section class="captain-handoff-panel tb-login"><h2>${projectId?'Sign in for '+esc(destination()):'Sign in to your assigned vessels'}</h2><form id="captainLoginForm"><div class="captain-handoff-grid"><label>Email<input data-bf-trim="boundary" id="captainLoginEmail" name="username" type="email" inputmode="email" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="Captain account email" required></label><label>Password<input data-bf-trim="preserve" id="captainLoginPassword" name="password" type="password" autocomplete="current-password" placeholder="Fleet account password" required></label></div><div class="captain-handoff-actions"><button id="captainLoginBtn" type="submit" class="btn primary">SIGN IN & CHECK ACCESS</button><button id="captainMagicBtn" type="button" class="btn ghost">EMAIL SIGN-IN LINK</button></div></form><p id="captainLoginStatus" class="captain-handoff-status" role="status">${esc(message)}</p><nav class="tb-entry-nav"><a href="${esc(routeUrl())}">My assigned vessels</a><a href="${esc(commandUrl())}">Fleet Captain / Admiral entrance</a></nav><p class="tb-command-note">Fleet Command can observe unassigned vessels through My Fleet. Its separate operating authorization is not granted by this Captain sign-in.</p></section>`);
     document.getElementById('captainLoginForm').onsubmit=e=>{e.preventDefault();signIn();};
     document.getElementById('captainMagicBtn').onclick=magicLink;
   }
@@ -453,7 +482,7 @@
       const redirect=new URL(routeUrl(projectId));
       const r=await fetch(SUPABASE_URL+'/auth/v1/otp?redirect_to='+encodeURIComponent(redirect.toString()),{method:'POST',headers:{apikey:SUPABASE_KEY,'Content-Type':'application/json'},body:JSON.stringify({email,create_user:false,gotrue_meta_security:{}})});
       if(!r.ok)throw new Error('Secure sign-in link could not be requested.');
-      status('If this is an existing appointed account, the newest secure sign-in link is on its way.',true);
+      status('If this is an existing account, the newest secure sign-in link is on its way.',true);
     }catch(error){status(String(error?.message||error));}finally{busy=false;if(button.isConnected)button.disabled=false;}
   }
   async function loadAppointment(){
@@ -628,7 +657,7 @@ const DB_NAME='blackFlagPlatformV1', STORE_PROJECTS='projects', STORE_SETTINGS='
 const OWNER_SESSION_KEY='blackFlagOwnerSessionV1', OWNER_AUTHORITY_WITNESS_KEY='darkSkyOwnerAuthorityWitnessV1', SUPABASE_SESSION_KEY='darkSkySupabaseOwnerSessionV1', OWNER_SESSION_TTL_MS=8*60*60*1000;
 const LOCAL_RECOVERY_FAILURE_KEY='darkSkyOwnerRecoveryFailuresV1', LOCAL_RECOVERY_MAX_FAILURES=5, LOCAL_RECOVERY_LOCK_MS=5*60*1000, DEFAULT_PROJECT_ADMIN_RECOVERY_PIN='4353';
 const SUPABASE_URL='https://sjgqqtnuttnkwsoebbqf.supabase.co', SUPABASE_KEY='sb_publishable_gvWfIBQg4ew2RvVr6CpJSg_8y02QmKy';
-const ownerSupabase=window.DarkSkySupabase.create({url:SUPABASE_URL,publishableKey:SUPABASE_KEY,sessionKey:SUPABASE_SESSION_KEY,build:'8.8.20.66'});
+const ownerSupabase=window.DarkSkySupabase.create({url:SUPABASE_URL,publishableKey:SUPABASE_KEY,sessionKey:SUPABASE_SESSION_KEY,build:'8.8.20.67'});
 const FLEET_CORE_PROJECT_IDS=new Set(['beccas-bloom-shop','bf-p-f92f87e8ec44','bor-north-richmond','grizzly-bear','ikes-wood-signs','mugshot-after-dark']);
 const q=new URLSearchParams(location.search), projectId=String(q.get('project')||''), source=String(q.get('source')||''), requestedView=String(q.get('view')||'login');
 const $=id=>document.getElementById(id); let db=null, project=null, orders=[], localRecoveryAttempt=false;
@@ -655,7 +684,7 @@ async function getOrders(){ownerOrderReadError='';try{return (await req(tx(STORE
 async function sha256(text){const b=new TextEncoder().encode(text);const h=await crypto.subtle.digest('SHA-256',b);return [...new Uint8Array(h)].map(x=>x.toString(16).padStart(2,'0')).join('');}
 function random(){const a=new Uint8Array(18);crypto.getRandomValues(a);return [...a].map(x=>x.toString(16).padStart(2,'0')).join('');}
 function ownerSession(){try{return JSON.parse(sessionStorage.getItem(OWNER_SESSION_KEY)||'null')}catch(_){return null}}
-function ownerWitness(event,s,extra={}){const w={schema:'dark-sky-owner-authority-witness-v1',build:'8.8.20.66',event,at:new Date().toISOString(),projectId:s?.projectId||projectId,sessionId:s?.sessionId||'',authority:'project_owner',namespace:s?.namespace||project?.namespace||'',...extra};try{sessionStorage.setItem(OWNER_AUTHORITY_WITNESS_KEY,JSON.stringify(w));}catch(_){}return w;}
+function ownerWitness(event,s,extra={}){const w={schema:'dark-sky-owner-authority-witness-v1',build:'8.8.20.67',event,at:new Date().toISOString(),projectId:s?.projectId||projectId,sessionId:s?.sessionId||'',authority:'project_owner',namespace:s?.namespace||project?.namespace||'',...extra};try{sessionStorage.setItem(OWNER_AUTHORITY_WITNESS_KEY,JSON.stringify(w));}catch(_){}return w;}
 function saveSession(){const now=Date.now(),s={schema:'dark-sky-owner-session-v2',projectId,namespace:project?.namespace||'',authority:'project_owner',sessionId:'OWN-'+now.toString(36)+'-'+Math.random().toString(36).slice(2,8),startedAt:new Date(now).toISOString(),expiresAt:new Date(now+OWNER_SESSION_TTL_MS).toISOString()};sessionStorage.setItem(OWNER_SESSION_KEY,JSON.stringify(s));ownerWitness('session-started',s,{scopeVerified:true});return s;}
 function sessionValid(s){
   if(!s||s.authority!=='project_owner'||s.projectId!==projectId||project?.id!==projectId)return false;
@@ -717,7 +746,7 @@ async function verifySupabaseMembership(){
 }
 async function ownerWatchRpc(name,body){const proof=await verifySupabaseMembership();if(!proof.ok||!proof.session?.access_token)throw new Error('A live exact-vessel owner identity is required. Local recovery cannot report to Fleet Watch.');const r=await fetch(SUPABASE_URL+'/rest/v1/rpc/'+name,{method:'POST',headers:{...supaHeaders(proof.session.access_token),Accept:'application/json'},body:JSON.stringify(body)});if(!r.ok){let message='Fleet Watch refused the report. No operational truth changed.';try{const problem=await r.json();message=problem?.message||problem?.hint||message;}catch(_){}throw new Error(message.replaceAll('_',' '));}return r.json();}
 async function readOwnWatchReport(){return ownerWatchRpc('vessel_read_own_watch_report',{p_project_id:projectId});}
-async function publishOwnWatchReport(currentWork,unresolvedIssues,issueSummary){return ownerWatchRpc('vessel_publish_watch_report',{p_project_id:projectId,p_current_work:String(currentWork||'').trim(),p_unresolved_issues:Math.max(0,Math.floor(Number(unresolvedIssues)||0)),p_issue_summary:String(issueSummary||'').trim().slice(0,500),p_source_label:'OWNER CONTROL CENTER',p_detail:{build:'8.8.20.66',surface:'owner-control-center',project_id:projectId}});}
+async function publishOwnWatchReport(currentWork,unresolvedIssues,issueSummary){return ownerWatchRpc('vessel_publish_watch_report',{p_project_id:projectId,p_current_work:String(currentWork||'').trim(),p_unresolved_issues:Math.max(0,Math.floor(Number(unresolvedIssues)||0)),p_issue_summary:String(issueSummary||'').trim().slice(0,500),p_source_label:'OWNER CONTROL CENTER',p_detail:{build:'8.8.20.67',surface:'owner-control-center',project_id:projectId}});}
 async function enterSupabaseOwner(){
   verifiedOwnerBinding=null;
   const proof=await verifySupabaseMembership();if(!proof.ok)return proof;
@@ -883,7 +912,7 @@ document.querySelectorAll('[data-sf-unpublish]').forEach(b=>b.onclick=async()=>{
 $('sfCompile').onclick=async()=>{const style=$('sfStyle').value;await compileGlyphForge();rerenderFoundry(style,'Reviewed canonical geometry compiled into a new version. Benchmark replay and certification remain separate gates.');};window.BlackFlagBusinessDeck.mountLettering({container:$('workspace'),packs:Object.values(styles),coverages:Object.fromEntries(Object.keys(styles).map(id=>[id,styleCoverage(id)]))});return;}
 if(k==='services'){const rows=await fleetServiceCatalog();workspace('Fleet Services','Services offered to this business. Included services and requested paid upgrades remain separately governed.',`<div class="service-list">${rows.length?rows.map(e=>{const c=e.capability,status=serviceStatusLabel(e),canRequest=e.commercial_mode==='paid'&&e.status==='available'&&!e.request;const note=e.status==='enabled'?'This service is active for this business.':e.status==='entitled'&&e.commercial_mode==='standard'?'Included by the Fleet. No upgrade request is required.':e.status==='entitled'?'Approved by the Admiral. Setup can proceed without another request.':e.request?'Your request is on file. The service stays off until the Fleet approves it.':'Requesting a paid service does not turn it on. The Fleet must approve it first.';return `<article class="service-card"><div class="service-card-head"><div><div class="eyebrow">${esc(c.lifecycle.toUpperCase())}</div><h3>${esc(c.display_name)}</h3><p class="muted">${esc(c.owner_summary.replace('project-scoped','your').replace('permitted for this vessel','approved for this business'))}</p></div><strong>${esc(status)}</strong></div><div class="service-meta"><span class="service-pill ${e.commercial_mode==='standard'?'standard':'paid'}">${e.commercial_mode==='standard'?'INCLUDED':'PAID UPGRADE'}</span>${e.fee_label?`<span class="service-pill">${esc(e.fee_label)}</span>`:''}</div>${canRequest?`<button class="btn ghost service-action" data-service-request="${esc(e.id)}">REQUEST UPGRADE</button>`:''}<div class="service-note">${esc(note)}</div></article>`}).join(''):'<p class="muted">No Fleet services are currently offered to this business.</p>'}</div>`);document.querySelectorAll('[data-service-request]').forEach(b=>b.onclick=async()=>{const ent=rows.find(x=>x.id===b.dataset.serviceRequest);if(!ent)return;b.disabled=true;b.textContent='REQUESTING…';try{await requestFleetService(ent);b.textContent='REQUESTED';}catch(e){b.disabled=false;b.textContent='REQUEST SERVICE';alert(String(e?.message||e));}});return;}
 if(k==='settings'){workspace('Settings','Manage your owner access for this business.',`<div class="feature-list"><div class="feature"><span><strong>Owner access</strong><br><small>Verified for ${esc(project?.name||'this business')}</small></span><strong>ACTIVE</strong></div><div class="feature"><span><strong>Fleet services</strong><br><small>Standard and paid capabilities are governed separately from owner access</small></span><strong>GOVERNED</strong></div><div class="feature"><span><strong>Fleet administration</strong><br><small>Kept separate from owner access</small></span><strong>SEPARATE</strong></div></div>`);return;}}
-async function boot(){if(!window.BlackFlagHeadway||window.BlackFlagHeadway.version!=='8.8.20.66'||!window.BlackFlagViewport)throw new Error('Strongbox workspace helpers are incomplete. Upload the complete update without clearing business data.');if(!window.BlackFlagBusinessDeck||window.BlackFlagBusinessDeck.BUILD!=='8.8.20.66'||window.BlackFlagInput?.build!=='8.8.20.66'||window.__workhorseDeckStylesFailed)throw new Error('Strongbox business workspace files are incomplete. Upload the complete matching TEST package; do not clear business data.');if(!projectId)throw new Error('Owner route is missing its project identifier.');$('safeStatus').textContent='Securing owner session…';db=await openDb();$('safeStatus').textContent='Resolving canonical project record…';project=await getProject();if(!project)throw new Error('The requested business was not found in the canonical project registry.');setNames();await ensureIkeTestCredential();orders=await getOrders();bindEngineButtons();$('safeStatus').textContent='Verifying owner authority…';const local=ownerSession();if(!usesSupabaseOwner()&&sessionValid(local)&&ownerActive()&&local.identityProvider!=='supabase'){renderPortal();history.replaceState({surface:'owner',projectId},'',`owner.html?project=${encodeURIComponent(projectId)}&view=portal${source==='engine'?'&source=engine':''}`);return;}const liveState=await resolveLiveOwnerState();if(liveState.state==='ready'){renderPortal();history.replaceState({surface:'owner',projectId},'',`owner.html?project=${encodeURIComponent(projectId)}&view=portal${source==='engine'?'&source=engine':''}`);return;}if(liveState.state==='password_setup'){renderPasswordSetup(liveState.recovery);return;}if(liveState.state==='denied'){$('safeStatus').textContent='Owner identity authenticated, but this vessel is not authorized.';clearSupabaseSession();clearSession('owner-scope-denied');show('login');$('loginError').textContent=ownerAccessMessage(liveState.reason);}else{show('login');if(requestedView==='portal')$('loginError').textContent='Sign in to restore the Owner Control Center.';}configureOwnerLogin();}
+async function boot(){if(!window.BlackFlagHeadway||window.BlackFlagHeadway.version!=='8.8.20.67'||!window.BlackFlagViewport)throw new Error('Strongbox workspace helpers are incomplete. Upload the complete update without clearing business data.');if(!window.BlackFlagBusinessDeck||window.BlackFlagBusinessDeck.BUILD!=='8.8.20.67'||window.BlackFlagInput?.build!=='8.8.20.67'||window.__workhorseDeckStylesFailed)throw new Error('Strongbox business workspace files are incomplete. Upload the complete matching TEST package; do not clear business data.');if(!projectId)throw new Error('Owner route is missing its project identifier.');$('safeStatus').textContent='Securing owner session…';db=await openDb();$('safeStatus').textContent='Resolving canonical project record…';project=await getProject();if(!project)throw new Error('The requested business was not found in the canonical project registry.');setNames();await ensureIkeTestCredential();orders=await getOrders();bindEngineButtons();$('safeStatus').textContent='Verifying owner authority…';const local=ownerSession();if(!usesSupabaseOwner()&&sessionValid(local)&&ownerActive()&&local.identityProvider!=='supabase'){renderPortal();history.replaceState({surface:'owner',projectId},'',`owner.html?project=${encodeURIComponent(projectId)}&view=portal${source==='engine'?'&source=engine':''}`);return;}const liveState=await resolveLiveOwnerState();if(liveState.state==='ready'){renderPortal();history.replaceState({surface:'owner',projectId},'',`owner.html?project=${encodeURIComponent(projectId)}&view=portal${source==='engine'?'&source=engine':''}`);return;}if(liveState.state==='password_setup'){renderPasswordSetup(liveState.recovery);return;}if(liveState.state==='denied'){$('safeStatus').textContent='Owner identity authenticated, but this vessel is not authorized.';clearSupabaseSession();clearSession('owner-scope-denied');show('login');$('loginError').textContent=ownerAccessMessage(liveState.reason);}else{show('login');if(requestedView==='portal')$('loginError').textContent='Sign in to restore the Owner Control Center.';}configureOwnerLogin();}
 $('signIn').onclick=async()=>{try{$('loginError').textContent='';if(usesSupabaseOwner()&&!localRecoveryAttempt){await signInWithPassword($('loginUser').value,$('loginPass').value);const state=await resolveLiveOwnerState();if(state.state==='password_setup'){renderPasswordSetup(state.recovery);return;}if(state.state!=='ready'){clearSupabaseSession();clearSession('owner-scope-denied');throw new Error(ownerAccessMessage(state.reason));}history.replaceState({surface:'owner',projectId},'',`owner.html?project=${encodeURIComponent(projectId)}&view=portal${source==='engine'?'&source=engine':''}`);renderPortal();return;}if(!await verify($('loginUser').value,$('loginPass').value)){ $('loginError').textContent='The login or password did not match.';return;}saveSession();history.replaceState({surface:'owner',projectId},'',`owner.html?project=${encodeURIComponent(projectId)}&view=portal${source==='engine'?'&source=engine':''}`);renderPortal();}catch(e){$('loginError').textContent=String(e?.message||e);}};
 $('sendMagicLink').onclick=async()=>{try{$('loginError').textContent='Sending secure sign-in link…';await sendMagicLink($('loginUser').value);$('loginError').textContent='Secure sign-in link sent. Open the newest email on this device.';}catch(e){$('loginError').textContent='Secure sign-in could not start. '+String(e?.message||e);}};
 $('forgotPassword').onclick=async()=>{try{$('loginError').textContent='';if(!usesSupabaseOwner()){renderLocalRecovery();return;}const email=String($('loginUser').value||'').trim();if(!email){$('loginError').textContent='Enter your email first.';return;}$('forgotPassword').disabled=true;$('forgotPassword').textContent='SENDING RECOVERY…';await sendPasswordRecovery(email);$('loginError').innerHTML='<div class="recovery-success">If this email belongs to the owner of this business, a recovery message is on its way. Open the newest recovery email on this device.</div>';}catch(e){$('loginError').textContent='Recovery could not start. '+String(e?.message||e);}finally{$('forgotPassword').disabled=false;$('forgotPassword').textContent='FORGOT PASSWORD?';}};

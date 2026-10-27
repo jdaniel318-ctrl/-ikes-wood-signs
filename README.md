@@ -1,3 +1,17 @@
+# Cleardeck 8.8.20.67 — Current release
+
+Current upload: `DarkSky882067-Cleardeck-Upload.zip`.
+Matching full-source archive: `DarkSky882067-Cleardeck-FullBackup.zip`.
+Supported baseline: the supplied Ironhaven 8.8.20.66 source (619 files).
+
+Read `UPLOAD_THIS_ONE_BUILD.md`, `CLEARDECK_GUIDE.md`, `CURRENT_BASELINE.json`, and `CLEARDECK_EVIDENCE.json` first.
+Run `node VERIFY_CLEARDECK_ALL.cjs . ../cleardeck-check-evidence` on the complete release.
+This is an incremental cleanup, not a new platform or database migration.
+
+## Historical release history below
+
+Prior commands and results describe those historical versions, not the current candidate.
+
 # CURRENT RELEASE — IRONHAVEN 8.8.20.66
 
 See `IRONHAVEN_GUIDE.md` and `UPLOAD_THIS_ONE_BUILD.md`. All previous build documentation is retained below.
