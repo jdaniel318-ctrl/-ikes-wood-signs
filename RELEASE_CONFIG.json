@@ -1,12 +1,12 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.69",
-  "name": "Trimline",
-  "seal": "trimline-882069",
-  "base": "8.8.20.68",
-  "base_sha256": "3347aaf7a75364a2f168e25a3c7a48560bf7bc2e581dc40597bc6b9cdcf26398",
-  "base_files": 641,
-  "prepared_at": "2026-10-27T17:23:45-04:00",
-  "app_component_revision": "8.8.20.69",
+  "build": "8.8.20.70",
+  "name": "Harbor",
+  "seal": "harbor-882070",
+  "base": "8.8.20.69",
+  "base_sha256": "2d0e1dc45ce3e808c4c0ecff33bc74f62c246891d8e9173d040274866be37590",
+  "base_files": 649,
+  "prepared_at": "2026-10-28T18:16:31.446322+00:00",
+  "app_component_revision": "8.8.20.70",
   "owner_helper_revision": "8.8.20.68"
 }

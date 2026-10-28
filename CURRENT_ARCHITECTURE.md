@@ -1,20 +1,20 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Current architecture — Trimline 8.8.20.69
+# Current architecture — Harbor 8.8.20.70
 
-Source of release identity: RELEASE_CONFIG.json. Installed page/manifest/seal/worker identity is generated together. APP_COMPONENT_REVISION is 8.8.20.69; owner helper revision is 8.8.20.68. Unchanged component bodies remain byte-identical across release-only changes.
+Source identity: RELEASE_CONFIG.json. APP_COMPONENT_REVISION is 8.8.20.70; owner helper revision remains 8.8.20.68. Page, manifest, seal, inventory and worker identity agree. Unchanged specialist components retain their verified bytes/revisions.
 
-The Engine still verifies every required body, current governance models, app component contract and worker identity before executing the same script sequence. App and Captain bind audit/display freshness to the verified installed release. This context never grants permissions. The owner page keeps explicit helper compatibility checks.
+The verified loader adds `fleet_storage_safety.js` immediately after `platform_core.js`. Its only runtime responsibilities are strict read-only observation, bounded/private capture, serialization, hashing and file verification. It has no network, write, migration, deletion, restore or authorization-grant operations. The Engine-only UI requires an explicit confirmation for capture and keeps it only in page memory, cleared on lock. Known credentials are filtered; arbitrary business content remains sensitive. Diagnostic summary is separate from the unencrypted PRIVATE capture.
 
-No specialist module is deferred or removed. No live data, schema, session key, appointment, authorization endpoint, sign-design geometry or ledger behavior is changed. Fleet core and Admiral programs remain distinct.
+`runShipIntegrityV3` and `renderV3ArchitectureStatus` no longer repair or persist. Read errors remain incomplete. Historical migration state is read only. Explicit snapshot APIs now propagate failure and require storage readback; historical recovery entries are not pruned. Existing commissioning write paths remain explicit. Only identified boot convergence/reference-repair loops are held; other legacy startup behavior is unchanged.
 
-## Release commands
-Prepare known identity fields: `python3 -B PREPARE_RELEASE.py .` (resets test status to untested; never deploys).
-Seal reviewed bytes only: `python3 -B PREPARE_RELEASE.py . --seal-only`.
-Verify: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`.
-Package: `python3 -B BUILD_RELEASE.py . --baseline <exact prior full-source ZIP> --out <new external directory>`.
+Business, sign geometry, orders, account session keys, server endpoints, role grants and ledgers are not redesigned or migrated. No shared authority is introduced. No font/data migrations, passkeys or startup-speed gains are claimed.
 
-Previous release guides/scripts are retained historical material; do not run their release-pinned sealers on this release.
-Native Safari/hosted integration is separate from offline checks. Source backup is not business-data restore.
+## Commands
+Verify selected suites: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`.
+Prepare release identity: `python3 -B PREPARE_RELEASE.py .` (resets status; generates generic docs that need release-specific review).
+Seal reviewed bytes: `python3 -B PREPARE_RELEASE.py . --seal-only`.
+Package exact baseline: `python3 -B BUILD_RELEASE.py . --baseline /path/to/DarkSky882069-Trimline-FullBackup.zip --out ../release-output`.
+Native Safari/hosted integration is separate acceptance. Full source backup is not business-data restoration.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 
 ## Retained historical notes

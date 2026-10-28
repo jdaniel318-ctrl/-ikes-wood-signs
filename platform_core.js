@@ -348,8 +348,20 @@ function readTelemetry({type=null,projectId=null,since=0}={}){
 function checksum(v){const s=JSON.stringify(v);let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return(h>>>0).toString(16).padStart(8,'0')}
 function sanitize(rows){return structuredClone(rows||[]).map(p=>{if(p?.ownerAccess?.credential)p.ownerAccess.credential={login:p.ownerAccess.credential.login||'',testMode:!!p.ownerAccess.credential.testMode,createdAt:p.ownerAccess.credential.createdAt||null,changedAt:p.ownerAccess.credential.changedAt||null,secretMaterialOmittedFromSnapshot:true};if(p?.ownerAccess?.invitation)p.ownerAccess.invitation={...p.ownerAccess.invitation,tokenHash:'[omitted]',tokenHashOmittedFromSnapshot:true};return p})}
 function snapshot(projects,reason='manual'){
- const safe=sanitize(projects), row={id:'SNP-'+Date.now().toString(36),at:new Date().toISOString(),reason,schemaVersion:SCHEMA,projectCount:safe.length,checksums:Object.fromEntries(safe.map(p=>[p.id,checksum(p)])),projects:safe};
- const rows=read(SNAP,[]);rows.unshift(row);write(SNAP,rows.slice(0,12));audit({category:'recovery',action:'recovery.snapshot.created',detail:reason});return row;
+ // Harbor: existing recovery history must be readable; a failed read is never an empty vault.
+ let prior;
+ try{const raw=localStorage.getItem(SNAP);prior=raw===null?[]:JSON.parse(raw);if(!Array.isArray(prior))throw new Error('snapshot history is not an array');}
+ catch(err){throw Object.assign(new Error('snapshot_read_failed: existing recovery history could not be read; nothing was written.'),{code:'SNAPSHOT_READ_FAILED',cause:err});}
+ const safe=sanitize(projects),row={id:'SNP-'+Date.now().toString(36)+'-'+randomId(),at:new Date().toISOString(),reason,schemaVersion:SCHEMA,projectCount:safe.length,checksums:Object.fromEntries(safe.map(p=>[p.id,checksum(p)])),projects:safe};
+ // Do not silently prune prior snapshots to make room. Export first; retention is a separate action.
+ const text=JSON.stringify([row,...prior]);
+ try{localStorage.setItem(SNAP,text);}
+ catch(err){throw Object.assign(new Error('snapshot_save_failed: the browser refused the save. Use the read-only rescue export; do not clear website data.'),{code:'SNAPSHOT_SAVE_FAILED',cause:err});}
+ try{if(localStorage.getItem(SNAP)!==text)throw new Error('stored bytes do not match');}
+ catch(err){throw Object.assign(new Error('snapshot_readback_failed: saved bytes could not be verified. No recovery success is certified.'),{code:'SNAPSHOT_READBACK_FAILED',cause:err});}
+ // Reporting a successful save happens only after exact readback; audit storage is secondary.
+ audit({category:'recovery',action:'recovery.snapshot.created',detail:reason+' • exact storage readback verified'});
+ return {...row,persisted:true,readbackVerified:true};
 }
 function integrity(projects=[],doc=document){
  const issues=[], ids=new Set(), spaces=new Set(), names=new Map(), dom=new Map(), deploymentIds=new Set();

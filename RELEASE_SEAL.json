@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.69",
-  "release": "Trimline",
-  "seal": "trimline-882069",
+  "build": "8.8.20.70",
+  "release": "Harbor",
+  "seal": "harbor-882070",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Trimline",
-  "name": "Trimline",
-  "releaseName": "Trimline"
+  "release_name": "Harbor",
+  "name": "Harbor",
+  "releaseName": "Harbor"
 }

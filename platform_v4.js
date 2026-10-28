@@ -137,9 +137,18 @@ function setReleaseRing(ring,detail=''){
  const next={...state,currentRing:ring,lastPromotion:{at:new Date().toISOString(),ring,detail:String(detail||'')}};write(KEYS.release,next);core()?.audit?.({actorRole:'captain',category:'release',action:'v4.release_ring.changed',detail:`${state.currentRing} → ${ring}${detail?' • '+detail:''}`});return next;
 }
 function recoveryPoint(projects=[],reason='manual-v4'){
- const coreSnap=core()?.snapshot?.(projects,reason)||null;
- const rows=read(KEYS.recovery,[]);const row={id:uid('VAULT'),at:new Date().toISOString(),reason,build:VERSION,projectCount:projects.length,projectIds:projects.map(p=>p.id),coreSnapshotId:coreSnap?.id||null,registryFingerprint:projects.map(p=>`${p.id}:${p.namespace||core()?.namespaceFor?.(p.id)||''}`).sort().join('|')};
- rows.unshift(row);write(KEYS.recovery,rows.slice(0,20));core()?.audit?.({actorRole:'system',category:'recovery',action:'v4.recovery_vault.sealed',detail:`${row.id} • ${row.projectCount} projects`});return row;
+ let prior;
+ try{const raw=localStorage.getItem(KEYS.recovery);prior=raw===null?[]:JSON.parse(raw);if(!Array.isArray(prior))throw new Error('invalid vault');}
+ catch(err){throw Object.assign(new Error('recovery_vault_read_failed: existing vault cannot be read; nothing was saved.'),{cause:err});}
+ const coreSnap=core()?.snapshot?.(projects,reason);
+ if(!coreSnap?.persisted||!coreSnap?.readbackVerified)throw new Error('recovery_snapshot_not_verified: no verified underlying snapshot.');
+ const row={id:uid('VAULT'),at:new Date().toISOString(),reason,build:VERSION,projectCount:projects.length,projectIds:projects.map(p=>p.id),coreSnapshotId:coreSnap.id,registryFingerprint:projects.map(p=>`${p.id}:${p.namespace||core()?.namespaceFor?.(p.id)||''}`).sort().join('|')};
+ const text=JSON.stringify([row,...prior]);
+ try{localStorage.setItem(KEYS.recovery,text);}
+ catch(err){throw Object.assign(new Error('recovery_vault_save_failed: core snapshot was read back, but the vault index was not saved. Full recovery-point creation is incomplete.'),{cause:err});}
+ try{if(localStorage.getItem(KEYS.recovery)!==text)throw new Error('vault mismatch');}
+ catch(err){throw Object.assign(new Error('recovery_vault_readback_failed: vault index could not be verified.'),{cause:err});}
+ core()?.audit?.({actorRole:'system',category:'recovery',action:'v4.recovery_vault.sealed',detail:`${row.id} • ${row.projectCount} projects • readback verified`});return {...row,persisted:true,readbackVerified:true};
 }
 function recoveryVault(){return read(KEYS.recovery,[])}
 function preflight(projects=[],doc=document){

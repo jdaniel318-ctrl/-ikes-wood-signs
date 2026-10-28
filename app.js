@@ -16,7 +16,7 @@
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
   // Component revision changes only when this module changes; installed release is loader-attested.
-  const APP_COMPONENT_REVISION='8.8.20.69';
+  const APP_COMPONENT_REVISION='8.8.20.70';
   const BUILD_VERSION=window.__darkSkyVerifiedRelease?.build;
   if(!BUILD_VERSION || BUILD_VERSION!==window.__darkSkyExpectedRelease?.build || window.__darkSkyVerifiedRelease?.seal!==window.__darkSkyExpectedRelease?.seal)throw new Error('Verified release context required before app execution.');
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
@@ -1482,6 +1482,7 @@
   function lockEngineSession(){
     invalidateEngineWorkspaceNavigation();
     engineSessionUnlocked = false;
+    clearHarborRescueMemory();
     if($('enginePinInput')) $('enginePinInput').value='';
     if($('blackFlagEntryPin')) $('blackFlagEntryPin').value='';
     document.body.classList.remove('engine-mode');
@@ -4148,15 +4149,30 @@
     }
   }
 
+  let v4ReadOnlyInspectionPending=null;
+  async function inspectV4EnvelopeConvergence(){
+    // Observation is not repair: no writes, migrations, success markers, or fallback passes.
+    if(v4ReadOnlyInspectionPending)return v4ReadOnlyInspectionPending;
+    v4ReadOnlyInspectionPending=(async()=>{
+      try{
+        if(!window.BlackFlagStorageSafety)throw new Error('Read-only inspector unavailable');
+        const result=await window.BlackFlagStorageSafety.inspect({projects:companies,schema:Number(window.BlackFlagV3Core?.schemaVersion||8)});
+        v4EnvelopeConvergenceState=result;window.__darkSkyV4EnvelopeConvergence=result;return result;
+      }catch(err){
+        const result={at:new Date().toISOString(),readOnly:true,status:'incomplete',total:Array.isArray(companies)?companies.length:0,sealed:null,checked:0,rows:[],error:'Stored-record inspection could not finish. No repair was attempted.',sources:[],orders:{status:'error',rows:[]},registry:[],settings:new Map(),settingsStatus:'error'};
+        v4EnvelopeConvergenceState=result;window.__darkSkyV4EnvelopeConvergence=result;return result;
+      }finally{v4ReadOnlyInspectionPending=null;}
+    })();return v4ReadOnlyInspectionPending;
+  }
+
   function renderV4EnvelopeTrace(state=v4EnvelopeConvergenceState){
-    const box=$('v4EnvelopeTrace'); if(!box)return;
-    if(!state||!state.total){box.innerHTML='';return;}
-    const cell=(ok)=>`<span class="${ok?'pass':'fail'}">${ok?'PASS':'FAIL'}</span>`;
-    box.innerHTML=`<div class="trace-head"><span>V4 ENVELOPE CONVERGENCE</span><strong>${state.sealed}/${state.total} SEALED</strong></div>
-      <div class="trace-grid">
-        <span>PROJECT</span><span>REGISTRY</span><span>LOCAL LEDGER</span><span>IDB MIRROR</span><span>MEMORY</span><span>RESULT</span>
-        ${state.rows.map(r=>`<span class="trace-label">${escapeHtml(r.name)}<br><small>${escapeHtml(r.projectId)}</small></span>${cell(r.registrySealed)}${cell(r.localEnvelope)}${cell(r.dbEnvelope)}${cell(r.memorySealed)}${cell(r.ok)}`).join('')}
-      </div>${state.error?`<div class="trace-note">${escapeHtml(state.error)}</div>`:'<div class="trace-note">The Broadside counter, commissioning gate, and Integrity preflight use this same convergence result.</div>'}`;
+    const box=$('v4EnvelopeTrace');if(!box)return;
+    if(!state){box.innerHTML='';return;}
+    const complete=state.status==='complete',cell=ok=>`<span class="${ok?'pass':'fail'}">${ok?'PASS':'FAIL'}</span>`;
+    box.innerHTML=`<div class="trace-head"><span>STORED PROJECT ENVELOPES · READ ONLY</span><strong>${complete?`${state.sealed}/${state.total} VERIFIED`:'INSPECTION INCOMPLETE'}</strong></div>
+      <div class="trace-grid"><span>PROJECT</span><span>REGISTRY</span><span>LOCAL LEDGER</span><span>IDB MIRROR</span><span>MEMORY</span><span>RESULT</span>
+      ${(state.rows||[]).map(r=>`<span class="trace-label">${escapeHtml(r.name)}<br><small>${escapeHtml(r.projectId)}</small></span>${cell(r.registrySealed)}${cell(r.localEnvelope)}${cell(r.dbEnvelope)}${cell(r.memorySealed)}${cell(r.ok)}`).join('')}</div>
+      <div class="trace-note">${escapeHtml(state.error||'Existing records checked without repair. This does not grant authority or complete server commissioning.')}</div>`;
   }
 
   const V4_PROJECT_REFERENCE_ALIASES=Object.freeze({
@@ -4328,7 +4344,7 @@
       companies=migration.projects;
       migrationChanged=!!migration.changed;
       if(migration.changed){
-        core.snapshot(before,'pre-v3.8.2-identity-migration');
+        core.snapshot(before,'pre-v3.8.2-identity-migration'); // throws on failed save/readback; completion below is then not reached
         core.markMigration({from:'3.3',to:'3.4',stage:'immutable-project-identity',status:'complete',projectCount:companies.length});
         core.audit({category:'migration',action:'v3.8.2.project.identity.migration.complete',detail:`${companies.length} projects`});
       }
@@ -4368,15 +4384,15 @@
     // A verified canonical project wins and stale journal/draft artifacts are removed.
     // If the Project ID is missing, one idempotent recovery attempt uses the preserved
     // commissioned candidate and verifies it by reading the canonical store back.
-    await reconcileCommissioningArtifacts({attemptRepair:true,source:'engine-boot'});
+    await reconcileCommissioningArtifacts({attemptRepair:false,source:'engine-boot'});
 
     try{ await ensureCanonicalFleetManifest({repairRegistry:true}); }catch(err){ console.warn('V4 fleet manifest repair warning',err); window.DarkSkyV4?.diagnostic?.('fleet_manifest.repair.failed',String(err?.message||err)); }
     try{ await ensureV4BaselineRegistrySeal(); }catch(err){ console.warn('V4 baseline registry seal warning',err); window.DarkSkyV4?.diagnostic?.('fleet_baseline.seal.failed',String(err?.message||err)); }
     try{ window.DarkSkyV4?.bootstrap?.(companies); }catch(err){ console.warn('V4 migration gate warning',err); window.DarkSkyV4?.diagnostic?.('migration.warning',String(err?.message||err)); }
-    try{ await repairLegacyProjectReferences(); }catch(err){ console.warn('V4 legacy project-reference repair warning',err); window.DarkSkyV4?.diagnostic?.('commissioning.legacy_references.failed',String(err?.message||err)); }
+    // Harbor: legacy reference repair is an explicit maintenance operation, never a boot side effect.
     try{ const muster=await ensureProtectedFleetMuster866({stage:'pre-envelope'}); companies=muster.rows.map(normalizeProjectCode).map(ensureProjectGovernance); await ensureCanonicalFleetManifest({repairRegistry:false}); }
     catch(err){ window.__darkSkyShowRecovery?.('fleet-muster-incomplete'); throw err; }
-    try{ await ensureV4EnvelopeConvergence({persistRegistry:true,record:true}); }catch(err){ console.warn('V4 envelope convergence warning',err); }
+    await inspectV4EnvelopeConvergence(); // Harbor: observe stored projections; do not rewrite them on every load.
     try{ await ensureV4BaselineRegistrySeal(); }catch(err){ console.warn('V4 post-convergence baseline seal warning',err); }
     writeProjectRegistryBackup(companies,`load-${registrySource}`);
   }
@@ -16114,82 +16130,51 @@ The full order and approved media remain stored with this project.`;
     })[state]||String(state||'PROJECT').toUpperCase();
   }
 
-  async function runShipIntegrityV3({record=false}={}){
-    // V4.1.1 uses one admission-authoritative convergence routine for storage, status, and certification.
-    // Integrity therefore cannot disagree with the Broadside envelope counter.
-    const convergence=await commandDeadline(ensureV4EnvelopeConvergence({persistRegistry:true,record:false}),1800,{sealed:projects().length});
-    try{await repairLegacyProjectReferences();}catch(err){console.warn('Integrity preflight reference repair warning',err);}
-    const base=window.BlackFlagV3Core?.integrity?.(companies,document)||{issues:[]};
-    const issues=[...(base.issues||[])], valid=new Set(companies.map(p=>p.id));
-    for(const row of (convergence?.rows||[])){
-      if(!row.ok)issues.push({level:'critical',code:'V4_ENVELOPE_CONVERGENCE_FAILED',projectId:row.projectId,detail:`registry=${row.registrySealed} local=${row.localEnvelope} idb=${row.dbEnvelope} memory=${row.memorySealed}`});
+  async function runShipIntegrityV3({record=false,inspection=null}={}){
+    // record is retained for call compatibility; inspection deliberately never persists diagnostics.
+    const convergence=inspection||await inspectV4EnvelopeConvergence();
+    const base=window.BlackFlagV3Core?.integrity?.(companies,document)||{issues:[{level:'critical',code:'CORE_INSPECTOR_UNAVAILABLE'}]};
+    const issues=[...(base.issues||[])],valid=new Set(companies.map(p=>p.id));let complete=convergence.status==='complete';
+    const incomplete=(code,detail)=>{complete=false;issues.push({level:'critical',code,detail});};
+    if(!complete)incomplete('STORAGE_INSPECTION_INCOMPLETE',convergence.error||'One or more source reads did not finish.');
+    for(const row of convergence.rows||[])if(!row.ok)issues.push({level:'critical',code:'STORED_ENVELOPE_MISMATCH',projectId:row.projectId,detail:`registry=${row.registrySealed} local=${row.localEnvelope} idb=${row.dbEnvelope} memory=${row.memorySealed}`});
+    const safety=window.BlackFlagStorageSafety;
+    const localOrders=safety?.readJSON(localStorage,LOCAL_ORDERS_KEY);
+    if(!localOrders||localOrders.status==='error'||(localOrders.status==='read'&&!Array.isArray(localOrders.value)))incomplete('LOCAL_ORDERS_UNREADABLE','Local order backup could not be checked.');
+    if(convergence.orders?.status!=='read')incomplete('ORDER_STORE_CHECK_FAILED','Stored orders could not be read; an empty queue is not assumed.');
+    const quarantined=new Set();
+    for(const [key,kind]of [[V4_ORPHAN_ORDER_TOMBSTONES_KEY,'tombstones'],[V4_QUARANTINE_KEY,'quarantine']]){
+      const existing=safety?.readJSON(localStorage,key);
+      if(!existing||existing.status==='error'||(existing.status==='read'&&!Array.isArray(existing.value)))incomplete('QUARANTINE_UNREADABLE','Stored quarantine references could not be inspected; they were not modified.');
+      else for(const row of existing.value||[]){if(kind==='tombstones')quarantined.add(String(row));else if(['order','orphan_order'].includes(row?.kind)&&row?.payload?.id)quarantined.add(String(row.payload.id));}
     }
-
-    try{
-      for(const o of await getMergedOrders()){
-        const pid=String(o?.projectId||'');
-        if(!pid)issues.push({level:'critical',code:'UNSCOPED_ORDER',detail:o.id||''});
-        else if(!valid.has(pid))issues.push({level:'critical',code:'ORDER_PROJECT_UNKNOWN',projectId:pid,detail:o.id||''});
-        else{
-          const scoped=window.BlackFlagV3Core?.assertProjectScope?.({...o,projectId:pid},pid);
-          if(scoped&&!scoped.ok)issues.push({level:'critical',code:'ORDER_SCOPE_MISMATCH',projectId:pid,detail:o.id||''});
-        }
-      }
-    }catch(e){issues.push({level:'warning',code:'ORDER_STORE_CHECK_FAILED',detail:String(e?.message||e)})}
-
-    const orphanOrderCount=quarantinedOrderIds().size;
-    if(orphanOrderCount){
-      issues.push({level:'info',code:'ORPHAN_ORDER_QUARANTINED',detail:`${orphanOrderCount} preserved in Recovery Vault`});
+    if(quarantined.size)issues.push({level:'info',code:'ORPHAN_ORDER_QUARANTINED',detail:`${quarantined.size} previously quarantined order reference(s) retained; no deletion performed`});
+    const orderRows=[...(Array.isArray(localOrders?.value)?localOrders.value:[]),...(convergence.orders?.rows||[])];
+    for(const o of orderRows){if(quarantined.has(String(o?.id||'')))continue;const pid=String(o?.projectId||'');if(!pid)issues.push({level:'critical',code:'UNSCOPED_ORDER',detail:String(o?.id||'')});else if(!valid.has(pid))issues.push({level:'critical',code:'ORDER_PROJECT_UNKNOWN',projectId:pid,detail:String(o?.id||'')});}
+    for(const [key,label]of [[PROJECT_LEDGER_KEY,'LEDGER'],[PROJECT_CUSTOMERS_KEY,'CUSTOMER']]){
+      const source=safety?.readJSON(localStorage,key);
+      if(!source||source.status==='error'||(source.status==='read'&&(!source.value||typeof source.value!=='object'||Array.isArray(source.value))))incomplete(label+'_STORE_UNREADABLE','Existing local records could not be checked.');
+      else for(const id of Object.keys(source.value||{}))if(!valid.has(id))issues.push({level:'critical',code:label+'_PROJECT_UNKNOWN',projectId:id});
     }
-
-    try{
-      Object.keys(readLedgers()||{}).forEach(pid=>{
-        if(!valid.has(pid))issues.push({level:'critical',code:'LEDGER_PROJECT_UNKNOWN',projectId:pid});
-      });
-    }catch(_){}
-
-    try{
-      Object.keys(readCustomerDirectory()||{}).forEach(pid=>{
-        if(!valid.has(pid))issues.push({level:'critical',code:'CUSTOMER_PROJECT_UNKNOWN',projectId:pid});
-      });
-    }catch(_){}
-
-    try{
-      const canonical=await readCanonicalProjectRegistry();
-      const mirror=(await getSetting('companies'))?.value||[];
-      const expected=projectRegistryIds(companies), canonicalIds=projectRegistryIds(canonical), mirrorIds=projectRegistryIds(mirror);
-      for(const id of expected){
-        if(!canonicalIds.has(id))issues.push({level:'critical',code:'REGISTRY_PROJECT_MISSING',projectId:id,detail:'Missing from canonical projects store'});
-        if(!mirrorIds.has(id))issues.push({level:'critical',code:'REGISTRY_MIRROR_MISSING',projectId:id,detail:'Missing from settings mirror'});
-      }
-      if(canonicalIds.size!==expected.size)issues.push({level:'critical',code:'REGISTRY_COUNT_MISMATCH',detail:`memory ${expected.size} • canonical ${canonicalIds.size}`});
-      const schema=Number((await getSetting(FLEET_REGISTRY_SCHEMA_KEY))?.value||0);
-      if(schema!==FLEET_REGISTRY_SCHEMA_VERSION)issues.push({level:'warning',code:'REGISTRY_SCHEMA_MISMATCH',detail:`expected ${FLEET_REGISTRY_SCHEMA_VERSION} • found ${schema||'unset'}`});
-      if(expected.has(LEGACY_GRIZZLE_PROJECT_ID)||canonicalIds.has(LEGACY_GRIZZLE_PROJECT_ID)||mirrorIds.has(LEGACY_GRIZZLE_PROJECT_ID))issues.push({level:'critical',code:'LEGACY_PROJECT_ID_UNSEALED',projectId:LEGACY_GRIZZLE_PROJECT_ID,detail:`Must resolve only through alias to ${CANONICAL_GRIZZLY_PROJECT_ID}`});
-      const grizzly=companies.find(p=>p.id===CANONICAL_GRIZZLY_PROJECT_ID);
-      if(grizzly){
-        const expectedNamespace=window.BlackFlagV3Core?.namespaceFor?.(CANONICAL_GRIZZLY_PROJECT_ID)||`bf.project.${CANONICAL_GRIZZLY_PROJECT_ID}`;
-        if(grizzly.namespace && grizzly.namespace!==expectedNamespace)issues.push({level:'critical',code:'PROJECT_NAMESPACE_IDENTITY_MISMATCH',projectId:grizzly.id,detail:`expected ${expectedNamespace} • found ${grizzly.namespace}`});
-        if(projectById(LEGACY_GRIZZLE_PROJECT_ID)?.id!==CANONICAL_GRIZZLY_PROJECT_ID)issues.push({level:'critical',code:'PROJECT_ALIAS_RESOLUTION_FAILED',projectId:grizzly.id,detail:`${LEGACY_GRIZZLE_PROJECT_ID} alias did not resolve to canonical vessel`});
-        if(projectActivityMetricLabel(grizzly)!=='ORDERS')issues.push({level:'warning',code:'PROJECT_COMMAND_METRIC_LABEL_MISMATCH',projectId:grizzly.id,detail:'Grizzly Bear first fleet KPI must render as ORDERS'});
-      }
-    }catch(e){issues.push({level:'critical',code:'REGISTRY_VERIFY_FAILED',detail:String(e?.message||e)})}
-
+    const canonical=convergence.registry||[],expected=projectRegistryIds(companies),canonicalIds=projectRegistryIds(canonical);
+    const mirror=convergence.settings?.get('companies'),mirrorIds=projectRegistryIds(Array.isArray(mirror)?mirror:[]);
+    if(convergence.settingsStatus!=='read')incomplete('REGISTRY_MIRROR_UNREADABLE','Settings mirror could not be inspected.');
+    else for(const id of expected)if(!mirrorIds.has(id))issues.push({level:'critical',code:'REGISTRY_MIRROR_MISSING',projectId:id});
+    for(const id of expected)if(!canonicalIds.has(id)&&convergence.status==='complete')issues.push({level:'critical',code:'REGISTRY_PROJECT_MISSING',projectId:id});
+    if(convergence.status==='complete'&&canonicalIds.size!==expected.size)issues.push({level:'critical',code:'REGISTRY_COUNT_MISMATCH',detail:`memory ${expected.size} • canonical ${canonicalIds.size}`});
+    const schema=Number(convergence.settings?.get(FLEET_REGISTRY_SCHEMA_KEY)||0);
+    if(convergence.settingsStatus==='read'&&schema!==FLEET_REGISTRY_SCHEMA_VERSION)issues.push({level:'warning',code:'REGISTRY_SCHEMA_MISMATCH',detail:`expected ${FLEET_REGISTRY_SCHEMA_VERSION} • found ${schema||'unset'}`});
+    if(expected.has(LEGACY_GRIZZLE_PROJECT_ID)||canonicalIds.has(LEGACY_GRIZZLE_PROJECT_ID)||mirrorIds.has(LEGACY_GRIZZLE_PROJECT_ID))issues.push({level:'critical',code:'LEGACY_PROJECT_ID_UNSEALED',projectId:LEGACY_GRIZZLE_PROJECT_ID});
+    const grizzly=companies.find(p=>p.id===CANONICAL_GRIZZLY_PROJECT_ID);
+    if(grizzly){
+      const ns=window.BlackFlagV3Core?.namespaceFor?.(CANONICAL_GRIZZLY_PROJECT_ID)||`bf.project.${CANONICAL_GRIZZLY_PROJECT_ID}`;
+      if(grizzly.namespace&&grizzly.namespace!==ns)issues.push({level:'critical',code:'PROJECT_NAMESPACE_IDENTITY_MISMATCH',projectId:grizzly.id});
+      if(projectById(LEGACY_GRIZZLE_PROJECT_ID)?.id!==CANONICAL_GRIZZLY_PROJECT_ID)issues.push({level:'critical',code:'PROJECT_ALIAS_RESOLUTION_FAILED',projectId:grizzly.id});
+      if(projectActivityMetricLabel(grizzly)!=='ORDERS')issues.push({level:'warning',code:'PROJECT_COMMAND_METRIC_LABEL_MISMATCH',projectId:grizzly.id});
+    }
     const criticalIds=['engineConfigureBtn','captainModeAccessBtn','projectEngineControl','engineConfigurationDock','projectCommandCards','ownerPortal','firstMateWatch','v3ArchitectureDeck','seaTrialsStation'];
-    criticalIds.forEach(id=>{if(!$(id))issues.push({level:'critical',code:'CRITICAL_CONTROL_MISSING',detail:id})});
-
-    const report={
-      at:new Date().toISOString(),
-      ok:!issues.some(x=>x.level==='critical'),
-      critical:issues.filter(x=>x.level==='critical').length,
-      warnings:issues.filter(x=>x.level==='warning').length,
-      issues
-    };
-    if(record)window.BlackFlagV3Core?.audit?.({
-      actorRole:'engine_admin',category:'integrity',action:'ship.integrity.check',
-      detail:`${report.critical} critical • ${report.warnings} warning`
-    });
-    return report;
+    criticalIds.forEach(id=>{if(!$(id))issues.push({level:'critical',code:'CRITICAL_CONTROL_MISSING',detail:id});});
+    return {at:new Date().toISOString(),readOnly:true,status:complete?'complete':'incomplete',auditPersisted:false,ok:complete&&!issues.some(x=>x.level==='critical'),critical:issues.filter(x=>x.level==='critical').length,warnings:issues.filter(x=>x.level==='warning').length,issues};
   }
 
   function seaTrialCheck(id,title,level,detail){ return {id,title,level,detail}; }
@@ -16263,23 +16248,20 @@ The full order and approved media remain stored with this project.`;
 
   async function renderV3ArchitectureStatus(){
     const box=$('v3ArchitectureStatus');if(!box)return;
-    const convergence=await commandDeadline(ensureV4EnvelopeConvergence({persistRegistry:true,record:false}),1800,{sealed:projects().length});
+    const convergence=await inspectV4EnvelopeConvergence();
+    const report=await runShipIntegrityV3({inspection:convergence});
     const states=companies.map(p=>window.BlackFlagV3Core?.lifecycle?.(p));
-    const report=await commandDeadline(runShipIntegrityV3(),1800,{ok:true,critical:0,warnings:0,checks:[]});
-    const migration=window.DarkSkyV4?.migrationState?.()||window.BlackFlagV3Core?.migrationState?.();
+    const marker=window.BlackFlagStorageSafety?.readJSON(localStorage,'darkSkyV4MigrationGateV1');
+    const migration=marker?.status==='read'?marker.value:null;
     const activeSchema=Number(window.BlackFlagV3Core?.schemaVersion||engineConfig.schemaVersion||8);
-    const sealed=Number(convergence?.sealed||0);
-    renderV4EnvelopeTrace(convergence);
-    if($('v3SchemaBadge')) $('v3SchemaBadge').textContent=`PROJECT ENVELOPE ${activeSchema}`;
-    const live=states.filter(x=>x==='live').length;
-    const testing=states.filter(x=>x==='testing'||x==='deployment_ready').length;
+    renderV4EnvelopeTrace(convergence);if($('v3SchemaBadge'))$('v3SchemaBadge').textContent=`PROJECT ENVELOPE ${activeSchema}`;
     box.innerHTML=`
-      <article><span>PROJECT ENVELOPES</span><strong>${sealed}/${companies.length}</strong><small>Schema ${activeSchema} + default deny</small></article>
-      <article><span>LIVE</span><strong>${live}</strong><small>Published projects</small></article>
-      <article><span>TESTING</span><strong>${testing}</strong><small>Deployment / sea trial</small></article>
-      <article><span>INTEGRITY</span><strong class="${report.ok?'ok':'warn'}">${report.ok?'CLEAR':'ATTENTION'}</strong><small>${report.critical} critical • ${report.warnings} warning</small></article>
-      <article><span>IDENTITY</span><strong>POLICY LIVE</strong><small>Production server auth still required</small></article>
-      <article><span>MIGRATION</span><strong>${sealed===companies.length&&migration?.completed?'V4 COMMISSIONED':migration?.failed?'COMMISSIONING FAILED':'V4 COMMISSIONING'}</strong><small>${migration?.at?new Date(migration.at).toLocaleString():'Broadside migration gate active'}</small></article>`;
+      <article><span>PROJECT ENVELOPES</span><strong>${convergence.status==='complete'?`${convergence.sealed}/${convergence.total}`:'NOT VERIFIED'}</strong><small>${convergence.status==='complete'?'Existing records inspected — read-only':'Read incomplete; no loss or safety inferred'}</small></article>
+      <article><span>PUBLICATION</span><strong>${states.filter(x=>x==='live').length}</strong><small>Saved publication state; not commissioning</small></article>
+      <article><span>TESTING</span><strong>${states.filter(x=>x==='testing'||x==='deployment_ready').length}</strong><small>Local deployment / sea trial</small></article>
+      <article><span>INTEGRITY</span><strong class="${report.ok?'ok':'warn'}">${report.status==='incomplete'?'INCOMPLETE':report.ok?'CLEAR':'ATTENTION'}</strong><small>${report.critical} findings • ${report.warnings} warnings • no repair</small></article>
+      <article><span>IDENTITY</span><strong>CHECKED SEPARATELY</strong><small>No server authority is granted by this panel</small></article>
+      <article><span>LAST LOCAL MIGRATION</span><strong>${marker?.status==='error'?'UNREADABLE':migration?.failed?'FAILED (RECORDED)':migration?.completed?'COMPLETED (RECORDED)':'NOT RECORDED'}</strong><small>${migration?.at?escapeHtml(new Date(migration.at).toLocaleString()):'Historical marker; read-only inspection'}</small></article>`;
   }
 
   async function firstMateWatchItems(){
@@ -16288,8 +16270,8 @@ The full order and approved media remain stored with this project.`;
     const items=[];
     if(report.critical)items.push({
       level:'captain',title:'Captain Decision Needed',
-      detail:`${report.critical} structural issue${report.critical===1?'':'s'} detected.`,
-      recommendation:'Run Ship Integrity and review the exact failed checks before continuing.',
+      detail:report.status==='incomplete'?'Storage inspection did not finish; some records could not be checked.':`${report.critical} structural issue${report.critical===1?'':'s'} detected.`,
+      recommendation:'Inspect stored records without repair; preserve a private rescue file before changing storage.',
       action:'integrity',cta:'RUN INTEGRITY CHECK'
     });
     else if(report.warnings)items.push({
@@ -16461,12 +16443,67 @@ The full order and approved media remain stored with this project.`;
   }
 
   async function createV3RecoverySnapshot(){
-    const snapshot=window.BlackFlagV3Core?.snapshot?.(companies,'captain-v3-final');
-    if(snapshot){
-      renderShipIntegrity(await runShipIntegrityV3());
-      const box=$('shipIntegritySummary');
-      if(box)box.insertAdjacentHTML('afterbegin',`<div class="v3-recovery-confirm"><strong>RECOVERY SNAPSHOT CREATED</strong><span>${escapeHtml(snapshot.id)} • ${snapshot.projectCount} project(s)</span></div>`);
-    }
+    if(!engineSessionUnlocked)throw new Error('Unlock Engine access before creating a local recovery snapshot.');
+    const button=$('createRecoverySnapshotBtn'),box=$('shipIntegritySummary');if(button?.disabled)return;
+    if(button)button.disabled=true;
+    try{
+      const snapshot=window.BlackFlagV3Core?.snapshot?.(companies,'captain-verified-snapshot');
+      if(!snapshot?.persisted||!snapshot?.readbackVerified)throw new Error('Snapshot storage readback was not verified.');
+      if(box)box.innerHTML=`<div class="v3-recovery-confirm"><strong>LOCAL SNAPSHOT SAVED · READBACK VERIFIED</strong><span>${escapeHtml(snapshot.id)} • ${snapshot.projectCount} projects. This is not an independent cloud backup or tested restore.</span></div>`;
+      return snapshot;
+    }catch(err){
+      if(box)box.innerHTML=`<div class="v3-integrity-result fail"><div><strong>SNAPSHOT NOT CONFIRMED</strong><span>${escapeHtml(String(err?.message||err))}</span><small>No recovery success is recorded. Use Read-only Rescue below; do not clear browser data.</small></div></div>`;
+      return null;
+    }finally{if(button)button.disabled=false;}
+  }
+
+  let harborRescueDocument=null,harborRescueBusy=false,harborRescueEpoch=0;
+  function harborRescueStatus(message){const el=$('harborRescueStatus');if(el)el.textContent=message;}
+  function clearHarborRescueMemory(){
+    harborRescueEpoch++;harborRescueDocument=null;
+    for(const id of ['harborDownloadRescue','harborDownloadDiagnostic'])if($(id))$(id).disabled=true;
+  }
+  function harborRequireAccess(){if(!engineSessionUnlocked)throw new Error('Engine access is locked. No records were exported.');}
+  function harborDownloadJSON(value,filename){
+    harborRequireAccess();const blob=new Blob([JSON.stringify(value)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+    a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
+  }
+  async function handleHarborRescueAction(id){
+    if(!['harborPrepareRescue','harborDownloadRescue','harborDownloadDiagnostic','harborVerifyRescue'].includes(id))return false;
+    try{
+      harborRequireAccess();const api=window.BlackFlagStorageSafety;if(!api)throw new Error('Read-only rescue tools are unavailable.');
+      if(id==='harborPrepareRescue'){
+        if(harborRescueBusy)return true;
+        if(!window.confirm('Prepare a private local rescue copy? It may contain business records and photos. Known credentials are omitted. Nothing will be changed or uploaded. Keep the rescue file private; share only the separate diagnostic summary.'))return true;
+        clearHarborRescueMemory();const epoch=harborRescueEpoch,button=$('harborPrepareRescue');harborRescueBusy=true;if(button)button.disabled=true;
+        const stillAuthorized=()=>{harborRequireAccess();if(epoch!==harborRescueEpoch)throw new Error('Rescue capture was cancelled because the Engine context changed.');};
+        try{
+          const payload=await api.capture({isAllowed:()=>engineSessionUnlocked&&epoch===harborRescueEpoch,onProgress:stage=>{stillAuthorized();harborRescueStatus(stage+'… Read-only; no records changed.');}});stillAuthorized();
+          const doc=await api.wrap(payload,BUILD_VERSION);stillAuthorized();harborRescueDocument=doc;
+          $('harborDownloadRescue').disabled=false;$('harborDownloadDiagnostic').disabled=false;
+          harborRescueStatus((payload.coverage.status==='partial'?'PARTIAL CAPTURE':'LISTED SOURCES CAPTURED')+` • ${payload.errors.length} read/serialization issue(s). Prepared in memory only. Download the PRIVATE rescue file, then reopen it with Verify Saved Rescue File. This is not a tested restore.`);
+        }finally{harborRescueBusy=false;if(button)button.disabled=false;}
+      }else if(id==='harborDownloadRescue'){
+        if(!harborRescueDocument)throw new Error('Prepare a rescue capture first.');
+        harborDownloadJSON(harborRescueDocument,`blackflag-${BUILD_VERSION.replaceAll('.','')}-PRIVATE-rescue.json`);
+        harborRescueStatus('Private rescue download requested—not yet verified saved. Keep it out of GitHub and this chat. Reopen the file with Verify Saved Rescue File.');
+      }else if(id==='harborDownloadDiagnostic'){
+        if(!harborRescueDocument)throw new Error('Prepare a rescue capture first.');
+        harborDownloadJSON(api.diagnostic(harborRescueDocument.payload,BUILD_VERSION),`blackflag-${BUILD_VERSION.replaceAll('.','')}-storage-diagnostic.json`);
+        harborRescueStatus('Diagnostic summary download requested. This separate counts-and-errors file may be shared for troubleshooting; the PRIVATE rescue file should remain private.');
+      }else{
+        const input=$('harborVerifyRescueInput');if(!input)throw new Error('Saved-file picker unavailable.');input.value='';
+        input.onchange=async()=>{const file=input.files?.[0];if(!file)return;try{
+          harborRequireAccess();if(file.size>100*1024*1024)throw new Error('Selected file exceeds the safe verification limit.');
+          const epoch=harborRescueEpoch,text=await file.text();harborRequireAccess();if(epoch!==harborRescueEpoch)throw new Error('Engine context changed.');
+          const result=await api.verify(text);harborRequireAccess();if(epoch!==harborRescueEpoch)throw new Error('Engine context changed.');
+          if(harborRescueDocument&&result.sha256!==harborRescueDocument.sha256)throw new Error('This file is intact but does not match the capture currently prepared on this page.');
+          harborRescueStatus(`SAVED FILE READBACK MATCHED • ${result.coverage==='partial'?'CAPTURE IS PARTIAL':'LISTED SOURCES ONLY'} • ${result.error_count} reported issue(s). No restore or authority change was performed. A checksum is not proof of a complete backup.`);
+        }catch(err){harborRescueStatus('FILE NOT VERIFIED: '+String(err?.message||err));}finally{input.value='';}};
+        input.click();
+      }
+    }catch(err){harborRescueStatus('RESCUE NOT CONFIRMED: '+String(err?.message||err));}
+    return true;
   }
 
   async function refreshV3CommandSystems(){
@@ -16755,6 +16792,8 @@ The full order and approved media remain stored with this project.`;
         }
         return;
       }
+
+      if(await handleHarborRescueAction(target.id))return;
 
       if(target.id==='createRecoverySnapshotBtn'){
         await createV3RecoverySnapshot();

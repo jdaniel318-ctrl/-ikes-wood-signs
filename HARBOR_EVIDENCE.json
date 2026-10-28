@@ -1,0 +1,40 @@
+{
+  "schema": "blackflag-harbor-evidence-v1",
+  "build": "8.8.20.70",
+  "release": "Harbor",
+  "verified_at": "2026-10-28T18:27:23.448946+00:00",
+  "base": "8.8.20.69",
+  "baseline_sha256": "2d0e1dc45ce3e808c4c0ecff33bc74f62c246891d8e9173d040274866be37590",
+  "scope": "Reproduced quota/error-handling repair; synthetic records; no real device/database operations",
+  "tests": {
+    "selected_suites": 17,
+    "snapshot_and_pure_storage_checks": 20,
+    "asynchronous_storage_checks": 20,
+    "navigation_checks": 46,
+    "browser_harbor_checks": 25,
+    "browser_account_checks": 32,
+    "browser_startup_checks": 18
+  },
+  "test_driven": {
+    "snapshot_rejection_and_readback": "failed on supplied baseline; pass on repaired functions",
+    "quarantine_preservation": "two tests failed during integration; corrected read-only handling; no quarantined records deleted"
+  },
+  "limitations": {
+    "native_safari": "pending",
+    "native_indexeddb": "not tested; isolated asynchronous adapter used",
+    "browser_navigation": "ERR_BLOCKED_BY_ADMINISTRATOR for local/network test pages; retained failure log",
+    "browser_hashing": "Python SHA-256 fixture; Node suite uses actual WebCrypto",
+    "quota_exhaustion": "injected errors; not physical device fill",
+    "full_boot": "not a real iPad storage startup simulation",
+    "live_auth_or_server": "not tested, unchanged",
+    "exact_current_failing_key": "unverified",
+    "file_integrity": "not restore or completeness certification",
+    "independent_review": false
+  },
+  "production_mutations": false,
+  "deployed": false,
+  "performance_improvement_claim": false,
+  "source_backup_not_customer_backup": true,
+  "private_export_plaintext": true,
+  "warnings_retained": true
+}

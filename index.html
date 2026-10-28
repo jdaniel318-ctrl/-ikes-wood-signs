@@ -15,7 +15,7 @@
   </style>
   <script id="darkSkyFirstLightBootstrap">
     // Dark Sky 8.6.23 MEMORY MUSTER — canonical release identity.
-    const DARK_SKY_RELEASE = Object.freeze({build:'8.8.20.69',seal:'trimline-882069'});
+    const DARK_SKY_RELEASE = Object.freeze({build:'8.8.20.70',seal:'harbor-882070'});
     const DARK_SKY_EXPECTED_BUILD = DARK_SKY_RELEASE.build;
     const DARK_SKY_RELEASE_SEAL = DARK_SKY_RELEASE.seal;
     // 8.6.23 Storage Safe Harbor — three independent channels, no silent storage failures.
@@ -575,6 +575,9 @@
 #fairleadStartupEvidence p{overflow-wrap:anywhere}
 @media(max-width:700px){#fairleadStartupEvidence .fairlead-startup-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:400px){#fairleadStartupEvidence .fairlead-startup-grid{grid-template-columns:1fr}}
+</style>
+<style id="harborStorageSafetyStyle">
+.harbor-rescue-panel{border:1px solid #41616a;border-radius:16px;padding:22px;margin:18px 0;background:#0a252e;color:#e7f1f1}.harbor-rescue-panel h3{font-size:24px;margin:8px 0 12px}.harbor-rescue-panel small{letter-spacing:.12em;font-weight:700}.harbor-rescue-panel p{line-height:1.6}.harbor-rescue-panel .helper{font-size:14px;color:#b5cad1}.harbor-private-warning{padding:14px;border-left:4px solid #e2bd64;background:#292614;line-height:1.6}.harbor-private-warning strong{display:block;color:#f0d98a}.harbor-rescue-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:18px 0}.harbor-rescue-actions button{min-height:48px;white-space:normal}.harbor-rescue-actions button:disabled{opacity:.5;cursor:not-allowed}.harbor-rescue-status{padding:14px;border:1px solid #426773;border-radius:10px;overflow-wrap:anywhere}@media(max-width:600px){.harbor-rescue-panel{padding:16px}.harbor-rescue-actions{grid-template-columns:1fr}}
 </style>
 </head>
 <body class="boot-locked">
@@ -1433,7 +1436,7 @@
       </nav>
 
       <section id="clearDeckLaunchpad" class="clear-deck-launchpad" aria-label="Engine command launchpad">
-        <div class="clear-deck-brief"><small id="engineReleaseLabel">8.8.20.69 • TRIMLINE</small><h3>Where are we working?</h3><p>Captain and Admiral are established as separate offices. The Admiral rank is durable; every secure session and modifying action still declares its authority source and exact scope.</p><div class="admiral-keel-office-state"><b>ADMIRAL OFFICE · COMMISSIONED</b><span>Rank persists until explicit server revocation. PIN + account verification protect each secure workspace session; session expiry does not demote the Admiral.</span></div></div>
+        <div class="clear-deck-brief"><small id="engineReleaseLabel">8.8.20.70 • HARBOR</small><h3>Where are we working?</h3><p>Captain and Admiral are established as separate offices. The Admiral rank is durable; every secure session and modifying action still declares its authority source and exact scope.</p><div class="admiral-keel-office-state"><b>ADMIRAL OFFICE · COMMISSIONED</b><span>Rank persists until explicit server revocation. PIN + account verification protect each secure workspace session; session expiry does not demote the Admiral.</span></div></div>
         <div class="clear-deck-primary-actions">
           <button type="button" class="clear-deck-action primary" data-clear-deck-command="projects"><span class="clear-deck-action-number">01</span><span><strong>OPERATE VESSELS</strong><small>Choose an independent vessel, then enter its exact Project Control or product surface.</small></span></button>
           <button type="button" class="clear-deck-action" data-command-open="captain"><span class="clear-deck-action-number">02</span><span><strong>CAPTAIN WATCH</strong><small>Review signals, decide a course, route deliberate action, and retain the outcome.</small></span></button>
@@ -1811,16 +1814,31 @@
           <div class="v3-integrity-copy">
             <div class="engine-kicker">SHIP INTEGRITY</div>
             <h4>Structural Certification</h4>
-            <p>Check project boundaries, command controls, stored project references, migration state, and v3 architecture.</p>
+            <p>Read-only inspection of stored project boundaries and controls. No automatic repair or migration.</p>
           </div>
           <div class="v3-integrity-actions">
-            <button id="runShipIntegrityBtn" class="primary-btn" type="button">RUN SHIP INTEGRITY CHECK</button>
-            <button id="createRecoverySnapshotBtn" class="secondary-btn" type="button">CREATE RECOVERY SNAPSHOT</button>
+            <button id="runShipIntegrityBtn" class="primary-btn" type="button">INSPECT SHIP INTEGRITY</button>
+            <button id="createRecoverySnapshotBtn" class="secondary-btn" type="button">SAVE VERIFIED LOCAL SNAPSHOT</button>
             <button id="showAuditTrailBtn" class="secondary-btn" type="button">VIEW SHIP'S LOG</button>
           </div>
           <div id="shipIntegritySummary" class="v3-integrity-summary"></div>
           <div id="v3AuditViewer" class="v3-audit-viewer hidden"></div>
         </section>
+      <section id="harborRescuePanel" class="harbor-rescue-panel" aria-labelledby="harborRescueTitle">
+        <header><small>STORAGE SAFETY · READ ONLY</small><h3 id="harborRescueTitle">Protect this device’s records</h3></header>
+        <p>Prepare a private rescue copy without writing to the website’s storage. No cleanup, migration, restore or cloud upload is performed.</p>
+        <div class="harbor-private-warning"><strong>PRIVATE BUSINESS DATA</strong> The rescue file is not encrypted. It may contain customers, designs, photographs, financial records and free-text notes. Keep it in private Files storage—not GitHub or this chat. Known credentials are excluded; coverage and omissions travel with the file.</div>
+        <div class="harbor-rescue-actions">
+          <button id="harborPrepareRescue" type="button" class="primary-btn">PREPARE READ-ONLY RESCUE</button>
+          <button id="harborDownloadRescue" type="button" class="secondary-btn" disabled>DOWNLOAD PRIVATE RESCUE</button>
+          <button id="harborDownloadDiagnostic" type="button" class="secondary-btn" disabled>DOWNLOAD DIAGNOSTIC SUMMARY</button>
+          <button id="harborVerifyRescue" type="button" class="secondary-btn">VERIFY SAVED RESCUE FILE</button>
+          <input id="harborVerifyRescueInput" type="file" accept=".json,application/json" hidden>
+        </div>
+        <p id="harborRescueStatus" class="harbor-rescue-status" role="status" aria-live="polite">Nothing has been captured. The diagnostic summary contains counts and storage-read errors only, not business records.</p>
+        <p class="helper">Limited to known Black Flag local stores. Cloud records, browser caches and sessions are excluded. Capture may be partial; a download request is not proof that a file was saved.</p>
+      </section>
+
 
         <section id="seaTrialsStation" class="sea-trials-station">
           <div class="sea-trials-copy">
@@ -2118,7 +2136,7 @@
     const APP_SCOPE=new URL('./',location.href).href;
     const APP_CACHE=/^(ikes-wood-signs-|workshop-engine-|black-flag-|dark-sky-)/;
     const delay=ms=>new Promise(r=>setTimeout(r,ms));
-    const snapshotPaths=['input_hygiene.js','fun_core.js','stormwake_core.js','fun_program.js','fun_program.css','fun_player.html','fleet_viewport.js','fleet_viewport.css','headway_contracts.js','woodwright_fit.js','styles.css','simple_books.css','platform_core.js','platform_v4.js','platform_identity.js','fleet_supabase.js','fleetguard_admiral_core.js','fleet_recovery_core.js','ike_style_registry.js','app.js','captain.js','simple_books.js','quartermaster_core.js','quartermaster_fonts.js','quartermaster_pdf.js','carve_fonts.js','carve_core.js','carve_store.js','carve_studio.js','quartermaster.js','quartermaster.css','carve_studio.css','fleet_design_assets.js','carvewright_core.js','boardcraft_photo.js','carvewright_store.js','carvewright_clipper.js','carvewright_cam.js','carvewright_portable.js','ike_shop_core.js','ike_shop_store.js','ike_shop_delivery.js','carvewright_posts.js','carvewright_machining.js','carvewright_studio.js','ike_shop.js','carvewright_app.js','carvewright_fleet.js','carvewright.css','carvewright_machining.css','ike_shop.css'];
+    const snapshotPaths=['input_hygiene.js','fun_core.js','stormwake_core.js','fun_program.js','fun_program.css','fun_player.html','fleet_viewport.js','fleet_viewport.css','headway_contracts.js','woodwright_fit.js','styles.css','simple_books.css','platform_core.js','fleet_storage_safety.js','platform_v4.js','platform_identity.js','fleet_supabase.js','fleetguard_admiral_core.js','fleet_recovery_core.js','ike_style_registry.js','app.js','captain.js','simple_books.js','quartermaster_core.js','quartermaster_fonts.js','quartermaster_pdf.js','carve_fonts.js','carve_core.js','carve_store.js','carve_studio.js','quartermaster.js','quartermaster.css','carve_studio.css','fleet_design_assets.js','carvewright_core.js','boardcraft_photo.js','carvewright_store.js','carvewright_clipper.js','carvewright_cam.js','carvewright_portable.js','ike_shop_core.js','ike_shop_store.js','ike_shop_delivery.js','carvewright_posts.js','carvewright_machining.js','carvewright_studio.js','ike_shop.js','carvewright_app.js','carvewright_fleet.js','carvewright.css','carvewright_machining.css','ike_shop.css'];
     // Manifest, seal and inventory are fetched and verified as the first group;
     // do not download those same documents again in the presence group.
     const presencePaths=['carvewright.html','business_deck.js','business_deck.css','owner.html','manifest.webmanifest','IKE_STYLE_FOUNDRY.json','sw.js','FLEET_DOCTRINE_REGISTRY.json','GOLDEN_VOYAGES.json','FLEET_COMMAND_MODEL.json','ADMIRAL_ENTITLEMENT_STATE_MODEL.json'];
@@ -2435,7 +2453,7 @@
       window.__funVerifiedPlayerHtml=fetched['fun_player.html'];
       const css=document.createElement('style');css.id='darkSkyVerifiedReleaseStyles';css.dataset.releaseSeal=SEAL;css.textContent=fetched['fun_program.css']+'\n'+fetched['styles.css']+'\n'+fetched['simple_books.css']+'\n'+fetched['fleet_viewport.css']+'\n'+fetched['quartermaster.css']+'\n'+fetched['carve_studio.css']+'\n'+fetched['carvewright.css']+'\n'+fetched['carvewright_machining.css']+'\n'+fetched['ike_shop.css'];document.head.appendChild(css);
       window.__darkSkyRuntimeEntryWitness8620?.('verified-styles-installed',{seal:SEAL});
-      for(const path of ['input_hygiene.js','platform_core.js','fleet_viewport.js','headway_contracts.js','woodwright_fit.js','platform_v4.js','platform_identity.js','fleet_supabase.js','fleetguard_admiral_core.js','fleet_recovery_core.js','ike_style_registry.js','app.js','captain.js','fun_core.js','stormwake_core.js','fun_program.js','simple_books.js','quartermaster_core.js','quartermaster_fonts.js','quartermaster_pdf.js','carve_fonts.js','carve_core.js','carve_store.js','carve_studio.js','quartermaster.js','fleet_design_assets.js','carvewright_core.js','boardcraft_photo.js','carvewright_store.js','carvewright_clipper.js','carvewright_cam.js','carvewright_portable.js','ike_shop_core.js','ike_shop_store.js','ike_shop_delivery.js','carvewright_posts.js','carvewright_machining.js','carvewright_studio.js','ike_shop.js','carvewright_app.js','carvewright_fleet.js']){
+      for(const path of ['input_hygiene.js','platform_core.js','fleet_storage_safety.js','fleet_viewport.js','headway_contracts.js','woodwright_fit.js','platform_v4.js','platform_identity.js','fleet_supabase.js','fleetguard_admiral_core.js','fleet_recovery_core.js','ike_style_registry.js','app.js','captain.js','fun_core.js','stormwake_core.js','fun_program.js','simple_books.js','quartermaster_core.js','quartermaster_fonts.js','quartermaster_pdf.js','carve_fonts.js','carve_core.js','carve_store.js','carve_studio.js','quartermaster.js','fleet_design_assets.js','carvewright_core.js','boardcraft_photo.js','carvewright_store.js','carvewright_clipper.js','carvewright_cam.js','carvewright_portable.js','ike_shop_core.js','ike_shop_store.js','ike_shop_delivery.js','carvewright_posts.js','carvewright_machining.js','carvewright_studio.js','ike_shop.js','carvewright_app.js','carvewright_fleet.js']){
         await new Promise((resolve,reject)=>{const blob=new Blob([fetched[path]+`\n//# sourceURL=dark-sky-${SEAL}/${path}`],{type:'text/javascript'});const url=URL.createObjectURL(blob);const el=document.createElement('script');el.async=false;el.dataset.releaseSeal=SEAL;el.onload=()=>{URL.revokeObjectURL(url);window.__darkSkyRuntimeEntryWitness8620?.('runtime-script-executed',{path});resolve();};el.onerror=()=>{URL.revokeObjectURL(url);window.__darkSkyRuntimeEntryWitness8620?.('runtime-script-error',{path});reject(new Error(`Verified ${path} could not execute.`));};el.src=url;document.body.appendChild(el);});
       }
     }
