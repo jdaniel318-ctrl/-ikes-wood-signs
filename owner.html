@@ -149,6 +149,7 @@
 @media(max-width:700px){.tb-security-form,.tb-recovery-grid{grid-template-columns:1fr}.tb-security-form>.captain-handoff-actions{grid-column:auto}}
 </style>
 <link rel="stylesheet" href="business_deck.css?v=fairlead-882068" onerror="window.__workhorseDeckStylesFailed=true">
+<script id="blackFlagPageRelease">window.__blackFlagPageRelease=Object.freeze({build:'8.8.20.69',seal:'trimline-882069',name:'Trimline'});</script>
 <script src="input_hygiene.js?v=fairlead-882068"></script>
 <script src="business_deck.js?v=fairlead-882068"></script>
 <script src="fleet_supabase.js?v=fairlead-882068"></script>
@@ -218,7 +219,7 @@
   <section id="portal" class="portal hidden">
     <div class="portal-wrap">
       <header class="portal-head">
-        <div class="bd-brand-heading"><div id="businessHeaderLogo" aria-hidden="true"></div><div><div class="eyebrow">8.8.20.68 · QUARTERMASTER</div><h1 id="portalName">Business</h1><span class="owner-badge">● SECURE OWNER SESSION</span><div id="ownerScopeNote" class="owner-scope-note">Verified for this business only</div></div></div>
+        <div class="bd-brand-heading"><div id="businessHeaderLogo" aria-hidden="true"></div><div><div class="eyebrow" id="ownerInstalledRelease">8.8.20.69 · QUARTERMASTER</div><h1 id="portalName">Business</h1><span class="owner-badge">● SECURE OWNER SESSION</span><div id="ownerScopeNote" class="owner-scope-note">Verified for this business only</div></div></div>
         <div class="head-actions"><button id="returnEngine" class="btn ghost hidden">RETURN TO BLACK FLAG</button><button id="signOut" class="btn secondary">SIGN OUT</button></div>
       </header>
       <nav id="businessDeckNav" class="bd-owner-nav" aria-label="Business workspace"></nav>
@@ -241,12 +242,13 @@
   const q=new URLSearchParams(location.search);
   if(q.get('surface')!=='vessel-captain')return;
   window.__darkSkyVesselCaptainRouteActive=true;
-  const BUILD='8.8.20.68', input=window.BlackFlagInput;
+  // Installed page identity and retained helper revision are separate contracts.
+  const BUILD=window.__blackFlagPageRelease.build, HELPER_COMPONENT_BUILD='8.8.20.68', input=window.BlackFlagInput;
   let projectId=String(q.get('project')||'').trim().toLowerCase();
   const invalidRoute=q.getAll('project').length>1||q.getAll('surface').length!==1||(projectId&&!/^[a-z0-9][a-z0-9-]{0,95}$/.test(projectId));
   const SUPABASE_URL='https://sjgqqtnuttnkwsoebbqf.supabase.co', SUPABASE_KEY='sb_publishable_gvWfIBQg4ew2RvVr6CpJSg_8y02QmKy', SESSION_KEY='darkSkySupabaseVesselCaptainSessionV1';
   const root=document.getElementById('app'),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  if(!input || input.build!==BUILD){root.innerHTML='<section class="route-safe"><div class="card"><h1>Test build files do not match</h1><p>Upload the complete Quartermaster folder contents, then reopen this page. No sign-in or vessel command was sent.</p></div></section>';return;}
+  if(!input || input.build!==HELPER_COMPONENT_BUILD){root.innerHTML='<section class="route-safe"><div class="card"><h1>Test build files do not match</h1><p>Upload the complete Quartermaster folder contents, then reopen this page. No sign-in or vessel command was sent.</p></div></section>';return;}
   const client=window.DarkSkySupabase.create({url:SUPABASE_URL,publishableKey:SUPABASE_KEY,sessionKey:SESSION_KEY,build:BUILD,guardSession:true});
   let appointment=null,access=null,orders=[],watch=null,busy=false,stationEpoch=0,person=null,myAppointments=[],securityController=null;
 
@@ -657,7 +659,7 @@ const DB_NAME='blackFlagPlatformV1', STORE_PROJECTS='projects', STORE_SETTINGS='
 const OWNER_SESSION_KEY='blackFlagOwnerSessionV1', OWNER_AUTHORITY_WITNESS_KEY='darkSkyOwnerAuthorityWitnessV1', SUPABASE_SESSION_KEY='darkSkySupabaseOwnerSessionV1', OWNER_SESSION_TTL_MS=8*60*60*1000;
 const LOCAL_RECOVERY_FAILURE_KEY='darkSkyOwnerRecoveryFailuresV1', LOCAL_RECOVERY_MAX_FAILURES=5, LOCAL_RECOVERY_LOCK_MS=5*60*1000, DEFAULT_PROJECT_ADMIN_RECOVERY_PIN='4353';
 const SUPABASE_URL='https://sjgqqtnuttnkwsoebbqf.supabase.co', SUPABASE_KEY='sb_publishable_gvWfIBQg4ew2RvVr6CpJSg_8y02QmKy';
-const ownerSupabase=window.DarkSkySupabase.create({url:SUPABASE_URL,publishableKey:SUPABASE_KEY,sessionKey:SUPABASE_SESSION_KEY,build:'8.8.20.68'});
+const ownerSupabase=window.DarkSkySupabase.create({url:SUPABASE_URL,publishableKey:SUPABASE_KEY,sessionKey:SUPABASE_SESSION_KEY,build:window.__blackFlagPageRelease.build});
 const FLEET_CORE_PROJECT_IDS=new Set(['beccas-bloom-shop','bf-p-f92f87e8ec44','bor-north-richmond','grizzly-bear','ikes-wood-signs','mugshot-after-dark']);
 const q=new URLSearchParams(location.search), projectId=String(q.get('project')||''), source=String(q.get('source')||''), requestedView=String(q.get('view')||'login');
 const $=id=>document.getElementById(id); let db=null, project=null, orders=[], localRecoveryAttempt=false;
@@ -684,7 +686,7 @@ async function getOrders(){ownerOrderReadError='';try{return (await req(tx(STORE
 async function sha256(text){const b=new TextEncoder().encode(text);const h=await crypto.subtle.digest('SHA-256',b);return [...new Uint8Array(h)].map(x=>x.toString(16).padStart(2,'0')).join('');}
 function random(){const a=new Uint8Array(18);crypto.getRandomValues(a);return [...a].map(x=>x.toString(16).padStart(2,'0')).join('');}
 function ownerSession(){try{return JSON.parse(sessionStorage.getItem(OWNER_SESSION_KEY)||'null')}catch(_){return null}}
-function ownerWitness(event,s,extra={}){const w={schema:'dark-sky-owner-authority-witness-v1',build:'8.8.20.68',event,at:new Date().toISOString(),projectId:s?.projectId||projectId,sessionId:s?.sessionId||'',authority:'project_owner',namespace:s?.namespace||project?.namespace||'',...extra};try{sessionStorage.setItem(OWNER_AUTHORITY_WITNESS_KEY,JSON.stringify(w));}catch(_){}return w;}
+function ownerWitness(event,s,extra={}){const w={schema:'dark-sky-owner-authority-witness-v1',build:window.__blackFlagPageRelease.build,event,at:new Date().toISOString(),projectId:s?.projectId||projectId,sessionId:s?.sessionId||'',authority:'project_owner',namespace:s?.namespace||project?.namespace||'',...extra};try{sessionStorage.setItem(OWNER_AUTHORITY_WITNESS_KEY,JSON.stringify(w));}catch(_){}return w;}
 function saveSession(){const now=Date.now(),s={schema:'dark-sky-owner-session-v2',projectId,namespace:project?.namespace||'',authority:'project_owner',sessionId:'OWN-'+now.toString(36)+'-'+Math.random().toString(36).slice(2,8),startedAt:new Date(now).toISOString(),expiresAt:new Date(now+OWNER_SESSION_TTL_MS).toISOString()};sessionStorage.setItem(OWNER_SESSION_KEY,JSON.stringify(s));ownerWitness('session-started',s,{scopeVerified:true});return s;}
 function sessionValid(s){
   if(!s||s.authority!=='project_owner'||s.projectId!==projectId||project?.id!==projectId)return false;
@@ -746,7 +748,7 @@ async function verifySupabaseMembership(){
 }
 async function ownerWatchRpc(name,body){const proof=await verifySupabaseMembership();if(!proof.ok||!proof.session?.access_token)throw new Error('A live exact-vessel owner identity is required. Local recovery cannot report to Fleet Watch.');const r=await fetch(SUPABASE_URL+'/rest/v1/rpc/'+name,{method:'POST',headers:{...supaHeaders(proof.session.access_token),Accept:'application/json'},body:JSON.stringify(body)});if(!r.ok){let message='Fleet Watch refused the report. No operational truth changed.';try{const problem=await r.json();message=problem?.message||problem?.hint||message;}catch(_){}throw new Error(message.replaceAll('_',' '));}return r.json();}
 async function readOwnWatchReport(){return ownerWatchRpc('vessel_read_own_watch_report',{p_project_id:projectId});}
-async function publishOwnWatchReport(currentWork,unresolvedIssues,issueSummary){return ownerWatchRpc('vessel_publish_watch_report',{p_project_id:projectId,p_current_work:String(currentWork||'').trim(),p_unresolved_issues:Math.max(0,Math.floor(Number(unresolvedIssues)||0)),p_issue_summary:String(issueSummary||'').trim().slice(0,500),p_source_label:'OWNER CONTROL CENTER',p_detail:{build:'8.8.20.68',surface:'owner-control-center',project_id:projectId}});}
+async function publishOwnWatchReport(currentWork,unresolvedIssues,issueSummary){return ownerWatchRpc('vessel_publish_watch_report',{p_project_id:projectId,p_current_work:String(currentWork||'').trim(),p_unresolved_issues:Math.max(0,Math.floor(Number(unresolvedIssues)||0)),p_issue_summary:String(issueSummary||'').trim().slice(0,500),p_source_label:'OWNER CONTROL CENTER',p_detail:{build:window.__blackFlagPageRelease.build,surface:'owner-control-center',project_id:projectId}});}
 async function enterSupabaseOwner(){
   verifiedOwnerBinding=null;
   const proof=await verifySupabaseMembership();if(!proof.ok)return proof;

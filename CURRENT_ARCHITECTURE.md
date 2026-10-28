@@ -1,3 +1,24 @@
+<!-- BLACKFLAG_CURRENT_RELEASE_START -->
+# Current architecture — Trimline 8.8.20.69
+
+Source of release identity: RELEASE_CONFIG.json. Installed page/manifest/seal/worker identity is generated together. APP_COMPONENT_REVISION is 8.8.20.69; owner helper revision is 8.8.20.68. Unchanged component bodies remain byte-identical across release-only changes.
+
+The Engine still verifies every required body, current governance models, app component contract and worker identity before executing the same script sequence. App and Captain bind audit/display freshness to the verified installed release. This context never grants permissions. The owner page keeps explicit helper compatibility checks.
+
+No specialist module is deferred or removed. No live data, schema, session key, appointment, authorization endpoint, sign-design geometry or ledger behavior is changed. Fleet core and Admiral programs remain distinct.
+
+## Release commands
+Prepare known identity fields: `python3 -B PREPARE_RELEASE.py .` (resets test status to untested; never deploys).
+Seal reviewed bytes only: `python3 -B PREPARE_RELEASE.py . --seal-only`.
+Verify: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`.
+Package: `python3 -B BUILD_RELEASE.py . --baseline <exact prior full-source ZIP> --out <new external directory>`.
+
+Previous release guides/scripts are retained historical material; do not run their release-pinned sealers on this release.
+Native Safari/hosted integration is separate from offline checks. Source backup is not business-data restore.
+<!-- BLACKFLAG_CURRENT_RELEASE_END -->
+
+## Retained historical notes
+
 # Fairlead 8.8.20.68 — Current release
 Current upload: `DarkSky882068-Fairlead-Upload.zip` (also delivered as byte-identical `Fairlead68.zip`).
 Matching complete source: `DarkSky882068-Fairlead-FullBackup.zip`.

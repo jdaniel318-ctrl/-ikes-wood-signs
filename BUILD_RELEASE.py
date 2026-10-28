@@ -126,6 +126,11 @@ def run_check(command:list[str],root:Path,log:Path)->None:
             result=subprocess.run(command,cwd=root,stdout=stream,stderr=subprocess.STDOUT,env=env,timeout=300,check=False)
         except (OSError,subprocess.TimeoutExpired) as e:raise ValueError("Verification failed to execute; inspect "+str(log)) from e
     if result.returncode:raise ValueError("Verification failed; inspect "+str(log))
+def verification_runner(files:dict[str,bytes])->str:
+    runner=data(files,"CURRENT_BASELINE.json").get("verification_runner","VERIFY_FAIRLEAD_ALL.cjs")
+    if not isinstance(runner,str) or not re.fullmatch(r"VERIFY_[A-Z0-9_]+\.cjs",runner) or runner not in files:
+        raise ValueError("Missing or invalid verification runner; no unchecked package generated")
+    return runner
 def build(root:Path,baseline:Path,out:Path)->dict:
     root=root.resolve();baseline=baseline.resolve();out=out.resolve()
     require_external_output(root,out)
@@ -151,7 +156,7 @@ def build(root:Path,baseline:Path,out:Path)->dict:
         evidence=stage/"verification"
         node=shutil.which("node")
         if not node:raise ValueError("Node is required; no unchecked package generated")
-        run_check([node,str(root/"VERIFY_FAIRLEAD_ALL.cjs"),str(root),str(evidence)],root,stage/"verification.log")
+        run_check([node,str(root/verification_runner(original)),str(root),str(evidence)],root,stage/"verification.log")
         if load_tree(root)!=original:raise ValueError("Source changed during verification; no package issued")
         upload={n:original[n] for n in names}
         rollback={n:old[n] for n in changes["changed"]}
@@ -170,11 +175,15 @@ def build(root:Path,baseline:Path,out:Path)->dict:
                "verification":"listed offline suites passed; logs included","source_snapshot_unchanged":True,
                "deployed":False,"database_actions":"none","backup_scope":"application source only; not database/customer/media recovery",
                "native_safari":"pending","performance_improvement_claim":False,"archives":{}}
+        runtime_names=set(data(original,"DEPLOYMENT_MANIFEST.json").get("runtime_integrity",{}).get("files",{}))
+        reused=sorted(n for n in runtime_names if n in old and original[n]==old[n])
+        changed_runtime=sorted(n for n in runtime_names if n not in old or original[n]!=old[n])
+        proof["component_reuse"]={"runtime_paths":len(runtime_names),"byte_identical_runtime_paths":reused,"changed_runtime_paths":changed_runtime,"policy":"Exact bytes compared to supported baseline; component labels are not proof"}
         for filename,folder,contents in outputs:
             path=stage/filename;write_zip(path,folder,contents,timestamp)
             proof["archives"][filename]={"files":len(contents),"bytes":path.stat().st_size,"sha256":digest(path.read_bytes()),"crc_and_readback":"pass"}
         (stage/"PackageProof.json").write_text(json.dumps(proof,indent=2)+"\n")
-        (stage/"README.txt").write_text("UPLOAD: "+outputs[0][0]+"\nExtract; upload its inner files into the existing repository root. Keep all other files.\nFULL BACKUP: source only, not business records. Do not upload it as the patch.\nROLLBACK: restore prior software files only, never old permissions or customer data. New .68 tool files remain inert under .67.\nVerification logs are separate from the website source. No deployment, deletion or live database action was performed.\n")
+        (stage/"README.txt").write_text("UPLOAD: "+outputs[0][0]+"\nExtract; upload its inner files into the existing repository root. Keep all other files.\nFULL BACKUP: source only, not business records. Do not upload it as the patch.\nROLLBACK: restore prior software files only, never old permissions or customer data. Added release-tool files remain unused by the restored prior software.\nVerification logs are separate from the website source. No deployment, deletion or live database action was performed.\n")
         os.replace(stage,out)
         return proof
     except Exception:

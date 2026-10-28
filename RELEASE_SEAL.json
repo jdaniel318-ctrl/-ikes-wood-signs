@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.68",
-  "release": "Fairlead",
-  "seal": "fairlead-882068",
+  "build": "8.8.20.69",
+  "release": "Trimline",
+  "seal": "trimline-882069",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Fairlead",
-  "name": "Fairlead",
-  "releaseName": "Fairlead"
+  "release_name": "Trimline",
+  "name": "Trimline",
+  "releaseName": "Trimline"
 }

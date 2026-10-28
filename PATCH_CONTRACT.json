@@ -1,16 +1,16 @@
 {
   "schema": "blackflag-patch-contract-v1",
-  "target_build": "8.8.20.68",
-  "target_seal": "fairlead-882068",
+  "target_build": "8.8.20.69",
+  "target_seal": "trimline-882069",
   "supported_bases": [
     {
-      "build": "8.8.20.67",
-      "source_sha256": "74ab64a6582a23d50a88711b53d3278620cfbf97da28168cd2dd4d10bdcef410",
-      "file_count": 630
+      "build": "8.8.20.68",
+      "source_sha256": "3347aaf7a75364a2f168e25a3c7a48560bf7bc2e581dc40597bc6b9cdcf26398",
+      "file_count": 641
     }
   ],
   "requires_deletions": false,
   "max_upload_files": 85,
   "database_actions": "none",
-  "rule": "Upload all changed/new root files over complete .67. Keep everything else. No SQL, permission or record changes."
+  "rule": "Upload every changed/new root file over complete 8.8.20.68. Keep everything else. No SQL, permission or record changes."
 }

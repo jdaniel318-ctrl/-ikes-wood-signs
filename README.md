@@ -1,3 +1,14 @@
+<!-- BLACKFLAG_CURRENT_RELEASE_START -->
+# Black Flag Trimline 8.8.20.69
+
+Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
+Baseline: 8.8.20.68. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
+No database, permission, stored-record, loading-dependency or deployment operation is part of this software patch.
+<!-- BLACKFLAG_CURRENT_RELEASE_END -->
+
+## Retained historical notes
+
 # Fairlead 8.8.20.68 — Current release
 Current upload: `DarkSky882068-Fairlead-Upload.zip` (also delivered as byte-identical `Fairlead68.zip`).
 Matching complete source: `DarkSky882068-Fairlead-FullBackup.zip`.

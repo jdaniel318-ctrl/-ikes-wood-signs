@@ -12,6 +12,7 @@ def main():
     if out.is_relative_to(root):p.error("Evidence must be outside source")
     out.mkdir(parents=True,exist_ok=True)
     text=(root/"index.html").read_text()
+    build=json.loads((root/"DEPLOYMENT_MANIFEST.json").read_text())["build"]
     script=re.search(r'<script id="blackFlagStartupMetrics">([\s\S]*?)</script>',text).group(1)
     style=re.search(r'<style id="fairleadStartupStyle">([\s\S]*?)</style>',text).group(1)
     start=text.index('<section id="enginePerformanceDeck"')
@@ -34,7 +35,7 @@ def main():
         @media(max-width:600px){body{padding:14px}.engine-performance-deck{grid-template-columns:1fr}}
         """
         page.set_content('<style>'+css+style+'</style><main><p class="fixture">OFFLINE TEST FIXTURE · synthetic phase events, not measured production speed</p><h1>Engineering Systems</h1>'+section+'</main>')
-        page.add_script_tag(content="const DARK_SKY_RELEASE={build:'8.8.20.68'};")
+        page.add_script_tag(content="const DARK_SKY_RELEASE="+json.dumps({"build":build})+";")
         page.add_script_tag(content=script)
         check("starts collapsed",not page.locator("#fairleadStartupEvidence details").get_attribute("open"))
         page.locator("#fairleadStartupEvidence summary").click()
@@ -55,7 +56,7 @@ def main():
         with page.expect_download() as event:page.locator("#fairleadDownloadStartup").click()
         download=event.value;download.save_as(out/"startup-fixture-download.json")
         exported=json.loads((out/"startup-fixture-download.json").read_text())
-        check("JSON export contains current build",exported["build"]=="8.8.20.68")
+        check("JSON export contains current build",exported["build"]==build)
         check("export is allowlisted",set(exported)<=set(["schema","build","scope","status","loader_elapsed_ms","phases","unfinished_phases","dropped_samples","production_readiness","performance_improvement_claim","privacy","navigation"]))
         check("download does not send a request",len(attempted)==0)
         check("download wording is not saved-file certification","does not prove it was saved" in page.locator("#fairleadStartupDownloadStatus").inner_text())

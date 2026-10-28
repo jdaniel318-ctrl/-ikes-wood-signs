@@ -15,7 +15,7 @@
   </style>
   <script id="darkSkyFirstLightBootstrap">
     // Dark Sky 8.6.23 MEMORY MUSTER — canonical release identity.
-    const DARK_SKY_RELEASE = Object.freeze({build:'8.8.20.68',seal:'fairlead-882068'});
+    const DARK_SKY_RELEASE = Object.freeze({build:'8.8.20.69',seal:'trimline-882069'});
     const DARK_SKY_EXPECTED_BUILD = DARK_SKY_RELEASE.build;
     const DARK_SKY_RELEASE_SEAL = DARK_SKY_RELEASE.seal;
     // 8.6.23 Storage Safe Harbor — three independent channels, no silent storage failures.
@@ -1433,7 +1433,7 @@
       </nav>
 
       <section id="clearDeckLaunchpad" class="clear-deck-launchpad" aria-label="Engine command launchpad">
-        <div class="clear-deck-brief"><small id="engineReleaseLabel">8.8.20.68 • FAIRLEAD</small><h3>Where are we working?</h3><p>Captain and Admiral are established as separate offices. The Admiral rank is durable; every secure session and modifying action still declares its authority source and exact scope.</p><div class="admiral-keel-office-state"><b>ADMIRAL OFFICE · COMMISSIONED</b><span>Rank persists until explicit server revocation. PIN + account verification protect each secure workspace session; session expiry does not demote the Admiral.</span></div></div>
+        <div class="clear-deck-brief"><small id="engineReleaseLabel">8.8.20.69 • TRIMLINE</small><h3>Where are we working?</h3><p>Captain and Admiral are established as separate offices. The Admiral rank is durable; every secure session and modifying action still declares its authority source and exact scope.</p><div class="admiral-keel-office-state"><b>ADMIRAL OFFICE · COMMISSIONED</b><span>Rank persists until explicit server revocation. PIN + account verification protect each secure workspace session; session expiry does not demote the Admiral.</span></div></div>
         <div class="clear-deck-primary-actions">
           <button type="button" class="clear-deck-action primary" data-clear-deck-command="projects"><span class="clear-deck-action-number">01</span><span><strong>OPERATE VESSELS</strong><small>Choose an independent vessel, then enter its exact Project Control or product surface.</small></span></button>
           <button type="button" class="clear-deck-action" data-command-open="captain"><span class="clear-deck-action-number">02</span><span><strong>CAPTAIN WATCH</strong><small>Review signals, decide a course, route deliberate action, and retain the outcome.</small></span></button>
@@ -1551,7 +1551,7 @@
       <section id="fleetMaintenanceStation" class="fleet-maintenance-station" aria-label="Fleet Maintenance">
         <header class="fleet-maintenance-head">
           <div>
-            <div class="engine-kicker">8.8.17 • FLEET STEWARD · STORAGE TRUTH</div>
+            <div class="engine-kicker">FLEET STEWARD · STORAGE & RECOVERY</div>
             <h3>FLEET MAINTENANCE</h3>
             <p>Recurring fleet care in one professional station. Inspect first, preserve evidence, and keep destructive cleanup outside this deck.</p>
           </div>
@@ -2409,13 +2409,27 @@
       }
       window.__darkSkyKeelGuardRuntimeIntegrity=Object.freeze({build:EXPECTED,seal:SEAL,files:requiredPaths.length,verifiedAt:new Date().toISOString(),scope:'body-integrity-not-a-server-signature'});
       await Promise.all(assetPaths.map(async path=>{try{await fetchResponse(path,requestOptions);}catch(err){console.warn('[Dark Sky] optional visual unavailable',path,err);}}));
-      const runtimeMatch=fetched['app.js'].match(/const\s+BUILD_VERSION\s*=\s*['"]([^'"]+)['"]/);
-      const runtimeBuild=runtimeMatch?.[1]||'unknown';
-      if(runtimeBuild!==EXPECTED)throw Object.assign(new Error(`App runtime ${runtimeBuild} does not match ${EXPECTED}.`),{manifestBuild,runtimeBuild});
+      // Trimline: old component revisions are admissible ONLY when these exact
+      // reviewed bodies match this release's checksums. No wildcard build bypass.
+      const contract=manifest.component_contract;
+      if(contract?.schema!=='blackflag-component-contract-v1'||contract?.release_binding!=='verified-page-context-v1')throw new Error('Missing or unsupported component contract.');
+      const appComponentRevision=fetched['app.js'].match(/const\s+APP_COMPONENT_REVISION\s*=\s*['"]([^'"]+)['"]/)?.[1]||'unknown';
+      if(!/^\d+(?:\.\d+)+$/.test(String(contract.app_revision||''))||appComponentRevision!==contract.app_revision)throw new Error('App component revision does not match the release manifest.');
+      const helperRevision=String(contract.owner_helper_revision||'');
+      const helperRevisions=[
+        fetched['owner.html'].match(/HELPER_COMPONENT_BUILD=['"]([^'"]+)['"]/)?.[1],
+        fetched['input_hygiene.js'].match(/Object.freeze\(\{build:['"]([^'"]+)['"]/)?.[1],
+        fetched['business_deck.js'].match(/const\s+BUILD\s*=\s*['"]([^'"]+)['"]/)?.[1],
+        fetched['headway_contracts.js'].match(/Object.freeze\(\{version:['"]([^'"]+)['"]/)?.[1]
+      ];
+      if(!/^\d+(?:\.\d+)+$/.test(helperRevision)||helperRevisions.some(v=>v!==helperRevision))throw new Error('Owner helper component revisions do not match the release contract.');
+      const runtimeBuild=EXPECTED;
       const swBuild=fetched['sw.js'].match(/const\s+RELEASE_BUILD\s*=\s*['"]([^'"]+)['"]/)?.[1]||'unknown';
       const swSeal=fetched['sw.js'].match(/const\s+RELEASE_SEAL\s*=\s*['"]([^'"]+)['"]/)?.[1]||'unknown';
       if(swBuild!==EXPECTED||swSeal!==SEAL)throw Object.assign(new Error(`Worker source identity mismatch: ${swBuild} / ${swSeal}.`),{manifestBuild,runtimeBuild});
-      return {manifestBuild,runtimeBuild,fetched};
+      // Identity for display/audit freshness, NOT authentication or permission.
+      window.__darkSkyVerifiedRelease=Object.freeze({build:EXPECTED,seal:SEAL,appComponentRevision,scope:'verified-body-release-context-not-authority'});
+      return {manifestBuild,runtimeBuild,appComponentRevision,fetched};
     }
     async function executeVerifiedSnapshot(fetched){
       window.__funVerifiedPlayerHtml=fetched['fun_player.html'];
@@ -2504,7 +2518,7 @@
 
   (()=>{
     'use strict';
-    const BUILD='8.8.20.68';
+    const BUILD=window.__darkSkyExpectedRelease.build;
     const AUTO_TIMEOUT=2500;
     const COMMAND_TIMEOUT=2600;
     const RECOVERY_TIMEOUT=5200;
