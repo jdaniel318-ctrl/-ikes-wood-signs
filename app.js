@@ -16,7 +16,7 @@
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
   // Component revision changes only when this module changes; installed release is loader-attested.
-  const APP_COMPONENT_REVISION='8.8.20.70';
+  const APP_COMPONENT_REVISION='8.8.20.71';
   const BUILD_VERSION=window.__darkSkyVerifiedRelease?.build;
   if(!BUILD_VERSION || BUILD_VERSION!==window.__darkSkyExpectedRelease?.build || window.__darkSkyVerifiedRelease?.seal!==window.__darkSkyExpectedRelease?.seal)throw new Error('Verified release context required before app execution.');
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
@@ -16744,7 +16744,7 @@ The full order and approved media remain stored with this project.`;
     // This intentionally binds before IndexedDB migrations / optional Engine setup.
     // Waters Ahead must remain actionable even when a noncritical initializer fails.
     document.addEventListener('click',async event=>{
-      const target=event.target?.closest?.('#firstMateRefreshBtn,[data-first-mate-action],#runShipIntegrityBtn,#createRecoverySnapshotBtn,#showAuditTrailBtn,#openShipsLogBtn,#runSeaTrialsBtn');
+      const target=event.target?.closest?.('#firstMateRefreshBtn,[data-first-mate-action],#runShipIntegrityBtn,#createRecoverySnapshotBtn,#showAuditTrailBtn,#openShipsLogBtn,#runSeaTrialsBtn,#harborPrepareRescue,#harborDownloadRescue,#harborDownloadDiagnostic,#harborVerifyRescue');
       if(!target)return;
 
       event.preventDefault();

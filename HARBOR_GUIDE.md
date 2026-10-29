@@ -1,9 +1,14 @@
-# Harbor 8.8.20.70 — storage safety
+# Harbor 8.8.20.71 — rescue controls connected
 
 ## Purpose and supported baseline
-Updates the exact delivered Trimline 8.8.20.69 full-source baseline. This repair addresses two reproduced defects: health viewing invoked write-capable repair, and failed snapshot saves could be reported as successful. It does not identify the current iPad quota-failing key or claim to fix storage capacity. Existing evidence and records must be preserved.
+Updates the exact delivered Harbor 8.8.20.70 full-source baseline. This repair addresses two reproduced defects: health viewing invoked write-capable repair, and failed snapshot saves could be reported as successful. It does not identify the current iPad quota-failing key or claim to fix storage capacity. Existing evidence and records must be preserved.
 
-## What changes
+## Corrective change in .71
+The .70 rescue controls were omitted from the production delegated click selector. Clicking Prepare therefore never reached its confirmation or capture handler. Four rescue IDs are now admitted by that existing listener. No capture, authorization, privacy filter, quota handling, storage limit, session or server operation is changed.
+
+The prior browser fixture assigned onclick directly, so it did not test production routing. The fixture now binds the actual shipped command listener, with no replacement button wiring. Its storage and digest adapters remain synthetic. A new offline route suite verifies dispatch, cancel, access denial, duplicate-binding protection, download filenames and existing-log navigation. Native Safari acceptance is still required.
+
+## Storage safety retained from .70
 - Engine health rendering and Inspect Ship Integrity use direct read-only localStorage/IndexedDB observation. They do not converge envelopes, normalize/delete records, write migration markers, or persist their diagnostics.
 - An unavailable/read-incomplete source produces INCOMPLETE / NOT VERIFIED, not zero records or an optimistic pass. A completed observation can still expose real mismatches. Historical migration failure stays labelled FAILED (RECORDED).
 - The specific automatic boot convergence and legacy-reference-repair calls are replaced/held for read-only inspection. Other pre-existing startup normalization/admission/persistence behavior was not redesigned. This is NOT a claim that the entire application performs zero startup writes.
@@ -28,7 +33,7 @@ Capture budget: 64 MiB approximate source serialization, 20,000 rows per store, 
 A matching SHA-256 validates the bytes of that file, NOT completeness, future durability, provenance against an adversary, business accuracy, restored authority, or successful restoration. A deliberate local reopen verifies an actual selected file. A download request alone is not labelled saved. Reopening after a new page load checks the file's own integrity; comparing to the currently prepared capture is possible only while that capture remains in memory.
 
 ## Verification and limits
-The selected release suite includes all 15 baseline suites plus two Harbor suites. The existing navigation fixture now includes the real private-capture invalidation helper and an additional lock test; prior navigation assertions remain.
+The selected release suite includes all 17 .70 baseline suites plus the rescue-route regression suite. The existing navigation fixture now includes the real private-capture invalidation helper and an additional lock test; prior navigation assertions remain.
 Browser fixtures execute shipped modules and UI using an explicit synthetic asynchronous IndexedDB/localStorage adapter, because browser navigation to file/HTTP/HTTPS test origins is blocked by this environment. Chromium about:blank does not provide native storage or WebCrypto; browser digest calls use a Python SHA-256 fixture. Node tests use actual Node WebCrypto. Do NOT call this native IndexedDB, native Safari, production authentication, physical quota exhaustion, or live database evidence.
 No independent reviewer/subagent was available; review is self-review plus executable tests. No live credentials, databases or deployments were used. Native Safari capture/file-readback is pending.
 

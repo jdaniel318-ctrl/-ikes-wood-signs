@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Shipped Harbor modules/UI in Chromium with an explicit asynchronous in-memory storage adapter.
+"""Shipped Harbor modules/UI AND delegated click listener in Chromium with an explicit asynchronous in-memory storage adapter. No replacement onclick wiring.
 All records are synthetic. No external network, production Auth or native Safari proof.
 """
 import argparse,json,re,shutil,hashlib
@@ -12,6 +12,7 @@ def main():
  panel=text[text.index('<section id="harborRescuePanel"'):];panel=panel[:panel.index('</section>')+10]
  css=re.search(r'<style id="harborStorageSafetyStyle">([\s\S]*?)</style>',text)[1]
  ui=app[app.index('  let harborRescueDocument='):app.index('  async function refreshV3CommandSystems(')]
+ bus_start=app.index('  function bindWatchCommandBus(');bus_end=app.index('\n  function ',bus_start+10);bus=app[bus_start:bus_end]
  status=app[app.index('  async function renderV3ArchitectureStatus('):app.index('  async function firstMateWatchItems(')]
  observer=app[app.index('  let v4ReadOnlyInspectionPending='):app.index('  const V4_PROJECT_REFERENCE_ALIASES')]
  integrity=app[app.index('  async function runShipIntegrityV3('):app.index('  function seaTrialCheck(')]
@@ -48,7 +49,7 @@ def main():
     const t=IDBDatabase.prototype.transaction;IDBDatabase.prototype.transaction=function(stores,mode){if(mode&&mode!=='readonly')return denied('transaction:'+mode)();return t.call(this,stores,mode)};
   }''')
   bootstrap="""let engineSessionUnlocked=true;const $=id=>document.getElementById(id);const BUILD_VERSION=%s;let companies=window.fixtureProjects,v4EnvelopeConvergenceState={};const engineConfig={schemaVersion:8};const PROJECT_LEDGER_KEY='blackFlagProjectLedgersV1',PROJECT_CUSTOMERS_KEY='blackFlagProjectCustomersV1',LOCAL_ORDERS_KEY='blackFlagOrdersBackupV1',FLEET_REGISTRY_SCHEMA_KEY='schema',FLEET_REGISTRY_SCHEMA_VERSION=1;const V4_ORPHAN_ORDER_TOMBSTONES_KEY='tombstones',V4_QUARANTINE_KEY='quarantine';const LEGACY_GRIZZLE_PROJECT_ID='grizzle-bear',CANONICAL_GRIZZLY_PROJECT_ID='grizzly-bear';const projectRegistryIds=rows=>new Set(rows.map(p=>p.id));const escapeHtml=x=>String(x).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');"""%json.dumps(build)
-  page.add_script_tag(content=bootstrap+observer+integrity+status+snaps+ui+"document.querySelectorAll('#harborRescuePanel button').forEach(b=>b.onclick=()=>handleHarborRescueAction(b.id));window.fixtureSetAccess=v=>{engineSessionUnlocked=v;if(!v)clearHarborRescueMemory();};")
+  page.add_script_tag(content=bootstrap+observer+integrity+status+snaps+ui+bus+"bindWatchCommandBus();window.fixtureSetAccess=v=>{engineSessionUnlocked=v;if(!v)clearHarborRescueMemory();};")
   r=page.evaluate('inspectV4EnvelopeConvergence()')
   check('IndexedDB-adapter observation checks seven stored vessels',r['status']=='complete' and r['sealed']==7)
   page.evaluate('renderV3ArchitectureStatus()')

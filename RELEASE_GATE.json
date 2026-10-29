@@ -1,6 +1,6 @@
 {
   "schema": "blackflag-release-gate-v1",
-  "build": "8.8.20.70",
+  "build": "8.8.20.71",
   "release": "Harbor",
   "pass": false,
   "verification_status": "OFFLINE_SELECTED_SUITES_PASSED_NATIVE_PENDING",

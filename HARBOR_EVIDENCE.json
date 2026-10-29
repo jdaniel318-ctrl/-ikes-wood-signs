@@ -1,40 +1,78 @@
 {
-  "schema": "blackflag-harbor-evidence-v1",
-  "build": "8.8.20.70",
+  "schema": "blackflag-harbor-evidence-v2",
+  "build": "8.8.20.71",
   "release": "Harbor",
-  "verified_at": "2026-10-28T18:27:23.448946+00:00",
-  "base": "8.8.20.69",
-  "baseline_sha256": "2d0e1dc45ce3e808c4c0ecff33bc74f62c246891d8e9173d040274866be37590",
-  "scope": "Reproduced quota/error-handling repair; synthetic records; no real device/database operations",
-  "tests": {
-    "selected_suites": 17,
-    "snapshot_and_pure_storage_checks": 20,
-    "asynchronous_storage_checks": 20,
-    "navigation_checks": 46,
-    "browser_harbor_checks": 25,
-    "browser_account_checks": 32,
-    "browser_startup_checks": 18
+  "baseline": "8.8.20.70",
+  "scope": "Rescue-button routing only; no storage algorithm or authorization changes",
+  "confirmed_defect": "All four Harbor rescue IDs absent from production click selector; isolated native DOM click reproduces unchanged status and no confirmation",
+  "red_before_fix": {
+    "route_checks_passed": 3,
+    "route_checks_failed": 14,
+    "native_dom_confirmations": 0,
+    "working_log_control": true
   },
-  "test_driven": {
-    "snapshot_rejection_and_readback": "failed on supplied baseline; pass on repaired functions",
-    "quarantine_preservation": "two tests failed during integration; corrected read-only handling; no quarantined records deleted"
+  "green_after_fix": {
+    "route_checks_passed": 17,
+    "route_checks_failed": 0,
+    "harbor_browser_checks_passed": 25,
+    "harbor_browser_checks_failed": 0
   },
-  "limitations": {
-    "native_safari": "pending",
-    "native_indexeddb": "not tested; isolated asynchronous adapter used",
-    "browser_navigation": "ERR_BLOCKED_BY_ADMINISTRATOR for local/network test pages; retained failure log",
-    "browser_hashing": "Python SHA-256 fixture; Node suite uses actual WebCrypto",
-    "quota_exhaustion": "injected errors; not physical device fill",
-    "full_boot": "not a real iPad storage startup simulation",
-    "live_auth_or_server": "not tested, unchanged",
-    "exact_current_failing_key": "unverified",
-    "file_integrity": "not restore or completeness certification",
-    "independent_review": false
-  },
-  "production_mutations": false,
+  "test_correction": "Old browser test direct onclick wiring replaced by actual shipped bindWatchCommandBus; no substitute button handler",
+  "selected_offline_suites": 18,
+  "native_safari": "pending",
+  "browser_limits": "Chromium real DOM and shipped listener/handlers; synthetic Engine identity, async storage and digest fixtures; not native Safari or live data",
+  "independent_reviewer": false,
   "deployed": false,
-  "performance_improvement_claim": false,
-  "source_backup_not_customer_backup": true,
+  "database_actions": "none",
   "private_export_plaintext": true,
-  "warnings_retained": true
+  "backup_scope": "source only, not customer/media records",
+  "prior_70_evidence": {
+    "schema": "blackflag-harbor-evidence-v1",
+    "build": "8.8.20.70",
+    "release": "Harbor",
+    "verified_at": "2026-10-28T18:27:23.448946+00:00",
+    "base": "8.8.20.69",
+    "baseline_sha256": "2d0e1dc45ce3e808c4c0ecff33bc74f62c246891d8e9173d040274866be37590",
+    "scope": "Reproduced quota/error-handling repair; synthetic records; no real device/database operations",
+    "tests": {
+      "selected_suites": 17,
+      "snapshot_and_pure_storage_checks": 20,
+      "asynchronous_storage_checks": 20,
+      "navigation_checks": 46,
+      "browser_harbor_checks": 25,
+      "browser_account_checks": 32,
+      "browser_startup_checks": 18
+    },
+    "test_driven": {
+      "snapshot_rejection_and_readback": "failed on supplied baseline; pass on repaired functions",
+      "quarantine_preservation": "two tests failed during integration; corrected read-only handling; no quarantined records deleted"
+    },
+    "limitations": {
+      "native_safari": "pending",
+      "native_indexeddb": "not tested; isolated asynchronous adapter used",
+      "browser_navigation": "ERR_BLOCKED_BY_ADMINISTRATOR for local/network test pages; retained failure log",
+      "browser_hashing": "Python SHA-256 fixture; Node suite uses actual WebCrypto",
+      "quota_exhaustion": "injected errors; not physical device fill",
+      "full_boot": "not a real iPad storage startup simulation",
+      "live_auth_or_server": "not tested, unchanged",
+      "exact_current_failing_key": "unverified",
+      "file_integrity": "not restore or completeness certification",
+      "independent_review": false
+    },
+    "production_mutations": false,
+    "deployed": false,
+    "performance_improvement_claim": false,
+    "source_backup_not_customer_backup": true,
+    "private_export_plaintext": true,
+    "warnings_retained": true
+  },
+  "prior_70_correction": "Its passing browser fixtures tested direct handler attachment, NOT production rescue event delegation. They missed this routing defect.",
+  "verified_at": "2026-10-28T19:49:37.276704+00:00",
+  "selected_offline_suites_passed": 18,
+  "browser_checks": {
+    "rescue_actual_listener": 25,
+    "account": 32,
+    "startup": 18,
+    "total": 75
+  }
 }

@@ -1,12 +1,12 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.70",
+  "build": "8.8.20.71",
   "name": "Harbor",
-  "seal": "harbor-882070",
-  "base": "8.8.20.69",
-  "base_sha256": "2d0e1dc45ce3e808c4c0ecff33bc74f62c246891d8e9173d040274866be37590",
-  "base_files": 649,
-  "prepared_at": "2026-10-28T18:16:31.446322+00:00",
-  "app_component_revision": "8.8.20.70",
+  "seal": "harbor-882071",
+  "base": "8.8.20.70",
+  "base_sha256": "8343e83196e1ae9f3989f42a4b9c9ee00f85876e0839736f68c9aee01c07d32d",
+  "base_files": 656,
+  "prepared_at": "2026-10-28T19:47:35.924989+00:00",
+  "app_component_revision": "8.8.20.71",
   "owner_helper_revision": "8.8.20.68"
 }

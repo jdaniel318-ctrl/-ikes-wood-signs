@@ -1,9 +1,9 @@
 {
   "release": "Harbor",
   "name": "Harbor",
-  "build": "8.8.20.70",
-  "seal": "harbor-882070",
-  "file_count": 656,
+  "build": "8.8.20.71",
+  "seal": "harbor-882071",
+  "file_count": 657,
   "files": [
     ".github/workflows/drydock-batch1.yml",
     "ADMIRALS_DECK_TRIAL.md",
@@ -415,6 +415,7 @@
     "VERIFY_HARBORHOLD_STORAGE.py",
     "VERIFY_HARBOR_ASYNC.cjs",
     "VERIFY_HARBOR_BROWSER.py",
+    "VERIFY_HARBOR_ROUTES.cjs",
     "VERIFY_HARBOR_STORAGE.cjs",
     "VERIFY_HEADWAY.cjs",
     "VERIFY_HEADWAY_APP.py",

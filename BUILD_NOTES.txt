@@ -1,9 +1,10 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Harbor 8.8.20.70
+# Black Flag Harbor 8.8.20.71
 
-Supported source baseline: Trimline 8.8.20.69. Instructions: UPLOAD_THIS_ONE_BUILD.md. Scope/coverage/privacy: HARBOR_GUIDE.md. Offline evidence: HARBOR_EVIDENCE.json.
-Read-only health inspection, verified snapshot write/readback, and private local rescue capture are added. No automatic cleanup, record deletion, live database mutation, permission change or deployment is performed by preparing this patch.
-Verify: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation resets test status and regenerates generic documentation; review/reseal current release-specific instructions before packaging. This is not production certification.
+Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
+Baseline: 8.8.20.70. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
+No database, permission, stored-record, loading-dependency or deployment operation is part of this software patch.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 
 ## Retained historical notes

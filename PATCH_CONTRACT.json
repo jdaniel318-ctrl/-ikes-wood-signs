@@ -1,16 +1,16 @@
 {
   "schema": "blackflag-patch-contract-v1",
-  "target_build": "8.8.20.70",
-  "target_seal": "harbor-882070",
+  "target_build": "8.8.20.71",
+  "target_seal": "harbor-882071",
   "supported_bases": [
     {
-      "build": "8.8.20.69",
-      "source_sha256": "2d0e1dc45ce3e808c4c0ecff33bc74f62c246891d8e9173d040274866be37590",
-      "file_count": 649
+      "build": "8.8.20.70",
+      "source_sha256": "8343e83196e1ae9f3989f42a4b9c9ee00f85876e0839736f68c9aee01c07d32d",
+      "file_count": 656
     }
   ],
   "requires_deletions": false,
   "max_upload_files": 85,
   "database_actions": "none",
-  "rule": "Upload all changed/new root files over complete 8.8.20.69. Keep all other files. No SQL, live data, permission change or storage layout migration. Corrects observation/snapshot behavior and adds explicit private read-only rescue."
+  "rule": "Upload every changed/new root file over complete 8.8.20.70. Keep everything else. No SQL, permission or record changes."
 }
