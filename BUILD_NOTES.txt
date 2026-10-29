@@ -1,8 +1,8 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Harbor 8.8.20.71
+# Black Flag Brightwake 8.8.20.72
 
 Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
-Baseline: 8.8.20.70. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Baseline: 8.8.20.71. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
 Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
 No database, permission, stored-record, loading-dependency or deployment operation is part of this software patch.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->

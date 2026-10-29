@@ -1,0 +1,10 @@
+// Existing fleet code must remain exactly as supplied in .71. No live backend test.
+'use strict';const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),assert=require('node:assert/strict');
+const root=path.resolve(process.argv[2]||__dirname),read=n=>fs.readFileSync(path.join(root,n)),c=JSON.parse(read('BRIGHTWAKE_FLEET_CONTRACT.json'));let n=0;
+function test(name,f){f();n++;console.log('PASS',name)}
+test('every protected existing fleet runtime has identical baseline bytes',()=>{assert(Object.keys(c.existing_runtime_hashes).length>50);for(const [p,h]of Object.entries(c.existing_runtime_hashes))assert.equal(crypto.createHash('sha256').update(read(p)).digest('hex'),h,p)});
+test('learning pilot has an Engine entrance without replacing existing route IDs',()=>{const h=read('index.html').toString();assert.equal(h.split('id="brightwakePilotEntry"').length,2);for(const id of ['quartermasterEngineOpen','carvewrightEngineOpen','engineConfigureBtn','clearDeckLaunchpad'])assert(h.includes('id="'+id+'"'));assert(/id="brightwakePilotEntry"[\s\S]*?href="brightwake.html"/.test(h));});
+test('grown-up page returns to standard Engine entrance without a permission token',()=>assert(read('brightwake_app.js').toString().includes('href="index.html">Return to Black Flag')));
+test('pilot registration declares no server commissioning or authority change',()=>{const v=JSON.parse(read('BRIGHTWAKE_VESSEL.json'));assert.equal(v.server_commissioned,false);assert.equal(v.authority_granted,false);assert.equal(v.existing_fleet_core_membership_changed,false)});
+test('existing business, game and recovery implementations are protected',()=>{for(const name of ['app.js','captain.js','fleet_supabase.js','platform_core.js','platform_v4.js','fleet_storage_safety.js','ike_shop_core.js','ike_shop_delivery.js','quartermaster_core.js','simple_books.js','stormwake_core.js'])assert(name in c.existing_runtime_hashes,name)});
+console.log(JSON.stringify({passed:n,protected_existing_runtime_files:Object.keys(c.existing_runtime_hashes).length,scope:'File identity and explicit link checks; not real server authorization or all fleet workflows'}));

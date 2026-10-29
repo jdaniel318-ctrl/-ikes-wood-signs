@@ -1,0 +1,38 @@
+{
+  "schema": "blackflag-learning-candidate-v1",
+  "name": "Brightwake",
+  "subtitle": "The Lantern Isles",
+  "proposed_project_key": "brightwake-learning",
+  "release": "8.8.20.72",
+  "candidate_status": "family-pilot",
+  "server_commissioned": false,
+  "authority_granted": false,
+  "existing_fleet_core_membership_changed": false,
+  "entry": "brightwake.html",
+  "curriculum_version": "1.0.0",
+  "coverage": "K\u201312 practice samples; not complete standards alignment or grade certification",
+  "learner_limit_per_device": 12,
+  "storage": {
+    "database": "blackflag.brightwake.learners.v1",
+    "store": "learners",
+    "cloud_sync": false,
+    "learner_exports": "private, unencrypted"
+  },
+  "parent_panel": "shared-device controls, not authenticated parent security",
+  "old_business_records_accessed": false,
+  "microphone": false,
+  "analytics": false,
+  "outbound_learner_upload": false,
+  "verification_runner": "VERIFY_RELEASE_ALL.cjs",
+  "optional_assets_sha256": {
+    "brightwake.html": "414fb5927bb4683f325f9cf4c0c7937d00407740a5edb6ddc90edc5025cb9e72",
+    "brightwake.css": "7825f7aaf87126b956b28245d9adf5c11146b0fd7c438a23969bb6346789787d",
+    "stormwake_three_vendor.js": "6e40e410c97c908254aa41dcbeba4bb57de69c7d37b1a33d72def3d0d0f884c6",
+    "brightwake_curriculum.js": "13963e43e573ff3bdea29b3865167d5792d66800b268e44eedd0591f6080eac3",
+    "brightwake_core.js": "99cb496056da8fb0455d8cc58a2c166e8b6b8034549071f4aad4ba34707473da",
+    "brightwake_store.js": "0026b4fa0777cd1ac9d5427db2a76272ba61e49c6b11796f07b8c22af6119028",
+    "brightwake_play.js": "723f700f0f7bed413edacae23d9a3f1ee68320b705d9aa13672f2ecd7bbb8168",
+    "brightwake_scene.js": "163d56d0cffdb42b946531f4595752b5d53cd11a7783ab1be428ecd9bf344d5b",
+    "brightwake_app.js": "0324da0d8c63bea26fdbf5e2c2120c76d763a7f382e86b6bbee7f9319afd808b"
+  }
+}

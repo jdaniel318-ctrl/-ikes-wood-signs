@@ -1,16 +1,16 @@
 {
   "schema": "blackflag-patch-contract-v1",
-  "target_build": "8.8.20.71",
-  "target_seal": "harbor-882071",
+  "target_build": "8.8.20.72",
+  "target_seal": "brightwake-882072",
   "supported_bases": [
     {
-      "build": "8.8.20.70",
-      "source_sha256": "8343e83196e1ae9f3989f42a4b9c9ee00f85876e0839736f68c9aee01c07d32d",
-      "file_count": 656
+      "build": "8.8.20.71",
+      "source_sha256": "8106a6b129b72e887aeca6bd7db779b5d5540ac865cdfa40ec01d5b3ada05134",
+      "file_count": 657
     }
   ],
   "requires_deletions": false,
   "max_upload_files": 85,
   "database_actions": "none",
-  "rule": "Upload every changed/new root file over complete 8.8.20.70. Keep everything else. No SQL, permission or record changes."
+  "rule": "Upload every changed/new root file over complete 8.8.20.71. Keep everything else. No SQL, permission or record changes."
 }

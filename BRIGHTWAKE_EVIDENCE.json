@@ -1,0 +1,40 @@
+{
+  "schema": "brightwake-evidence-v1",
+  "build": "8.8.20.72",
+  "status": "SELECTED_OFFLINE_AND_BROWSER_FIXTURE_CHECKS_PASSED",
+  "existing_baseline": "8.8.20.71",
+  "verification_runner": "VERIFY_RELEASE_ALL.cjs",
+  "browser_runner": "VERIFY_BRIGHTWAKE_BROWSER.py",
+  "independent_reviewer": false,
+  "limitations": [
+    "39 math sets and 104 words are K\u201312 practice samples, not a complete curriculum.",
+    "Native Safari, actual Pencil interaction, local voices and hardware WebGL acceptance pending.",
+    "Browser fixtures use synthetic asynchronous IndexedDB-shaped storage.",
+    "No server commissioning, backend writes, child cloud accounts or cloud save.",
+    "Same-origin namespaces are not secure school multi-tenancy.",
+    "Private learner exports are unencrypted."
+  ],
+  "verified_at": "2026-10-29T02:01:57.583614+00:00",
+  "offline_suites": 24,
+  "existing_runtime_files_byte_identical": 67,
+  "math": {
+    "skill_sets": 39,
+    "independently_computed_examples": 7800,
+    "incorrect_answer_rejections": 7800
+  },
+  "spelling_words": 104,
+  "browser": {
+    "brightwake_checks": 32,
+    "account_checks": 32,
+    "startup_checks": 18,
+    "rescue_checks": 25,
+    "entry_checks": 4,
+    "scope": "Shipped DOM/scripts in Chromium with synthetic storage/Auth; no live hosting or Safari",
+    "native_safari": "pending"
+  },
+  "deployed": false,
+  "server_commissioned": false,
+  "database_actions": "none",
+  "storage_scope": "New application-level learner namespace only; no pre-existing fleet store access",
+  "public_child_rollout": "not approved"
+}

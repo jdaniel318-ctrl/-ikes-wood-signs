@@ -1,14 +1,15 @@
-# Upload Harbor 8.8.20.71
+# Upload Brightwake 8.8.20.72 over Harbor 8.8.20.71
 
-Use `DarkSky882071-Harbor-Upload.zip`, not the full backup or rollback.
-1. Extract the ZIP. Open its single folder. Upload ALL files inside to the existing repository ROOT; replace matching files and KEEP all other files. Commit the upload.
-2. After deployment open the Engine and confirm `8.8.20.71 · HARBOR`. Do not clear Safari data, reset records or change permissions.
-3. Open Configure Engine → Protect this device’s records. Tap PREPARE READ-ONLY RESCUE once. The privacy confirmation must appear. Accept only to prepare the local rescue; then read the resulting capture/partial/error status. Do not run cleanup or commissioning.
+Upload Brightwake72.zip, not the full backup or rollback. Extract its single folder and upload ALL files INSIDE to the existing repository ROOT. Replace matching files; retain everything else; commit.
 
-The four rescue controls are now connected to the existing delegated click handler. Business workflows, account/session keys, authority rules, layouts, storage algorithms and loading order are preserved. Shared specialist components retain their own revision labels; this is intentional reuse, not a mixed upload. Exact SHA-256 checks still run before Engine scripts execute.
+Open the Engine after deployment and confirm 8.8.20.72 · BRIGHTWAKE. Scroll just below Fleet Support / Assigned Captain entrance to OPEN BRIGHTWAKE. The separate learning-pilot page is brightwake.html. Return via Grown-ups → Return to Black Flag. No authority is granted by either link.
 
-Full backup: application source ONLY; not Supabase, customer media or device drafts.
-Rollback: restore prior software files only. Never restore old permissions or business data. New root tooling files remain unused by the old app.
-No passkeys/Face ID or performance gain is claimed.
+Create two learner nicknames. Practice one math activity with each, switch back, and check their progress stays separate. Local saves require native Safari acceptance. Export learner files privately. Never clear Safari data to resolve a problem.
 
-Private rescue files are plaintext and may contain business/customer records. Keep them private, not in GitHub or chat. Only the separate storage-diagnostic.json summary is intended for troubleshooting sharing. No records have been captured or repaired on the user device by preparing this release.
+Original 3D islands, 39 generated math skill sets, 104 spelling words, uppercase/lowercase tracing, editable seasonal creations, and Sky Sail are included. These are K–12 practice samples, NOT complete K–12 instruction or validated placement. Up to twelve learners share one device. No cloud synchronization or protected school accounts are claimed.
+
+Existing businesses, Stormwake, sessions, roles, backend, and the paused storage investigation are unchanged. No SQL, automatic commissioning, deletion or cleanup is performed. The new IndexedDB namespace is not an origin-level security boundary.
+
+See BRIGHTWAKE_GUIDE.md for scope, recovery and expansion rules. Full-source backup protects code only. Software rollback restores prior files; added Brightwake files remain on disk but are not linked by the restored Engine. It does not erase business or learner data.
+
+Never restore old permissions or business data when rolling back software.

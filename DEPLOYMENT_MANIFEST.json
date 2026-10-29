@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.20.71",
-  "version": "8.8.20.71",
-  "release_name": "Harbor",
-  "releaseName": "Harbor",
-  "release_seal": "harbor-882071",
+  "build": "8.8.20.72",
+  "version": "8.8.20.72",
+  "release_name": "Brightwake",
+  "releaseName": "Brightwake",
+  "release_seal": "brightwake-882072",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -261,8 +261,8 @@
     "algorithm": "SHA-256",
     "files": {
       "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": {
-        "sha256": "a7a6327167322c2b7cc59b8cd943d5a4c30b4f5a871b6ba0f92b24d1afed5546",
-        "build": "8.8.20.71",
+        "sha256": "77c0208f34be64ab8f13730e469a50d63e8da0eeeb23406e963d5a53aa6c48e1",
+        "build": "8.8.20.72",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -309,14 +309,14 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_COMMAND_MODEL.json": {
-        "sha256": "ca959c95f95b1f4c7212b3343c40136c9b011538ddbf54a06927722108a48a6e",
-        "build": "8.8.20.71",
+        "sha256": "50e7ec71f97368ad68c677307c39b23623b9f3a1faf3e8f5367a3afafe175221",
+        "build": "8.8.20.72",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
       "FLEET_DOCTRINE_REGISTRY.json": {
-        "sha256": "0daeab7e3d6a750375cfc9fbe736b5b379256644ff616f72c4fd09f2f27ac1cd",
-        "build": "8.8.20.71",
+        "sha256": "db423e52d66d12ee368ddf462bed4a7fe0b8ce945273f623f4decbf481f18fdf",
+        "build": "8.8.20.72",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -375,8 +375,8 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "GOLDEN_VOYAGES.json": {
-        "sha256": "9970dfa63a57956c7d5c7d3c421bce4395aa6a6ae5e49fadd5f2598354f5ed02",
-        "build": "8.8.20.71",
+        "sha256": "f14e3db1ad7b9e4b03bde3ef796a7e71926bb740b553736057ca43215f32ac60",
+        "build": "8.8.20.72",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -535,14 +535,14 @@
       "app.js": "0942b4b1702ed270c287989abb3f91e7060e5cb7be6533351780bd6e6307faca",
       "captain.js": "e590c01a589e03210c921f35d1bb12ab001aaec9111784bad9d0dbabd9c6c30c",
       "simple_books.js": "ddd76dcf5e6c579f16918a9d3e645b0fc65d8a5b4d7c66df8896d8314eea325d",
-      "owner.html": "738366c5072dfd94ee5a39cf62f42b4abbed5349fbecdc84bbd45c3d21474c6c",
-      "manifest.webmanifest": "a0468110fdfa3e38cb405b234671ddd86b437485dfe8c4db116ac8395bba809a",
+      "owner.html": "ea05a5bb9ac3e845dde673e1335d7cf9e90f7e25e649a09f7bd21d8a88b4f7a2",
+      "manifest.webmanifest": "0f2e6a213247572aa6d6ff7d80e4d3a982abe4b66f124721f676a193d5817d8e",
       "IKE_STYLE_FOUNDRY.json": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
-      "sw.js": "62367f57119cc429b4d0fba4d90df0bb5ae59b948adc2531f4d453791d88be05",
-      "FLEET_DOCTRINE_REGISTRY.json": "0daeab7e3d6a750375cfc9fbe736b5b379256644ff616f72c4fd09f2f27ac1cd",
-      "GOLDEN_VOYAGES.json": "9970dfa63a57956c7d5c7d3c421bce4395aa6a6ae5e49fadd5f2598354f5ed02",
-      "FLEET_COMMAND_MODEL.json": "ca959c95f95b1f4c7212b3343c40136c9b011538ddbf54a06927722108a48a6e",
-      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "a7a6327167322c2b7cc59b8cd943d5a4c30b4f5a871b6ba0f92b24d1afed5546",
+      "sw.js": "6517b6aa1d515f08080f2177c050dfd86ec2a94e1f4e32abf6ab2fc186c526cf",
+      "FLEET_DOCTRINE_REGISTRY.json": "db423e52d66d12ee368ddf462bed4a7fe0b8ce945273f623f4decbf481f18fdf",
+      "GOLDEN_VOYAGES.json": "f14e3db1ad7b9e4b03bde3ef796a7e71926bb740b553736057ca43215f32ac60",
+      "FLEET_COMMAND_MODEL.json": "50e7ec71f97368ad68c677307c39b23623b9f3a1faf3e8f5367a3afafe175221",
+      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "77c0208f34be64ab8f13730e469a50d63e8da0eeeb23406e963d5a53aa6c48e1",
       "input_hygiene.js": "85584886dd424e619c6ee1069665e201dca51e815673839f91da0d796fcf591a",
       "business_deck.js": "b243334f39ff99eefe009872c0afb5eea0939cd8c7b9308bbf199b405c2716c5",
       "business_deck.css": "445fa81fff307d41cdd9a7d181ec86f9daae6843d24ac0d9fe14f939a25b6289",
@@ -1901,5 +1901,17 @@
     "database_actions": "none",
     "scope_guide": "HARBOR_GUIDE.md",
     "native_safari": "pending"
+  },
+  "optional_features": {
+    "brightwake": {
+      "entry": "brightwake.html",
+      "descriptor": "BRIGHTWAKE_VESSEL.json",
+      "status": "family-pilot-not-server-commissioned",
+      "mandatory_engine_startup": false,
+      "database": "blackflag.brightwake.learners.v1",
+      "existing_vessels_modified": false,
+      "backend_actions": "none",
+      "full_curriculum": false
+    }
   }
 }
