@@ -1,260 +1,44 @@
-<!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Harbor 8.8.20.71
+# Wonderwake — First Light 0.1.0
 
-Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
-Baseline: 8.8.20.70. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
-Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
-No database, permission, stored-record, loading-dependency or deployment operation is part of this software patch.
-<!-- BLACKFLAG_CURRENT_RELEASE_END -->
+An original Black Flag learning-ship preview: an animated illustrated island, short mathematics and spelling expeditions, letter drawing, creative construction and a gentle movement game. The art is original animated Canvas illustration with depth and day/night lighting, not a photorealistic 3D engine. This is runnable software, not a concept slideshow.
 
-## Retained historical notes
+## Install as a new ship
 
-# Fairlead 8.8.20.68 — Current release
-Current upload: `DarkSky882068-Fairlead-Upload.zip` (also delivered as byte-identical `Fairlead68.zip`).
-Matching complete source: `DarkSky882068-Fairlead-FullBackup.zip`.
-Baseline: Cleardeck 8.8.20.67, 630 files. No deletions, database operations or permission changes.
-Read `FAIRLEAD_GUIDE.md`, `CURRENT_BASELINE.json` and `FAIRLEAD_EVIDENCE.json`.
-Check: `node VERIFY_FAIRLEAD_ALL.cjs . ../fairlead-check-evidence`.
-Package: `python3 -B BUILD_RELEASE.py . --baseline /path/to/DarkSky882067-Cleardeck-FullBackup.zip --out ../new-fairlead-output`.
+Read **START_HERE.txt**. Use a **new `wonderwake` repository**, not the existing Harbor / `-ikes-wood-signs` repository. Its `index.html` is Wonderwake's entrypoint, not a replacement for Black Flag's Engine.
 
-## Earlier releases — historical evidence only
+Upload the files inside the ZIP's single folder to the new repository root. Enable GitHub Pages using **main / (root)**. There is no build step and no external library, texture or font to install. A regular static HTTPS server also works. For desktop development, use `python -m http.server` in this folder; do not rely on mobile Files previews to execute a website.
 
-# Cleardeck 8.8.20.67 — Current release
+The code does not register a service worker, access the fleet database, commission a vessel, alter memberships, invoke fleet APIs or read fleet storage. Existing fleet files and source archives are untouched. Separate project paths on one GitHub hostname are not separate browser security origins; for production child accounts use a deliberately designed origin, authorization and privacy model. The separate repository prevents replacing Harbor’s sealed source files and gives this draft an independent entrypoint. Harbor .71’s root worker is identity-only (no fetch handler); an older assets/sw.js has a navigation handler and is not the active root worker. Separate hosting here is an intentional deployment boundary, not a claim of production tenant isolation.
 
-Current upload: `DarkSky882067-Cleardeck-Upload.zip`.
-Matching full-source archive: `DarkSky882067-Cleardeck-FullBackup.zip`.
-Supported baseline: the supplied Ironhaven 8.8.20.66 source (619 files).
+## Playable now
 
-Read `UPLOAD_THIS_ONE_BUILD.md`, `CLEARDECK_GUIDE.md`, `CURRENT_BASELINE.json`, and `CLEARDECK_EVIDENCE.json` first.
-Run `node VERIFY_CLEARDECK_ALL.cjs . ../cleardeck-check-evidence` on the complete release.
-This is an incremental cleanup, not a new platform or database migration.
+- **Skybridge:** 30 math seed skills, from counting to algebra, geometry, elementary trigonometric ratios, probability and sequences. Generated choices and accepting equivalent numeric fractions.
+- **Wordforge:** 120 original practice words in 12 banks; word clues, browser speech, movable letter selection, keyboard entry and explicit guided practice.
+- **Letter Trails:** 26 uppercase stroke trails and 26 lowercase visual guides. Finger/Pencil/mouse drawing with image export; no automated handwriting grading. Traces are temporary until exported.
+- **Maker Grove:** pumpkin, celebration tree and robot; place, drag, resize, rotate, recolor, mirror, remove shapes and export a picture. Always available without paying with correct answers.
+- **Star Glider:** pointer/keyboard movement and target-number collection. No timer, lives, penalties or mastery credit. Pause and reduced-motion controls.
+- **Learning map and grown-up corner:** separate starting challenges, transparent practice indicators, day/starlight styles and trailblazer/star-princess/robot characters. Presentation does not depend on academic level.
 
-## Historical release history below
+## Progress rules
 
-Prior commands and results describe those historical versions, not the current candidate.
+Default starting points are early skills. Three **different, unaided** correct items at the current skill raise that subject's provisional challenge level by one; not a certified grade. Repeated or hinted answers cannot do so. Wrong answers get help, and a subsequent correction is guided practice. Math and spelling never advance one another.
 
-# CURRENT RELEASE — IRONHAVEN 8.8.20.66
+A 'steady' practice indicator needs at least five distinct independent successes across at least two UTC calendar dates and an overall correct rate of at least 80%. This is a simple transparent heuristic, not a validated psychometric mastery model. Earlier attempted skills become eligible for a later review. Choosing a later starting point does not credit the skipped skills. See CURRICULUM_AND_SAFETY.md for coverage and expansion limits.
 
-See `IRONHAVEN_GUIDE.md` and `UPLOAD_THIS_ONE_BUILD.md`. All previous build documentation is retained below.
+## Local storage and continuity
 
----
+Up to 24 separate local learners, including three anonymous starter slots: Starling, Comet and Aurora. Add learners from the learner picker, choose a short nickname and avatar, and rename them in Grown-ups. Nicknames never serve as database keys. Each learner owns separate math/spelling readiness, practice evidence, art and settings. The picker opens on each page load. No real name, birthdate, email, password or child voice recording is required. Storage uses only `blackflag_wonderwake_local_v1`, with separate records per slot. A save is successful only after the transaction completes and independent readback matches. Read failures do not overwrite existing records with an empty profile. Failed writes remain explicit and the current in-memory work can be exported.
 
-# Keelwatch 8.8.20.65
+Exports use SHA-256 over canonical JSON to detect accidental damage. The checksum is not a digital signature or encryption. Imports are bounded, schema-checked, reject another vessel, and require the matching explorer plus confirmation before replacement. Other explorers are not replaced. Verified files for new UUID learners can be imported as separate learners; existing IDs require matching the current learner before replacement. Unsaved in-page changes are retained when switching learners and remain explicitly marked unsaved. Use one active game tab per device; simultaneous editing of one learner across tabs is not supported. Local profiles and grown-up controls are NOT access-control boundaries on a shared device.
 
-**Read-only Fleetguard evidence inside Admiral Delegate.** Refer to `KEELWATCH_GUIDE.md` and `KEELWATCH_EVIDENCE.json`. The working 8.8.20.64 source is preserved in the recovered baseline; no production data or authority changes are required.
+No application analytics, ads, open chat, purchases, third-party scripts or cloud progress uploads are included. The static host may keep ordinary access logs. Spoken text uses the device/browser speech service, preferring local English voices; voice availability and offline behavior are not guaranteed. No microphone or camera permission is requested. Only original canvas art and system typography are used.
 
----
+## Verification
 
-# Fleetclarity 8.8.20.64
+The matching source/evidence ZIP contains reproducible Node tests, browser fixture tests, screenshots, a development plan and the verification report. Node tests use real WebCrypto for progress checksums. Browser checks load the actual shipped DOM, scripts and delegated event handlers with explicit synthetic IndexedDB responses and a SHA-256 bridge, because navigation to localhost/file/fixture hosts is blocked in the build environment. They are NOT a hosted deployment or native Safari test.
 
-**Upload: DarkSky882064-Fleetclarity-Upload47.zip** — **47 changed/new files** over **Fleetcare 8.8.20.63**.
-Matching complete software backup: **DarkSky882064-Fleetclarity-FullBackup.zip**.
+Native Safari, Apple Pencil behavior, actual quota conditions, offline audio and real IndexedDB across device restarts remain acceptance checks. There is no promise of full offline installation, cloud backup, grade completion, formal educational accreditation or measured learning gains.
 
-Extract the ZIP and open its one filename-matching folder. Upload every file
-inside over the exact delivered Fleetcare .63 release. Replace matching names
-and retain every other file. No SQL, deletion, data reset or browser-data clearing.
-Reload and check Engine/Bootstrap build **8.8.20.64**, seal **fleetclarity-882064**.
+## Independent vessel contract
 
-Saved publication is labeled PUBLISHED without implying availability or completed
-commissioning. Owner setup keeps disabled, unclaimed, invited and locally active
-states distinct. Overview and Captain show individual local commissioning gates;
-missing evidence remains unverified. Review opens the existing Commissioning Dock.
-Existing Customers, customer-opening routes and sign workflow stay familiar.
-
-Read **FLEETCLARITY_GUIDE.md** and **FLEETCLARITY_EVIDENCE.json** for exact verification
-scope and three device checks. Software ZIPs do not export private browser jobs;
-retain your editable job/request downloads. Native iPad, live inbox delivery and
-physical CNC acceptance remain user checks. Preview and Sea Trial remain guarded.
-
----
-
-## Historical instructions below — retained verbatim
-
-# Fleetcare 8.8.20.63
-
-**Upload: DarkSky882063-Fleetcare-Upload49.zip** — **49 changed/new files** over **Boardcraft 8.8.20.62**.
-Matching complete software backup: **DarkSky882063-Fleetcare-FullBackup.zip**.
-
-Extract the ZIP and open its one filename-matching folder. Upload every file
-inside over the exact delivered Boardcraft .62 release. Replace matching names
-and retain every other file. No SQL, deletion, data reset or browser-data clearing.
-Reload and check Engine/Bootstrap build **8.8.20.63**, seal **fleetcare-882063**.
-
-Customers opens the selected vessel's retained history and totals. Fleet status
-separates identity, local setup, experience, deployment records and available
-recovery tools. Local approval is not server authority; tools are not a verified
-backup or restore. Attention includes a ready vessel awaiting a Captain order.
-Fleet Compass returns preserve a current search/filter and useful position.
-Readiness shares static reads within one run and reads fresh on the next run.
-
-Read **FLEETCARE_GUIDE.md** and **FLEETCARE_EVIDENCE.json** for exact verification
-scope and three device checks. Software ZIPs do not export private browser jobs;
-retain your editable job/request downloads. Native iPad, live inbox delivery and
-physical CNC acceptance remain user checks. Preview and Sea Trial remain guarded.
-
----
-
-## Historical instructions below — retained verbatim
-
-# Quartermaster 8.8.20.53 — a clearer operator workspace
-
-Upload: **DarkSky882053-Quartermaster-Upload45.zip** — **45 changed/new files** over complete **Quartermaster 8.8.20.52**. Follow START_HERE_QUARTERMASTER_53.md and retain all other repository files.
-
-This release gives the business-support workspace a stronger visual identity: compact navy toolbar, clear navigation and actions, a HouseHull architectural illustration, true workspace counts, direct access to Recent documents, and a smaller example section. Each business retains its own identity and saved work.
-
-The existing guarded handlers, catalogs, quote/invoice numbers, amounts, customer PDF rendering and .52 separate-tab/download behavior are preserved. No data migration, browser-data clearing, backend action or live publication is required.
-
-12 focused workspace checks, 11 document workflow cases and 13 PDF handoff cases passed with independent review approval. All three actual-index startup/integrity checks passed. Native .53 iPad Safari appearance remains the next device observation.
-
-## Preserved release history — earlier instructions below are historical
-
-# Quartermaster 8.8.20.52 — PDFs keep your workspace open
-
-Upload: **DarkSky882052-Quartermaster-Upload44.zip** — **44 changed/new files** over complete **Quartermaster 8.8.20.51**. Follow START_HERE_QUARTERMASTER_52.md and retain all other repository files.
-
-After Prepare PDF, choose **Open PDF in new tab** or **Download PDF**. Both PDF actions keep the original workspace tab in place. A browser that previews a requested download is directed to a separate tab. The original saved-document snapshot, filename, PDF layout and calculations are retained.
-
-Existing parts, quotes, invoices, unique numbers, storage and Admiral session rules remain intact. There is no data migration, browser-data clearing, SQL update or live service action. JSON backup download behavior is preserved.
-
-13 focused PDF handoff cases and 11 existing workflow scenarios passed, with independent review approval. All three actual-index startup/integrity cases passed. Native iPad Safari behavior of the new controls is not claimed as verified by the offline checks.
-
-## Preserved release history — earlier instructions below are historical
-
-# Quartermaster 8.8.20.51 — a clearer Admiral workspace
-
-Upload: **DarkSky882051-Quartermaster-Upload45.zip** — **45 changed/new files** over complete **Quartermaster 8.8.20.50**. Follow START_HERE_QUARTERMASTER_51.md and retain all other repository files.
-
-This update refines the Admiral entry and the business-support workspace. It corrects inherited command styles that made every button look alike, adds a clear selected-tab marker, gives primary actions a teal emphasis, simplifies the gate instructions and makes better use of the available screen height. Session and storage details remain available without dominating the work area.
-
-Existing catalogs, quotes, invoices, numbers, PDFs and authority behavior are preserved. Device records remain in their original store; no reset or migration is required. Keep downloading private backup files through Business & backup.
-
-35 presentation checks, 8 disclosure/current-identity checks and 11 existing workflow scenarios passed. Independent review approved the bounded presentation changes. The actual sealed index passed all 3 startup/integrity cases. Exact scope and limits are in QUARTERMASTER_POLISH_VALIDATION.md.
-
-## Preserved release history — earlier instructions below are historical
-
-# Quartermaster 8.8.20.50 — Admiral business support
-
-Upload package: **DarkSky882050-Quartermaster-Upload54.zip** — **54 changed/new files** over complete **Harborhold 8.8.20.49**. Upload the inner files to the existing repository root, replace matching names and retain the rest. Follow START_HERE_QUARTERMASTER.md.
-
-The Engine Room now opens a verified Admiral workspace for each business's parts and services, quotes, invoices and customer PDFs. HouseHull is operated by the person measuring and estimating. The approved document layout includes item/part references, quantities, units and prices, with a stable document number at the upper right. Finalized quotes can create separately numbered linked invoices. Business costs remain internal; existing customer journeys keep their branding and behavior.
-
-Records are saved on this device under the verified account and selected business. The local document series is not a central production registry. Download private backups regularly; the supported compact backup size is 25 MiB. No supplier order, message, payment, ledger posting or permission change happens automatically.
-
-The original independent reviewer accepted the scoped corrections to all five findings. Three actual-index checks passed: coherent release starts; altered runtime bytes and an altered checksum declaration both hold before execution. Full measured scope and limitations are in QUARTERMASTER_VALIDATION.md. Native iPad/Safari use of this new workflow remains a device check.
-
-## Preserved release history — earlier instructions below are historical
-
-# Harborhold 8.8.20.49 TEST — device save repair
-
-Upload package: **DarkSky882049-Harborhold-Upload45-TEST.zip** — **45 changed/new files** over complete Homeward 8.8.20.48. Retain all other files.
-
-The game uses its own durable IndexedDB save with the existing verified account/backend/environment/site scope. Legacy localStorage game saves remain intact; a validated matching copy can be migrated. Keep your downloaded JSON. No SQL, business-data clearing, live permission change or remote deployment is part of this update.
-
-Current selected offline evidence passed; native iPad Safari acceptance is pending. See START_HERE_HARBORHOLD.md and HARBORHOLD_TEST_REPORT.md.
-
-## Preserved history — unchanged previous document
-
-# Homeward 8.8.20.48 TEST — recover the voyage after a timeout
-
-Use **DarkSky882048-Homeward-Upload46-TEST.zip** over the exact **Breakwater 8.8.20.47** site. Follow START_HERE_HOMEWARD.md. Retain all other files; no SQL, browser-data clearing or live publication is part of this update.
-
-Validated game progress now has a device recovery copy scoped to the same verified account, identity backend, configured environment and engine base path. Re-entering after an Admiral timeout or page reload recovers the mission at its safe dock. The JSON format and SAVE GAME FILE backup remain available. Private browsing, cleared website data or unavailable storage can prevent local recovery; the game must show that condition explicitly.
-
-Current scoped checks and limitations are recorded in HOMEWARD_TEST_RESULTS.json and HOMEWARD_TEST_REPORT.md. Existing art, core mission/save rules, business logic, 15-minute idle and 60-minute maximum Admiral session limits remain intact. Native iPad acceptance and live authority certification are separate.
-
-## Preserved previous release record
-
-# Breakwater 8.8.20.47 TEST — current release
-
-Current upload: **DarkSky882047-Breakwater-Upload49-TEST.zip** — **49 changed/new files** over exact Saltglass 8.8.20.46. Every previous filename is retained. Follow START_HERE_BREAKWATER.md.
-
-This bounded follow-up adds harbor roof/gable artwork, a validated save-file preview and title-screen mission status. A pure voyage-summary helper presents existing state; mission rules, save format and movement remain unchanged.
-
-Selected final .47 checks passed: summary 7/7, title 3/3, host preview/import/layout 8/8, roofs 8/8, three rendered views and two actual compiled-player cases, with independent source review. Historical failure and evidence limits are recorded separately; final package/extracted startup and native .47 acceptance are not claimed here. Exact current scope and evidence are in BREAKWATER_TEST_REPORT.md and BREAKWATER_TEST_RESULTS.json. Archive reconstruction and extracted boot are recorded separately after sealing. Native iPad Safari appearance and sustained performance remain a device check. Keep the downloaded voyage; no replay is required.
-
-The user reports that Saltglass .46 runs smoothly on iPad Safari; supplied screenshots show the imported voyage at 6/6, crew home and channel reopened. This is user-reported .46 acceptance, not a native .47 result or an FPS measurement.
-
-## Preserved Saltglass and earlier record — historical
-
-# Saltglass 8.8.20.46 TEST — current release
-
-Current update: **DarkSky882046-Saltglass-Upload49-TEST.zip** (49 changed/new files) over exact Dreadwater 8.8.20.45. Every previous filename is retained. Follow START_HERE_SALTGLASS.md.
-
-This pass refines crew faces, hands and clothing; worn harbor ground and coastal edges; and lighting readability. It keeps the existing renderer, embedded artwork, mission, movement/camera, save format and fleet permissions. The user reported smooth .45 play and a received JSON download. Current .46 native iPad appearance and sustained performance remain a device check.
-
-Current measured results are in SALTGLASS_TEST_REPORT.md and SALTGLASS_TEST_RESULTS.json. Keep the downloaded voyage; no replay is required. No database action or remote publication is performed by this ZIP.
-
----
-
-## Earlier release records
-
-The retained sections below document earlier builds. Use the Saltglass 8.8.20.46 instructions above for this update.
-
-# Dreadwater 8.8.20.45 TEST — current release
-
-Current update: **DarkSky882045-Dreadwater-Upload61-TEST.zip** (61 changed/new files) over exact Lanternwake 8.8.20.44, with all previous filenames retained. Follow START_HERE_DREADWATER.md.
-
-This build introduces pinned Three.js WebGL2 rendering, eight licensed material images, skinned adult crew, detailed harbor and boat geometry, dusk water/lighting, and camera/crew clearance. The complete opaque player is SHA-256 verified and capped at 8 MiB; artwork is embedded and uses no remote runtime service. The original WebGL1 fallback and all prior game/learning content remain available. Mission/save core and fleet authority rules are preserved.
-
-Current measured results belong in DREADWATER_TEST_REPORT.md and DREADWATER_TEST_RESULTS.json. Native iPad/Safari appearance and sustained performance need the Captain's field check. Keep the known downloaded voyage; no replay is required. No database action, live permission change or publication is performed by this ZIP.
-
----
-
-# Lanternwake 8.8.20.44 TEST
-
-**Current upload: DarkSky882044-Lanternwake-Upload44-TEST.zip — 44 files.** Follow START_HERE_LANTERNWAKE.md and install over complete Helmsman 8.8.20.43. This visual pass targets warm lantern/cool blue lighting, adult character proportions and clearer materials. The user has shown the .43 rescue complete on iPad: SAVE GAME FILE before refresh, keep the completed game, and inspect the .44 art after loading it. No replay is required. Mission, input, save and authority behavior remain .43, including the 15-minute idle / 60-minute maximum. Current evidence: LANTERNWAKE_TEST_REPORT.md. Final-source, compiled rescue and save/load checks passed. Archives and extracted startup are checked after sealing; native .44 acceptance remains pending.
-
-## Preserved Helmsman and earlier release record — historical, not current instructions
-
-# Helmsman 8.8.20.43 TEST
-
-**Current upload: DarkSky882043-Helmsman-Upload49-TEST.zip — 49 files.** Follow START_HERE_HELMSMAN.md and install over the complete Blacktide 8.8.20.42 site. Helmsman repairs the launch collision trap, replaces arithmetic bridge repair with fitting salvaged parts and operating a physical winch, and lets validated active play count toward the existing Admiral idle window. The 15-minute idle / 60-minute maximum limits remain. Save a GAME FILE before refresh and preserve completed .42 progress. Current evidence and limits are in HELMSMAN_TEST_REPORT.md; native iPad .43 acceptance remains pending. The cinematic art milestone in STORMWAKE_VISUAL_AND_MISSION_PLAN.md is future work.
-
-## Preserved Blacktide and earlier release record — historical, not current instructions
-
-# Blacktide 8.8.20.42 TEST
-
-The current upload is **DarkSky882042-Blacktide-Upload53-TEST.zip**, containing **53 files**. Follow START_HERE_BLACKTIDE.md. Install over the complete Stormwake 8.8.20.41 site and keep other repository files. This build adds playable harbor art and comfort improvements, four fleet-model declaration repairs and coherent shared-client identity. It remains TEST. See BLACKTIDE_TEST_REPORT.md for current evidence and native/live limits.
-
-## Preserved earlier release documentation — historical, not current instructions
-
-# Stormwake 8.8.20.41 TEST
-
-Current instructions: START_HERE_STORMWAKE.md. One original 3D FUN rescue, separate Admiral access, explicit compatible game saves. Business workflows unchanged. No production, multiplayer, cloud-save or native-frame-rate certification.
-
-## Earlier release record — historical, not current upload instructions
-
-# Fairwind 8.8.20.40 TEST
-
-Current instructions: START_HERE_FAIRWIND.md. FUN is a separate Admiral program, not Fleet Core. Game invitations/community remain closed. No production certification, SQL, cleanup or changed authority.
-
-## Earlier release record — historical, not tonight’s instructions
-
-# Woodwright TEST — 8.8.20.39
-
-See START_HERE_WOODWRIGHT.md and WOODWRIGHT_REPAIR_NOTES.md. This is a TEST update over Wayfinder .38, not a production or native Safari certificate. No database, membership, commissioning or price changes.
-
-## Preserved previous release documentation
-
-# Wayfinder 8.8.20.38 TEST — Fleet Compass
-
-Current installation instructions: **START_HERE_WAYFINDER.md**. Install only over complete Strongbox 8.8.20.37. No SQL, record cleanup, permission change or commissioning.
-
-Search now validates the full protected source before comparing the exact selected-card set. Fleet Compass reuses project logos and the existing preview, owner, control and customer routes. Storage failures are observed separately; quota recovery is not claimed.
-
-See WAYFINDER_REVIEW.md and WAYFINDER_TEST_RESULTS.json for scope and fresh verification limits.
-
----
-## Preserved earlier release documentation (historical, not installation instructions)
-
-# Black Flag 8.8.20.37 — Strongbox TEST
-
-A bounded backup compatibility repair over complete Headway .36. Follow **START_HERE_STRONGBOX.md**, not an older START_HERE file. The small update includes only changed/new files, while the full recovery snapshot preserves every Headway filename.
-
-The shared owner backup now preserves NaN, positive/negative infinity, negative zero, explicit undefined values, sparse arrays and null-prototype plain objects in a reversible, typed v2 archive when ordinary JSON cannot represent them faithfully. Every affected location is recorded in the checksummed manifest and displayed safely as text. Ordinary JSON-compatible records retain the v1 format. Existing v1 files remain readable.
-
-No original record is corrected, omitted, repriced, or rewritten. New-job numeric validation is unchanged and still rejects invalid values. Unsupported archival types fail explicitly with a field path, instead of being silently converted. No supported-type claim is made for arbitrary IndexedDB values such as Date, Blob, typed arrays, cyclic graphs, or Maps.
-
-The owner gate, namespace binding, customer forms, production geometry, nominal-size preview, no-retry policies and HouseHull plan are unchanged apart from release identities. The real owner-stock service and new complete-job production/Sea Trial path remain held.
-
-Full verification details and limits: **TEST_BUILD_REPORT.md**. Checksums detect inconsistent content, not malicious authorship. This is TEST only, not production launch, a server security audit, actual database restore, or cloud durability certification.
+The included vessel JSON is a design/installation descriptor only. It grants no permissions, registers no production vessel and changes no Fleet Core membership. Harbor 8.8.20.71 remains the existing application baseline.

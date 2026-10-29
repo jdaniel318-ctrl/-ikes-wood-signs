@@ -1,0 +1,54 @@
+{
+  "scope": "Build inventory, not a browser trust root or signature",
+  "version": "0.1.0",
+  "files": {
+    "CURRICULUM_AND_SAFETY.md": {
+      "bytes": 6123,
+      "sha256": "4fd5a0a430957a108605f26af67f2decd2612bb8b94af3b65a3f015d8830e7e7"
+    },
+    "LEARNERS.md": {
+      "bytes": 2949,
+      "sha256": "981faf5bdc6860fdb77235e95a90544255e268ef9871c31fa4797952d19b86e4"
+    },
+    "README.md": {
+      "bytes": 6718,
+      "sha256": "0436378f60160a03645bf6abb58d026fb3b915c91cb8bb069a633442cfb27db4"
+    },
+    "START_HERE.txt": {
+      "bytes": 1970,
+      "sha256": "8fbf9104199333c755ad3fc8f314d9c3402b12030c4c2e01c82310054553b1b1"
+    },
+    "WONDERWAKE_VESSEL.json": {
+      "bytes": 1440,
+      "sha256": "1a69e4aed2721c04354183a20eeaf9130384af82f84fe5ba55f618735eed5137"
+    },
+    "index.html": {
+      "bytes": 2784,
+      "sha256": "f873b047dee91a00298b90b15bf6e5b507c50968711afebb394706853f8f29a4"
+    },
+    "wonderwake.css": {
+      "bytes": 20160,
+      "sha256": "060643337282bdc770109478d6ec3736d96d241293bdc7df03b1e94baae3f7f8"
+    },
+    "wonderwake_app.js": {
+      "bytes": 50439,
+      "sha256": "36c71bc04415879f7645c53e606a4eccd432a90d0ce896a0a03c29415d20fcca"
+    },
+    "wonderwake_content.js": {
+      "bytes": 21059,
+      "sha256": "0b0c2b6154d12ff670d33f092ea91db37d4339fc59d6fe0a07c06f4616925145"
+    },
+    "wonderwake_core.js": {
+      "bytes": 6018,
+      "sha256": "bfb901b94257249e5c15d9dd8111e3c16e332c88a48f405980d8330849a07441"
+    },
+    "wonderwake_store.js": {
+      "bytes": 4660,
+      "sha256": "d7534a396b3c531e7da0cb47f1d2a9850feb9f24cf6dcf0fd27b4ad7c49be931"
+    },
+    "wonderwake_world.js": {
+      "bytes": 12561,
+      "sha256": "14a6d57444f92f1af8825df59601f97cbc2e19a7f56b29662d71bd0bfdded6bc"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+WONDERWAKE — FIRST LIGHT 0.1.0
+A NEW LEARNING SHIP. NOT A HARBOR UPDATE.
+
+DO NOT upload these files into -ikes-wood-signs or overwrite its index.html.
+
+1. Create a NEW GitHub repository named wonderwake in your account.
+2. Extract Wonderwake01.zip. Open its one folder. Upload ALL files INSIDE to the new repository root and commit.
+3. In that NEW repository: Settings > Pages > Deploy from a branch > main > /(root) > Save.
+
+For account jdaniel318-ctrl, the expected address AFTER successful deployment is:
+https://jdaniel318-ctrl.github.io/wonderwake/
+This address is not live or verified by this package. GitHub Pages shows the actual published URL.
+
+Harbor stays 8.8.20.71. No fleet source, database, permissions or records are changed.
+Wonderwake has not been commissioned on the fleet server or added to the six-member Fleet Core.
+
+The learner picker opens first. Start with Starling (the star princess), use the other starter profiles, or choose Add learner. Up to 24 local learners are supported; use nicknames rather than personal information. Choose Skybridge, Wordforge, Letter Trails, Maker Grove or Star Glider.
+Grown-ups can change starting math and spelling levels separately, choose another character, reduce motion and export progress.
+Maker Grove does not require answers or points. It has a pumpkin, celebration tree and robot.
+
+Progress is local to this device and browser, not cloud synchronized. Save success requires readback.
+If saving fails, use 'Keep a progress copy' before leaving. Do not clear Safari website data.
+Exported progress is not encrypted. Keep it privately. Never upload learner exports to a public repository.
+The preview page itself has no access-control gate and is public if published.
+
+Native iPad Safari, Apple Pencil, actual IndexedDB persistence and browser speech still need acceptance testing.
+This is a playable first expedition with K–12 seed practice, NOT a complete or independently reviewed K–12 curriculum.
