@@ -1,5 +1,5 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Brightwake 8.8.20.72
+# Black Flag Homeport 8.8.20.72
 
 Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
 Baseline: 8.8.20.71. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.

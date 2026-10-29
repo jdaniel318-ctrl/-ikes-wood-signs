@@ -1,10 +1,12 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Brightwake 8.8.20.72
+# Black Flag Homeport 8.8.20.72
 
-Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
-Baseline: 8.8.20.71. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
-Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
-No database, permission, stored-record, loading-dependency or deployment operation is part of this software patch.
+Current instructions: UPLOAD_THIS_ONE_BUILD.md. Scope: HOMEPORT_GUIDE.md.
+A named Wonderwake family-preview vessel launch appears in existing Fleet Compass; it is not included as a verified/core vessel and grants no account authority. No new engine runtime module, loading dependency, storage or auth changes. Independent Wonderwake 0.2.0 uses its own repository.
+Release identity remains generated from RELEASE_CONFIG.json; hashes remain mandatory. Existing app component is 8.8.20.71 and owner helper is 8.8.20.68; reuse is intentional.
+Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`.
+Packaging: `python3 -B BUILD_RELEASE.py . --baseline <Harbor .71 full-source ZIP> --out <new external directory>`.
+Production isolation, learner accounts and server commissioning remain unverified; same-host repository paths do not create separate browser origins. No live deployment or data action has been performed.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 
 ## Retained historical notes

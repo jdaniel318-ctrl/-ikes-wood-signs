@@ -1,7 +1,7 @@
 {
   "schema": "blackflag-patch-contract-v1",
   "target_build": "8.8.20.72",
-  "target_seal": "brightwake-882072",
+  "target_seal": "homeport-882072",
   "supported_bases": [
     {
       "build": "8.8.20.71",

@@ -1,7 +1,7 @@
 {
   "name": "Dark Sky \u2014 Fleet Mission",
   "short_name": "Dark Sky",
-  "start_url": "./index.html?_darkSkyRelease=8.8.20.72&_darkSkySeal=brightwake-882072",
+  "start_url": "./index.html?_darkSkyRelease=8.8.20.72&_darkSkySeal=homeport-882072",
   "display": "standalone",
   "background_color": "#071419",
   "theme_color": "#071419",

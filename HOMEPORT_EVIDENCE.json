@@ -1,0 +1,13 @@
+{
+  "schema": "blackflag-homeport-evidence-v1",
+  "build": "8.8.20.72",
+  "stage": "19 selected offline suites passed in worktree; packager reruns before issuing archives",
+  "entry_tests_passed": 9,
+  "static_card_browser_checks_passed": 16,
+  "native_safari": "pending",
+  "hosted_launch": "pending; browser navigation blocked by environment",
+  "source_mutations": "no runtime JavaScript changes; only preview card/style and release metadata/tooling/docs",
+  "server_commissioning": false,
+  "database_or_permission_actions": "none",
+  "independent_review": false
+}

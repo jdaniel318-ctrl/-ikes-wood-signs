@@ -2,9 +2,9 @@
   "schema": "dark-sky-deployment-manifest-v2",
   "build": "8.8.20.72",
   "version": "8.8.20.72",
-  "release_name": "Brightwake",
-  "releaseName": "Brightwake",
-  "release_seal": "brightwake-882072",
+  "release_name": "Homeport",
+  "releaseName": "Homeport",
+  "release_seal": "homeport-882072",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -138,7 +138,7 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "Repeatable fail-closed release packaging and device-local startup evidence; no business or authority changes.",
+  "release_focus": "Named Wonderwake preview-vessel entry in existing Fleet Compass; reviewed capability sharing, no account or data bridge.",
   "release_note": "Fairlead .68 adds tested software artifact generation and private startup timing within existing Engineering Systems. No lazy-loading, account, data or permission change.",
   "tax_ledger_upgrade": {
     "schema": "dark-sky-fleet-tax-ledger-v1",
@@ -535,10 +535,10 @@
       "app.js": "0942b4b1702ed270c287989abb3f91e7060e5cb7be6533351780bd6e6307faca",
       "captain.js": "e590c01a589e03210c921f35d1bb12ab001aaec9111784bad9d0dbabd9c6c30c",
       "simple_books.js": "ddd76dcf5e6c579f16918a9d3e645b0fc65d8a5b4d7c66df8896d8314eea325d",
-      "owner.html": "ea05a5bb9ac3e845dde673e1335d7cf9e90f7e25e649a09f7bd21d8a88b4f7a2",
-      "manifest.webmanifest": "0f2e6a213247572aa6d6ff7d80e4d3a982abe4b66f124721f676a193d5817d8e",
+      "owner.html": "ae923453ff7ddb438ab3a6a1c565087bab2ab522d27ceaf63b9fa554951d864e",
+      "manifest.webmanifest": "87796219f7226386b99563d09d229846fb36f2aee83da7d60465441ec3934f2a",
       "IKE_STYLE_FOUNDRY.json": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
-      "sw.js": "6517b6aa1d515f08080f2177c050dfd86ec2a94e1f4e32abf6ab2fc186c526cf",
+      "sw.js": "82d7e41870536d533eee18ec101badd771d384d8d9aa438e2639635c60bb8b72",
       "FLEET_DOCTRINE_REGISTRY.json": "db423e52d66d12ee368ddf462bed4a7fe0b8ce945273f623f4decbf481f18fdf",
       "GOLDEN_VOYAGES.json": "f14e3db1ad7b9e4b03bde3ef796a7e71926bb740b553736057ca43215f32ac60",
       "FLEET_COMMAND_MODEL.json": "50e7ec71f97368ad68c677307c39b23623b9f3a1faf3e8f5367a3afafe175221",
@@ -1902,16 +1902,14 @@
     "scope_guide": "HARBOR_GUIDE.md",
     "native_safari": "pending"
   },
-  "optional_features": {
-    "brightwake": {
-      "entry": "brightwake.html",
-      "descriptor": "BRIGHTWAKE_VESSEL.json",
-      "status": "family-pilot-not-server-commissioned",
-      "mandatory_engine_startup": false,
-      "database": "blackflag.brightwake.learners.v1",
-      "existing_vessels_modified": false,
-      "backend_actions": "none",
-      "full_curriculum": false
-    }
+  "homeport_upgrade": {
+    "version": "8.8.20.72",
+    "ship": "wonderwake",
+    "ship_version": "0.2.0",
+    "scope": "static launch in existing gated fleet dock, outside canonical roster",
+    "server_commissioned": false,
+    "private_progress_transfer": false,
+    "database_actions": "none",
+    "capability_promotion": "review-only, never automatic"
   }
 }

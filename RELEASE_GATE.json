@@ -1,16 +1,15 @@
 {
   "schema": "blackflag-release-gate-v1",
   "build": "8.8.20.72",
-  "release": "Brightwake",
+  "release": "Homeport",
   "pass": false,
-  "verification_status": "SELECTED_OFFLINE_AND_BROWSER_FIXTURE_CHECKS_PASSED",
+  "verification_status": "PENDING_FINAL_PACKAGED_VERIFICATION",
   "native_safari_acceptance": "PENDING",
   "database_actions": "none",
   "customer_data_changes": false,
   "production_certification": false,
-  "evidence_file": "BRIGHTWAKE_EVIDENCE.json",
+  "evidence_file": "HOMEPORT_EVIDENCE.json",
   "performance_improvement_claim": false,
   "backup_restore": "Software archives only. Existing partial encrypted snapshot retained; no server restoration added.",
-  "full_engine_network_boot": "NOT VERIFIED: environment blocked local URL navigation; file-backed loader validation passed",
-  "reason": "Family pilot, not production readiness; native acceptance and formal commissioning remain separate."
+  "full_engine_network_boot": "NOT VERIFIED: environment blocked local URL navigation; file-backed loader validation passed"
 }

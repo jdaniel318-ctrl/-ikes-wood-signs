@@ -1,12 +1,12 @@
 {
   "schema": "blackflag-release-config-v1",
   "build": "8.8.20.72",
-  "name": "Brightwake",
-  "seal": "brightwake-882072",
+  "name": "Homeport",
+  "seal": "homeport-882072",
   "base": "8.8.20.71",
   "base_sha256": "8106a6b129b72e887aeca6bd7db779b5d5540ac865cdfa40ec01d5b3ada05134",
   "base_files": 657,
-  "prepared_at": "2026-10-29T01:51:30.060314+00:00",
+  "prepared_at": "2026-10-29T02:10:36.377523+00:00",
   "app_component_revision": "8.8.20.71",
   "owner_helper_revision": "8.8.20.68"
 }

@@ -15,7 +15,7 @@
   </style>
   <script id="darkSkyFirstLightBootstrap">
     // Dark Sky 8.6.23 MEMORY MUSTER — canonical release identity.
-    const DARK_SKY_RELEASE = Object.freeze({build:'8.8.20.72',seal:'brightwake-882072'});
+    const DARK_SKY_RELEASE = Object.freeze({build:'8.8.20.72',seal:'homeport-882072'});
     const DARK_SKY_EXPECTED_BUILD = DARK_SKY_RELEASE.build;
     const DARK_SKY_RELEASE_SEAL = DARK_SKY_RELEASE.seal;
     // 8.6.23 Storage Safe Harbor — three independent channels, no silent storage failures.
@@ -578,6 +578,9 @@
 </style>
 <style id="harborStorageSafetyStyle">
 .harbor-rescue-panel{border:1px solid #41616a;border-radius:16px;padding:22px;margin:18px 0;background:#0a252e;color:#e7f1f1}.harbor-rescue-panel h3{font-size:24px;margin:8px 0 12px}.harbor-rescue-panel small{letter-spacing:.12em;font-weight:700}.harbor-rescue-panel p{line-height:1.6}.harbor-rescue-panel .helper{font-size:14px;color:#b5cad1}.harbor-private-warning{padding:14px;border-left:4px solid #e2bd64;background:#292614;line-height:1.6}.harbor-private-warning strong{display:block;color:#f0d98a}.harbor-rescue-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:18px 0}.harbor-rescue-actions button{min-height:48px;white-space:normal}.harbor-rescue-actions button:disabled{opacity:.5;cursor:not-allowed}.harbor-rescue-status{padding:14px;border:1px solid #426773;border-radius:10px;overflow-wrap:anywhere}@media(max-width:600px){.harbor-rescue-panel{padding:16px}.harbor-rescue-actions{grid-template-columns:1fr}}
+</style>
+<style id="homeportShipStyle">
+.homeport-ship{display:grid;grid-template-columns:64px minmax(0,1fr) minmax(210px,280px);align-items:center;gap:18px;margin-top:22px;padding:23px;border:1px solid #537d84;border-radius:18px;background:linear-gradient(120deg,#123743,#09262e);color:#e4eeee}.homeport-ship-mark{font-size:42px;color:#e6c571;text-align:center}.homeport-ship-copy small{font-size:10px;letter-spacing:1.5px;font-weight:800;color:#91c9ce}.homeport-ship-copy h3{margin:6px 0;font-size:27px;color:#f4ead0}.homeport-ship-copy p{font-size:14px;line-height:1.55;margin:7px 0;color:#bdd0d3}.homeport-status{display:inline-block;border:1px solid #8a7746;border-radius:22px;padding:7px 11px;color:#f1d68d;font-size:12px}.homeport-ship-action a{display:block;text-align:center;padding:17px 15px;border-radius:12px;border:1px solid #dbc479;background:#ebcc83;color:#163943;text-decoration:none;font-weight:850;min-height:52px}.homeport-ship-action a:focus-visible,.homeport-boundary summary:focus-visible{outline:3px solid #b7ecf0;outline-offset:4px}.homeport-ship-action small{display:block;font-size:12px;text-align:center;margin-top:10px;color:#bad0d2}.homeport-boundary{grid-column:1/-1;border-top:1px solid #3e5c64;padding-top:15px;font-size:13px;line-height:1.6}.homeport-boundary summary{cursor:pointer;min-height:32px;font-weight:700}.homeport-boundary p{margin:12px 0 0;color:#bdd0d3}@media(max-width:700px){.homeport-ship{grid-template-columns:40px minmax(0,1fr);padding:18px;gap:12px}.homeport-ship-action{grid-column:1/-1}.homeport-ship-copy h3{font-size:24px}.homeport-ship-mark{font-size:32px}}
 </style>
 </head>
 <body class="boot-locked">
@@ -1436,7 +1439,7 @@
       </nav>
 
       <section id="clearDeckLaunchpad" class="clear-deck-launchpad" aria-label="Engine command launchpad">
-        <div class="clear-deck-brief"><small id="engineReleaseLabel">8.8.20.72 • BRIGHTWAKE</small><h3>Where are we working?</h3><p>Captain and Admiral are established as separate offices. The Admiral rank is durable; every secure session and modifying action still declares its authority source and exact scope.</p><div class="admiral-keel-office-state"><b>ADMIRAL OFFICE · COMMISSIONED</b><span>Rank persists until explicit server revocation. PIN + account verification protect each secure workspace session; session expiry does not demote the Admiral.</span></div></div>
+        <div class="clear-deck-brief"><small id="engineReleaseLabel">8.8.20.72 • HOMEPORT</small><h3>Where are we working?</h3><p>Captain and Admiral are established as separate offices. The Admiral rank is durable; every secure session and modifying action still declares its authority source and exact scope.</p><div class="admiral-keel-office-state"><b>ADMIRAL OFFICE · COMMISSIONED</b><span>Rank persists until explicit server revocation. PIN + account verification protect each secure workspace session; session expiry does not demote the Admiral.</span></div></div>
         <div class="clear-deck-primary-actions">
           <button type="button" class="clear-deck-action primary" data-clear-deck-command="projects"><span class="clear-deck-action-number">01</span><span><strong>OPERATE VESSELS</strong><small>Choose an independent vessel, then enter its exact Project Control or product surface.</small></span></button>
           <button type="button" class="clear-deck-action" data-command-open="captain"><span class="clear-deck-action-number">02</span><span><strong>CAPTAIN WATCH</strong><small>Review signals, decide a course, route deliberate action, and retain the outcome.</small></span></button>
@@ -1446,14 +1449,7 @@
         <div class="clear-deck-support" aria-label="Fleet support routes"><span><b>FLEET SUPPORT</b><small>Commission New Project and Configure Engine remain above. Proof, recovery, learning and diagnostics stay here.</small></span><button type="button" id="clearDeckSystemsToggle" data-clear-deck-command="systems" aria-expanded="false"><i aria-hidden="true"></i><span><strong>ENGINEERING SYSTEMS</strong><small>Diagnostics, proof, learning &amp; recovery</small></span><em>OPEN</em></button></div>
         <nav aria-label="Assigned Captain entrance"><a href="owner.html?surface=vessel-captain" class="tb-assigned-entry">Appointed Captain? Open My Assigned Vessels →</a></nav>
 
-        <!-- BRIGHTWAKE_PILOT_ENTRY_START -->
-<div class="qm-engine-entry" id="brightwakePilotEntry">
-  <div><strong>BRIGHTWAKE · LEARNING PILOT</strong><small>The Lantern Isles · Math, spelling, letter trails and creative play. Separate local learners. Not yet server-commissioned.</small></div>
-  <a class="btn primary" href="brightwake.html">OPEN BRIGHTWAKE →</a>
-</div>
-<!-- BRIGHTWAKE_PILOT_ENTRY_END -->
-
-<!-- HEADWAY_PLAN_LINK_START -->
+        <!-- HEADWAY_PLAN_LINK_START -->
         <div class="qm-engine-entry"><div><strong>ADMIRAL BUSINESS SUPPORT</strong><small>Business catalogs, material quantities, quotes and invoices.</small><small id="qmEntryStatus" role="status" aria-live="polite"></small></div><button id="quartermasterEngineOpen" type="button">QUOTES &amp; INVOICES</button></div>
         <div class="qm-engine-entry carvewright-engine-entry"><div><strong>CARVEWRIGHT</strong><small>Independent sign design and CNC machining workspace · registration pending.</small><small id="carvewrightEntryStatus" role="status" aria-live="polite"></small></div><button id="carvewrightEngineOpen" type="button">OPEN CARVEWRIGHT</button></div>
         <nav aria-label="Release planning brief"><a id="headwayPlanLink" class="tb-assigned-entry" href="headway-brief.html" target="_blank" rel="noopener">HouseHull measuring roadmap · Headway build brief →</a></nav>
@@ -1691,6 +1687,15 @@
         <aside id="fleetDockStorageNotice" class="wayfinder-storage-warning" role="status" hidden></aside>
         <div id="fleetCommissioningFleet" class="fleet-commissioning-fleet" aria-live="polite"></div>
         <div id="fleetCommissioningReference" class="fleet-commissioning-reference"></div>
+<!-- HOMEPORT_VESSEL_START -->
+<section id="wonderwakePreviewVessel" class="homeport-ship" aria-labelledby="wonderwakePreviewTitle">
+ <div class="homeport-ship-mark" aria-hidden="true">✦</div>
+ <div class="homeport-ship-copy"><small>BLACK FLAG · INDEPENDENT LEARNING VESSEL</small><h3 id="wonderwakePreviewTitle">Wonderwake</h3><p>Spelling, mathematics, letter trails and a creative playground. Separate adventures for multiple learners.</p><span class="homeport-status">Family preview · Server commissioning pending</span></div>
+ <div class="homeport-ship-action"><a id="openWonderwakeShip" href="https://jdaniel318-ctrl.github.io/wonderwake/" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">OPEN WONDERWAKE ↗</a><small>Opens the separate learning ship.</small></div>
+ <details class="homeport-boundary"><summary>Fleet connection & shared learning</summary><p>This is a preview launch entry, not a live health check or a server-commissioned vessel record. It does not change Fleet Core counts, ownership, appointments or permissions. Public preview: not a private test environment.</p><p>No learner data or account session is sent by this link. Wonderwake keeps its own local learner store; engine and business records stay unchanged by the learning ship.</p><p><strong>Fleet → ship:</strong> explicit identity, truthful save readback and tested releases. <strong>Ship → fleet:</strong> touch-first creative controls and clear learner selection. Capabilities must be reviewed and adopted deliberately through the existing Fleet Learning Registry; nothing is promoted automatically.</p><p>Repository paths on the same host are not browser-level isolation. Separate origins and server authorization still require verification before production use.</p></details>
+</section>
+<!-- HOMEPORT_VESSEL_END -->
+
       </section>
 
       <section id="fleetLearningRegistry" class="fleet-learning-registry" aria-label="Fleet Learning Registry">
