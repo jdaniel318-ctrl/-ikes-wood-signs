@@ -471,3 +471,22 @@
  #quartermasterWorkspace .qm-dock-context strong{font-size:11px}
  #quartermasterWorkspace #qmRunningTotal{font-size:18px}
 }
+
+/* Highwater 8.8.20.75 — touch editing above Safari's floating accessory controls. */
+#quartermasterWorkspace[data-qm-viewport]{position:fixed;top:var(--qm-edit-top);bottom:auto;left:0;right:0;margin:0 auto;height:var(--qm-edit-height)}
+#quartermasterWorkspace[data-qm-editing] .qm-head{min-height:54px;padding-block:5px}
+#quartermasterWorkspace[data-qm-editing] .qm-head small,#quartermasterWorkspace[data-qm-editing] .qm-brand-mark,#quartermasterWorkspace[data-qm-editing] .qm-release{display:none}
+#quartermasterWorkspace[data-qm-editing] .qm-head h1{font-size:20px;margin:0}
+#quartermasterWorkspace[data-qm-editing] .qm-document-dock{border-top:0;border-bottom:1px solid #becfc8;box-shadow:0 5px 16px #173b3510;padding-block:8px;gap:6px 14px}
+#quartermasterWorkspace[data-qm-editing] .qm-dock-actions button{min-width:96px}
+#quartermasterWorkspace[data-qm-editing] #qmContent{scroll-behavior:auto}
+@media(max-width:760px){
+ #quartermasterWorkspace[data-qm-editing] .qm-dock-actions{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+ #quartermasterWorkspace[data-qm-editing] .qm-dock-actions button{min-width:0;padding:8px 6px;font-size:12px}
+}
+
+/* Use actual keyboard space: layout-viewport media queries miss visual-only shrinkage. */
+#quartermasterWorkspace[data-qm-compact] .qm-head,#quartermasterWorkspace[data-qm-compact] .qm-tabs{display:none}
+#quartermasterWorkspace[data-qm-compact] .qm-document-dock{padding-block:4px;gap:4px 12px}
+#quartermasterWorkspace[data-qm-compact] #qmContent{scroll-padding-top:10px}
+#quartermasterWorkspace[data-qm-compact] textarea{height:44px;min-height:44px;max-height:44px;resize:none}

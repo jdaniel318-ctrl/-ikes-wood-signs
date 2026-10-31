@@ -1,0 +1,40 @@
+{
+  "schema": "blackflag-field-acceptance-v1",
+  "build_observed": "8.8.20.74",
+  "release": "Steadyhelm",
+  "source": "User-supplied iPad Safari screenshots dated 2026-10-31, approximately 17:47–18:08 device time",
+  "recorded_in_build": "8.8.20.75",
+  "workflow": "HouseHull sample quote edit, save, reopen, quantity edit, restore, saved PDF and return",
+  "document_number": "HH-QTE-2026-L366ACBECC9E644A18402864B16F5F24E-000002",
+  "observed": {
+    "saved_name": "HouseHull Steadyhelm review",
+    "reopened_name_retained": true,
+    "vinyl_quantity_9_line_amount": "1701.00",
+    "vinyl_quantity_restored": 8,
+    "restored_line_amount": "1512.00",
+    "saved_document_revision": 5,
+    "workspace_revision_after_return": 20,
+    "quote_total": "6271.00",
+    "tax_rate_percent": 0,
+    "pdf_materials": "2721.00",
+    "pdf_labor_services": "3550.00",
+    "pdf_pages": 1,
+    "pdf_labels": ["DRAFT", "SAMPLE - FOR REVIEW ONLY"],
+    "pdf_opened_in_separate_tab": true,
+    "returned_to_original_workspace": true,
+    "overview_catalog_items": 12,
+    "overview_saved_drafts": 2,
+    "overview_finalized_copies": 0,
+    "original_example_quote_still_listed": true
+  },
+  "finding": "Safari floating keyboard/password toolbar obscures the persistent total and part of the action area while an input is focused.",
+  "status": "Observed save/reopen/PDF workflow passed; keyboard usability follow-up required",
+  "not_established": [
+    "Quantity-9 total visibly readable on the physical device; toolbar obscures it",
+    "PDF saved to Files, printing, finalization or invoice conversion",
+    "Backup restoration or full accessibility certification",
+    "Security certification or clearance of five governance holds",
+    "Physical acceptance of Highwater 8.8.20.75"
+  ],
+  "historical_integrity": "Original Steadyhelm release evidence and archives remain unchanged; this is a separate field-observation record."
+}

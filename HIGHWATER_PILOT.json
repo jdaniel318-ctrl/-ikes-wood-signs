@@ -1,0 +1,13 @@
+{
+  "schema": "blackflag-learning-pilot-v1",
+  "build": "8.8.20.75",
+  "origin": "Steadyhelm 8.8.20.74 physical iPad review",
+  "adaptation": "Keep document actions and total above the form during touch editing; compact navigation when a full keyboard leaves little visible height.",
+  "pilot_workflow": "HouseHull sample quote edit, save, reopen and PDF",
+  "status": "implemented_offline_verified_pending_ipad_acceptance",
+  "scope": "Quartermaster document editor shared by its isolated business workspaces",
+  "evidence": "HIGHWATER_EVIDENCE.json",
+  "previous_field_acceptance": "STEADYHELM_FIELD_ACCEPTANCE.json",
+  "promotion": "No fleet-wide promotion or Carvewright adaptation in this build.",
+  "physical_checks": "Three focused checks in HIGHWATER_GUIDE.md"
+}

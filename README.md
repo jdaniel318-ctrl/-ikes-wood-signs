@@ -1,11 +1,12 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Steadyhelm 8.8.20.74
+# Black Flag Highwater 8.8.20.75
 
 Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
-Baseline: 8.8.20.73. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Baseline: 8.8.20.74. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
 Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
 No database, permission, stored-record, loading-dependency or deployment operation is part of this software patch.
-Quotes & Invoices now keeps document actions and current totals visible, reports exact save state and retains failed edits. Invalid amounts require review. See STEADYHELM_GUIDE.md and STEADYHELM_EVIDENCE.json.
+Highwater: touch editing places document actions above the form, adds Done editing, and adapts to short keyboard viewports. See HIGHWATER_GUIDE.md and HIGHWATER_EVIDENCE.json. Physical iPad acceptance remains pending.
+
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 
 ## Retained historical notes

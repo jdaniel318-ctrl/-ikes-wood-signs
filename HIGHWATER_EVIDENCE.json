@@ -1,0 +1,224 @@
+{
+  "schema": "blackflag-highwater-evidence-v1",
+  "build": "8.8.20.75",
+  "source_baseline": "8.8.20.74 Steadyhelm",
+  "baseline_archive_sha256": "d67215789539df1ff4973e762ef7709143e8e07c6f165f2202171e47d876d888",
+  "baseline_live_match": "Seven public deployment/runtime files matched exact Steadyhelm source; live-baseline.json in verification archive.",
+  "sources": {
+    "quartermaster.js": "50ddf2815d2c8369d7421a7ce02ca4595eb328357a5701b7bb7965a50cacf3c0",
+    "quartermaster.css": "a235eed45320ad10b961feb0cf3dd0985e2063995a6dc2b0c4514eefed0080ee",
+    "quartermaster_core.js": "5de2d40cb05eeeafb03855e5a374b7fc451982969d187d71632dd908e1051eed",
+    "quartermaster_pdf.js": "7e1c51fa7d7a4ae4fcd55a2330b15ff87c6b4ec0c9db548ff2b6a72658a453a1",
+    "quartermaster_fonts.js": "69b2f7fbcf0d29731cf6feea6d3f7b57d7633fafc29703123a7213ea861c9df5",
+    "VERIFY_HIGHWATER_UI.cjs": "37c2737dc793d55dbcb1cd416c459e9ae8881bf0caf162579905b00d9078cd80",
+    "VERIFY_STEADYHELM_UI.cjs": "deae2b40efc19b18fb855b1d1342a53fdb75e1fa3d69a99b3e0a1c7b3457262a",
+    "VERIFY_QUARTERMASTER_UI.cjs": "91f99f90ded9879ad9effc5b47d776569455cb8cbe6e1fb7e52dfb7fd1011c06"
+  },
+  "browser_scope": "Offline Chromium with native IndexedDB. Touch, authority and keyboard geometry synthetic. Physical Safari remains pending.",
+  "focused_browser_checks": [
+    {
+      "name": "touch controls clear floating toolbar 1024x768",
+      "pass": true
+    },
+    {
+      "name": "touch controls clear floating toolbar 768x1024",
+      "pass": true
+    },
+    {
+      "name": "touch controls clear floating toolbar 390x844",
+      "pass": true
+    },
+    {
+      "name": "touch controls clear floating toolbar 844x390",
+      "pass": true
+    },
+    {
+      "name": "touch controls clear floating toolbar 390x500",
+      "pass": true
+    },
+    {
+      "name": "blur during press cannot move Save or lose final digit",
+      "pass": true
+    },
+    {
+      "name": "failed touch save keeps retry and edits above obstruction",
+      "pass": true
+    },
+    {
+      "name": "full keyboard resize and pan retain focused field",
+      "pass": true
+    },
+    {
+      "name": "short keyboard keeps editable field and failed-save retry 844x180",
+      "pass": true
+    },
+    {
+      "name": "short keyboard keeps editable field and failed-save retry 844x220",
+      "pass": true
+    },
+    {
+      "name": "short keyboard keeps editable field and failed-save retry 390x300",
+      "pass": true
+    },
+    {
+      "name": "pinch zoom leaves native dialog sizing and input intact",
+      "pass": true
+    },
+    {
+      "name": "close reopen and business exit clear editing layout",
+      "pass": true
+    },
+    {
+      "name": "desktop keeps stable bottom actions during typing",
+      "pass": true
+    }
+  ],
+  "steadyhelm_ui_checks": 15,
+  "quartermaster_workflow_checks": 11,
+  "native_indexeddb_checks": 44,
+  "pdf_renderer_checks": 37,
+  "red_green_evidence": {
+    "initial_baseline": "9 expected failures / 2 passes; floating accessory overlay obstructed total or Save.",
+    "review_case": "Three short-keyboard cases failed before compact layout; all passed after fix."
+  },
+  "independent_review": {
+    "critical_open": 0,
+    "important_open": 0,
+    "minor_deferred": 0,
+    "finding_fixed": "Short full-keyboard viewport clipped editable field; now compact according to visual height, with 3 regression cases covering field correction, failed saves, retry, and notes.",
+    "fix_verification": "Focused suite 14/14; no second review claimed."
+  },
+  "review_boundaries": [
+    "Physical Safari keyboard/accessory acceptance pending",
+    "Security and fleet certification not claimed",
+    "Full assistive-technology audit not performed",
+    "Seals and package integrity checked separately by release pipeline"
+  ],
+  "native_safari_acceptance": "PENDING",
+  "engine_deployed": false,
+  "database_actions": "none",
+  "customer_data_changes": false,
+  "previous_field_evidence": "STEADYHELM_FIELD_ACCEPTANCE.json",
+  "offline_suites": [
+    {
+      "name": "VERIFY_HOMEPORT_ENTRY.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FLEETBOUND_PROGRAMS.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_HARBOR_ROUTES.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_HARBOR_ASYNC.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_HARBOR_STORAGE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_RELEASE_IDENTITY.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FAIRLEAD_LOADER.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FAIRLEAD_STARTUP.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_CLEARDECK_ACCOUNT.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_RELEASE_CONTRACT.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_CLEARDECK_PREFLIGHT.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_IRONHAVEN_CORE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FLEETCARE_READINESS.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FLEETCARE_NAVIGATION.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FLEETCRAFT_CORE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_LETTERCRAFT_FONTS.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_QUARTERMASTER_CORE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_STORMWAKE_CORE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "TEST_RELEASE_PIPELINE.py",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "TEST_RELEASE_IDENTITY.py",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    }
+  ]
+}

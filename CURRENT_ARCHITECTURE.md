@@ -1,13 +1,11 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Current architecture — Steadyhelm 8.8.20.74
+# Current architecture — Highwater 8.8.20.75
 
 Source of release identity: RELEASE_CONFIG.json. Installed page/manifest/seal/worker identity is generated together. APP_COMPONENT_REVISION is 8.8.20.71; owner helper revision is 8.8.20.68. Unchanged component bodies remain byte-identical across release-only changes.
 
 The Engine still verifies every required body, current governance models, app component contract and worker identity before executing the same script sequence. App and Captain bind audit/display freshness to the verified installed release. This context never grants permissions. The owner page keeps explicit helper compatibility checks.
 
 No specialist module is deferred or removed. No live data, schema, session key, appointment, authorization endpoint, sign-design geometry or ledger behavior is changed. Fleet core and Admiral programs remain distinct.
-
-Quartermaster UI revision is 8.8.20.74. The document action strip is outside its scrolling content. Its status derives from dirty edits, in-flight save and the most recent save failure. Existing guarded IndexedDB and saved-snapshot PDF APIs remain unchanged.
 
 ## Release commands
 Prepare known identity fields: `python3 -B PREPARE_RELEASE.py .` (resets test status to untested; never deploys).
@@ -17,6 +15,8 @@ Package: `python3 -B BUILD_RELEASE.py . --baseline <exact prior full-source ZIP>
 
 Previous release guides/scripts are retained historical material; do not run their release-pinned sealers on this release.
 Native Safari/hosted integration is separate from offline checks. Source backup is not business-data restore.
+Highwater: touch editing places document actions above the form, adds Done editing, and adapts to short keyboard viewports. See HIGHWATER_GUIDE.md and HIGHWATER_EVIDENCE.json. Physical iPad acceptance remains pending.
+
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 
 ## Retained historical notes

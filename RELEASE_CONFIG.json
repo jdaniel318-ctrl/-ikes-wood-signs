@@ -1,12 +1,12 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.74",
-  "name": "Steadyhelm",
-  "seal": "steadyhelm-882074",
-  "base": "8.8.20.73",
-  "base_sha256": "81171da18453033a27bce902125d03be30020bb2889130fd786d1299384c2afc",
-  "base_files": 667,
-  "prepared_at": "2026-10-31T21:27:09.720817+00:00",
+  "build": "8.8.20.75",
+  "name": "Highwater",
+  "seal": "highwater-882075",
+  "base": "8.8.20.74",
+  "base_sha256": "d67215789539df1ff4973e762ef7709143e8e07c6f165f2202171e47d876d888",
+  "base_files": 671,
+  "prepared_at": "2026-10-31T22:24:33.675072+00:00",
   "app_component_revision": "8.8.20.71",
   "owner_helper_revision": "8.8.20.68"
 }
