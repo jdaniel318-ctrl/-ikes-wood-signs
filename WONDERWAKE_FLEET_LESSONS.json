@@ -1,0 +1,86 @@
+{
+  "schema": "blackflag-mission-learning-candidates-v1",
+  "source_release": "Skybloom 0.10.0",
+  "adoption": "Review mission fit, adapt, test one suitable surface, then promote deliberately.",
+  "automatic_promotion": false,
+  "candidates": [
+    {
+      "id": "wonderwake-action-feedback",
+      "class": "capability",
+      "title": "Show the result beside the action",
+      "lesson": "Use explicit saving, saved, or retry feedback beside the control; confirm persistence before claiming success.",
+      "missionAdapter": "Pilot in quotes and invoices; test failed saves and navigation before expanding.",
+      "origin": "Wonderwake",
+      "source_release": "Skybloom 0.10.0",
+      "status": "candidate",
+      "automatic_promotion": false,
+      "applies": [],
+      "evidence_source": "Wonderwake14-Skybloom/FLEET_LESSONS.md"
+    },
+    {
+      "id": "wonderwake-controls-with-work",
+      "class": "capability",
+      "title": "Keep controls with the work",
+      "lesson": "Keep essential tools and the next action visible; reduce decoration before reducing usable control sizes.",
+      "missionAdapter": "Pilot in the Carvewright drawing workspace; retain access to job details and allow necessary document scrolling.",
+      "origin": "Wonderwake",
+      "source_release": "Skybloom 0.10.0",
+      "status": "candidate",
+      "automatic_promotion": false,
+      "applies": [],
+      "evidence_source": "Wonderwake14-Skybloom/FLEET_LESSONS.md"
+    },
+    {
+      "id": "wonderwake-input-intent",
+      "class": "capability",
+      "title": "Separate the tool from the input device",
+      "lesson": "A finger or Pencil chooses an input device; Draw, Shapes and Select define the action. Switching devices must not silently choose a shape.",
+      "missionAdapter": "Review canvas tools only. Recheck menu dismissal, pen-to-finger transitions and undo.",
+      "origin": "Wonderwake",
+      "source_release": "Skybloom 0.10.0",
+      "status": "candidate",
+      "automatic_promotion": false,
+      "applies": [],
+      "evidence_source": "Wonderwake14-Skybloom/FLEET_LESSONS.md"
+    },
+    {
+      "id": "wonderwake-mission-completion",
+      "class": "capability",
+      "title": "Finish in the context of the job",
+      "lesson": "Completion should explain what was completed and offer the relevant next step, while preserving a way back.",
+      "missionAdapter": "Review each workflow separately: a flight lands; an invoice confirms its saved state; a design returns to its own job.",
+      "origin": "Wonderwake",
+      "source_release": "Skybloom 0.10.0",
+      "status": "candidate",
+      "automatic_promotion": false,
+      "applies": [],
+      "evidence_source": "Wonderwake14-Skybloom/FLEET_LESSONS.md"
+    },
+    {
+      "id": "wonderwake-animation-lifecycle",
+      "class": "capability",
+      "title": "Give animation a clear lifetime",
+      "lesson": "Use readable pacing, reduced-motion support, hidden-tab pause and immediate exit. Cancel callbacks when leaving a view.",
+      "missionAdapter": "Use subtle feedback where business work benefits; never delay a user action for a celebration.",
+      "origin": "Wonderwake",
+      "source_release": "Skybloom 0.10.0",
+      "status": "candidate",
+      "automatic_promotion": false,
+      "applies": [],
+      "evidence_source": "Wonderwake14-Skybloom/FLEET_LESSONS.md"
+    },
+    {
+      "id": "wonderwake-playful-variety",
+      "class": "mission_adapter",
+      "title": "Keep playful variety in learning activities",
+      "lesson": "Vary solvable number patterns and celebrate flight completion with a short firework display.",
+      "missionAdapter": "Wonderwake only by default. Do not automatically add game rewards, fireworks or random choices to business workflows.",
+      "origin": "Wonderwake",
+      "source_release": "Skybloom 0.10.0",
+      "status": "candidate",
+      "automatic_promotion": false,
+      "applies": [],
+      "evidence_source": "Wonderwake14-Skybloom/FLEET_LESSONS.md"
+    }
+  ]
+}

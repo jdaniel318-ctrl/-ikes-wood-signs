@@ -1,10 +1,11 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Homeport 8.8.20.72
+# Black Flag Fleetbound 8.8.20.73
 
-Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
-Baseline: 8.8.20.71. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
-Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
-No database, permission, stored-record, loading-dependency or deployment operation is part of this software patch.
+Wonderwake is commissioned as an active Admiral Program with accepted family-preview release Skybloom 0.10.0. A separate connected administrator transaction and independent server readback are recorded in WONDERWAKE_COMMISSION_RECEIPT.json. This software patch publishes the visible launch and dated receipt; it does not execute SQL or grant browser authority.
+
+Read FLEETBOUND_GUIDE.md and UPLOAD_THIS_ONE_BUILD.md. Authentication, PINs, session rules and the six Core business definitions are unchanged. Admiral Program rendering now survives filtering and branding refresh. Six Wonderwake lesson candidates remain unadopted pending mission-specific review.
+
+Engine publication and native Safari verification of this Engine patch are pending. The accepted Wonderwake game is unchanged. Full-source backups and UI rollback contain application code only.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 
 ## Retained historical notes

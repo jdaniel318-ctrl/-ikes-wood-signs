@@ -1,12 +1,12 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.72",
-  "name": "Homeport",
-  "seal": "homeport-882072",
-  "base": "8.8.20.71",
-  "base_sha256": "8106a6b129b72e887aeca6bd7db779b5d5540ac865cdfa40ec01d5b3ada05134",
-  "base_files": 657,
-  "prepared_at": "2026-10-29T02:10:36.377523+00:00",
+  "build": "8.8.20.73",
+  "name": "Fleetbound",
+  "seal": "fleetbound-882073",
+  "base": "8.8.20.72",
+  "base_sha256": "0814b9323cc10674298ef6e609eee26068d97006ccb984f3ee59896a1e9b638b",
+  "base_files": 661,
+  "prepared_at": "2026-10-31T17:54:49.242714+00:00",
   "app_component_revision": "8.8.20.71",
   "owner_helper_revision": "8.8.20.68"
 }

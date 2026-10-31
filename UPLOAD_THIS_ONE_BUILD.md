@@ -1,12 +1,11 @@
-# Upload Homeport 8.8.20.72
+# Upload Fleetbound 8.8.20.73
 
-Upload Homeport72.zip ONLY to -ikes-wood-signs. It updates Harbor .71.
-Extract the ZIP, open its one folder, upload ALL inner files to existing repository root, replace matching files, keep every other file. Do not nest the folder or upload the ZIP itself.
+Server commissioning is already complete. This upload makes the Engine entry and reviewed lesson candidates visible. No SQL or PIN changes are required.
 
-The separate Wonderwake02.zip goes ONLY to the existing wonderwake repository. It is not an Engine patch.
+1. Extract `DarkSky882073-Fleetbound-Upload.zip`. Upload ALL files inside its single folder to the ROOT of the existing `jdaniel318-ctrl/-ikes-wood-signs` repository, replacing matching files and keeping all others. Commit the upload.
+2. After Pages deployment, open the Engine in your usual browser and confirm **8.8.20.73 · FLEETBOUND**. Its main launchpad now shows **Wonderwake is in the fleet**.
+3. Choose **Open Wonderwake**. In the Engine's Fleet Learning section, expand **From Wonderwake to the fleet** for six mission-specific candidates.
 
-After deployment, Engine shows 8.8.20.72 HOMEPORT. Open Operate Vessels and find Wonderwake below the current roster. The public family-preview link opens a separate tab. No credentials or learner data are encoded in the link. No server commissioning is performed.
+Do not upload this to the `wonderwake` repository. Keep the accepted Skybloom game unchanged. Do not clear Safari data or reset progress.
 
-No new passwords, permissions, SQL, cleanup or Safari-data deletion. Full backup protects source, not learner/customer data. Legacy component revisions are preserved intentionally.
-
-Rollback is software-only. Never restore old permissions or business data. Added release tools remain inert after software rollback.
+The full backup is application source only, not server/business/learner records. Software rollback restores Homeport UI code; it does not retire Wonderwake or undo its audit record. Never restore old permissions or business data. Full details: FLEETBOUND_GUIDE.md.

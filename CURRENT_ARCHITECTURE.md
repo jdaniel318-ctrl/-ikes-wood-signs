@@ -1,12 +1,20 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Homeport 8.8.20.72
+# Current architecture — Fleetbound 8.8.20.73
 
-Current instructions: UPLOAD_THIS_ONE_BUILD.md. Scope: HOMEPORT_GUIDE.md.
-A named Wonderwake family-preview vessel launch appears in existing Fleet Compass; it is not included as a verified/core vessel and grants no account authority. No new engine runtime module, loading dependency, storage or auth changes. Independent Wonderwake 0.2.0 uses its own repository.
-Release identity remains generated from RELEASE_CONFIG.json; hashes remain mandatory. Existing app component is 8.8.20.71 and owner helper is 8.8.20.68; reuse is intentional.
-Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`.
-Packaging: `python3 -B BUILD_RELEASE.py . --baseline <Harbor .71 full-source ZIP> --out <new external directory>`.
-Production isolation, learner accounts and server commissioning remain unverified; same-host repository paths do not create separate browser origins. No live deployment or data action has been performed.
+Source of release identity: RELEASE_CONFIG.json. Installed page/manifest/seal/worker identity is generated together. APP_COMPONENT_REVISION is 8.8.20.71; owner helper revision is 8.8.20.68. Unchanged component bodies remain byte-identical across release-only changes.
+
+The Engine still verifies every required body, current governance models, app component contract and worker identity before executing the same script sequence. App and Captain bind audit/display freshness to the verified installed release. This context never grants permissions. The owner page keeps explicit helper compatibility checks.
+
+No specialist module is deferred or removed. This software patch changes no schema, session key, appointment, authorization endpoint, sign-design geometry or ledger behavior. The separate, completed administrative commissioning transaction is documented in WONDERWAKE_COMMISSION_RECEIPT.json. Fleet Core and Admiral Programs remain distinct. Program rendering now retains server program records across local filters and branding refresh; no authentication behavior changed.
+
+## Release commands
+Prepare known identity fields: `python3 -B PREPARE_RELEASE.py .` (resets test status to untested; never deploys).
+Seal reviewed bytes only: `python3 -B PREPARE_RELEASE.py . --seal-only`.
+Verify: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`.
+Package: `python3 -B BUILD_RELEASE.py . --baseline <exact prior full-source ZIP> --out <new external directory>`.
+
+Previous release guides/scripts are retained historical material; do not run their release-pinned sealers on this release.
+Native Safari/hosted integration is separate from offline checks. Source backup is not business-data restore.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 
 ## Retained historical notes

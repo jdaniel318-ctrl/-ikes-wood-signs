@@ -1,12 +1,11 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Homeport 8.8.20.72
+# Black Flag Fleetbound 8.8.20.73
 
-Current instructions: UPLOAD_THIS_ONE_BUILD.md. Scope: HOMEPORT_GUIDE.md.
-A named Wonderwake family-preview vessel launch appears in existing Fleet Compass; it is not included as a verified/core vessel and grants no account authority. No new engine runtime module, loading dependency, storage or auth changes. Independent Wonderwake 0.2.0 uses its own repository.
-Release identity remains generated from RELEASE_CONFIG.json; hashes remain mandatory. Existing app component is 8.8.20.71 and owner helper is 8.8.20.68; reuse is intentional.
-Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`.
-Packaging: `python3 -B BUILD_RELEASE.py . --baseline <Harbor .71 full-source ZIP> --out <new external directory>`.
-Production isolation, learner accounts and server commissioning remain unverified; same-host repository paths do not create separate browser origins. No live deployment or data action has been performed.
+Wonderwake is commissioned as an active Admiral Program with accepted family-preview release Skybloom 0.10.0. A separate connected administrator transaction and independent server readback are recorded in WONDERWAKE_COMMISSION_RECEIPT.json. This software patch publishes the visible launch and dated receipt; it does not execute SQL or grant browser authority.
+
+Read FLEETBOUND_GUIDE.md and UPLOAD_THIS_ONE_BUILD.md. Authentication, PINs, session rules and the six Core business definitions are unchanged. Admiral Program rendering now survives filtering and branding refresh. Six Wonderwake lesson candidates remain unadopted pending mission-specific review.
+
+Engine publication and native Safari verification of this Engine patch are pending. The accepted Wonderwake game is unchanged. Full-source backups and UI rollback contain application code only.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 
 ## Retained historical notes

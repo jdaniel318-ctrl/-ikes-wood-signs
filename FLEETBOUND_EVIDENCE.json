@@ -1,0 +1,221 @@
+{
+  "schema": "blackflag-fleetbound-evidence-v1",
+  "build": "8.8.20.73",
+  "source_baseline": "8.8.20.72 Homeport",
+  "offline_suites": [
+    {
+      "name": "VERIFY_HOMEPORT_ENTRY.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FLEETBOUND_PROGRAMS.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_HARBOR_ROUTES.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_HARBOR_ASYNC.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_HARBOR_STORAGE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_RELEASE_IDENTITY.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FAIRLEAD_LOADER.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FAIRLEAD_STARTUP.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_CLEARDECK_ACCOUNT.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_RELEASE_CONTRACT.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_CLEARDECK_PREFLIGHT.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_IRONHAVEN_CORE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FLEETCARE_READINESS.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FLEETCARE_NAVIGATION.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FLEETCRAFT_CORE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_LETTERCRAFT_FONTS.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_QUARTERMASTER_CORE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_STORMWAKE_CORE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "TEST_RELEASE_PIPELINE.py",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "TEST_RELEASE_IDENTITY.py",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    }
+  ],
+  "browser_checks": [
+    {
+      "name": "both entries remain within the gated Engine",
+      "pass": true
+    },
+    {
+      "name": "learning candidates stay outside the dynamic lesson body",
+      "pass": true
+    },
+    {
+      "name": "1366px: no horizontal overflow",
+      "pass": true
+    },
+    {
+      "name": "1366px: visible launch target >=44px",
+      "pass": true
+    },
+    {
+      "name": "1366px: fixed destination and no authority payload",
+      "pass": true
+    },
+    {
+      "name": "1366px: six readable mission candidates",
+      "pass": true
+    },
+    {
+      "name": "1366px: expanded lessons do not overflow",
+      "pass": true
+    },
+    {
+      "name": "1024px: no horizontal overflow",
+      "pass": true
+    },
+    {
+      "name": "1024px: visible launch target >=44px",
+      "pass": true
+    },
+    {
+      "name": "1024px: fixed destination and no authority payload",
+      "pass": true
+    },
+    {
+      "name": "1024px: six readable mission candidates",
+      "pass": true
+    },
+    {
+      "name": "1024px: expanded lessons do not overflow",
+      "pass": true
+    },
+    {
+      "name": "390px: no horizontal overflow",
+      "pass": true
+    },
+    {
+      "name": "390px: visible launch target >=44px",
+      "pass": true
+    },
+    {
+      "name": "390px: fixed destination and no authority payload",
+      "pass": true
+    },
+    {
+      "name": "390px: six readable mission candidates",
+      "pass": true
+    },
+    {
+      "name": "390px: expanded lessons do not overflow",
+      "pass": true
+    },
+    {
+      "name": "commissioning date, route and limits remain explicit",
+      "pass": true
+    },
+    {
+      "name": "receipt is present and parseable",
+      "pass": true
+    },
+    {
+      "name": "no component scripts, remote requests or errors",
+      "pass": true
+    }
+  ],
+  "browser_scope": "Offline shipped HTML/CSS only, not production authentication or physical Safari acceptance",
+  "commissioning_receipt": "WONDERWAKE_COMMISSION_RECEIPT.json",
+  "independent_review": {
+    "critical": 0,
+    "important": 0,
+    "scope": "changed Engine UI, program rendering, public receipt, permission preservation"
+  },
+  "game_release_changed": false,
+  "engine_deployed": false,
+  "native_safari_engine_acceptance": "pending",
+  "security_redesign": "deferred by user",
+  "recorded_at": "2026-10-31T18:01:32.567074+00:00"
+}
