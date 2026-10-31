@@ -1,16 +1,16 @@
 {
   "schema": "blackflag-patch-contract-v1",
-  "target_build": "8.8.20.73",
-  "target_seal": "fleetbound-882073",
+  "target_build": "8.8.20.74",
+  "target_seal": "steadyhelm-882074",
   "supported_bases": [
     {
-      "build": "8.8.20.72",
-      "source_sha256": "0814b9323cc10674298ef6e609eee26068d97006ccb984f3ee59896a1e9b638b",
-      "file_count": 661
+      "build": "8.8.20.73",
+      "source_sha256": "81171da18453033a27bce902125d03be30020bb2889130fd786d1299384c2afc",
+      "file_count": 667
     }
   ],
   "requires_deletions": false,
   "max_upload_files": 85,
   "database_actions": "none",
-  "rule": "Upload every changed/new root file over complete 8.8.20.72. Keep everything else. No SQL, permission or record changes."
+  "rule": "Upload every changed/new root file over complete 8.8.20.73. Keep everything else. No SQL, permission or record changes."
 }

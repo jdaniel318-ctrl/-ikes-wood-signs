@@ -1,11 +1,13 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Current architecture — Fleetbound 8.8.20.73
+# Current architecture — Steadyhelm 8.8.20.74
 
 Source of release identity: RELEASE_CONFIG.json. Installed page/manifest/seal/worker identity is generated together. APP_COMPONENT_REVISION is 8.8.20.71; owner helper revision is 8.8.20.68. Unchanged component bodies remain byte-identical across release-only changes.
 
 The Engine still verifies every required body, current governance models, app component contract and worker identity before executing the same script sequence. App and Captain bind audit/display freshness to the verified installed release. This context never grants permissions. The owner page keeps explicit helper compatibility checks.
 
-No specialist module is deferred or removed. This software patch changes no schema, session key, appointment, authorization endpoint, sign-design geometry or ledger behavior. The separate, completed administrative commissioning transaction is documented in WONDERWAKE_COMMISSION_RECEIPT.json. Fleet Core and Admiral Programs remain distinct. Program rendering now retains server program records across local filters and branding refresh; no authentication behavior changed.
+No specialist module is deferred or removed. No live data, schema, session key, appointment, authorization endpoint, sign-design geometry or ledger behavior is changed. Fleet core and Admiral programs remain distinct.
+
+Quartermaster UI revision is 8.8.20.74. The document action strip is outside its scrolling content. Its status derives from dirty edits, in-flight save and the most recent save failure. Existing guarded IndexedDB and saved-snapshot PDF APIs remain unchanged.
 
 ## Release commands
 Prepare known identity fields: `python3 -B PREPARE_RELEASE.py .` (resets test status to untested; never deploys).

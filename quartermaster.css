@@ -429,3 +429,45 @@
 #quartermasterWorkspace button.qm-recent-row:focus-visible,#quartermasterWorkspace button.qm-workspace-link:focus-visible,#quartermasterWorkspace .qm-tabs button:focus-visible{outline-offset:-4px!important}
 
 #quartermasterWorkspace .qm-hero-copy h2{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;line-clamp:3;overflow:hidden}
+
+
+/* Steadyhelm 8.8.20.74 — persistent document actions, scoped to this workspace. */
+#quartermasterWorkspace .qm-document-dock{flex:none;display:grid;grid-template-columns:minmax(170px,1fr) auto auto;align-items:center;gap:10px 20px;padding:12px 22px;background:#fffef8;border-top:1px solid #becfc8;box-shadow:0 -6px 20px #173b3510;z-index:3}
+#quartermasterWorkspace .qm-dock-context{min-width:0;display:flex;flex-direction:column;gap:4px;font-size:12px;color:#506960}
+#quartermasterWorkspace .qm-dock-context strong{font-size:13px;color:#244e45}
+#quartermasterWorkspace .qm-dock-total{display:flex;flex-direction:column;gap:2px;text-align:right;font-variant-numeric:tabular-nums}
+#quartermasterWorkspace #qmTotalLabel{font-size:11px;color:#536a62}
+#quartermasterWorkspace #qmRunningTotal{font-size:22px;line-height:1.25;color:#193f37}
+#quartermasterWorkspace .qm-dock-actions{display:flex;gap:8px}
+#quartermasterWorkspace .qm-dock-actions button{min-height:46px;min-width:112px}
+#quartermasterWorkspace #qmDockMessage{grid-column:1/-1;margin:0;font-size:12px;line-height:1.4;color:#843a26}
+#quartermasterWorkspace[data-save-state="unsaved"] #qmStorageLabel,#quartermasterWorkspace[data-save-state="unsaved"] #qmDockSaveState{color:#77561a}
+#quartermasterWorkspace[data-save-state="failed"] #qmStorageLabel,#quartermasterWorkspace[data-save-state="failed"] #qmDockSaveState{color:#963f27;font-weight:700}
+#quartermasterWorkspace[data-save-state="saving"] #qmStorageLabel,#quartermasterWorkspace[data-save-state="saving"] #qmDockSaveState{color:#275d79}
+#quartermasterWorkspace[data-save-state="unsaved"] .qm-device-dot{background:#b0822f}
+#quartermasterWorkspace[data-save-state="failed"] .qm-device-dot{background:#ad4a31}
+#quartermasterWorkspace[data-save-state="saving"] .qm-device-dot{background:#39758f}
+#quartermasterWorkspace[data-save-state="unavailable"] .qm-device-dot{background:#7b8584}
+#quartermasterWorkspace .qm-review-guidance{font-size:14px;padding:12px 14px;border-left:3px solid #79a69a;background:#edf4ee;color:#315b4e;margin:16px 0 8px}
+#quartermasterWorkspace[data-save-state="failed"] .qm-review-guidance{background:#fff0e8;border-color:#ba6a44;color:#843a26}
+#quartermasterWorkspace input[type="date"]{display:block;width:100%;max-width:100%;min-width:0;-webkit-appearance:none;appearance:none}
+#quartermasterWorkspace input[type="date"]::-webkit-date-and-time-value{text-align:left;min-height:1.35em}
+#quartermasterWorkspace[data-qm-view="editor"] .qm-foot{display:none}
+@media(max-width:760px){
+ #quartermasterWorkspace .qm-document-dock{grid-template-columns:minmax(0,1fr) auto;gap:8px 12px;padding:10px 14px max(10px,env(safe-area-inset-bottom))}
+ #quartermasterWorkspace .qm-dock-context{font-size:11px;gap:2px}
+ #quartermasterWorkspace .qm-dock-context strong{font-size:12px}
+ #quartermasterWorkspace #qmTotalLabel{font-size:10px}
+ #quartermasterWorkspace #qmRunningTotal{font-size:20px}
+ #quartermasterWorkspace .qm-dock-actions{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+ #quartermasterWorkspace .qm-dock-actions button{min-width:0;font-size:13px}
+ #quartermasterWorkspace #qmDockMessage{font-size:11px}
+}
+@media(max-height:520px){
+ #quartermasterWorkspace[data-qm-view="editor"] .qm-head{min-height:54px;padding-block:5px}
+ #quartermasterWorkspace[data-qm-view="editor"] .qm-head small,#quartermasterWorkspace[data-qm-view="editor"] .qm-brand-mark,#quartermasterWorkspace[data-qm-view="editor"] .qm-release{display:none}
+ #quartermasterWorkspace[data-qm-view="editor"] .qm-head h1{font-size:20px}
+ #quartermasterWorkspace .qm-document-dock{padding-block:7px;gap:5px 12px}
+ #quartermasterWorkspace .qm-dock-context strong{font-size:11px}
+ #quartermasterWorkspace #qmRunningTotal{font-size:18px}
+}

@@ -1,11 +1,11 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Fleetbound 8.8.20.73
+# Black Flag Steadyhelm 8.8.20.74
 
-Wonderwake is commissioned as an active Admiral Program with accepted family-preview release Skybloom 0.10.0. A separate connected administrator transaction and independent server readback are recorded in WONDERWAKE_COMMISSION_RECEIPT.json. This software patch publishes the visible launch and dated receipt; it does not execute SQL or grant browser authority.
-
-Read FLEETBOUND_GUIDE.md and UPLOAD_THIS_ONE_BUILD.md. Authentication, PINs, session rules and the six Core business definitions are unchanged. Admiral Program rendering now survives filtering and branding refresh. Six Wonderwake lesson candidates remain unadopted pending mission-specific review.
-
-Engine publication and native Safari verification of this Engine patch are pending. The accepted Wonderwake game is unchanged. Full-source backups and UI rollback contain application code only.
+Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
+Baseline: 8.8.20.73. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
+No database, permission, stored-record, loading-dependency or deployment operation is part of this software patch.
+Quotes & Invoices now keeps document actions and current totals visible, reports exact save state and retains failed edits. Invalid amounts require review. See STEADYHELM_GUIDE.md and STEADYHELM_EVIDENCE.json.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 
 ## Retained historical notes

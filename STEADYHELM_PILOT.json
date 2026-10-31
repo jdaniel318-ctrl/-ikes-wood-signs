@@ -1,0 +1,17 @@
+{
+  "schema": "blackflag-learning-pilot-v1",
+  "build": "8.8.20.74",
+  "origin": "Wonderwake / Skybloom 0.10.0",
+  "capabilities": [
+    "wonderwake-action-feedback",
+    "wonderwake-controls-with-work",
+    "wonderwake-mission-completion"
+  ],
+  "adaptation": "Quotes & Invoices: explicit save states, persistent actions/current total, and saved-document PDF guidance.",
+  "pilot_workflow": "HouseHull sample quote edit, save, reopen and PDF",
+  "status": "implemented_offline_verified_pending_ipad_acceptance",
+  "scope": "Quartermaster UI shared by its isolated business workspaces; no changes to other product workspaces.",
+  "evidence": "STEADYHELM_EVIDENCE.json",
+  "promotion": "Existing fleet candidates remain candidates. Wider adoption requires each workflow to pass its own acceptance checks.",
+  "next_candidate_after_acceptance": "Carvewright controls; separate mission review and implementation."
+}
