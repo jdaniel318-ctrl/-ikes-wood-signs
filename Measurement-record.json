@@ -1,0 +1,54 @@
+{
+  "schema": "blackflag-manual-board-review-v1",
+  "createdAt": "2026-11-01T20:59:23.684Z",
+  "sourceCaptureId": "CW-20a94bae-17ee-4598-8279-f900f6f8c15a",
+  "sourceSha256": "27b2e8e8bc73728cbf46d029bce64710f231eac7673266e76221e5bb8c93b4d8",
+  "measurementSource": "user-reported-tape-readings",
+  "physicalMeasurements": {
+    "lengthInches": 23.5625,
+    "widthAtMidpointInches": 9.25,
+    "thicknessAtMidpointInches": 1.375,
+    "lengthMm": 598.4875,
+    "widthAtMidpointMm": 234.95,
+    "thicknessAtMidpointMm": 34.925
+  },
+  "pricing": {
+    "nominalLengthFeet": 2,
+    "species": null,
+    "finalPrice": null
+  },
+  "layout": {
+    "referenceShape": "rectangle-from-length-and-midpoint-width",
+    "actualLiveEdgeTraced": false,
+    "fontName": "Studio Sans Bold",
+    "wording": "Smoke Hole",
+    "artworkBoundsMm": {
+      "minX": 102.9874,
+      "minY": 94.1619,
+      "maxX": 496.9121,
+      "maxY": 140.7881
+    },
+    "artworkWidthMm": 393.92470000000003,
+    "artworkHeightMm": 46.62619999999998,
+    "geometryFingerprint": "6f4dbefd63e291493700f93d2b8549e310be26f5a46f850d0dfc1e4de70ddead"
+  },
+  "originalCameraMeasurement": {
+    "lengthInches": 22.539202350866574,
+    "widthInches": 9.666943477418947,
+    "notUsedForReviewScale": true
+  },
+  "validation": {
+    "editableRoundTripPassed": true,
+    "svgUnits": "mm",
+    "dxfUnits": "mm",
+    "dxfCurveToleranceMm": 0.02,
+    "dxfContours": 13,
+    "physicalDimensionsIndependentlyVerified": false,
+    "actualCamImportTested": false,
+    "physicalCutTested": false
+  },
+  "customerApproved": false,
+  "productionReady": false,
+  "machineProgramIncluded": false,
+  "orderCreated": false
+}

@@ -1,0 +1,29 @@
+TRUEFIT — SMOKE HOLE REVIEW
+
+Open 01-Review.pdf first.
+
+USER-REPORTED BOARD
+Length: 23 9/16 inches (598.4875 mm)
+Width at midpoint: 9 1/4 inches (234.95 mm)
+Thickness at midpoint: 1 3/8 inches (34.925 mm)
+Pricing length: nominal 2 feet. Species and final price remain unconfirmed.
+
+DESIGN
+Smoke Hole, Studio Sans Bold; same wording, font and 70% layout setting as the saved Sightline capture, regenerated against the reported reference dimensions. The rectangle is a layout reference, not the actual live-edge outline. No stock boundary is exported as a cut path. SVG and DXF contain outlined lettering only.
+
+FILES
+Smoke-Hole-editable.json: valid Carvewright job, checked by export/import and geometry comparison. Open it through Carvewright's job-file import, not Sightline's native-sweep import.
+Smoke-Hole-artwork.svg: millimeter vector artwork.
+Smoke-Hole-artwork.dxf: millimeter closed polylines, lower-left origin, curve tolerance 0.02 mm.
+Measurement-record.json: reported dimensions and provenance.
+Original-Sightline-private-job.json: original capture preserved byte-for-byte.
+Original-board-photo.jpg: saved photograph for matching the physical blank.
+Lettering-license.txt: bundled lettering license.
+
+IKE'S REVIEW
+1. Match the photograph to the board; confirm length, usable width, thickness and species. Midpoint width does not guarantee clearance everywhere on a live-edge blank.
+2. Import SVG OR DXF into VCarve/CAM as millimeters. Confirm the lettering spans 15.509 x 1.836 inches (393.925 x 46.626 mm). Do not scale it to the nominal 24-inch pricing length. Position it on usable wood and review the toolpath simulation.
+3. The machine operator selects tooling, cut depth, workholding, zero and the correct machine post before a controlled trial.
+
+STATUS
+Review artwork only. No customer approval, order, toolpath or machine program is included. CAM import and a physical cut remain untested. Sightline's camera-measurement issue is not fixed by these files.

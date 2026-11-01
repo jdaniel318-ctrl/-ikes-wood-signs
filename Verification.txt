@@ -1,0 +1,11 @@
+TRUEFIT REVIEW FILE CHECKS
+
+PASS: Carvewright export/import reproduces exact glyph geometry.
+PASS: Saved SVG has 598.4875 x 234.95 mm reference dimensions and nine outlined glyph paths.
+PASS: Independent ezdxf parser audit reports no errors; millimeter units and thirteen closed contours.
+PASS: DXF coordinate bounds match the shared exporter within 0.00011 mm.
+PASS: One-page review PDF rendered and visually inspected.
+PASS: Original Sightline private-job JSON retained byte-for-byte.
+
+NOT TESTED: Installed VCarve import, physical-board fit or machining.
+Sightline camera measurement remains unresolved; this review uses user-reported tape dimensions.
