@@ -1374,6 +1374,12 @@
   }
 
   function openAdmiralGate(source='captain',directTarget=''){
+    // Direct workspace entrances use the same surface owner as the office cards.
+    // Otherwise a previous Engine return leaves the visible gate untappable.
+    if(window.DarkSkyFleetNavigator?.navigate)return window.DarkSkyFleetNavigator.navigate('admiral',{source,directTarget});
+    return renderAdmiralGate(source,directTarget);
+  }
+  function renderAdmiralGate(source='captain',directTarget=''){
     admiralGateAttempt++;admiralPassageVerified=false;window.DarkSkyAdmiralSession?.cancelSignIn();
     ensureAdmiralDeck();
     hide('captainGlobalExit');
@@ -1751,7 +1757,7 @@
     hydrateUpperCommandVisuals();
     document.querySelectorAll('[data-command-jump]').forEach(btn=>btn.addEventListener('click',()=>{const el=byId(btn.dataset.commandJump);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});}));
     window.DarkSkyFleetNavigator?.register('captain',()=>{if(authorized){hide('admiralDeck');hide('admiralGateOverlay');show('captainQuarters');show('captainGlobalExit');document.body.classList.add('captain-modal-open','captain-authorized');}else openGate();});
-    window.DarkSkyFleetNavigator?.register('admiral',()=>openAdmiralGate('engine'));
+    window.DarkSkyFleetNavigator?.register('admiral',({source,directTarget})=>renderAdmiralGate(source==='captain'?'captain':'engine',directTarget));
     document.querySelectorAll('[data-command-open="captain"]').forEach(btn=>btn.addEventListener('click',event=>{event.preventDefault();window.DarkSkyFleetNavigator?.navigate('captain',{source:'engine'})||openGate();}));
     document.querySelectorAll('[data-command-open="admiral"]').forEach(btn=>btn.addEventListener('click',event=>{event.preventDefault();window.DarkSkyFleetNavigator?.navigate('admiral',{source:'engine'})||openAdmiralGate('engine');}));
     document.querySelectorAll('[data-command-open="fleet-registry"]').forEach(btn=>btn.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();openAdmiralGate('engine','fleet');}));

@@ -1,10 +1,10 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Countercraft 8.8.20.77
+# Black Flag Waypoint 8.8.20.78
 
 Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
-Baseline: 8.8.20.76. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Baseline: 8.8.20.77. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
 Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
-Countercraft connects a guided Ike customer request to a private owner inbox, revision approval, production states, sealed iPad recovery and verified receipts. This candidate is Sea Trial only. See COUNTERCRAFT_GUIDE.md for backend prerequisites, three field checks and live-activation holds. Existing personal-device requests and other vessels remain available.
+Waypoint organizes the existing Engine into one four-office command area, grouped workspaces and programs, and an Engineering directory with direct station and return controls. Existing vessel routes, authorization, records and TrueFit board measurements are retained. No backend change. See WAYPOINT_GUIDE.md.
 Preparation does not deploy frontend or backend changes. See PATCH_CONTRACT.json for separately managed backend prerequisites.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 

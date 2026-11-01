@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.77",
-  "release": "Countercraft",
-  "seal": "countercraft-882077",
+  "build": "8.8.20.78",
+  "release": "Waypoint",
+  "seal": "waypoint-882078",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Countercraft",
-  "name": "Countercraft",
-  "releaseName": "Countercraft"
+  "release_name": "Waypoint",
+  "name": "Waypoint",
+  "releaseName": "Waypoint"
 }

@@ -1,11 +1,11 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Current architecture — Countercraft 8.8.20.77
+# Current architecture — Waypoint 8.8.20.78
 
 Source of release identity: RELEASE_CONFIG.json. Installed page/manifest/seal/worker identity is generated together. APP_COMPONENT_REVISION is 8.8.20.71; owner helper revision is 8.8.20.68. Unchanged component bodies remain byte-identical across release-only changes.
 
 The Engine still verifies every required body, current governance models, app component contract and worker identity before executing the same script sequence. App and Captain bind audit/display freshness to the verified installed release. This context never grants permissions. The owner page keeps explicit helper compatibility checks.
 
-Countercraft connects a guided Ike customer request to a private owner inbox, revision approval, production states, sealed iPad recovery and verified receipts. This candidate is Sea Trial only. See COUNTERCRAFT_GUIDE.md for backend prerequisites, three field checks and live-activation holds. Existing personal-device requests and other vessels remain available.
+Waypoint organizes the existing Engine into one four-office command area, grouped workspaces and programs, and an Engineering directory with direct station and return controls. Existing vessel routes, authorization, records and TrueFit board measurements are retained. No backend change. See WAYPOINT_GUIDE.md.
 Backend prerequisites are recorded separately in PATCH_CONTRACT.json. Release preparation executes no database commands. Fleet core and Admiral programs remain distinct.
 
 ## Release commands

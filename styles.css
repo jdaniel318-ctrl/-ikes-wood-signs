@@ -16437,3 +16437,72 @@ dialog.cg-workspace::backdrop{background:#061c24;}
 #admiralDeck #qdPanel-evidence .qd-evidence-gates li{background:#082531;min-height:95px;}
 #admiralDeck #qdPanel-evidence button#harborEvidenceExport{display:block;width:100%;min-height:50px;}
 @media(max-width:750px){#admiralDeck .qd-tabs{grid-template-columns:repeat(2,minmax(0,1fr));}#admiralDeck #qdPanel-evidence .qd-evidence-gates{grid-template-columns:1fr;}}
+/* Waypoint — one command map, grouped workspaces and an Engineering directory. */
+body.engine-mode #enginePanel .modern-engine-hero{min-height:112px!important;padding:18px 24px!important}
+body.engine-mode #enginePanel .modern-engine-brand-copy h2{font-size:30px!important}
+body.engine-mode #enginePanel .modern-engine-brand-copy>p{font-size:14px!important;line-height:1.45!important}
+body.engine-mode #enginePanel .waypoint-home{padding:22px!important}
+#clearDeckLaunchpad.waypoint-home .clear-deck-brief h3{font-size:28px;margin:5px 0 8px}
+#clearDeckLaunchpad.waypoint-home .clear-deck-brief p{font-size:15px;line-height:1.45;margin:0 0 18px}
+#clearDeckLaunchpad.waypoint-home .clear-deck-action{min-height:94px!important;padding:18px!important;gap:13px!important}
+#clearDeckLaunchpad.waypoint-home .clear-deck-action small{font-size:14px!important;line-height:1.45}
+#clearDeckLaunchpad.waypoint-home .clear-deck-action strong{font-size:15px!important;letter-spacing:.045em}
+#clearDeckLaunchpad.waypoint-home .clear-deck-action em{font-size:10px}
+.waypoint-assigned{display:flex;align-items:center;gap:12px;margin:10px 0 20px;flex-wrap:wrap}
+.waypoint-assigned .tb-assigned-entry{margin:0;font-size:14px}
+.waypoint-assigned>span{font-size:13px;color:#a9c1c8}
+.waypoint-workspaces>header{display:flex;justify-content:space-between;align-items:end;gap:12px;margin-bottom:12px}
+.waypoint-workspaces>header small,.waypoint-systems-directory header small{font-size:11px;letter-spacing:.13em;color:#94cbd4;font-weight:800}
+.waypoint-workspaces>header h4{font-size:19px;color:#f1f4ed;margin:4px 0 0}
+.waypoint-workspaces>header p{font-size:13px;color:#a9c1c8;margin:0}
+.waypoint-workspace-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+#clearDeckLaunchpad .waypoint-workspace{display:flex!important;flex-direction:column;justify-content:space-between;align-items:stretch;min-width:0;gap:16px;margin:0;padding:18px;border:1px solid #3f626c;border-radius:14px;background:#0b2730;box-shadow:none}
+#clearDeckLaunchpad .waypoint-workspace strong,#clearDeckLaunchpad .waypoint-workspace h4{display:block;font-size:22px;color:#f2f4ef;margin:7px 0 8px}
+#clearDeckLaunchpad .waypoint-workspace p{font-size:14px;line-height:1.5;color:#bacecf;margin:0 0 7px}
+#clearDeckLaunchpad .waypoint-workspace small{display:block;font-size:12px;line-height:1.4;color:#a9c2c9}
+#clearDeckLaunchpad .waypoint-workspace .waypoint-type{font-size:10px;letter-spacing:.1em;font-weight:800;color:#a7d1d7}
+#clearDeckLaunchpad .waypoint-workspace button,#clearDeckLaunchpad .waypoint-workspace>a{display:flex;align-items:center;justify-content:space-between;width:100%;min-height:48px;padding:12px;border:1px solid #678f9a;border-radius:8px;background:#153b48;color:#e4f1f3;text-decoration:none;text-align:left;white-space:normal;font:800 13px/1.4 system-ui,sans-serif}
+#clearDeckLaunchpad .waypoint-program{border-color:#7f744d;background:#192f30}
+#clearDeckLaunchpad .waypoint-program>a{background:#e9cc81;color:#18333c;border-color:#e9cc81}
+#clearDeckLaunchpad.waypoint-home .clear-deck-support{margin-top:20px;padding-top:16px;border-top:1px solid #32515a}
+#clearDeckLaunchpad.waypoint-home .clear-deck-support b{font-size:12px}
+#clearDeckLaunchpad.waypoint-home .clear-deck-support small{font-size:13px;line-height:1.4}
+.waypoint-office-details{border-top:1px solid #32515a;margin-top:14px;color:#bdd0d4;font-size:14px}
+.waypoint-office-details summary{min-height:48px;padding:14px 0;cursor:pointer;font-weight:700}
+.waypoint-office-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;padding:8px 0 16px;line-height:1.55}
+.waypoint-office-grid strong{color:#e8d391}.waypoint-office-grid .tb-assigned-entry{margin:0}
+#clearDeckLaunchpad.waypoint-home .clear-deck-status{font-size:13px;line-height:1.45;color:#a9c1c8}
+#engineSystemsDirectory{display:none;margin:18px 22px;padding:22px;border:1px solid #4d7480;border-radius:16px;background:#09262f;color:#edf3f1;scroll-margin-top:16px}
+body.engine-mode.engine-systems-expanded #engineSystemsDirectory{display:block}
+body.engine-mode:not(.engine-systems-expanded) #fleetMissionControl{display:none}
+.waypoint-systems-directory header{display:flex;justify-content:space-between;align-items:start;gap:16px;margin-bottom:18px}
+.waypoint-systems-directory h3{font-size:26px;margin:6px 0}.waypoint-systems-directory p{margin:0;color:#b8ced3;font-size:15px}
+.waypoint-systems-directory nav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.waypoint-systems-directory button,.waypoint-dock-return button{border:1px solid #61808b;border-radius:9px;background:#133843;color:#ecf4f2;padding:12px 16px;min-height:48px;text-align:left;cursor:pointer;font:700 14px/1.4 system-ui,sans-serif}
+.waypoint-systems-directory nav button{display:flex;flex-direction:column;gap:6px;min-height:88px}
+.waypoint-systems-directory nav strong{font-size:16px;color:#f1d68d}.waypoint-systems-directory nav span{font-size:13px;color:#bcd0d6;font-weight:400}
+.waypoint-dock-return{display:flex;justify-content:flex-end;margin-bottom:12px}
+.waypoint-home :is(button,a,summary):focus-visible,.waypoint-systems-directory :is(button,a):focus-visible,.waypoint-dock-return button:focus-visible{outline:3px solid #f2d174;outline-offset:3px}
+#engineSystemsDirectory:focus{outline:2px solid #87c9d9;outline-offset:3px}
+@media(max-width:1050px){.waypoint-workspace-grid{gap:10px}#clearDeckLaunchpad .waypoint-workspace{padding:15px}.waypoint-workspaces>header{align-items:start;flex-direction:column}.waypoint-systems-directory nav{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:680px){body.engine-mode #enginePanel .waypoint-home{padding:16px!important}.waypoint-workspace-grid,.waypoint-office-grid{grid-template-columns:1fr}.waypoint-systems-directory header{flex-direction:column}.waypoint-systems-directory nav{grid-template-columns:1fr}#engineSystemsDirectory{margin:12px 10px;padding:16px}#clearDeckLaunchpad.waypoint-home .clear-deck-action{padding:16px!important}.waypoint-assigned{gap:8px}.waypoint-office-grid{gap:12px}}
+
+/* Keep the return beside the work at every Engineering destination. */
+#enginePanel .waypoint-station-return{grid-column:1/-1;justify-self:start;display:block;min-height:44px;margin:0 0 14px;padding:10px 14px;border:1px solid #648995;border-radius:8px;background:#12313b;color:#e4f0f1;font:700 14px/1.4 system-ui,sans-serif;cursor:pointer}
+#enginePanel .waypoint-station-return:focus-visible{outline:3px solid #f2d174;outline-offset:3px}
+@media(max-width:680px){
+ body.engine-mode #enginePanel .modern-engine-hero{padding:16px!important;margin:12px 10px!important;gap:14px!important}
+ body.engine-mode #enginePanel .modern-engine-wordmark{max-width:72px!important;width:72px!important;height:72px!important;object-fit:contain}
+ body.engine-mode #enginePanel .modern-engine-brand-copy{display:grid!important;grid-template-columns:72px minmax(0,1fr)!important;column-gap:12px!important;text-align:left!important}
+ body.engine-mode #enginePanel .modern-engine-brand-copy .modern-engine-wordmark{grid-column:1!important;grid-row:1/4!important;align-self:center}
+ body.engine-mode #enginePanel .modern-engine-brand-copy .engine-kicker,body.engine-mode #enginePanel .modern-engine-brand-copy h2,body.engine-mode #enginePanel .modern-engine-brand-copy p{grid-column:2!important;text-align:left!important;max-width:100%!important}
+ body.engine-mode #enginePanel .modern-engine-brand-copy h2{font-size:22px!important;margin:4px 0!important}
+ body.engine-mode #enginePanel .modern-engine-brand-copy>p{font-size:12px!important;margin:0!important}
+ body.engine-mode #enginePanel .modern-engine-top-actions{grid-template-columns:1fr 1fr!important;gap:8px!important}
+ body.engine-mode #enginePanel .modern-engine-top-actions .engine-commission-btn{grid-column:1!important}
+ body.engine-mode #enginePanel .modern-engine-top-actions .modern-engine-secure{grid-column:1/-1!important;min-height:44px!important;justify-content:center!important;padding:8px!important}
+ body.engine-mode #enginePanel .modern-engine-top-actions .modern-engine-secure div{display:flex!important;align-items:center!important;gap:8px!important}
+ body.engine-mode #enginePanel .modern-engine-top-actions .engine-commission-btn,body.engine-mode #enginePanel .modern-engine-top-actions .engine-configure-btn{padding:10px!important;min-height:64px!important}
+}
+
+@media(max-width:680px){body.engine-mode #enginePanel .modern-engine-top-actions .engine-configure-btn{grid-column:2!important;grid-row:1!important}}

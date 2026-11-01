@@ -1,13 +1,9 @@
-# Upload Countercraft 8.8.20.77
+# Upload Waypoint 8.8.20.78
 
-Use `DarkSky882077-Countercraft-Upload.zip`, not the full backup or rollback.
-1. Extract the ZIP. Open its single folder. Upload ALL files inside to the existing repository ROOT; replace matching files and KEEP all other files. Commit the upload.
-2. After deployment open the Engine and confirm `8.8.20.77 · COUNTERCRAFT`. Do not clear Safari data, reset records or change permissions.
-3. Fleet Maintenance should show `FLEET STEWARD · STORAGE & RECOVERY`, without the misleading old app-version prefix.
+Use Waypoint.zip → Waypoint/Upload. Upload every file and the docs folder inside Upload to the existing -ikes-wood-signs repository root. Preserve folder paths, replace matching files and keep everything else. Commit and wait for GitHub Pages.
 
-Countercraft connects a guided Ike customer request to a private owner inbox, revision approval, production states, sealed iPad recovery and verified receipts. This candidate is Sea Trial only. See COUNTERCRAFT_GUIDE.md for backend prerequisites, three field checks and live-activation holds. Existing personal-device requests and other vessels remain available.
-The upload itself executes no database commands. Read the current guide before enabling new features. Shared specialist components retain their own revision labels; this is intentional reuse, not a mixed upload. Exact SHA-256 checks still run before Engine scripts execute.
+Open the Engine and confirm 8.8.20.78 · WAYPOINT. Test Operate Vessels → Ike → Project Control → Back, then Engineering Systems → Release evidence → Back to Engine. The vessel search should stay in place.
 
-Full backup: application source ONLY; not Supabase, customer media or device drafts.
-Rollback: restore prior software files only. Never restore old permissions or business data. New root tooling files remain unused by the old app.
-No passkeys/Face ID or performance gain is claimed.
+See WAYPOINT_GUIDE.md for scope and field checks. No database or permission changes are required. Countercraft Sea Trial restrictions remain; TrueFit remains included. Shared components retain their own compatible revision labels while the loader verifies exact bytes.
+
+Rollback restores prior source files only. Never restore old permissions or business data. Support contains full application source archives and evidence; it is not a backup of Supabase, customer media or device records. Upload only the contents of Upload.

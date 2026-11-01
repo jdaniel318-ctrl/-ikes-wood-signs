@@ -12196,19 +12196,19 @@
   window.DarkSkyFleetNavigator={
     register(target,handler){if(typeof handler==='function')commandRouteAdapters.set(String(target),handler);return this;},
     state(){return {target:activeCommandRoute,generation:commandRouteGeneration,registered:[...commandRouteAdapters.keys()],build:BUILD_VERSION};},
-    navigate(target,{source='unknown'}={}){
+    navigate(target,{source='unknown',directTarget=''}={}){
       target=String(target||'engine');
       const generation=++commandRouteGeneration;
       if(target==='engine'){
         restoreEngineSurface(source,generation);
-        return Promise.resolve(openEnginePanel()).then(()=>recordCommandRoute('engine',source,generation)).catch(err=>{
+        return Promise.resolve(openEnginePanel()).then(()=>generation===commandRouteGeneration?recordCommandRoute('engine',source,generation):null).catch(err=>{
           console.warn('Engine refresh warning after route commit',err);
-          return recordCommandRoute('engine',source,generation,'visible-refresh-warning');
+          return generation===commandRouteGeneration?recordCommandRoute('engine',source,generation,'visible-refresh-warning'):null;
         });
       }
       const adapter=commandRouteAdapters.get(target);
       if(!adapter)return Promise.reject(new Error(`Command route is unavailable: ${target}`));
-      return Promise.resolve(adapter({target,source,generation})).then(()=>recordCommandRoute(target,source,generation));
+      return Promise.resolve(adapter({target,source,generation,directTarget})).then(()=>generation===commandRouteGeneration?recordCommandRoute(target,source,generation):null);
     }
   };
   window.DarkSkyReturnToEngine=()=>window.DarkSkyFleetNavigator.navigate('engine',{source:document.body.dataset.commandSurface||'upper-command'});
@@ -16631,13 +16631,37 @@ The full order and approved media remain stored with this project.`;
 
       if(target.matches('[data-clear-deck-command]')){
         event.preventDefault();event.stopPropagation();const command=target.dataset.clearDeckCommand;const status=$('clearDeckStatus');
-        const reveal=(id,message)=>{const section=$(id);if(!section)return;requestAnimationFrame(()=>{section.scrollIntoView({behavior:'smooth',block:'start'});section.classList.add('command-target-pulse');setTimeout(()=>section.classList.remove('command-target-pulse'),1800);});if(status)status.textContent=message;};
+        const reveal=(id,message)=>{
+          const section=$(id);if(!section)return;
+          const navigation=engineWorkspaceNavigationToken();
+          scheduleEngineWorkspaceFrame(navigation,()=>{
+            if(!section.hasAttribute('tabindex')&&!section.matches('button,a,input'))section.setAttribute('tabindex','-1');
+            section.focus({preventScroll:true});
+            section.scrollIntoView({behavior:'instant',block:'start'});
+          });
+          if(status)status.textContent=message;
+        };
+        const engineering=open=>{
+          document.body.classList.toggle('engine-systems-expanded',open);
+          const toggle=$('clearDeckSystemsToggle');
+          if(toggle){toggle.setAttribute('aria-expanded',String(open));const hint=toggle.querySelector('em');if(hint)hint.textContent=open?'OPENED':'OPEN';}
+        };
         if(command==='projects'){document.body.classList.add('engine-dock-open');reveal('fleetCommissioningDock','Vessel Workstations opened. Choose one vessel, then one exact surface.');return;}
+        if(command==='projects-close'){document.body.classList.remove('engine-dock-open');reveal('engineOperateVessels','Back at Engine. Your vessel search and filter are kept for this session.');return;}
         if(command==='fleet'){reveal('engineFleetHealth','Fleet picture opened. Choose a vessel to go directly to Project Control.');return;}
         if(command==='watch'){Promise.resolve(renderFirstMateWatch()).finally(()=>reveal('firstMateWatch','Fleet Watch refreshed. No vessel state was changed.'));return;}
         if(command==='commission'){$('commissionNewProjectBtn')?.click();return;}
         if(command==='configure'){rememberEngineWorkspaceOrigin(target);openEngineConfiguration('top');return;}
-        if(command==='systems'){const opening=!document.body.classList.contains('engine-systems-expanded');document.body.classList.toggle('engine-systems-expanded',opening);target.setAttribute('aria-expanded',opening?'true':'false');target.innerHTML=`<i aria-hidden="true"></i><span><strong>${opening?'HIDE ENGINEERING SYSTEMS':'ENGINEERING SYSTEMS'}</strong><small>Diagnostics, proof, learning &amp; recovery</small></span><em>${opening?'OPENED':'OPEN'}</em>`;if(status)status.textContent=opening?'Engineering Systems opened: performance, maintenance, release proof, Fleet Intelligence, learning, recovery, and evidence are available below.':'Engineering Systems closed. Daily command remains forward.';if(!opening)requestAnimationFrame(()=>$('clearDeckLaunchpad')?.scrollIntoView({behavior:'smooth',block:'start'}));return;}
+        if(command==='systems'||command==='systems-close'){
+          const opening=command==='systems'&&!document.body.classList.contains('engine-systems-expanded');
+          engineering(opening);
+          reveal(opening?'engineSystemsDirectory':'clearDeckSystemsToggle',opening?'Engineering Systems opened. Choose a station below.':'Back at Engine. Engineering Systems closed.');return;
+        }
+        if(command==='systems-jump'){
+          const destination=target.dataset.engineDestination;
+          if(!['enginePerformanceDeck','fleetMaintenanceStation','firstMateWatch','admiralReadiness','fleetIntelligenceDeck','fleetLearningRegistry'].includes(destination))return;
+          engineering(true);reveal(destination,`${target.querySelector('strong')?.textContent||'Engineering station'} opened.`);return;
+        }
       }
 
       if(target.matches('#projectTabs [data-project-group]')){
