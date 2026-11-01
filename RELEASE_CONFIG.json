@@ -1,12 +1,21 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.75",
-  "name": "Highwater",
-  "seal": "highwater-882075",
-  "base": "8.8.20.74",
-  "base_sha256": "d67215789539df1ff4973e762ef7709143e8e07c6f165f2202171e47d876d888",
-  "base_files": 671,
-  "prepared_at": "2026-10-31T22:24:33.675072+00:00",
+  "build": "8.8.20.76",
+  "name": "TradeWinds",
+  "seal": "tradewinds-882076",
+  "base": "8.8.20.75",
+  "base_sha256": "df0d12dda727e7ae535081b8fa0f3d5b979b43218026565179d091caf6bbf08c",
+  "base_files": 676,
+  "prepared_at": "2026-11-01T00:15:41.669806+00:00",
   "app_component_revision": "8.8.20.71",
-  "owner_helper_revision": "8.8.20.68"
+  "owner_helper_revision": "8.8.20.68",
+  "feature_notes": "Trade Winds adds explicit per-business cloud workspaces, receipt-based interrupted-save recovery and separate unsaved draft recovery. Original device records stay intact. HouseHull remains planned; existing Admiral/PIN/session rules and Captain access are unchanged. Read TRADEWINDS_GUIDE.md for the three-device-check pilot, recovery and rollback limits. The additive backend prerequisite is already applied; do not run its SQL again.",
+  "backend_prerequisite": {
+    "project": "sjgqqtnuttnkwsoebbqf",
+    "migration": "QUARTERMASTER_TRADEWINDS.sql",
+    "status": "applied_and_verified",
+    "automatic_execution_by_upload": false,
+    "migration_version": "20261101001602",
+    "sql_sha256": "e00b2332b0af95bcf96155c63882696be57240de453b7c45da909e3bc7094172"
+  }
 }

@@ -490,3 +490,25 @@
 #quartermasterWorkspace[data-qm-compact] .qm-document-dock{padding-block:4px;gap:4px 12px}
 #quartermasterWorkspace[data-qm-compact] #qmContent{scroll-padding-top:10px}
 #quartermasterWorkspace[data-qm-compact] textarea{height:44px;min-height:44px;max-height:44px;resize:none}
+
+/* Trade Winds: scoped connection and recovery controls. */
+#quartermasterWorkspace .qm-sync-card{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:18px 20px;margin-bottom:18px;border:1px solid #cbdad4;border-radius:12px;background:#f5f8f5;color:#213c3a}
+#quartermasterWorkspace .qm-sync-card>div:first-child{min-width:0;flex:1}
+#quartermasterWorkspace .qm-sync-card small{font-size:10px;letter-spacing:.12em;font-weight:750;color:#51776b}
+#quartermasterWorkspace .qm-sync-card h3{font-size:17px;margin:5px 0}
+#quartermasterWorkspace .qm-sync-card p{font-size:13px;line-height:1.5;margin:5px 0;color:#526963}
+#quartermasterWorkspace .qm-sync-connected{background:#eaf3ef;border-left:4px solid #28745e}
+#quartermasterWorkspace .qm-sync-attention{background:#fff9e9;border-color:#dbc99a}
+#quartermasterWorkspace .qm-recovery-row{border-top:1px solid #dfd4b8;margin-top:12px;padding-top:12px;display:grid;gap:8px}
+#quartermasterWorkspace .qm-recovery-row span{font-size:13px;color:#6d5c34}
+#quartermasterWorkspace[data-qm-view="editor"] #qmSyncPanel .qm-sync-connected{padding:10px 16px}
+#quartermasterWorkspace[data-qm-view="editor"] #qmSyncPanel .qm-sync-connected h3{display:none}
+#quartermasterWorkspace .qm-sync-card .qm-actions{flex-wrap:wrap}
+@media(max-width:700px){#quartermasterWorkspace .qm-sync-card{align-items:stretch;flex-direction:column;padding:15px;gap:10px}#quartermasterWorkspace .qm-sync-card .qm-actions{display:grid;grid-template-columns:1fr}#quartermasterWorkspace .qm-sync-card button{width:100%;white-space:normal}#quartermasterWorkspace .qm-recovery-row strong{overflow-wrap:anywhere}}
+
+@media(max-width:700px){
+ #quartermasterWorkspace[data-qm-view="editor"] #qmSyncPanel .qm-sync-connected{gap:6px;padding:10px 12px;margin-bottom:12px}
+ #quartermasterWorkspace[data-qm-view="editor"] #qmSyncPanel .qm-sync-connected .qm-actions{grid-template-columns:1fr 1fr;gap:8px}
+ #quartermasterWorkspace[data-qm-view="editor"] #qmSyncPanel .qm-sync-connected button{font-size:12px;padding:8px;min-height:44px}
+ #quartermasterWorkspace[data-qm-view="editor"] #qmSyncPanel .qm-sync-connected p{margin:2px 0;font-size:12px}
+}

@@ -1,12 +1,11 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Highwater 8.8.20.75
+# Black Flag TradeWinds 8.8.20.76
 
 Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
-Baseline: 8.8.20.74. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Baseline: 8.8.20.75. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
 Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
-No database, permission, stored-record, loading-dependency or deployment operation is part of this software patch.
-Highwater: touch editing places document actions above the form, adds Done editing, and adapts to short keyboard viewports. See HIGHWATER_GUIDE.md and HIGHWATER_EVIDENCE.json. Physical iPad acceptance remains pending.
-
+Trade Winds adds explicit per-business cloud workspaces, receipt-based interrupted-save recovery and separate unsaved draft recovery. Original device records stay intact. HouseHull remains planned; existing Admiral/PIN/session rules and Captain access are unchanged. Read TRADEWINDS_GUIDE.md for the three-device-check pilot, recovery and rollback limits. The additive backend prerequisite is already applied; do not run its SQL again.
+Preparation does not deploy frontend or backend changes. See PATCH_CONTRACT.json for separately managed backend prerequisites.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 
 ## Retained historical notes

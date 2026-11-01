@@ -1,16 +1,24 @@
 {
   "schema": "blackflag-patch-contract-v1",
-  "target_build": "8.8.20.75",
-  "target_seal": "highwater-882075",
+  "target_build": "8.8.20.76",
+  "target_seal": "tradewinds-882076",
   "supported_bases": [
     {
-      "build": "8.8.20.74",
-      "source_sha256": "d67215789539df1ff4973e762ef7709143e8e07c6f165f2202171e47d876d888",
-      "file_count": 671
+      "build": "8.8.20.75",
+      "source_sha256": "df0d12dda727e7ae535081b8fa0f3d5b979b43218026565179d091caf6bbf08c",
+      "file_count": 676
     }
   ],
   "requires_deletions": false,
   "max_upload_files": 85,
   "database_actions": "none",
-  "rule": "Upload every changed/new root file over complete 8.8.20.74. Keep everything else. No SQL, permission or record changes."
+  "rule": "Upload every changed/new root file over complete 8.8.20.75. Keep everything else. This software archive executes no database commands.",
+  "backend_prerequisite": {
+    "project": "sjgqqtnuttnkwsoebbqf",
+    "migration": "QUARTERMASTER_TRADEWINDS.sql",
+    "status": "applied_and_verified",
+    "automatic_execution_by_upload": false,
+    "migration_version": "20261101001602",
+    "sql_sha256": "e00b2332b0af95bcf96155c63882696be57240de453b7c45da909e3bc7094172"
+  }
 }

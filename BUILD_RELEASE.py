@@ -173,7 +173,7 @@ def build(root:Path,baseline:Path,out:Path)->dict:
                "changed":changes["changed"],"removed":[],"exact_patch_reconstruction":True,
                "software_rollback_original_files_match":True,"retained_new_tool_files_after_rollback":changes["added"],
                "verification":"listed offline suites passed; logs included","source_snapshot_unchanged":True,
-               "deployed":False,"database_actions":"none","backup_scope":"application source only; not database/customer/media recovery",
+               "deployed":False,"database_actions":"none","backend_prerequisite":contract.get("backend_prerequisite"),"backup_scope":"application source only; not database/customer/media recovery",
                "native_safari":"pending","performance_improvement_claim":False,"archives":{}}
         runtime_names=set(data(original,"DEPLOYMENT_MANIFEST.json").get("runtime_integrity",{}).get("files",{}))
         reused=sorted(n for n in runtime_names if n in old and original[n]==old[n])

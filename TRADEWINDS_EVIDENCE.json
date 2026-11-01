@@ -1,0 +1,485 @@
+{
+  "schema": "blackflag-tradewinds-evidence-v1",
+  "build": "8.8.20.76",
+  "baseline": "8.8.20.75",
+  "frontend_deployed": false,
+  "backend": {
+    "migration": {
+      "version": "20261101001602",
+      "name": "quartermaster_tradewinds_882076"
+    },
+    "result": {
+      "success": true
+    },
+    "smoke": [
+      {
+        "live_proof": "PASS",
+        "synthetic_user_rolled_back": true,
+        "synthetic_workspace_rolled_back": true,
+        "synthetic_authority_rolled_back": true
+      }
+    ],
+    "grants": [
+      {
+        "verification": {
+          "tables": [
+            {
+              "rls": true,
+              "name": "quartermaster_receipts",
+              "anon_select": false,
+              "authenticated_select": false
+            },
+            {
+              "rls": true,
+              "name": "quartermaster_workspaces",
+              "anon_select": false,
+              "authenticated_select": false
+            }
+          ],
+          "receipts": 0,
+          "functions": [
+            {
+              "name": "quartermaster_read_workspace",
+              "config": [
+                "search_path=\"\""
+              ],
+              "schema": "public",
+              "definer": false,
+              "anon_execute": false,
+              "authenticated_execute": true
+            },
+            {
+              "name": "quartermaster_commit_workspace",
+              "config": [
+                "search_path=\"\""
+              ],
+              "schema": "public",
+              "definer": false,
+              "anon_execute": false,
+              "authenticated_execute": true
+            },
+            {
+              "name": "qm_require_scope",
+              "config": [
+                "search_path=\"\""
+              ],
+              "schema": "fleet_private",
+              "definer": true,
+              "anon_execute": false,
+              "authenticated_execute": false
+            },
+            {
+              "name": "qm_read",
+              "config": [
+                "search_path=\"\""
+              ],
+              "schema": "fleet_private",
+              "definer": true,
+              "anon_execute": false,
+              "authenticated_execute": true
+            },
+            {
+              "name": "qm_commit",
+              "config": [
+                "search_path=\"\""
+              ],
+              "schema": "fleet_private",
+              "definer": true,
+              "anon_execute": false,
+              "authenticated_execute": true
+            }
+          ],
+          "cloud_workspaces": 0
+        }
+      }
+    ],
+    "security_advisors": [
+      {
+        "name": "rls_enabled_no_policy",
+        "level": "INFO",
+        "count": 13
+      },
+      {
+        "name": "authenticated_security_definer_function_executable",
+        "level": "WARN",
+        "count": 61
+      },
+      {
+        "name": "auth_leaked_password_protection",
+        "level": "WARN",
+        "count": 1
+      }
+    ],
+    "advisor_note": "Two additional INFO notices are expected for private RLS tables with no direct grants/policies; guarded private RPCs are the access path. Existing authenticated public SECURITY DEFINER warnings are unchanged."
+  },
+  "automated": {
+    "sql-evidence": {
+      "engine": "PGlite PostgreSQL; synthetic auth/session tables",
+      "results": [
+        {
+          "name": "absent cloud workspace is explicitly absent",
+          "pass": true
+        },
+        {
+          "name": "migration preserves exact document number totals and revisions",
+          "pass": true
+        },
+        {
+          "name": "duplicate migration is idempotent and rejects changed payload",
+          "pass": true
+        },
+        {
+          "name": "second first-migration cannot replace existing history",
+          "pass": true
+        },
+        {
+          "name": "one saved edit increments cloud revision and records receipt",
+          "pass": true
+        },
+        {
+          "name": "stale device cannot overwrite a newer revision",
+          "pass": true
+        },
+        {
+          "name": "another account cannot fetch or write the first account scope",
+          "pass": true
+        },
+        {
+          "name": "business namespaces remain separate and foreign payloads reject",
+          "pass": true
+        },
+        {
+          "name": "unknown and program businesses are denied",
+          "pass": true
+        },
+        {
+          "name": "backend environment site and account binding cannot be spoofed",
+          "pass": true
+        },
+        {
+          "name": "missing session and revoked authority fail closed",
+          "pass": true
+        },
+        {
+          "name": "rewritten historical definition is rejected without write",
+          "pass": true
+        },
+        {
+          "name": "forged totals is rejected without write",
+          "pass": true
+        },
+        {
+          "name": "zero quantity is rejected without write",
+          "pass": true
+        },
+        {
+          "name": "foreign line is rejected without write",
+          "pass": true
+        },
+        {
+          "name": "duplicate document number is rejected without write",
+          "pass": true
+        },
+        {
+          "name": "deleted history is rejected without write",
+          "pass": true
+        },
+        {
+          "name": "rewritten number is rejected without write",
+          "pass": true
+        },
+        {
+          "name": "reduced counter is rejected without write",
+          "pass": true
+        },
+        {
+          "name": "missing operation is rejected without write",
+          "pass": true
+        },
+        {
+          "name": "extra customer field is rejected without write",
+          "pass": true
+        },
+        {
+          "name": "changed installation is rejected without write",
+          "pass": true
+        },
+        {
+          "name": "finalization locks exact saved snapshot",
+          "pass": true
+        },
+        {
+          "name": "direct tables and anonymous RPC access are blocked",
+          "pass": true
+        }
+      ]
+    },
+    "sync-evidence": {
+      "scope": "Native browser IndexedDB + real PostgreSQL functions; synthetic identity and transport faults",
+      "results": [
+        {
+          "name": "cloud storage API supports explicit opt-in without local writes",
+          "pass": true
+        },
+        {
+          "name": "migration keeps exact saved numbers and another device reads them",
+          "pass": true
+        },
+        {
+          "name": "existing reducers save one exact cloud revision across devices",
+          "pass": true
+        },
+        {
+          "name": "lost acknowledgement leaves pending then reconciles with no replay",
+          "pass": true
+        },
+        {
+          "name": "storage quota stops transmission before server mutation",
+          "pass": true
+        },
+        {
+          "name": "uncommitted pending request survives reopen and explicit retry",
+          "pass": true
+        },
+        {
+          "name": "stale document is never silently merged",
+          "pass": true
+        },
+        {
+          "name": "recovery stays separate from saved records and is scoped",
+          "pass": true
+        },
+        {
+          "name": "closed and changed guard cannot read private recovery or save",
+          "pass": true
+        }
+      ]
+    },
+    "ui-evidence": {
+      "scope": "Real UI/native IndexedDB + PostgreSQL; synthetic identity and fault injection, not physical Safari",
+      "results": [
+        {
+          "name": "local business presents a deliberate across-devices action",
+          "pass": true
+        },
+        {
+          "name": "preview and enable preserve all original device records",
+          "pass": true
+        },
+        {
+          "name": "second device opens the exact cloud revision and quote",
+          "pass": true
+        },
+        {
+          "name": "a phone edit is saved and refresh reaches the tablet unchanged",
+          "pass": true
+        },
+        {
+          "name": "auth interruption retains an unsaved draft through sign-in",
+          "pass": true
+        },
+        {
+          "name": "lost reply exposes check-result and does not duplicate the save",
+          "pass": true
+        },
+        {
+          "name": "both devices produce identical PDF content and saved revision",
+          "pass": true
+        },
+        {
+          "name": "competing edits retain the losing change without replacing the saved quote",
+          "pass": true
+        },
+        {
+          "name": "unavailable cloud never silently opens the older device archive",
+          "pass": true
+        },
+        {
+          "name": "cloud mode persists across reload without touching local archive",
+          "pass": true
+        }
+      ]
+    },
+    "recovery-evidence": {
+      "scope": "Same-origin tabs sharing native IndexedDB, real SQL, synthetic identity",
+      "results": [
+        {
+          "name": "resume",
+          "pass": true
+        },
+        {
+          "name": "reconcile",
+          "pass": true
+        },
+        {
+          "name": "discard",
+          "pass": true
+        }
+      ]
+    }
+  },
+  "regressions": {
+    "native_core": {
+      "passed": 44,
+      "failed": 0
+    },
+    "pdf": {
+      "passed": 37,
+      "failed": 0
+    },
+    "ui-regression-final": {
+      "passed": 11,
+      "failed": 0
+    },
+    "highwater-regression-final": {
+      "passed": 14,
+      "failed": 0
+    },
+    "steadyhelm-evidence": {
+      "passed": 15,
+      "failed": 0
+    }
+  },
+  "physical_safari": "PENDING",
+  "hosted_full_auth_flow": "PENDING",
+  "known_minor": "Production normalized conflict may initially display unconfirmed; explicit receipt check safely resolves the state.",
+  "review_fixes": [
+    "Origin identity preserves unrelated tab drafts during confirmation and pending discard.",
+    "Resume creates a new editor-owned recovery ID and retains the source.",
+    "Historical definitions anchored to previous catalog/documents with grouped validation."
+  ],
+  "no_user_records_in_artifacts": true,
+  "release_suites": {
+    "scope": "listed offline suites; not live Safari, Auth, email or machining certification",
+    "results": [
+      {
+        "name": "VERIFY_HOMEPORT_ENTRY.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_FLEETBOUND_PROGRAMS.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_HARBOR_ROUTES.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_HARBOR_ASYNC.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_HARBOR_STORAGE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_RELEASE_IDENTITY.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_FAIRLEAD_LOADER.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_FAIRLEAD_STARTUP.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_CLEARDECK_ACCOUNT.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_RELEASE_CONTRACT.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_CLEARDECK_PREFLIGHT.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_IRONHAVEN_CORE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_FLEETCARE_READINESS.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_FLEETCARE_NAVIGATION.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_FLEETCRAFT_CORE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_LETTERCRAFT_FONTS.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_QUARTERMASTER_CORE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_STORMWAKE_CORE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "TEST_RELEASE_PIPELINE.py",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "TEST_RELEASE_IDENTITY.py",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      }
+    ]
+  },
+  "runtime_sha256": {
+    "quartermaster_core.js": "9a5f85005f83b820c5bcbfc9afb29475bc65e62ba84e9e8ac2f59edc20a9bebb",
+    "quartermaster_sync.js": "d09f38de910f90fce272a859b1cacb7dd1c5026ae6c4ba5adabaf9a70c0f9228",
+    "quartermaster.js": "39bd8a7052d3f357f7e8aa535045fb34cb8de1983e69b828930aa88d46b293c3",
+    "quartermaster.css": "7873d13ead95debc796a0e51d8f6eaf529488ff66da21242a8bf1135c4732c8b",
+    "quartermaster_pdf.js": "7e1c51fa7d7a4ae4fcd55a2330b15ff87c6b4ec0c9db548ff2b6a72658a453a1",
+    "QUARTERMASTER_TRADEWINDS.sql": "e00b2332b0af95bcf96155c63882696be57240de453b7c45da909e3bc7094172"
+  }
+}

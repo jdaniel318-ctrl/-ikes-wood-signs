@@ -1,13 +1,13 @@
-# Upload Highwater 8.8.20.75
+# Upload TradeWinds 8.8.20.76
 
-Use `DarkSky882075-Highwater-Upload.zip` over the complete Steadyhelm 8.8.20.74 source.
-Extract it, open its single folder, and upload ALL files inside to the existing repository ROOT. Replace matching files, KEEP everything else, and commit the upload.
-After the deployment finishes, open the Engine through the usual link and confirm `8.8.20.75 · HIGHWATER`.
+Use `DarkSky882076-TradeWinds-Upload.zip`, not the full backup or rollback.
+1. Extract the ZIP. Open its single folder. Upload ALL files inside to the existing repository ROOT; replace matching files and KEEP all other files. Commit the upload.
+2. After deployment open the Engine and confirm `8.8.20.76 · TRADEWINDS`. Do not clear Safari data, reset records or change permissions.
+3. Follow the three iPad/iPhone checks in TRADEWINDS_GUIDE.md. Start with the iPad that holds your saved HouseHull records.
 
-This patch moves the document action strip above the form while touch editing and keeps the form usable with a short keyboard viewport. Read `HIGHWATER_GUIDE.md` for the three iPad checks.
-Do not clear Safari storage, reset records, run SQL or change permissions. No deployment was performed by the build process.
+Trade Winds adds explicit per-business cloud workspaces, receipt-based interrupted-save recovery and separate unsaved draft recovery. Original device records stay intact. HouseHull remains planned; existing Admiral/PIN/session rules and Captain access are unchanged. Read TRADEWINDS_GUIDE.md for the three-device-check pilot, recovery and rollback limits. The additive backend prerequisite is already applied; do not run its SQL again.
+The upload itself executes no database commands. Read the current guide before enabling new features. Shared specialist components retain their own revision labels; this is intentional reuse, not a mixed upload. Exact SHA-256 checks still run before Engine scripts execute.
 
-FullBackup: application source only, not device drafts, database records or customer media.
-Rollback: `DarkSky882074-RollbackFrom882075.zip` restores prior software files only. Never restore old permissions or business data. New release documentation/tests can remain unused.
-
-Offline checks do not certify physical Safari behavior or resolve fleet governance holds.
+Full backup: application source ONLY; not Supabase, customer media or device drafts.
+Rollback: restore prior software files only. Never restore old permissions or business data. New root tooling files remain unused by the old app.
+No passkeys/Face ID or performance gain is claimed.

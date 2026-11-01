@@ -1,16 +1,17 @@
 {
   "schema": "blackflag-release-gate-v1",
-  "build": "8.8.20.75",
-  "release": "Highwater",
+  "build": "8.8.20.76",
+  "release": "TradeWinds",
   "pass": true,
-  "verification_status": "OFFLINE_SUITES_UI_STORAGE_PDF_AND_REVIEW_FIX_PASSED",
+  "verification_status": "AUTOMATED_AND_LIVE_BACKEND_VERIFIED_PHYSICAL_PILOT_PENDING",
   "native_safari_acceptance": "PENDING",
   "database_actions": "none",
   "customer_data_changes": false,
   "production_certification": false,
-  "evidence_file": "HIGHWATER_EVIDENCE.json",
+  "evidence_file": "TRADEWINDS_EVIDENCE.json",
   "performance_improvement_claim": false,
-  "backup_restore": "Software archives only. Existing partial encrypted snapshot retained; no server restoration added.",
-  "full_engine_network_boot": "Not exercised; verified loader/runtime tests and isolated shipped HTML/CSS checks passed.",
-  "separate_commissioning": "Complete and independently read back; see WONDERWAKE_COMMISSION_RECEIPT.json"
+  "backup_restore": "Original device records retained. Software rollback preserves cloud tables; .75 does not display cloud-only changes.",
+  "full_engine_network_boot": "Hosted frontend .75 confirmed byte-identical baseline; .76 frontend not deployed.",
+  "separate_commissioning": "No commissioning in TradeWinds; HouseHull remains planned.",
+  "backend_prerequisite": "applied_and_verified"
 }

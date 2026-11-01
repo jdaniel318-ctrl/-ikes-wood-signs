@@ -34,6 +34,15 @@ class IdentityPreparationTests(unittest.TestCase):
  def test_inventory_names_follow_installed_release(self):
   f=module.prepare(self.files,self.config);i=json.loads(f['RELEASE_INVENTORY.json'])
   self.assertEqual(i['name'],self.config['name']);self.assertEqual(i['release'],self.config['name'])
+ def test_feature_release_retains_backend_prerequisite_and_honest_notes(self):
+  prerequisite={'migration':'SYNTHETIC.sql','status':'separately-applied'}
+  c={**self.config,'feature_notes':'Synthetic cloud feature with separate backend prerequisite.','backend_prerequisite':prerequisite}
+  f=module.prepare(self.files,c)
+  self.assertEqual(json.loads(f['PATCH_CONTRACT.json'])['backend_prerequisite'],prerequisite)
+  for name in ['UPLOAD_THIS_ONE_BUILD.md','README.md','CURRENT_ARCHITECTURE.md']:
+   current=f[name].decode().split('<!-- BLACKFLAG_CURRENT_RELEASE_END -->')[0]
+   self.assertIn(c['feature_notes'],current)
+   self.assertNotIn('No database, permission, stored-record',current)
  def test_preparation_does_not_certify_success(self):
   f=module.prepare(self.files,self.config);g=json.loads(f['RELEASE_GATE.json'])
   self.assertFalse(g['pass']);self.assertEqual(g['verification_status'],'PREPARED_NOT_TESTED')

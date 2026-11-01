@@ -4,7 +4,7 @@ const {createRequire}=require('node:module');
 const runtimeRequire=createRequire(path.join(process.env.CODEX_PRIMARY_RUNTIME_NODE_MODULES,'playwright','package.json'));
 const {chromium}=runtimeRequire('playwright');
 const ORIGIN='https://quartermaster-fixture.invalid';
-const MODULES=['quartermaster_core.js','quartermaster_fonts.js','quartermaster_pdf.js','quartermaster.js'];
+const MODULES=['quartermaster_core.js','quartermaster_sync.js','quartermaster_fonts.js','quartermaster_pdf.js','quartermaster.js'];
 const HOST='<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Isolated Quartermaster developer fixture</title><link rel="stylesheet" href="quartermaster.css"></head><body><section id="admiralDeck"><h1>Synthetic verified Admiral fixture</h1><button id="quartermasterLaunch" type="button">Open Quartermaster</button></section>'+MODULES.map(x=>'<script src="'+x+'"></script>').join('')+'</body></html>';
 function initFixture(options={}){
  const cfg={account:'synthetic-admiral-a',backend:'https://synthetic-backend.invalid',environment:'isolated-qa',authority:true,reusable:true,...options};

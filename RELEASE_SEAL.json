@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.75",
-  "release": "Highwater",
-  "seal": "highwater-882075",
+  "build": "8.8.20.76",
+  "release": "TradeWinds",
+  "seal": "tradewinds-882076",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Highwater",
-  "name": "Highwater",
-  "releaseName": "Highwater"
+  "release_name": "TradeWinds",
+  "name": "TradeWinds",
+  "releaseName": "TradeWinds"
 }
