@@ -1,0 +1,35 @@
+IKE — SHOP FIRST · CUSTOMER COPY CANDIDATE
+Prepared 2026-11-01 against Countercraft 8.8.20.77.
+
+SLOGAN
+Your words. Ike’s craftsmanship.
+Choose a board from Ike’s shop, create your design, and see your sign take shape.
+
+CHANGES INCLUDED
+Shop-stock boards are the customer-facing default. “My own board / ask Ike” becomes “Match my shop board.” The photograph instructions describe the board selected at Ike’s shop. “Retake photo” becomes “Change photo.” The review shows inches first and states that actual board measurements are pending. Material appearance is labeled as appearance.
+No customer-board intake feature is added. That remains future scope.
+
+WHAT THIS PATCH DOES NOT IMPLEMENT
+Automatic measurement or inventory identification, dimension propagation, CNC changes, or the intermittent Review button fix. This is a copy-only candidate for the next complete build; the live site has not been changed.
+
+SIZE GAP CONFIRMED IN SOURCE
+countercraft_core.js permits actualMm on published stock. The owner form only edits nominal length and creates new stocks with actualMm:null. countercraft_flow.js stores a selected stockId but does not apply actual dimensions to the design. Thus the 24 by 8 inch design reference can persist for a differently sized board. A nominal length or uncalibrated photo is not a measured length, width and thickness.
+Required next behavior: identify the actual shop board, obtain physical dimensions with their source, carry them and the usable carving area into the design, and preserve the exact size through approval and production export. Never silently promote the starter dimensions or material appearance to measured stock/species. Any design change that changes the approved result needs a new proof.
+
+CURRENT CARVEWRIGHT OUTPUTS — SOURCE REVIEWED
+1. The customer-to-owner design package includes the frozen photo proof, reference photographs, request brief, dimensioned outlined SVG/DXF artwork and editable design JSON.
+2. The separate machining workspace generates fixed-depth flat-endmill pocket toolpaths from the reviewed vector design and a shop setup: actual thickness, tool diameter/cutting length, depth, feeds, clearance, units and work origin.
+3. Current posts generate ShopBot OpenSBP .sbp and GRBL 1.1 / LinuxCNC .nc in inches or millimeters.
+4. Variable-depth V-bit carving, 3D relief, automatic tool changes and direct machine streaming are not implemented. VCarve can be the downstream CAM workflow for the outlined SVG/DXF; no native .crv output is supplied. No physical CNC test was performed here.
+5. The customer design package is not itself a machining release. Ike completes machine-specific setup and controller preview before cutting.
+
+VERIFICATION
+node --check countercraft_customer.js: passed.
+git diff --check: passed.
+Chromium touch browser: photo upload, Andie / Harbor Script, embedded studio vertical repositioning, customer name/email/notes, Review my sign: reached “Is this your sign?” with no status error.
+Native iPad behavior and physical machining were not retested by this copy-only check.
+
+FILES
+countercraft_customer.js — next-build candidate.
+rollback-countercraft_customer.js — exact previous source; rename to countercraft_customer.js to restore.
+This archive is not a full fleet release or a business-data backup. Keep the existing .77 full backup. No database changes are needed for this text-only file.
