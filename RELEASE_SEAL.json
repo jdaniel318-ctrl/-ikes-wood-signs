@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.80",
-  "release": "Holdfast",
-  "seal": "holdfast-882080",
+  "build": "8.8.20.81",
+  "release": "Keyline",
+  "seal": "keyline-882081",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Holdfast",
-  "name": "Holdfast",
-  "releaseName": "Holdfast"
+  "release_name": "Keyline",
+  "name": "Keyline",
+  "releaseName": "Keyline"
 }

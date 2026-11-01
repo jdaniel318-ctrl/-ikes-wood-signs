@@ -1,11 +1,11 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Current architecture — Holdfast 8.8.20.80
+# Current architecture — Keyline 8.8.20.81
 
 Source of release identity: RELEASE_CONFIG.json. Installed page/manifest/seal/worker identity is generated together. APP_COMPONENT_REVISION is 8.8.20.71; owner helper revision is 8.8.20.68. Unchanged component bodies remain byte-identical across release-only changes.
 
 The Engine still verifies every required body, current governance models, app component contract and worker identity before executing the same script sequence. App and Captain bind audit/display freshness to the verified installed release. This context never grants permissions. The owner page keeps explicit helper compatibility checks.
 
-Holdfast preserves exact older Ike backup and draft records in a separate verified file. Cleanup is offered only after the saved file is verified and every record in an old copy matches current storage. Unique, changed, foreign, quarantined and unreadable records stay. Recovery counts and iPad controls are clearer. No automatic cleanup, migration retry or backend change. See HOLDFAST_GUIDE.md.
+Keyline standardizes saved-account AutoFill metadata across fleet owner, appointed Captain and Admiral password sign-in fields. Apple controls Face ID or Touch ID for saved credentials. Existing server role, vessel membership, PIN, session and recovery checks are unchanged. No passkey enrollment or biometric authentication protocol is added. See KEYLINE_GUIDE.md.
 Backend prerequisites are recorded separately in PATCH_CONTRACT.json. Release preparation executes no database commands. Fleet core and Admiral programs remain distinct.
 
 ## Release commands

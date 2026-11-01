@@ -1,16 +1,17 @@
 {
   "schema": "blackflag-release-gate-v1",
-  "build": "8.8.20.80",
-  "release": "Holdfast",
+  "build": "8.8.20.81",
+  "release": "Keyline",
   "pass": false,
   "verification_status": "OFFLINE_PASSED_NATIVE_SAFARI_PENDING",
-  "evidence_file": "HOLDFAST_EVIDENCE.json",
+  "evidence_file": "KEYLINE_EVIDENCE.json",
   "native_safari_acceptance": "PENDING",
   "database_actions": "none",
-  "backend_prerequisite": "unchanged_from_8.8.20.79_not_revalidated",
+  "backend_prerequisite": "unchanged_from_8.8.20.80_not_revalidated",
   "customer_data_changes": false,
   "production_certification": false,
   "frontend_deployed": false,
   "backup_restore": "Application software rollback documented in external PackageProof.json. Business-data restore not certified.",
-  "performance_improvement_claim": false
+  "performance_improvement_claim": false,
+  "offline_suite_count": 21
 }

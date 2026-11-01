@@ -1,10 +1,10 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Holdfast 8.8.20.80
+# Black Flag Keyline 8.8.20.81
 
 Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
-Baseline: 8.8.20.79. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Baseline: 8.8.20.80. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
 Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
-Holdfast preserves exact older Ike backup and draft records in a separate verified file. Cleanup is offered only after the saved file is verified and every record in an old copy matches current storage. Unique, changed, foreign, quarantined and unreadable records stay. Recovery counts and iPad controls are clearer. No automatic cleanup, migration retry or backend change. See HOLDFAST_GUIDE.md.
+Keyline standardizes saved-account AutoFill metadata across fleet owner, appointed Captain and Admiral password sign-in fields. Apple controls Face ID or Touch ID for saved credentials. Existing server role, vessel membership, PIN, session and recovery checks are unchanged. No passkey enrollment or biometric authentication protocol is added. See KEYLINE_GUIDE.md.
 Preparation does not deploy frontend or backend changes. See PATCH_CONTRACT.json for separately managed backend prerequisites.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 

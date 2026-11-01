@@ -1111,8 +1111,8 @@
       <h2>${escapeHtml(p.name)}</h2>
       <p>Welcome back. Sign in to manage your business.</p>
       ${message?`<div class="owner-login-message">${escapeHtml(message)}</div>`:''}
-      <label>Email or login<input data-bf-trim="boundary" id="ownerLoginEmail" type="text" autocomplete="username" value="${escapeHtml(p.ownerAccess.credential?.testMode?'joe':(p.ownerAccess.ownerEmail||''))}"></label>
-      <label>Password<input data-bf-trim="preserve" id="ownerLoginPassword" type="password" autocomplete="current-password"></label>
+      <label>Email or login<input data-bf-trim="boundary" id="ownerLoginEmail" spellcheck="false" autocapitalize="none" name="username" type="text" autocomplete="username" value="${escapeHtml(p.ownerAccess.credential?.testMode?'joe':(p.ownerAccess.ownerEmail||''))}"></label>
+      <label>Password<input data-bf-trim="preserve" id="ownerLoginPassword" name="password" type="password" autocomplete="current-password"></label>
       <button id="ownerLoginSubmit" class="primary-btn" type="button">SIGN IN</button>
       <p id="ownerLoginError" class="owner-login-error"></p>
       ${p.ownerAccess.credential?.testMode?'<p class="owner-test-login-note">Test owner login: <strong>joe</strong> / <strong>8642</strong> • separate from Project Admin 4353</p>':''}
