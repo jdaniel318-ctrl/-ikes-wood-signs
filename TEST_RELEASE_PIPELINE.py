@@ -57,6 +57,12 @@ class ReleaseTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as t:
             r=Path(t)/"source";r.mkdir();o=Path(t)/"out";o.mkdir()
             with self.assertRaisesRegex(ValueError,"exists"):pipeline.require_external_output(r,o)
+    def test_worktree_and_preview_state_excluded(self):
+        with tempfile.TemporaryDirectory() as t:
+            r=Path(t);(r/".git").write_text("gitdir: /private/worktree")
+            (r/".openai").mkdir();(r/".openai"/"hosting.json").write_text("local")
+            (r/"app.js").write_text("source")
+            self.assertEqual(pipeline.load_tree(r),{"app.js":b"source"})
     def test_source_symlink_refused(self):
         with tempfile.TemporaryDirectory() as t:
             r=Path(t);(r/"real").write_text("x");(r/"link").symlink_to(r/"real")

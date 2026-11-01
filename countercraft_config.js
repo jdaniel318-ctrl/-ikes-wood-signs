@@ -1,0 +1,2 @@
+/* The server publication is authoritative. This only selects the staged pilot. */
+(function(g){g.CountercraftConfig=Object.freeze({scope:Object.freeze({projectId:'ikes-wood-signs',backend:'https://sjgqqtnuttnkwsoebbqf.supabase.co',environment:'staging',site:'https://jdaniel318-ctrl.github.io/-ikes-wood-signs/',deploymentId:'countercraft-pilot-1',mode:'sea_trial'}),build:'8.8.20.77',name:'Countercraft'});})(globalThis);

@@ -30,10 +30,11 @@ def clean_path(name:str)->str:
 def load_tree(root:Path)->dict[str,bytes]:
     root=root.resolve(); files={}
     for directory,dirs,names in os.walk(root,followlinks=False):
-        if Path(directory)==root:dirs[:]=[d for d in dirs if d!=".git"]
+        if Path(directory)==root:dirs[:]=[d for d in dirs if d not in (".git",".openai","__pycache__")]
         for d in dirs:
             if (Path(directory)/d).is_symlink():raise ValueError("source symlink directory refused")
         for name in sorted(names):
+            if Path(directory)==root and name==".git":continue
             p=Path(directory)/name
             if p.is_symlink():raise ValueError("source symlink refused")
             rel=clean_path(p.relative_to(root).as_posix())

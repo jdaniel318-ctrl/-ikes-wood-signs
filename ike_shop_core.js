@@ -270,5 +270,5 @@
   async function verifyPackage(request,bundle,fonts){
     try{const r=clone(request),actual=copyPackage(bundle),expected=await buildPackage(r,fontsOrDefault(fonts));if(actual.name!==expected.name||actual.sha256!==expected.sha256||!equalBytes(actual.bytes,expected.bytes)||canonical(actual.manifest)!==canonical(expected.manifest)||actual.files.length!==expected.files.length)return false;for(let i=0;i<actual.files.length;i++){const a=actual.files[i],e=expected.files[i];if(a.name!==e.name||a.mime!==e.mime||a.sha256!==e.sha256||!equalBytes(a.bytes,e.bytes))return false;}return true;}catch(_){return false;}
   }
-  return Object.freeze({createRequest,clone,validate,normalizePhoto,renderProof,review,approvalMatches,fingerprint,buildPackage,verifyPackage,copyPackage,sha256,emailValid:email,attemptIdValid,limits:LIMITS});
+  return Object.freeze({createRequest,clone,validate,normalizePhoto,renderProof,review,approvalMatches,fingerprint,buildPackage,verifyPackage,copyPackage,zipFiles:zip,sha256,emailValid:email,attemptIdValid,limits:LIMITS});
 });

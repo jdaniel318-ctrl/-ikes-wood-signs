@@ -24,6 +24,14 @@
     }, true);
   }
 
+  // A customer handoff permanently fences this document's auth clients. A fresh
+  // owner document is required; delayed login/refresh responses are revoked.
+  const kioskClients = new Set();
+  let kioskLocked = window.CountercraftPrivacy?.isLocked?.() === true;
+  function lockKioskAuth(){kioskLocked=true;for(const client of kioskClients)client.lock();}
+  window.addEventListener('countercraft:locked',lockKioskAuth);
+  window.DarkSkyKioskAuth=Object.freeze({async seal(){lockKioskAuth();const results=await Promise.all([...kioskClients].map(c=>c.wait()));return results.every(Boolean);}});
+
   const DEFAULT_EXPIRY_SECONDS = 3600;
   const EXPIRY_SKEW_MS = 30_000;
 
@@ -172,7 +180,7 @@
     // Opt-in cancellation for the separate Vessel Captain route. Owner and
     // Admiral policies are untouched. Generation prevents late session writes.
     const guarded = options.guardSession === true && !admiral;
-    let localGeneration=0;const localRequests=new Set();
+    let localGeneration=0,privacyFailed=false;const localRequests=new Set(),authRequests=new Set();
     if (!url || !publishableKey) throw new Error('Supabase publishable client configuration is incomplete.');
     const headers = (token = '', json = true) => {
       const value = { apikey: publishableKey };
@@ -181,10 +189,12 @@
       return value;
     };
     const readSession = () => {
+      if(kioskLocked)return null;
       const s = safeSessionRead(sessionKey);
       return !admiral || allowSession(s) ? s : null;
     };
     const saveSession = data => {
+      if(kioskLocked){if(data?.access_token)void revokeLate(data).catch(()=>{});throw new Error('Customer mode is active. Reopen owner sign-in after handoff.');}
       if (!data?.access_token) return null;
       const previous = safeSessionRead(sessionKey);
       const session = {
@@ -196,12 +206,27 @@
       return session;
     };
     const clearSession = () => { if (admiral) endWindow('signed-out'); else {if(guarded){localGeneration++;for(const c of localRequests)c.abort();localRequests.clear();}safeSessionRemove(sessionKey);} };
-    async function request(path, init = {}, fallback = 'Supabase refused the request.') {
+    function revokeLate(data){
+      const work=(async()=>{const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),12000);try{const r=await fetch(`${url}/auth/v1/logout?scope=local`,{method:'POST',headers:headers(data.access_token,false),cache:'no-store',signal:controller.signal});if(!r.ok&&r.status!==401)throw new Error('Late sign-in could not be revoked.');}catch(e){privacyFailed=true;throw e;}finally{clearTimeout(timer);}})();
+      authRequests.add(work);work.then(()=>authRequests.delete(work),()=>authRequests.delete(work));return work;
+    }
+    async function guardedBody(response,path){
+      const body=await parseJson(response);
+      if(kioskLocked){if(body?.access_token)await revokeLate(body);const error=new Error('Authentication cancelled for customer handoff.');error.privacyCancelled=true;throw error;}return body;
+    }
+    async function authOperation(fn){const work=fn();authRequests.add(work);try{return await work;}finally{authRequests.delete(work);}}
+    kioskClients.add({lock(){localGeneration++;safeSessionRemove(sessionKey);},async wait(){let timer;try{return await Promise.race([(async()=>{while(authRequests.size)await Promise.allSettled([...authRequests]);return !privacyFailed;})(),new Promise(resolve=>timer=setTimeout(()=>resolve(false),14000))]);}finally{clearTimeout(timer);}}});
+    async function request(path,init={},fallback='Supabase refused the request.'){
+      if(kioskLocked)throw new Error('Customer mode is active. Reopen owner sign-in after handoff.');
+      const auth=path.startsWith('/auth/');const work=baseRequest(path,init,fallback).catch(error=>{if(auth&&kioskLocked&&!error.privacyCancelled)privacyFailed=true;throw error;});
+      if(auth)authRequests.add(work);try{return await work;}finally{authRequests.delete(work);}
+    }
+    async function baseRequest(path, init = {}, fallback = 'Supabase refused the request.') {
       // Only Admiral transport is changed by HarborMaster. Owner transport keeps its policy.
       if (guarded) {
         const generation=localGeneration,controller=new AbortController();localRequests.add(controller);let timer;
         try{return await Promise.race([(async()=>{
-          const response=await fetch(`${url}${path}`,{cache:'no-store',...init,signal:controller.signal});const body=await parseJson(response);
+          const response=await fetch(`${url}${path}`,{cache:'no-store',...init,signal:controller.signal});const body=await guardedBody(response,path);
           if(generation!==localGeneration)throw new Error('Captain request cancelled.');
           if(!response.ok){const error=apiError(body,fallback);error.status=response.status;throw error;}return body;
         })(),new Promise((_,reject)=>{timer=setTimeout(()=>{controller.abort();reject(new Error('Captain request timed out. No automatic retry was made.'));},12000);})]);}
@@ -209,7 +234,7 @@
       }
       if (!admiral) {
         const response = await fetch(`${url}${path}`, {cache:'no-store', ...init});
-        const body = await parseJson(response);
+        const body = await guardedBody(response,path);
         if (!response.ok) throw apiError(body, fallback);
         return body;
       }
@@ -220,7 +245,7 @@
         return await Promise.race([
           (async () => {
             const response = await fetch(`${url}${path}`, {cache:'no-store', ...init, signal:controller.signal});
-            const body = await parseJson(response);
+            const body = await guardedBody(response,path);
             if (generation !== authGeneration) throw new Error('Admiral request cancelled. Reopen the intended workspace.');
             if (!response.ok) {const error=apiError(body,fallback);error.status=response.status;throw error;}
             return body;
@@ -229,7 +254,8 @@
         ]);
       } finally {clearTimeout(timer);pendingControllers.delete(controller);}
     }
-    async function refreshSession(session = readSession()) {
+    function refreshSession(session=readSession()){return authOperation(()=>baseRefreshSession(session));}
+    async function baseRefreshSession(session = readSession()) {
       if (!session?.refresh_token || (admiral && !allowSession(session))) return null;
       if (admiral && refreshFlight) return refreshFlight;
       const work = async () => {
@@ -255,7 +281,8 @@
       if(session?.refresh_token)session=await refreshSession(session);
       return session?.access_token && (!admiral || allowSession(session))?session:null;
     }
-    async function signInWithPassword(email,password) {
+    function signInWithPassword(email,password){return authOperation(()=>baseSignInWithPassword(email,password));}
+    async function baseSignInWithPassword(email,password) {
       const normalized=cleanEmail(email);
       if(!normalized||!password)throw new Error('Enter the account email and password.');
       if(admiral)endWindow('signing-in');if(guarded)clearSession();
@@ -271,13 +298,14 @@
         return session;
       } catch(error) {if(admiral && generation===authGeneration)endWindow('sign-in-failed');throw error;}
     }
-    async function user(session=null) {
+    function user(session=null){return authOperation(()=>baseUser(session));}
+    async function baseUser(session=null) {
       session=session||await currentSession();if(!session?.access_token)return null;const local=localGeneration;
       try {
         const value=await request('/auth/v1/user',{headers:{...headers(session.access_token),Accept:'application/json'}},'The signed-in identity could not be verified.');
         if(admiral && (!allowSession(session)||value?.id!==session.user?.id)){endWindow('account-changed');return null;}
         if(guarded&&(local!==localGeneration||!value?.id||(session.user?.id&&value.id!==session.user.id))){if(local===localGeneration)clearSession();return null;}
-        session.user=value;safeSessionWrite(sessionKey,session);return value;
+        if(kioskLocked)return null;session.user=value;safeSessionWrite(sessionKey,session);return value;
       } catch(error) {if(guarded){if(local===localGeneration)clearSession();}else if(!admiral||[401,403].includes(error.status))clearSession();return null;}
     }
     async function verifyAdmiralAuthority() {

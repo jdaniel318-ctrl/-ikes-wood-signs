@@ -232,7 +232,7 @@ async function main() {
     await page.locator('#clientPreviewUnlockBtn').click();
     await page.waitForFunction(() => !document.querySelector('#clientPreviewGate'));
     assert.equal(await page.locator('#ikeShopEntry').isVisible(), true);
-    await page.locator('#ikeShopStart').click(); await ready();
+    await page.locator('#ikeShopEntry summary').click();await page.locator('#ikeShopStart').click(); await ready();
     assert.equal(await page.evaluate(() => IkeShop.build), deployment.build);
     for (const [index, trial] of trials.entries()) await customerRequest(trial, index);
   } catch (error) {

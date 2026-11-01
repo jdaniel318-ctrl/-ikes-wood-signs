@@ -1,17 +1,16 @@
 {
   "schema": "blackflag-release-gate-v1",
-  "build": "8.8.20.76",
-  "release": "TradeWinds",
+  "build": "8.8.20.77",
+  "release": "Countercraft",
   "pass": true,
-  "verification_status": "AUTOMATED_AND_LIVE_BACKEND_VERIFIED_PHYSICAL_PILOT_PENDING",
+  "verification_status": "OFFLINE_SUITES_PASS_BACKEND_PENDING",
+  "evidence_file": "COUNTERCRAFT_EVIDENCE.json",
   "native_safari_acceptance": "PENDING",
   "database_actions": "none",
+  "backend_prerequisite": "not_applied_confirmation_expired",
   "customer_data_changes": false,
   "production_certification": false,
-  "evidence_file": "TRADEWINDS_EVIDENCE.json",
-  "performance_improvement_claim": false,
-  "backup_restore": "Original device records retained. Software rollback preserves cloud tables; .75 does not display cloud-only changes.",
-  "full_engine_network_boot": "Hosted frontend .75 confirmed byte-identical baseline; .76 frontend not deployed.",
-  "separate_commissioning": "No commissioning in TradeWinds; HouseHull remains planned.",
-  "backend_prerequisite": "applied_and_verified"
+  "frontend_deployed": false,
+  "backup_restore": "Exact .76 software rollback verified by packager; shop backup history/media rehearsal tested with synthetic data.",
+  "performance_improvement_claim": false
 }

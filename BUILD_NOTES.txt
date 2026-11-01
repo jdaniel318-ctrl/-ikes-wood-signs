@@ -1,10 +1,10 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag TradeWinds 8.8.20.76
+# Black Flag Countercraft 8.8.20.77
 
 Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
-Baseline: 8.8.20.75. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Baseline: 8.8.20.76. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
 Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
-Trade Winds adds explicit per-business cloud workspaces, receipt-based interrupted-save recovery and separate unsaved draft recovery. Original device records stay intact. HouseHull remains planned; existing Admiral/PIN/session rules and Captain access are unchanged. Read TRADEWINDS_GUIDE.md for the three-device-check pilot, recovery and rollback limits. The additive backend prerequisite is already applied; do not run its SQL again.
+Countercraft connects a guided Ike customer request to a private owner inbox, revision approval, production states, sealed iPad recovery and verified receipts. This candidate is Sea Trial only. See COUNTERCRAFT_GUIDE.md for backend prerequisites, three field checks and live-activation holds. Existing personal-device requests and other vessels remain available.
 Preparation does not deploy frontend or backend changes. See PATCH_CONTRACT.json for separately managed backend prerequisites.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 

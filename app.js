@@ -12766,7 +12766,7 @@
     setProjectText('doneHeadline',x.doneHeadline);
     setProjectText('doneCopy',x.doneCopy);
     if(p.id==='ikes-wood-signs'){
-      const start=$('projectStartButton');if(start)start.textContent='START WITH MY PLANK →';
+      const start=$('projectStartButton');if(start)start.textContent='DESIGN MY SIGN →';
       const approval=$('approvalCheck')?.closest('.approval-row')?.querySelector('span');if(approval)approval.textContent="I approve this exact design, wording, lettering, finish, orientation, and contact information. Ike's Wood Signs may refuse or cancel an order at its discretion.";
       const contactLabel=$('contactChoices')?.previousElementSibling;if(contactLabel)contactLabel.textContent='Preferred pickup contact';
     }
@@ -17164,7 +17164,7 @@ The full order and approved media remain stored with this project.`;
       b.dataset.busy='1';
       let next=b.dataset.next;
       if(activeProjectId==='ikes-wood-signs'){
-        if(state.current==='welcome'){ resetIkeNewOrderState(); next='photo'; }
+        if(state.current==='welcome'){const ctx=currentExperienceContext(activeProject());if(ctx&&ctx.state!=='deployed'){location.assign('countercraft.html'+(ctx.state==='sea_trial'?'?shop=1':''));delete b.dataset.busy;return;}resetIkeNewOrderState();next='photo';}
         else if(state.current==='photo' && next==='orientation') next='ike-plank';
       }
       setScreen(next);

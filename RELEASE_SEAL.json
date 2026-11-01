@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.76",
-  "release": "TradeWinds",
-  "seal": "tradewinds-882076",
+  "build": "8.8.20.77",
+  "release": "Countercraft",
+  "seal": "countercraft-882077",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "TradeWinds",
-  "name": "TradeWinds",
-  "releaseName": "TradeWinds"
+  "release_name": "Countercraft",
+  "name": "Countercraft",
+  "releaseName": "Countercraft"
 }

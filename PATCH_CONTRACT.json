@@ -1,24 +1,26 @@
 {
   "schema": "blackflag-patch-contract-v1",
-  "target_build": "8.8.20.76",
-  "target_seal": "tradewinds-882076",
+  "target_build": "8.8.20.77",
+  "target_seal": "countercraft-882077",
   "supported_bases": [
     {
-      "build": "8.8.20.75",
-      "source_sha256": "df0d12dda727e7ae535081b8fa0f3d5b979b43218026565179d091caf6bbf08c",
-      "file_count": 676
+      "build": "8.8.20.76",
+      "source_sha256": "87df3119b61c2c76b06ee5638b5aecadb915aa997e45cae4817f4426bf8e7092",
+      "file_count": 685
     }
   ],
   "requires_deletions": false,
   "max_upload_files": 85,
   "database_actions": "none",
-  "rule": "Upload every changed/new root file over complete 8.8.20.75. Keep everything else. This software archive executes no database commands.",
+  "rule": "Upload every changed/new root file over complete 8.8.20.76. Keep everything else. This software archive executes no database commands.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
-    "migration": "QUARTERMASTER_TRADEWINDS.sql",
-    "status": "applied_and_verified",
+    "migration": "COUNTERCRAFT_INTAKE.sql",
+    "edge_function": "countercraft",
+    "status": "not_applied_confirmation_expired",
     "automatic_execution_by_upload": false,
-    "migration_version": "20261101001602",
-    "sql_sha256": "e00b2332b0af95bcf96155c63882696be57240de453b7c45da909e3bc7094172"
+    "sql_sha256": "9c12f7e2a56eb6141280545a7d6330ef90ee16ce1fd6cc2ce16d8f11c3b6c048",
+    "reason": "Supabase apply_migration confirmation expired twice. Read-only final check: zero Countercraft tables; no gateway; Ike remains staging.",
+    "edge_function_status": "not_deployed"
   }
 }

@@ -1,0 +1,31 @@
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs');
+const file=require('node:path').join(__dirname,'countercraft_core.js');
+assert(fs.existsSync(file),'Countercraft request contracts must be implemented');
+const C=require(file),S=require('./ike_shop_core.js');
+const scope={projectId:'ikes-wood-signs',backend:'https://sjgqqtnuttnkwsoebbqf.supabase.co',environment:'staging',site:'https://jdaniel318-ctrl.github.io/-ikes-wood-signs/',deploymentId:'countercraft-pilot-1',mode:'sea_trial'};
+const pub={scope,revision:1,enabled:true,stocks:[{id:'R12',revision:3,species:'cedar',nominalInches:30,available:true,actualMm:null}],rates:[{species:'cedar',centsPerFoot:2200}],recoveryKey:null};
+(async()=>{
+assert.equal(S.createRequest().design.text.value,'');
+assert.equal(C.price(pub,'R12',2).totalCents,11000);
+assert.equal(C.price(pub,'',1).totalCents,null);
+assert.throws(()=>C.price({...pub,rates:[{species:'cedar',centsPerFoot:-1}]},'R12',1),/rate/i);
+assert.throws(()=>C.scope({...scope,projectId:'wonderwake'}),/scope/i);
+assert.throws(()=>C.scope({...scope,mode:'preview'}),/scope/i);
+const r=S.createRequest();r.design.text.value='  Ike’s  HOME!  ';r.customer={name:'Customer',email:'c@example.invalid',phone:''};
+const snap={schema:'countercraft-request-v1',request:r,stockId:'',price:C.price(pub,'',1),contactPreference:'email',requestedPickup:'',approval:null};
+const d=await C.approvalDigest(snap);const contact=structuredClone(snap);contact.request.customer.phone='+1 555 123 4567';assert.equal(await C.approvalDigest(contact),d);
+for(const fn of [s=>s.request.design.text.value+='!',s=>s.price.totalCents=100,s=>s.request.details.quantity++,s=>s.stockId='R12']){const s=structuredClone(snap);fn(s);assert.notEqual(await C.approvalDigest(s),d);}
+assert.equal(snap.request.design.text.value,'  Ike’s  HOME!  ');
+let job={version:1,status:'received',revision:1,customerApprovedRevision:1,production:null};
+assert.throws(()=>C.transition(job,{status:'in-production'}),/transition/i);
+assert.throws(()=>C.transition(job,{status:'ready-for-production',checks:{material:true,price:true,geometry:false}}),/review/i);
+job=C.transition(job,{status:'ready-for-production',checks:{material:true,price:true,geometry:true}});assert.equal(job.status,'ready-for-production');
+job=C.transition(job,{status:'in-production'});assert.equal(job.production.revision,1);
+assert.throws(()=>C.transition({...job,revision:2,customerApprovedRevision:1},{status:'ready-for-production',checks:{material:true,price:true,geometry:true}}),/approval/i);
+assert.throws(()=>C.transition(job,{status:'cancelled',reason:''}),/reason/i);
+const manifest=[{name:'proof.png',mime:'image/png',bytes:3,sha256:await S.sha256(new Uint8Array([1,2,3]))}];
+const b={schema:'countercraft-backup-v1',scope,jobs:[{id:'job',revisions:[{assets:manifest}],events:[{action:'received'}]}],assets:[{...manifest[0],data:'AQID'}]};
+b.checksum=await C.backupDigest(b);assert.equal((await C.rehearse(b,scope)).assets,1);const altered=C.clone(b);altered.jobs[0].events[0].action='cancelled';await assert.rejects(C.rehearse(altered,scope),/checksum/i);b.assets[0].data='AQIE';await assert.rejects(C.rehearse(b,scope),/checksum/i);
+console.log('PASS Countercraft scope, exact text, pricing, approval, lifecycle and backup corruption');
+})().catch(e=>{console.error(e);process.exitCode=1;});

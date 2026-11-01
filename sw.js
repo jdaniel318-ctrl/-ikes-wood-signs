@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.20.76';
-const RELEASE_SEAL='tradewinds-882076';
+const RELEASE_BUILD='8.8.20.77';
+const RELEASE_SEAL='countercraft-882077';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.
