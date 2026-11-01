@@ -2,7 +2,7 @@
 const assert=require('node:assert/strict'),fs=require('node:fs');
 assert.ok(fs.existsSync(__dirname+'/carvewright_capture_artwork.js'),'capture artwork adapter must exist');
 const A=require('./carvewright_capture_artwork.js'),F=require('./carve_fonts.js'),C=require('./carvewright_capture_core.js');
-const m=C.measurePhoto({reference:[[50,50],[135.6,50],[135.6,103.98],[50,103.98]],board:[[0,0],[600,0],[600,200],[0,200]],imageWidth:800,imageHeight:600});
+const m=C.measurePhoto({reference:[[50,50],[177,50],[177,126.2],[50,126.2]],board:[[0,0],[600,0],[600,200],[0,200]],imageWidth:800,imageHeight:600});
 const b=A.build(m,'Smoke Hole','studio-sans',F);
 assert.ok(Math.abs(Number(b.svg.match(/width="([\d.]+)mm"/)[1])-600)<.001);
 assert.ok(b.svg.includes(b.paths));

@@ -1,9 +1,9 @@
 {
-  "release": "Sightline",
-  "name": "Sightline",
-  "build": "8.8.20.82",
-  "seal": "sightline-882082",
-  "file_count": 759,
+  "release": "Fieldnote",
+  "name": "Fieldnote",
+  "build": "8.8.20.83",
+  "seal": "fieldnote-882083",
+  "file_count": 761,
   "files": [
     ".github/workflows/drydock-batch1.yml",
     "ADMIRALS_DECK_TRIAL.md",
@@ -103,6 +103,8 @@
     "FAIRLEAD_GUIDE.md",
     "FAIRWIND_PRESERVATION.json",
     "FEATURE_ENTITLEMENT_MODEL_870.json",
+    "FIELDNOTE_EVIDENCE.json",
+    "FIELDNOTE_PLAN.md",
     "FIELD_WHITESPACE_POLICY.json",
     "FIRSTLIGHT_PRESERVATION.json",
     "FIRSTLIGHT_TEST_RESULTS.json",

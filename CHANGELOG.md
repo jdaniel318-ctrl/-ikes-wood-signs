@@ -1,10 +1,10 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Sightline 8.8.20.82
+# Black Flag Fieldnote 8.8.20.83
 
 Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
-Baseline: 8.8.20.81. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Baseline: 8.8.20.82. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
 Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
-Sightline adds an isolated Carvewright camera trial linked from Ike's shop inbox and Carvewright. Reference-card photo measurement and native ARKit evidence import feed one outlined lettering geometry for preview, SVG and DXF. No routine rack code or board dimension entry. Species and thickness remain unknown; pricing stays conditional and no machine program is generated. An unsigned, uncompiled native companion source project is supplied for device trials. No accounts, live orders or backend changes. See SIGHTLINE_GUIDE.md and SIGHTLINE_NATIVE.md.
+Fieldnote updates Sightline's temporary photo-reference bridge to selectable 3 x 5 or 4 x 6 inch index cards. Customer details can stay on the card in a private job capture; photo proofs cover the marked card pixels. Changing card size invalidates photo measurements and downloads. Native sweep remains independent of cards. Card-free measurement is the destination; production accuracy, live-edge tracing, species identification and machine programs are not delivered by this trial. No accounts, live orders, backend or native source changes. See SIGHTLINE_GUIDE.md and FIELDNOTE_EVIDENCE.json.
 Preparation does not deploy frontend or backend changes. See PATCH_CONTRACT.json for separately managed backend prerequisites.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 
