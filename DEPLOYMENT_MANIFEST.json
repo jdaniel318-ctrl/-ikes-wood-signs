@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.20.79",
-  "version": "8.8.20.79",
-  "release_name": "Lifeboat",
-  "releaseName": "Lifeboat",
-  "release_seal": "lifeboat-882079",
+  "build": "8.8.20.80",
+  "version": "8.8.20.80",
+  "release_name": "Holdfast",
+  "releaseName": "Holdfast",
+  "release_seal": "holdfast-882080",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -278,8 +278,8 @@
     "algorithm": "SHA-256",
     "files": {
       "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": {
-        "sha256": "520b65149e719110166c4a40d8d9664250071d84702c8cc8ee0b0b56961bd37f",
-        "build": "8.8.20.79",
+        "sha256": "4275b856806ebfb192f08a79a99bd5851283644983273b4886787bff3a9b8757",
+        "build": "8.8.20.80",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -326,14 +326,14 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_COMMAND_MODEL.json": {
-        "sha256": "cd3f70fcfd79ec7424608b877d2f5dd522230251540f794d88402aaf1abc54a7",
-        "build": "8.8.20.79",
+        "sha256": "18f1e0a5342bf0aa8d371912c0964f689a2f7063eebe21c5d72234b38d4e5b4c",
+        "build": "8.8.20.80",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
       "FLEET_DOCTRINE_REGISTRY.json": {
-        "sha256": "29e10d09bcc4478e928a6e87f71b2769fcf9be365cf3b4f371dbd190bd3f4c73",
-        "build": "8.8.20.79",
+        "sha256": "778b92093b14cfee443dee2f790f824b9e7547dc5c2aadf048cfb7ed9adce288",
+        "build": "8.8.20.80",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -392,8 +392,8 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "GOLDEN_VOYAGES.json": {
-        "sha256": "ee22d19c430c8a0390424daa0cdaf12ead2945a6eca007bf5bed72876071c53e",
-        "build": "8.8.20.79",
+        "sha256": "b20f64fe10f25eda02307eea8ecc97f937aa8abb946de7c298e302f87b16748f",
+        "build": "8.8.20.80",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -542,24 +542,24 @@
     "algorithm": "SHA-256",
     "serialization": "UTF-8 response body, same text executed by atomic loader",
     "files": {
-      "styles.css": "3d987425625a84abea47fc6595521cf733fd34064f0f1472a4c6a6e3da2a18ce",
+      "styles.css": "d17450eec31378a7ad897ff0c984e9798d7d1a3149724b9f18ce8710d8b55afd",
       "simple_books.css": "5939590021ef2d3738d5f5f7249d72f8da64cc274bf287ef8183958517b0ba46",
       "platform_core.js": "7fb1504a8b8de0fe319bfd29bed4d0875784565d45ede84a07a61c767491da68",
       "platform_v4.js": "f1596bec1fa4689f5edd75378241da7042ff04eb879401a83f3bd7a2d5cc4e9e",
       "platform_identity.js": "0beacfb452fb0e3e24aea71efd86140b1657560e98fa670a0f3bea428414232d",
       "fleet_supabase.js": "f77498f41bc7c12eb308acfe4efba1b7b7192c429b5a76e9b27874219c0ea015",
       "ike_style_registry.js": "6b348ebceb47e172e6676f46252b19c1c6bb7532baf76febfa8dd81760a76ab7",
-      "app.js": "4359483b2dee67666f9c12de832acd041c9031720fd67f252fb6f8df3571bf89",
+      "app.js": "f319510674da74a915205233f8d68b47575083301a369479a6667dbf683e0046",
       "captain.js": "0550ee6c846efe1a7ca28dc8c5f422343139818ddc19d38839b53bca7f14a3a1",
       "simple_books.js": "ddd76dcf5e6c579f16918a9d3e645b0fc65d8a5b4d7c66df8896d8314eea325d",
-      "owner.html": "d769d3192e5544f993aa7b975d6694d9069931a23a9e52e9fbf4bed6c364116e",
-      "manifest.webmanifest": "a4675537b49dd650cf4e269199122ff57acb95935a570e85e65770f02be616c9",
+      "owner.html": "d2f604876d2a631cc25ae0e8ce1a5d252b214e8c394972025b75c2b7666d1939",
+      "manifest.webmanifest": "b17fcfbc341ddf6c312f085bb232bf7555cdb6ee6fb859e68e8151b250c2a296",
       "IKE_STYLE_FOUNDRY.json": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
-      "sw.js": "8b4bfa6dde79fa143604c55c65e0faffd5dada41b6bfff1a38d06dd29f4858ff",
-      "FLEET_DOCTRINE_REGISTRY.json": "29e10d09bcc4478e928a6e87f71b2769fcf9be365cf3b4f371dbd190bd3f4c73",
-      "GOLDEN_VOYAGES.json": "ee22d19c430c8a0390424daa0cdaf12ead2945a6eca007bf5bed72876071c53e",
-      "FLEET_COMMAND_MODEL.json": "cd3f70fcfd79ec7424608b877d2f5dd522230251540f794d88402aaf1abc54a7",
-      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "520b65149e719110166c4a40d8d9664250071d84702c8cc8ee0b0b56961bd37f",
+      "sw.js": "4af5f377d624b52c782178528f62f3bf67179bfb6330c722ccd4f0f373e68dbd",
+      "FLEET_DOCTRINE_REGISTRY.json": "778b92093b14cfee443dee2f790f824b9e7547dc5c2aadf048cfb7ed9adce288",
+      "GOLDEN_VOYAGES.json": "b20f64fe10f25eda02307eea8ecc97f937aa8abb946de7c298e302f87b16748f",
+      "FLEET_COMMAND_MODEL.json": "18f1e0a5342bf0aa8d371912c0964f689a2f7063eebe21c5d72234b38d4e5b4c",
+      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "4275b856806ebfb192f08a79a99bd5851283644983273b4886787bff3a9b8757",
       "input_hygiene.js": "85584886dd424e619c6ee1069665e201dca51e815673839f91da0d796fcf591a",
       "business_deck.js": "b243334f39ff99eefe009872c0afb5eea0939cd8c7b9308bbf199b405c2716c5",
       "business_deck.css": "445fa81fff307d41cdd9a7d181ec86f9daae6843d24ac0d9fe14f939a25b6289",
@@ -623,7 +623,8 @@
       "countercraft_store.js": "d1509a9bf6e165529d825e15071aceea872fb409b6ad4594fde87ca5a2832e0a",
       "countercraft_exports.js": "d5543c5b94155aed3bd873d3b1cff85470c41b0ea57a109170321b3fe4b6587c",
       "countercraft_backup.js": "74bad722a9dfd78fb93dc17def96d2a9d218c068c84f05d276496cf5fe6f9f7f",
-      "countercraft_recognition.js": "9725578473e656a61092e1263a7a33e82c4d668ae375eef555bcfa8a76227baa"
+      "countercraft_recognition.js": "9725578473e656a61092e1263a7a33e82c4d668ae375eef555bcfa8a76227baa",
+      "fleet_legacy_recovery.js": "3119748e77df0967f481e45d14200752d015fb15db7009c1faf35e0d6b71f1e2"
     }
   },
   "watchbeacon_upgrade": {

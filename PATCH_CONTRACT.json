@@ -1,18 +1,18 @@
 {
   "schema": "blackflag-patch-contract-v1",
-  "target_build": "8.8.20.79",
-  "target_seal": "lifeboat-882079",
+  "target_build": "8.8.20.80",
+  "target_seal": "holdfast-882080",
   "supported_bases": [
     {
-      "build": "8.8.20.78",
-      "source_sha256": "f64497a48bfe8a3615f38ff6f0b2b78eb9f1258a555278c39c8bd44fa9a79395",
-      "file_count": 732
+      "build": "8.8.20.79",
+      "source_sha256": "c9c2ead54aee570c7ddfc16758105328d776e15cd3d44153445c62febef6ce4a",
+      "file_count": 734
     }
   ],
   "requires_deletions": false,
   "max_upload_files": 85,
   "database_actions": "none",
-  "rule": "Upload every changed/new root file over complete 8.8.20.78. Keep everything else. This software archive executes no database commands.",
+  "rule": "Upload every changed/new root file over complete 8.8.20.79. Keep everything else. This software archive executes no database commands.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "COUNTERCRAFT_INTAKE.sql",

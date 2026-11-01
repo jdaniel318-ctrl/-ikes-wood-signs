@@ -1351,12 +1351,12 @@ body.project-admin-mode .app-shell{
 .protected-control-group{
   margin-top:9px;border:1px solid #49636b;border-radius:18px;background:#ffffff09;overflow:hidden;
 }
-.protected-control-group summary{
+.protected-control-group > summary{
   cursor:pointer;list-style:none;padding:15px 17px;color:#eef4f3;font-weight:900;
 }
-.protected-control-group summary::-webkit-details-marker{display:none}
-.protected-control-group summary::after{content:'＋';float:right;color:#e8cb73}
-.protected-control-group[open] summary::after{content:'−'}
+.protected-control-group > summary::-webkit-details-marker{display:none}
+.protected-control-group > summary::after{content:'+';float:right;color:#e8cb73}
+.protected-control-group[open] > summary::after{content:'−'}
 .protected-control-body{padding:0 17px 17px}
 .protected-control-body label{color:#e9f0ef}
 .protected-control-body .text-input{background:#fff}
@@ -16506,3 +16506,37 @@ body.engine-mode:not(.engine-systems-expanded) #fleetMissionControl{display:none
 }
 
 @media(max-width:680px){body.engine-mode #enginePanel .modern-engine-top-actions .engine-configure-btn{grid-column:2!important;grid-row:1!important}}
+
+/* Holdfast recovery: clear actions, readable feedback, independent disclosures. */
+#engineRecoveryGroup .recovery-toolbar{display:flex;flex-wrap:wrap;gap:10px;margin:4px 0 18px}
+#engineRecoveryGroup .recovery-card{padding:22px;margin:16px 0;border:1px solid #385c67;border-radius:16px;background:#0a2028;min-width:0}
+#engineRecoveryGroup .recovery-card-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+#engineRecoveryGroup .recovery-eyebrow{color:#9fcbd5;font-size:.72rem;letter-spacing:.14em;font-weight:800}
+#engineRecoveryGroup .recovery-card h3{margin:6px 0 0;color:#f0f6f5;font-size:1.35rem;font-weight:700;line-height:1.3;letter-spacing:0;text-transform:none}
+#engineRecoveryGroup .recovery-copy{margin:12px 0;color:#c7d8dc;line-height:1.55}
+#engineRecoveryGroup .recovery-note{font-size:.86rem;line-height:1.5;color:#9cb5bd;margin:14px 0 0}
+#engineRecoveryGroup .recovery-actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:18px 0 10px}
+#engineRecoveryGroup .recovery-card :is(button,a.recovery-download,.recovery-actions a,.recovery-file-control){display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:12px 18px;border-radius:10px;text-decoration:none;white-space:normal;line-height:1.35;text-transform:none;letter-spacing:0;font-size:.94rem;max-width:100%;box-sizing:border-box}
+#engineRecoveryGroup .recovery-card :is(button:disabled,.recovery-file-control:has(input:disabled)){opacity:.5;cursor:default}
+#engineRecoveryGroup .recovery-file-control{position:relative;cursor:pointer;color:#102c35;margin:0}
+#enginePanel #engineRecoveryGroup .recovery-file-control input{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer}
+#engineRecoveryGroup .recovery-file-control:focus-within{outline:3px solid #e7c873;outline-offset:3px}
+#engineRecoveryGroup .storage-steward-status strong,#engineRecoveryGroup .storage-steward-status .recovery-message{display:block}
+#engineRecoveryGroup .storage-steward-status .recovery-message{margin:8px 0 16px;color:#cfdee1}
+#engineRecoveryGroup .recovery-download{margin:0 0 4px}
+#engineRecoveryGroup .recovery-comparison{display:grid;gap:8px;margin-top:16px}
+#engineRecoveryGroup .recovery-comparison article{display:flex;gap:12px;justify-content:space-between;align-items:flex-start;padding:14px;border:1px solid #31515b;border-radius:10px;background:#102a33}
+#engineRecoveryGroup .recovery-comparison strong,#engineRecoveryGroup .recovery-comparison small{display:block}
+#engineRecoveryGroup .recovery-comparison small{margin-top:5px;color:#b2c8ce;line-height:1.45}
+#engineRecoveryGroup .recovery-tag{flex-shrink:0;color:#a7dfc3;font-size:.8rem;font-weight:800;border:1px solid #487366;border-radius:6px;padding:5px 9px}
+#engineRecoveryGroup .recovery-tag.keep{color:#edd39a;border-color:#746b48}
+#engineRecoveryGroup .recovery-verification{color:#c7dfd5;line-height:1.5;margin:14px 0}
+.storage-report-details > summary{display:flex;align-items:center;justify-content:space-between;gap:12px;list-style:none;padding:12px 0;min-height:44px;box-sizing:border-box}
+.storage-report-details > summary::-webkit-details-marker{display:none}
+.storage-report-details > summary::after{content:'+';color:#e8cb73;flex-shrink:0}
+.storage-report-details[open] > summary::after{content:'−'}
+.storage-report-details{overflow-x:auto}
+@media(max-width:600px){#engineRecoveryGroup .recovery-card{padding:16px}#engineRecoveryGroup .recovery-card-heading{align-items:stretch;flex-direction:column}#engineRecoveryGroup .recovery-actions{align-items:stretch;flex-direction:column}#engineRecoveryGroup .recovery-comparison article{flex-direction:column}.storage-report-head{align-items:flex-start;flex-direction:column}}
+
+#engineRecoveryGroup .recovery-actions > :is(a,label){flex:1 1 220px;width:auto}
+@media(max-width:600px){#engineRecoveryGroup .recovery-actions > :is(a,label){flex:auto;width:100%}#engineRecoveryGroup > .protected-control-body{padding:0 10px 12px}}

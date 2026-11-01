@@ -11920,31 +11920,36 @@
   }
 
   async function refreshEngineDiagnostics(){
-    const merged=await getMergedOrders();
-    let indexedCount=0;
-    try{ indexedCount=(await getAll(STORE_ORDERS)).length; }catch(_){}
-    const localCount=readLocalOrders().length;
-    const hasDraft=Object.keys(localStorage).some(k=>k.startsWith(DRAFT_KEY+':'));
-    let storageText='Available';
-    try{
-      const estimate=await navigator.storage?.estimate?.();
-      if(estimate?.usage!=null && estimate?.quota){
-        const used=(estimate.usage/1024/1024).toFixed(1);
-        const quota=(estimate.quota/1024/1024).toFixed(0);
-        storageText=`${used} MB / ${quota} MB`;
-      }
-    }catch(_){}
-    if($('engineOrderCount')) $('engineOrderCount').textContent=String(merged.length);
-    if($('engineDraftStatus')) $('engineDraftStatus').textContent=hasDraft?'Recoverable':'Clear';
-    if($('engineStorageStatus')) $('engineStorageStatus').textContent=storageText;
-    if($('engineEmailStatus')) $('engineEmailStatus').textContent=LEGACY_IKE_WEB3FORMS_ACCESS_KEY && !LEGACY_IKE_WEB3FORMS_ACCESS_KEY.includes('PASTE_')?'Configured':'Needs Setup';
-    if($('engineStorageDetail')) $('engineStorageDetail').textContent=`IndexedDB: ${indexedCount} order(s) • Local backup: ${localCount} order(s) • Merged view: ${merged.length} order(s).`;
     const hull=$('engineStorageStewardStatus');
-    if(hull){hull.classList.add('is-active');hull.innerHTML=`<strong>HULL CHECK COMPLETE · ${new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})}</strong><br><span>${indexedCount}/${indexedCount} IndexedDB order rows readable • ${merged.length} merged orders visible • draft ${hasDraft?'recoverable':'clear'} • storage ${escapeHtml(storageText)}. No data changed.</span>`;}
-    window.DarkSkyV4?.diagnostic?.('storage.hull_check.complete','Captain hull check completed',{build:BUILD_VERSION,indexedCount,localCount,mergedCount:merged.length,hasDraft,storageText});
-    await renderEnginePerformance();
+    try{
+      requireRecoveryEngine();
+      const indexed=await boundedRecoveryRead(()=>getAll(STORE_ORDERS,{readOnlyRecovery:true}));
+      requireRecoveryEngine();
+      const raw=localStorage.getItem(LOCAL_ORDERS_KEY),local=raw===null?[]:JSON.parse(raw);
+      if(!Array.isArray(local))throw new Error('Current local order mirror could not be read.');
+      const excluded=readRecoveryExclusions(),merged=new Map();
+      for(const item of [...local,...indexed])if(item?.id&&!excluded.has(String(item.id)))merged.set(item.id,item);
+      const legacy=window.BlackFlagLegacyRecovery.capture(localStorage);
+      const oldBackup=legacy.find(x=>x.key===LEGACY_LOCAL_ORDERS_KEYS[0]);
+      let olderOrders='0';
+      if(oldBackup){try{const rows=JSON.parse(oldBackup.raw);olderOrders=Array.isArray(rows)?String(rows.length):'unreadable';}catch(_){olderOrders='unreadable';}}
+      const oldDrafts=legacy.filter(x=>x.key!==LEGACY_LOCAL_ORDERS_KEYS[0]).length;
+      const currentDrafts=Object.keys(localStorage).filter(k=>k.startsWith(DRAFT_KEY+':')).length;
+      const hasDraft=currentDrafts>0||oldDrafts>0;
+      let storageText='Estimate unavailable';
+      try{const estimate=await boundedRecoveryRead(()=>navigator.storage?.estimate?.());if(estimate?.usage!=null)storageText=`${formatStorageMb(estimate.usage)} MB browser estimate`;}catch(_){}
+      requireRecoveryEngine();
+      if($('engineOrderCount'))$('engineOrderCount').textContent=String(merged.size);
+      if($('engineDraftStatus'))$('engineDraftStatus').textContent=hasDraft?`${currentDrafts} current · ${oldDrafts} older`:'Clear';
+      if($('engineStorageStatus'))$('engineStorageStatus').textContent=storageText;
+      if($('engineStorageDetail'))$('engineStorageDetail').textContent=`Primary: ${indexed.length} orders · Current local mirror: ${local.length} orders · Older Ike backup: ${olderOrders} orders · Drafts: ${currentDrafts} current / ${oldDrafts} older.`;
+      if(hull){hull.classList.add('is-active');hull.innerHTML=`<strong>STORAGE CHECK COMPLETE</strong><span class="recovery-message">${indexed.length} primary orders read · ${merged.size} visible after exclusions · ${currentDrafts} current drafts · ${oldDrafts} older drafts. ${escapeHtml(storageText)}.</span><span>Use the panel above to save older Ike records.</span>`;}
+    }catch(err){
+      if($('engineDraftStatus'))$('engineDraftStatus').textContent='Check incomplete';
+      if($('engineStorageDetail'))$('engineStorageDetail').textContent='Storage check incomplete; prior counts have not been confirmed.';
+      if(hull){hull.classList.add('is-active');hull.textContent=`Storage check interrupted: ${String(err?.message||err)}`;}
+    }
   }
-
 
 
   function renderDarkSkyV4EngineStatus(){
@@ -13237,8 +13242,127 @@ The full order and approved media remain stored with this project.`;
     }));
   }
 
+  // Holdfast: all I/O is user-triggered; preparing and comparing never writes storage.
+  let olderIkeRecovery=null,olderIkeBusy=false;
+  function requireRecoveryEngine(navigation){
+    if(window.BlackFlagAuth?.isUnlocked?.()!==true)throw new Error('Sign in to the Engine to work with private recovery files.');
+    if(navigation&&!engineWorkspaceNavigationCurrent(navigation))throw new Error('The Engine session changed. Prepare and verify a fresh file.');
+  }
+  async function boundedRecoveryRead(work){
+    let timer;try{return await Promise.race([work(),new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('Storage did not respond within 20 seconds. Try again when it is ready.')),20000);})]);}finally{clearTimeout(timer);}
+  }
+  function setOlderIkeBusy(value){
+    olderIkeBusy=value;
+    if($('engineLegacyPrepareBtn'))$('engineLegacyPrepareBtn').disabled=value;
+    if($('engineLegacyVerifyFile'))$('engineLegacyVerifyFile').disabled=value;
+    if($('engineLegacyRemoveBtn'))$('engineLegacyRemoveBtn').disabled=value||!olderIkeRecovery?.verified||!olderIkeRecovery?.comparison.some(x=>x.eligible);
+  }
+  function olderIkeMessage(text){const box=$('engineLegacyStatus');if(box){box.classList.add('is-active');box.textContent=text;}}
+  function readRecoveryExclusions(){
+    const tombstones=JSON.parse(localStorage.getItem(V4_ORPHAN_ORDER_TOMBSTONES_KEY)||'[]');
+    const quarantine=JSON.parse(localStorage.getItem(V4_QUARANTINE_KEY)||'[]');
+    if(!Array.isArray(tombstones)||!Array.isArray(quarantine))throw new Error('Quarantine records could not be checked. Older records remain in place.');
+    const ids=new Set(tombstones.map(String));
+    for(const row of quarantine)if((row?.kind==='order'||row?.kind==='orphan_order')&&row?.payload?.id)ids.add(String(row.payload.id));
+    return ids;
+  }
+  async function inspectOlderIkeRecords(){
+    const api=window.BlackFlagLegacyRecovery;if(!api)throw new Error('Recovery tools did not finish loading. Reopen the Engine.');
+    const orders=await getAll(STORE_ORDERS,{readOnlyRecovery:true});
+    const entries=api.capture(localStorage),draft=localStorage.getItem(`${DRAFT_KEY}:${LEGACY_IKE_PROJECT_ID}`);
+    return {entries,draft,comparison:api.compare(entries,orders,draft,readRecoveryExclusions())};
+  }
+  function renderOlderIkeComparison(comparison){
+    const names={'ikesWoodSignsOrdersBackupV15':'Older order backup','ikesOrderDraftV2':'Older draft','ikesOrderDraftV2:ikes-wood-signs':'Older Ike draft'};
+    $('engineLegacySummary').innerHTML=comparison.map(row=>{
+      const detail=row.status==='unreadable'?'Saved intact. Its contents need review before cleanup.':row.eligible?`${row.matched} record${row.matched===1?'':'s'} fully matched in current storage.`:`${row.matched} matched · ${row.changed} changed · ${row.missing} absent from current storage · ${row.held} need review.`;
+      return `<article><div><strong>${escapeHtml(names[row.key]||row.key)}</strong><small>${escapeHtml(detail)}</small></div><span class="recovery-tag ${row.eligible?'':'keep'}">${row.eligible?'Matched':'Keep'}</span></article>`;
+    }).join('');
+    const count=comparison.filter(x=>x.eligible).length;
+    $('engineLegacyRemoveBtn').textContent=count?`Remove ${count} verified old ${count===1?'copy':'copies'}`:'All older records kept';
+  }
+  async function prepareOlderIkeRecovery(){
+    if(olderIkeBusy)return false;
+    try{requireRecoveryEngine();}catch(err){olderIkeMessage(err.message);return false;}
+    const navigation=engineWorkspaceNavigationToken();
+    setOlderIkeBusy(true);
+    if(olderIkeRecovery?.url)URL.revokeObjectURL(olderIkeRecovery.url);
+    olderIkeRecovery=null;$('engineLegacyReady').classList.add('hidden');$('engineLegacyVerification').textContent='';$('engineLegacyVerifyFile').value='';
+    olderIkeMessage('Preserving older records and comparing current work…');
+    try{
+      const result=await boundedRecoveryRead(async()=>{
+        const snapshot=await inspectOlderIkeRecords();
+        const data=await window.BlackFlagLegacyRecovery.archive(snapshot.entries,BUILD_VERSION);
+        const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+        await window.BlackFlagLegacyRecovery.verify(await blob.text(),snapshot.entries);
+        return {...snapshot,blob};
+      });
+      requireRecoveryEngine(navigation);
+      if(!window.BlackFlagLegacyRecovery.sameEntries(window.BlackFlagLegacyRecovery.capture(localStorage),result.entries))throw new Error('Older records changed while preparing. Prepare a fresh file.');
+      if(!result.entries.length){olderIkeMessage('No older Ike records found. Captain’s backup can export current orders and settings.');return true;}
+      const url=URL.createObjectURL(result.blob);
+      olderIkeRecovery={...result,url,navigation,verified:false};
+      const link=$('engineLegacyDownload');link.href=url;link.download=`black-flag-older-ike-records-${BUILD_VERSION}-${new Date().toISOString().slice(0,10)}.json`;
+      renderOlderIkeComparison(result.comparison);$('engineLegacyReady').classList.remove('hidden');
+      olderIkeMessage(`Recovery file ready · ${result.blob.size<1048576?Math.max(.1,result.blob.size/1024).toFixed(1)+' KB':formatStorageMb(result.blob.size)+' MB'}. All ${result.entries.length} older storage entries are included and checked.`);
+      $('engineLegacyVerification').textContent='Save the file, then verify your saved copy to enable eligible cleanup.';
+      return true;
+    }catch(err){olderIkeMessage(`Preparation interrupted: ${String(err?.message||err)} No records changed.`);return false;}
+    finally{setOlderIkeBusy(false);}
+  }
+  async function verifyOlderIkeFile(event){
+    const file=event.target.files?.[0];event.target.value='';
+    if(!file||olderIkeBusy||!olderIkeRecovery)return false;
+    setOlderIkeBusy(true);olderIkeRecovery.verified=false;
+    try{
+      requireRecoveryEngine(olderIkeRecovery.navigation);const navigation=engineWorkspaceNavigationToken();$('engineLegacyVerification').textContent='Checking the saved file…';
+      const expected=olderIkeRecovery.entries;
+      await boundedRecoveryRead(async()=>window.BlackFlagLegacyRecovery.verify(await file.text(),expected));
+      requireRecoveryEngine(navigation);
+      if(!window.BlackFlagLegacyRecovery.sameEntries(window.BlackFlagLegacyRecovery.capture(localStorage),expected))throw new Error('Older records changed. Prepare and save a fresh file.');
+      olderIkeRecovery.verified=true;
+      $('engineLegacyVerification').textContent='Saved file verified. Cleanup will check current work again and remove only fully matched older copies.';
+      return true;
+    }catch(err){$('engineLegacyVerification').textContent=`File not verified: ${String(err?.message||err)}`;return false;}
+    finally{setOlderIkeBusy(false);}
+  }
+  async function removeOlderIkeCopies(){
+    if(olderIkeBusy)return false;
+    try{requireRecoveryEngine();}catch(err){olderIkeMessage(err.message);return false;}
+    if(!olderIkeRecovery?.verified){olderIkeMessage('Save and verify the older-records file before cleanup.');return false;}
+    const navigation=engineWorkspaceNavigationToken();
+    setOlderIkeBusy(true);olderIkeMessage('Checking the verified copies against current work…');
+    try{
+      requireRecoveryEngine(olderIkeRecovery.navigation);
+      const fresh=await boundedRecoveryRead(inspectOlderIkeRecords);
+      requireRecoveryEngine(navigation);
+      const api=window.BlackFlagLegacyRecovery,previous=olderIkeRecovery;
+      if(!api.sameEntries(fresh.entries,previous.entries)||localStorage.getItem(`${DRAFT_KEY}:${LEGACY_IKE_PROJECT_ID}`)!==fresh.draft)throw new Error('Records changed. Prepare and verify a fresh file before cleanup.');
+      const keys=previous.comparison.filter(x=>x.eligible).map(x=>x.key);
+      if(!keys.length)throw new Error('There are no fully matched older copies to remove.');
+      if(keys.some(key=>!fresh.comparison.some(x=>x.key===key&&x.eligible)))throw new Error('Current work changed. Older copies are kept; prepare a fresh comparison.');
+      const result=api.removeVerified(localStorage,previous.entries,keys);
+      previous.verified=false;
+      const remaining=previous.entries.length-result.removed.length;
+      $('engineLegacyVerification').textContent=result.error?`${result.removed.length} older copies confirmed removed. ${result.unconfirmed.length?'A removal could not be verified. ':''}Prepare again to check remaining records. Keep your verified recovery file.`:`${result.removed.length} older ${result.removed.length===1?'copy':'copies'} removed. ${remaining} older storage ${remaining===1?'entry remains':'entries remain'}. Keep your verified recovery file.`;
+      olderIkeMessage(result.error?`Cleanup stopped: ${result.error}`:'Verified cleanup complete. Current orders, current drafts and other fleet records were kept.');
+      $('engineLegacyRemoveBtn').textContent='Prepare again to check remaining records';
+      // Update counts without replacing this recovery result or rerunning migrations.
+      await refreshEngineDiagnostics();
+      return !result.error;
+    }catch(err){olderIkeRecovery.verified=false;olderIkeMessage(`Cleanup stopped: ${String(err?.message||err)}`);return false;}
+    finally{setOlderIkeBusy(false);}
+  }
+  function bindEngineRecoveryCore(){
+    for(const [id,event,handler] of [['engineLegacyPrepareBtn','click',prepareOlderIkeRecovery],['engineLegacyVerifyFile','change',verifyOlderIkeFile],['engineLegacyRemoveBtn','click',removeOlderIkeCopies],['engineRefreshDiagnosticsBtn','click',refreshEngineDiagnostics]]){
+      const element=$(id);if(!element||element.dataset.recoveryBound==='true')continue;
+      element.dataset.recoveryBound='true';element.addEventListener(event,handler);
+    }
+  }
+
   let captainBackupPending=false;
   function bindCaptainBackupCore(){
+    bindEngineRecoveryCore();
     const button=$('engineExportBtn');
     if(!button || button.dataset.backupBound==='true')return;
     button.dataset.backupBound='true';
@@ -13255,7 +13379,7 @@ The full order and approved media remain stored with this project.`;
     const button=$('engineExportBtn');if(button)button.disabled=true;
     let watchdog;
 
-    if(status){status.classList.add('is-active');status.innerHTML='<strong>PREPARING CAPTAIN\'S BACKUP…</strong><br><span>Read-only export preparation. Nothing is removed or changed.</span>';}
+    if(status){status.classList.add('is-active');status.innerHTML='<strong>PREPARING CAPTAIN\'S BACKUP…</strong><span class="recovery-message">Gathering current orders, photos and settings.</span>';}
     try{
       const snapshot=await Promise.race([
         (async()=>{
@@ -13280,7 +13404,7 @@ The full order and approved media remain stored with this project.`;
       const filename=`dark-sky-captains-backup-${BUILD_VERSION}-${new Date().toISOString().slice(0,10)}.json`;
       if(window.__darkSkyCaptainBackupUrl)try{URL.revokeObjectURL(window.__darkSkyCaptainBackupUrl)}catch(_){}
       window.__darkSkyCaptainBackupUrl=url;
-      if(status){status.innerHTML=`<strong>CAPTAIN'S BACKUP READY · ${formatStorageMb(blob.size)} MB</strong><br><span>${orders.length} merged orders + ${settings.length} settings rows prepared. On iPad, tap the durable download link below so Safari receives a fresh user gesture.</span><br><a class="secondary-btn small" href="${url}" download="${filename}">DOWNLOAD CAPTAIN'S BACKUP</a>`;}
+      if(status){status.innerHTML=`<strong>CAPTAIN'S BACKUP READY · ${formatStorageMb(blob.size)} MB</strong><span class="recovery-message">${orders.length} orders · ${settings.length} settings. Ready to save to Files.</span><a class="primary-btn recovery-download" href="${url}" download="${filename}">Save backup</a>`;}
       // Recovery export must not depend on, or add pressure to, any storage writer.
       return true;
     }catch(err){
@@ -17562,7 +17686,7 @@ The full order and approved media remain stored with this project.`;
       $('engineWorkflowStatus').textContent='Default workflow saved for newly commissioned projects.';
     });
 
-    $('engineRefreshDiagnosticsBtn').addEventListener('click',refreshEngineDiagnostics);
+    bindEngineRecoveryCore();
     $('engineClearDraftBtn').addEventListener('click',()=>{
       clearDraft();
       $('engineStorageDetail').textContent='Interrupted-order draft cleared. Existing saved orders were not changed.';

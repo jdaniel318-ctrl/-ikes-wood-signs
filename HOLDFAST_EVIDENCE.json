@@ -1,0 +1,191 @@
+{
+  "schema": "blackflag-holdfast-evidence-v1",
+  "build": "8.8.20.80",
+  "release": "Holdfast",
+  "checked_at": "2026-11-01T16:02:33.016747+00:00",
+  "scope": "Offline synthetic testing. Native Safari acceptance pending. Not deployed.",
+  "core_behavioral_checks": 11,
+  "release_suites": {
+    "scope": "listed offline suites; not live Safari, Auth, email or machining certification",
+    "results": [
+      {
+        "name": "VERIFY_HOLDFAST_CORE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_HOMEPORT_ENTRY.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_FLEETBOUND_PROGRAMS.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_HARBOR_ROUTES.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_HARBOR_ASYNC.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_HARBOR_STORAGE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_RELEASE_IDENTITY.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_FAIRLEAD_LOADER.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_FAIRLEAD_STARTUP.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_CLEARDECK_ACCOUNT.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_RELEASE_CONTRACT.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_CLEARDECK_PREFLIGHT.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_IRONHAVEN_CORE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_FLEETCARE_READINESS.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_FLEETCARE_NAVIGATION.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_FLEETCRAFT_CORE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_LETTERCRAFT_FONTS.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_QUARTERMASTER_CORE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_STORMWAKE_CORE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "TEST_RELEASE_PIPELINE.py",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "TEST_RELEASE_IDENTITY.py",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      }
+    ]
+  },
+  "browser": {
+    "passed": 15,
+    "checks": [
+      "Hull identifies older backup and both older drafts",
+      "Quota-full preservation: exact raw data downloaded, no storage writes",
+      "Wrong saved file cannot enable cleanup",
+      "Source changed after verification: no removals",
+      "Current media changed: old source retained",
+      "Lock and re-enter during cleanup cancels pending removal",
+      "ipad-landscape recovery panel fits",
+      "ipad-portrait recovery panel fits",
+      "iphone recovery panel fits",
+      "Nested accordions correctly indicate their own state",
+      "Verified cleanup removes only matching legacy keys and keeps unique/current work",
+      "Malformed original preserved and kept",
+      "Primary read failure: visible failure, no new recovery download",
+      "Timeout leaves sources intact and ignores late completion",
+      "Locked Engine cannot preserve or remove private records"
+    ],
+    "scope": "Synthetic Chromium data and exact served source with startup quota injection. Native iPad acceptance pending."
+  },
+  "captain_backup_regression": {
+    "passed": 6,
+    "checks": [
+      "Export responds after startup quota failure",
+      "Full localStorage: actual download retains order media and settings",
+      "Full localStorage: stale database connection recovers without diagnostic writes",
+      "Unreadable primary orders: visible error, no partial download",
+      "Stalled read: bounded error, late completion cannot create a download",
+      "Locked Engine cannot export"
+    ],
+    "scope": "Offline Chromium with synthetic startup failure, full localStorage and real IndexedDB; native Safari pending"
+  },
+  "independent_review": {
+    "status": "findings_fixed_and_rechecked",
+    "resolved": [
+      "Engine lock/re-entry cancels pending cleanup",
+      "Foreign and quarantined draft identity retained",
+      "Unconfirmed removal readback reported accurately",
+      "Backup coverage wording corrected"
+    ]
+  },
+  "runtime_sha256": {
+    "app.js": "f319510674da74a915205233f8d68b47575083301a369479a6667dbf683e0046",
+    "index.html": "b1cc87c6b4ea9cff19134cc6fb0705782f6636460984a02ac2cbd8168ede9fbc",
+    "styles.css": "d17450eec31378a7ad897ff0c984e9798d7d1a3149724b9f18ce8710d8b55afd",
+    "fleet_legacy_recovery.js": "3119748e77df0967f481e45d14200752d015fb15db7009c1faf35e0d6b71f1e2"
+  },
+  "package_verification": "External PackageProof.json records final ZIP readback, exact patch reconstruction and software rollback.",
+  "native_safari_acceptance": "PENDING",
+  "frontend_deployed": false,
+  "business_data_restore_certified": false
+}
