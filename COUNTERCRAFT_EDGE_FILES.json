@@ -9,15 +9,15 @@
     },
     {
       "name": "countercraft_service.mjs",
-      "sha256": "b84d83c31c929472317b804103b8fc293587872185869560c58801f4036c4572"
+      "sha256": "c6d1b6a686df58126a404d4138fb862816469630aef52b953de0d2f71087bd4b"
     },
     {
       "name": "countercraft_core.js",
-      "sha256": "b240b4c9a24616f9edbede6ee548266e959e85fbb1637cbf45c14c316f72aecc"
+      "sha256": "acd805bbf0d6ff2312207d19f7146a844e7749f6610a9384ea4a5d91cd13e964"
     },
     {
       "name": "ike_shop_core.js",
-      "sha256": "6523f3e47b6eae2d17538c87d6dc17472a564bcbab5705d5bb07b6a725d11d9d"
+      "sha256": "9ca23bb464f068133b8ef5a850960f5a621e01b39f203243832b18dec8f6eaba"
     },
     {
       "name": "boardcraft_photo.js",

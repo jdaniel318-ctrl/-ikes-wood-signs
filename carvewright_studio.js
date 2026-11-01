@@ -32,6 +32,7 @@
     s.root.setAttribute('aria-busy',String(s.busy));
     s.root.querySelectorAll('button,input,select,textarea').forEach(n=>{n.disabled=disabled;});
     node(s,'cweClose').disabled=false;
+    if(s.embedded&&s.options.measuredStock)for(const id of ['cweWidth','cweHeight','cweThickness','cweStockId','cweSpecies'])node(s,id).disabled=true;
     for(const id of ['cweReview','cweExportSvg','cweDownloadJob'])node(s,id).disabled=disabled||!validLayout(s);
     node(s,'cweSave').disabled=disabled||(s.embedded?!validLayout(s):!s.layout?.ok);
     node(s,'cweMachining').disabled=s.embedded||disabled||!validLayout(s)||s.dirty||s.draft.revision<1||!s.draft.review;
@@ -139,7 +140,7 @@
     const frame=s.panel==='stock'||s.guides?`<rect id="cwePhotoFrame" ${s.panel==='stock'?'data-board-frame="move"':''} x="${f.x}" y="${f.y}" width="${f.w}" height="${f.h}" fill="${s.panel==='stock'?'#1675a8':'none'}" fill-opacity=".07" stroke="#159bea" stroke-width="${stroke*2}" stroke-dasharray="${stroke*6} ${stroke*4}" pointer-events="${s.panel==='stock'?'all':'none'}" style="cursor:${s.panel==='stock'?'move':'default'}"/>`:'';
     const art=composed.artworkSvg.replace('<g ','<g id="cwePhotoArtwork" ');
     node(s,'cweViewport').innerHTML=`<svg id="cweCanvas" viewBox="0 0 ${width} ${height}" role="img" aria-labelledby="cweCanvasTitle cweCanvasDesc" xmlns="http://www.w3.org/2000/svg"><title id="cweCanvasTitle">${esc(s.draft.title||'Sign design')}</title><desc id="cweCanvasDesc">Exact vector artwork on your board photograph. The layout dimensions are reference dimensions until Ike confirms the wood.</desc>${s.view==='material'?composed.photoSvg:`<rect width="${width}" height="${height}" fill="#f8fafb"/>`}${art}<g transform="matrix(${matrix.join(' ')})">${guides}${selection}${s.panel==='stock'?'':targets}</g>${frame}</svg>`;
-    node(s,'cweBlankSize').textContent=`${display(s,w)} × ${display(s,h)} ${s.unit} reference · actual size unconfirmed`;
+    node(s,'cweBlankSize').textContent=`${display(s,w)} × ${display(s,h)} ${s.unit}${s.options.measuredStock?' · measured shop board':' reference · actual size unconfirmed'}`;
     node(s,'cwePreviewHint').textContent=s.panel==='stock'?'Drag the blue area · sliders resize and position':'Tap an object · drag to move';
   }
   function scene(s){
@@ -259,6 +260,7 @@
   }
   function input(s,e){
     if(s.busy||!alive(s))return;const n=e.target,lengthFields={cweWidth:'widthMm',cweHeight:'heightMm',cweThickness:'thicknessMm',cweMargin:'marginMm'};
+    if(s.embedded&&s.options.measuredStock&&['cweWidth','cweHeight','cweThickness','cweStockId','cweSpecies'].includes(n.id))return;
     if(s.boardPhoto&&['cweFrameScale','cweFrameX','cweFrameY'].includes(n.id)){boardInput(s,n.id,n.value);return;}
     const recognized=['cweWording','cweJobTitle','cweStockId','cweSize','cweSizeNumber','cweTracking','cweOffsetX','cweOffsetY','cweRotation','cweGraphicWidth','cweGraphicHeight','cweSpecies',...Object.keys(lengthFields)];if(!recognized.includes(n.id))return;
     mutate(s,d=>{
@@ -322,6 +324,7 @@
     const root=document.createElement('dialog');root.id='carvewrightStudio';root.className='cwe-modal';root.setAttribute('aria-labelledby','cweTitle');root.innerHTML=shell(!!options.referenceOnly);document.body.appendChild(root);
     const s={root,parent,options,embedded,origin:document.activeElement,draft,boardPhoto,photoScene:null,layout:null,store:null,unit:'in',view:'material',guides:true,panel:'lettering',selectedId:'primary',dirty:false,busy:false,closed:false,generation:0,urls:[],timer:null,undo:[],redo:[],editGroup:'',drag:null,previewFont:null};
     if(embedded){root.classList.add('cwe-embedded','cwe-ike-brand');node(s,'cweTitle').textContent='Ike’s Sign Studio';root.querySelector('.cwe-brand-icon').outerHTML='<img class="cwe-ike-character" src="ike_character.png" width="32" height="62" alt="Ike holding a wood sign">';root.querySelector('.cwe-brand small').textContent='IKE’S WOOD SIGNS';node(s,'cweClose').setAttribute('aria-label','Back to sign request');node(s,'cweClose').querySelector('span').textContent='Back to request';node(s,'cweSave').setAttribute('aria-label','Use this design');for(const id of ['cweReviewTab','cweReviewPanel','cweMachining','cweDownloadJob','cweExportSvg'])node(s,id).hidden=true;root.querySelector('.cwe-footer>div>span').textContent='Sign request · Ike confirms wood and machine setup';node(s,'cweStockPanel').querySelector('.cwe-field-note').textContent='Enter your requested blank size. Ike confirms the actual wood and dimensions before production.';}
+    if(embedded&&options.measuredStock)node(s,'cweStockPanel').querySelector('.cwe-field-note').textContent='Ike’s measured shop board: '+options.measuredStock.species+'. These dimensions stay with your design. Adjust the edge margin and position the layout on usable wood.';
     if(boardPhoto){root.classList.add('cwe-with-board-photo');node(s,'cweStockTab').textContent='Board';node(s,'cweStockPanel').insertAdjacentHTML('afterbegin',boardControls());root.querySelector('[data-view="material"]').textContent='Your photo';node(s,'cweStockPanel').querySelector('label[for="cweStockId"]').textContent='Board reference';}
     current=s;root.showModal();if(!embedded)try{s.store=g.CarvewrightStore.create({scope:clone(options.scope),guard:()=>{assertLive(s);return true;}});}catch(e){close(true);throw e;}
     root.addEventListener('click',e=>{e.stopPropagation();click(s,e);});root.addEventListener('input',e=>{e.stopPropagation();input(s,e);});root.addEventListener('change',e=>{e.stopPropagation();s.editGroup='';});root.addEventListener('focusout',()=>{s.editGroup='';});

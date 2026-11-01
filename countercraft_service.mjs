@@ -59,7 +59,7 @@ export function createService(io){
   if(action==='owner-command'){
    const args={jobId:uuid(input.jobId),expectedVersion:input.expectedVersion,operationId:uuid(input.operationId),status:input.status,reason:String(input.reason||'').slice(0,2000),checks:input.checks||null,confirmedPickup:String(input.confirmedPickup||'').slice(0,120)};
    const previous=await rpc('owner-result',scope,{...auth,operationId:args.operationId});if(previous){const candidate=await C.hash(args);return rpc(action,scope,{...auth,...args,digest:candidate});}
-   if(input.status==='ready-for-production'){const job=await rpc('owner-job',scope,{...auth,jobId:args.jobId}),record=await hydrate(job.revisions.find(r=>r.revision===job.revision));if(record.snapshot.lettering&&!record.snapshot.lettering.resolved)throw Error('Prepare a matching lettering proposal and obtain customer approval first.');if(!Number.isSafeInteger(record.snapshot.price.totalCents)||record.snapshot.price.totalCents<1)throw Error('Confirm the price in an amendment and obtain customer approval first.');const layout=D.layout(record.snapshot.request.design,F);if(!layout.ok||layout.blank)throw Error('Exportable artwork needs review.');}
+   if(input.status==='ready-for-production'){const job=await rpc('owner-job',scope,{...auth,jobId:args.jobId}),record=await hydrate(job.revisions.find(r=>r.revision===job.revision));C.checkBoard(record.snapshot,null,true);if(record.snapshot.lettering&&!record.snapshot.lettering.resolved)throw Error('Prepare a matching lettering proposal and obtain customer approval first.');if(!Number.isSafeInteger(record.snapshot.price.totalCents)||record.snapshot.price.totalCents<1)throw Error('Confirm the price in an amendment and obtain customer approval first.');const layout=D.layout(record.snapshot.request.design,F);if(!layout.ok||layout.blank)throw Error('Exportable artwork needs review.');}
    return rpc(action,scope,{...auth,...args,digest:await C.hash(args)});
   }
   if(action==='contact-correct'){
@@ -70,10 +70,11 @@ export function createService(io){
   }
   if(action==='amend'){
    if(!String(input.reason||'').trim())throw Error('Explain the proposed change.');
-   const snapshot=C.clone(input.snapshot),check=S.validate(snapshot.request,F,{complete:true});if(!check.ok||!await S.approvalMatches(snapshot.request,F))throw Error('Render and review the proposed sign proof. '+check.errors.join(' '));
+   const snapshot=C.clone(input.snapshot);C.checkBoard(snapshot);const check=S.validate(snapshot.request,F,{complete:true});if(!check.ok||!await S.approvalMatches(snapshot.request,F))throw Error('Render and review the proposed sign proof. '+check.errors.join(' '));
    if(!Number.isSafeInteger(snapshot.price.totalCents)||snapshot.price.totalCents<1||snapshot.price.totalCents>100000000)throw Error('Enter the confirmed whole-cent price.');snapshot.price.state='owner-quote';snapshot.approval={kind:'owner-proposal',at:new Date().toISOString(),digest:await C.approvalDigest(snapshot)};
    const operationId=uuid(input.operationId),args={jobId:uuid(input.jobId),expectedVersion:input.expectedVersion,operationId,snapshot:C.metadata(snapshot),reason:String(input.reason||'').slice(0,2000)};args.digest=await C.hash({...args,snapshot:{...args.snapshot,approval:{...args.snapshot.approval,at:null}}});
    const previous=await rpc('owner-result',scope,{...auth,operationId});if(previous)return rpc(action,scope,{...auth,...args,assets:[]});
+   const savedJob=await rpc('owner-job',scope,{...auth,jobId:args.jobId}),savedSnapshot=savedJob.revisions.find(r=>r.revision===savedJob.revision).snapshot;if(snapshot.boardSpec&&C.canonical(snapshot.boardSpec)!==C.canonical(savedSnapshot.boardSpec||null)){const publication=(await rpc('owner-list',scope,auth)).publication;C.checkBoard(snapshot,publication);}
    args.assets=await saveAssets(scope,operationId,await assetsFor(snapshot),auth,'owner');return rpc(action,scope,{...auth,...args});
   }
   if(action==='recover'||action==='recover-resume'){

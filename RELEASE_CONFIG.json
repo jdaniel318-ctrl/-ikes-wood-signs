@@ -14,10 +14,10 @@
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "COUNTERCRAFT_INTAKE.sql",
     "edge_function": "countercraft",
-    "status": "not_applied_confirmation_expired",
+    "status": "applied_verified",
     "automatic_execution_by_upload": false,
     "sql_sha256": "9c12f7e2a56eb6141280545a7d6330ef90ee16ce1fd6cc2ce16d8f11c3b6c048",
-    "reason": "Supabase apply_migration confirmation expired twice. Read-only final check: zero Countercraft tables; no gateway; Ike remains staging.",
-    "edge_function_status": "not_deployed"
+    "reason": "Countercraft tables, private storage and exact-vessel gateway verified. TrueFit service v2 deployed; Sea Trial remains enabled only by owner publication.",
+    "edge_function_status": "deployed_active_v2"
   }
 }
