@@ -1,10 +1,10 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Keyline 8.8.20.81
+# Black Flag Sightline 8.8.20.82
 
 Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
-Baseline: 8.8.20.80. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Baseline: 8.8.20.81. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
 Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
-Keyline standardizes saved-account AutoFill metadata across fleet owner, appointed Captain and Admiral password sign-in fields. Apple controls Face ID or Touch ID for saved credentials. Existing server role, vessel membership, PIN, session and recovery checks are unchanged. No passkey enrollment or biometric authentication protocol is added. See KEYLINE_GUIDE.md.
+Sightline adds an isolated Carvewright camera trial linked from Ike's shop inbox and Carvewright. Reference-card photo measurement and native ARKit evidence import feed one outlined lettering geometry for preview, SVG and DXF. No routine rack code or board dimension entry. Species and thickness remain unknown; pricing stays conditional and no machine program is generated. An unsigned, uncompiled native companion source project is supplied for device trials. No accounts, live orders or backend changes. See SIGHTLINE_GUIDE.md and SIGHTLINE_NATIVE.md.
 Preparation does not deploy frontend or backend changes. See PATCH_CONTRACT.json for separately managed backend prerequisites.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 

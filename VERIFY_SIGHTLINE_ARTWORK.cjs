@@ -1,0 +1,17 @@
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs');
+assert.ok(fs.existsSync(__dirname+'/carvewright_capture_artwork.js'),'capture artwork adapter must exist');
+const A=require('./carvewright_capture_artwork.js'),F=require('./carve_fonts.js'),C=require('./carvewright_capture_core.js');
+const m=C.measurePhoto({reference:[[50,50],[135.6,50],[135.6,103.98],[50,103.98]],board:[[0,0],[600,0],[600,200],[0,200]],imageWidth:800,imageHeight:600});
+const b=A.build(m,'Smoke Hole','studio-sans',F);
+assert.ok(Math.abs(Number(b.svg.match(/width="([\d.]+)mm"/)[1])-600)<.001);
+assert.ok(b.svg.includes(b.paths));
+assert.ok(b.dxf.includes('$INSUNITS\r\n70\r\n4'));
+assert.equal(b.packet.measurement.thicknessMm,null);
+assert.equal(b.packet.customerApproved,false);
+assert.equal(b.packet.machineProgramIncluded,false);
+assert.ok(b.packet.artwork.glyphs.length>0);
+assert.throws(()=>A.build(m,'','studio-sans',F));
+assert.throws(()=>A.build({...m,outlineMm:[[0,0],[600,0],[300,1],[0,1]]},'Smoke Hole','studio-sans',F),/outside/);
+assert.throws(()=>A.build(m,'Test','unknown-font',F));
+console.log('PASS shared proof/export geometry, mm DXF, unknown thickness, empty/unsupported text and out-of-board lettering');

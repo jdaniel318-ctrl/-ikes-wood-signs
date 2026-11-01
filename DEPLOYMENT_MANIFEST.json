@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.20.81",
-  "version": "8.8.20.81",
-  "release_name": "Keyline",
-  "releaseName": "Keyline",
-  "release_seal": "keyline-882081",
+  "build": "8.8.20.82",
+  "version": "8.8.20.82",
+  "release_name": "Sightline",
+  "releaseName": "Sightline",
+  "release_seal": "sightline-882082",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -278,8 +278,8 @@
     "algorithm": "SHA-256",
     "files": {
       "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": {
-        "sha256": "469d4fff95e532173850395bc5377b3d5e4a1213c4858528cbbaa2fea7cdf6e7",
-        "build": "8.8.20.81",
+        "sha256": "4b1458c8203679c63bf6f080ecbe5f311ab5f5ef649fe7e6661d5ba47103d3a3",
+        "build": "8.8.20.82",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -326,14 +326,14 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_COMMAND_MODEL.json": {
-        "sha256": "349743820dc8d6b82d083343210adfcf00c3df36c89f190a49b90f7d8201b08e",
-        "build": "8.8.20.81",
+        "sha256": "0cd51c1bc813b83ef2945ea19ee27bcf72027af3fda7d26a993ba7a650db74d5",
+        "build": "8.8.20.82",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
       "FLEET_DOCTRINE_REGISTRY.json": {
-        "sha256": "b29995badc60121e7f5a0da9b10bb0fb37e18494c5648cef526a3aa0077e6ceb",
-        "build": "8.8.20.81",
+        "sha256": "4f5bec611e635bca5f5745e973b169808ae296c13951507c56147a7843ddddfe",
+        "build": "8.8.20.82",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -392,8 +392,8 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "GOLDEN_VOYAGES.json": {
-        "sha256": "db28d4ea208c0ddb6093c258219b5c703b1f9c84cd8572b9b9107eb7d94b667c",
-        "build": "8.8.20.81",
+        "sha256": "74b57f8d87f4b66b419d85da7bf828c49888e7997bb0c9b61197f76fe537ea7c",
+        "build": "8.8.20.82",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -552,14 +552,14 @@
       "app.js": "f5564e217d8174bb98496fd8038ed8712feed7a9a3fb61b4c817484489ca2731",
       "captain.js": "dc33f745a50e30661fb14b7a4286abbe7a2a4b02c880df014ca698a8f5af266e",
       "simple_books.js": "ddd76dcf5e6c579f16918a9d3e645b0fc65d8a5b4d7c66df8896d8314eea325d",
-      "owner.html": "53c218b2ff2c9de19dfe762f6845b9bc11ac7494591413ebe2a648eaa18df29f",
-      "manifest.webmanifest": "fc54fdcbd8acac2f4af6ffdda109175e5cc4403678c35d425d3b9b0c1789b001",
+      "owner.html": "16eccb0e852565915c98c3b73670c716d69ecb51ab5894af52b292b6e239651f",
+      "manifest.webmanifest": "50aca706cd561f972cf25b40fd3ba7db62b538357ce6374450f95bc28225054a",
       "IKE_STYLE_FOUNDRY.json": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
-      "sw.js": "82b8b1d44a4b000cfa76ab7bdcca75919863b7786f8601ad00fe10a1bfacf9aa",
-      "FLEET_DOCTRINE_REGISTRY.json": "b29995badc60121e7f5a0da9b10bb0fb37e18494c5648cef526a3aa0077e6ceb",
-      "GOLDEN_VOYAGES.json": "db28d4ea208c0ddb6093c258219b5c703b1f9c84cd8572b9b9107eb7d94b667c",
-      "FLEET_COMMAND_MODEL.json": "349743820dc8d6b82d083343210adfcf00c3df36c89f190a49b90f7d8201b08e",
-      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "469d4fff95e532173850395bc5377b3d5e4a1213c4858528cbbaa2fea7cdf6e7",
+      "sw.js": "9202819400c8bb32acfb7ac520aa0816be3a4dc17db42bd2839f2a98643a5799",
+      "FLEET_DOCTRINE_REGISTRY.json": "4f5bec611e635bca5f5745e973b169808ae296c13951507c56147a7843ddddfe",
+      "GOLDEN_VOYAGES.json": "74b57f8d87f4b66b419d85da7bf828c49888e7997bb0c9b61197f76fe537ea7c",
+      "FLEET_COMMAND_MODEL.json": "0cd51c1bc813b83ef2945ea19ee27bcf72027af3fda7d26a993ba7a650db74d5",
+      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "4b1458c8203679c63bf6f080ecbe5f311ab5f5ef649fe7e6661d5ba47103d3a3",
       "input_hygiene.js": "85584886dd424e619c6ee1069665e201dca51e815673839f91da0d796fcf591a",
       "business_deck.js": "b243334f39ff99eefe009872c0afb5eea0939cd8c7b9308bbf199b405c2716c5",
       "business_deck.css": "445fa81fff307d41cdd9a7d181ec86f9daae6843d24ac0d9fe14f939a25b6289",
@@ -578,16 +578,16 @@
       "quartermaster.js": "39bd8a7052d3f357f7e8aa535045fb34cb8de1983e69b828930aa88d46b293c3",
       "quartermaster.css": "7873d13ead95debc796a0e51d8f6eaf529488ff66da21242a8bf1135c4732c8b",
       "carve_fonts.js": "8eff084fd386b9fe63cac51924de2cef24f3af3bfeee98572c2929a7adb8fcc4",
-      "carve_core.js": "1332b534c520f6953750206c73f9c80175b0ea06132739a1145575de8060cc4c",
+      "carve_core.js": "428acd25f8208c66a9681e744a57665d1d0db2abf11a34704b94591c69be61f3",
       "carve_store.js": "95444741396e68749ecbf67dc15fd4f5f34d58a9f036621f41e6e2e276caa984",
       "carve_studio.js": "cd63bebe96e3bd01428a9f1ed1ca43342a1d5b0e589b80ec3f7ea5e1ce31d6e7",
       "carve_studio.css": "ca66e672d2b856c757a43ffdf4787757dc1d3faf6429d657b450665642f19834",
       "carve-studio.html": "55fdae2f13704659f40a2f976673c81c7ab40f141ac044457d8e2e444c4a53f3",
       "carve_font_license.txt": "af106c9b258eb3caa9bbb3bd1f6076b5ce30ac5499801e860ab55dcc03eea4ef",
-      "carvewright_core.js": "a187227e9356b562a3620d474ee3ab9e66103b54ae9738b148de4924abdb93b9",
+      "carvewright_core.js": "6bdbc40817183e32187e1702035ea11ba7183081b41a04a2a0736db5f9c29fe6",
       "carvewright_store.js": "3ab158e100e16b01a5a3a3fb139d961b580bee31ca1cc4f5ff4024f7b2b18df1",
       "carvewright_studio.js": "68ea0f494ff24db9a0c5b7f41331eadfbbec6f5f8b19d423ab69c27ef98f2681",
-      "carvewright_app.js": "2e50463bd253fc2dae4f77cae1eb8c0f745b8364001aff9f2630ac8a272ab04f",
+      "carvewright_app.js": "60ea4c61d8ed93bc0eeb9d59c302ea809a02680ed766c1adb914f74c3b263544",
       "carvewright_fleet.js": "fb8efc8dc562222f6755b1d2b894726e7b5e2902efbc2f7540d3a7141b760053",
       "carvewright.css": "2d3d86cc200627af481d095ccca8a6205d3a7756e3c0fb1cae024f5a2ca3a85c",
       "carvewright.html": "f40aa305eddd5088dd14a776f2cd909e3bdd80dd3e614baa89044a2fb098d353",
@@ -615,7 +615,7 @@
       "countercraft_core.js": "acd805bbf0d6ff2312207d19f7146a844e7749f6610a9384ea4a5d91cd13e964",
       "countercraft_customer.js": "4e5acbc749508d527bd3f2424558475b7c9f4f252402b1558fe4205cae6701a6",
       "countercraft_flow.js": "c7edf9d23559e54df4b2bc48ac29a2a8bb4d4704c580f604313ca0f3dbe625d9",
-      "countercraft_owner.js": "bbf5bfb3d7b5de9765ef1e9a1957f574d47e2527655474de1c3bc966d5e6c551",
+      "countercraft_owner.js": "fbafbcdf7c3213f5e4f67bf681dd6f77fcffc529d977b425e5bfc67b218e5b05",
       "countercraft_owner_core.js": "098a3ab1f5532266342191af3c45c2b8fa9266d82b8c528a0c0c897247f65ace",
       "countercraft_privacy.js": "dee25bfbf5a9fd2d57e75824dddea93bb592c928e048a6e789ef8e9e58442592",
       "countercraft_qr.js": "f2dc761ce50dc8d10dcb9fff0898118e10e0e5a45d49bf65378d3fb74efecb82",
@@ -624,7 +624,12 @@
       "countercraft_exports.js": "d5543c5b94155aed3bd873d3b1cff85470c41b0ea57a109170321b3fe4b6587c",
       "countercraft_backup.js": "74bad722a9dfd78fb93dc17def96d2a9d218c068c84f05d276496cf5fe6f9f7f",
       "countercraft_recognition.js": "9725578473e656a61092e1263a7a33e82c4d668ae375eef555bcfa8a76227baa",
-      "fleet_legacy_recovery.js": "3119748e77df0967f481e45d14200752d015fb15db7009c1faf35e0d6b71f1e2"
+      "fleet_legacy_recovery.js": "3119748e77df0967f481e45d14200752d015fb15db7009c1faf35e0d6b71f1e2",
+      "carvewright_capture.html": "194628f4e5fbd42d894789def4a8e30af68ab5ccac23155e206ef1f113c47ca8",
+      "carvewright_capture.css": "6196f97aabd2f9b892fe1ad943ca29c177d6ab0d99703ccc4e086b2f03505318",
+      "carvewright_capture_core.js": "e01e86da000ca6e1773964ef131dcef2a8e898972bceb28d8ecbbbee9459c90b",
+      "carvewright_capture_artwork.js": "e4e826bd09bd8138fafce52fa2638b185c14df87bf43ff5d7d33e5a6edc9920b",
+      "carvewright_capture.js": "1e51a549e7fb2ed82d6663c815e3f1e89b7a172d9fc67a7c20e39c784c4f91ec"
     }
   },
   "watchbeacon_upgrade": {
@@ -1966,5 +1971,15 @@
     "cloud_limit_bytes": 5242880,
     "automatic_upload": false,
     "automatic_write_retry": false
+  },
+  "sightline": {
+    "build": "8.8.20.82",
+    "mode": "isolated-device-trial",
+    "entrypoint": "carvewright_capture.html",
+    "evidence_file": "SIGHTLINE_EVIDENCE.json",
+    "native_companion": "unsigned-uncompiled-source",
+    "automatic_species_identification": false,
+    "machine_program_generation": false,
+    "customer_order_writes": false
   }
 }

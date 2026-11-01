@@ -3,7 +3,8 @@
 'use strict';
 var DESIGN='carvewright-design-v1',PACKET='carvewright-job-v1',BAD=['__proto__','prototype','constructor'];
 var clone=function(x){return JSON.parse(JSON.stringify(x));};
-function uuid(){if(globalThis.crypto&&globalThis.crypto.randomUUID)return globalThis.crypto.randomUUID();if(typeof require==='function')return require('node:crypto').randomUUID();throw Error('Secure design identifiers are unavailable.');}
+function uuid(){if(globalThis.crypto&&globalThis.crypto.randomUUID)return globalThis.crypto.randomUUID();if(globalThis.crypto?.getRandomValues){const b=new Uint8Array(16);globalThis.crypto.getRandomValues(b);b[6]=(b[6]&15)|64;b[8]=(b[8]&63)|128;const h=Array.from(b,x=>x.toString(16).padStart(2,'0')).join('');return h.slice(0,8)+'-'+h.slice(8,12)+'-'+h.slice(12,16)+'-'+h.slice(16,20)+'-'+h.slice(20);}
+    if(typeof require==='function')return require('node:crypto').randomUUID();throw Error('Secure design identifiers are unavailable.');}
 function plain(x){return x&&typeof x==='object'&&!Array.isArray(x)&&(Object.getPrototypeOf(x)===Object.prototype||Object.getPrototypeOf(x)===null);}
 function safeTree(value,depth){if(depth>24)throw Error('Design nesting is too deep.');if(value===null||typeof value==='string'||typeof value==='boolean')return;if(typeof value==='number'&&Number.isFinite(value))return;if(!plain(value)&&!Array.isArray(value))throw Error('Design must contain plain JSON data.');Reflect.ownKeys(value).forEach(function(k){if(Array.isArray(value)&&k==='length')return;if(typeof k!=='string'||BAD.indexOf(k)!==-1)throw Error('Unsafe design key.');var p=Object.getOwnPropertyDescriptor(value,k);if(!p||!Object.prototype.hasOwnProperty.call(p,'value')||!p.enumerable)throw Error('Design properties must be enumerable own data properties.');safeTree(p.value,depth+1);});}
 function keys(x,allowed,label,errors){if(!plain(x)){errors.push(label+' must be an object.');return false;}Reflect.ownKeys(x).forEach(function(k){if(allowed.indexOf(k)===-1)errors.push('Unknown '+label+' field: '+String(k));});allowed.forEach(function(k){if(!Object.prototype.hasOwnProperty.call(x,k))errors.push('Missing '+label+' field: '+k);});return true;}
@@ -59,6 +60,7 @@ return Object.freeze({createDraft:createDraft,validate:validate,layout:layout,re
   }
   function newId() {
     if(root.crypto?.randomUUID)return root.crypto.randomUUID();
+    if(globalThis.crypto?.getRandomValues){const b=new Uint8Array(16);globalThis.crypto.getRandomValues(b);b[6]=(b[6]&15)|64;b[8]=(b[8]&63)|128;const h=Array.from(b,x=>x.toString(16).padStart(2,'0')).join('');return h.slice(0,8)+'-'+h.slice(8,12)+'-'+h.slice(12,16)+'-'+h.slice(16,20)+'-'+h.slice(20);}
     if(typeof require==='function')return require('node:crypto').randomUUID();
     throw Error('Secure object identifiers are unavailable.');
   }

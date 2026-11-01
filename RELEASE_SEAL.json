@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.81",
-  "release": "Keyline",
-  "seal": "keyline-882081",
+  "build": "8.8.20.82",
+  "release": "Sightline",
+  "seal": "sightline-882082",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Keyline",
-  "name": "Keyline",
-  "releaseName": "Keyline"
+  "release_name": "Sightline",
+  "name": "Sightline",
+  "releaseName": "Sightline"
 }

@@ -1,11 +1,11 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Current architecture — Keyline 8.8.20.81
+# Current architecture — Sightline 8.8.20.82
 
 Source of release identity: RELEASE_CONFIG.json. Installed page/manifest/seal/worker identity is generated together. APP_COMPONENT_REVISION is 8.8.20.71; owner helper revision is 8.8.20.68. Unchanged component bodies remain byte-identical across release-only changes.
 
 The Engine still verifies every required body, current governance models, app component contract and worker identity before executing the same script sequence. App and Captain bind audit/display freshness to the verified installed release. This context never grants permissions. The owner page keeps explicit helper compatibility checks.
 
-Keyline standardizes saved-account AutoFill metadata across fleet owner, appointed Captain and Admiral password sign-in fields. Apple controls Face ID or Touch ID for saved credentials. Existing server role, vessel membership, PIN, session and recovery checks are unchanged. No passkey enrollment or biometric authentication protocol is added. See KEYLINE_GUIDE.md.
+Sightline adds an isolated Carvewright camera trial linked from Ike's shop inbox and Carvewright. Reference-card photo measurement and native ARKit evidence import feed one outlined lettering geometry for preview, SVG and DXF. No routine rack code or board dimension entry. Species and thickness remain unknown; pricing stays conditional and no machine program is generated. An unsigned, uncompiled native companion source project is supplied for device trials. No accounts, live orders or backend changes. See SIGHTLINE_GUIDE.md and SIGHTLINE_NATIVE.md.
 Backend prerequisites are recorded separately in PATCH_CONTRACT.json. Release preparation executes no database commands. Fleet core and Admiral programs remain distinct.
 
 ## Release commands

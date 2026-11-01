@@ -1,0 +1,53 @@
+{
+  "schema": "blackflag-sightline-evidence-v1",
+  "build": "8.8.20.82",
+  "status": "OFFLINE_PASSED_DEVICE_ACCEPTANCE_PENDING",
+  "baseline": "8.8.20.81 Keyline",
+  "baseline_suite_count": 21,
+  "target_suite_count": 25,
+  "browser_checks": {
+    "sample_dimensions_mm": [
+      600,
+      200
+    ],
+    "photo_proof_rendered": true,
+    "synthetic_native_import": true,
+    "native_fixture_dimensions_mm": [
+      600,
+      200
+    ],
+    "empty_wording_blocks_export": true,
+    "evidence_json_download_read_back": true,
+    "svg_download_completion": "NOT_CONFIRMED_CLOUD_BROWSER_TIMEOUT",
+    "valid_wording_recovers_after_error": true,
+    "screenshot": "external Sightline sample preview"
+  },
+  "review": {
+    "independent_source_review": "no Critical or Important issues reported",
+    "minor_findings": "step indicator and error status corrected"
+  },
+  "native": {
+    "xcode_project_structure": "tested",
+    "compiled": false,
+    "signed": false,
+    "installed": false,
+    "device_tested": false
+  },
+  "device_acceptance": "PENDING",
+  "accuracy_certified": false,
+  "automatic_species_classifier": false,
+  "final_price_automatic": false,
+  "machine_program_included": false,
+  "production_certification": false,
+  "deployed": false,
+  "business_data_changed": false,
+  "offline_suite_count": 25,
+  "verified_at": "2026-11-01T17:58:45.136168Z",
+  "checks": [
+    "VERIFY_SIGHTLINE_CORE.cjs",
+    "VERIFY_SIGHTLINE_ARTWORK.cjs",
+    "VERIFY_SIGHTLINE_IDS.cjs",
+    "TEST_SIGHTLINE_NATIVE.py",
+    "21 retained fleet/release suites"
+  ]
+}
