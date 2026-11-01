@@ -1612,10 +1612,11 @@
     return opened;
   }
 
-  function openPrimaryDbRequest(version=DB_VERSION){
+  function openPrimaryDbRequest(version=DB_VERSION,{allowUpgrade=true}={}){
     return new Promise((resolve,reject)=>{
       const req=version==null ? indexedDB.open(DB_NAME) : indexedDB.open(DB_NAME,version);
       req.onupgradeneeded=()=>{
+        if(!allowUpgrade){req.transaction.abort();reject(new Error('No existing primary database is available for backup.'));return;}
         const d=req.result;
         if(!d.objectStoreNames.contains(STORE_ORDERS)){
           const s=d.createObjectStore(STORE_ORDERS,{keyPath:'id'});
@@ -1640,7 +1641,9 @@
     });
   }
 
-  async function openDb(){
+  async function openDb({readOnlyRecovery=false}={}){
+    // Backup may reconnect, but must not create/upgrade a database or write diagnostics.
+    if(readOnlyRecovery)return openPrimaryDbRequest(null,{allowUpgrade:false});
     try{
       return await openPrimaryDbRequest(DB_VERSION);
     }catch(err){
@@ -2166,24 +2169,24 @@
     const message=String(err?.message||err||'');
     return ['InvalidStateError','TransactionInactiveError','AbortError','UnknownError'].includes(name) || /database.*closed|connection.*closed|transaction.*inactive|not a valid state|db\.transaction|undefined.*transaction/i.test(message);
   }
-  async function reopenPrimaryDb(reason='retry'){
+  async function reopenPrimaryDb(reason='retry',{readOnlyRecovery=false}={}){
     try{db?.close?.();}catch(_){}
-    db=await openDb();
+    db=await openDb({readOnlyRecovery});
     if(!db || typeof db.transaction!=='function') throw new Error('Primary Dark Sky database did not open correctly.');
-    window.DarkSkyV4?.diagnostic?.('storage.primary_db.reopened',String(reason||'retry'),{build:BUILD_VERSION});
+    if(!readOnlyRecovery)window.DarkSkyV4?.diagnostic?.('storage.primary_db.reopened',String(reason||'retry'),{build:BUILD_VERSION});
     return db;
   }
-  async function ensurePrimaryDb(reason='storage operation'){
+  async function ensurePrimaryDb(reason='storage operation',options={}){
     if(db && typeof db.transaction==='function') return db;
-    return reopenPrimaryDb(`ensure:${reason}`);
+    return reopenPrimaryDb(`ensure:${reason}`,options);
   }
-  async function withPrimaryDbRetry(work,label='storage operation'){
-    await ensurePrimaryDb(label);
+  async function withPrimaryDbRetry(work,label='storage operation',options={}){
+    await ensurePrimaryDb(label,options);
     try{return await work();}
     catch(err){
       if(!primaryDbRetryable(err))throw err;
       console.warn(`${label} retrying after IndexedDB connection interruption`,err);
-      await reopenPrimaryDb(label);
+      await reopenPrimaryDb(label,options);
       return work();
     }
   }
@@ -2192,7 +2195,7 @@
     if(store===STORE_ORDERS) backupOrderLocally(value);
     return result;
   }
-  async function getAll(store){ return withPrimaryDbRetry(()=>reqToPromise(tx(store).getAll()),`getAll:${store}`); }
+  async function getAll(store,options={}){ return withPrimaryDbRetry(()=>reqToPromise(tx(store).getAll()),`getAll:${store}`,options); }
   async function getSetting(key){ return withPrimaryDbRetry(()=>reqToPromise(tx(STORE_SETTINGS).get(key)),`getSetting:${key}`); }
   async function setSetting(key,value){
     try{ return await put(STORE_SETTINGS,{key,value}); }
@@ -13234,12 +13237,43 @@ The full order and approved media remain stored with this project.`;
     }));
   }
 
+  let captainBackupPending=false;
+  function bindCaptainBackupCore(){
+    const button=$('engineExportBtn');
+    if(!button || button.dataset.backupBound==='true')return;
+    button.dataset.backupBound='true';
+    button.addEventListener('click',exportBackup);
+  }
   async function exportBackup(){
-    const status=$('engineStorageStewardStatus');
+    const status=$('engineBackupStatus')||$('engineStorageStewardStatus');
+    if(window.BlackFlagAuth?.isUnlocked?.()!==true){
+      if(status){status.classList.add('is-active');status.textContent='Sign in to the Engine to prepare a private backup.';}
+      return false;
+    }
+    if(captainBackupPending)return false;
+    captainBackupPending=true;
+    const button=$('engineExportBtn');if(button)button.disabled=true;
+    let watchdog;
+
     if(status){status.classList.add('is-active');status.innerHTML='<strong>PREPARING CAPTAIN\'S BACKUP…</strong><br><span>Read-only export preparation. Nothing is removed or changed.</span>';}
     try{
-      const orders=await getMergedOrders();
-      const settings=await getAll(STORE_SETTINGS);
+      const snapshot=await Promise.race([
+        (async()=>{
+          // Read canonical orders explicitly: getMergedOrders alone masks a failed
+          // primary read and could misleadingly export only the local mirror.
+          const indexed=await getAll(STORE_ORDERS,{readOnlyRecovery:true});
+          const settings=await getAll(STORE_SETTINGS,{readOnlyRecovery:true});
+          const local=readLocalOrders(), excluded=quarantinedOrderIds(), merged=new Map();
+          for(const item of [...local,...indexed]){
+            const row=normalizeOrderIsolation(item);
+            if(row?.id&&!excluded.has(String(row.id)))merged.set(row.id,row);
+          }
+          return {orders:[...merged.values()],settings};
+        })(),
+        new Promise((_,reject)=>{watchdog=setTimeout(()=>reject(new Error('Storage did not respond within 20 seconds. No backup download was created.')),20000);})
+      ]);
+      if(window.BlackFlagAuth?.isUnlocked?.()!==true)throw new Error('Engine session ended. Sign in again to prepare the backup.');
+      const {orders,settings}=snapshot;
       const data={version:3,platform:'Dark Sky / Black Flag',build:BUILD_VERSION,schemaVersion:3,exportedAt:new Date().toISOString(),orders,settings};
       const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
       const url=URL.createObjectURL(blob);
@@ -13247,11 +13281,13 @@ The full order and approved media remain stored with this project.`;
       if(window.__darkSkyCaptainBackupUrl)try{URL.revokeObjectURL(window.__darkSkyCaptainBackupUrl)}catch(_){}
       window.__darkSkyCaptainBackupUrl=url;
       if(status){status.innerHTML=`<strong>CAPTAIN'S BACKUP READY · ${formatStorageMb(blob.size)} MB</strong><br><span>${orders.length} merged orders + ${settings.length} settings rows prepared. On iPad, tap the durable download link below so Safari receives a fresh user gesture.</span><br><a class="secondary-btn small" href="${url}" download="${filename}">DOWNLOAD CAPTAIN'S BACKUP</a>`;}
-      window.DarkSkyV4?.diagnostic?.('storage.backup.ready','Captain backup prepared',{build:BUILD_VERSION,bytes:blob.size,orders:orders.length,settings:settings.length});
+      // Recovery export must not depend on, or add pressure to, any storage writer.
       return true;
     }catch(err){
       if(status)status.innerHTML=`<strong>BACKUP PREPARATION INTERRUPTED</strong><br><span>${escapeHtml(String(err?.message||err))}. No data changed.</span>`;
       return false;
+    }finally{
+      clearTimeout(watchdog);captainBackupPending=false;if(button)button.disabled=false;
     }
   }
 
@@ -17532,7 +17568,7 @@ The full order and approved media remain stored with this project.`;
       $('engineStorageDetail').textContent='Interrupted-order draft cleared. Existing saved orders were not changed.';
       refreshEngineDiagnostics();
     });
-    $('engineExportBtn').addEventListener('click',exportBackup);
+    bindCaptainBackupCore();
     $('engineResetSettingsBtn').addEventListener('click',()=>{
       $('engineResetPinInput').value='';
       $('engineResetError').textContent='';
@@ -17681,6 +17717,7 @@ The full order and approved media remain stored with this project.`;
   // Arm independent command buses immediately. init() calls these again safely.
   // 8.6.1 Voyage Truth: arm one canonical telemetry route before storage/migrations.
   bindEngineTelemetryCore();
+  bindCaptainBackupCore();
   commandWiringSelfCheck();
   // Engine appearance is also armed here because the selector lives on the pre-login gate
   // and must never wait for IndexedDB, migrations, or the late bindEvents() sequence.

@@ -1,7 +1,7 @@
 {
   "schema": "blackflag-release-gate-v1",
-  "build": "8.8.20.78",
-  "release": "Waypoint",
+  "build": "8.8.20.79",
+  "release": "Lifeboat",
   "pass": false,
   "verification_status": "PREPARED_NOT_TESTED",
   "evidence_file": "TRIMLINE_EVIDENCE.json",
