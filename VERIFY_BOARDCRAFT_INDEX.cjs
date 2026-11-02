@@ -267,7 +267,7 @@ async function main() {
       await page.locator('#clientPreviewUnlockBtn').click();
       await page.waitForFunction(() => !document.querySelector('#clientPreviewGate'));
       assert.equal(await page.locator('#ikeShopEntry').isVisible(), true);
-      await page.locator('#ikeShopEntry summary').click();await page.locator('#ikeShopStart').click(); await ready();
+      await page.locator('#projectStartButton').click(); await ready();
       assert.equal(await page.evaluate(() => IkeShop.build), deployment.build);
       assert.equal(await page.locator('#ishCameraInput').getAttribute('capture'), 'environment');
       assert.equal(await page.locator('#ishCameraInput').getAttribute('multiple'), null);

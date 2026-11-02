@@ -50,6 +50,16 @@
     if(!checked.ok)throw fault('VALIDATION',checked.errors.join(' '));
     return copy;
   }
+  function validateDraft(request){
+    const copy=clone(request),customer=copy.customer,details=copy.details;
+    if(!plain(customer)||Object.keys(customer).sort().join(',')!=='email,name,phone'||!plain(details))throw fault('VALIDATION','Invalid draft fields.');
+    for(const [key,max] of [['name',160],['email',254],['phone',80]])if(typeof customer[key]!=='string'||customer[key].length>max)throw fault('VALIDATION','Draft contact is too long.');
+    if(typeof details.finish!=='string'||details.finish.length>120||(details.quantity!==null&&!Number.isFinite(details.quantity)))throw fault('VALIDATION','Invalid draft details.');
+    // A draft may pause midway through a field. Validate the bounded answers
+    // above, while retaining full identity, artwork, photo and scope checks.
+    validate({...copy,customer:{name:'',email:'',phone:''},details:{...details,quantity:1,finish:'Black'}},copy.revision);
+    return copy;
+  }
   function create(options){
     options=options||{};
     const sourceScope=options.scope,scopeKey=scopeIdentity(sourceScope);
@@ -81,7 +91,7 @@
         const cancel=()=>fail(fault('AUTH','The sign request closed before storage opened.'));
         pending.add(cancel);
         try{
-          request=globalThis.indexedDB.open(DB_NAME,1);
+          request=globalThis.indexedDB.open(options.draftStore===true?'blackflag-ike-private-drafts-v1':DB_NAME,1);
           request.onupgradeneeded=()=>{try{authorized();if(!request.result.objectStoreNames.contains(STORE_NAME))request.result.createObjectStore(STORE_NAME,{keyPath:'key'});}catch(e){try{request.transaction.abort();}catch(_){}fail(e);}};
           request.onerror=()=>fail(request.error);
           request.onblocked=()=>fail(fault('STORAGE','Local request storage is blocked. Close older shop tabs and try again.'));
@@ -124,13 +134,35 @@
       if(memoryOnly){await Promise.resolve();authorized();const record=next(read(memory.get(recordKey(copy.id)),copy.id));authorized();memory.set(record.key,record);return clone(copy);}
       return transact('readwrite',(store,checked,done)=>{const r=store.get(recordKey(copy.id));r.onsuccess=checked(()=>{const record=next(read(r.result,copy.id));authorized();const put=store.put(record);put.onsuccess=checked(()=>done(clone(copy)));});});
     }
+    // Recovery lives separately from submitted request revisions. A tombstone
+    // retains only a token so a stale tab cannot resurrect a discarded draft.
+    const draftKey=JSON.stringify([scopeKey,'private-device-draft']);
+    function checkedDraft(record){
+      if(!record)return null;
+      if(record.key!==draftKey||record.scopeKey!==scopeKey||!idOK(record.token))throw fault('STORAGE','The saved progress is invalid.');
+      return {token:record.token,request:record.request===null?null:validateDraft(record.request)};
+    }
+    async function readDraft(){
+      authorized();if(options.draftStore!==true||memoryOnly)throw fault('AUTH','Private-device recovery is unavailable here.');
+      return transact('readonly',(store,checked,done)=>{const r=store.get(draftKey);r.onsuccess=checked(()=>done(checkedDraft(r.result)));});
+    }
+    async function writeDraft(request,expectedToken){
+      authorized();if(options.draftStore!==true||memoryOnly)throw fault('AUTH','Private-device recovery is unavailable here.');
+      if(expectedToken!==null&&!idOK(expectedToken))throw fault('VALIDATION','Invalid recovery token.');
+      const copy=request===null?null:validateDraft(request);
+      return transact('readwrite',(store,checked,done)=>{const r=store.get(draftKey);r.onsuccess=checked(()=>{
+        const previous=checkedDraft(r.result);
+        if((previous?.token||null)!==expectedToken)throw fault('CONFLICT','Saved progress changed in another tab. Close this request and reopen it before saving again.');
+        const token=globalThis.crypto.randomUUID();const put=store.put({key:draftKey,scopeKey,token,request:copy});put.onsuccess=checked(()=>done(token));
+      });});
+    }
     function close(){
       if(closed)return;closed=true;
       Array.from(pending).forEach(cancel=>cancel());
       transactions.forEach(tx=>{try{tx.abort();}catch(_){}});transactions.clear();memory.clear();
       if(database){database.close();database=null;}
     }
-    return Object.freeze({save,load,close});
+    return Object.freeze({save,load,readDraft,writeDraft,close});
   }
   return Object.freeze({create});
 }));

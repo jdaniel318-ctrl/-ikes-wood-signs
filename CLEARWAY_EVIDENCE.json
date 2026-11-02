@@ -1,0 +1,680 @@
+{
+  "build": "8.8.20.86",
+  "name": "Clearway",
+  "browser_results": {
+    "Clearway": {
+      "results": [
+        {
+          "name": "next steps preserve answers and expose Mail action above footer",
+          "pass": true
+        },
+        {
+          "name": "private device opt-in restores photo design and answers only after Resume",
+          "pass": true
+        },
+        {
+          "name": "default fresh requests do not persist; preview cannot opt in",
+          "pass": true
+        },
+        {
+          "name": "draft slots isolate scope and reject stale overwrite and revoked reads",
+          "pass": true
+        },
+        {
+          "name": "reload offers saved progress without exposing it until resume",
+          "pass": true
+        },
+        {
+          "name": "shared session has no recovery controls or personal draft database",
+          "pass": true
+        },
+        {
+          "name": "storage failure reports unsaved progress and permits deliberate close",
+          "pass": true
+        },
+        {
+          "name": "cancel share retains package and never claims delivery",
+          "pass": true
+        },
+        {
+          "name": "review regression partial answers remain recoverable and correction keeps saving",
+          "pass": true
+        },
+        {
+          "name": "review regression departure after prepare preserves recoverable progress",
+          "pass": true
+        },
+        {
+          "name": "review regression storage unavailable permits explicit screen-only reset",
+          "pass": true
+        },
+        {
+          "name": "review regression changed design leaves Mail step and requires review",
+          "pass": true
+        },
+        {
+          "name": "two tabs cannot resurrect a draft discarded with a pending edit",
+          "pass": true
+        },
+        {
+          "name": "prepare acknowledges recovery revision before showing Mail readiness",
+          "pass": true
+        },
+        {
+          "name": "recovery refuses a different committed revision without changing answers",
+          "pass": true
+        }
+      ],
+      "passed": 15,
+      "failed": 0
+    },
+    "Fairwater": {
+      "results": [
+        {
+          "name": "typing keeps photo nodes and focus; editing invalidates approved package",
+          "pass": true
+        },
+        {
+          "name": "larger and smaller buttons clamp, undo and preserve board size",
+          "pass": true
+        },
+        {
+          "name": "Mail is primary, provider secondary, same ZIP shared without provider call",
+          "pass": true
+        },
+        {
+          "name": "unsupported file sharing keeps usable download and addressed draft",
+          "pass": true
+        }
+      ],
+      "passed": 4,
+      "failed": 0
+    },
+    "Customer": {
+      "scope": "Isolated Chromium; real board-photo customer/editor/core/store/package and exact native share bytes. Only provider network is routed locally. Safari/inbox receipt/physical CNC not claimed.",
+      "results": [
+        {
+          "name": "camera-first Ike branding uses this customer photo and one sign",
+          "pass": true
+        },
+        {
+          "name": "complete same-ZIP native share and addressed Mail handoff remain explicit",
+          "pass": true
+        },
+        {
+          "name": "provider rejection retains complete package and prepares usable Mail alternative",
+          "pass": true
+        },
+        {
+          "name": "new request removes photo, proof, contact and manual handoff",
+          "pass": true
+        },
+        {
+          "name": "embedded editor returns validated artwork without private store or Admiral session",
+          "pass": true
+        },
+        {
+          "name": "embedded numeric errors block return and guard loss closes the editor",
+          "pass": true
+        },
+        {
+          "name": "complete request freezes photos and downloads one complete native ZIP",
+          "pass": true,
+          "downloadBytes": 73777
+        },
+        {
+          "name": "content and numeric changes revoke approval and prepared bytes",
+          "pass": true
+        },
+        {
+          "name": "accepted delivery persists attempted state before fetch and never duplicates",
+          "pass": true,
+          "provider": [
+            {
+              "bytes": 76995,
+              "hasZip": true,
+              "attachmentBytes": 74037,
+              "attachmentSha256": "d1f1c52ecca375ca07d1c0db8fc485cbc5dfe2c78068a7132e30d5d4f8a2bb71",
+              "statusBeforeFetch": "attempted",
+              "attemptIdMatches": true,
+              "requestId": "7f6585a2-c9c4-4940-b9c5-748a9dfbccd2",
+              "revision": 2
+            }
+          ],
+          "postAcceptedDownloadMatchesSent": true
+        },
+        {
+          "name": "ambiguous network result locks further sends and retains download",
+          "pass": true
+        },
+        {
+          "name": "stale stored revision blocks the exact package before download or send",
+          "pass": true
+        },
+        {
+          "name": "context loss blocks send and a fresh customer sees no previous details",
+          "pass": true
+        },
+        {
+          "name": "preview keeps requests in memory and sends nothing",
+          "pass": true
+        },
+        {
+          "name": "sea_trial keeps requests in memory and sends nothing",
+          "pass": true
+        },
+        {
+          "name": "phone usable request controls and embedded editor",
+          "pass": true,
+          "geometry": {
+            "documentWidth": 390,
+            "viewport": 390,
+            "left": 0,
+            "right": 390,
+            "small": []
+          }
+        },
+        {
+          "name": "ipad usable request controls and embedded editor",
+          "pass": true,
+          "geometry": {
+            "documentWidth": 1024,
+            "viewport": 1024,
+            "left": 14,
+            "right": 1010,
+            "small": []
+          }
+        },
+        {
+          "name": "desktop usable request controls and embedded editor",
+          "pass": true,
+          "geometry": {
+            "documentWidth": 1440,
+            "viewport": 1440,
+            "left": 165,
+            "right": 1275,
+            "small": []
+          }
+        }
+      ],
+      "passed": 17,
+      "failed": 0
+    },
+    "Rosewood": {
+      "results": [
+        {
+          "name": "photo and design picker cancellation preserves an empty request",
+          "pass": true
+        },
+        {
+          "name": "saved board opens with exact dimensions and remains through wording changes",
+          "pass": true
+        }
+      ],
+      "passed": 2,
+      "failed": 0
+    },
+    "ActualIndex": {
+      "schema": "boardcraft-index-verification-v1",
+      "scope": "Actual sealed index, local client-preview PIN gate, photo-first storefront, shared Board controls, customer wording and native ZIP. Runtime assets served unchanged; every external request blocked. All names, contacts, images and dimensions are synthetic fixtures. Camera UI semantics are checked; native camera capture, Safari, live inbox receipt and physical CNC acceptance are not claimed.",
+      "build": "8.8.20.86",
+      "seal": "clearway-882086",
+      "passed": 5,
+      "failed": 0,
+      "expectedRequests": 1,
+      "completedRequests": 1,
+      "resetVerified": true,
+      "privatePreview": true,
+      "runtimeAssetsUnmodified": true,
+      "sealedRuntimeHashes": 88,
+      "pageErrors": [],
+      "blockedExternalAttempts": [],
+      "popupAttempts": [],
+      "served": [
+        "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
+        "DEPLOYMENT_MANIFEST.json",
+        "FLEET_COMMAND_MODEL.json",
+        "FLEET_DOCTRINE_REGISTRY.json",
+        "GOLDEN_VOYAGES.json",
+        "IKE_STYLE_FOUNDRY.json",
+        "RELEASE_INVENTORY.json",
+        "RELEASE_SEAL.json",
+        "app.js",
+        "black_flag_platform_icon.png",
+        "black_flag_primary_lockup.png",
+        "boardcraft_photo.js",
+        "bootstrap_build_horizontal.png",
+        "business_deck.css",
+        "business_deck.js",
+        "captain.js",
+        "captains_quarters_command_center_v578.png",
+        "carve_core.js",
+        "carve_fonts.js",
+        "carve_store.js",
+        "carve_studio.css",
+        "carve_studio.js",
+        "carvewright.css",
+        "carvewright.html",
+        "carvewright_app.js",
+        "carvewright_cam.js",
+        "carvewright_clipper.js",
+        "carvewright_core.js",
+        "carvewright_fleet.js",
+        "carvewright_machining.css",
+        "carvewright_machining.js",
+        "carvewright_portable.js",
+        "carvewright_posts.js",
+        "carvewright_store.js",
+        "carvewright_studio.js",
+        "countercraft_privacy.js",
+        "fleet_design_assets.js",
+        "fleet_legacy_recovery.js",
+        "fleet_recovery_core.js",
+        "fleet_storage_safety.js",
+        "fleet_supabase.js",
+        "fleet_viewport.css",
+        "fleet_viewport.js",
+        "fleetguard_admiral_core.js",
+        "fun_core.js",
+        "fun_player.html",
+        "fun_program.css",
+        "fun_program.js",
+        "headway_contracts.js",
+        "ike_character.png",
+        "ike_shop.css",
+        "ike_shop.js",
+        "ike_shop_core.js",
+        "ike_shop_delivery.js",
+        "ike_shop_store.js",
+        "ike_style_registry.js",
+        "index.html",
+        "input_hygiene.js",
+        "manifest.webmanifest",
+        "owner.html",
+        "platform_core.js",
+        "platform_identity.js",
+        "platform_v4.js",
+        "quartermaster.css",
+        "quartermaster.js",
+        "quartermaster_core.js",
+        "quartermaster_fonts.js",
+        "quartermaster_pdf.js",
+        "quartermaster_sync.js",
+        "simple_books.css",
+        "simple_books.js",
+        "stormwake_core.js",
+        "styles.css",
+        "sw.js",
+        "woodwright_fit.js"
+      ],
+      "results": [
+        {
+          "name": "sealed runtime and release identities agree before loading",
+          "pass": true,
+          "build": "8.8.20.86",
+          "seal": "clearway-882086",
+          "verifiedRuntimeHashes": 88
+        },
+        {
+          "name": "actual index and PIN invitation open the camera-first Ike preview",
+          "pass": true,
+          "privatePreview": true,
+          "atomicGate": "clear",
+          "cameraControl": true,
+          "photoFirst": true,
+          "storefrontResizeExercised": true
+        },
+        {
+          "name": "own photo opens Board first and returns the exact framed lettering",
+          "pass": true,
+          "wording": "Wild  Current 27",
+          "chosenFont": "monoton",
+          "catalog": [
+            {
+              "id": "monoton",
+              "name": "Retroline",
+              "sourceSha256": "951c4cea65ffede784a7c9672feec5d329a7e1e12216c42d53ecf36c90d04dea",
+              "glyphCount": 196,
+              "catalogName": "Retroline",
+              "inCatalog": true
+            },
+            {
+              "id": "berkshire-swash",
+              "name": "Orchard Swash",
+              "sourceSha256": "f0c80837dc6f32b89b10894a7e39295db4a00ab697cada682a3f5942c342fe00",
+              "glyphCount": 198,
+              "catalogName": "Orchard Swash",
+              "inCatalog": true
+            }
+          ],
+          "photoSha256": "2ba7480a9ef29531712a6579412ce1fd9dc9885b50a33c4578af11a83c462eb4",
+          "quarterTurns": 1,
+          "viewBox": "0 0 800 1200",
+          "artworkPaths": 13,
+          "exactReturnedScene": true
+        },
+        {
+          "name": "frozen displayed proof and complete native ZIP retain the selected board",
+          "pass": true,
+          "requestId": "23f3a9e1-7825-496e-b2e7-247a2ca66e9f",
+          "designId": "002e34d7-d08d-43c2-8c7b-37baffcbaf56",
+          "quantity": 1,
+          "zipFile": "boardcraft-index-01-synthetic-request.zip",
+          "suggestedFilename": "ike-sign-23f3a9e1-7825-496e-b2e7-247a2ca66e9f-r1.zip",
+          "zipBytes": 256743,
+          "archiveSha256": "17c1b3cf66cf2877e12df81a1a132cc25a307794f94862e1470ecf0fae2df2a7",
+          "proofSha256": "8dac3ca9b09e55af56742cc5bc34bd4149009ba650dd4bf479d1eb16cf364d9c",
+          "board": {
+            "photoId": "8ac2aae6-8bdb-42b2-b978-ff714cb015cb",
+            "quarterTurns": 1,
+            "frame": {
+              "x": 0.17360000000000003,
+              "y": 0.3192,
+              "w": 0.72,
+              "h": 0.16
+            },
+            "frameConfirmed": true,
+            "dimensionsStatus": "reference-unconfirmed"
+          },
+          "files": {
+            "preview.png": {
+              "bytes": 126007,
+              "sha256": "8dac3ca9b09e55af56742cc5bc34bd4149009ba650dd4bf479d1eb16cf364d9c"
+            },
+            "photos/reference-01.jpg": {
+              "bytes": 15107,
+              "sha256": "2ba7480a9ef29531712a6579412ce1fd9dc9885b50a33c4578af11a83c462eb4"
+            },
+            "request-brief.html": {
+              "bytes": 3069,
+              "sha256": "771a3952c6f2cf3cf55990228ba8953283c2e335c2ce304d1c120e2a6243e54f"
+            },
+            "request-brief.txt": {
+              "bytes": 1555,
+              "sha256": "8b0a88074ad318ff54a8d3a76d6da04478e76389fd3d06b9fea8fc91cc5f821d"
+            },
+            "artwork.svg": {
+              "bytes": 11281,
+              "sha256": "f2abd039fce43036a598f1f193a3485c0968bfc918290445c05aa26d72d21a5b"
+            },
+            "artwork.dxf": {
+              "bytes": 78046,
+              "sha256": "9066e051c6e4b8c57c481607052231ef06f36733b0f0147ca03ff260147e9273"
+            },
+            "editable-design.json": {
+              "bytes": 13094,
+              "sha256": "aec469872ff17429daf86f8885fd300b3d15b66a5a0c878a5b9fb06d38c2f076"
+            },
+            "request.json": {
+              "bytes": 2634,
+              "sha256": "ff844b2397cbf5d7cb59a3ff74f08386ffe41e023f00dff057527ed3322877ab"
+            },
+            "README.txt": {
+              "bytes": 2629,
+              "sha256": "dc1ee50c8ddc0320a6dc1d77dfdc7dba346a658fbdfcd32a70bb5ef0405634fc"
+            },
+            "manifest.json": {
+              "bytes": 2247,
+              "sha256": "4bfc7746cfaf507cf4994aebb8c3043e4ab71b97ce6525d364959ed791a60d8d"
+            }
+          },
+          "crcAndManifestVerified": true,
+          "exactDisplayedProof": true,
+          "photoPixels": {
+            "photoSize": [
+              1200,
+              800
+            ],
+            "proofSize": [
+              800,
+              1200
+            ],
+            "quarterTurns": 1,
+            "cornerChannelDifferenceMax": 0
+          },
+          "dxfClosedPolylines": 78,
+          "vectorOnlyExports": true,
+          "productionApproved": false,
+          "sendShareMailDisabled": true
+        },
+        {
+          "name": "New request removes the prior photo, design, contact and package",
+          "pass": true,
+          "previousRequestId": "23f3a9e1-7825-496e-b2e7-247a2ca66e9f",
+          "freshRequestId": "09a53db0-e5c2-4d27-b77c-db3dddc004c1",
+          "previousCustomerCleared": true,
+          "previousBoardCleared": true,
+          "downloadRetained": true
+        }
+      ]
+    },
+    "Delivery": {
+      "scope": "Isolated Chromium, reviewed synthetic photograph request and real ZIP bytes; provider/native share endpoints simulated; no live email, sharing or network.",
+      "results": [
+        {
+          "name": "manual email draft identifies the verified ZIP without pretending to attach or send it",
+          "pass": true
+        },
+        {
+          "name": "native share dispatch is synchronous and receives the exact approved ZIP bytes",
+          "pass": true
+        },
+        {
+          "name": "manual draft remains usable without provider credentials or native ZIP sharing",
+          "pass": true
+        },
+        {
+          "name": "recipient punctuation cannot inject mail headers and invalid recipients are rejected",
+          "pass": true
+        },
+        {
+          "name": "preparation rejects unsafe context, modified archives, incomplete requests and send history",
+          "pass": true
+        },
+        {
+          "name": "async verification cannot mint a ticket after authorization or caller content changes",
+          "pass": true
+        },
+        {
+          "name": "every ticket action rechecks context, request, config and all package bytes",
+          "pass": true
+        },
+        {
+          "name": "native support probing cannot mutate the request just before share dispatch",
+          "pass": true
+        },
+        {
+          "name": "simultaneous native handoffs dispatch once and cancellation does not claim delivery",
+          "pass": true
+        },
+        {
+          "name": "accepted or uncertain automatic attempts invalidate an older manual ticket",
+          "pass": true
+        },
+        {
+          "name": "explicit provider rejection retains the ZIP and explains attachment support without claiming account state",
+          "pass": true
+        }
+      ],
+      "passed": 11,
+      "failed": 0
+    }
+  },
+  "delivery_checks": 11,
+  "index_checks": 5,
+  "index_final_run": "pass",
+  "offline_suite_groups": 27,
+  "physical_safari": "pending",
+  "live_email_sent": false,
+  "backend_changed": false,
+  "deployed": false,
+  "review": "Fresh independent review; important findings reproduced RED then fixed GREEN; post-fix listed suite passed",
+  "offline_results": {
+    "scope": "listed offline suites; not live Safari, Auth, email or machining certification",
+    "results": [
+      {
+        "name": "VERIFY_FAIRWATER_PASTE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_ROSEWOOD_CORE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_SIGHTLINE_CORE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_SIGHTLINE_ARTWORK.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_SIGHTLINE_IDS.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_HOLDFAST_CORE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_HOMEPORT_ENTRY.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_FLEETBOUND_PROGRAMS.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_HARBOR_ROUTES.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_HARBOR_ASYNC.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_HARBOR_STORAGE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_RELEASE_IDENTITY.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_FAIRLEAD_LOADER.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_FAIRLEAD_STARTUP.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_CLEARDECK_ACCOUNT.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_RELEASE_CONTRACT.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_CLEARDECK_PREFLIGHT.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_IRONHAVEN_CORE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_FLEETCARE_READINESS.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_FLEETCARE_NAVIGATION.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_FLEETCRAFT_CORE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_LETTERCRAFT_FONTS.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_QUARTERMASTER_CORE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_STORMWAKE_CORE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "TEST_RELEASE_PIPELINE.py",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "TEST_RELEASE_IDENTITY.py",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "TEST_SIGHTLINE_NATIVE.py",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      }
+    ]
+  },
+  "targeted_browser_checks": 54
+}

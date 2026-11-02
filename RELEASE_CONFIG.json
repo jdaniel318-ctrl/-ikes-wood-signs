@@ -1,20 +1,19 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.85",
-  "name": "Fairwater",
-  "seal": "fairwater-882085",
-  "base": "8.8.20.84",
-  "base_sha256": "0b025336feffb8efe67266652ea1b2516e0e27c84a3560befab6611358572b44",
-  "base_files": 766,
-  "prepared_at": "2026-11-02T20:43:19.401587+00:00",
-  "app_component_revision": "8.8.20.71",
+  "build": "8.8.20.86",
+  "name": "Clearway",
+  "seal": "clearway-882086",
+  "base": "8.8.20.85",
+  "base_sha256": "c1c0cc099c72d8e097de19d151e67a15db6c7cb269dbd66414a0b8e2a0e2b030",
+  "base_files": 770,
+  "prepared_at": "2026-11-02T22:20:03.852994+00:00",
+  "app_component_revision": "8.8.20.86",
   "owner_helper_revision": "8.8.20.68",
   "feature_notes": [
-    "Free Mail-first complete sign file handoff; automatic provider sending stays secondary.",
-    "Typing preserves unchanged preview and photo nodes; pasted field text honors preservation policy.",
-    "Touch-friendly Smaller and Larger lettering controls with undo; supplied board dimensions retained.",
-    "Provider rejection reports HTTP status without guessing subscription requirements.",
-    "No deployment, email, database or customer data changes. Native Safari and inbox receipt require physical acceptance."
+    "Main Design My Sign opens the current guarded Ike request flow.",
+    "Persistent next/back controls and visible Mail actions; Mail may require recipient and subject entry.",
+    "Optional scoped recovery on private devices; explicit Resume, clean New request and no persistence in previews or deployed shared sessions.",
+    "Free Mail remains primary. No deployment, live email, backend changes or machining certification."
   ],
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",

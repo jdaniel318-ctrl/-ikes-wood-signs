@@ -44,3 +44,12 @@
 .ish-mail-handoff{margin-top:24px;padding-top:20px;border-top:1px solid #cedfe9}.ish-mail-handoff h3{font-size:15px}.ish-mail-handoff .ish-package-actions{margin-top:13px}
 .ish-delivery{color:#496c82}.ish-footer{border-color:#d7e3ea}.ish-footer p{font-size:12px;color:#4c697b;max-height:58px}
 @media(max-width:580px){.ish-header{padding:11px 14px}.ish-brand{gap:8px}.ish-ike-character{width:35px;height:48px}.ish-header h1{font-size:21px}.ish-eyebrow{font-size:8px;letter-spacing:1px}.ish-header-actions{flex-direction:column;gap:4px}.ish-modal .ish-header button{min-height:44px}.ish-intro h2{font-size:27px}.ish-photo>img{width:58px;height:48px}.ish-photo span{font-size:10px}.ish-photo strong{font-size:11px}.ish-note,.ish-caption{font-size:12px}.ish-footer p{max-height:50px}}
+
+/* Clearway: reachable next actions without replacing customers' fields. */
+.ish-navigation{display:flex;align-items:center;gap:12px;justify-content:space-between;margin-bottom:6px}
+.ish-navigation span{font-size:13px;font-weight:700}.ish-navigation button{min-height:44px;padding:9px 14px}
+.ish-recovery{border:1px solid #9cb6c0;border-radius:10px;padding:16px;background:#fff9de;margin-bottom:18px}.ish-recovery button{margin-right:8px}
+.ish-remember{margin-top:20px}.ish-card{scroll-margin-top:12px}
+.ish-main{scroll-padding:12px}.ish-footer #ishStatus{font-size:12px;max-height:38px;overflow:auto}
+#ishDraftStatus[data-state="error"]{color:#9b3224;font-weight:700}
+@media(max-width:700px){.ish-header{padding:12px}.ish-main{padding:12px}.ish-footer{padding:8px 12px}.ish-navigation{gap:6px}.ish-navigation span{display:none}.ish-navigation button{font-size:13px}.ish-mail-handoff{margin-top:12px;padding-top:10px}}

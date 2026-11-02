@@ -16,7 +16,7 @@
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
   // Component revision changes only when this module changes; installed release is loader-attested.
-  const APP_COMPONENT_REVISION='8.8.20.71';
+  const APP_COMPONENT_REVISION='8.8.20.86';
   const BUILD_VERSION=window.__darkSkyVerifiedRelease?.build;
   if(!BUILD_VERSION || BUILD_VERSION!==window.__darkSkyExpectedRelease?.build || window.__darkSkyVerifiedRelease?.seal!==window.__darkSkyExpectedRelease?.seal)throw new Error('Verified release context required before app execution.');
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
@@ -4943,7 +4943,8 @@
       // Ike's existing email path; the captured session/scope guard still binds
       // this request and revokes it on navigation, replacement or mode changes.
       const canSend=()=>guard()&&mode==='deployed'&&location.protocol==='https:'&&projectExternalContactAllowed(project);
-      const opened=window.IkeShop.open({scope,guard,canSend,mode,parent,deliveryConfig:{accessKey:LEGACY_IKE_WEB3FORMS_ACCESS_KEY,recipient:LEGACY_IKE_ORDER_EMAIL,maxBytes:5*1024*1024},onClose:()=>{if(note)note.textContent='';}});
+      const sharedDevice=!!context.deploymentId;
+      const opened=window.IkeShop.open({scope,guard,canSend,mode,parent,sharedDevice,deliveryConfig:{accessKey:LEGACY_IKE_WEB3FORMS_ACCESS_KEY,recipient:LEGACY_IKE_ORDER_EMAIL,maxBytes:5*1024*1024},onClose:()=>{if(note)note.textContent='';}});
       if(opened!==false&&note)note.textContent='';
       return opened;
     }catch(error){if(note)note.textContent=String(error?.message||'The sign request could not open.');return false;}
@@ -17348,6 +17349,7 @@ The full order and approved media remain stored with this project.`;
       b.dataset.busy='1';
       let next=b.dataset.next;
       if(activeProjectId==='ikes-wood-signs'){
+        if(state.current==='welcome'&&b.id==='projectStartButton'){openIkeSignRequest();delete b.dataset.busy;return;}
         if(state.current==='welcome'){const ctx=currentExperienceContext(activeProject());if(ctx&&ctx.state!=='deployed'){location.assign('countercraft.html'+(ctx.state==='sea_trial'?'?shop=1':''));delete b.dataset.busy;return;}resetIkeNewOrderState();next='photo';}
         else if(state.current==='photo' && next==='orientation') next='ike-plank';
       }

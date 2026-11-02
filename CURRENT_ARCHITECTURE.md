@@ -1,11 +1,11 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Current architecture — Fairwater 8.8.20.85
+# Current architecture — Clearway 8.8.20.86
 
-Source of release identity: RELEASE_CONFIG.json. Installed page/manifest/seal/worker identity is generated together. APP_COMPONENT_REVISION is 8.8.20.71; owner helper revision is 8.8.20.68. Unchanged component bodies remain byte-identical across release-only changes.
+Source of release identity: RELEASE_CONFIG.json. Installed page/manifest/seal/worker identity is generated together. APP_COMPONENT_REVISION is 8.8.20.86; owner helper revision is 8.8.20.68. Unchanged component bodies remain byte-identical across release-only changes.
 
 The Engine still verifies every required body, current governance models, app component contract and worker identity before executing the same script sequence. App and Captain bind audit/display freshness to the verified installed release. This context never grants permissions. The owner page keeps explicit helper compatibility checks.
 
-['Free Mail-first complete sign file handoff; automatic provider sending stays secondary.', 'Typing preserves unchanged preview and photo nodes; pasted field text honors preservation policy.', 'Touch-friendly Smaller and Larger lettering controls with undo; supplied board dimensions retained.', 'Provider rejection reports HTTP status without guessing subscription requirements.', 'No deployment, email, database or customer data changes. Native Safari and inbox receipt require physical acceptance.']
+['Main Design My Sign opens the current guarded Ike request flow.', 'Persistent next/back controls and visible Mail actions; Mail may require recipient and subject entry.', 'Optional scoped recovery on private devices; explicit Resume, clean New request and no persistence in previews or deployed shared sessions.', 'Free Mail remains primary. No deployment, live email, backend changes or machining certification.']
 Backend prerequisites are recorded separately in PATCH_CONTRACT.json. Release preparation executes no database commands. Fleet core and Admiral programs remain distinct.
 
 ## Release commands
