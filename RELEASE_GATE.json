@@ -1,18 +1,18 @@
 {
   "schema": "blackflag-release-gate-v1",
-  "build": "8.8.20.84",
-  "release": "Rosewood",
+  "build": "8.8.20.85",
+  "release": "Fairwater",
   "pass": false,
   "verification_status": "FOCUSED_SOFTWARE_CHECKS_PASSED; FULL_OFFLINE_SUITE_ENFORCED_AT_PACKAGING",
-  "evidence_file": "ROSEWOOD_EVIDENCE.json",
+  "evidence_file": "FAIRWATER_EVIDENCE.json",
   "native_safari_acceptance": "PENDING",
   "database_actions": "none",
-  "backend_prerequisite": "unchanged_from_8.8.20.83_not_revalidated",
+  "backend_prerequisite": "unchanged_from_8.8.20.84_not_revalidated",
   "customer_data_changes": false,
   "production_certification": false,
   "frontend_deployed": false,
   "backup_restore": "Application software rollback documented in external PackageProof.json. Business-data restore not certified.",
   "performance_improvement_claim": false,
-  "offline_suite_count": 26,
+  "offline_suite_count": 27,
   "native_compilation": "PENDING"
 }

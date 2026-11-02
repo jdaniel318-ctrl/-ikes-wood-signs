@@ -11,7 +11,7 @@
     window.__blackFlagSingleLinePasteHygiene88180 = true;
     document.addEventListener('paste', event => {
       const n = event.target instanceof HTMLInputElement ? event.target : null;
-      if (!n || n.hasAttribute('data-preserve-edge-space')) return;
+      if (!n || n.hasAttribute('data-preserve-edge-space') || n.getAttribute('data-bf-trim') === 'preserve') return;
       const type = String(n.type || 'text').toLowerCase();
       if (!['text','email','search','url','tel'].includes(type)) return;
       window.setTimeout(() => {

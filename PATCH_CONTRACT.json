@@ -1,18 +1,18 @@
 {
   "schema": "blackflag-patch-contract-v1",
-  "target_build": "8.8.20.84",
-  "target_seal": "rosewood-882084",
+  "target_build": "8.8.20.85",
+  "target_seal": "fairwater-882085",
   "supported_bases": [
     {
-      "build": "8.8.20.83",
-      "source_sha256": "a573d2c1021b9e4cdcaa6e19332cf4bbed0947b266d4a9ae8940580ee2bc0a32",
-      "file_count": 761
+      "build": "8.8.20.84",
+      "source_sha256": "0b025336feffb8efe67266652ea1b2516e0e27c84a3560befab6611358572b44",
+      "file_count": 766
     }
   ],
   "requires_deletions": false,
   "max_upload_files": 85,
   "database_actions": "none",
-  "rule": "Upload every changed/new root file over complete 8.8.20.83. Keep everything else. This software archive executes no database commands.",
+  "rule": "Upload every changed/new root file over complete 8.8.20.84. Keep everything else. This software archive executes no database commands.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "COUNTERCRAFT_INTAKE.sql",

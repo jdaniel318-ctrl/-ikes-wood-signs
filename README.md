@@ -1,10 +1,10 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Rosewood 8.8.20.84
+# Black Flag Fairwater 8.8.20.85
 
 Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
-Baseline: 8.8.20.83. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Baseline: 8.8.20.84. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
 Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
-Rosewood adds an explicit saved-design handoff in Ike: board photograph, artwork, exact supplied dimensions and separate nominal pricing length travel together without request contact fields, approval or send history. Open the separately supplied Andie-Rose.ike.json to review the prefilled trial. Fresh requests remain blank. Cancelling a photo picker no longer closes the request. Existing delivery and authority guards remain. No backend changes, live email receipt or physical-cut certification. See ROSEWOOD_GUIDE.md and ROSEWOOD_EVIDENCE.json.
+['Free Mail-first complete sign file handoff; automatic provider sending stays secondary.', 'Typing preserves unchanged preview and photo nodes; pasted field text honors preservation policy.', 'Touch-friendly Smaller and Larger lettering controls with undo; supplied board dimensions retained.', 'Provider rejection reports HTTP status without guessing subscription requirements.', 'No deployment, email, database or customer data changes. Native Safari and inbox receipt require physical acceptance.']
 Preparation does not deploy frontend or backend changes. See PATCH_CONTRACT.json for separately managed backend prerequisites.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 

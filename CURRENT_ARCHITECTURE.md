@@ -1,11 +1,11 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Current architecture — Rosewood 8.8.20.84
+# Current architecture — Fairwater 8.8.20.85
 
 Source of release identity: RELEASE_CONFIG.json. Installed page/manifest/seal/worker identity is generated together. APP_COMPONENT_REVISION is 8.8.20.71; owner helper revision is 8.8.20.68. Unchanged component bodies remain byte-identical across release-only changes.
 
 The Engine still verifies every required body, current governance models, app component contract and worker identity before executing the same script sequence. App and Captain bind audit/display freshness to the verified installed release. This context never grants permissions. The owner page keeps explicit helper compatibility checks.
 
-Rosewood adds an explicit saved-design handoff in Ike: board photograph, artwork, exact supplied dimensions and separate nominal pricing length travel together without request contact fields, approval or send history. Open the separately supplied Andie-Rose.ike.json to review the prefilled trial. Fresh requests remain blank. Cancelling a photo picker no longer closes the request. Existing delivery and authority guards remain. No backend changes, live email receipt or physical-cut certification. See ROSEWOOD_GUIDE.md and ROSEWOOD_EVIDENCE.json.
+['Free Mail-first complete sign file handoff; automatic provider sending stays secondary.', 'Typing preserves unchanged preview and photo nodes; pasted field text honors preservation policy.', 'Touch-friendly Smaller and Larger lettering controls with undo; supplied board dimensions retained.', 'Provider rejection reports HTTP status without guessing subscription requirements.', 'No deployment, email, database or customer data changes. Native Safari and inbox receipt require physical acceptance.']
 Backend prerequisites are recorded separately in PATCH_CONTRACT.json. Release preparation executes no database commands. Fleet core and Admiral programs remain distinct.
 
 ## Release commands

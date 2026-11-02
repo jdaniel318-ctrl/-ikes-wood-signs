@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.20.84';
-const RELEASE_SEAL='rosewood-882084';
+const RELEASE_BUILD='8.8.20.85';
+const RELEASE_SEAL='fairwater-882085';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.

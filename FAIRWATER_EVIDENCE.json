@@ -1,0 +1,105 @@
+{
+  "build": "8.8.20.85",
+  "release": "Fairwater",
+  "browser_cases_passed": 40,
+  "checks": [
+    {
+      "evidence": "review-final-ui",
+      "passed": 4,
+      "failed": 0,
+      "checks": [
+        "typing keeps photo nodes and focus; editing invalidates approved package",
+        "larger and smaller buttons clamp, undo and preserve board size",
+        "Mail is primary, provider secondary, same ZIP shared without provider call",
+        "unsupported file sharing keeps usable download and addressed draft"
+      ]
+    },
+    {
+      "evidence": "green-delivery",
+      "passed": 11,
+      "failed": 0,
+      "checks": [
+        "manual email draft identifies the verified ZIP without pretending to attach or send it",
+        "native share dispatch is synchronous and receives the exact approved ZIP bytes",
+        "manual draft remains usable without provider credentials or native ZIP sharing",
+        "recipient punctuation cannot inject mail headers and invalid recipients are rejected",
+        "preparation rejects unsafe context, modified archives, incomplete requests and send history",
+        "async verification cannot mint a ticket after authorization or caller content changes",
+        "every ticket action rechecks context, request, config and all package bytes",
+        "native support probing cannot mutate the request just before share dispatch",
+        "simultaneous native handoffs dispatch once and cancellation does not claim delivery",
+        "accepted or uncertain automatic attempts invalidate an older manual ticket",
+        "explicit provider rejection retains the ZIP and explains attachment support without claiming account state"
+      ]
+    },
+    {
+      "evidence": "rosewood-ui",
+      "passed": 2,
+      "failed": 0,
+      "checks": [
+        "photo and design picker cancellation preserves an empty request",
+        "saved board opens with exact dimensions and remains through wording changes"
+      ]
+    },
+    {
+      "evidence": "customer-final",
+      "passed": 17,
+      "failed": 0,
+      "checks": [
+        "camera-first Ike branding uses this customer photo and one sign",
+        "complete same-ZIP native share and addressed Mail handoff remain explicit",
+        "provider rejection retains complete package and prepares usable Mail alternative",
+        "new request removes photo, proof, contact and manual handoff",
+        "embedded editor returns validated artwork without private store or Admiral session",
+        "embedded numeric errors block return and guard loss closes the editor",
+        "complete request freezes photos and downloads one complete native ZIP",
+        "content and numeric changes revoke approval and prepared bytes",
+        "accepted delivery persists attempted state before fetch and never duplicates",
+        "ambiguous network result locks further sends and retains download",
+        "stale stored revision blocks the exact package before download or send",
+        "context loss blocks send and a fresh customer sees no previous details",
+        "preview keeps requests in memory and sends nothing",
+        "sea_trial keeps requests in memory and sends nothing",
+        "phone usable request controls and embedded editor",
+        "ipad usable request controls and embedded editor",
+        "desktop usable request controls and embedded editor"
+      ]
+    },
+    {
+      "evidence": "sealed-cx",
+      "passed": 1,
+      "failed": 0,
+      "checks": [
+        "field feedback audit of paste and delivery visibility"
+      ]
+    },
+    {
+      "evidence": "index-verified",
+      "passed": 5,
+      "failed": 0,
+      "checks": [
+        "sealed runtime and release identities agree before loading",
+        "actual index and PIN invitation open the camera-first Ike preview",
+        "own photo opens Board first and returns the exact framed lettering",
+        "frozen displayed proof and complete native ZIP retain the selected board",
+        "New request removes the prior photo, design, contact and package"
+      ]
+    }
+  ],
+  "runtime_sha256": {
+    "fleet_supabase.js": "4985a3a83ac08405c136e8855850bf68323cd393c9421adb1c291c6f303ce2a1",
+    "ike_shop.js": "cf804772c0e70685effe8fbd3309e5e5e5b03dd55badbe0a8c38ddbe92b76160",
+    "ike_shop_delivery.js": "ea33278ddd6c96ddedfaaa8693c8485d44a6d90845d391c68bdce00d0ad03b4a",
+    "carvewright_studio.js": "bf227c88a66fb9a600d0f474c99106cf9818951855eae352915c602cee8ee934",
+    "carvewright.css": "5fbcd019a02ae8b38789af0dbcbc5b898481f5ed99eb581bbb8c8c1c551f3b9b"
+  },
+  "offline_suite": "27 groups; re-enforced by BUILD_RELEASE.py on exact source",
+  "review": "Independent read-only review; important customer harness issue corrected and rerun; dimension assertion added.",
+  "red_green": "Expected behavioral failures observed before runtime edits; all focused assertions now pass.",
+  "native_safari": "PENDING",
+  "inbox_receipt": "UNVERIFIED",
+  "live_email_sent": false,
+  "database_actions": "none",
+  "deployed": false,
+  "legacy_fixture_limit": "VERIFY_SHOPCRAFT_UI.cjs predates Boardcraft requirements; retained unchanged, superseded by current 17-case customer harness."
+}

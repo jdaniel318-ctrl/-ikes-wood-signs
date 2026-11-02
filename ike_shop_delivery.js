@@ -56,7 +56,7 @@
         inFlight.add(request.id);
         let handoff;
         // Deliberately synchronous: preserve the final tap's transient user activation.
-        try{handoff=navigator.share({files:[file],title:subject,text:'Choose Mail and send this complete ZIP to '+config.recipient+'. Sign request: '+request.id+'.'});}
+        try{handoff=navigator.share({files:[file],title:subject,text:'Sign design: '+request.design.title+'\nFor: '+config.recipient+'\nRequest: '+request.id+'\n'+request.details.notes+'\nIke reviews before production.'});}
         catch(error){inFlight.delete(request.id);return Promise.resolve(failed(error));}
         return Promise.resolve(handoff).then(()=>result('handed-off','The complete ZIP was handed to your chosen app. Choose Mail and send it to '+config.recipient+'. Email sending and inbox receipt are not confirmed.'),failed).finally(()=>inFlight.delete(request.id));
       }catch(error){return Promise.resolve(result('blocked',String(error?.message||'The request changed. Prepare the complete package again.')));}
@@ -112,12 +112,12 @@
           const response=await fetcher(ENDPOINT,{method:'POST',body,headers:{Accept:'application/json'},...(controller?{signal:controller.signal}:{})});
           let value;try{value=await response.json();}catch(_){return {kind:'uncertain'};}
           if(response.ok===true&&response.status>=200&&response.status<300&&value?.success===true)return {kind:'accepted'};
-          if(response.status>=200&&response.status<500&&value?.success===false)return {kind:'rejected'};
+          if(response.status>=200&&response.status<500&&value?.success===false)return {kind:'rejected',httpStatus:response.status};
           return {kind:'uncertain'};
         })();
         const response=await Promise.race([network,timeout]);
         if(response.kind==='accepted'){remember(contentKey,'provider-accepted');return result('provider-accepted','The email provider accepted the complete ZIP request. Inbox receipt has not been confirmed.',{providerAcceptedAt:new Date().toISOString()});}
-        if(response.kind==='rejected')return result('failed','The provider rejected the complete ZIP request. Attachment uploads require Web3Forms PRO support. Keep the ZIP and use the email handoff, or have the shop owner check attachment support before a deliberate retry. Nothing was resent.');
+        if(response.kind==='rejected')return result('failed','The provider rejected the complete ZIP attachment. Keep the ZIP and use Mail, or ask the shop owner to check delivery settings. Nothing was resent.',{httpStatus:response.httpStatus});
         remember(contentKey,'unconfirmed');return result('unconfirmed','The provider response did not confirm the result. The request may have been accepted. Check with Ike before sending again; the complete ZIP is retained.');
       }catch(_){remember(contentKey,'unconfirmed');return result('unconfirmed','The delivery response was interrupted. The request may have been accepted. Check with Ike before sending again; the complete ZIP is retained.');}
       finally{clearTimeout(timer);}

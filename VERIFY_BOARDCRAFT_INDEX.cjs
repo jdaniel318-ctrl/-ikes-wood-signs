@@ -360,7 +360,7 @@ async function main() {
       await download.saveAs(zipPath);
       assert.equal(await download.failure(), null);
       const archiveSha = sha256(fs.readFileSync(zipPath)), extractDirectory = path.join(OUT, trial.id + '-extracted');
-      assert.equal(await page.locator('#ishPackageHash').innerText(), 'Archive SHA-256: ' + archiveSha);
+      assert.equal(await page.locator('#ishPackageHash').textContent(), 'Archive SHA-256: ' + archiveSha);
       const extracted = inspectDownloadedZip(zipPath, extractDirectory), {design} = extracted.packet, request = extracted.request;
       assert.deepEqual(Object.keys(extracted.files).sort(), expectedFiles);
       assert.equal(await page.locator('#ishFiles li').count(), expectedFiles.length);

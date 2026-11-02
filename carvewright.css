@@ -92,3 +92,6 @@
 .cwe-ike-brand .cwe-field-note{color:#567385}.cwe-ike-brand .cwe-layer-list [aria-pressed=true] .cwe-radio{border-color:#1675a8}
 .cwe-ike-brand .cwe-footer{background:#f9fcfe;border-color:#d5e2eb}
 @media(max-width:720px){.cwe-ike-character{width:27px;height:43px}.cwe-ike-brand .cwe-header{padding:7px 12px}.cwe-ike-brand .cwe-brand small{font-size:8px}.cwe-ike-brand h1{font-size:19px}.cwe-board-photo-controls>strong{font-size:14px}}
+
+/* Touch-friendly lettering size steps; range and exact percentage remain available. */
+.cwe-size-buttons{display:flex;gap:8px;margin:8px 0}.cwe-size-buttons button{flex:1;min-height:44px}
