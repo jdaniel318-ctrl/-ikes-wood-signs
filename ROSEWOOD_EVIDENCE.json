@@ -1,0 +1,45 @@
+{
+  "build": "8.8.20.84",
+  "release": "Rosewood",
+  "status": "focused-software-checks-passed; full offline suite enforced by BUILD_RELEASE.py before ZIP issuance",
+  "sourceBaseline": "Fieldnote 8.8.20.83; all 761 files matched uploaded full backup before changes",
+  "checks": {
+    "portableCore": "PASS: exact dimensions; v1/v2 handoff; blank unfinished contact/quantity; no inherited contact or approval; strict metadata; accessor rejection",
+    "rosewoodBrowser": {
+      "passed": 3,
+      "failed": 0,
+      "scope": "picker cancellation (photo, camera, design); explicit board-file import/export; actual Andie board proof/package; approval invalidation"
+    },
+    "customerBrowser": {
+      "passed": 17,
+      "failed": 0
+    },
+    "packageBrowser": {
+      "passed": 10,
+      "failed": 0
+    },
+    "deliveryBrowser": {
+      "passed": 9,
+      "failed": 0,
+      "scope": "intercepted provider fixtures only; no live email"
+    },
+    "storeBrowser": {
+      "passed": 8,
+      "failed": 0
+    },
+    "sealedIkeEntryBrowser": {
+      "passed": 2,
+      "failed": 0
+    },
+    "independentReview": "Resolved v2 dispatcher, blank quantity export, design-picker coverage; no remaining blockers reported"
+  },
+  "releaseProof": "BUILD_RELEASE.py emits external PackageProof.json with offline-suite status, ZIP hashes and exact overlay reconstruction. It refuses to issue archives on failure.",
+  "nativeSafari": "pending",
+  "storageWarningDiagnosis": "pending",
+  "liveEmailSent": false,
+  "inboxReceiptVerified": false,
+  "physicalCutTested": false,
+  "deployed": false,
+  "databaseActions": "none",
+  "privacy": "Andie Rose private photo/design stays outside software upload and source backup."
+}

@@ -1,10 +1,10 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Fieldnote 8.8.20.83
+# Black Flag Rosewood 8.8.20.84
 
 Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
-Baseline: 8.8.20.82. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Baseline: 8.8.20.83. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
 Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
-Fieldnote updates Sightline's temporary photo-reference bridge to selectable 3 x 5 or 4 x 6 inch index cards. Customer details can stay on the card in a private job capture; photo proofs cover the marked card pixels. Changing card size invalidates photo measurements and downloads. Native sweep remains independent of cards. Card-free measurement is the destination; production accuracy, live-edge tracing, species identification and machine programs are not delivered by this trial. No accounts, live orders, backend or native source changes. See SIGHTLINE_GUIDE.md and FIELDNOTE_EVIDENCE.json.
+Rosewood adds an explicit saved-design handoff in Ike: board photograph, artwork, exact supplied dimensions and separate nominal pricing length travel together without request contact fields, approval or send history. Open the separately supplied Andie-Rose.ike.json to review the prefilled trial. Fresh requests remain blank. Cancelling a photo picker no longer closes the request. Existing delivery and authority guards remain. No backend changes, live email receipt or physical-cut certification. See ROSEWOOD_GUIDE.md and ROSEWOOD_EVIDENCE.json.
 Preparation does not deploy frontend or backend changes. See PATCH_CONTRACT.json for separately managed backend prerequisites.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 

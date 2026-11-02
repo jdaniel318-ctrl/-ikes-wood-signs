@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.83",
-  "release": "Fieldnote",
-  "seal": "fieldnote-882083",
+  "build": "8.8.20.84",
+  "release": "Rosewood",
+  "seal": "rosewood-882084",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Fieldnote",
-  "name": "Fieldnote",
-  "releaseName": "Fieldnote"
+  "release_name": "Rosewood",
+  "name": "Rosewood",
+  "releaseName": "Rosewood"
 }

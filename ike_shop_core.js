@@ -83,7 +83,14 @@
     const errors=[],complete=options?.complete===true;fonts=fontsOrDefault(fonts);
     // Optional photo placement keeps original v1 requests and their exact
     // approval/package bytes readable without a migration.
-    if(!keys(r,REQUEST_KEYS.concat('board'),REQUEST_KEYS,'request',errors))return {ok:false,errors};
+    if(!keys(r,REQUEST_KEYS.concat('board','boardSetup'),REQUEST_KEYS,'request',errors))return {ok:false,errors};
+    if(r.boardSetup!==undefined){
+      const b=r.boardSetup;
+      if(keys(b,['source','lengthMm','widthMm','thicknessMm','pricingLengthFt'],['source','lengthMm','widthMm','thicknessMm','pricingLengthFt'],'board measurements',errors)){
+        if(b.source!=='customer-reported'||b.lengthMm!==r.design?.stock?.widthMm||b.widthMm!==r.design?.stock?.heightMm||b.thicknessMm!==r.design?.stock?.thicknessMm)errors.push('Saved board measurements must match the design dimensions.');
+        if(b.pricingLengthFt!==null&&(!Number.isFinite(b.pricingLengthFt)||b.pricingLengthFt<=0||b.pricingLengthFt>100))errors.push('Nominal pricing length must be positive or unconfirmed.');
+      }
+    }
     if(r.schema!==SCHEMA||r.projectId!==PROJECT)errors.push('This is not an Ike sign request.');
     if(!identity(r.id)||!Number.isSafeInteger(r.revision)||r.revision<0)errors.push('Invalid request identity or revision.');
     if(!date(r.createdAt)||!date(r.updatedAt))errors.push('Invalid request timestamp.');
@@ -141,7 +148,35 @@
   }
   async function contentFingerprint(r,fonts){
     const designFingerprint=await Design.fingerprint(r.design,fonts);
-    return {designFingerprint,contentFingerprint:await sha256(canonical({schema:r.schema,projectId:r.projectId,id:r.id,customer:r.customer,details:r.details,designFingerprint,photos:r.photos.map(p=>({id:p.id,name:p.name,mime:p.mime,sha256:p.sha256,originalName:p.originalName,originalSha256:p.originalSha256,width:p.width,height:p.height})),...(r.board?{board:r.board}:{}),productionApproved:false}))};
+    return {designFingerprint,contentFingerprint:await sha256(canonical({schema:r.schema,projectId:r.projectId,id:r.id,customer:r.customer,details:r.details,designFingerprint,photos:r.photos.map(p=>({id:p.id,name:p.name,mime:p.mime,sha256:p.sha256,originalName:p.originalName,originalSha256:p.originalSha256,width:p.width,height:p.height})),...(r.board?{board:r.board}:{}),...(r.boardSetup?{boardSetup:r.boardSetup}:{}),productionApproved:false}))};
+  }
+  // A selected file transports design context only. Never contact, approval or delivery state.
+  async function exportStart(request,fonts){
+    if(!plain(request))throw Error('Saved design source must be a plain object.');
+    const selected={};
+    for(const key of ['design','photos','board','boardSetup']){
+      const d=Object.getOwnPropertyDescriptor(request,key);
+      if(!d){if(key==='design'||key==='photos')throw Error('Saved design is missing '+key+'.');continue;}
+      if(!Object.prototype.hasOwnProperty.call(d,'value')||!d.enumerable)throw Error('Saved design properties must be data, not accessors.');
+      selected[key]=d.value;
+    }
+    const source=clone(selected),r=createRequest(source.design);r.photos=source.photos;r.board=source.board||null;
+    if(source.boardSetup!==undefined)r.boardSetup=source.boardSetup;
+    fonts=fontsOrDefault(fonts);required(r,fonts,false);await verifyPhotos(r);
+    const d=clone(r.design);d.review=null;
+    return {schema:'ike-sign-start-v1',projectId:PROJECT,designPacket:await Design.createPacket(d,fonts),photos:r.photos,board:r.board||null,...(r.boardSetup?{boardSetup:r.boardSetup}:{})};
+  }
+  async function importStart(text,fonts){
+    if(typeof text!=='string'||text.length>8*MiB)throw Error('Choose a saved design smaller than 8 MiB.');
+    const data=clone(JSON.parse(text));fonts=fontsOrDefault(fonts);
+    if(['carvewright-job-v1','carvewright-job-v2','ike-carve-job-v1'].includes(data.schema))return createRequest(await Design.readPacket(text,fonts));
+    const errors=[];keys(data,['schema','projectId','designPacket','photos','board','boardSetup'],['schema','projectId','designPacket','photos','board'],'saved design',errors);
+    if(data.schema!=='ike-sign-start-v1'||data.projectId!==PROJECT)errors.push('Choose a saved Ike design.');
+    if(errors.length)throw Error(errors.join(' '));
+    const r=createRequest(await Design.readPacket(JSON.stringify(data.designPacket),fonts));r.photos=data.photos;r.board=data.board;
+    if(r.board)r.board.frameConfirmed=false;
+    if(data.boardSetup!==undefined)r.boardSetup=data.boardSetup;
+    required(r,fonts,false);await verifyPhotos(r);return r;
   }
   async function fingerprint(request,fonts){const r=clone(request);fonts=fontsOrDefault(fonts);required(r,fonts,true);await verifyPhotos(r);return (await contentFingerprint(r,fonts)).contentFingerprint;}
   function rasterType(b){
@@ -254,6 +289,7 @@
     await add('editable-design.json','application/json',JSON.stringify(await Design.createPacket(r.design,fonts),null,2)+'\n');
     const metadata={schema:SCHEMA,projectId:PROJECT,id:r.id,revision:r.revision,createdAt:r.createdAt,updatedAt:r.updatedAt,customer:r.customer,details:r.details,design:{file:'editable-design.json',id:r.design.id,revision:r.design.revision,title:r.design.title,stock:r.design.stock,fingerprint:r.approval.designFingerprint},photos:r.photos.map((p,i)=>({id:p.id,file:'photos/reference-'+String(i+1).padStart(2,'0')+'.jpg',name:p.name,mime:p.mime,sha256:p.sha256,originalName:p.originalName,originalSha256:p.originalSha256,width:p.width,height:p.height})),proof:{file:'preview.png',mime:r.proof.mime,sha256:r.proof.sha256,width:r.proof.width,height:r.proof.height,designFingerprint:r.proof.designFingerprint},approval:r.approval,delivery:r.delivery,productionApproved:false};
     if(r.board)metadata.board=clone(r.board);
+    if(r.boardSetup){metadata.boardSetup=clone(r.boardSetup);const b=r.boardSetup;await add('board-setup.txt','text/plain;charset=utf-8','CUSTOMER-SUPPLIED BOARD MEASUREMENTS\nLength: '+b.lengthMm+' mm\nMidpoint width: '+b.widthMm+' mm\nMidpoint thickness: '+b.thicknessMm+' mm\nNominal pricing length: '+(b.pricingLengthFt===null?'Unconfirmed':b.pricingLengthFt+' ft')+'\nPricing length does not change the artwork dimensions.\nPhoto placement is not calibrated. Live edges and final machine setup require Ike\'s review.\n');}
     await add('request.json','application/json',JSON.stringify(metadata,null,2)+'\n');await add('README.txt','text/plain;charset=utf-8',readme(r));
     const manifest={schema:'ike-sign-package-v1',projectId:PROJECT,requestId:r.id,requestRevision:r.revision,contentFingerprint:r.approval.contentFingerprint,designFingerprint:r.approval.designFingerprint,proofSha256:r.proof.sha256,approvedAt:r.approval.approvedAt,deliveryAttempt:attemptIdValid(r.delivery.attemptId)&&date(r.delivery.attemptedAt)?{attemptId:r.delivery.attemptId,attemptedAt:r.delivery.attemptedAt}:null,productionApproved:false,units:'mm',dxfToleranceMm:.02,files:files.map(f=>({name:f.name,mime:f.mime,bytes:f.bytes.length,sha256:f.sha256}))};
     await add('manifest.json','application/json',JSON.stringify(manifest,null,2)+'\n');const bytes=zip(files);
@@ -270,5 +306,5 @@
   async function verifyPackage(request,bundle,fonts){
     try{const r=clone(request),actual=copyPackage(bundle),expected=await buildPackage(r,fontsOrDefault(fonts));if(actual.name!==expected.name||actual.sha256!==expected.sha256||!equalBytes(actual.bytes,expected.bytes)||canonical(actual.manifest)!==canonical(expected.manifest)||actual.files.length!==expected.files.length)return false;for(let i=0;i<actual.files.length;i++){const a=actual.files[i],e=expected.files[i];if(a.name!==e.name||a.mime!==e.mime||a.sha256!==e.sha256||!equalBytes(a.bytes,e.bytes))return false;}return true;}catch(_){return false;}
   }
-  return Object.freeze({createRequest,clone,validate,normalizePhoto,renderProof,review,approvalMatches,fingerprint,buildPackage,verifyPackage,copyPackage,zipFiles:zip,sha256,emailValid:email,attemptIdValid,limits:LIMITS});
+  return Object.freeze({createRequest,exportStart,importStart,clone,validate,normalizePhoto,renderProof,review,approvalMatches,fingerprint,buildPackage,verifyPackage,copyPackage,zipFiles:zip,sha256,emailValid:email,attemptIdValid,limits:LIMITS});
 });
