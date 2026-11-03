@@ -1,11 +1,14 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Current architecture — Clearway 8.8.20.86
+# Current architecture — Harborlight 8.8.20.87
 
-Source of release identity: RELEASE_CONFIG.json. Installed page/manifest/seal/worker identity is generated together. APP_COMPONENT_REVISION is 8.8.20.86; owner helper revision is 8.8.20.68. Unchanged component bodies remain byte-identical across release-only changes.
+Source of release identity: RELEASE_CONFIG.json. Installed page/manifest/seal/worker identity is generated together. APP_COMPONENT_REVISION is 8.8.20.87; owner helper revision is 8.8.20.68. Unchanged component bodies remain byte-identical across release-only changes.
 
 The Engine still verifies every required body, current governance models, app component contract and worker identity before executing the same script sequence. App and Captain bind audit/display freshness to the verified installed release. This context never grants permissions. The owner page keeps explicit helper compatibility checks.
 
-['Main Design My Sign opens the current guarded Ike request flow.', 'Persistent next/back controls and visible Mail actions; Mail may require recipient and subject entry.', 'Optional scoped recovery on private devices; explicit Resume, clean New request and no persistence in previews or deployed shared sessions.', 'Free Mail remains primary. No deployment, live email, backend changes or machining certification.']
+- One task per page with retained answers and required-step validation.
+- Existing Countercraft kiosk hardened with fresh customer sessions, idle expiry and owner-selected locations.
+- Fleet Test Center replaces Test Access bypass and separate preview entry; field learning record added.
+- No paid service, outgoing email, backend deployment or machine certification.
 Backend prerequisites are recorded separately in PATCH_CONTRACT.json. Release preparation executes no database commands. Fleet core and Admiral programs remain distinct.
 
 ## Release commands

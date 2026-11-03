@@ -6,7 +6,7 @@ create table fleet_private.cc_publications(id uuid primary key default gen_rando
 create table fleet_private.cc_recovery_keys(id uuid primary key default gen_random_uuid(),publication_id uuid not null references fleet_private.cc_publications(id),public_jwk jsonb not null,private_jwk jsonb not null,created_at timestamptz not null default now(),active boolean not null default true);
 create table fleet_private.cc_devices(id uuid primary key default gen_random_uuid(),publication_id uuid not null references fleet_private.cc_publications(id),public_jwk jsonb not null,label text not null,created_at timestamptz not null default now(),revoked_at timestamptz);
 create table fleet_private.cc_challenges(id uuid primary key default gen_random_uuid(),device_id uuid not null references fleet_private.cc_devices(id),nonce text not null,expires_at timestamptz not null default now()+interval '2 minutes',used_at timestamptz);
-create table fleet_private.cc_sessions(id uuid primary key default gen_random_uuid(),publication_id uuid not null references fleet_private.cc_publications(id),device_id uuid not null references fleet_private.cc_devices(id),token_hash text unique not null check(length(token_hash)=64),created_at timestamptz not null default now(),expires_at timestamptz not null default now()+interval '4 hours',ended_at timestamptz,job_id uuid);
+create table fleet_private.cc_sessions(id uuid primary key default gen_random_uuid(),publication_id uuid not null references fleet_private.cc_publications(id),device_id uuid not null references fleet_private.cc_devices(id),token_hash text unique not null check(length(token_hash)=64),created_at timestamptz not null default now(),expires_at timestamptz not null default now()+interval '3 minutes',ended_at timestamptz,job_id uuid);
 create table fleet_private.cc_operations(publication_id uuid not null references fleet_private.cc_publications(id),operation_id uuid not null,session_id uuid not null references fleet_private.cc_sessions(id),digest text not null check(length(digest)=64),snapshot jsonb not null,manifest jsonb not null,receipt jsonb,created_at timestamptz not null default now(),expires_at timestamptz not null default now()+interval '24 hours',primary key(publication_id,operation_id));
 create table fleet_private.cc_jobs(id uuid primary key default gen_random_uuid(),publication_id uuid not null references fleet_private.cc_publications(id),request_number bigint generated always as identity,version integer not null default 1,revision integer not null default 1,approved_revision integer not null default 1,status text not null default 'received',checks jsonb,production jsonb,created_at timestamptz not null default now(),updated_at timestamptz not null default now(),unique(publication_id,request_number));
 create table fleet_private.cc_revisions(job_id uuid not null references fleet_private.cc_jobs(id),revision integer not null,snapshot jsonb not null,assets jsonb not null,created_at timestamptz not null default now(),primary key(job_id,revision));
@@ -78,7 +78,7 @@ begin
  end if;
  if p_action='cleanup-done' then delete from fleet_private.cc_upload_batches where publication_id=p.id and operation_id=(p_input->>'operationId')::uuid and exists(select 1 from fleet_private.cc_closed_operations closedrow where closedrow.publication_id=p.id and closedrow.operation_id=(p_input->>'operationId')::uuid);return jsonb_build_object('cleaned',true);end if;
  if p_action in ('asset-stage-owner','asset-stage-customer') then
-  if p_action='asset-stage-customer' and not exists(select 1 from fleet_private.cc_sessions cs join fleet_private.cc_operations co on co.session_id=cs.id where cs.publication_id=p.id and cs.token_hash=p_input->>'tokenHash' and co.operation_id=(p_input->>'operationId')::uuid and cs.ended_at is null and cs.expires_at>now()) then raise exception 'Customer upload unavailable';end if;
+  if p_action='asset-stage-customer' and not exists(select 1 from fleet_private.cc_sessions cs join fleet_private.cc_operations co on co.session_id=cs.id where cs.publication_id=p.id and cs.token_hash=p_input->>'tokenHash' and co.operation_id=(p_input->>'operationId')::uuid and cs.ended_at is null and cs.expires_at>now() and cs.created_at+interval '4 hours'>now()) then raise exception 'Customer upload unavailable';end if;
   if exists(select 1 from fleet_private.cc_closed_operations where publication_id=p.id and operation_id=(p_input->>'operationId')::uuid) then raise exception 'Upload operation closed';end if;
   insert into fleet_private.cc_upload_batches values(p.id,(p_input->>'operationId')::uuid,p_input->'paths',now()) on conflict do nothing;return jsonb_build_object('staged',true);
  end if;
@@ -113,11 +113,12 @@ begin
   update fleet_private.cc_challenges set used_at=now() where id=c.id;
   insert into fleet_private.cc_sessions(publication_id,device_id,token_hash) values(p.id,d.id,p_input->>'tokenHash') returning * into s;
   select * into keyrow from fleet_private.cc_recovery_keys where publication_id=p.id and active order by created_at desc limit 1;
-  return jsonb_build_object('id',s.id,'expiresAt',s.expires_at,'publication',jsonb_build_object('scope',p.scope,'revision',p.revision,'enabled',p.enabled,'stocks',p.settings->'stocks','rates',p.settings->'rates','recoveryKey',case when keyrow.id is null then null else jsonb_build_object('id',keyrow.id,'publicJwk',keyrow.public_jwk) end));
+  return jsonb_build_object('id',s.id,'expiresAt',s.expires_at,'sessionPolicy','idle-v1','publication',jsonb_build_object('scope',p.scope,'revision',p.revision,'enabled',p.enabled,'stocks',p.settings->'stocks','rates',p.settings->'rates','recoveryKey',case when keyrow.id is null then null else jsonb_build_object('id',keyrow.id,'publicJwk',keyrow.public_jwk) end));
  end if;
- if p_action in ('context','begin','commit','result','end','receipt-token','resume','refresh-request') then
+ if p_action in ('context','begin','commit','result','end','receipt-token','resume','refresh-request','touch') then
   select * into s from fleet_private.cc_sessions where publication_id=p.id and token_hash=p_input->>'tokenHash' for update;
-  if s.id is null or s.ended_at is not null or s.expires_at<=now() or not exists(select 1 from fleet_private.cc_devices where id=s.device_id and revoked_at is null) then raise exception 'Customer session or device unavailable';end if;
+  if s.id is null or s.ended_at is not null or s.expires_at<=now() or s.created_at+interval '4 hours'<=now() or not exists(select 1 from fleet_private.cc_devices where id=s.device_id and revoked_at is null) then raise exception 'Customer session or device unavailable';end if;
+  if p_action='touch' then update fleet_private.cc_sessions set expires_at=least(created_at+interval '4 hours',now()+interval '3 minutes') where id=s.id returning * into s;return jsonb_build_object('expiresAt',s.expires_at,'sessionPolicy','idle-v1');end if;
   if p_action='resume' then
    select snapshot into result from fleet_private.cc_resumes where token_hash=p_input->>'resumeTokenHash' and publication_id=p.id and device_id=s.device_id and used_at is null and expires_at>now() for update;
    if result is null then raise exception 'Resume link used or unavailable on this device';end if;
@@ -193,16 +194,21 @@ begin
   insert into fleet_private.cc_events(job_id,actor,action,details) values(j.id,u::text,actor,jsonb_build_object('version',j.version,'revision',j.revision,'reason',left(p_input->>'reason',2000),'confirmedPickup',left(p_input->>'confirmedPickup',120)));
   result:=jsonb_build_object('job',fleet_private.cc_job(j.id));insert into fleet_private.cc_owner_operations values(p.id,(p_input->>'operationId')::uuid,p_input->>'digest',result);return result;
  end if;
- if p_action in ('exchange','token-read','review-respond') then
+ if p_action in ('exchange','token-read','review-respond','token-touch','token-end') then
   select * into t from fleet_private.cc_tokens where token_hash=p_input->>'tokenHash' and publication_id=p.id for update;
   if t.token_hash is null or t.expires_at<=now() then raise exception 'Receipt or review session expired';end if;
   if p_action='exchange' then
    if t.kind not in ('receipt-transfer','review-transfer') or t.used_at is not null then raise exception 'Link already used';end if;
    update fleet_private.cc_tokens set used_at=now() where token_hash=t.token_hash;
-   insert into fleet_private.cc_tokens values(p_input->>'newTokenHash',p.id,t.job_id,t.revision,replace(t.kind,'transfer','session'),now()+interval '1 hour',null,t.token_hash,now());
+   insert into fleet_private.cc_tokens values(p_input->>'newTokenHash',p.id,t.job_id,t.revision,replace(t.kind,'transfer','session'),now()+case when t.kind='review-transfer' then interval '3 minutes' else interval '1 hour' end,null,t.token_hash,now());
    return jsonb_build_object('kind',replace(t.kind,'transfer','session'),'expiresIn',3600);
   end if;
   if t.kind not in ('receipt-session','review-session') then raise exception 'Exchange this link first';end if;
+  if p_action='token-end' then update fleet_private.cc_tokens set expires_at=now() where token_hash=t.token_hash;return jsonb_build_object('ended',true);end if;
+  if p_action='token-touch' then
+   if t.kind<>'review-session' or t.created_at+interval '1 hour'<=now() then raise exception 'Review session expired';end if;
+   update fleet_private.cc_tokens set expires_at=least(created_at+interval '1 hour',now()+interval '3 minutes') where token_hash=t.token_hash;return jsonb_build_object('sessionPolicy','idle-v1');
+  end if;
   select * into j from fleet_private.cc_jobs where id=t.job_id and publication_id=p.id for update;
   if p_action='review-respond' then
    if t.kind<>'review-session' or t.used_at is not null or j.revision<>t.revision or j.status<>'awaiting-customer-approval' then raise exception 'Review is no longer current';end if;
@@ -217,7 +223,7 @@ begin
   select jsonb_build_object('revision',r.revision,'snapshot',r.snapshot,'assets',r.assets) into result from fleet_private.cc_revisions r where r.job_id=j.id and r.revision=t.revision;
   -- Minimal customer projection: no contacts or owner activity history. The amendment reason is customer-facing.
   result:=jsonb_set(result,'{snapshot,request,customer}','{"name":"","email":"","phone":""}'::jsonb);
-  return jsonb_build_object('id',j.id,'number','IKE-'||lpad(j.request_number::text,6,'0'),'revision',t.revision,'kind',t.kind,'record',result,'responded',t.used_at is not null,'correctionSummary',(select e.details->>'reason' from fleet_private.cc_events e where e.job_id=j.id and e.action='amendment-proposed' and (e.details->>'revision')::int=t.revision order by e.id desc limit 1));
+  return jsonb_build_object('id',j.id,'number','IKE-'||lpad(j.request_number::text,6,'0'),'revision',t.revision,'kind',t.kind,'sessionPolicy','idle-v1','record',result,'responded',t.used_at is not null,'correctionSummary',(select e.details->>'reason' from fleet_private.cc_events e where e.job_id=j.id and e.action='amendment-proposed' and (e.details->>'revision')::int=t.revision order by e.id desc limit 1));
  end if;
  raise exception 'Unsupported Countercraft action';
 end$$;

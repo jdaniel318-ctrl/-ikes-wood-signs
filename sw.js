@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.20.86';
-const RELEASE_SEAL='clearway-882086';
+const RELEASE_BUILD='8.8.20.87';
+const RELEASE_SEAL='harborlight-882087';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.

@@ -2,7 +2,7 @@
 (function (g) {
   'use strict';
   if (!g.document || g.IkeShop) return;
-  const BUILD='8.8.20.86',LIMIT=5*1024*1024;
+  const BUILD='8.8.20.87',LIMIT=5*1024*1024;
   const core=()=>g.IkeShopCore,fonts=()=>g.IkeCarveFonts;
   const clone=value=>g.structuredClone?g.structuredClone(value):JSON.parse(JSON.stringify(value));
   const canonical=value=>Array.isArray(value)?'['+value.map(canonical).join(',')+']':value&&typeof value==='object'?'{'+Object.keys(value).sort().map(k=>JSON.stringify(k)+':'+canonical(value[k])).join(',')+'}':JSON.stringify(value);
@@ -19,12 +19,30 @@
   function revoke(s){for(const url of s.urls)URL.revokeObjectURL(url);s.urls=[];}
   function clearPackage(s){revoke(s);s.bundle=null;s.bundleRequest=null;s.handoff=null;s.shareReady=false;node(s,'ishPackage').hidden=true;node(s,'ishFiles').replaceChildren();}
   const steps=[['Your board','ishPhotoSection','ishChoosePhoto'],['Your design','ishDesignSection','ishEditDesign'],['Your details','ishDetailsSection','ishName'],['Review','ishReviewSection','ishApproval'],['Mail','ishPackage','ishShare']];
+  function showStep(s){
+    steps.forEach((item,i)=>{node(s,item[1]).hidden=i!==s.step||(i===4&&!s.bundle);});
+    s.root.querySelector('.ish-art-column').hidden=s.step>1;
+    s.root.querySelector('.ish-workgrid').hidden=s.step>2;
+    s.root.querySelector('.ish-intro').hidden=s.step!==0;
+    node(s,'ishDelivery').hidden=s.step!==4;
+    node(s,'ishNext').hidden=s.step>=3;
+    if(s.step===3){
+      const r=s.request,words=g.CarvewrightCore.layerList(r.design).filter(x=>x.type==='text').map(x=>x.text.value).join(' · ');
+      node(s,'ishReviewSummary').innerHTML='<div class="ish-review-proof">'+node(s,'ishDesignPreview').innerHTML+'</div><dl><dt>Wording</dt><dd>'+esc(words||'Artwork design')+'</dd><dt>Contact</dt><dd>'+esc(r.customer.name)+'<br>'+esc([r.customer.email,r.customer.phone].filter(Boolean).join(' · '))+'</dd><dt>Quantity and finish</dt><dd>'+esc(r.details.quantity)+' · '+esc(r.details.finish)+'</dd><dt>Notes</dt><dd>'+esc(r.details.notes||'None')+'</dd></dl>';
+    }
+  }
   function navigate(s,step){
-    s.step=Math.max(0,Math.min(s.bundle?4:3,step));
-    const item=steps[s.step],section=node(s,item[1]);
-    section.scrollIntoView({block:'start',behavior:'instant'});
-    const target=node(s,s.step===4&&!s.shareReady?'ishDownload':item[2]);
-    target.scrollIntoView({block:'nearest',behavior:'instant'});target.focus({preventScroll:true});controls(s);
+    if(step>s.step){
+      let error='';
+      if(s.step===0&&!s.request.photos.length)error='Add a photo of your board before continuing.';
+      if(s.step===1){const layout=g.CarvewrightCore.layout(s.request.design,fonts());if(!layout.ok||layout.blank)error='Add your words or artwork before continuing.';}
+      if(s.step===2){const check=completeCheck(s);if(!check.ok)error=check.errors.join(' ');}
+      if(error){status(s,error,'error');return;}
+    }
+    s.step=Math.max(0,Math.min(s.bundle?4:3,step));controls(s);
+    s.root.querySelector('.ish-main').scrollTop=0;
+    const heading=node(s,steps[s.step][1]).querySelector('h2');heading.tabIndex=-1;heading.focus({preventScroll:true});
+    status(s,'Step '+(s.step+1)+' of 5 · '+steps[s.step][0]);
   }
   function draftStatus(s,text,state){if(!alive(s))return;const n=node(s,'ishDraftStatus');n.textContent=text;n.dataset.state=state;}
   function queueDraft(s){
@@ -89,6 +107,7 @@
     node(s,'ishMail').disabled=unavailable||frozen||s.conflict||!s.handoff||!canSend(s);
     node(s,'ishApproval').checked=s.approved;
     const errors=node(s,'ishValidation');errors.hidden=check.ok;errors.textContent=check.ok?'':check.errors.join(' ');
+    showStep(s);
     node(s,'ishPhotoLimit').textContent=s.request.photos.length+' of 3 photographs added · one sign request';
   }
   function preview(s){
@@ -276,10 +295,11 @@
     <section id="ishPhotoSection" class="ish-card"><div class="ish-section-heading"><span class="ish-step">1</span><h2>Your piece of wood</h2></div><p class="ish-note">Take a straight-on photo with the whole board in view. Its grain, knots and edges stay visible while you design.</p><div class="ish-photo-buttons"><button id="ishTakePhoto" class="ish-primary" type="button">Take a photo of my board</button><button id="ishChoosePhoto" type="button">Choose my own photo</button></div><input id="ishCameraInput" type="file" accept="image/*" capture="environment" aria-label="Take a photo of this board" hidden><input id="ishPhotoInput" type="file" accept="image/*" multiple aria-label="Choose my own photographs" hidden><span id="ishPhotoLimit" class="ish-caption"></span><div id="ishPhotoList" class="ish-photo-list"></div><button id="ishOpenDesign" type="button">Open saved design</button><input id="ishOpenDesignInput" type="file" accept=".json,application/json" aria-label="Open a saved Ike or Carvewright design" hidden><p class="ish-note">You can add two more pictures for Ike. This request starts fresh with your photos.</p></section>
     <section id="ishDesignSection" class="ish-card"><div class="ish-section-heading"><span class="ish-step">2</span><h2>Make it yours</h2></div><div id="ishDesignPreview" class="ish-design-preview"></div><p id="ishProofState" class="ish-caption"></p><p id="ishSpecs" class="ish-specs"></p><button id="ishEditDesign" class="ish-primary ish-wide" type="button">Create sign design</button><button id="ishSaveDesign" type="button">Save design for later</button><p class="ish-note">Try your own words, lettering, colors and graphics. Move the layout to suit your board; Ike confirms the finished size.</p></section></div>
     <section id="ishDetailsSection" class="ish-card ish-details"><div class="ish-section-heading"><span class="ish-step">3</span><h2>How can Ike reach you?</h2></div><p class="ish-note">Leave your name and an email address or phone number so Ike can follow up.</p><label for="ishName">Your name<input id="ishName" maxlength="160" autocomplete="off" data-bf-trim="preserve"></label><label for="ishEmail">Email address<input id="ishEmail" type="email" maxlength="254" autocomplete="off" autocapitalize="off" inputmode="email" data-bf-trim="preserve"></label><label for="ishPhone">Phone number<input id="ishPhone" type="tel" maxlength="80" autocomplete="off" inputmode="tel" data-bf-trim="preserve"></label><div class="ish-two-fields"><label for="ishQuantity">Quantity<input id="ishQuantity" type="number" min="1" max="100" step="1" inputmode="numeric"></label><label for="ishFinish">Requested finish<input id="ishFinish" maxlength="120" autocomplete="off" data-bf-trim="preserve"></label></div><label for="ishNotes">Anything Ike should know?<textarea id="ishNotes" rows="5" maxlength="4000" placeholder="Wood preferences, mounting, timing or other details…" data-bf-trim="preserve"></textarea></label><label class="ish-check ish-remember"><input id="ishRemember" type="checkbox"><span>Remember progress on my private device</span></label><p class="ish-note">Includes your photos and contact details. Leave off on a shared device. A download is still your backup.</p><p id="ishDraftStatus" class="ish-caption" role="status" data-state="off">Progress is not kept on this device.</p><p class="ish-note">One sign is all you need to start. Quantity is for additional copies of this design.</p></section></div>
-    <section id="ishReviewSection" class="ish-card ish-approval"><div class="ish-section-heading"><span class="ish-step">4</span><h2>Review your sign</h2></div><p id="ishValidation" class="ish-validation" role="status"></p><label class="ish-check" for="ishApproval"><input id="ishApproval" type="checkbox"><span>I checked my words, layout, details and pictures. I’m ready for Ike to review this design and confirm the wood, size and price.</span></label><button id="ishPrepare" class="ish-primary" type="button">Prepare complete package</button></section>
+    <section id="ishReviewSection" class="ish-card ish-approval"><div class="ish-section-heading"><span class="ish-step">4</span><h2>Review your sign</h2></div><div id="ishReviewSummary"></div><p id="ishValidation" class="ish-validation" role="status"></p><label class="ish-check" for="ishApproval"><input id="ishApproval" type="checkbox"><span>I checked my words, layout, details and pictures. I’m ready for Ike to review this design and confirm the wood, size and price.</span></label><button id="ishPrepare" class="ish-primary" type="button">Prepare complete package</button></section>
     <section id="ishPackage" class="ish-card ish-package" hidden aria-labelledby="ishPackageTitle"><div class="ish-section-heading"><span class="ish-step">5</span><h2 id="ishPackageTitle">Send your design to Ike</h2></div><strong id="ishRecipient" class="ish-recipient"></strong><div class="ish-mail-handoff"><p id="ishMailHelp" class="ish-note">Choose Mail to attach the complete file. Mail may leave To and Subject blank: enter Ike’s address above and your sign name, then tap Send.</p><div class="ish-package-actions"><button id="ishShare" class="ish-primary" type="button">Share with Mail…</button><button id="ishDownload" type="button">Download complete ZIP</button></div><p class="ish-note">No Mail sharing option? Download the ZIP, then open the addressed email below and attach your download.</p><button id="ishMail" type="button">Open addressed email…</button><p class="ish-note">An email draft does not attach the ZIP automatically. Finish sending in Mail.</p></div><p id="ishPackageSummary"></p><p id="ishPackageNotes" class="ish-package-notes"></p><details class="ish-file-details"><summary>File contents and request details</summary><p id="ishPackageMeta" class="ish-package-meta"></p><ul id="ishFiles" class="ish-files"></ul><p class="ish-note">Includes the approved preview, photographs, sign details, editable design and SVG/DXF artwork. Ike confirms the size and machine setup before production.</p><p id="ishPackageHash" class="ish-hash"></p></details><details class="ish-file-details"><summary>Other delivery options</summary><p class="ish-note">Direct sending requires compatible shop delivery settings. Mail above is the free route. Do not send another copy if delivery is uncertain.</p><button id="ishSend" type="button">Send request to Ike</button></details></section>
     <p id="ishDelivery" class="ish-delivery" role="status"></p></main><footer class="ish-footer"><nav class="ish-navigation" aria-label="Sign request steps"><button id="ishPrevious" type="button">Back</button><span id="ishStepLabel">Your board</span><button id="ishNext" type="button" class="ish-primary">Next: Your design</button></nav><p id="ishStatus" role="status" aria-live="polite">Start with your board photo, then make your sign your own.</p></footer></div>`;}
   function open(options){
+    if(options?.sharedDevice===true)throw Error('Use the protected shop kiosk for a shared device. Mail tools are for a personal device.');
     if(!options||options.scope?.projectId!=='ikes-wood-signs'||typeof options.guard!=='function'||options.guard()!==true||!['deployed','preview','sea_trial'].includes(options.mode))throw Error('Open a sign request from Ike’s shop.');
     if(!core()?.createRequest||!g.IkeShopStore?.create||!g.IkeShopDelivery?.send||!g.IkeShopDelivery?.prepareHandoff||!g.BoardcraftPhoto?.scene||!g.CarvewrightStudio?.openEmbedded||!g.CarvewrightPortable||!fonts())throw Error('The sign request files are incomplete. Reload the complete release.');
     const parent=options.parent||document.body;if(!parent.isConnected)throw Error('The shop is no longer open.');if(current&&!close())return false;

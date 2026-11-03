@@ -43,10 +43,11 @@ export function createService(io){
     const saved=await saveAssets(scope,operationId,assets,{tokenHash:th},'customer');return await rpc('commit',scope,{...args,assets:saved});
    }catch(e){const latest=await rpc('context',scope,{tokenHash:th});if(latest.revision!==pub.revision)return refresh();throw e;}
   }
-  if(['result','end'].includes(action))return rpc(action,scope,{tokenHash:await tokenHash(input.token),...(action==='result'?{operationId:uuid(input.operationId)}:{})});
+  if(['result','end','touch'].includes(action))return rpc(action,scope,{tokenHash:await tokenHash(input.token),...(action==='result'?{operationId:uuid(input.operationId)}:{})});
   if(action==='resume')return rpc('resume',scope,{tokenHash:await tokenHash(input.token),resumeTokenHash:await tokenHash(input.resumeToken)});
   if(action==='receipt-token'){const token=secret(),r=await rpc(action,scope,{tokenHash:await tokenHash(input.token),newTokenHash:await tokenHash(token)});return {...r,token};}
   if(action==='exchange'){const token=secret(),r=await rpc(action,scope,{tokenHash:await tokenHash(input.token),newTokenHash:await tokenHash(token)});return {...r,token};}
+  if(['token-touch','token-end'].includes(action))return rpc(action,scope,{tokenHash:await tokenHash(input.token)});
   if(action==='token-read'){const r=await rpc(action,scope,{tokenHash:await tokenHash(input.token)});r.record=await hydrate(r.record);return r;}
   if(action==='review-respond')return rpc(action,scope,{tokenHash:await tokenHash(input.token),answer:input.answer,digest:input.digest});
   // Everything below is exact-vessel owner work. Never accept client-provided user/session IDs.

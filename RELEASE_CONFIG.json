@@ -1,28 +1,24 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.86",
-  "name": "Clearway",
-  "seal": "clearway-882086",
-  "base": "8.8.20.85",
-  "base_sha256": "c1c0cc099c72d8e097de19d151e67a15db6c7cb269dbd66414a0b8e2a0e2b030",
-  "base_files": 770,
-  "prepared_at": "2026-11-02T22:20:03.852994+00:00",
-  "app_component_revision": "8.8.20.86",
+  "build": "8.8.20.87",
+  "name": "Harborlight",
+  "seal": "harborlight-882087",
+  "base": "8.8.20.86",
+  "base_sha256": "213529cf13f85ad390b5fec90eba8bfdbe16ab8d9dc2bb04af0b295ac909ca2d",
+  "base_files": 774,
+  "prepared_at": "2026-11-03T01:52:40.690359+00:00",
+  "app_component_revision": "8.8.20.87",
   "owner_helper_revision": "8.8.20.68",
-  "feature_notes": [
-    "Main Design My Sign opens the current guarded Ike request flow.",
-    "Persistent next/back controls and visible Mail actions; Mail may require recipient and subject entry.",
-    "Optional scoped recovery on private devices; explicit Resume, clean New request and no persistence in previews or deployed shared sessions.",
-    "Free Mail remains primary. No deployment, live email, backend changes or machining certification."
-  ],
+  "feature_notes": "- One task per page with retained answers and required-step validation.\n- Existing Countercraft kiosk hardened with fresh customer sessions, idle expiry and owner-selected locations.\n- Fleet Test Center replaces Test Access bypass and separate preview entry; field learning record added.\n- No paid service, outgoing email, backend deployment or machine certification.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
-    "migration": "COUNTERCRAFT_INTAKE.sql",
+    "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
     "edge_function": "countercraft",
-    "status": "applied_verified",
+    "service_source": "countercraft_service.mjs",
+    "status": "source_ready_not_applied",
     "automatic_execution_by_upload": false,
-    "sql_sha256": "9c12f7e2a56eb6141280545a7d6330ef90ee16ce1fd6cc2ce16d8f11c3b6c048",
-    "reason": "Countercraft tables, private storage and exact-vessel gateway verified. TrueFit service v2 deployed; Sea Trial remains enabled only by owner publication.",
-    "edge_function_status": "deployed_active_v2"
+    "sql_sha256": "4ed61a09eb42982fa9975d2fda8b3711c1e6b749cbdc10bbf0c750b3dade1aee",
+    "reason": "Existing Countercraft backend is active; this build requires idle-v1 service and SQL upgrade before customer kiosk use. No Ike publication configured at read-only audit. Old service is rejected by kiosk.",
+    "edge_function_status": "upgrade_pending"
   }
 }

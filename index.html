@@ -15,7 +15,7 @@
   </style>
   <script id="darkSkyFirstLightBootstrap">
     // Dark Sky 8.6.23 MEMORY MUSTER — canonical release identity.
-    const DARK_SKY_RELEASE = Object.freeze({build:'8.8.20.86',seal:'clearway-882086'});
+    const DARK_SKY_RELEASE = Object.freeze({build:'8.8.20.87',seal:'harborlight-882087'});
     const DARK_SKY_EXPECTED_BUILD = DARK_SKY_RELEASE.build;
     const DARK_SKY_RELEASE_SEAL = DARK_SKY_RELEASE.seal;
     // 8.6.23 Storage Safe Harbor — three independent channels, no silent storage failures.
@@ -800,18 +800,7 @@
         <section><span>CREATIVE HOLD</span><strong>Ready for experiments</strong><small>Future visual ideas, prototypes and Captain-only toys dock here.</small></section>
         <section><span>PROJECT BULKHEADS</span><strong>Sealed</strong><small>Customer and project namespaces stay outside the chamber.</small></section>
         <section><span>PIRATE MODE</span><strong>Still aboard</strong><small>Personality remains separate from Captain privileges.</small></section>
-        <section class="captain-test-access-card"><span>TEST ACCESS</span><strong id="captainTestAccessStatus">OFF — NORMAL PIN SECURITY ACTIVE</strong><small>Session-only testing shortcut. PINs, roles, lockouts and project isolation remain intact.</small><button id="captainTestAccessToggle" type="button">ENABLE TEST ACCESS</button></section>
-      </div>
-      <div id="captainTestAccessGate" class="captain-test-access-gate hidden" role="dialog" aria-modal="true" aria-labelledby="captainTestAccessTitle">
-        <div class="captain-test-access-shell">
-          <div class="captain-kicker">CAPTAIN CONTROL • DUAL AUTHORIZATION</div>
-          <h3 id="captainTestAccessTitle">Enable Test Access</h3>
-          <p>This does not remove or change any PIN. It only bypasses PIN entry for this browser session and leaves project boundaries intact.</p>
-          <label for="testAccessEnginePin">ENGINE PIN</label><input data-bf-trim="preserve" id="testAccessEnginePin" type="password" inputmode="numeric" maxlength="8" autocomplete="off">
-          <label for="testAccessCaptainPin">CAPTAIN PIN</label><input data-bf-trim="preserve" id="testAccessCaptainPin" type="password" inputmode="numeric" maxlength="8" autocomplete="off">
-          <p id="captainTestAccessError" class="error-text" aria-live="polite"></p>
-          <div class="captain-test-access-actions"><button id="captainTestAccessConfirm" type="button">AUTHORIZE TEST ACCESS</button><button id="captainTestAccessCancel" type="button">CANCEL</button></div>
-        </div>
+        <section class="captain-test-access-card"><span>FLEET TEST CENTER</span><strong id="captainTestAccessStatus">ENGINE ONLY</strong><small>Preview, controlled trials and learning records share one authenticated Engine workspace.</small><button id="captainTestAccessToggle" type="button">OPEN ENGINE</button></section>
       </div>
       <div class="captain-rule">CAPTAIN'S RULE: creativity may roam; production boundaries do not.</div>
       <button id="captainShipyardLaunch" class="captain-shipyard-launch" type="button" aria-label="Open Captain's Shipyard and resume Bootstrap Build">
@@ -828,9 +817,9 @@
           <b id="captainWatchDetail">Dark Sky signal intelligence</b>
         </span>
       </button>
-      <button id="captainTestAccessDeckBtn" class="cq-test-access-watch" type="button" aria-label="Open Test Access controls" aria-pressed="false">
+      <button id="captainTestAccessDeckBtn" class="cq-test-access-watch" type="button" aria-label="Open Engine for fleet testing" aria-pressed="false">
         <span class="cq-test-access-lamp" aria-hidden="true"></span>
-        <span><strong>TEST ACCESS</strong><small id="captainTestAccessDeckStatus">SECURE</small></span>
+        <span><strong>TEST CENTER</strong><small id="captainTestAccessDeckStatus">SECURE</small></span>
       </button>
       <div class="cq-rustic-desk" aria-label="Captain's command desk"><div class="cq-desk-grain"></div>
         <div class="cq-desk-history" aria-hidden="true">
@@ -1431,7 +1420,7 @@
       </header>
 
       <section id="clearDeckLaunchpad" class="clear-deck-launchpad waypoint-home" aria-labelledby="engineNextMoveTitle">
-        <header class="clear-deck-brief"><small id="engineReleaseLabel">8.8.20.86 • CLEARWAY</small><h3 id="engineNextMoveTitle">Your fleet. A clear next move.</h3><p>Open a vessel, lead the work, see the fleet or shape what comes next.</p></header>
+        <header class="clear-deck-brief"><small id="engineReleaseLabel">8.8.20.87 • HARBORLIGHT</small><h3 id="engineNextMoveTitle">Your fleet. A clear next move.</h3><p>Open a vessel, lead the work, see the fleet or shape what comes next.</p></header>
         <nav class="clear-deck-primary-actions" aria-label="Fleet command offices">
           <button id="engineOperateVessels" type="button" class="clear-deck-action primary" data-clear-deck-command="projects" aria-controls="fleetCommissioningDock"><span class="clear-deck-action-number">01</span><span><strong>OPERATE VESSELS</strong><small>Choose a business and open its workstation.</small></span></button>
           <button type="button" class="clear-deck-action" data-command-open="captain"><span class="clear-deck-action-number">02</span><span><strong>CAPTAIN WATCH</strong><small>Review signals, decide the next action and record the result.</small></span></button>
@@ -1882,11 +1871,11 @@
         <section id="seaTrialsStation" class="sea-trials-station">
           <div class="sea-trials-copy">
             <div class="engine-kicker">SEA TRIALS</div>
-            <h4>End-to-End Readiness</h4>
+            <h4>Fleet checks and field evidence</h4>
             <p>Run non-destructive checks across identity, project isolation, navigation, persistence, lifecycle, recovery, and the production-security boundary.</p>
           </div>
           <div class="sea-trials-actions">
-            <button id="runSeaTrialsBtn" class="primary-btn" type="button">RUN SEA TRIALS</button>
+            <button id="runSeaTrialsBtn" class="primary-btn" type="button">OPEN TEST CENTER</button>
             <button id="openShipsLogBtn" class="secondary-btn" type="button">VIEW SHIP'S LOG</button>
           </div>
           <div id="seaTrialsSummary" class="sea-trials-summary"><div class="sea-trials-idle"><strong>READY FOR TRIAL</strong><span>No destructive changes are made by this check.</span></div></div>
@@ -2194,7 +2183,7 @@
     const APP_SCOPE=new URL('./',location.href).href;
     const APP_CACHE=/^(ikes-wood-signs-|workshop-engine-|black-flag-|dark-sky-)/;
     const delay=ms=>new Promise(r=>setTimeout(r,ms));
-    const snapshotPaths=['countercraft_privacy.js','input_hygiene.js','fun_core.js','stormwake_core.js','fun_program.js','fun_program.css','fun_player.html','fleet_viewport.js','fleet_viewport.css','headway_contracts.js','woodwright_fit.js','styles.css','simple_books.css','platform_core.js','fleet_storage_safety.js','fleet_legacy_recovery.js','platform_v4.js','platform_identity.js','fleet_supabase.js','fleetguard_admiral_core.js','fleet_recovery_core.js','ike_style_registry.js','app.js','captain.js','simple_books.js','quartermaster_core.js','quartermaster_sync.js','quartermaster_fonts.js','quartermaster_pdf.js','carve_fonts.js','carve_core.js','carve_store.js','carve_studio.js','quartermaster.js','quartermaster.css','carve_studio.css','fleet_design_assets.js','carvewright_core.js','boardcraft_photo.js','carvewright_store.js','carvewright_clipper.js','carvewright_cam.js','carvewright_portable.js','ike_shop_core.js','ike_shop_store.js','ike_shop_delivery.js','carvewright_posts.js','carvewright_machining.js','carvewright_studio.js','ike_shop.js','carvewright_app.js','carvewright_fleet.js','carvewright.css','carvewright_machining.css','ike_shop.css'];
+    const snapshotPaths=['countercraft_config.js','countercraft_privacy.js','input_hygiene.js','fun_core.js','stormwake_core.js','fun_program.js','fun_program.css','fun_player.html','fleet_viewport.js','fleet_viewport.css','headway_contracts.js','woodwright_fit.js','styles.css','simple_books.css','platform_core.js','fleet_storage_safety.js','fleet_legacy_recovery.js','platform_v4.js','platform_identity.js','fleet_supabase.js','fleetguard_admiral_core.js','fleet_recovery_core.js','ike_style_registry.js','app.js','captain.js','simple_books.js','quartermaster_core.js','quartermaster_sync.js','quartermaster_fonts.js','quartermaster_pdf.js','carve_fonts.js','carve_core.js','carve_store.js','carve_studio.js','quartermaster.js','quartermaster.css','carve_studio.css','fleet_design_assets.js','carvewright_core.js','boardcraft_photo.js','carvewright_store.js','carvewright_clipper.js','carvewright_cam.js','carvewright_portable.js','ike_shop_core.js','ike_shop_store.js','ike_shop_delivery.js','carvewright_posts.js','carvewright_machining.js','carvewright_studio.js','ike_shop.js','carvewright_app.js','carvewright_fleet.js','carvewright.css','carvewright_machining.css','ike_shop.css'];
     // Manifest, seal and inventory are fetched and verified as the first group;
     // do not download those same documents again in the presence group.
     const presencePaths=['carvewright.html','business_deck.js','business_deck.css','owner.html','manifest.webmanifest','IKE_STYLE_FOUNDRY.json','sw.js','FLEET_DOCTRINE_REGISTRY.json','GOLDEN_VOYAGES.json','FLEET_COMMAND_MODEL.json','ADMIRAL_ENTITLEMENT_STATE_MODEL.json'];
@@ -2511,7 +2500,7 @@
       window.__funVerifiedPlayerHtml=fetched['fun_player.html'];
       const css=document.createElement('style');css.id='darkSkyVerifiedReleaseStyles';css.dataset.releaseSeal=SEAL;css.textContent=fetched['fun_program.css']+'\n'+fetched['styles.css']+'\n'+fetched['simple_books.css']+'\n'+fetched['fleet_viewport.css']+'\n'+fetched['quartermaster.css']+'\n'+fetched['carve_studio.css']+'\n'+fetched['carvewright.css']+'\n'+fetched['carvewright_machining.css']+'\n'+fetched['ike_shop.css'];document.head.appendChild(css);
       window.__darkSkyRuntimeEntryWitness8620?.('verified-styles-installed',{seal:SEAL});
-      for(const path of ['countercraft_privacy.js','input_hygiene.js','platform_core.js','fleet_storage_safety.js','fleet_legacy_recovery.js','fleet_viewport.js','headway_contracts.js','woodwright_fit.js','platform_v4.js','platform_identity.js','fleet_supabase.js','fleetguard_admiral_core.js','fleet_recovery_core.js','ike_style_registry.js','app.js','captain.js','fun_core.js','stormwake_core.js','fun_program.js','simple_books.js','quartermaster_core.js','quartermaster_sync.js','quartermaster_fonts.js','quartermaster_pdf.js','carve_fonts.js','carve_core.js','carve_store.js','carve_studio.js','quartermaster.js','fleet_design_assets.js','carvewright_core.js','boardcraft_photo.js','carvewright_store.js','carvewright_clipper.js','carvewright_cam.js','carvewright_portable.js','ike_shop_core.js','ike_shop_store.js','ike_shop_delivery.js','carvewright_posts.js','carvewright_machining.js','carvewright_studio.js','ike_shop.js','carvewright_app.js','carvewright_fleet.js']){
+      for(const path of ['countercraft_config.js','countercraft_privacy.js','input_hygiene.js','platform_core.js','fleet_storage_safety.js','fleet_legacy_recovery.js','fleet_viewport.js','headway_contracts.js','woodwright_fit.js','platform_v4.js','platform_identity.js','fleet_supabase.js','fleetguard_admiral_core.js','fleet_recovery_core.js','ike_style_registry.js','app.js','captain.js','fun_core.js','stormwake_core.js','fun_program.js','simple_books.js','quartermaster_core.js','quartermaster_sync.js','quartermaster_fonts.js','quartermaster_pdf.js','carve_fonts.js','carve_core.js','carve_store.js','carve_studio.js','quartermaster.js','fleet_design_assets.js','carvewright_core.js','boardcraft_photo.js','carvewright_store.js','carvewright_clipper.js','carvewright_cam.js','carvewright_portable.js','ike_shop_core.js','ike_shop_store.js','ike_shop_delivery.js','carvewright_posts.js','carvewright_machining.js','carvewright_studio.js','ike_shop.js','carvewright_app.js','carvewright_fleet.js']){
         await new Promise((resolve,reject)=>{const blob=new Blob([fetched[path]+`\n//# sourceURL=dark-sky-${SEAL}/${path}`],{type:'text/javascript'});const url=URL.createObjectURL(blob);const el=document.createElement('script');el.async=false;el.dataset.releaseSeal=SEAL;el.onload=()=>{URL.revokeObjectURL(url);window.__darkSkyRuntimeEntryWitness8620?.('runtime-script-executed',{path});resolve();};el.onerror=()=>{URL.revokeObjectURL(url);window.__darkSkyRuntimeEntryWitness8620?.('runtime-script-error',{path});reject(new Error(`Verified ${path} could not execute.`));};el.src=url;document.body.appendChild(el);});
       }
     }

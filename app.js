@@ -16,7 +16,7 @@
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
   // Component revision changes only when this module changes; installed release is loader-attested.
-  const APP_COMPONENT_REVISION='8.8.20.86';
+  const APP_COMPONENT_REVISION='8.8.20.87';
   const BUILD_VERSION=window.__darkSkyVerifiedRelease?.build;
   if(!BUILD_VERSION || BUILD_VERSION!==window.__darkSkyExpectedRelease?.build || window.__darkSkyVerifiedRelease?.seal!==window.__darkSkyExpectedRelease?.seal)throw new Error('Verified release context required before app execution.');
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
@@ -65,22 +65,17 @@
   const DEFAULT_ADMIN_PIN = '4353';
   const DEFAULT_ENGINE_PIN = '5615';
   const TEST_ACCESS_SESSION_KEY = 'darkSkyTestAccessSessionV1';
-  function isTestAccessActive(){try{return sessionStorage.getItem(TEST_ACCESS_SESSION_KEY)==='active';}catch(_){return false;}}
+  function isTestAccessActive(){try{sessionStorage.removeItem(TEST_ACCESS_SESSION_KEY);}catch(_){}return false;}
   function renderTestAccessState(){
-    const active=isTestAccessActive(); document.body.classList.toggle('test-access-active',active); document.body.dataset.testAccess=active?'active':'off';
-    document.getElementById('testAccessBanner')?.classList.toggle('hidden',!active);
-    const st=document.getElementById('captainTestAccessStatus'); if(st){st.textContent=active?'ACTIVE — ENGINE TEST ACCESS ENABLED • PROJECT ADMIN STILL REQUIRES PIN':'OFF — NORMAL PIN SECURITY ACTIVE';st.classList.toggle('active',active);}
-    const tg=document.getElementById('captainTestAccessToggle'); if(tg)tg.textContent=active?'DISABLE TEST ACCESS':'ENABLE TEST ACCESS';
-    const deck=document.getElementById('captainTestAccessDeckBtn'); if(deck){deck.classList.toggle('active',active);deck.setAttribute('aria-pressed',active?'true':'false');}
-    const deckStatus=document.getElementById('captainTestAccessDeckStatus'); if(deckStatus)deckStatus.textContent=active?'ACTIVE':'SECURE';
-    const entry=document.getElementById('blackFlagEntryUnlock'); if(entry)entry.textContent=active?'CONTINUE — TEST ACCESS →':(document.body.classList.contains('dark-flag-pirate-mode')?'BOARD ENGINE ROOM →':'ENTER ENGINE ROOM →');
-    const eg=document.getElementById('unlockEngineBtn'); if(eg)eg.textContent=active?'CONTINUE — TEST ACCESS →':'BOARD THE ENGINE ROOM →';
-    // Project Admin is never controlled by Captain/Test Access. Keep the gate visually and behaviorally independent.
-    const ag=document.getElementById('unlockAdminBtn'); if(ag)ag.textContent='UNLOCK ADMIN';
-    const rg=document.getElementById('confirmEngineResetBtn'); if(rg)rg.textContent=active?'CONFIRM RESET — TEST ACCESS':'CONFIRM RESET';
+    isTestAccessActive();document.body.classList.remove('test-access-active');document.body.dataset.testAccess='off';
+    document.getElementById('testAccessBanner')?.classList.add('hidden');
+    const st=document.getElementById('captainTestAccessStatus');if(st)st.textContent='Testing starts in the authenticated Engine';
+    const tg=document.getElementById('captainTestAccessToggle');if(tg)tg.textContent='OPEN ENGINE';
+    const status=document.getElementById('captainTestAccessDeckStatus');if(status)status.textContent='ENGINE ONLY';
   }
-  function setTestAccessActive(enabled){try{enabled?sessionStorage.setItem(TEST_ACCESS_SESSION_KEY,'active'):sessionStorage.removeItem(TEST_ACCESS_SESSION_KEY);}catch(_){} renderTestAccessState(); window.dispatchEvent(new CustomEvent('darksky:testaccesschange',{detail:{active:isTestAccessActive()}})); return isTestAccessActive();}
-  window.DarkSkyTestAccess={isActive:isTestAccessActive,enable:()=>setTestAccessActive(true),disable:()=>setTestAccessActive(false),refresh:renderTestAccessState};
+  function setTestAccessActive(){renderTestAccessState();return false;}
+  // Compatibility only: a stale testing flag can never unlock Engine access.
+  window.DarkSkyTestAccess={isActive:isTestAccessActive,enable:setTestAccessActive,disable:setTestAccessActive,refresh:renderTestAccessState};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',renderTestAccessState,{once:true});else renderTestAccessState();
   const DEFAULT_COMPANIES = [
     {
@@ -616,29 +611,7 @@
   }
   function closeClientPreviewBuilder(){document.getElementById('clientPreviewBuilder')?.remove();}
   async function openClientPreviewBuilder(projectId){
-    const p=projectById(projectId); if(!p)return;
-    if(!projectCustomerOperatingModelReady(p)){alert('Create a customer-ready experience before generating a client preview.');return;}
-    closeClientPreviewBuilder();
-    const modal=document.createElement('div');modal.id='clientPreviewBuilder';modal.className='client-preview-builder';
-    modal.innerHTML=`<div class="client-preview-builder-card"><button type="button" class="client-preview-close" aria-label="Close">×</button><small>CLIENT PREVIEW</small><h2>${escapeHtml(p.name)}</h2><p>Create a clean customer-facing preview that contains no Engine, Captain, or Project Admin controls. Every invite receives a new six-digit PIN generated by Black Flag. All calls, messages, submissions, payments, and external actions remain simulated.</p><div class="client-preview-unique-note"><strong>NEW PIN PER INVITE</strong><span>The Client Preview PIN is never Project Admin 4353, Black Flag 5615, or Captain's Quarters 19613, and it is not reused from a recent invite on this device.</span></div><label>Link expires<select id="clientPreviewExpiry"><option value="7">7 days</option><option value="14" selected>14 days</option><option value="30">30 days</option></select></label><button type="button" id="clientPreviewGenerate" class="primary-btn">GENERATE NEW INVITE</button><div id="clientPreviewResult" class="client-preview-result hidden"></div></div>`;
-    document.body.appendChild(modal);
-    modal.querySelector('.client-preview-close')?.addEventListener('click',closeClientPreviewBuilder);
-    modal.addEventListener('click',e=>{if(e.target===modal)closeClientPreviewBuilder();});
-    modal.querySelector('#clientPreviewGenerate')?.addEventListener('click',async()=>{
-      const pin=randomClientPreviewPin();
-      const inviteId=randomClientPreviewInviteId();
-      const days=Math.max(1,Number(modal.querySelector('#clientPreviewExpiry')?.value||14));
-      const assets=await clientPreviewPortableAssets(p.id);
-      const payload={v:2,inviteId,project:clientPreviewProjectSnapshot(p),assets,pinHash:await clientPreviewHashPin(pin,inviteId),createdAt:new Date().toISOString(),expiresAt:new Date(Date.now()+days*86400000).toISOString(),revision:experienceConfigurationSignature(p),build:BUILD_VERSION};
-      const encoded=clientPreviewBase64UrlEncode(JSON.stringify(payload));
-      const link=`${location.origin}${location.pathname}#client-preview=${encoded}`;
-      const result=modal.querySelector('#clientPreviewResult');
-      result.classList.remove('hidden');
-      result.innerHTML=`<div class="client-preview-seal"><span>SEALED CLIENT INVITE</span><strong>${escapeHtml(p.name)}</strong><small>Invite ${escapeHtml(inviteId.slice(0,8).toUpperCase())} • one project • one revision • expires ${new Date(payload.expiresAt).toLocaleDateString()}</small></div><div class="client-preview-pin-reveal"><span>UNIQUE INVITE PIN</span><strong>${escapeHtml(pin)}</strong><small>Generated for this invite only. Share it separately from the link.</small></div><label>Private link<textarea id="clientPreviewLink" readonly rows="3">${escapeHtml(link)}</textarea></label><div class="client-preview-share-row"><button type="button" id="clientPreviewCopy" class="primary-btn small">COPY LINK</button><button type="button" id="clientPreviewOpen" class="secondary-btn small">OPEN PREVIEW</button><button type="button" id="clientPreviewAnother" class="secondary-btn small">NEW INVITE + NEW PIN</button></div>${Object.keys(assets).length?'':'<p class="client-preview-warning">Large locally uploaded graphics could not be embedded in the portable link. Public/source-site brand assets will still render when available.</p>'}`;
-      result.querySelector('#clientPreviewCopy')?.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(link);result.querySelector('#clientPreviewCopy').textContent='COPIED';}catch(_){result.querySelector('#clientPreviewLink')?.select();}});
-      result.querySelector('#clientPreviewOpen')?.addEventListener('click',()=>window.open(link,'_blank','noopener'));
-      result.querySelector('#clientPreviewAnother')?.addEventListener('click',()=>modal.querySelector('#clientPreviewGenerate')?.click());
-    });
+    return openExperienceTestDeck(projectId);
   }
   function clientPreviewCleanCustomerChrome(){
     document.body.classList.add('client-preview-mode');
@@ -678,21 +651,8 @@
     ['blackFlagEntryGate','enginePanel','adminPanel','customerApp','universalCustomerShell','mugsCustomerShell','flowersCustomerShell','borCustomerShell','pinGate','projectOrdersPanel','projectLedgerPanel','projectEngineControl','ownerPortal','captainQuarters','captainQuartersGate','experienceTestDeck','returnToEngineBtn','testAccessBanner'].forEach(id=>document.getElementById(id)?.classList.add('hidden'));
     document.body.removeAttribute('data-active-project');
     const gate=document.createElement('div');gate.id='clientPreviewGate';gate.className='client-preview-gate';
-    if(!payload?.project?.id || !payload?.pinHash){gate.innerHTML='<div class="client-preview-gate-card"><h1>Preview unavailable</h1><p>This private preview link is incomplete or invalid.</p></div>';document.body.appendChild(gate);return true;}
-    if(payload.expiresAt && Date.now()>Date.parse(payload.expiresAt)){gate.innerHTML=`<div class="client-preview-gate-card"><h1>Preview expired</h1><p>Ask ${escapeHtml(payload.project.name||'the project owner')} for a new private preview link.</p></div>`;document.body.appendChild(gate);return true;}
-    const logo=payload.assets?.projectLogo||payload.project?.businessIntake?.visualAssets?.logo||'';
-    gate.innerHTML=`<div class="client-preview-gate-card">${logo?`<img class="client-preview-gate-logo" src="${escapeHtml(logo)}" alt="${escapeHtml(payload.project.name)} logo">`:''}<small>PRIVATE CLIENT PREVIEW</small><h1>${escapeHtml(payload.project.name||'Project Preview')}</h1><p>This unpublished preview is protected by a project-specific PIN. No calls, emails, texts, payments, or real submissions can leave this preview.</p><input data-bf-trim="preserve" id="clientPreviewUnlockPin" type="password" inputmode="numeric" autocomplete="off" maxlength="10" placeholder="Preview PIN"><button id="clientPreviewUnlockBtn" type="button" class="primary-btn">OPEN PREVIEW</button><div id="clientPreviewUnlockError" class="client-preview-error"></div></div>`;
-    document.body.appendChild(gate);
-    document.body.classList.remove('boot-locked');
-    document.documentElement.classList.remove('client-preview-preflight');
-    window.__darkSkyClientPreviewPreflight=false;
-    window.releaseDarkSkyFirstPaint?.('client-preview-gate-ready');
-    window.__darkSkyBootStage='client-preview-gate-ready';
-    const unlock=async()=>{const input=document.getElementById('clientPreviewUnlockPin');const ok=await unlockClientPreview(payload,String(input?.value||'').trim());if(!ok){const e=document.getElementById('clientPreviewUnlockError');if(e)e.textContent='That preview PIN is not correct.';if(input){input.value='';input.focus();}}};
-    document.getElementById('clientPreviewUnlockBtn')?.addEventListener('click',unlock);
-    document.getElementById('clientPreviewUnlockPin')?.addEventListener('keydown',e=>{if(e.key==='Enter')unlock();});
-    setTimeout(()=>document.getElementById('clientPreviewUnlockPin')?.focus(),80);
-    return true;
+    gate.innerHTML='<div class="client-preview-gate-card"><h1>Testing has moved to the Engine.</h1><p>Open the Fleet Test Center from your authenticated Engine workspace. Old preview links cannot start a customer test.</p></div>';document.body.appendChild(gate);return true;
+
   }
   window.BlackFlagClientPreview={open:openClientPreviewBuilder,route:routeClientPreviewFromHash};
 
@@ -4944,6 +4904,11 @@
       // this request and revokes it on navigation, replacement or mode changes.
       const canSend=()=>guard()&&mode==='deployed'&&location.protocol==='https:'&&projectExternalContactAllowed(project);
       const sharedDevice=!!context.deploymentId;
+      if(sharedDevice){
+        const station=window.CountercraftConfig?.activeLocation();
+        if(!station||station.deploymentId!==context.deploymentId||station.mode!==(mode==='sea_trial'?'sea_trial':'live'))throw Error('Ask Ike to open this station from the shop workspace.');
+        location.assign('countercraft.html');return true;
+      }
       const opened=window.IkeShop.open({scope,guard,canSend,mode,parent,sharedDevice,deliveryConfig:{accessKey:LEGACY_IKE_WEB3FORMS_ACCESS_KEY,recipient:LEGACY_IKE_ORDER_EMAIL,maxBytes:5*1024*1024},onClose:()=>{if(note)note.textContent='';}});
       if(opened!==false&&note)note.textContent='';
       return opened;
@@ -4957,7 +4922,7 @@
   }
   function syncIkeShopEntry(project){
     const entry=$('ikeShopEntry'),isIke=project?.id==='ikes-wood-signs';
-    if(entry){entry.hidden=!isIke;entry.classList.toggle('hidden',!isIke);}
+    if(entry){entry.hidden=true;entry.classList.add('hidden');}
     bindIkeShopRequest();
   }
   // Shopcraft customer request host — end
@@ -5068,7 +5033,7 @@
   function ensureExperienceTestDeck(){
     let deck=document.getElementById('experienceTestDeck');if(deck)return deck;
     deck=document.createElement('section');deck.id='experienceTestDeck';deck.className='experience-test-deck hidden';
-    deck.innerHTML='<div class="experience-test-shell"><header><div><span>EXPERIENCE TEST DECK</span><h2 id="experienceTestTitle">Project Experience</h2><p>One customer experience. Preview it, Sea Trial the real infrastructure, then open Live when published.</p></div><button type="button" id="closeExperienceTestDeck" class="secondary-btn">RETURN TO ENGINE</button></header><div id="experienceTestDeckBody"></div></div>';
+    deck.innerHTML='<div class="experience-test-shell"><header><div><span>FLEET TEST CENTER</span><h2 id="experienceTestTitle">Project Experience</h2><p>Preview the journey, run controlled trials, and keep evidence of what we learned. Testing starts here in the Engine.</p></div><button type="button" id="closeExperienceTestDeck" class="secondary-btn">RETURN TO ENGINE</button></header><div id="experienceTestDeckBody"></div></div>';
     document.body.appendChild(deck);return deck;
   }
 
@@ -5097,11 +5062,13 @@
       <article class="experience-approval-card ${snap.seaTrialPassed?'approved':'pending'}"><span>SEA TRIAL CERTIFICATION</span><strong>${snap.seaTrialPassed?'PASSED':'NOT PASSED'}</strong><p>${snap.seaTrialPassed?'The current configuration has real project-scoped test evidence.':'Run the current configuration through a saved outpost and complete a customer submission.'}</p></article>
     </section>
     <section class="experience-results-card"><div class="experience-results-head"><div><span>TEST RESULTS</span><h3>${snap.evidenceReadError?'Evidence read limited':`${snap.checklist.filter(x=>x.pass).length} passed • ${snap.checklist.filter(x=>!x.pass).length} open`}</h3></div><b class="${snap.seaTrialPassed&&snap.approved?'ready':'watch'}">${snap.seaTrialPassed&&snap.approved?'FLEET READY EVIDENCE':'KEEP TESTING'}</b></div>${snap.evidenceReadError?`<p>Test Deck opened in read-only recovery mode. Evidence read warning: ${escapeHtml(snap.evidenceReadError)}</p>`:`<div class="experience-checklist">${snap.checklist.map(x=>`<div class="${x.pass?'pass':'open'}"><i>${x.pass?'✓':'!'}</i><span><strong>${escapeHtml(x.label)}</strong><small>${escapeHtml(x.detail)}</small></span></div>`).join('')}</div>`}</section>
+    <section class="experience-results-card fleet-test-learning"><span>FLEET CHECKS & LEARNING</span><h3>One place to test and improve</h3><p>Structural checks inspect this browser and fleet records. They do not certify an iPad, a customer delivery, or machining.</p><button type="button" id="fleetRunChecks" class="secondary-btn">RUN FLEET CHECKS</button><div id="fleetCheckEvidence" role="status"></div><hr><h3>Field test record</h3><p>Use synthetic names. Record what happened, the next action, and the location. This local record can be exported for the next build.</p><label>Location <input id="fleetTestLocation" maxlength="80" value="${escapeHtml(d?.id||'preview')}"></label><label>Check <select id="fleetTestCase"><option>Next and Back preserve work</option><option>Customer B cannot see Customer A</option><option>Paste and keyboard on iPad</option><option>Owner receives the exact approved design</option><option>Other field observation</option></select></label><label>Result <select id="fleetTestResult"><option value="pending">Not tested</option><option value="pass">Passed</option><option value="fail">Failed</option><option value="blocked">Blocked</option></select></label><label>Observation and next action <textarea id="fleetTestNote" maxlength="1000" placeholder="Describe behavior without customer details"></textarea></label><button type="button" id="fleetSaveLearning" class="secondary-btn">SAVE FIELD RESULT</button> <button type="button" id="fleetExportLearning" class="secondary-btn">DOWNLOAD LEARNING RECORD</button><p id="fleetLearningStatus" role="status"></p></section>
     ${!d?'<div class="experience-deck-guidance"><strong>Sea Trial needs an outpost.</strong><span>Preview is available first. Create and save an outpost when you are ready to test persistence, deployment identity, session behavior, workflow and customer submission.</span><button type="button" id="experienceOpenShipwright" class="secondary-btn">OPEN SHIPWRIGHT</button></div>':''}`;
   }
 
 
   async function openExperienceTestDeck(projectId){
+    if(!engineSessionUnlocked||!document.body.classList.contains('engine-mode')||document.body.classList.contains('boot-locked'))return false;
     const requested=String(projectId||'').trim();
     const resolution=await resolveProjectReference(requested,{rehydrate:false});
     const p=resolution.project;
@@ -5137,7 +5104,7 @@
   function ensureExperienceModeBanner(p,mode){let banner=document.getElementById('experienceModeBanner');if(!banner){banner=document.createElement('div');banner.id='experienceModeBanner';banner.className='experience-mode-banner';document.body.appendChild(banner);}const label=mode==='preview'?'PRIVATE PREVIEW • NO RECORDS':mode==='sea_trial'?'SEA TRIAL • TEST DATA':'LIVE CUSTOMER EXPERIENCE';const isBor=p?.id===BOR_PROJECT_ID;banner.classList.toggle('bor-test-banner',isBor&&mode!=='live');banner.innerHTML=`<span><b>${escapeHtml(isBor&&mode!=='live'?'DARK SKY • TEST':label)}</b><small>${escapeHtml(isBor&&mode!=='live'?'Private project preview':p.name)}</small></span><button type="button" id="returnExperienceTestDeck" class="secondary-btn">${mode==='live'?'RETURN TO ENGINE':isBor?'← TEST DECK':'RETURN TO TEST DECK'}</button>`;banner.classList.remove('hidden');}
 
   async function enterExperienceMode(p,mode){
-    if(!p)return;
+    if(!p||!engineSessionUnlocked||!document.body.classList.contains('engine-mode')||document.body.classList.contains('boot-locked'))return false;
     const d=mode==='live'?migrateLegacyDeployment(p).find(x=>x.state==='deployed'):experienceDeploymentFor(p);
     if(mode==='sea_trial'&&!experienceApproved(p)){alert('Preview and approve the current project revision before running Sea Trial.');return;}
     if(mode==='sea_trial'&&(!d||Number(d.manifestVersion||1)<=1)){alert('Sea Trial requires a saved outpost manifest. Use Shipwright to create and save the outpost before infrastructure testing.');return;}
@@ -5156,13 +5123,24 @@
       try{await persistProjectMutation(canonicalProject,{reason:'experience.preview.reviewed'});logActivity(canonicalProject.id,'Customer experience preview reviewed');}
       catch(err){console.warn('Preview evidence could not be saved',err);}
     }
-    experienceTestReturnState={projectId:p.id,mode,deploymentId:d?.id||null};setCustomerSessionContext(p,mode,d,{source:'experience_test_deck'});
+    if(p.id==='ikes-wood-signs'&&mode!=='live'){
+      const config=window.CountercraftConfig;
+      if(!config){alert('Station configuration is missing. Upload the complete matching build.');return false;}
+      const nonce=Array.from(crypto.getRandomValues(new Uint8Array(16)),x=>x.toString(16).padStart(2,'0')).join('');
+      const scope=config.checked({...config.scope,deploymentId:d?.id||'engine-preview',mode:'sea_trial'});
+      // This one-use launch is navigation intent, never backend owner authority.
+      sessionStorage.setItem('blackflag-engine-launch:'+nonce,JSON.stringify({kind:mode==='preview'?'preview':'trial',build:config.build,scope,expiresAt:Date.now()+600000}));
+      const route=mode==='preview'?'countercraft.html?preview=1':'owner.html?project=ikes-wood-signs&view=countercraft&source=engine';
+      location.assign(route+'#launch='+nonce);return true;
+    }
+    experienceTestReturnState={projectId:p.id,mode,deploymentId:d?.id||null,authorizedEngine:true};setCustomerSessionContext(p,mode,d,{source:'experience_test_deck'});
     if(projectShellFor(p)==='universal'&&mode!=='live')clearUniversalReceipt(p);
     closeExperienceTestDeck();ensureExperienceModeBanner(p,mode);await enterProject(p.id);
   }
 
   async function returnFromExperienceMode(){
     const state=experienceTestReturnState;
+    if(!state?.authorizedEngine){closeExperienceTestDeck();requestEngineFromProject();return false;}
     if(projectShellFor(projectById(activeProjectId))==='flowers') resetFlowersShell();
     experienceTestReturnState=null;
     clearCustomerSessionContext();
@@ -6841,7 +6819,7 @@
         <div class="project-launch-line ${launch.key}"><span>${escapeHtml(launch.label)}</span><small>${escapeHtml(launch.detail)}</small></div>
         <div class="project-card-primary-actions">
           <button type="button" data-project-launch="${escapeHtml(p.id)}" class="primary-btn small project-next-action">${escapeHtml(launch.actionLabel)}</button>
-          <button type="button" data-project-client-preview="${escapeHtml(p.id)}" class="client-preview-btn small" ${projectCustomerOperatingModelReady(p)?'':'disabled'}>CLIENT PREVIEW</button>
+          <button type="button" data-project-client-preview="${escapeHtml(p.id)}" class="client-preview-btn small" ${projectCustomerOperatingModelReady(p)?'':'disabled'}>TEST CENTER</button>
         </div>
         <details class="project-card-tools"><summary>PROJECT TOOLS</summary><div class="project-card-actions project-card-actions-command">
           <button type="button" data-open-project-control="${escapeHtml(p.id)}" class="secondary-btn small">CONTROL CENTER</button>
@@ -16895,14 +16873,30 @@ The full order and approved media remain stored with this project.`;
   function bindExperienceTestDeckBus(){
     if(window.__blackFlagExperienceTestDeckBound)return;window.__blackFlagExperienceTestDeckBound=true;
     document.addEventListener('click',async event=>{
-      const target=event.target?.closest?.('#closeExperienceTestDeck,[data-experience-mode],#approveExperienceBtn,#experienceOpenShipwright,#experienceEditConfiguration,#returnExperienceTestDeck');if(!target)return;
+      const target=event.target?.closest?.('#closeExperienceTestDeck,[data-experience-mode],#approveExperienceBtn,#experienceOpenShipwright,#experienceEditConfiguration,#returnExperienceTestDeck,#fleetRunChecks,#fleetSaveLearning,#fleetExportLearning');if(!target)return;
       if(target.id==='returnExperienceTestDeck'){event.preventDefault();event.stopPropagation();await returnFromExperienceMode();return;}
       if(target.id==='closeExperienceTestDeck'){closeExperienceTestDeck();return;}
+      if(!engineSessionUnlocked||!document.body.classList.contains('engine-mode')||document.body.classList.contains('boot-locked'))return;
       const resolution=await resolveProjectReference(experienceTestDeckProjectId,{rehydrate:true});
       const p=resolution.project;
       if(!p){
         alert(`Experience command stopped: project ${experienceTestDeckProjectId||'(missing)'} is no longer resolvable.`);
         return;
+      }
+      if(target.id==='fleetRunChecks'){
+        target.disabled=true;
+        try{const report=await runSeaTrialsV3811({record:true});renderSeaTrials(report);$('fleetCheckEvidence').textContent=`${report.checks.filter(c=>c.level==='pass').length} passed · ${report.failures} failed · ${report.warnings} warnings. Device and customer journey checks remain separate.`;}
+        catch(err){$('fleetCheckEvidence').textContent='Checks interrupted: '+String(err.message||err);}
+        finally{target.disabled=false;}return;
+      }
+      if(target.id==='fleetSaveLearning'||target.id==='fleetExportLearning'){
+        const key='blackflag-learning:'+p.id;let rows=[];try{rows=JSON.parse(localStorage.getItem(key)||'[]');if(!Array.isArray(rows))rows=[];}catch(_){}
+        if(target.id==='fleetSaveLearning'){
+          const row={build:BUILD_VERSION,projectId:p.id,location:$('fleetTestLocation').value.slice(0,80),check:$('fleetTestCase').value,result:$('fleetTestResult').value,note:$('fleetTestNote').value.slice(0,1000),at:new Date().toISOString()};
+          try{rows.push(row);localStorage.setItem(key,JSON.stringify(rows.slice(-100)));$('fleetLearningStatus').textContent='Field result saved on this device. Export it to keep a backup.';}catch(_){$('fleetLearningStatus').textContent='Could not save locally. Keep a separate note of this result.';}
+        }else{
+          const url=URL.createObjectURL(new Blob([JSON.stringify({schema:'blackflag-learning-v1',projectId:p.id,records:rows},null,2)],{type:'application/json'}));const link=document.createElement('a');link.href=url;link.download='Fleet-learning-'+p.id+'.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);$('fleetLearningStatus').textContent='Learning record prepared for download.';
+        }return;
       }
       if(target.matches('[data-experience-mode]')){if(target.disabled)return;await enterExperienceMode(p,target.dataset.experienceMode);return;}
       if(target.id==='approveExperienceBtn'){
@@ -16989,20 +16983,7 @@ The full order and approved media remain stored with this project.`;
         return;
       }
       if(target.id==='runSeaTrialsBtn'){
-        const prior=target.textContent;
-        if(target.dataset.commandBusy==='1')return;
-        target.dataset.commandBusy='1';target.disabled=true;target.textContent='RUNNING SEA TRIALS…';
-        try{
-          const report=await runSeaTrialsV3811({record:true});
-          renderSeaTrials(report);
-          await renderFirstMateWatch();
-          await renderV3ArchitectureStatus();
-        }catch(err){
-          console.error('Sea Trials command failed',err);
-          setFirstMateActionStatus(`Sea Trials interrupted: ${String(err?.message||err)}`,'error');
-        }finally{
-          delete target.dataset.commandBusy;target.disabled=false;target.textContent=prior||'RUN SEA TRIALS';
-        }
+        await openExperienceTestDeck(engineActiveProjectId||activeProjectId||companies[0]?.id);
       }
     },true);
   }

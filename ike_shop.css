@@ -53,3 +53,12 @@
 .ish-main{scroll-padding:12px}.ish-footer #ishStatus{font-size:12px;max-height:38px;overflow:auto}
 #ishDraftStatus[data-state="error"]{color:#9b3224;font-weight:700}
 @media(max-width:700px){.ish-header{padding:12px}.ish-main{padding:12px}.ish-footer{padding:8px 12px}.ish-navigation{gap:6px}.ish-navigation span{display:none}.ish-navigation button{font-size:13px}.ish-mail-handoff{margin-top:12px;padding-top:10px}}
+
+/* Harborlight: only the active task is visible, with native fields retained. */
+.ish-workgrid{display:block}.ish-main{max-width:860px;width:100%;margin:0 auto}
+.ish-art-column{display:block}.ish-approval,.ish-package{margin-top:0}
+.ish-review-proof{margin-bottom:20px}.ish-review-proof img,.ish-review-proof svg{width:100%;max-height:300px;object-fit:contain}
+#ishReviewSummary dl{display:grid;grid-template-columns:140px minmax(0,1fr);gap:10px;margin:0 0 24px}
+#ishReviewSummary dt{font-weight:700}#ishReviewSummary dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
+.ish-navigation{margin:0}.ish-footer{flex-wrap:wrap}.ish-footer #ishStatus{flex:1;min-width:180px}
+@media(max-width:580px){#ishReviewSummary dl{grid-template-columns:1fr;gap:4px}#ishReviewSummary dd{margin-bottom:10px}}

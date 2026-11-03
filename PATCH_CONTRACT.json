@@ -1,26 +1,27 @@
 {
   "schema": "blackflag-patch-contract-v1",
-  "target_build": "8.8.20.86",
-  "target_seal": "clearway-882086",
+  "target_build": "8.8.20.87",
+  "target_seal": "harborlight-882087",
   "supported_bases": [
     {
-      "build": "8.8.20.85",
-      "source_sha256": "c1c0cc099c72d8e097de19d151e67a15db6c7cb269dbd66414a0b8e2a0e2b030",
-      "file_count": 770
+      "build": "8.8.20.86",
+      "source_sha256": "213529cf13f85ad390b5fec90eba8bfdbe16ab8d9dc2bb04af0b295ac909ca2d",
+      "file_count": 774
     }
   ],
   "requires_deletions": false,
   "max_upload_files": 85,
   "database_actions": "none",
-  "rule": "Upload every changed/new root file over complete 8.8.20.85. Keep everything else. This software archive executes no database commands.",
+  "rule": "Upload every changed/new root file over complete 8.8.20.86. Keep everything else. This software archive executes no database commands.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
-    "migration": "COUNTERCRAFT_INTAKE.sql",
+    "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
     "edge_function": "countercraft",
-    "status": "applied_verified",
+    "service_source": "countercraft_service.mjs",
+    "status": "source_ready_not_applied",
     "automatic_execution_by_upload": false,
-    "sql_sha256": "9c12f7e2a56eb6141280545a7d6330ef90ee16ce1fd6cc2ce16d8f11c3b6c048",
-    "reason": "Countercraft tables, private storage and exact-vessel gateway verified. TrueFit service v2 deployed; Sea Trial remains enabled only by owner publication.",
-    "edge_function_status": "deployed_active_v2"
+    "sql_sha256": "4ed61a09eb42982fa9975d2fda8b3711c1e6b749cbdc10bbf0c750b3dade1aee",
+    "reason": "Existing Countercraft backend is active; this build requires idle-v1 service and SQL upgrade before customer kiosk use. No Ike publication configured at read-only audit. Old service is rejected by kiosk.",
+    "edge_function_status": "upgrade_pending"
   }
 }

@@ -1,10 +1,13 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Clearway 8.8.20.86
+# Black Flag Harborlight 8.8.20.87
 
 Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
-Baseline: 8.8.20.85. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Baseline: 8.8.20.86. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
 Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
-['Main Design My Sign opens the current guarded Ike request flow.', 'Persistent next/back controls and visible Mail actions; Mail may require recipient and subject entry.', 'Optional scoped recovery on private devices; explicit Resume, clean New request and no persistence in previews or deployed shared sessions.', 'Free Mail remains primary. No deployment, live email, backend changes or machining certification.']
+- One task per page with retained answers and required-step validation.
+- Existing Countercraft kiosk hardened with fresh customer sessions, idle expiry and owner-selected locations.
+- Fleet Test Center replaces Test Access bypass and separate preview entry; field learning record added.
+- No paid service, outgoing email, backend deployment or machine certification.
 Preparation does not deploy frontend or backend changes. See PATCH_CONTRACT.json for separately managed backend prerequisites.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 

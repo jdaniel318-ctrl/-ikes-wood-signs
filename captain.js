@@ -488,7 +488,7 @@
         <button type="button" data-cine-route="forge"><b>Visual Forge</b><small>Presentation and brand</small></button>
         <button type="button" data-cine-route="shipyard"><b>Shipyard</b><small>Future vessels</small></button>
         <button type="button" data-cine-route="blueprint"><b>Blueprint</b><small>Architecture map</small></button>
-        <button type="button" data-cine-route="test"><b>Test Access</b><small>Session controls</small></button>
+        <button type="button" data-cine-route="test"><b>Test Access</b><small>Engine testing</small></button>
         <button type="button" data-cine-route="admiral"><b>Admiral's Gate</b><small>Provisional higher command</small></button>
       </section>`;
     helm.dataset.stage='watch';
@@ -1551,7 +1551,7 @@
       </section>
       <section class="cq-desk-group" aria-label="Explore tools"><h4>EXPLORE</h4>
         <button type="button" data-cq-desk-route="spyglass" data-cq-desk-state="active"><span>⌖</span><b>Spyglass</b><small>Fleet intelligence</small><em>READY</em></button>
-        <button type="button" data-cq-desk-route="test" data-cq-desk-state="active"><span>◇</span><b>Test Access</b><small>Session controls</small><em>READY</em></button>
+        <button type="button" data-cq-desk-route="test" data-cq-desk-state="active"><span>◇</span><b>Test Access</b><small>Engine testing</small><em>READY</em></button>
         <button type="button" data-cq-desk-route="trade" data-cq-desk-state="future" aria-disabled="true"><span>☸</span><b>Trade Routes</b><small>Route planning</small><em>FUTURE</em></button>
       </section>
       <section class="cq-desk-group cq-desk-ascend" aria-label="Higher command"><h4>ASCEND</h4>
@@ -1827,37 +1827,10 @@
       event.preventDefault();
       leaveCaptainSubview('captainSpyglassPanel');
     });
-    byId('captainTestAccessToggle')?.addEventListener('click',async(event)=>{
-      event.preventDefault();
-      if(window.DarkSkyTestAccess?.isActive?.()){
-        window.DarkSkyTestAccess.disable();
-        leaveCaptainSubview('captainTestAccessGate');
-        return;
-      }
-      if(byId('testAccessEnginePin')) byId('testAccessEnginePin').value='';
-      if(byId('testAccessCaptainPin')) byId('testAccessCaptainPin').value='';
-      if(byId('captainTestAccessError')) byId('captainTestAccessError').textContent='';
-      enterCaptainSubview('captainTestAccessGate');
-      requestAnimationFrame(()=>byId('testAccessEnginePin')?.focus());
+    byId('captainTestAccessToggle')?.addEventListener('click',event=>{
+      event.preventDefault();window.DarkSkyTestAccess?.disable?.();window.requireEngineEntry?.();
     });
-    byId('captainTestAccessDeckBtn')?.addEventListener('click',(event)=>{
-      event.preventDefault();
-      byId('captainTestAccessToggle')?.click();
-    });
-    byId('captainTestAccessCancel')?.addEventListener('click',()=>hide('captainTestAccessGate'));
-    byId('captainTestAccessConfirm')?.addEventListener('click',async()=>{
-      const enginePin=String(byId('testAccessEnginePin')?.value||'').trim();
-      const captainPin=String(byId('testAccessCaptainPin')?.value||'').trim();
-      const error=byId('captainTestAccessError');
-      if(captainPin!==CAPTAIN_PIN){ if(error)error.textContent='Captain PIN is incorrect.'; return; }
-      const result=await window.BlackFlagAuth?.verify?.(enginePin);
-      if(!result?.ok){ if(error)error.textContent=window.BlackFlagAuth?.message?.(result)||'Engine PIN is incorrect.'; return; }
-      window.DarkSkyTestAccess?.enable?.();
-      if(byId('testAccessEnginePin')) byId('testAccessEnginePin').value='';
-      if(byId('testAccessCaptainPin')) byId('testAccessCaptainPin').value='';
-      leaveCaptainSubview('captainTestAccessGate');
-    });
-    window.addEventListener('darksky:testaccesschange',()=>window.DarkSkyTestAccess?.refresh?.());
+    byId('captainTestAccessDeckBtn')?.addEventListener('click',event=>{event.preventDefault();byId('captainTestAccessToggle')?.click();});
 
     byId('captainPinInput')?.addEventListener('keydown', (event) => {
       if (event.key === 'Enter') {

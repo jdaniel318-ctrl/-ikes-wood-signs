@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.86",
-  "release": "Clearway",
-  "seal": "clearway-882086",
+  "build": "8.8.20.87",
+  "release": "Harborlight",
+  "seal": "harborlight-882087",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Clearway",
-  "name": "Clearway",
-  "releaseName": "Clearway"
+  "release_name": "Harborlight",
+  "name": "Harborlight",
+  "releaseName": "Harborlight"
 }

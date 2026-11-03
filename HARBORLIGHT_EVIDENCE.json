@@ -1,0 +1,350 @@
+{
+  "schema": "blackflag-harborlight-evidence-v1",
+  "build": "8.8.20.87",
+  "release": "Harborlight",
+  "recorded_at": "2026-11-03T02:09:42.037075+00:00",
+  "scope": "Actual source exercised with controlled browser, service and isolated PostgreSQL fixtures. No live customer or backend writes.",
+  "suites": {
+    "release": {
+      "scope": "listed offline suites; not live Safari, Auth, email or machining certification",
+      "results": [
+        {
+          "name": "VERIFY_HARBORLIGHT_SCOPE.cjs",
+          "pass": true,
+          "exit_code": 0,
+          "error": null
+        },
+        {
+          "name": "VERIFY_HARBORLIGHT_ENGINE.cjs",
+          "pass": true,
+          "exit_code": 0,
+          "error": null
+        },
+        {
+          "name": "VERIFY_FAIRWATER_PASTE.cjs",
+          "pass": true,
+          "exit_code": 0,
+          "error": null
+        },
+        {
+          "name": "VERIFY_ROSEWOOD_CORE.cjs",
+          "pass": true,
+          "exit_code": 0,
+          "error": null
+        },
+        {
+          "name": "VERIFY_SIGHTLINE_CORE.cjs",
+          "pass": true,
+          "exit_code": 0,
+          "error": null
+        },
+        {
+          "name": "VERIFY_SIGHTLINE_ARTWORK.cjs",
+          "pass": true,
+          "exit_code": 0,
+          "error": null
+        },
+        {
+          "name": "VERIFY_SIGHTLINE_IDS.cjs",
+          "pass": true,
+          "exit_code": 0,
+          "error": null
+        },
+        {
+          "name": "VERIFY_HOLDFAST_CORE.cjs",
+          "pass": true,
+          "exit_code": 0,
+          "error": null
+        },
+        {
+          "name": "VERIFY_HOMEPORT_ENTRY.cjs",
+          "pass": true,
+          "exit_code": 0,
+          "error": null
+        },
+        {
+          "name": "VERIFY_FLEETBOUND_PROGRAMS.cjs",
+          "pass": true,
+          "exit_code": 0,
+          "error": null
+        },
+        {
+          "name": "VERIFY_HARBOR_ROUTES.cjs",
+          "pass": true,
+          "exit_code": 0,
+          "error": null
+        },
+        {
+          "name": "VERIFY_HARBOR_ASYNC.cjs",
+          "pass": true,
+          "exit_code": 0,
+          "error": null
+        },
+        {
+          "name": "VERIFY_HARBOR_STORAGE.cjs",
+          "pass": true,
+          "exit_code": 0,
+          "error": null
+        },
+        {
+          "name": "VERIFY_RELEASE_IDENTITY.cjs",
+          "pass": true,
+          "exit_code": 0,
+          "error": null
+        },
+        {
+          "name": "VERIFY_FAIRLEAD_LOADER.cjs",
+          "pass": true,
+          "exit_code": 0,
+          "error": null
+        },
+        {
+          "name": "VERIFY_FAIRLEAD_STARTUP.cjs",
+          "pass": true,
+          "exit_code": 0,
+          "error": null
+        },
+        {
+          "name": "VERIFY_CLEARDECK_ACCOUNT.cjs",
+          "pass": true,
+          "exit_code": 0,
+          "error": null
+        },
+        {
+          "name": "VERIFY_RELEASE_CONTRACT.cjs",
+          "pass": true,
+          "exit_code": 0,
+          "error": null
+        },
+        {
+          "name": "VERIFY_CLEARDECK_PREFLIGHT.cjs",
+          "pass": true,
+          "exit_code": 0,
+          "error": null
+        },
+        {
+          "name": "VERIFY_IRONHAVEN_CORE.cjs",
+          "pass": true,
+          "exit_code": 0,
+          "error": null
+        },
+        {
+          "name": "VERIFY_FLEETCARE_READINESS.cjs",
+          "pass": true,
+          "exit_code": 0,
+          "error": null
+        },
+        {
+          "name": "VERIFY_FLEETCARE_NAVIGATION.cjs",
+          "pass": true,
+          "exit_code": 0,
+          "error": null
+        },
+        {
+          "name": "VERIFY_FLEETCRAFT_CORE.cjs",
+          "pass": true,
+          "exit_code": 0,
+          "error": null
+        },
+        {
+          "name": "VERIFY_LETTERCRAFT_FONTS.cjs",
+          "pass": true,
+          "exit_code": 0,
+          "error": null
+        },
+        {
+          "name": "VERIFY_QUARTERMASTER_CORE.cjs",
+          "pass": true,
+          "exit_code": 0,
+          "error": null
+        },
+        {
+          "name": "VERIFY_STORMWAKE_CORE.cjs",
+          "pass": true,
+          "exit_code": 0,
+          "error": null
+        },
+        {
+          "name": "TEST_RELEASE_PIPELINE.py",
+          "pass": true,
+          "exit_code": 0,
+          "error": null
+        },
+        {
+          "name": "TEST_RELEASE_IDENTITY.py",
+          "pass": true,
+          "exit_code": 0,
+          "error": null
+        },
+        {
+          "name": "TEST_SIGHTLINE_NATIVE.py",
+          "pass": true,
+          "exit_code": 0,
+          "error": null
+        }
+      ]
+    },
+    "personal_ui": {
+      "results": [
+        {
+          "name": "one task visible and missing photo blocks forward",
+          "pass": true
+        },
+        {
+          "name": "forward and back preserve the same board and wording",
+          "pass": true
+        },
+        {
+          "name": "shared devices cannot enter the personal Mail tool",
+          "pass": true
+        },
+        {
+          "name": "personal Mail package preserves approved proof and correct recipient",
+          "pass": true
+        },
+        {
+          "name": "private draft resume retains answers; new request clears them",
+          "pass": true
+        }
+      ]
+    },
+    "kiosk": {
+      "results": [
+        {
+          "name": "public preview query does not open testing",
+          "pass": true
+        },
+        {
+          "name": "Engine preview follows real steps and expires customer state",
+          "pass": true
+        },
+        {
+          "name": "used preview link cannot be reopened",
+          "pass": true
+        },
+        {
+          "name": "customer can finish early and leave a clean station",
+          "pass": true
+        }
+      ]
+    },
+    "live_contract": {
+      "results": [
+        "Lost response reconciles one job, exact proof and location isolation",
+        "Customer B starts with no A photograph, wording or details",
+        "Reload never restores a customer-readable draft",
+        "Late submission response cannot repaint an expired customer",
+        "Old tab clears and cannot reopen prior customer"
+      ],
+      "errors": [],
+      "scope": "synthetic backend, not native iPad or deployed service"
+    },
+    "engine_ui": {
+      "pass": true,
+      "errors": [],
+      "blocked": []
+    },
+    "countercraft": {
+      "scope": "synthetic offline PostgreSQL, WebCrypto and production core/service contracts; not native Safari or physical machining",
+      "results": [
+        {
+          "test": "VERIFY_COUNTERCRAFT_CORE.cjs",
+          "pass": true,
+          "status": 0
+        },
+        {
+          "test": "VERIFY_COUNTERCRAFT_SQL.cjs",
+          "pass": true,
+          "status": 0
+        },
+        {
+          "test": "VERIFY_COUNTERCRAFT_RECOVERY.cjs",
+          "pass": true,
+          "status": 0
+        },
+        {
+          "test": "VERIFY_COUNTERCRAFT_FLOW.cjs",
+          "pass": true,
+          "status": 0
+        },
+        {
+          "test": "VERIFY_COUNTERCRAFT_PRIVACY.cjs",
+          "pass": true,
+          "status": 0
+        },
+        {
+          "test": "VERIFY_COUNTERCRAFT_OWNER.cjs",
+          "pass": true,
+          "status": 0
+        },
+        {
+          "test": "VERIFY_COUNTERCRAFT_BOARDS.cjs",
+          "pass": true,
+          "status": 0
+        },
+        {
+          "test": "VERIFY_COUNTERCRAFT_INTEGRATION.cjs",
+          "pass": true,
+          "status": 0
+        },
+        {
+          "test": "VERIFY_COUNTERCRAFT_SERVICE.mjs",
+          "pass": true,
+          "status": 0
+        }
+      ]
+    },
+    "review_regressions": {
+      "scope": "isolated PostgreSQL and synthetic Chromium service responses",
+      "results": [
+        {
+          "name": "upgrade expires old review sessions while retaining receipt and transfer access",
+          "pass": true
+        },
+        {
+          "name": "server-confirmed review locks owner peers even through a receipt URL",
+          "pass": true
+        }
+      ]
+    }
+  },
+  "additional_checks": {
+    "session_upgrade": "PASS: Clearway schema upgraded, old sessions ended, enrollment preserved, renewable 3-minute idle and 4-hour maximum enforced",
+    "learning_visual": "PASS: three role controls and 360px viewport fit",
+    "service": "PASS: real PostgreSQL service flow, exact proof, lost upload, idempotence, private transfer, review, media backup"
+  },
+  "final_review": {
+    "status": "complete; two confirmed Important findings fixed and verified",
+    "critical_findings": 0,
+    "important_findings": 2,
+    "fixes": [
+      "Expire legacy review-session tokens at upgrade; preserve receipt sessions and unexchanged transfers.",
+      "Seal the shared browser based on server-confirmed review kind, regardless of query spelling."
+    ],
+    "regression_evidence": "Both tests failed before fixes and pass afterward.",
+    "retracted": "Duplicate entry hidden intentionally; visible DESIGN MY SIGN button already opens the personal flow.",
+    "declined": [
+      "Native iPad and OS privacy",
+      "Deployed backend readiness",
+      "Local Engine PIN strength or malicious same-origin code",
+      "Email delivery and VCarve",
+      "Archive seal and reconstruction (verified separately by packager)"
+    ]
+  },
+  "pending": [
+    "Native iPad Safari paste, camera, keyboard, background and dedicated-device privacy",
+    "Deployment of idle-v1 SQL/service upgrade and explicit owner publication/enrollment per location",
+    "Real network/site acceptance and business-data restore",
+    "VCarve import and physical machining",
+    "Mail spam and attachment download behavior"
+  ],
+  "claims": {
+    "frontend_deployed": false,
+    "backend_deployed": false,
+    "production_certified": false,
+    "native_safari_certified": false,
+    "paid_service_added": false,
+    "outgoing_email_sent": false,
+    "database_backup_created": false
+  }
+}
