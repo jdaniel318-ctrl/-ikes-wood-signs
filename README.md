@@ -1,13 +1,13 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Helmward 8.8.20.88
+# Black Flag Keephaven 8.8.20.89
 
 Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
-Baseline: 8.8.20.87. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Baseline: 8.8.20.88. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
 Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
-- Focused fleet vessel chooser and workstations, with main actions at the top.
-- Consistent Test Center entrances and visible Back to vessel / Back to Engine routes.
-- Expired Engine previews explain the ended session and offer safe recovery.
-- No database, publication, account, customer-record or paid-service changes.
+- Explicitly archive exact older Ike records after saved-file verification, then free only their older LocalStorage space.
+- Reopen, verify and download on-device archives; restore only missing older entries.
+- General rescue includes the two known older draft keys. Archived snapshots have their own exact-file export.
+- No automatic archival, migration, deletion, backend deployment or change to customer readiness.
 Preparation does not deploy frontend or backend changes. See PATCH_CONTRACT.json for separately managed backend prerequisites.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 

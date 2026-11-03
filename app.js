@@ -16,7 +16,7 @@
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
   // Component revision changes only when this module changes; installed release is loader-attested.
-  const APP_COMPONENT_REVISION='8.8.20.88';
+  const APP_COMPONENT_REVISION='8.8.20.89';
   const BUILD_VERSION=window.__darkSkyVerifiedRelease?.build;
   if(!BUILD_VERSION || BUILD_VERSION!==window.__darkSkyExpectedRelease?.build || window.__darkSkyVerifiedRelease?.seal!==window.__darkSkyExpectedRelease?.seal)throw new Error('Verified release context required before app execution.');
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
@@ -13297,6 +13297,7 @@ The full order and approved media remain stored with this project.`;
 
   // Holdfast: all I/O is user-triggered; preparing and comparing never writes storage.
   let olderIkeRecovery=null,olderIkeBusy=false;
+  let olderIkeArchiveBusy=false,olderIkeArchiveURL=null,olderIkeArchiveRequest=0,olderIkeArchiveDownloadNavigation=null;
   function requireRecoveryEngine(navigation){
     if(window.BlackFlagAuth?.isUnlocked?.()!==true)throw new Error('Sign in to the Engine to work with private recovery files.');
     if(navigation&&!engineWorkspaceNavigationCurrent(navigation))throw new Error('The Engine session changed. Prepare and verify a fresh file.');
@@ -13306,6 +13307,7 @@ The full order and approved media remain stored with this project.`;
   }
   function setOlderIkeBusy(value){
     olderIkeBusy=value;
+    if($('engineLegacyArchiveBtn'))$('engineLegacyArchiveBtn').disabled=value||!olderIkeRecovery?.verified;
     if($('engineLegacyPrepareBtn'))$('engineLegacyPrepareBtn').disabled=value;
     if($('engineLegacyVerifyFile'))$('engineLegacyVerifyFile').disabled=value;
     if($('engineLegacyRemoveBtn'))$('engineLegacyRemoveBtn').disabled=value||!olderIkeRecovery?.verified||!olderIkeRecovery?.comparison.some(x=>x.eligible);
@@ -13335,7 +13337,7 @@ The full order and approved media remain stored with this project.`;
     $('engineLegacyRemoveBtn').textContent=count?`Remove ${count} verified old ${count===1?'copy':'copies'}`:'All older records kept';
   }
   async function prepareOlderIkeRecovery(){
-    if(olderIkeBusy)return false;
+    if(olderIkeBusy||olderIkeArchiveBusy)return false;
     try{requireRecoveryEngine();}catch(err){olderIkeMessage(err.message);return false;}
     const navigation=engineWorkspaceNavigationToken();
     setOlderIkeBusy(true);
@@ -13355,7 +13357,7 @@ The full order and approved media remain stored with this project.`;
       if(!result.entries.length){olderIkeMessage('No older Ike records found. Captain’s backup can export current orders and settings.');return true;}
       const url=URL.createObjectURL(result.blob);
       olderIkeRecovery={...result,url,navigation,verified:false};
-      const link=$('engineLegacyDownload');link.href=url;link.download=`black-flag-older-ike-records-${BUILD_VERSION}-${new Date().toISOString().slice(0,10)}.json`;
+      const link=$('engineLegacyDownload');link.classList.remove('hidden');link.href=url;link.download=`black-flag-older-ike-records-${BUILD_VERSION}-${new Date().toISOString().slice(0,10)}.json`;
       renderOlderIkeComparison(result.comparison);$('engineLegacyReady').classList.remove('hidden');
       olderIkeMessage(`Recovery file ready · ${result.blob.size<1048576?Math.max(.1,result.blob.size/1024).toFixed(1)+' KB':formatStorageMb(result.blob.size)+' MB'}. All ${result.entries.length} older storage entries are included and checked.`);
       $('engineLegacyVerification').textContent='Save the file, then verify your saved copy to enable eligible cleanup.';
@@ -13370,17 +13372,17 @@ The full order and approved media remain stored with this project.`;
     try{
       requireRecoveryEngine(olderIkeRecovery.navigation);const navigation=engineWorkspaceNavigationToken();$('engineLegacyVerification').textContent='Checking the saved file…';
       const expected=olderIkeRecovery.entries;
-      await boundedRecoveryRead(async()=>window.BlackFlagLegacyRecovery.verify(await file.text(),expected));
+      const verifiedText=await boundedRecoveryRead(async()=>{const text=await file.text();await window.BlackFlagLegacyRecovery.verify(text,expected);return text;});
       requireRecoveryEngine(navigation);
       if(!window.BlackFlagLegacyRecovery.sameEntries(window.BlackFlagLegacyRecovery.capture(localStorage),expected))throw new Error('Older records changed. Prepare and save a fresh file.');
-      olderIkeRecovery.verified=true;
-      $('engineLegacyVerification').textContent='Saved file verified. Cleanup will check current work again and remove only fully matched older copies.';
+      olderIkeRecovery.verified=true;olderIkeRecovery.verifiedText=verifiedText;
+      $('engineLegacyVerification').textContent='Saved file verified. You can archive all older entries to free their space, or remove only fully matched copies below.';
       return true;
     }catch(err){$('engineLegacyVerification').textContent=`File not verified: ${String(err?.message||err)}`;return false;}
     finally{setOlderIkeBusy(false);}
   }
   async function removeOlderIkeCopies(){
-    if(olderIkeBusy)return false;
+    if(olderIkeBusy||olderIkeArchiveBusy)return false;
     try{requireRecoveryEngine();}catch(err){olderIkeMessage(err.message);return false;}
     if(!olderIkeRecovery?.verified){olderIkeMessage('Save and verify the older-records file before cleanup.');return false;}
     const navigation=engineWorkspaceNavigationToken();
@@ -13403,11 +13405,86 @@ The full order and approved media remain stored with this project.`;
       // Update counts without replacing this recovery result or rerunning migrations.
       await refreshEngineDiagnostics();
       return !result.error;
-    }catch(err){olderIkeRecovery.verified=false;olderIkeMessage(`Cleanup stopped: ${String(err?.message||err)}`);return false;}
+    }catch(err){if(olderIkeRecovery)olderIkeRecovery.verified=false;if(window.BlackFlagAuth?.isUnlocked?.()===true&&engineWorkspaceNavigationCurrent(navigation))olderIkeMessage(`Cleanup stopped: ${String(err?.message||err)}`);return false;}
     finally{setOlderIkeBusy(false);}
   }
+  function clearOlderIkeRecoveryMemory(){
+    olderIkeArchiveRequest++;
+    if(olderIkeRecovery?.url)URL.revokeObjectURL(olderIkeRecovery.url);
+    olderIkeRecovery=null;
+    if(olderIkeArchiveURL)URL.revokeObjectURL(olderIkeArchiveURL);
+    olderIkeArchiveURL=null;olderIkeArchiveDownloadNavigation=null;
+    for(const id of ['engineLegacyDownload','engineLegacyArchiveDownload'])if($(id)){$(id).removeAttribute('href');$(id).classList.add('hidden');}
+    for(const id of ['engineLegacySummary','engineLegacyArchiveList'])if($(id))$(id).innerHTML='';
+    for(const id of ['engineLegacyStatus','engineLegacyVerification','engineLegacyArchiveStatus'])if($(id))$(id).textContent='';
+    $('engineLegacyReady')?.classList.add('hidden');
+  }
+  async function archiveOlderIkeRecords(){
+    if(olderIkeBusy||olderIkeArchiveBusy)return false;
+    let previous,navigation;
+    try{requireRecoveryEngine();previous=olderIkeRecovery;if(!previous?.verified||!previous.verifiedText)throw Error('Save and verify the older-records file first.');requireRecoveryEngine(previous.navigation);navigation=engineWorkspaceNavigationToken();}
+    catch(e){olderIkeMessage(e.message);return false;}
+    setOlderIkeBusy(true);olderIkeMessage('Saving an exact archive, then checking it before freeing older storage…');
+    try{
+      const guard=()=>{requireRecoveryEngine(navigation);if(olderIkeRecovery!==previous)throw Error('Prepared recovery changed.');};
+      const result=await window.BlackFlagLegacyRecovery.moveToArchive({storage:localStorage,indexedDB:window.indexedDB,entries:previous.entries,savedText:previous.verifiedText,build:BUILD_VERSION,guard});
+      guard();previous.verified=false;previous.verifiedText='';
+      $('engineLegacyVerification').textContent='Your saved file and the on-device archive preserve the older entries. Current work was not replaced.';
+      olderIkeMessage(result.error?`Archive preserved. ${result.removed.length} older entries confirmed removed; ${result.unconfirmed.length} removals unconfirmed. Move stopped: ${result.error}`:`Archive verified. ${result.removed.length} older entries removed from LocalStorage. Keep your saved file; this does not certify overall storage health.`);
+      await refreshOlderIkeArchives();return !result.error;
+    }catch(e){if(olderIkeRecovery===previous){previous.verified=false;previous.verifiedText='';}
+      if(window.BlackFlagAuth?.isUnlocked?.()===true)olderIkeMessage(`Archive move stopped: ${String(e.message||e)} Check archived records before retrying. Keep your saved file.`);return false;
+    }finally{setOlderIkeBusy(false);}
+  }
+  async function refreshOlderIkeArchives(){
+    if(olderIkeArchiveBusy)return false;
+    const box=$('engineLegacyArchiveStatus');let navigation;
+    try{requireRecoveryEngine();navigation=engineWorkspaceNavigationToken();}catch(e){if(box)box.textContent=e.message;return false;}
+    const request=++olderIkeArchiveRequest;olderIkeArchiveBusy=true;
+    if(olderIkeArchiveURL)URL.revokeObjectURL(olderIkeArchiveURL);olderIkeArchiveURL=null;olderIkeArchiveDownloadNavigation=null;
+    $('engineLegacyArchiveDownload').removeAttribute('href');$('engineLegacyArchiveDownload').classList.add('hidden');
+    $('engineLegacyArchiveList').innerHTML='';box.textContent='Checking saved archives…';$('engineLegacyArchiveRefreshBtn').disabled=true;
+    try{const guard=()=>{requireRecoveryEngine(navigation);if(request!==olderIkeArchiveRequest)throw Error('Archive view changed.');};
+      const rows=await window.BlackFlagLegacyRecovery.listArchives({indexedDB:window.indexedDB,guard});guard();
+      $('engineLegacyArchiveList').innerHTML=rows.map(row=>row.invalid?'<article><div><strong>Unverified archive kept</strong><small>This snapshot could not be verified. It remains stored; use your saved recovery file.</small></div><span class="recovery-tag keep">Needs review</span></article>':`<article><div><strong>${escapeHtml(row.createdAt)}</strong><small>${row.count} older entries · ${formatStorageMb(row.bytes)} MB</small></div><div class="recovery-actions"><button type="button" class="secondary-btn" data-older-archive="download" data-archive-id="${escapeHtml(row.id)}">Prepare download</button><button type="button" class="secondary-btn" data-older-archive="restore" data-archive-id="${escapeHtml(row.id)}">Restore older entries</button></div></article>`).join('');
+      const good=rows.filter(row=>!row.invalid).length,bad=rows.length-good;
+      box.textContent=rows.length?`${good} verified archive${good===1?'':'s'} found.${bad?' '+bad+' unverified snapshot(s) kept; no actions offered for those.':''} Download a verified private copy or restore missing older entries.`:'No on-device archives found. Preparing or verifying a file alone does not create an archive.';return true;
+    }catch(e){if(request===olderIkeArchiveRequest)box.textContent=`Archive check stopped: ${String(e.message||e)}`;return false;}
+    finally{olderIkeArchiveBusy=false;$('engineLegacyArchiveRefreshBtn').disabled=false;}
+  }
+  async function handleOlderIkeArchiveAction(event){
+    const button=event.target.closest('[data-older-archive]');if(!button||olderIkeBusy||olderIkeArchiveBusy)return false;
+    const action=button.dataset.olderArchive,id=button.dataset.archiveId,box=$('engineLegacyArchiveStatus');
+    if(!['download','restore'].includes(action))return false;
+    let navigation;try{requireRecoveryEngine();navigation=engineWorkspaceNavigationToken();}catch(e){box.textContent=e.message;return false;}
+    const request=++olderIkeArchiveRequest;olderIkeArchiveBusy=true;button.disabled=true;
+    const guard=()=>{requireRecoveryEngine(navigation);if(request!==olderIkeArchiveRequest)throw Error('Archive view changed.');};
+    if(olderIkeArchiveURL)URL.revokeObjectURL(olderIkeArchiveURL);olderIkeArchiveURL=null;olderIkeArchiveDownloadNavigation=null;
+    $('engineLegacyArchiveDownload').removeAttribute('href');$('engineLegacyArchiveDownload').classList.add('hidden');
+    box.textContent=action==='download'?'Verifying archived file…':'Restoring only missing older entries…';
+    try{const options={indexedDB:window.indexedDB,storage:localStorage,guard};
+      if(action==='download'){
+        const value=await window.BlackFlagLegacyRecovery.readArchive(id,options);guard();
+        olderIkeArchiveURL=URL.createObjectURL(new Blob([JSON.stringify(value,null,2)],{type:'application/json'}));olderIkeArchiveDownloadNavigation=navigation;
+        const link=$('engineLegacyArchiveDownload');link.href=olderIkeArchiveURL;link.download=`black-flag-older-ike-archive-${id.slice(0,12)}.json`;link.classList.remove('hidden');box.textContent='Archived file verified. Tap Save archived file below and keep it private.';
+      }else{
+        // Restoring old keys must not reactivate the pre-existing startup import.
+        const settings=await boundedRecoveryRead(()=>getAll(STORE_SETTINGS,{readOnlyRecovery:true}));guard();
+        const markers=settings.filter(row=>row?.key==='platformMigration:v3.7');
+        if(markers.length!==1||markers[0]?.value?.complete!==true)throw Error('Legacy migration state is not confirmed complete. Restore is held to protect current work; download the archive instead.');
+        const result=await window.BlackFlagLegacyRecovery.restoreArchive(id,options);guard();
+        if(olderIkeRecovery){olderIkeRecovery.verified=false;olderIkeRecovery.verifiedText='';}
+        box.textContent=`${result.restored.length} older entries restored; ${result.kept.length} existing entries kept; ${result.unconfirmed.length} writes unconfirmed. Archive retained.${result.error?' Restore stopped: '+result.error:' Current work was not replaced.'}`;
+      }return true;
+    }catch(e){if(request===olderIkeArchiveRequest)box.textContent=`Archive action stopped: ${String(e.message||e)} The archive was not deleted.`;return false;}
+    finally{olderIkeArchiveBusy=false;button.disabled=false;setOlderIkeBusy(false);}
+  }
+  function guardOlderArchiveDownload(event){
+    try{requireRecoveryEngine(olderIkeArchiveDownloadNavigation);if(!olderIkeArchiveDownloadNavigation||!olderIkeArchiveURL)throw Error('Prepare the archive download again.');}
+    catch(e){event.preventDefault();$('engineLegacyArchiveStatus').textContent=e.message;}
+  }
   function bindEngineRecoveryCore(){
-    for(const [id,event,handler] of [['engineLegacyPrepareBtn','click',prepareOlderIkeRecovery],['engineLegacyVerifyFile','change',verifyOlderIkeFile],['engineLegacyRemoveBtn','click',removeOlderIkeCopies],['engineRefreshDiagnosticsBtn','click',refreshEngineDiagnostics]]){
+    for(const [id,event,handler] of [['engineLegacyArchiveBtn','click',archiveOlderIkeRecords],['engineLegacyArchiveRefreshBtn','click',refreshOlderIkeArchives],['engineLegacyArchiveList','click',handleOlderIkeArchiveAction],['engineLegacyArchiveDownload','click',guardOlderArchiveDownload],['engineLegacyPrepareBtn','click',prepareOlderIkeRecovery],['engineLegacyVerifyFile','change',verifyOlderIkeFile],['engineLegacyRemoveBtn','click',removeOlderIkeCopies],['engineRefreshDiagnosticsBtn','click',refreshEngineDiagnostics]]){
       const element=$(id);if(!element||element.dataset.recoveryBound==='true')continue;
       element.dataset.recoveryBound='true';element.addEventListener(event,handler);
     }
@@ -16673,6 +16750,7 @@ The full order and approved media remain stored with this project.`;
   let harborRescueDocument=null,harborRescueBusy=false,harborRescueEpoch=0;
   function harborRescueStatus(message){const el=$('harborRescueStatus');if(el)el.textContent=message;}
   function clearHarborRescueMemory(){
+    clearOlderIkeRecoveryMemory();
     harborRescueEpoch++;harborRescueDocument=null;
     for(const id of ['harborDownloadRescue','harborDownloadDiagnostic'])if($(id))$(id).disabled=true;
   }

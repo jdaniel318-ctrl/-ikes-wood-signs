@@ -94,5 +94,79 @@
     }
     return {removed,unconfirmed,error};
   }
-  return Object.freeze({KEYS,PROJECT,capture,compare,archive,verify,sameEntries,removeVerified});
+  // Keephaven: explicit exact-record archive. No calls run at module load.
+  const ARCHIVE_DB='blackFlagOlderIkeArchiveV1', ARCHIVE_STORE='snapshots';
+  function operation(options={}){
+    if(typeof options.guard!=='function')throw Error('Engine session check is required.');
+    const end=Date.now()+(options.timeout||20000);
+    return {factory:options.indexedDB||globalThis.indexedDB,check(){options.guard();if(Date.now()>=end)throw Error('Archive operation timed out. Originals were not automatically retried.');},remaining(){return Math.max(1,end-Date.now());}};
+  }
+  function openArchive(op,create=false){return new Promise((resolve,reject)=>{
+    let request,settled=false;
+    const finish=(error,db)=>{if(settled){db?.close();return;}settled=true;clearTimeout(timer);error?reject(error):resolve(db);};
+    const timer=setTimeout(()=>{try{request?.transaction?.abort();}catch(_){}finish(Error('Archive open timed out.'));},op.remaining());
+    try{op.check();if(!op.factory)throw Error('Archive storage is unavailable.');request=op.factory.open(ARCHIVE_DB,1);
+      request.onupgradeneeded=()=>{try{if(settled)throw Error('Archive open ended.');op.check();if(!create){request.transaction.abort();finish(null,null);return;}request.result.createObjectStore(ARCHIVE_STORE,{keyPath:'id'});}catch(e){try{request.transaction.abort();}catch(_){}finish(e);}};
+      request.onblocked=()=>finish(Error('Archive storage is busy in another tab. Close that tab and try again.'));
+      request.onerror=()=>finish(request.error||Error('Archive could not be opened.'));
+      request.onsuccess=()=>{const db=request.result;try{if(settled){db.close();return;}op.check();if(!db.objectStoreNames.contains(ARCHIVE_STORE))throw Error('Archive store is missing.');db.onversionchange=()=>db.close();finish(null,db);}catch(e){db.close();finish(e);}};
+    }catch(e){finish(e);}
+  });}
+  function archiveTransaction(db,op,mode,work){return new Promise((resolve,reject)=>{
+    let tx,settled=false,value;
+    const finish=(error)=>{if(settled)return;settled=true;clearTimeout(timer);error?reject(error):resolve(value);};
+    const stop=error=>{try{tx?.abort();}catch(_){}finish(error);};
+    const timer=setTimeout(()=>stop(Error('Archive transaction timed out.')),op.remaining());
+    try{op.check();tx=db.transaction([ARCHIVE_STORE],mode);
+      tx.onabort=()=>finish(tx.error||Error('Archive transaction aborted.'));
+      tx.onerror=()=>stop(tx.error||Error('Archive transaction failed.'));
+      tx.oncomplete=()=>{try{op.check();finish();}catch(e){finish(e);}};
+      work(tx.objectStore(ARCHIVE_STORE),(v)=>{value=v;},stop);
+    }catch(e){stop(e);}
+  });}
+  async function archiveId(entries){validateEntries(entries);return (await digest(JSON.stringify(KEYS.flatMap(key=>entries.filter(e=>e.key===key).map(e=>({key:e.key,raw:e.raw})))))).sha256;}
+  async function validateArchive(value){
+    if(!value||!value.entries?.length)throw Error('Archived snapshot is missing or invalid.');
+    await verify(JSON.stringify(value),value.entries);
+    if(value.id!==await archiveId(value.entries))throw Error('Archived snapshot identity did not match.');
+    return value;
+  }
+  async function readStored(id,op){
+    const db=await openArchive(op);if(!db)throw Error('Archived snapshot was not found.');
+    try{const value=await archiveTransaction(db,op,'readonly',(store,result,fail)=>{const req=store.get(id);req.onsuccess=()=>result(req.result);req.onerror=()=>fail(req.error);});await validateArchive(value);op.check();return value;}
+    finally{db.close();}
+  }
+  async function readArchive(id,options){return readStored(id,operation(options));}
+  async function listArchives(options){
+    const op=operation(options),db=await openArchive(op);if(!db)return [];
+    try{const values=await archiveTransaction(db,op,'readonly',(store,result,fail)=>{const req=store.getAll();req.onsuccess=()=>result(req.result);req.onerror=()=>fail(req.error);});
+      const rows=[];for(const value of values){try{await validateArchive(value);op.check();rows.push({id:value.id,createdAt:value.createdAt,count:value.entries.length,bytes:value.entries.reduce((n,e)=>n+e.bytes,0)});}catch(e){op.check();rows.push({invalid:true});}}return rows.sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||'')));
+    }finally{db.close();}
+  }
+  async function moveToArchive(options){
+    const op=operation(options),{storage,entries,savedText}=options;op.check();validateEntries(entries);
+    if(!entries.length)throw Error('No older records to archive.');
+    await verify(savedText,entries);op.check();
+    if(!sameEntries(capture(storage),entries))throw Error('Older records changed. Prepare and verify a fresh file.');
+    const value=await archive(entries,options.build);value.id=await archiveId(entries);op.check();
+    const db=await openArchive(op,true);
+    try{await archiveTransaction(db,op,'readwrite',(store,result,fail)=>{
+      const req=store.get(value.id);req.onerror=()=>fail(req.error);
+      req.onsuccess=()=>{try{op.check();if(req.result){result(req.result);return;}const add=store.add(value);add.onerror=()=>fail(add.error);add.onsuccess=()=>result(value);}catch(e){fail(e);}};
+    });}finally{db.close();}
+    // A successful request is insufficient: wait for commit, reopen, hash, compare.
+    const readback=await readStored(value.id,op);op.check();
+    if(!sameEntries(readback.entries,entries))throw Error('Archive readback did not match. Older records kept.');
+    if(!sameEntries(capture(storage),entries))throw Error('Older records changed. Archive kept; no older entries removed.');
+    const removed=[],unconfirmed=[];let error='';
+    for(const e of entries){try{op.check();if(storage.getItem(e.key)!==e.raw)throw Error('An older record changed. Move stopped.');storage.removeItem(e.key);unconfirmed.push(e.key);if(storage.getItem(e.key)!==null)throw Error('Removal was not confirmed.');unconfirmed.pop();removed.push(e.key);}catch(e){error=String(e.message||e);break;}}
+    return {id:value.id,archived:entries.length,removed,unconfirmed,error};
+  }
+  async function restoreArchive(id,options){
+    const op=operation(options),value=await readStored(id,op),{storage}=options;
+    const restored=[],kept=[],unconfirmed=[];let error='';
+    for(const e of value.entries){try{op.check();if(storage.getItem(e.key)!==null){kept.push(e.key);continue;}storage.setItem(e.key,e.raw);unconfirmed.push(e.key);if(storage.getItem(e.key)!==e.raw)throw Error('Restored entry could not be verified.');unconfirmed.pop();restored.push(e.key);}catch(e){error=String(e.message||e);break;}}
+    return {restored,kept,unconfirmed,error,archiveKept:true};
+  }
+  return Object.freeze({KEYS,PROJECT,capture,compare,archive,verify,sameEntries,removeVerified,ARCHIVE_DB,listArchives,readArchive,moveToArchive,restoreArchive});
 });

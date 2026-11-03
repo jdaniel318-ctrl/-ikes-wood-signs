@@ -1,14 +1,14 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Current architecture — Helmward 8.8.20.88
+# Current architecture — Keephaven 8.8.20.89
 
-Source of release identity: RELEASE_CONFIG.json. Installed page/manifest/seal/worker identity is generated together. APP_COMPONENT_REVISION is 8.8.20.88; owner helper revision is 8.8.20.68. Unchanged component bodies remain byte-identical across release-only changes.
+Source of release identity: RELEASE_CONFIG.json. Installed page/manifest/seal/worker identity is generated together. APP_COMPONENT_REVISION is 8.8.20.89; owner helper revision is 8.8.20.68. Unchanged component bodies remain byte-identical across release-only changes.
 
 The Engine still verifies every required body, current governance models, app component contract and worker identity before executing the same script sequence. App and Captain bind audit/display freshness to the verified installed release. This context never grants permissions. The owner page keeps explicit helper compatibility checks.
 
-- Focused fleet vessel chooser and workstations, with main actions at the top.
-- Consistent Test Center entrances and visible Back to vessel / Back to Engine routes.
-- Expired Engine previews explain the ended session and offer safe recovery.
-- No database, publication, account, customer-record or paid-service changes.
+- Explicitly archive exact older Ike records after saved-file verification, then free only their older LocalStorage space.
+- Reopen, verify and download on-device archives; restore only missing older entries.
+- General rescue includes the two known older draft keys. Archived snapshots have their own exact-file export.
+- No automatic archival, migration, deletion, backend deployment or change to customer readiness.
 Backend prerequisites are recorded separately in PATCH_CONTRACT.json. Release preparation executes no database commands. Fleet core and Admiral programs remain distinct.
 
 ## Release commands

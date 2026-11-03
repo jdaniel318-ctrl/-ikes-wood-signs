@@ -12,7 +12,7 @@ function harness(){
  const calls={confirm:0,capture:0,wrap:0,diagnostic:0,verify:0,log:0,prevent:0,downloads:[],filePicker:0},elements=new Map(),listeners=[];
  function element(id){if(elements.has(id))return elements.get(id);const e={id,disabled:['harborDownloadRescue','harborDownloadDiagnostic'].includes(id),dataset:{},textContent:'Nothing has been captured.',files:[],value:'',matches(sel){return sel.split(',').some(s=>s.trim()==='#'+id)},closest(sel){return this.matches(sel)?this:null},click(){calls.filePicker++},remove(){}};elements.set(id,e);return e}
  [...ids,'harborVerifyRescueInput','harborRescueStatus','showAuditTrailBtn','unrelated'].forEach(element);
- const c={console,Blob,Promise,Date,JSON,setTimeout:()=>0,engineSessionUnlocked:true,BUILD_VERSION:'8.8.20.71',$:element,
+ const c={clearOlderIkeRecoveryMemory:()=>{},console,Blob,Promise,Date,JSON,setTimeout:()=>0,engineSessionUnlocked:true,BUILD_VERSION:'8.8.20.71',$:element,
   URL:{createObjectURL:()=> 'blob:synthetic-rescue',revokeObjectURL:()=>{}},confirm:()=>{calls.confirm++;return c.confirmAllowed},confirmAllowed:true,
   document:{getElementById:element,addEventListener:(type,fn)=>{assert.equal(type,'click');listeners.push(fn)},body:{appendChild:()=>{}},createElement:()=>({href:'',download:'',click(){calls.downloads.push(this.download)},remove(){}})},
   renderV3AuditTrail:()=>{calls.log++},

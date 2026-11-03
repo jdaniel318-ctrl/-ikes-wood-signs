@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.88",
-  "release": "Helmward",
-  "seal": "helmward-882088",
+  "build": "8.8.20.89",
+  "release": "Keephaven",
+  "seal": "keephaven-882089",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Helmward",
-  "name": "Helmward",
-  "releaseName": "Helmward"
+  "release_name": "Keephaven",
+  "name": "Keephaven",
+  "releaseName": "Keephaven"
 }

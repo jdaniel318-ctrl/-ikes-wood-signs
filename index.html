@@ -15,7 +15,7 @@
   </style>
   <script id="darkSkyFirstLightBootstrap">
     // Dark Sky 8.6.23 MEMORY MUSTER — canonical release identity.
-    const DARK_SKY_RELEASE = Object.freeze({build:'8.8.20.88',seal:'helmward-882088'});
+    const DARK_SKY_RELEASE = Object.freeze({build:'8.8.20.89',seal:'keephaven-882089'});
     const DARK_SKY_EXPECTED_BUILD = DARK_SKY_RELEASE.build;
     const DARK_SKY_RELEASE_SEAL = DARK_SKY_RELEASE.seal;
     // 8.6.23 Storage Safe Harbor — three independent channels, no silent storage failures.
@@ -1420,7 +1420,7 @@
       </header>
 
       <section id="clearDeckLaunchpad" class="clear-deck-launchpad waypoint-home" aria-labelledby="engineNextMoveTitle">
-        <header class="clear-deck-brief"><small id="engineReleaseLabel">8.8.20.88 • HELMWARD</small><h3 id="engineNextMoveTitle">Your fleet. A clear next move.</h3><p>Open a vessel, lead the work, see the fleet or shape what comes next.</p></header>
+        <header class="clear-deck-brief"><small id="engineReleaseLabel">8.8.20.89 • KEEPHAVEN</small><h3 id="engineNextMoveTitle">Your fleet. A clear next move.</h3><p>Open a vessel, lead the work, see the fleet or shape what comes next.</p></header>
         <nav class="clear-deck-primary-actions" aria-label="Fleet command offices">
           <button id="engineOperateVessels" type="button" class="clear-deck-action primary" data-clear-deck-command="projects" aria-controls="fleetCommissioningDock"><span class="clear-deck-action-number">01</span><span><strong>OPERATE VESSELS</strong><small>Choose a business and open its workstation.</small></span></button>
           <button type="button" class="clear-deck-action" data-command-open="captain"><span class="clear-deck-action-number">02</span><span><strong>CAPTAIN WATCH</strong><small>Review signals, decide the next action and record the result.</small></span></button>
@@ -2009,8 +2009,19 @@
                 </div>
                 <p class="recovery-note">After saving, choose that file from Files to verify its contents.</p>
                 <p id="engineLegacyVerification" class="recovery-verification" role="status" aria-live="polite"></p>
+                <p class="recovery-note">To free older storage while keeping differing orders and drafts: archive all older entries. Each exact copy is checked in the on-device archive before its older LocalStorage entry is removed. Your current work stays in place. Keep your saved file too.</p>
+                <button type="button" id="engineLegacyArchiveBtn" class="primary-btn" disabled>3. Archive &amp; free older space</button>
+                <p class="recovery-note">Or remove only copies that fully match current work:</p>
                 <button type="button" id="engineLegacyRemoveBtn" class="secondary-btn" disabled>Remove verified old copies</button>
               </div>
+            </section>
+            <section class="recovery-card" aria-labelledby="olderIkeArchiveHeading">
+              <div class="recovery-card-heading"><div><span class="recovery-eyebrow">03 · SAVED ON THIS DEVICE</span><h3 id="olderIkeArchiveHeading">Archived older records</h3></div><button type="button" id="engineLegacyArchiveRefreshBtn" class="secondary-btn">Check archived records</button></div>
+              <p class="recovery-copy">Older snapshots stay separate from current work. Restore fills only missing older storage entries when the legacy import is confirmed complete. It may use that space again and keeps the archive. Download a private copy before changing devices or clearing website data.</p>
+              <div id="engineLegacyArchiveList" class="recovery-comparison"></div>
+              <p id="engineLegacyArchiveStatus" class="recovery-verification" role="status" aria-live="polite"></p>
+              <a id="engineLegacyArchiveDownload" class="primary-btn hidden">Save archived file</a>
+              <p class="recovery-note">Archives are plaintext business data on this browser. They are excluded from the general rescue export; download them here. No cloud backup or complete fleet restore is implied.</p>
             </section>
             <div class="storage-steward">
               <div><strong>Storage Steward</strong><small>Safe housekeeping only. Never deletes projects, orders, customers, graphics, admissions, or quarantine evidence.</small></div>

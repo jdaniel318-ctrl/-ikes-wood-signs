@@ -4,7 +4,7 @@
 const VERSION=1,PRIMARY='blackFlagPlatformV1',ENVELOPES='darkSkyV4ProjectEnvelopesV1';
 const DATABASES=Object.freeze([PRIMARY,'ikesWoodSignsV1','blackFlagGraphicsDB','bootstrapBuildScheduleDB','blackflag-ike-sign-requests-v1','blackflag-carvewright-v1','blackflag-carve-studio-v1','blackflag-carvewright-machining-v1','darkSkyDurableLedgerV1','blackFlagCharterGuardDraftsV1','dark-sky-upper-command-visuals-v1','blackflag-stormwake-voyages-v1']);
 const LIMITS=Object.freeze({bytes:64*1024*1024,records:20000,timeout:8000,depth:40});
-const businessKey=k=>/^(blackflag|darksky|bootstrapbuild|ikeswoodsigns|carvewright|schedulejoe|househull|stormwake|bf[.:-])/i.test(k);
+const businessKey=k=>['ikesOrderDraftV2','ikesOrderDraftV2:ikes-wood-signs'].includes(k)||/^(blackflag|darksky|bootstrapbuild|ikeswoodsigns|carvewright|schedulejoe|househull|stormwake|bf[.:-])/i.test(k);
 const secretKey=k=>/(?:password|passphrase|credential|secret|token|session|nonce|csrf|(?:^|[_:-])pin(?:$|[_:-])|adminpin|enginepin|captainpin|pin(?:hash|code)?$|jwt|bearer|accesskey|apikey|privatekey|authorization)/i.test(String(k));
 const fieldSecret=k=>/password|passphrase|credential|secret|token|nonce|csrf|^(?:pin|adminPin|enginePin|captainPin|authorization|session|accessKey|apiKey|privateKey|jwt|bearer)$|(?:recovery|gate|authority|preview|admin|engine|captain)Pin|session[_-]?(?:id|token)|(?:access|api|private)[_-]?key$/i.test(k);
 const code=e=>String(e?.name||'ReadError').replace(/[^a-zA-Z0-9_-]/g,'').slice(0,60)||'ReadError';
@@ -121,6 +121,8 @@ async function capture({indexedDB:factory=globalThis.indexedDB,localStorage:stor
  let catalog=null;
  try{if(typeof factory?.databases==='function')catalog=await new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(Object.assign(new Error('Catalog timeout'),{name:'CatalogTimeout'})),timeout);Promise.resolve(factory.databases()).then(v=>{clearTimeout(timer);resolve(v);},e=>{clearTimeout(timer);reject(e);});});else out.errors.push({source:'catalog',code:'CatalogUnsupported'});}
  catch(e){out.errors.push({source:'catalog',code:code(e)});}
+ out.exclusions.older_ike_archive='Excluded: use Storage & Recovery > Archived older records > Prepare download.';
+ if(catalog?.some(x=>x.name==='blackFlagOlderIkeArchiveV1'))out.errors.push({source:'blackFlagOlderIkeArchiveV1',code:'SeparateArchiveExportRequired'});
  if(catalog){out.exclusions.unrecognized_databases=catalog.filter(x=>!DATABASES.includes(x.name)).length;}
  for(const name of DATABASES){progress('Reading '+name);
  if(catalog&&!catalog.some(x=>x.name===name)){out.sources.push({kind:'indexeddb',name,status:'not-present',stores:[]});continue;}
