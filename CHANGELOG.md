@@ -1,13 +1,13 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Harborlight 8.8.20.87
+# Black Flag Helmward 8.8.20.88
 
 Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
-Baseline: 8.8.20.86. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Baseline: 8.8.20.87. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
 Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
-- One task per page with retained answers and required-step validation.
-- Existing Countercraft kiosk hardened with fresh customer sessions, idle expiry and owner-selected locations.
-- Fleet Test Center replaces Test Access bypass and separate preview entry; field learning record added.
-- No paid service, outgoing email, backend deployment or machine certification.
+- Focused fleet vessel chooser and workstations, with main actions at the top.
+- Consistent Test Center entrances and visible Back to vessel / Back to Engine routes.
+- Expired Engine previews explain the ended session and offer safe recovery.
+- No database, publication, account, customer-record or paid-service changes.
 Preparation does not deploy frontend or backend changes. See PATCH_CONTRACT.json for separately managed backend prerequisites.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 

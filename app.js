@@ -16,7 +16,7 @@
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
   // Component revision changes only when this module changes; installed release is loader-attested.
-  const APP_COMPONENT_REVISION='8.8.20.87';
+  const APP_COMPONENT_REVISION='8.8.20.88';
   const BUILD_VERSION=window.__darkSkyVerifiedRelease?.build;
   if(!BUILD_VERSION || BUILD_VERSION!==window.__darkSkyExpectedRelease?.build || window.__darkSkyVerifiedRelease?.seal!==window.__darkSkyExpectedRelease?.seal)throw new Error('Verified release context required before app execution.');
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
@@ -868,6 +868,8 @@
   let ownerPreviewOpening=false;
   let experienceTestReturnState=null;
   let experienceTestDeckProjectId=null;
+  let experienceTestDeckRequest=0;
+  let experienceTestDeckOrigin=null;
 
   function ownerInviteStatus(p){
     ensureProjectGovernance(p);
@@ -1442,6 +1444,7 @@
   function lockEngineSession(){
     invalidateEngineWorkspaceNavigation();
     engineSessionUnlocked = false;
+    closeExperienceTestDeck();
     clearHarborRescueMemory();
     if($('enginePinInput')) $('enginePinInput').value='';
     if($('blackFlagEntryPin')) $('blackFlagEntryPin').value='';
@@ -5033,51 +5036,68 @@
   function ensureExperienceTestDeck(){
     let deck=document.getElementById('experienceTestDeck');if(deck)return deck;
     deck=document.createElement('section');deck.id='experienceTestDeck';deck.className='experience-test-deck hidden';
-    deck.innerHTML='<div class="experience-test-shell"><header><div><span>FLEET TEST CENTER</span><h2 id="experienceTestTitle">Project Experience</h2><p>Preview the journey, run controlled trials, and keep evidence of what we learned. Testing starts here in the Engine.</p></div><button type="button" id="closeExperienceTestDeck" class="secondary-btn">RETURN TO ENGINE</button></header><div id="experienceTestDeckBody"></div></div>';
+    deck.innerHTML='<div class="experience-test-shell"><header><div><span>FLEET TEST CENTER</span><h2 id="experienceTestTitle">Project Experience</h2><p>Preview, run a controlled trial, or record what you learned.</p></div><button type="button" id="closeExperienceTestDeck" class="secondary-btn">← BACK TO VESSEL</button></header><div id="experienceTestDeckBody"></div></div>';
     document.body.appendChild(deck);return deck;
   }
 
 
   async function renderExperienceTestDeck(p){
-    const deck=ensureExperienceTestDeck(),body=document.getElementById('experienceTestDeckBody');if(!p||!body)return;
+    if(!p||String(p.id)!==String(experienceTestDeckProjectId)||!document.body.classList.contains('experience-test-deck-open'))return false;
+    const deck=ensureExperienceTestDeck(),body=document.getElementById('experienceTestDeckBody');if(!body)return false;
+    const request=experienceTestDeckRequest,navigation=engineWorkspaceNavigationToken();
+    if(!engineWorkspaceNavigationCurrent(navigation)||document.body.classList.contains('boot-locked'))return false;
     experienceTestDeckProjectId=p.id;document.getElementById('experienceTestTitle').textContent=p.name;
     let snap;
     try{
       snap=await experienceTestSnapshot(p);
     }catch(err){
+      if(request!==experienceTestDeckRequest||!engineWorkspaceNavigationCurrent(navigation)||document.body.classList.contains('boot-locked'))return false;
       console.warn('Experience Test Deck evidence snapshot degraded to safe read-only mode',err);
       snap={deployment:experienceDeploymentFor(p),checklist:[],critical:[],seaTrialPassed:false,approved:experienceApproved(p),evidenceReadError:String(err?.message||err)};
     }
+    if(request!==experienceTestDeckRequest||!engineWorkspaceNavigationCurrent(navigation)||document.body.classList.contains('boot-locked'))return false;
     const shellReady=projectCustomerOperatingModelReady(p),d=snap.deployment;
     const liveDeployment=migrateLegacyDeployment(p).find(x=>x.state==='deployed');
     const live=!!liveDeployment&&p.publish?.status==='live';
     const lifecycle=experienceLifecycleSnapshot(p,snap);
-    body.innerHTML=`${experienceLifecycleRail(p,snap)}<section class="experience-mode-grid">
+    body.innerHTML=`<section class="experience-mode-grid">
       <article class="experience-mode-card preview"><small>LOOK ONLY</small><h3>Preview</h3><p>Walk through the real customer renderer using the current project configuration. Preview submissions are simulated and create no customer, engagement/order, analytics, email, deployment, or lifecycle records.</p><button type="button" data-experience-mode="preview" class="primary-btn" ${shellReady?'':'disabled'}>OPEN PRIVATE PREVIEW</button><span>${shellReady?'Safe visual and customer-journey inspection.':'Add a customer-ready offer before previewing this vessel.'}</span></article>
       <article class="experience-mode-card sea-trial"><small>TEST INFRASTRUCTURE</small><h3>Sea Trial</h3><p>Exercise the approved customer experience against a saved project-owned outpost. Test records use the real persistence/workflow path but stay explicitly marked as test data.</p><button type="button" data-experience-mode="sea_trial" class="primary-btn" ${d&&Number(d.manifestVersion||1)>1&&shellReady&&lifecycle.approved?'':'disabled'}>${!lifecycle.approved?'APPROVAL REQUIRED':d&&Number(d.manifestVersion||1)>1?'RUN SEA TRIAL':'SAVED OUTPOST REQUIRED'}</button><span>${!lifecycle.approved?'Preview and approve the current revision before infrastructure testing.':d?`${escapeHtml(d.name)} • ${escapeHtml(d.state.replaceAll('_',' '))}`:'Create and save an outpost in Shipwright first.'}</span></article>
       <article class="experience-mode-card live"><small>PRODUCTION</small><h3>Live</h3><p>Open the actual published customer experience. No test flags and no simulation.</p><button type="button" data-experience-mode="live" class="primary-btn" ${live?'':'disabled'}>${live?'OPEN LIVE EXPERIENCE':'NOT LIVE YET'}</button></article>
     </section>
+    <details class="helmward-test-details"><summary>Readiness, approval and test evidence</summary>${experienceLifecycleRail(p,snap)}
     <section class="experience-certification-grid">
       <article class="experience-approval-card ${snap.approved?'approved':'pending'}"><span>VISUAL / EXPERIENCE APPROVAL</span><strong>${snap.approved?'APPROVED':lifecycle.previewed?'READY TO APPROVE':'PREVIEW REQUIRED'}</strong><p>${snap.approved?'Approval matches the current customer-facing configuration.':lifecycle.previewed?'The current revision has been previewed. Approve it when branding, language, offers, inputs and presentation are ready.':'Open Private Preview before approving this revision. If configuration changes later, this approval automatically becomes stale.'}</p><button type="button" id="approveExperienceBtn" class="${snap.approved?'secondary-btn':'primary-btn'}" ${!snap.approved&&!lifecycle.previewed?'disabled':''}>${snap.approved?'REVOKE APPROVAL':'APPROVE EXPERIENCE'}</button></article>
       <article class="experience-approval-card ${snap.seaTrialPassed?'approved':'pending'}"><span>SEA TRIAL CERTIFICATION</span><strong>${snap.seaTrialPassed?'PASSED':'NOT PASSED'}</strong><p>${snap.seaTrialPassed?'The current configuration has real project-scoped test evidence.':'Run the current configuration through a saved outpost and complete a customer submission.'}</p></article>
     </section>
     <section class="experience-results-card"><div class="experience-results-head"><div><span>TEST RESULTS</span><h3>${snap.evidenceReadError?'Evidence read limited':`${snap.checklist.filter(x=>x.pass).length} passed • ${snap.checklist.filter(x=>!x.pass).length} open`}</h3></div><b class="${snap.seaTrialPassed&&snap.approved?'ready':'watch'}">${snap.seaTrialPassed&&snap.approved?'FLEET READY EVIDENCE':'KEEP TESTING'}</b></div>${snap.evidenceReadError?`<p>Test Deck opened in read-only recovery mode. Evidence read warning: ${escapeHtml(snap.evidenceReadError)}</p>`:`<div class="experience-checklist">${snap.checklist.map(x=>`<div class="${x.pass?'pass':'open'}"><i>${x.pass?'✓':'!'}</i><span><strong>${escapeHtml(x.label)}</strong><small>${escapeHtml(x.detail)}</small></span></div>`).join('')}</div>`}</section>
-    <section class="experience-results-card fleet-test-learning"><span>FLEET CHECKS & LEARNING</span><h3>One place to test and improve</h3><p>Structural checks inspect this browser and fleet records. They do not certify an iPad, a customer delivery, or machining.</p><button type="button" id="fleetRunChecks" class="secondary-btn">RUN FLEET CHECKS</button><div id="fleetCheckEvidence" role="status"></div><hr><h3>Field test record</h3><p>Use synthetic names. Record what happened, the next action, and the location. This local record can be exported for the next build.</p><label>Location <input id="fleetTestLocation" maxlength="80" value="${escapeHtml(d?.id||'preview')}"></label><label>Check <select id="fleetTestCase"><option>Next and Back preserve work</option><option>Customer B cannot see Customer A</option><option>Paste and keyboard on iPad</option><option>Owner receives the exact approved design</option><option>Other field observation</option></select></label><label>Result <select id="fleetTestResult"><option value="pending">Not tested</option><option value="pass">Passed</option><option value="fail">Failed</option><option value="blocked">Blocked</option></select></label><label>Observation and next action <textarea id="fleetTestNote" maxlength="1000" placeholder="Describe behavior without customer details"></textarea></label><button type="button" id="fleetSaveLearning" class="secondary-btn">SAVE FIELD RESULT</button> <button type="button" id="fleetExportLearning" class="secondary-btn">DOWNLOAD LEARNING RECORD</button><p id="fleetLearningStatus" role="status"></p></section>
+    </details><section class="experience-results-card fleet-test-learning"><span>FLEET CHECKS & LEARNING</span><h3>One place to test and improve</h3><p>Structural checks inspect this browser and fleet records. They do not certify an iPad, a customer delivery, or machining.</p><button type="button" id="fleetRunChecks" class="secondary-btn">RUN FLEET CHECKS</button><div id="fleetCheckEvidence" role="status"></div><hr><h3>Field test record</h3><p>Use synthetic names. Record what happened, the next action, and the location. This local record can be exported for the next build.</p><label>Location <input id="fleetTestLocation" maxlength="80" value="${escapeHtml(d?.id||'preview')}"></label><label>Check <select id="fleetTestCase"><option>Next and Back preserve work</option><option>Customer B cannot see Customer A</option><option>Paste and keyboard on iPad</option><option>Owner receives the exact approved design</option><option>Other field observation</option></select></label><label>Result <select id="fleetTestResult"><option value="pending">Not tested</option><option value="pass">Passed</option><option value="fail">Failed</option><option value="blocked">Blocked</option></select></label><label>Observation and next action <textarea id="fleetTestNote" maxlength="1000" placeholder="Describe behavior without customer details"></textarea></label><button type="button" id="fleetSaveLearning" class="secondary-btn">SAVE FIELD RESULT</button> <button type="button" id="fleetExportLearning" class="secondary-btn">DOWNLOAD LEARNING RECORD</button><p id="fleetLearningStatus" role="status"></p></section>
     ${!d?'<div class="experience-deck-guidance"><strong>Sea Trial needs an outpost.</strong><span>Preview is available first. Create and save an outpost when you are ready to test persistence, deployment identity, session behavior, workflow and customer submission.</span><button type="button" id="experienceOpenShipwright" class="secondary-btn">OPEN SHIPWRIGHT</button></div>':''}`;
   }
 
 
   async function openExperienceTestDeck(projectId){
     if(!engineSessionUnlocked||!document.body.classList.contains('engine-mode')||document.body.classList.contains('boot-locked'))return false;
+    const request=++experienceTestDeckRequest,navigation=engineWorkspaceNavigationToken();
+    experienceTestDeckProjectId=null;
+    const current=()=>request===experienceTestDeckRequest&&engineWorkspaceNavigationCurrent(navigation)&&!document.body.classList.contains('boot-locked');
+    const source=document.activeElement,originProjectId=fleetWorkstationProjectId;
+    const fromVessel=document.body.classList.contains('engine-dock-open')&&!document.body.classList.contains('engine-workspace-open');
     const requested=String(projectId||'').trim();
     const resolution=await resolveProjectReference(requested,{rehydrate:false});
+    if(!current())return false;
     const p=resolution.project;
+    experienceTestDeckOrigin={fromVessel,projectId:originProjectId,focus:source,navigation};
     const deck=ensureExperienceTestDeck();
+    const heading=document.getElementById('experienceTestTitle');if(heading)heading.textContent='Test Center';
     deck.classList.remove('hidden');
+    deck.scrollTop=0;
     deck.setAttribute('aria-hidden','false');
+    const back=document.getElementById('closeExperienceTestDeck');
+    if(back)back.textContent=fromVessel?'← BACK TO VESSEL':'← BACK';
     document.body.classList.add('experience-test-deck-open');
     const body=document.getElementById('experienceTestDeckBody');
-    if(body) body.innerHTML='<section class="experience-results-card"><div class="experience-results-head"><div><span>EXPERIENCE TEST DECK</span><h3>Opening project experience…</h3></div><b class="watch">VERIFYING • ${BUILD_VERSION}</b></div><p>Resolving project identity and current customer configuration.</p></section>';
+    if(body) body.innerHTML='<section class="experience-results-card"><div class="experience-results-head"><div><span>FLEET TEST CENTER</span><h3>Opening project experience…</h3></div><b class="watch">VERIFYING • ${BUILD_VERSION}</b></div><p>Resolving project identity and current customer configuration.</p></section>';
     if(!p){
       const detail=`Requested: ${requested||'missing'} • Canonical: ${resolution.canonical||'missing'} • Sources searched: memory, Project Command snapshot, canonical project store, settings mirror, verified backup, V4 baseline definition`;
       if(body) body.innerHTML=`<section class="experience-results-card"><div class="experience-results-head"><div><span>COMMAND FAILURE</span><h3>Project could not be resolved</h3></div><b class="watch">STOPPED</b></div><p>${escapeHtml(detail)}</p></section>`;
@@ -5087,10 +5107,13 @@
     const title=document.getElementById('experienceTestTitle');if(title)title.textContent=p.name;
     try{
       await renderExperienceTestDeck(p);
+      if(!current())return false;
+      document.getElementById('closeExperienceTestDeck')?.focus({preventScroll:true});
       // Opening Test Experience is intentionally read-only. Do not emit an
       // audit/storage write here; a diagnostic screen must always be openable.
       return true;
     }catch(err){
+      if(!current())return false;
       console.error('Experience Test Deck render failed',err);
       if(body) body.innerHTML=`<section class="experience-results-card"><div class="experience-results-head"><div><span>COMMAND FAILURE</span><h3>Test Experience could not finish opening</h3></div><b class="watch">ERROR</b></div><p>${escapeHtml(String(err?.message||err))}</p><p>The project remains unchanged. Return to Engine and report this message.</p></section>`;
       throw err;
@@ -5099,12 +5122,26 @@
   window.blackFlagOpenExperienceTestDeck=(projectId)=>openExperienceTestDeck(projectId);
   // Fleet Commissioning routes are owned by the v4.6.4 Seaworthiness Command Spine.
 
-  function closeExperienceTestDeck(){document.getElementById('experienceTestDeck')?.classList.add('hidden');document.body.classList.remove('experience-test-deck-open');}
+  function closeExperienceTestDeck(){
+    ++experienceTestDeckRequest;
+    const origin=experienceTestDeckOrigin;experienceTestDeckOrigin=null;
+    document.getElementById('experienceTestDeck')?.classList.add('hidden');
+    document.getElementById('experienceTestDeck')?.setAttribute('aria-hidden','true');
+    document.body.classList.remove('experience-test-deck-open');
+    if(!engineSessionUnlocked||!document.body.classList.contains('engine-mode')||document.body.classList.contains('boot-locked'))return;
+    if(origin?.fromVessel&&document.body.classList.contains('engine-dock-open')&&!document.body.classList.contains('engine-workspace-open')&&setFleetWorkstationView(experienceTestDeckProjectId||origin.projectId))return;
+    if(origin?.focus?.isConnected&&engineWorkspaceNavigationCurrent(origin.navigation)&&origin.focus.getClientRects().length){origin.focus.focus({preventScroll:true});return;}
+    const navigation=engineWorkspaceNavigationToken();
+    scheduleEngineWorkspaceFrame(navigation,()=>{$('engineOperateVessels')?.focus({preventScroll:true});window.scrollTo({top:0,left:0,behavior:'instant'});});
+  }
 
-  function ensureExperienceModeBanner(p,mode){let banner=document.getElementById('experienceModeBanner');if(!banner){banner=document.createElement('div');banner.id='experienceModeBanner';banner.className='experience-mode-banner';document.body.appendChild(banner);}const label=mode==='preview'?'PRIVATE PREVIEW • NO RECORDS':mode==='sea_trial'?'SEA TRIAL • TEST DATA':'LIVE CUSTOMER EXPERIENCE';const isBor=p?.id===BOR_PROJECT_ID;banner.classList.toggle('bor-test-banner',isBor&&mode!=='live');banner.innerHTML=`<span><b>${escapeHtml(isBor&&mode!=='live'?'DARK SKY • TEST':label)}</b><small>${escapeHtml(isBor&&mode!=='live'?'Private project preview':p.name)}</small></span><button type="button" id="returnExperienceTestDeck" class="secondary-btn">${mode==='live'?'RETURN TO ENGINE':isBor?'← TEST DECK':'RETURN TO TEST DECK'}</button>`;banner.classList.remove('hidden');}
+  function ensureExperienceModeBanner(p,mode){let banner=document.getElementById('experienceModeBanner');if(!banner){banner=document.createElement('div');banner.id='experienceModeBanner';banner.className='experience-mode-banner';document.body.appendChild(banner);}const label=mode==='preview'?'PRIVATE PREVIEW • NO RECORDS':mode==='sea_trial'?'SEA TRIAL • TEST DATA':'LIVE CUSTOMER EXPERIENCE';const isBor=p?.id===BOR_PROJECT_ID;banner.classList.toggle('bor-test-banner',isBor&&mode!=='live');banner.innerHTML=`<span><b>${escapeHtml(isBor&&mode!=='live'?'DARK SKY • TEST':label)}</b><small>${escapeHtml(isBor&&mode!=='live'?'Private project preview':p.name)}</small></span><button type="button" id="returnExperienceTestDeck" class="secondary-btn">${mode==='live'?'RETURN TO ENGINE':isBor?'← TEST CENTER':'RETURN TO TEST CENTER'}</button>`;banner.classList.remove('hidden');}
 
   async function enterExperienceMode(p,mode){
     if(!p||!engineSessionUnlocked||!document.body.classList.contains('engine-mode')||document.body.classList.contains('boot-locked'))return false;
+    const request=experienceTestDeckRequest,navigation=engineWorkspaceNavigationToken();
+    const current=()=>request===experienceTestDeckRequest&&String(experienceTestDeckProjectId)===String(p.id)&&engineWorkspaceNavigationCurrent(navigation)&&!document.body.classList.contains('boot-locked');
+    if(!current())return false;
     const d=mode==='live'?migrateLegacyDeployment(p).find(x=>x.state==='deployed'):experienceDeploymentFor(p);
     if(mode==='sea_trial'&&!experienceApproved(p)){alert('Preview and approve the current project revision before running Sea Trial.');return;}
     if(mode==='sea_trial'&&(!d||Number(d.manifestVersion||1)<=1)){alert('Sea Trial requires a saved outpost manifest. Use Shipwright to create and save the outpost before infrastructure testing.');return;}
@@ -5123,6 +5160,7 @@
       try{await persistProjectMutation(canonicalProject,{reason:'experience.preview.reviewed'});logActivity(canonicalProject.id,'Customer experience preview reviewed');}
       catch(err){console.warn('Preview evidence could not be saved',err);}
     }
+    if(!current())return false;
     if(p.id==='ikes-wood-signs'&&mode!=='live'){
       const config=window.CountercraftConfig;
       if(!config){alert('Station configuration is missing. Upload the complete matching build.');return false;}
@@ -6571,6 +6609,36 @@
     return {label:moves[next.id]||'Clear next gate',detail:next.detail,gate:next.id};
   }
 
+  // Presentation-only workstation selection; never an authority or publication grant.
+  let fleetWorkstationProjectId='';
+  function setFleetWorkstationView(projectId,{focus=true}={}){
+    if(!engineSessionUnlocked||!document.body.classList.contains('engine-mode')||document.body.classList.contains('boot-locked'))return false;
+    const dock=$('fleetCommissioningDock'),fleet=$('fleetCommissioningFleet');
+    if(!dock||!fleet||fleet.getAttribute('aria-busy')==='true')return false;
+    const cards=[...fleet.querySelectorAll('.fleet-dock-card[data-project-id]')];
+    const id=String(projectId||''),selected=id?cards.find(card=>card.dataset.projectId===id):null;
+    if(id&&!selected)return false;
+    const previous=fleetWorkstationProjectId;
+    if(focus||previous!==id)++experienceTestDeckRequest;
+    fleetWorkstationProjectId=id;
+    dock.classList.toggle('helmward-vessel-open',!!selected);
+    for(const card of cards)card.hidden=!!selected&&card!==selected;
+    const back=$('fleetWorkstationBack');if(back)back.hidden=!selected;
+    const title=$('fleetWorkstationTitle'),hint=$('fleetWorkstationHint');
+    if(title)title.textContent=selected?.querySelector('.wayfinder-vessel-name')?.textContent||'Choose a vessel';
+    if(hint)hint.textContent=selected?'Choose your next action. Access stays with this vessel.':'Open a workstation to test, work with the owner, or manage the vessel.';
+    if(focus){
+      const navigation=engineWorkspaceNavigationToken();
+      requestAnimationFrame(()=>{
+        if(!engineWorkspaceNavigationCurrent(navigation)||fleetWorkstationProjectId!==id)return;
+        window.scrollTo({top:0,left:0,behavior:'instant'});
+        const target=selected?.querySelector('[data-fleet-dock-action="preview"]')||cards.find(card=>card.dataset.projectId===previous)?.querySelector('[data-fleet-select]')||$('fleetDockSearch');
+        target?.focus({preventScroll:true});
+      });
+    }
+    return true;
+  }
+
   let fleetDockFilter='all';
   let fleetDockSearch='';
   function fleetDockPriority(p,s){
@@ -6650,17 +6718,17 @@
   function fleetCompassVesselMarkup(p,snapshot){
     const presentation=projectStatusPresentation(p,snapshot);
     return `<article class="fleet-proof-card fleet-dock-card wayfinder-vessel" data-project-id="${escapeHtml(p.id)}">
-          <header><div class="wayfinder-vessel-identity"><span class="wayfinder-logo" data-compass-logo="${escapeHtml(p.id)}" aria-hidden="true">${escapeHtml(fleetStableCallsign(p))}</span><div><small>EXACT VESSEL · ${escapeHtml(fleetStableCallsign(p))}</small><strong>${escapeHtml(p.name)}</strong></div></div><span class="wayfinder-local-state">Saved publication: ${escapeHtml(presentation.publication.label)}</span></header>
+          <header><div class="wayfinder-vessel-identity"><span class="wayfinder-logo" data-compass-logo="${escapeHtml(p.id)}" aria-hidden="true">${escapeHtml(fleetStableCallsign(p))}</span><div><small>EXACT VESSEL · ${escapeHtml(fleetStableCallsign(p))}</small><strong class="wayfinder-vessel-name">${escapeHtml(p.name)}</strong></div></div><button type="button" data-fleet-select="${escapeHtml(p.id)}" class="helmward-select" aria-label="Open ${escapeHtml(p.name)} workstation">Open workstation →</button><span class="wayfinder-local-state">Saved publication: ${escapeHtml(presentation.publication.label)}</span></header>
           <p class="wayfinder-publication">${escapeHtml(presentation.publication.detail)}</p>
           <p class="wayfinder-choose">Choose where you are going. Each entrance keeps its existing access check.</p>
           <div class="fleet-dock-actions" aria-label="${escapeHtml(p.name)} vessel routes">
             <div class="wayfinder-route-grid">
-              <button type="button" data-fleet-dock-action="preview" data-project-id="${escapeHtml(p.id)}" class="wayfinder-route wayfinder-preview"><span class="wayfinder-route-number">01 · LOOK ONLY</span><strong>Private Preview →</strong><small>Open the test deck, then choose Preview.</small></button>
+              <button type="button" data-fleet-dock-action="preview" data-project-id="${escapeHtml(p.id)}" class="wayfinder-route wayfinder-preview"><span class="wayfinder-route-number">01 · TEST & LEARN</span><strong>Test Center →</strong><small>Preview, controlled trials and field results.</small></button>
               <button type="button" data-fleet-dock-action="owner" data-project-id="${escapeHtml(p.id)}" class="wayfinder-route"><span class="wayfinder-route-number">02 · BUSINESS</span><strong>${escapeHtml(presentation.owner.routeLabel)} →</strong><small>${escapeHtml(presentation.owner.routeDetail)}</small></button>
               <button type="button" data-open-project-control="${escapeHtml(p.id)}" class="wayfinder-route"><span class="wayfinder-route-number">03 · BLACK FLAG</span><strong>Project Control →</strong><small>Existing authorized configuration route.</small></button>
             </div>
             <div class="wayfinder-not-checked"><span><b>Owner authority</b> · Not checked here</span><span><b>Order backup</b> · Not checked here</span></div>
-            <details class="wayfinder-customer-route"><summary>Customer Experience — separate from Preview</summary><p>This is the existing customer route. Local setup labels are not proof of publication or production readiness.</p><button type="button" data-fleet-dock-action="customer" data-project-id="${escapeHtml(p.id)}" class="secondary-btn small">OPEN CUSTOMER EXPERIENCE →</button></details>
+            <details class="wayfinder-customer-route"><summary>Customer Experience</summary><p>This is the existing customer route. Local setup labels are not proof of publication or production readiness.</p><button type="button" data-fleet-dock-action="customer" data-project-id="${escapeHtml(p.id)}" class="secondary-btn small">OPEN CUSTOMER EXPERIENCE →</button></details>
           </div>
         </article>`;
   }
@@ -6764,6 +6832,8 @@
         }catch(err){console.error('Fleet Compass route failed',err);showFleetActionStatus(`The selected ${project.name} route could not open. No automatic retry was sent.`,{tone:'watch',duration:8000});}
         finally{if(document.body.contains(btn)){delete btn.dataset.commandBusy;btn.disabled=false;btn.removeAttribute('aria-busy');}}
       }));
+      fleet.querySelectorAll('[data-fleet-select]').forEach(button=>button.onclick=()=>setFleetWorkstationView(button.dataset.fleetSelect));
+      const back=$('fleetWorkstationBack');if(back)back.onclick=()=>setFleetWorkstationView('');
       // Reuse project-owned artwork. Late logo responses cannot alter a newer view.
       visibleSnaps.forEach(({p})=>{
         const mark=[...fleet.querySelectorAll('[data-compass-logo]')].find(el=>el.dataset.compassLogo===String(p.id));if(!mark)return;
@@ -6775,7 +6845,11 @@
       if(count)count.textContent='This view could not be verified.';
       fleet.innerHTML=`<div class="wayfinder-source-hold"><strong>Workstation check did not finish</strong><p>${escapeHtml(String(err?.message||err))}</p><small>No repair, cleanup, or automatic retry was started by this view.</small></div>`;
       renderFleetStorageNotice8838();
-    }finally{if(current()){fleet.removeAttribute('aria-busy');fleet.inert=false;bindFleetDockControls8838();}}
+    }finally{if(current()){
+      fleet.removeAttribute('aria-busy');fleet.inert=false;bindFleetDockControls8838();
+      const retained=[...fleet.querySelectorAll('.fleet-dock-card[data-project-id]')].some(card=>card.dataset.projectId===fleetWorkstationProjectId);
+      setFleetWorkstationView(retained?fleetWorkstationProjectId:'',{focus:false});
+    }}
   }
 
   async function renderProjectCommand(){
@@ -16785,8 +16859,23 @@ The full order and approved media remain stored with this project.`;
           const toggle=$('clearDeckSystemsToggle');
           if(toggle){toggle.setAttribute('aria-expanded',String(open));const hint=toggle.querySelector('em');if(hint)hint.textContent=open?'OPENED':'OPEN';}
         };
-        if(command==='projects'){document.body.classList.add('engine-dock-open');reveal('fleetCommissioningDock','Vessel Workstations opened. Choose one vessel, then one exact surface.');return;}
-        if(command==='projects-close'){document.body.classList.remove('engine-dock-open');reveal('engineOperateVessels','Back at Engine. Your vessel search and filter are kept for this session.');return;}
+        if(command==='projects'){
+          document.body.classList.add('engine-dock-open');
+          if(!setFleetWorkstationView(fleetWorkstationProjectId)){
+            const navigation=engineWorkspaceNavigationToken();
+            scheduleEngineWorkspaceFrame(navigation,()=>window.scrollTo({top:0,left:0,behavior:'instant'}));
+          }
+          if(status)status.textContent='Vessel workstations opened. Choose a vessel.';
+          return;
+        }
+        if(command==='projects-close'){
+          ++experienceTestDeckRequest;
+          document.body.classList.remove('engine-dock-open');
+          const navigation=engineWorkspaceNavigationToken();
+          scheduleEngineWorkspaceFrame(navigation,()=>{window.scrollTo({top:0,left:0,behavior:'instant'});$('engineOperateVessels')?.focus({preventScroll:true});});
+          if(status)status.textContent='Back at Engine. Your vessel selection and search are kept.';
+          return;
+        }
         if(command==='fleet'){reveal('engineFleetHealth','Fleet picture opened. Choose a vessel to go directly to Project Control.');return;}
         if(command==='watch'){Promise.resolve(renderFirstMateWatch()).finally(()=>reveal('firstMateWatch','Fleet Watch refreshed. No vessel state was changed.'));return;}
         if(command==='commission'){$('commissionNewProjectBtn')?.click();return;}
@@ -16877,7 +16966,10 @@ The full order and approved media remain stored with this project.`;
       if(target.id==='returnExperienceTestDeck'){event.preventDefault();event.stopPropagation();await returnFromExperienceMode();return;}
       if(target.id==='closeExperienceTestDeck'){closeExperienceTestDeck();return;}
       if(!engineSessionUnlocked||!document.body.classList.contains('engine-mode')||document.body.classList.contains('boot-locked'))return;
-      const resolution=await resolveProjectReference(experienceTestDeckProjectId,{rehydrate:true});
+      const request=experienceTestDeckRequest,projectId=experienceTestDeckProjectId,navigation=engineWorkspaceNavigationToken();
+      const current=()=>request===experienceTestDeckRequest&&projectId===experienceTestDeckProjectId&&engineWorkspaceNavigationCurrent(navigation)&&!document.body.classList.contains('boot-locked');
+      const resolution=await resolveProjectReference(projectId,{rehydrate:true});
+      if(!current())return;
       const p=resolution.project;
       if(!p){
         alert(`Experience command stopped: project ${experienceTestDeckProjectId||'(missing)'} is no longer resolvable.`);
@@ -16885,8 +16977,8 @@ The full order and approved media remain stored with this project.`;
       }
       if(target.id==='fleetRunChecks'){
         target.disabled=true;
-        try{const report=await runSeaTrialsV3811({record:true});renderSeaTrials(report);$('fleetCheckEvidence').textContent=`${report.checks.filter(c=>c.level==='pass').length} passed · ${report.failures} failed · ${report.warnings} warnings. Device and customer journey checks remain separate.`;}
-        catch(err){$('fleetCheckEvidence').textContent='Checks interrupted: '+String(err.message||err);}
+        try{const report=await runSeaTrialsV3811({record:true});if(!current())return;renderSeaTrials(report);$('fleetCheckEvidence').textContent=`${report.checks.filter(c=>c.level==='pass').length} passed · ${report.failures} failed · ${report.warnings} warnings. Device and customer journey checks remain separate.`;}
+        catch(err){if(current())$('fleetCheckEvidence').textContent='Checks interrupted: '+String(err.message||err);}
         finally{target.disabled=false;}return;
       }
       if(target.id==='fleetSaveLearning'||target.id==='fleetExportLearning'){
@@ -16905,8 +16997,8 @@ The full order and approved media remain stored with this project.`;
         if(state.approvedAt){delete state.approvedAt;delete state.approvedBy;delete state.approvedSignature;}
         else{state.approvedAt=new Date().toISOString();state.approvedBy='engine_admin';state.approvedSignature=experienceConfigurationSignature(p);}
         p.updatedAt=new Date().toISOString();
-        try{await persistProjectMutation(p,{reason:'experience.approval.update'});logActivity(p.id,state.approvedAt?'Customer experience approved':'Customer experience approval revoked');await renderExperienceTestDeck(p);await renderProjectCommand();}
-        catch(err){alert(`Experience approval could not be saved: ${String(err?.message||err)}`);}
+        try{await persistProjectMutation(p,{reason:'experience.approval.update'});logActivity(p.id,state.approvedAt?'Customer experience approved':'Customer experience approval revoked');if(!current())return;await renderExperienceTestDeck(p);if(current())await renderProjectCommand();}
+        catch(err){if(current())alert(`Experience approval could not be saved: ${String(err?.message||err)}`);}
         return;
       }
       if(target.id==='experienceEditConfiguration'){closeExperienceTestDeck();await openProjectEngineControl(p.id,'experience');return;}

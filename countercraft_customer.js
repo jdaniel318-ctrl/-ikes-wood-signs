@@ -5,7 +5,14 @@ const money=p=>p.totalCents===null?'Ike will confirm the price':new Intl.NumberF
 if(!g.isSecureContext||!g.crypto?.subtle){$('ccApp').innerHTML='<section class="cc-card"><h1>Open Ike’s secure shop link.</h1><p>This browser needs the complete HTTPS site to protect your design and contact details. No request was started.</p></section>';return;}
 const params=new URLSearchParams(location.search),launch=g.CountercraftConfig.consumePreview(new URLSearchParams(location.hash.slice(1)).get('launch')),preview=!!launch,tokenRoute=params.has('receipt')||params.has('review'),scope=tokenRoute?g.CountercraftConfig.receiptScope(params):launch?.scope||g.CountercraftConfig.activeLocation(),flow=g.CountercraftFlow.create();
 if(launch)history.replaceState({},'',location.pathname+location.search);
-if(!scope||params.has('preview')&&!launch){$('ccMode').hidden=true;$('ccApp').innerHTML='<section class="cc-card"><h1>Please ask Ike to open this station.</h1><p>This device is not ready for a customer session. Your details have not been collected.</p></section>';return;}
+if(!scope||params.has('preview')&&!launch){
+  $('ccMode').hidden=true;$('ccHelp').hidden=true;
+  $('ccApp').innerHTML=params.has('preview')
+    ?'<section class="cc-card cc-recovery"><h1>Preview ended.</h1><p>Return to the Engine and open Test Center to start a fresh preview. Refreshing or reopening a preview does not carry its session forward.</p><p>No request was sent from this preview. Its photo and details are not restored here.</p><a class="cc-return" href="index.html">← Return to Engine</a></section>'
+    :'<section class="cc-card"><h1>Please ask Ike to open this station.</h1><p>This device is not ready for a customer session. Your details have not been collected.</p></section>';
+  return;
+}
+if(preview)$('ccEngineReturn').hidden=false;
 let sessionEpoch=0,expired=false,lastActivity=Date.now(),lastTouch=0,touchFlight=false,ending=false;
 function active(promise){const epoch=sessionEpoch,stale=()=>Object.assign(Error('This customer session has ended.'),{code:'STALE_CUSTOMER'});return Promise.resolve(promise).then(value=>{if(epoch!==sessionEpoch||expired){if(value?.getTracks)value.getTracks().forEach(t=>t.stop());throw stale();}return value;},error=>{if(epoch!==sessionEpoch||expired)throw stale();throw error;});}
 let store,session,client,started=false,busy=false,editing=false,stream=null,checkpointTimer,idleTimer,saveText=preview?'Private Preview · stays in memory':'Starting protected session…',receipt=null,transfer=null,tokenSession=null,tokenRecord=null;

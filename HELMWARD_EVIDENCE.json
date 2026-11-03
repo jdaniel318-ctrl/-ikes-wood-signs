@@ -1,0 +1,260 @@
+{
+  "schema": "blackflag-helmward-evidence-v1",
+  "build": "8.8.20.88",
+  "release": "Helmward",
+  "verified_at": "2026-11-03T03:17:07.308078+00:00",
+  "offline_suites": {
+    "scope": "listed offline suites; not live Safari, Auth, email or machining certification",
+    "results": [
+      {
+        "name": "VERIFY_HELMWARD_NAVIGATION.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_HELMWARD_ASYNC.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_HELMWARD_RECOVERY.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_HARBORLIGHT_SCOPE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_HARBORLIGHT_ENGINE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_FAIRWATER_PASTE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_ROSEWOOD_CORE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_SIGHTLINE_CORE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_SIGHTLINE_ARTWORK.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_SIGHTLINE_IDS.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_HOLDFAST_CORE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_HOMEPORT_ENTRY.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_FLEETBOUND_PROGRAMS.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_HARBOR_ROUTES.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_HARBOR_ASYNC.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_HARBOR_STORAGE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_RELEASE_IDENTITY.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_FAIRLEAD_LOADER.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_FAIRLEAD_STARTUP.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_CLEARDECK_ACCOUNT.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_RELEASE_CONTRACT.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_CLEARDECK_PREFLIGHT.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_IRONHAVEN_CORE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_FLEETCARE_READINESS.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_FLEETCARE_NAVIGATION.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_FLEETCRAFT_CORE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_LETTERCRAFT_FONTS.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_QUARTERMASTER_CORE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_STORMWAKE_CORE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "TEST_RELEASE_PIPELINE.py",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "TEST_RELEASE_IDENTITY.py",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "TEST_SIGHTLINE_NATIVE.py",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      }
+    ]
+  },
+  "offline_passed": 32,
+  "offline_failed": 0,
+  "baseline_suites_passed": 29,
+  "review": {
+    "reviewer": "independent read-only reviewer",
+    "outstanding_critical": 0,
+    "outstanding_important": 0,
+    "outstanding_minor": 0,
+    "report": "HELMWARD_REVIEW.md"
+  },
+  "browser": {
+    "method": "actual production renderer/controller/CSS; synthetic data in fixed-size browser iframe fixtures",
+    "tablet_viewport": [
+      1024,
+      768
+    ],
+    "phone_viewport": [
+      390,
+      844
+    ],
+    "workstation_main_actions_in_initial_viewport": true,
+    "no_horizontal_overflow": true,
+    "test_center_preview_bottom_px": {
+      "tablet": 414,
+      "phone": 419.5
+    },
+    "verified_returns": [
+      "Test Center to selected vessel",
+      "All vessels retains useful focus",
+      "Back to Engine restores launcher focus"
+    ],
+    "started_preview_header": {
+      "viewport_width": 390,
+      "before_scroll_width": 420,
+      "after_scroll_width": 390,
+      "minimum_control_height": 44
+    }
+  },
+  "limitations": [
+    "Full application browser boot and real preview recovery blocked on local HTTP by intact HTTPS/integrity guard",
+    "Native Safari/iPad acceptance pending",
+    "No live repository or frontend deployment",
+    "Backend idle-v1 upgrade and owner/location configuration remain separate",
+    "Software backup is not business data backup"
+  ],
+  "database_actions": "none",
+  "production_certification": false,
+  "runtime_sha256": {
+    "app.js": "38bf2c0d4dbe7b0d23237a364bac45dbe8e957aeb7394a828d1662860bad5249",
+    "styles.css": "a17f20ce955a61ea8b9e6238065377bf8b7e37d546036a64c03a9b2c4af38ceb",
+    "countercraft_customer.js": "810cc71283066594cf1475569c0a614b0432d80fc5b258811a5554a100328aa7",
+    "countercraft_config.js": "7d6b8ee9a258dc967021bf47ef1a2e20406eb8005999fcbca9bad102fc3ba377",
+    "countercraft.css": "e3cb0698447dc96b85fa872f9ce50bfe9a6bbd53f3e50d2f18d4cc85a9df21d5",
+    "countercraft.html": "9b9f40b4b5ae6435d204fac3948c165b752ff779ae5a512e4ada0cfc86f7a126",
+    "index.html": "5614cc75753bbb8aebcb2bd879c27dc7997a0c3cffa5b2909a30299a9a8adc0f"
+  },
+  "archive_proof": "PackageProof.json generated alongside final ZIPs by BUILD_RELEASE.py"
+}

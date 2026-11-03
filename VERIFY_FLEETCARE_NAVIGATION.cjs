@@ -20,6 +20,7 @@ function harness(){
   vm.createContext(context);
   vm.runInContext('let harborRescueEpoch=0,harborRescueDocument=null;\n'+functionSource('clearHarborRescueMemory'),context);
   vm.runInContext(section('  let engineWorkspaceReturnScrollY=0;','  function v3LifecycleLabel'),context);
+  context.closeExperienceTestDeck=()=>{}; // Test Center cleanup is covered by VERIFY_HELMWARD_ASYNC.cjs.
   vm.runInContext(functionSource('openProjectEngineControl')+'\n'+functionSource('lockEngineSession')+'\n'+functionSource('prepareEngineBoundary'),context);
   vm.runInContext(section('  window.BlackFlagCloseStorageTelemetry=function(event){','  window.BlackFlagStorageStewardInspect='),context);
   return {c:context,els,calls,frames,element,flush(){while(frames.length)frames.shift()();},run:code=>vm.runInContext(code,context),route(){context.commandRouteGeneration++;context.activeCommandRoute='captain';},emit(name){for(const fn of events[name]||[])fn();}};

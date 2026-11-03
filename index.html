@@ -15,7 +15,7 @@
   </style>
   <script id="darkSkyFirstLightBootstrap">
     // Dark Sky 8.6.23 MEMORY MUSTER — canonical release identity.
-    const DARK_SKY_RELEASE = Object.freeze({build:'8.8.20.87',seal:'harborlight-882087'});
+    const DARK_SKY_RELEASE = Object.freeze({build:'8.8.20.88',seal:'helmward-882088'});
     const DARK_SKY_EXPECTED_BUILD = DARK_SKY_RELEASE.build;
     const DARK_SKY_RELEASE_SEAL = DARK_SKY_RELEASE.seal;
     // 8.6.23 Storage Safe Harbor — three independent channels, no silent storage failures.
@@ -1420,7 +1420,7 @@
       </header>
 
       <section id="clearDeckLaunchpad" class="clear-deck-launchpad waypoint-home" aria-labelledby="engineNextMoveTitle">
-        <header class="clear-deck-brief"><small id="engineReleaseLabel">8.8.20.87 • HARBORLIGHT</small><h3 id="engineNextMoveTitle">Your fleet. A clear next move.</h3><p>Open a vessel, lead the work, see the fleet or shape what comes next.</p></header>
+        <header class="clear-deck-brief"><small id="engineReleaseLabel">8.8.20.88 • HELMWARD</small><h3 id="engineNextMoveTitle">Your fleet. A clear next move.</h3><p>Open a vessel, lead the work, see the fleet or shape what comes next.</p></header>
         <nav class="clear-deck-primary-actions" aria-label="Fleet command offices">
           <button id="engineOperateVessels" type="button" class="clear-deck-action primary" data-clear-deck-command="projects" aria-controls="fleetCommissioningDock"><span class="clear-deck-action-number">01</span><span><strong>OPERATE VESSELS</strong><small>Choose a business and open its workstation.</small></span></button>
           <button type="button" class="clear-deck-action" data-command-open="captain"><span class="clear-deck-action-number">02</span><span><strong>CAPTAIN WATCH</strong><small>Review signals, decide the next action and record the result.</small></span></button>
@@ -1668,12 +1668,12 @@
       </section>
 
 <section id="fleetCommissioningDock" class="fleet-commissioning-dock" aria-label="Fleet Dock">
-        <div class="waypoint-dock-return"><button type="button" data-clear-deck-command="projects-close">← Back to Engine</button></div>
+        <nav class="waypoint-dock-return helmward-dock-nav" aria-label="Vessel navigation"><button type="button" data-clear-deck-command="projects-close">← Back to Engine</button><button id="fleetWorkstationBack" type="button" hidden>← All vessels</button><span>VESSEL WORKSTATIONS</span></nav>
         <header class="fleet-commissioning-head">
           <div>
-            <div class="engine-kicker">WAYFINDER · VESSEL WORKSTATIONS</div>
-            <h3><span class="wayfinder-compass-mark" aria-hidden="true">✦</span> FLEET COMPASS</h3>
-            <p>Find your vessel. Choose the right entrance. Get to work.</p>
+            <div class="engine-kicker">FLEET COMPASS</div>
+            <h3 id="fleetWorkstationTitle">Choose a vessel</h3>
+            <p id="fleetWorkstationHint">Open a workstation to test, work with the owner, or manage the vessel.</p>
           </div>
           <div class="fleet-commissioning-head-actions">
             <span id="fleetCommissioningState" class="fleet-commissioning-state">READING FLEET</span>

@@ -1,14 +1,14 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Current architecture — Harborlight 8.8.20.87
+# Current architecture — Helmward 8.8.20.88
 
-Source of release identity: RELEASE_CONFIG.json. Installed page/manifest/seal/worker identity is generated together. APP_COMPONENT_REVISION is 8.8.20.87; owner helper revision is 8.8.20.68. Unchanged component bodies remain byte-identical across release-only changes.
+Source of release identity: RELEASE_CONFIG.json. Installed page/manifest/seal/worker identity is generated together. APP_COMPONENT_REVISION is 8.8.20.88; owner helper revision is 8.8.20.68. Unchanged component bodies remain byte-identical across release-only changes.
 
 The Engine still verifies every required body, current governance models, app component contract and worker identity before executing the same script sequence. App and Captain bind audit/display freshness to the verified installed release. This context never grants permissions. The owner page keeps explicit helper compatibility checks.
 
-- One task per page with retained answers and required-step validation.
-- Existing Countercraft kiosk hardened with fresh customer sessions, idle expiry and owner-selected locations.
-- Fleet Test Center replaces Test Access bypass and separate preview entry; field learning record added.
-- No paid service, outgoing email, backend deployment or machine certification.
+- Focused fleet vessel chooser and workstations, with main actions at the top.
+- Consistent Test Center entrances and visible Back to vessel / Back to Engine routes.
+- Expired Engine previews explain the ended session and offer safe recovery.
+- No database, publication, account, customer-record or paid-service changes.
 Backend prerequisites are recorded separately in PATCH_CONTRACT.json. Release preparation executes no database commands. Fleet core and Admiral programs remain distinct.
 
 ## Release commands
