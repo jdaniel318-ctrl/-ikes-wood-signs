@@ -1,15 +1,15 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Current architecture — Truebound 8.8.20.91
+# Current architecture — Plankfit 8.8.20.92
 
 Source of release identity: RELEASE_CONFIG.json. Installed page/manifest/seal/worker identity is generated together. APP_COMPONENT_REVISION is 8.8.20.91; owner helper revision is 8.8.20.68. Unchanged component bodies remain byte-identical across release-only changes.
 
 The Engine still verifies every required body, current governance models, app component contract and worker identity before executing the same script sequence. App and Captain bind audit/display freshness to the verified installed release. This context never grants permissions. The owner page keeps explicit helper compatibility checks.
 
-- Explicit missing-only boundary repair after saved identity and admission verification.
-- Review exact additions, then confirm; existing conflicting records block repair.
-- Transaction commit, saved-copy readback and fresh integrity inspection are separate checks. Interrupted repairs report partial and can be reviewed again.
-- No automatic repair, identity reassignment, admission creation, commissioning or customer readiness change.
-- See TRUEBOUND_GUIDE.md for the three-step device check.
+- Compact Your plank step for iPad landscape, with readable touch controls and an uncropped photo.
+- Photo guidance is available in an expandable photo check.
+- Unmeasured board-size readouts are omitted from customer steps and the photo editor Board tab; recorded shop measurements remain visible.
+- Camera behavior and timeouts are unchanged in this focused layout update.
+- See PLANKFIT_GUIDE.md for the three-step device check.
 Backend prerequisites are recorded separately in PATCH_CONTRACT.json. Release preparation executes no database commands. Fleet core and Admiral programs remain distinct.
 
 ## Release commands

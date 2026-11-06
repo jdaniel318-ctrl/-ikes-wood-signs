@@ -1,14 +1,14 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Truebound 8.8.20.91
+# Black Flag Plankfit 8.8.20.92
 
 Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
-Baseline: 8.8.20.90. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Baseline: 8.8.20.91. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
 Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
-- Explicit missing-only boundary repair after saved identity and admission verification.
-- Review exact additions, then confirm; existing conflicting records block repair.
-- Transaction commit, saved-copy readback and fresh integrity inspection are separate checks. Interrupted repairs report partial and can be reviewed again.
-- No automatic repair, identity reassignment, admission creation, commissioning or customer readiness change.
-- See TRUEBOUND_GUIDE.md for the three-step device check.
+- Compact Your plank step for iPad landscape, with readable touch controls and an uncropped photo.
+- Photo guidance is available in an expandable photo check.
+- Unmeasured board-size readouts are omitted from customer steps and the photo editor Board tab; recorded shop measurements remain visible.
+- Camera behavior and timeouts are unchanged in this focused layout update.
+- See PLANKFIT_GUIDE.md for the three-step device check.
 Preparation does not deploy frontend or backend changes. See PATCH_CONTRACT.json for separately managed backend prerequisites.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 

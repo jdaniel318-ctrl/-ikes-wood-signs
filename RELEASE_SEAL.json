@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.91",
-  "release": "Truebound",
-  "seal": "truebound-882091",
+  "build": "8.8.20.92",
+  "release": "Plankfit",
+  "seal": "plankfit-882092",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Truebound",
-  "name": "Truebound",
-  "releaseName": "Truebound"
+  "release_name": "Plankfit",
+  "name": "Plankfit",
+  "releaseName": "Plankfit"
 }

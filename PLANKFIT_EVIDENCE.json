@@ -1,0 +1,299 @@
+{
+  "schema": "blackflag-plankfit-evidence-v1",
+  "build": "8.8.20.92",
+  "baseline": "8.8.20.91",
+  "scope": "Compact customer plank step and removal of unmeasured board-size readouts",
+  "integration": {
+    "command": "node VERIFY_COUNTERCRAFT_INTEGRATION.cjs",
+    "pass": true,
+    "regression": "Unmeasured dimension assertion failed before implementation and passed after; measured shop dimensions retained",
+    "includes": "Graphic order, layered wording, Ike recognition, canonical export and 102 MiB backup rehearsal"
+  },
+  "browser": {
+    "engine": "Chromium, synthetic fixture using the customer renderer",
+    "landscape": [
+      {
+        "width": 1366,
+        "height": 890,
+        "document_height": 890,
+        "empty_and_photo": "pass"
+      },
+      {
+        "width": 1024,
+        "height": 650,
+        "document_height": 650,
+        "empty_and_photo": "pass",
+        "rotated_photo": "pass"
+      }
+    ],
+    "visible_controls": [
+      "Take or change photo",
+      "Choose a photo",
+      "Rotate board when present",
+      "Plank / rack code",
+      "Add a reference photo",
+      "Make it mine"
+    ],
+    "footer_overlap": false,
+    "minimum_checked_button_height_css_px": 44,
+    "additional_cases": [
+      "Phone 390 x 740 and portrait 768 x 920: normal vertical scrolling, no horizontal overflow",
+      "Expanded photo guidance remains available with normal scrolling",
+      "Next, embedded photo editor, Use this design and Back retain the photograph",
+      "Finish session and start another preview show an empty plank step",
+      "Customer unmeasured photo editor hides working dimension inputs and numerical reference label"
+    ],
+    "qa_transport": "HTTP preview used a test-only secure-origin/hash shim outside release source; this is layout evidence only",
+    "production_secure_context_guard": "retained",
+    "customer_records_used": false,
+    "native_ipad_safari": "PENDING",
+    "real_camera_test": "NOT_RUN"
+  },
+  "offline": {
+    "status": "PASS",
+    "runner": "VERIFY_RELEASE_ALL.cjs",
+    "package_verification": "BUILD_RELEASE.py reruns the listed suites and checks immutable source, exact reconstruction, rollback and archive readback",
+    "suite_count": 37,
+    "all_passed": true,
+    "suites": [
+      {
+        "name": "VERIFY_GLASSWAKE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_TRUEBOUND_CORE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_TRUEBOUND_UI.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_KEEPHAVEN_CORE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_KEEPHAVEN_UI.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_HELMWARD_NAVIGATION.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_HELMWARD_ASYNC.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_HELMWARD_RECOVERY.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_HARBORLIGHT_SCOPE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_HARBORLIGHT_ENGINE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_FAIRWATER_PASTE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_ROSEWOOD_CORE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_SIGHTLINE_CORE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_SIGHTLINE_ARTWORK.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_SIGHTLINE_IDS.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_HOLDFAST_CORE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_HOMEPORT_ENTRY.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_FLEETBOUND_PROGRAMS.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_HARBOR_ROUTES.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_HARBOR_ASYNC.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_HARBOR_STORAGE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_RELEASE_IDENTITY.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_FAIRLEAD_LOADER.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_FAIRLEAD_STARTUP.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_CLEARDECK_ACCOUNT.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_RELEASE_CONTRACT.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_CLEARDECK_PREFLIGHT.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_IRONHAVEN_CORE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_FLEETCARE_READINESS.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_FLEETCARE_NAVIGATION.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_FLEETCRAFT_CORE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_LETTERCRAFT_FONTS.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_QUARTERMASTER_CORE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_STORMWAKE_CORE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "TEST_RELEASE_PIPELINE.py",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "TEST_RELEASE_IDENTITY.py",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "TEST_SIGHTLINE_NATIVE.py",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      }
+    ]
+  },
+  "unchanged_scope": [
+    "camera capture and zoom",
+    "session timeout policy",
+    "Engine and Admiral access",
+    "stored fleet and customer records",
+    "Truebound boundary repair"
+  ],
+  "deployed": false,
+  "production_certification": false,
+  "package_proof": "PackageProof.json is generated separately for the final sealed tree",
+  "tested_runtime_sha256": {
+    "countercraft_customer.js": "04168f7c9b2b143846a99d72bc955cbc008bb38686be539671119b96a2ee099e",
+    "countercraft.css": "71023bd5e02ce80f2f51660e45a1990282ac64dfca0afcb741e34eea735b2a96",
+    "carvewright_studio.js": "237f132df6ccb579aa6f3520aac7be5026333cb551c9b84215f9be03f47f161a"
+  },
+  "review_scope_note": "Existing advanced object size and position controls retain working units; this patch removes assumed board-size readouts, without redesigning those controls."
+}
