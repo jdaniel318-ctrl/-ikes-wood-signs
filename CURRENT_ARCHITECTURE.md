@@ -1,15 +1,14 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Current architecture — Plankfit 8.8.20.92
+# Current architecture — Longwatch 8.8.20.93
 
 Source of release identity: RELEASE_CONFIG.json. Installed page/manifest/seal/worker identity is generated together. APP_COMPONENT_REVISION is 8.8.20.91; owner helper revision is 8.8.20.68. Unchanged component bodies remain byte-identical across release-only changes.
 
 The Engine still verifies every required body, current governance models, app component contract and worker identity before executing the same script sequence. App and Captain bind audit/display freshness to the verified installed release. This context never grants permissions. The owner page keeps explicit helper compatibility checks.
 
-- Compact Your plank step for iPad landscape, with readable touch controls and an uncropped photo.
-- Photo guidance is available in an expandable photo check.
-- Unmeasured board-size readouts are omitted from customer steps and the photo editor Board tab; recorded shop measurements remain visible.
-- Camera behavior and timeouts are unchanged in this focused layout update.
-- See PLANKFIT_GUIDE.md for the three-step device check.
+- Engine private preview: seven minutes of inactivity before the Continue warning, then 30 seconds before reset; five additional minutes for testing.
+- Editor input counts as activity even when the editor stops event bubbling.
+- Live/trial customer expiry and owner/Engine authentication are unchanged.
+- See LONGWATCH_GUIDE.md for installation, test steps and pending field notes.
 Backend prerequisites are recorded separately in PATCH_CONTRACT.json. Release preparation executes no database commands. Fleet core and Admiral programs remain distinct.
 
 ## Release commands

@@ -1,18 +1,18 @@
 {
   "schema": "blackflag-patch-contract-v1",
-  "target_build": "8.8.20.92",
-  "target_seal": "plankfit-882092",
+  "target_build": "8.8.20.93",
+  "target_seal": "longwatch-882093",
   "supported_bases": [
     {
-      "build": "8.8.20.91",
-      "source_sha256": "3cb16a0805935646a23f2c6a9136ec83ced9044280eceba10f6bc98fb4484c29",
-      "file_count": 817
+      "build": "8.8.20.92",
+      "source_sha256": "f2375c66b9f4ca22771246f912cba8495fcfb01227291c18a67d5afa70668501",
+      "file_count": 820
     }
   ],
   "requires_deletions": false,
   "max_upload_files": 85,
   "database_actions": "none",
-  "rule": "Upload every changed/new root file over complete 8.8.20.91. Keep everything else. This software archive executes no database commands.",
+  "rule": "Upload every changed/new root file over complete 8.8.20.92. Keep everything else. This software archive executes no database commands.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",

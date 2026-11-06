@@ -1,0 +1,272 @@
+{
+  "schema": "blackflag-longwatch-evidence-v1",
+  "build": "8.8.20.93",
+  "release": "Longwatch",
+  "recorded_at": "2026-11-06T23:44:09.693400+00:00",
+  "scope": "offline deterministic customer-controller timing and release suites; no native Safari, backend, email or machining certification",
+  "timeout_checks": {
+    "pass": true,
+    "count": 18,
+    "preview_warning_ms": 420000,
+    "preview_expiry_ms": 450000,
+    "live_warning_ms": 120000,
+    "live_expiry_ms": 150000,
+    "checks": [
+      "old deadline retention",
+      "exact warning/expiry",
+      "Continue extension",
+      "pointer/keyboard/input activity",
+      "stopped editor input",
+      "background resume before and after expiry",
+      "late activity",
+      "late Continue",
+      "old target input cannot repopulate fresh flow in preview/live/trial",
+      "warning remains explicit",
+      "live/trial policy unchanged",
+      "rejected launch",
+      "early finish"
+    ],
+    "regression_proof": "baseline eight intended failures; reviewed stale-target regression three failures then green; capture mutation isolated stopped-editor-input failure"
+  },
+  "offline_suites": [
+    {
+      "name": "VERIFY_LONGWATCH_IDLE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_GLASSWAKE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_TRUEBOUND_CORE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_TRUEBOUND_UI.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_KEEPHAVEN_CORE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_KEEPHAVEN_UI.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_HELMWARD_NAVIGATION.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_HELMWARD_ASYNC.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_HELMWARD_RECOVERY.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_HARBORLIGHT_SCOPE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_HARBORLIGHT_ENGINE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FAIRWATER_PASTE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_ROSEWOOD_CORE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_SIGHTLINE_CORE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_SIGHTLINE_ARTWORK.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_SIGHTLINE_IDS.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_HOLDFAST_CORE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_HOMEPORT_ENTRY.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FLEETBOUND_PROGRAMS.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_HARBOR_ROUTES.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_HARBOR_ASYNC.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_HARBOR_STORAGE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_RELEASE_IDENTITY.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FAIRLEAD_LOADER.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FAIRLEAD_STARTUP.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_CLEARDECK_ACCOUNT.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_RELEASE_CONTRACT.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_CLEARDECK_PREFLIGHT.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_IRONHAVEN_CORE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FLEETCARE_READINESS.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FLEETCARE_NAVIGATION.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FLEETCRAFT_CORE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_LETTERCRAFT_FONTS.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_QUARTERMASTER_CORE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_STORMWAKE_CORE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "TEST_RELEASE_PIPELINE.py",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "TEST_RELEASE_IDENTITY.py",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "TEST_SIGHTLINE_NATIVE.py",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    }
+  ],
+  "independent_review": {
+    "initial": "two blocking findings",
+    "resolution": "cross-realm fixture corrected; startup render and input binding asserted; stale callback epoch guards added with three red-to-green regressions",
+    "remaining_critical_or_important": 0
+  },
+  "native_safari_acceptance": "PENDING",
+  "frontend_deployed": false,
+  "backend_changes": false,
+  "runtime_sha256": {
+    "countercraft_customer.js": "03cd336e6aa8571f90852d1366cab65e81b9e2faa48ef28b42afaa9eeb3aeba1"
+  }
+}
