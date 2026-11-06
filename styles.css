@@ -16609,3 +16609,22 @@ body.engine-mode.engine-dock-open #wonderwakePreviewVessel{display:none!importan
 }
 
 body:not(.engine-mode) #experienceTestDeck,body.boot-locked #experienceTestDeck{display:none!important}
+
+/* Glasswake: compact, readable integrity evidence on iPad and phone. */
+#shipIntegritySummary .integrity-guidance{font-size:14px;line-height:1.5;color:#b9ced1;margin:12px 0}
+#shipIntegritySummary .integrity-project{padding:16px;margin:12px 0;border:1px solid #927349;border-radius:14px;background:#0b222a;min-width:0}
+#shipIntegritySummary .integrity-project h4{font-size:20px;margin:0 0 4px;color:#eff6f4;overflow-wrap:anywhere}
+#shipIntegritySummary .integrity-project>small{display:block;color:#a8c3c8;overflow-wrap:anywhere}
+#shipIntegritySummary .integrity-check-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:14px}
+#shipIntegritySummary .integrity-check{display:grid;align-content:start;gap:8px;padding:12px;border:1px solid #536974;border-radius:9px;min-width:0;font-size:13px;overflow-wrap:anywhere}
+#shipIntegritySummary .integrity-check strong{color:#eaf2f0;font-size:14px}
+#shipIntegritySummary .integrity-check b{color:#f1ce7e;font-size:11px;letter-spacing:.05em}
+#shipIntegritySummary .integrity-check.pass b{color:#99d7ac}
+#shipIntegritySummary .integrity-check span{color:#bad0d4;line-height:1.45}
+#shipIntegritySummary .integrity-findings{border:1px solid #365761;border-radius:10px;padding:12px;margin:12px 0}
+#shipIntegritySummary summary{cursor:pointer;min-height:32px;font-size:15px;color:#d6e8e8}
+#shipIntegritySummary .integrity-finding-list article{display:grid;gap:5px;padding:10px 0;border-top:1px solid #365761;font-size:13px;overflow-wrap:anywhere}
+#shipIntegritySummary .integrity-finding-list small{font-size:12px;color:#b9ced1}
+#shipIntegritySummary button{min-height:48px;white-space:normal}
+@media(max-width:800px){#shipIntegritySummary .integrity-check-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:440px){#shipIntegritySummary .integrity-check-grid{grid-template-columns:1fr}#shipIntegritySummary .v3-integrity-result{flex-wrap:wrap}#shipIntegritySummary button{width:100%}}

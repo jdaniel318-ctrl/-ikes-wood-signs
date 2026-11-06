@@ -1,0 +1,252 @@
+{
+  "schema": "blackflag-glasswake-evidence-v1",
+  "build": "8.8.20.90",
+  "created_at": "2026-11-06T20:38:48.495126+00:00",
+  "offline": {
+    "suite_count": 35,
+    "all_passed": true,
+    "suites": [
+      {
+        "name": "VERIFY_GLASSWAKE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_KEEPHAVEN_CORE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_KEEPHAVEN_UI.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_HELMWARD_NAVIGATION.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_HELMWARD_ASYNC.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_HELMWARD_RECOVERY.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_HARBORLIGHT_SCOPE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_HARBORLIGHT_ENGINE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_FAIRWATER_PASTE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_ROSEWOOD_CORE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_SIGHTLINE_CORE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_SIGHTLINE_ARTWORK.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_SIGHTLINE_IDS.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_HOLDFAST_CORE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_HOMEPORT_ENTRY.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_FLEETBOUND_PROGRAMS.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_HARBOR_ROUTES.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_HARBOR_ASYNC.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_HARBOR_STORAGE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_RELEASE_IDENTITY.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_FAIRLEAD_LOADER.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_FAIRLEAD_STARTUP.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_CLEARDECK_ACCOUNT.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_RELEASE_CONTRACT.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_CLEARDECK_PREFLIGHT.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_IRONHAVEN_CORE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_FLEETCARE_READINESS.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_FLEETCARE_NAVIGATION.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_FLEETCRAFT_CORE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_LETTERCRAFT_FONTS.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_QUARTERMASTER_CORE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "VERIFY_STORMWAKE_CORE.cjs",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "TEST_RELEASE_PIPELINE.py",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "TEST_RELEASE_IDENTITY.py",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      },
+      {
+        "name": "TEST_SIGHTLINE_NATIVE.py",
+        "pass": true,
+        "exit_code": 0,
+        "error": null
+      }
+    ],
+    "focused_diagnostic_checks": 15
+  },
+  "review": {
+    "file": "GLASSWAKE_REVIEW.md",
+    "verdict": "No remaining blockers within reviewed scope",
+    "original_predicate_equivalence_cases": 216
+  },
+  "browser": {
+    "environment": "controlled Chromium fixture, production renderer/stylesheet with synthetic project records",
+    "tablet": {
+      "frame_width": 1024,
+      "document_width": 1024,
+      "scroll_width": 1024,
+      "check_grid_columns": 4
+    },
+    "phone": {
+      "frame_width": 390,
+      "document_client_width": 375,
+      "scroll_width": 375,
+      "check_grid_columns": 1,
+      "note": "15px desktop scrollbar accounts for client width"
+    },
+    "all_findings_expansion": "observed names plus IDs and quarantine information",
+    "download_control": "actual click updated status to Diagnostic download requested; JSON serialization separately verified by focused test",
+    "incomplete": "observed INSPECTION INCOMPLETE and no fabricated passing cards",
+    "lock": "observed report and download control removed"
+  },
+  "native_safari_acceptance": "PENDING",
+  "device_mismatches_repaired": false,
+  "deployed": false,
+  "business_data_modified_by_new_inspection": false,
+  "scope": "Inspection UI and projected diagnostic export only; no automatic repair or migration. Package reconstruction and rollback proven separately by PackageProof.json."
+}

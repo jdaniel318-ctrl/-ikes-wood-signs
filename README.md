@@ -1,13 +1,14 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Keephaven 8.8.20.89
+# Black Flag Glasswake 8.8.20.90
 
 Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
-Baseline: 8.8.20.88. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Baseline: 8.8.20.89. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
 Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
-- Explicitly archive exact older Ike records after saved-file verification, then free only their older LocalStorage space.
-- Reopen, verify and download on-device archives; restore only missing older entries.
-- General rescue includes the two known older draft keys. Archived snapshots have their own exact-file export.
-- No automatic archival, migration, deletion, backend deployment or change to customer readiness.
+- Read-only integrity cards show project names, IDs and the precise failing boundary fields in four sources.
+- All findings remain available, including quarantined-order information. Unreadable checks remain incomplete.
+- Download a diagnostic JSON with project labels, IDs and check outcomes, excluding raw business records and credential fields.
+- Diagnostic memory clears on Engine lock; late results are discarded after navigation.
+- No automatic repair, storage migration, backend deployment or change to customer readiness.
 Preparation does not deploy frontend or backend changes. See PATCH_CONTRACT.json for separately managed backend prerequisites.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 

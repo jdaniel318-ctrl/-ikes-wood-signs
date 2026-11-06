@@ -57,6 +57,25 @@ async function readDatabase(factory,name,{stores=null,budget={used:0,maxBytes:LI
  finally{try{db?.close();}catch(_){}}
  return out;
 }
+const INTEGRITY_FIELDS=Object.freeze(['record','projectId','schemaVersion','namespace','isolation.projectId','isolation.namespace','isolation.crossProjectAccess','permissions.defaultDeny','permissions.projectScoped','duplicateId']);
+function boundaryCheck(value,id,schema,envelope=false,duplicate=false){
+ if(!value)return {status:'missing',reasons:['record']};
+ const expected={'schemaVersion':schema,'namespace':'bf.project.'+id,'isolation.projectId':id,'isolation.crossProjectAccess':'deny','permissions.defaultDeny':true};
+ if(envelope)Object.assign(expected,{'projectId':id,'isolation.namespace':'bf.project.'+id,'permissions.projectScoped':true});
+ const reasons=Object.entries(expected).filter(([field,want])=>{let got=field.split('.').reduce((v,k)=>v?.[k],value);if(field==='schemaVersion')got=Number(got);return got!==want;}).map(([field])=>field);
+ if(!id&&!reasons.includes('projectId'))reasons.push('projectId');
+ if(duplicate)reasons.push('duplicateId');
+ return {status:reasons.length?'fail':'pass',reasons};
+}
+function integrityDiagnostic(report,build){
+ // Explicit projection only. Never serialize raw records or free-text issue details.
+ const text=v=>typeof v==='string'?v.slice(0,160):'';
+ const count=v=>Number.isSafeInteger(v)&&v>=0?v:0;
+ const check=c=>({status:['pass','fail','missing'].includes(c?.status)?c.status:'unknown',reasons:(Array.isArray(c?.reasons)?c.reasons:[]).filter(r=>INTEGRITY_FIELDS.includes(r))});
+ return {schema:'blackflag-integrity-diagnostic-v1',build:text(build),inspected_at:text(report?.at),readOnly:true,status:report?.status==='complete'?'complete':'incomplete',ok:report?.status==='complete'&&report?.ok===true,critical:count(report?.critical),warnings:count(report?.warnings),scope:'Project labels, IDs, check outcomes and field names only. No customer records, credential fields or raw values. Not a backup or repair.',
+ projects:(report?.envelopeChecks||[]).map(r=>({projectId:text(r.projectId),name:text(r.name)||text(r.projectId),checks:Object.fromEntries(['registry','local','database','memory'].map(k=>[k,check(r.checks?.[k])]))})),
+ issues:(report?.issues||[]).map(i=>({level:['critical','warning','info'].includes(i.level)?i.level:'info',code:/^[A-Z][A-Z0-9_]{1,79}$/.test(i.code||'')?i.code:'UNRECOGNIZED_FINDING',projectId:text(i.projectId)}))};
+}
 function evaluateEnvelopes({projects=[],registry=[],localEnvelope={},dbEnvelope={},sources=[],schema=8}={}){
  const result={at:new Date().toISOString(),status:'complete',readOnly:true,total:Array.isArray(projects)?projects.length:0,checked:0,sealed:null,rows:[],sources:sources.map(s=>({name:s.name,status:s.status,error:s.error||null})),error:''};
  if(!Array.isArray(projects)||!Array.isArray(registry)||sources.some(s=>!['read','missing'].includes(s.status))){result.status='incomplete';result.error='One or more sources could not be read. No repair or commissioning was attempted.';return result;}
@@ -66,6 +85,7 @@ function evaluateEnvelopes({projects=[],registry=[],localEnvelope={},dbEnvelope=
  const projectOK=(p,id)=>!!p&&Number(p.schemaVersion)===schema&&p.namespace==='bf.project.'+id&&p.isolation?.projectId===id&&p.isolation?.crossProjectAccess==='deny'&&p.permissions?.defaultDeny===true;
  const envelopeOK=(e,id)=>!!e&&e.projectId===id&&Number(e.schemaVersion)===schema&&e.namespace==='bf.project.'+id&&e.isolation?.projectId===id&&e.isolation?.namespace==='bf.project.'+id&&e.isolation?.crossProjectAccess==='deny'&&e.permissions?.defaultDeny===true&&e.permissions?.projectScoped===true;
  for(const p of projects){const id=String(p?.id||'');const r={projectId:id,name:String(p?.name||id),registryFound:registryMap.has(id),localEnvelope:envelopeOK(localEnvelope[id],id),dbEnvelope:envelopeOK(dbEnvelope[id],id),memorySealed:projectOK(p,id),registrySealed:projectOK(registryMap.get(id),id)&&!duplicate.has(id)};
+ r.checks={registry:boundaryCheck(registryMap.get(id),id,schema,false,duplicate.has(id)),local:boundaryCheck(localEnvelope[id],id,schema,true),database:boundaryCheck(dbEnvelope[id],id,schema,true),memory:boundaryCheck(p,id,schema,false,ids.has(id))};
  r.ok=!!id&&!ids.has(id)&&r.localEnvelope&&r.dbEnvelope&&r.memorySealed&&r.registrySealed;ids.add(id);result.rows.push(r);}
  result.checked=result.rows.length;result.sealed=result.rows.filter(r=>r.ok).length;
  if(!projects.length){result.status='incomplete';result.sealed=null;result.error='No in-memory vessels supplied; empty is not a commissioning pass.';}
@@ -147,5 +167,5 @@ async function verify(text,crypto=globalThis.crypto){if(typeof text!=='string'||
  if(await hash(JSON.stringify(d.payload),crypto)!==d.sha256)throw new Error('Rescue checksum mismatch.');
  return {readback:true,coverage:d.payload.coverage.status,source_count:d.payload.sources.length,error_count:d.payload.errors.length,sha256:d.sha256,restored:false,authority_granted:false,note:'File integrity only; no restore or backup completeness is certified.'};}
 function diagnostic(payload,build){return {schema:'blackflag-storage-diagnostic-v1',build,captured_at:payload.created_at||new Date().toISOString(),scope:'Counts and known store names only; no customer records or credentials',coverage:payload.coverage?.status||'unknown',sources:(payload.sources||[]).map(s=>({kind:s.kind,name:s.name,status:s.status,count:typeof s.count==='number'?s.count:null,stores:(s.stores||[]).map(t=>({name:t.name,status:t.status,read_count:t.read_count??t.count??null,exported_count:t.count??null,error:t.error||null}))})),errors:(payload.errors||[]).map(e=>({source:e.source,code:e.code})),exclusions:payload.exclusions||{},bytes_observed:payload.bytes_observed??null,no_restore_performed:true};}
-return Object.freeze({VERSION,DATABASES,LIMITS,readJSON,openExisting,readDatabase,evaluateEnvelopes,inspect,serialize,capture,wrap,verify,diagnostic});
+return Object.freeze({VERSION,DATABASES,LIMITS,readJSON,openExisting,readDatabase,evaluateEnvelopes,integrityDiagnostic,inspect,serialize,capture,wrap,verify,diagnostic});
 });

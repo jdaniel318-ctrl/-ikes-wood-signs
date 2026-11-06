@@ -16,7 +16,7 @@
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
   // Component revision changes only when this module changes; installed release is loader-attested.
-  const APP_COMPONENT_REVISION='8.8.20.89';
+  const APP_COMPONENT_REVISION='8.8.20.90';
   const BUILD_VERSION=window.__darkSkyVerifiedRelease?.build;
   if(!BUILD_VERSION || BUILD_VERSION!==window.__darkSkyExpectedRelease?.build || window.__darkSkyVerifiedRelease?.seal!==window.__darkSkyExpectedRelease?.seal)throw new Error('Verified release context required before app execution.');
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
@@ -1446,6 +1446,7 @@
     engineSessionUnlocked = false;
     closeExperienceTestDeck();
     clearHarborRescueMemory();
+    clearIntegrityDiagnostic();
     if($('enginePinInput')) $('enginePinInput').value='';
     if($('blackFlagEntryPin')) $('blackFlagEntryPin').value='';
     document.body.classList.remove('engine-mode');
@@ -11478,6 +11479,7 @@
     engineActiveProjectId=null;
     invalidateEngineWorkspaceNavigation();
     logActivity(projectId,'Project opened');engineSessionUnlocked=false;
+    clearIntegrityDiagnostic();
     document.body.classList.remove('boot-locked','engine-mode');$('enginePanel')?.classList.add('hidden');$('blackFlagEntryGate')?.classList.add('hidden');document.body.classList.add('project-mode');
     showCustomerShellForProject(p);
     await applyProjectAssetSlots(p);
@@ -16464,7 +16466,7 @@ The full order and approved media remain stored with this project.`;
     }
     const criticalIds=['engineConfigureBtn','captainModeAccessBtn','projectEngineControl','engineConfigurationDock','projectCommandCards','ownerPortal','firstMateWatch','v3ArchitectureDeck','seaTrialsStation'];
     criticalIds.forEach(id=>{if(!$(id))issues.push({level:'critical',code:'CRITICAL_CONTROL_MISSING',detail:id});});
-    return {at:new Date().toISOString(),readOnly:true,status:complete?'complete':'incomplete',auditPersisted:false,ok:complete&&!issues.some(x=>x.level==='critical'),critical:issues.filter(x=>x.level==='critical').length,warnings:issues.filter(x=>x.level==='warning').length,issues};
+    return {at:new Date().toISOString(),readOnly:true,status:complete?'complete':'incomplete',auditPersisted:false,ok:complete&&!issues.some(x=>x.level==='critical'),critical:issues.filter(x=>x.level==='critical').length,warnings:issues.filter(x=>x.level==='warning').length,issues,envelopeChecks:convergence.rows||[]};
   }
 
   function seaTrialCheck(id,title,level,detail){ return {id,title,level,detail}; }
@@ -16643,9 +16645,13 @@ The full order and approved media remain stored with this project.`;
     try{
       if(action==='integrity'||action==='results'){
         openEngineConfiguration('integrity');
+        const navigation=engineWorkspaceNavigationToken();
+        if(!engineWorkspaceNavigationCurrent(navigation))return false;
+        clearIntegrityDiagnostic();
         const report=await runShipIntegrityV3({record:action==='integrity'});
+        if(!engineWorkspaceNavigationCurrent(navigation))return false;
         renderShipIntegrity(report);
-        requestAnimationFrame(()=>pulseCommandTarget($('v3IntegrityStation')));
+        scheduleEngineWorkspaceFrame(navigation,()=>pulseCommandTarget($('v3IntegrityStation')));
         setFirstMateActionStatus(action==='integrity'?'Integrity check complete. Review the structural results below.':'Showing the latest structural results.','success');
       }else if(action==='economics'){
         openEngineConfiguration('economics');
@@ -16714,13 +16720,28 @@ The full order and approved media remain stored with this project.`;
   }
 
 
+  let integrityDiagnosticState=null;
+  function clearIntegrityDiagnostic(){
+    integrityDiagnosticState=null;
+    const box=$('shipIntegritySummary');if(box)box.innerHTML='';
+  }
+  function downloadIntegrityDiagnostic(){
+    if(!engineSessionUnlocked||!integrityDiagnosticState)return false;
+    harborDownloadJSON(integrityDiagnosticState,`blackflag-${BUILD_VERSION.replace(/\./g,'')}-integrity-diagnostic.json`);
+    const status=$('integrityDownloadStatus');if(status)status.textContent='Diagnostic download requested. Contains project labels, IDs and check outcomes. Keep the saved file for review.';
+    return true;
+  }
   function renderShipIntegrity(report){
-    const box=$('shipIntegritySummary');if(!box)return;
-    box.innerHTML=`<div class="v3-integrity-result ${report.ok?'pass':'fail'}">
-      <div><small>LAST CHECK</small><strong>${report.ok?'SHIP INTEGRITY CLEAR':'ATTENTION REQUIRED'}</strong><span>${report.critical} critical • ${report.warnings} warning</span></div>
-      <time>${new Date(report.at).toLocaleString()}</time>
-    </div>
-    <div class="v3-integrity-issues">${report.issues.length?report.issues.slice(0,16).map(x=>`<span class="${escapeHtml(x.level)}"><b>${escapeHtml(x.code)}</b>${escapeHtml(x.projectId||x.detail||'')}</span>`).join(''):'<span class="clear"><b>ALL CLEAR</b>No structural issues detected by the current certification checks.</span>'}</div>`;
+    const box=$('shipIntegritySummary');if(!box||!report||!engineSessionUnlocked)return;
+    integrityDiagnosticState=window.BlackFlagStorageSafety.integrityDiagnostic(report,BUILD_VERSION);
+    const data=integrityDiagnosticState,labels={registry:'Project registry',local:'Local ledger',database:'Database mirror',memory:'Current session'};
+    const state=data.status!=='complete'?'INSPECTION INCOMPLETE':data.ok?'CHECKS CLEAR':'ATTENTION REQUIRED';
+    const projects=data.projects.filter(p=>Object.values(p.checks).some(c=>c.status!=='pass'));
+    const cards=projects.map(p=>`<article class="integrity-project"><h4>${escapeHtml(p.name)}</h4><small>${escapeHtml(p.projectId)}</small><div class="integrity-check-grid">${Object.entries(p.checks).map(([key,c])=>`<div class="integrity-check ${c.status}"><strong>${labels[key]}</strong><b>${({pass:'PASS',fail:'NEEDS ATTENTION',missing:'MISSING',unknown:'NOT CHECKED'})[c.status]}</b><span>${c.reasons.length?escapeHtml(c.reasons.map(r=>r==='record'?'Required record was not found':r==='duplicateId'?'Duplicate project ID':r+' does not meet the required boundary').join('; ')):'pass'===c.status?'Required boundary fields verified':'No result available'}</span></div>`).join('')}</div></article>`).join('');
+    box.innerHTML=`<div class="v3-integrity-result ${data.ok?'pass':'fail'}"><div><small>READ-ONLY INSPECTION</small><strong>${state}</strong><span>${data.critical} critical • ${data.warnings} warning</span></div><time>${escapeHtml(new Date(data.inspected_at).toLocaleString())}</time></div>
+      <p class="integrity-guidance">${data.status!=='complete'?'Some records could not be checked. Unavailable results are not passes.':data.ok?'The inspected checks passed. Customer readiness and commissioning are checked separately.':'Review the failing checks below before choosing a repair.'} No records were repaired or removed.</p>
+      ${cards}<details class="integrity-findings" ${data.status!=='complete'||!cards?'open':''}><summary>All findings (${data.issues.length})</summary><div class="integrity-finding-list">${data.issues.map((i,n)=>{const project=data.projects.find(p=>p.projectId===i.projectId)||companies.find(p=>p.id===i.projectId);return `<article><b>${escapeHtml(i.level.toUpperCase())} · ${escapeHtml(i.code)}</b><span>${escapeHtml(project?.name||i.projectId||'Fleet')}</span>${i.projectId?`<small>Project ID: ${escapeHtml(i.projectId)}</small>`:''}<small>${escapeHtml(report.issues[n]?.detail||'')}</small></article>`;}).join('')||'<p>No findings reported.</p>'}</div></details>
+      <button type="button" id="downloadIntegrityDiagnostic" class="secondary-btn">Download integrity report</button><p id="integrityDownloadStatus" class="integrity-guidance" role="status">Diagnostic only: project labels, IDs and check outcomes. No customer records or credential fields.</p>`;
   }
 
   function renderV3AuditTrail(){
@@ -17093,7 +17114,7 @@ The full order and approved media remain stored with this project.`;
     // This intentionally binds before IndexedDB migrations / optional Engine setup.
     // Waters Ahead must remain actionable even when a noncritical initializer fails.
     document.addEventListener('click',async event=>{
-      const target=event.target?.closest?.('#firstMateRefreshBtn,[data-first-mate-action],#runShipIntegrityBtn,#createRecoverySnapshotBtn,#showAuditTrailBtn,#openShipsLogBtn,#runSeaTrialsBtn,#harborPrepareRescue,#harborDownloadRescue,#harborDownloadDiagnostic,#harborVerifyRescue');
+      const target=event.target?.closest?.('#firstMateRefreshBtn,[data-first-mate-action],#runShipIntegrityBtn,#downloadIntegrityDiagnostic,#createRecoverySnapshotBtn,#showAuditTrailBtn,#openShipsLogBtn,#runSeaTrialsBtn,#harborPrepareRescue,#harborDownloadRescue,#harborDownloadDiagnostic,#harborVerifyRescue');
       if(!target)return;
 
       event.preventDefault();
@@ -17122,18 +17143,23 @@ The full order and approved media remain stored with this project.`;
         return;
       }
 
+      if(target.id==='downloadIntegrityDiagnostic'){downloadIntegrityDiagnostic();return;}
+
       if(target.id==='runShipIntegrityBtn'){
         if(target.disabled||target.dataset.commandBusy==='1')return;
+        const navigation=engineWorkspaceNavigationToken();
+        if(!engineWorkspaceNavigationCurrent(navigation))return;
         const prior=target.textContent;
         target.disabled=true;target.dataset.commandBusy='1';target.textContent='RUNNING CHECK…';
+        clearIntegrityDiagnostic();
         try{
           const report=await runShipIntegrityV3({record:true});
+          if(!engineWorkspaceNavigationCurrent(navigation))return;
           renderShipIntegrity(report);
-          await renderFirstMateWatch();
-          await renderV3ArchitectureStatus();
           pulseCommandTarget($('shipIntegritySummary'));
         }catch(err){
           console.error('Ship Integrity check failed',err);
+          if(!engineWorkspaceNavigationCurrent(navigation))return;
           const box=$('shipIntegritySummary');
           if(box)box.innerHTML=`<div class="v3-integrity-result fail"><div><small>CHECK INTERRUPTED</small><strong>SHIP INTEGRITY COULD NOT COMPLETE</strong><span>${escapeHtml(String(err?.message||err))}</span></div></div>`;
         }finally{

@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.20.89';
-const RELEASE_SEAL='keephaven-882089';
+const RELEASE_BUILD='8.8.20.90';
+const RELEASE_SEAL='glasswake-882090';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.

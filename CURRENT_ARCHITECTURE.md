@@ -1,14 +1,15 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Current architecture — Keephaven 8.8.20.89
+# Current architecture — Glasswake 8.8.20.90
 
-Source of release identity: RELEASE_CONFIG.json. Installed page/manifest/seal/worker identity is generated together. APP_COMPONENT_REVISION is 8.8.20.89; owner helper revision is 8.8.20.68. Unchanged component bodies remain byte-identical across release-only changes.
+Source of release identity: RELEASE_CONFIG.json. Installed page/manifest/seal/worker identity is generated together. APP_COMPONENT_REVISION is 8.8.20.90; owner helper revision is 8.8.20.68. Unchanged component bodies remain byte-identical across release-only changes.
 
 The Engine still verifies every required body, current governance models, app component contract and worker identity before executing the same script sequence. App and Captain bind audit/display freshness to the verified installed release. This context never grants permissions. The owner page keeps explicit helper compatibility checks.
 
-- Explicitly archive exact older Ike records after saved-file verification, then free only their older LocalStorage space.
-- Reopen, verify and download on-device archives; restore only missing older entries.
-- General rescue includes the two known older draft keys. Archived snapshots have their own exact-file export.
-- No automatic archival, migration, deletion, backend deployment or change to customer readiness.
+- Read-only integrity cards show project names, IDs and the precise failing boundary fields in four sources.
+- All findings remain available, including quarantined-order information. Unreadable checks remain incomplete.
+- Download a diagnostic JSON with project labels, IDs and check outcomes, excluding raw business records and credential fields.
+- Diagnostic memory clears on Engine lock; late results are discarded after navigation.
+- No automatic repair, storage migration, backend deployment or change to customer readiness.
 Backend prerequisites are recorded separately in PATCH_CONTRACT.json. Release preparation executes no database commands. Fleet core and Admiral programs remain distinct.
 
 ## Release commands

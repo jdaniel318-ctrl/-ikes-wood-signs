@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.89",
-  "release": "Keephaven",
-  "seal": "keephaven-882089",
+  "build": "8.8.20.90",
+  "release": "Glasswake",
+  "seal": "glasswake-882090",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Keephaven",
-  "name": "Keephaven",
-  "releaseName": "Keephaven"
+  "release_name": "Glasswake",
+  "name": "Glasswake",
+  "releaseName": "Glasswake"
 }
