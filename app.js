@@ -16,7 +16,7 @@
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
   // Component revision changes only when this module changes; installed release is loader-attested.
-  const APP_COMPONENT_REVISION='8.8.20.90';
+  const APP_COMPONENT_REVISION='8.8.20.91';
   const BUILD_VERSION=window.__darkSkyVerifiedRelease?.build;
   if(!BUILD_VERSION || BUILD_VERSION!==window.__darkSkyExpectedRelease?.build || window.__darkSkyVerifiedRelease?.seal!==window.__darkSkyExpectedRelease?.seal)throw new Error('Verified release context required before app execution.');
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
@@ -16721,9 +16721,48 @@ The full order and approved media remain stored with this project.`;
 
 
   let integrityDiagnosticState=null;
+  let boundaryRepairState=null,boundaryRepairBusy=false,boundaryRepairEpoch=0;
   function clearIntegrityDiagnostic(){
     integrityDiagnosticState=null;
+    if(typeof boundaryRepairState!=='undefined'){boundaryRepairState=null;++boundaryRepairEpoch;}
+    const repair=$('boundaryRepairPanel');if(repair){repair.innerHTML='';repair.textContent='';}
     const box=$('shipIntegritySummary');if(box)box.innerHTML='';
+  }
+  async function reviewBoundaryRepair(){
+    if(boundaryRepairBusy)return false;
+    const navigation=engineWorkspaceNavigationToken(),epoch=++boundaryRepairEpoch;
+    const guard=()=>{requireRecoveryEngine(navigation);if(epoch!==boundaryRepairEpoch)throw Error('Review changed. Start a fresh boundary review.');};
+    const box=$('boundaryRepairPanel');boundaryRepairState=null;
+    try{
+      guard();if(integrityDiagnosticState?.status!=='complete')throw Error('Run a complete integrity inspection first.');
+      const ids=integrityDiagnosticState.projects.filter(p=>Object.values(p.checks).some(c=>c.status!=='pass')).map(p=>p.projectId);
+      if(!ids.length)throw Error('No missing boundary repairs are currently shown.');
+      boundaryRepairBusy=true;if(box)box.textContent='Checking saved identity, admission and boundary evidence…';
+      const repair=window.BlackFlagBoundaryRepair.create({storage:localStorage,indexedDB:window.indexedDB,getProjects:()=>companies,guard,build:BUILD_VERSION});
+      const plan=await repair.review(ids);guard();boundaryRepairState={repair,plan,navigation,epoch};
+      if(box)box.innerHTML=`<h4>Review missing boundary records</h4><p>This adds only the missing records listed below. Existing records and access permissions stay in place.</p>${plan.rows.map(r=>`<article class="integrity-project"><strong>${escapeHtml(r.name)}</strong><small>${escapeHtml(r.projectId)}</small><p>${r.add.length?'Add: '+r.add.map(s=>s==='local'?'Local ledger':'Database mirror').join(' and '):'No missing copies.'}</p>${r.blocked.map(reason=>`<p class="integrity-blocked">${escapeHtml(reason)}</p>`).join('')}</article>`).join('')}<p>${plan.ready?'Saved admission and identity checks passed. Close other Black Flag tabs before confirming.':'Repair blocked. Review the findings; no records were saved.'}</p>${plan.ready?'<button type="button" id="applyBoundaryRepair" class="primary-btn">Confirm missing boundary repair</button>':''}`;
+      return plan.ready;
+    }catch(err){if(engineWorkspaceNavigationCurrent(navigation)&&epoch===boundaryRepairEpoch&&box)box.textContent='Repair review stopped: '+String(err?.message||err);return false;}
+    finally{boundaryRepairBusy=false;}
+  }
+  async function applyBoundaryRepair(){
+    if(boundaryRepairBusy||!boundaryRepairState?.plan?.ready)return false;
+    const prepared=boundaryRepairState,{navigation,epoch}=prepared;
+    const current=()=>engineWorkspaceNavigationCurrent(navigation)&&epoch===boundaryRepairEpoch;
+    let verified=false;
+    try{
+      requireRecoveryEngine(navigation);if(!current())throw Error('Review changed. Review the repair again.');
+      boundaryRepairBusy=true;boundaryRepairState=null;
+      const box=$('boundaryRepairPanel');if(box)box.textContent='Saving missing boundaries and checking both saved copies…';
+      const result=await prepared.repair.apply(prepared.plan);if(!current())return false;
+      verified=result.verified;
+      if(!verified){if(box)box.textContent='Repair partial — both copies were not confirmed. '+result.error+' Run Inspect Ship Integrity, then review again. Saved additions are retained.';return false;}
+      const report=await runShipIntegrityV3({record:false});if(!current())return false;
+      renderShipIntegrity(report);
+      const status=$('boundaryRepairPanel');if(status)status.textContent=`Missing boundaries verified for ${result.projectIds.length} vessel(s). ${report.status==='complete'&&report.ok?'Fresh integrity checks passed. Customer readiness remains separate.':report.status==='complete'?'Fresh integrity inspection still needs attention; see the remaining findings.':'Fresh integrity inspection was incomplete; review its findings before continuing.'}`;
+      return true;
+    }catch(err){if(current()){const box=$('boundaryRepairPanel');if(box)box.textContent=(verified?'Boundary copies verified; the fresh inspection did not complete. ':'Repair stopped. ')+String(err?.message||err)+' Run Inspect Ship Integrity before retrying.';}return false;}
+    finally{boundaryRepairBusy=false;}
   }
   function downloadIntegrityDiagnostic(){
     if(!engineSessionUnlocked||!integrityDiagnosticState)return false;
@@ -16733,6 +16772,7 @@ The full order and approved media remain stored with this project.`;
   }
   function renderShipIntegrity(report){
     const box=$('shipIntegritySummary');if(!box||!report||!engineSessionUnlocked)return;
+    if(typeof boundaryRepairState!=='undefined'){boundaryRepairState=null;++boundaryRepairEpoch;}
     integrityDiagnosticState=window.BlackFlagStorageSafety.integrityDiagnostic(report,BUILD_VERSION);
     const data=integrityDiagnosticState,labels={registry:'Project registry',local:'Local ledger',database:'Database mirror',memory:'Current session'};
     const state=data.status!=='complete'?'INSPECTION INCOMPLETE':data.ok?'CHECKS CLEAR':'ATTENTION REQUIRED';
@@ -16741,7 +16781,8 @@ The full order and approved media remain stored with this project.`;
     box.innerHTML=`<div class="v3-integrity-result ${data.ok?'pass':'fail'}"><div><small>READ-ONLY INSPECTION</small><strong>${state}</strong><span>${data.critical} critical • ${data.warnings} warning</span></div><time>${escapeHtml(new Date(data.inspected_at).toLocaleString())}</time></div>
       <p class="integrity-guidance">${data.status!=='complete'?'Some records could not be checked. Unavailable results are not passes.':data.ok?'The inspected checks passed. Customer readiness and commissioning are checked separately.':'Review the failing checks below before choosing a repair.'} No records were repaired or removed.</p>
       ${cards}<details class="integrity-findings" ${data.status!=='complete'||!cards?'open':''}><summary>All findings (${data.issues.length})</summary><div class="integrity-finding-list">${data.issues.map((i,n)=>{const project=data.projects.find(p=>p.projectId===i.projectId)||companies.find(p=>p.id===i.projectId);return `<article><b>${escapeHtml(i.level.toUpperCase())} · ${escapeHtml(i.code)}</b><span>${escapeHtml(project?.name||i.projectId||'Fleet')}</span>${i.projectId?`<small>Project ID: ${escapeHtml(i.projectId)}</small>`:''}<small>${escapeHtml(report.issues[n]?.detail||'')}</small></article>`;}).join('')||'<p>No findings reported.</p>'}</div></details>
-      <button type="button" id="downloadIntegrityDiagnostic" class="secondary-btn">Download integrity report</button><p id="integrityDownloadStatus" class="integrity-guidance" role="status">Diagnostic only: project labels, IDs and check outcomes. No customer records or credential fields.</p>`;
+      <button type="button" id="downloadIntegrityDiagnostic" class="secondary-btn">Download integrity report</button><p id="integrityDownloadStatus" class="integrity-guidance" role="status">Diagnostic only: project labels, IDs and check outcomes. No customer records or credential fields.</p>
+      ${data.status==='complete'&&projects.length?'<button type="button" id="reviewBoundaryRepair" class="primary-btn">Review missing boundary repair</button>':''}<div id="boundaryRepairPanel" class="integrity-repair" role="status" aria-live="polite"></div>`;
   }
 
   function renderV3AuditTrail(){
@@ -17114,7 +17155,7 @@ The full order and approved media remain stored with this project.`;
     // This intentionally binds before IndexedDB migrations / optional Engine setup.
     // Waters Ahead must remain actionable even when a noncritical initializer fails.
     document.addEventListener('click',async event=>{
-      const target=event.target?.closest?.('#firstMateRefreshBtn,[data-first-mate-action],#runShipIntegrityBtn,#downloadIntegrityDiagnostic,#createRecoverySnapshotBtn,#showAuditTrailBtn,#openShipsLogBtn,#runSeaTrialsBtn,#harborPrepareRescue,#harborDownloadRescue,#harborDownloadDiagnostic,#harborVerifyRescue');
+      const target=event.target?.closest?.('#firstMateRefreshBtn,[data-first-mate-action],#runShipIntegrityBtn,#downloadIntegrityDiagnostic,#reviewBoundaryRepair,#applyBoundaryRepair,#createRecoverySnapshotBtn,#showAuditTrailBtn,#openShipsLogBtn,#runSeaTrialsBtn,#harborPrepareRescue,#harborDownloadRescue,#harborDownloadDiagnostic,#harborVerifyRescue');
       if(!target)return;
 
       event.preventDefault();
@@ -17144,6 +17185,8 @@ The full order and approved media remain stored with this project.`;
       }
 
       if(target.id==='downloadIntegrityDiagnostic'){downloadIntegrityDiagnostic();return;}
+      if(target.id==='reviewBoundaryRepair'){await reviewBoundaryRepair();return;}
+      if(target.id==='applyBoundaryRepair'){await applyBoundaryRepair();return;}
 
       if(target.id==='runShipIntegrityBtn'){
         if(target.disabled||target.dataset.commandBusy==='1')return;

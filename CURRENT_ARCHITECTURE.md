@@ -1,15 +1,15 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Current architecture — Glasswake 8.8.20.90
+# Current architecture — Truebound 8.8.20.91
 
-Source of release identity: RELEASE_CONFIG.json. Installed page/manifest/seal/worker identity is generated together. APP_COMPONENT_REVISION is 8.8.20.90; owner helper revision is 8.8.20.68. Unchanged component bodies remain byte-identical across release-only changes.
+Source of release identity: RELEASE_CONFIG.json. Installed page/manifest/seal/worker identity is generated together. APP_COMPONENT_REVISION is 8.8.20.91; owner helper revision is 8.8.20.68. Unchanged component bodies remain byte-identical across release-only changes.
 
 The Engine still verifies every required body, current governance models, app component contract and worker identity before executing the same script sequence. App and Captain bind audit/display freshness to the verified installed release. This context never grants permissions. The owner page keeps explicit helper compatibility checks.
 
-- Read-only integrity cards show project names, IDs and the precise failing boundary fields in four sources.
-- All findings remain available, including quarantined-order information. Unreadable checks remain incomplete.
-- Download a diagnostic JSON with project labels, IDs and check outcomes, excluding raw business records and credential fields.
-- Diagnostic memory clears on Engine lock; late results are discarded after navigation.
-- No automatic repair, storage migration, backend deployment or change to customer readiness.
+- Explicit missing-only boundary repair after saved identity and admission verification.
+- Review exact additions, then confirm; existing conflicting records block repair.
+- Transaction commit, saved-copy readback and fresh integrity inspection are separate checks. Interrupted repairs report partial and can be reviewed again.
+- No automatic repair, identity reassignment, admission creation, commissioning or customer readiness change.
+- See TRUEBOUND_GUIDE.md for the three-step device check.
 Backend prerequisites are recorded separately in PATCH_CONTRACT.json. Release preparation executes no database commands. Fleet core and Admiral programs remain distinct.
 
 ## Release commands

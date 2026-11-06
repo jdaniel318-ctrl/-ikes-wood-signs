@@ -1,14 +1,14 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Glasswake 8.8.20.90
+# Black Flag Truebound 8.8.20.91
 
 Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
-Baseline: 8.8.20.89. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Baseline: 8.8.20.90. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
 Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
-- Read-only integrity cards show project names, IDs and the precise failing boundary fields in four sources.
-- All findings remain available, including quarantined-order information. Unreadable checks remain incomplete.
-- Download a diagnostic JSON with project labels, IDs and check outcomes, excluding raw business records and credential fields.
-- Diagnostic memory clears on Engine lock; late results are discarded after navigation.
-- No automatic repair, storage migration, backend deployment or change to customer readiness.
+- Explicit missing-only boundary repair after saved identity and admission verification.
+- Review exact additions, then confirm; existing conflicting records block repair.
+- Transaction commit, saved-copy readback and fresh integrity inspection are separate checks. Interrupted repairs report partial and can be reviewed again.
+- No automatic repair, identity reassignment, admission creation, commissioning or customer readiness change.
+- See TRUEBOUND_GUIDE.md for the three-step device check.
 Preparation does not deploy frontend or backend changes. See PATCH_CONTRACT.json for separately managed backend prerequisites.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 

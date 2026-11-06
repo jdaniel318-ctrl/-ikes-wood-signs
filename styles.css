@@ -16612,6 +16612,10 @@ body:not(.engine-mode) #experienceTestDeck,body.boot-locked #experienceTestDeck{
 
 /* Glasswake: compact, readable integrity evidence on iPad and phone. */
 #shipIntegritySummary .integrity-guidance{font-size:14px;line-height:1.5;color:#b9ced1;margin:12px 0}
+#shipIntegritySummary .integrity-repair:not(:empty){margin-top:18px;padding:18px;border:1px solid #6a9da5;border-radius:14px;background:#0b222a;color:#e4eef0;line-height:1.6;overflow-wrap:anywhere}
+#shipIntegritySummary .integrity-repair h4{margin:0;font-size:22px}
+#shipIntegritySummary .integrity-blocked{color:#f1c5a8}
+#shipIntegritySummary .integrity-repair button{white-space:normal;max-width:100%;min-height:48px}
 #shipIntegritySummary .integrity-project{padding:16px;margin:12px 0;border:1px solid #927349;border-radius:14px;background:#0b222a;min-width:0}
 #shipIntegritySummary .integrity-project h4{font-size:20px;margin:0 0 4px;color:#eff6f4;overflow-wrap:anywhere}
 #shipIntegritySummary .integrity-project>small{display:block;color:#a8c3c8;overflow-wrap:anywhere}
