@@ -1,0 +1,3 @@
+Signalman Relay
+Release 8.8.20.99
+Fresh GitHub Pages publication attempt for Signalman.
