@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.94",
-  "release": "Freeboard",
-  "seal": "freeboard-882094",
+  "build": "8.8.20.95",
+  "release": "Keydeck",
+  "seal": "keydeck-882095",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Freeboard",
-  "name": "Freeboard",
-  "releaseName": "Freeboard"
+  "release_name": "Keydeck",
+  "name": "Keydeck",
+  "releaseName": "Keydeck"
 }

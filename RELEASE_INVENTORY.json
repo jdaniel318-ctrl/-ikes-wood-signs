@@ -1,9 +1,9 @@
 {
-  "release": "Freeboard",
-  "name": "Freeboard",
-  "build": "8.8.20.94",
-  "seal": "freeboard-882094",
-  "file_count": 830,
+  "release": "Keydeck",
+  "name": "Keydeck",
+  "build": "8.8.20.95",
+  "seal": "keydeck-882095",
+  "file_count": 832,
   "files": [
     ".github/workflows/drydock-batch1.yml",
     "ADMIRALS_DECK_TRIAL.md",
@@ -237,6 +237,8 @@
     "KEEPHAVEN_LEDGER.md",
     "KEEPHAVEN_PLAN.md",
     "KEEPHAVEN_REVIEW.md",
+    "KEYDECK_EVIDENCE.json",
+    "KEYDECK_GUIDE.md",
     "KEYLINE_EVIDENCE.json",
     "KEYLINE_GUIDE.md",
     "LANTERNWAKE_TEST_REPORT.md",

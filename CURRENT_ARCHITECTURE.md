@@ -1,14 +1,11 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Current architecture — Freeboard 8.8.20.94
+# Current architecture — Keydeck 8.8.20.95
 
-Source of release identity: RELEASE_CONFIG.json. Installed page/manifest/seal/worker identity is generated together. APP_COMPONENT_REVISION is 8.8.20.94; owner helper revision is 8.8.20.68. Unchanged component bodies remain byte-identical across release-only changes.
+Source of release identity: RELEASE_CONFIG.json. Installed page/manifest/seal/worker identity is generated together. APP_COMPONENT_REVISION is 8.8.20.95; owner helper revision is 8.8.20.68. Unchanged component bodies remain byte-identical across release-only changes.
 
 The Engine still verifies every required body, current governance models, app component contract and worker identity before executing the same script sequence. App and Captain bind audit/display freshness to the verified installed release. This context never grants permissions. The owner page keeps explicit helper compatibility checks.
 
-- Direct contractor owner sign-in from a fresh browser, scoped to the selected business. The Fleet Test Center remains the private testing entrance.
-- Ike’s one-board request, contact paste cleanup, board-aware lettering, explicit placement review and compact landscape proof.
-- Camera retake within the current customer session; Safari retains control of camera permissions. Engine PIN inputs no longer identify as account passwords.
-- See FREEBOARD_GUIDE.md for installation, iPad acceptance and the scope of standalone operation.
+Both Engine PIN entrances now accept keypad buttons or hardware-keyboard digits. The code stays outside editable fields and clears when checked or dismissed. See KEYDECK_GUIDE.md for the Legacy private-preview iPad retest.
 Backend prerequisites are recorded separately in PATCH_CONTRACT.json. Release preparation executes no database commands. Fleet core and Admiral programs remain distinct.
 
 ## Release commands

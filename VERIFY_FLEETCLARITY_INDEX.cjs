@@ -63,7 +63,7 @@ async function openDisplayedProject(id){
   await check('sealed index opens the existing Engine PIN route without external contact',async()=>{
     for(const [name,sha]of Object.entries(manifest.runtime_integrity.files))assert.equal(crypto.createHash('sha256').update(files[name]).digest('hex'),sha,name);
     await page.goto(origin+'/index.html',{waitUntil:'domcontentloaded'});await page.waitForFunction(()=>window.__darkSkyReleaseGateState==='clear');
-    await page.locator('#blackFlagEntryPin').fill('5615');await page.locator('#blackFlagEntryUnlock').click();
+    await page.locator('#blackFlagEntryPin').pressSequentially('5615');await page.locator('#blackFlagEntryUnlock').click();
     await page.waitForFunction(()=>document.body.classList.contains('engine-mode')&&!document.querySelector('#enginePanel').classList.contains('hidden'));
     // Engine first paint deliberately precedes its own readiness run. Observe its
     // completion before measuring a separate manual run's request count.

@@ -16,7 +16,7 @@
   </style>
   <script id="darkSkyFirstLightBootstrap">
     // Dark Sky 8.6.23 MEMORY MUSTER — canonical release identity.
-    const DARK_SKY_RELEASE = Object.freeze({build:'8.8.20.94',seal:'freeboard-882094'});
+    const DARK_SKY_RELEASE = Object.freeze({build:'8.8.20.95',seal:'keydeck-882095'});
     const DARK_SKY_EXPECTED_BUILD = DARK_SKY_RELEASE.build;
     const DARK_SKY_RELEASE_SEAL = DARK_SKY_RELEASE.seal;
     // 8.6.23 Storage Safe Harbor — three independent channels, no silent storage failures.
@@ -599,8 +599,25 @@
       <p class="bf-entry-sub">Authorized access to project operations, fleet controls, and platform command.</p><div class="bf-entry-trust"><span class="bf-entry-trust-dot"></span><strong>SECURE ENGINE ACCESS</strong><span>Session isolated • project boundaries enforced</span></div>
 
       <div class="bf-entry-panel">
-        <label for="blackFlagEntryPin">BLACK FLAG ENGINE PIN</label>
-      <input data-bf-trim="preserve" id="blackFlagEntryPin" class="bf-pin-input" type="text" data-bf-pin autocomplete="off" inputmode="numeric" maxlength="8" autocorrect="off" autocapitalize="none" spellcheck="false" />
+        <fieldset id="blackFlagEntryPin" class="engine-code-pad" tabindex="-1">
+          <legend>Black Flag Engine PIN</legend>
+          <span data-code-mask aria-hidden="true"></span>
+          <span data-code-status class="code-sr-only" role="status" aria-live="polite" aria-atomic="true"></span>
+          <div class="engine-code-keys">
+            <button type="button" data-code-key="1">1</button>
+            <button type="button" data-code-key="2">2</button>
+            <button type="button" data-code-key="3">3</button>
+            <button type="button" data-code-key="4">4</button>
+            <button type="button" data-code-key="5">5</button>
+            <button type="button" data-code-key="6">6</button>
+            <button type="button" data-code-key="7">7</button>
+            <button type="button" data-code-key="8">8</button>
+            <button type="button" data-code-key="9">9</button>
+            <button type="button" data-code-key="clear">Clear</button>
+            <button type="button" data-code-key="0">0</button>
+            <button type="button" data-code-key="delete">Delete</button>
+          </div>
+        </fieldset>
         <p id="blackFlagEntryError" class="bf-entry-error" aria-live="polite"></p><p id="blackFlagLockTimer" class="pin-lock-timer hidden"></p>
         <button type="button" id="blackFlagEntryUnlock" class="bf-entry-primary">ENTER ENGINE ROOM →</button>
 <button type="button" id="closeBlackFlagEntry" class="bf-entry-secondary bf-close-entry">RETURN TO PROJECT</button>
@@ -1356,8 +1373,25 @@
         <div class="pirate-eyebrow">CAPTAIN'S QUARTERS</div>
         <h2 id="enginePinTitle">Ye Be Entering the Engine Room</h2>
         <p>Only captains, code-wranglers, and suspiciously competent pirates beyond this point.</p>
-        <label for="enginePinInput">Enter Captain's Code</label>
-        <input data-bf-trim="preserve" id="enginePinInput" class="text-input pin-input" type="text" data-bf-pin autocomplete="off" inputmode="numeric" maxlength="8" autocorrect="off" autocapitalize="none" spellcheck="false" />
+        <fieldset id="enginePinInput" class="engine-code-pad" tabindex="-1">
+          <legend>Captain’s code</legend>
+          <span data-code-mask aria-hidden="true"></span>
+          <span data-code-status class="code-sr-only" role="status" aria-live="polite" aria-atomic="true"></span>
+          <div class="engine-code-keys">
+            <button type="button" data-code-key="1">1</button>
+            <button type="button" data-code-key="2">2</button>
+            <button type="button" data-code-key="3">3</button>
+            <button type="button" data-code-key="4">4</button>
+            <button type="button" data-code-key="5">5</button>
+            <button type="button" data-code-key="6">6</button>
+            <button type="button" data-code-key="7">7</button>
+            <button type="button" data-code-key="8">8</button>
+            <button type="button" data-code-key="9">9</button>
+            <button type="button" data-code-key="clear">Clear</button>
+            <button type="button" data-code-key="0">0</button>
+            <button type="button" data-code-key="delete">Delete</button>
+          </div>
+        </fieldset>
         <p id="enginePinError" class="pirate-error" aria-live="polite"></p><p id="engineLockTimer" class="pin-lock-timer hidden"></p>
         <button type="button" id="unlockEngineBtn" class="pirate-primary-btn">BOARD THE ENGINE ROOM →</button>
         <button type="button" id="cancelEngineBtn" class="secondary-btn">RETURN TO PROJECT</button>
@@ -1421,7 +1455,7 @@
       </header>
 
       <section id="clearDeckLaunchpad" class="clear-deck-launchpad waypoint-home" aria-labelledby="engineNextMoveTitle">
-        <header class="clear-deck-brief"><small id="engineReleaseLabel">8.8.20.94 • FREEBOARD</small><h3 id="engineNextMoveTitle">Your fleet. A clear next move.</h3><p>Open a vessel, lead the work, see the fleet or shape what comes next.</p></header>
+        <header class="clear-deck-brief"><small id="engineReleaseLabel">8.8.20.95 • KEYDECK</small><h3 id="engineNextMoveTitle">Your fleet. A clear next move.</h3><p>Open a vessel, lead the work, see the fleet or shape what comes next.</p></header>
         <nav class="clear-deck-primary-actions" aria-label="Fleet command offices">
           <button id="engineOperateVessels" type="button" class="clear-deck-action primary" data-clear-deck-command="projects" aria-controls="fleetCommissioningDock"><span class="clear-deck-action-number">01</span><span><strong>OPERATE VESSELS</strong><small>Choose a business and open its workstation.</small></span></button>
           <button type="button" class="clear-deck-action" data-command-open="captain"><span class="clear-deck-action-number">02</span><span><strong>CAPTAIN WATCH</strong><small>Review signals, decide the next action and record the result.</small></span></button>
@@ -2583,9 +2617,7 @@
       observeStartup('finish','complete');
       // Bounded completion contract: the verified release must restore same-tab interaction.
       setTimeout(()=>{
-        const pin=document.getElementById('enginePinInput')||document.querySelector('input');
         if(shield&&shield.style.display!=='none')completeReleaseHandoff({automatic:true});
-        if(pin){try{pin.disabled=false;pin.readOnly=false;pin.style.pointerEvents='auto';}catch(_){}}
       },1200);
     }catch(err){renderHold('RELEASE RECOVERY REQUIRED',String(err?.message||err),{manifestBuild:err?.manifestBuild||'unknown',runtimeBuild:err?.runtimeBuild||'unknown'});}
   })();

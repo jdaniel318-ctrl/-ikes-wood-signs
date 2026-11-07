@@ -7,7 +7,9 @@ function harness(){
  const elements={experienceTestDeckBody:{innerHTML:''},experienceTestTitle:{textContent:''},closeExperienceTestDeck:{textContent:'',focus(){}}};
  const deck={scrollTop:99,classList:{add(){ctx.hidden=true},remove(){ctx.hidden=false;ctx.shown++}},setAttribute(){}};
  const ctx={console,engineSessionUnlocked:true,experienceTestDeckRequest:0,experienceTestDeckOrigin:null,experienceTestDeckProjectId:null,fleetWorkstationProjectId:'ike',shown:0,document:{body:{classList:classes},getElementById:id=>id==='experienceTestDeck'?deck:elements[id]||null,activeElement:null},$:id=>elements[id],window:{scrollTo(){}},requestAnimationFrame:f=>f(),engineWorkspaceNavigationToken:()=>({}),engineWorkspaceNavigationCurrent:()=>ctx.engineSessionUnlocked,ensureExperienceTestDeck:()=>deck,setFleetWorkstationView:id=>{ctx.returned=id;return true},scheduleEngineWorkspaceFrame:(n,f)=>f(),escapeHtml:String};
- vm.createContext(ctx);for(const n of ['lockEngineSession','bindExperienceTestDeckBus','enterExperienceMode','bindMissionCriticalNavigation','openExperienceTestDeck','closeExperienceTestDeck','renderExperienceTestDeck'])vm.runInContext(fn(n),ctx);
+ vm.createContext(ctx);
+ vm.runInContext(source.slice(0,source.indexOf('\n(() => {')),ctx);
+ for(const n of ['lockEngineSession','bindExperienceTestDeckBus','enterExperienceMode','bindMissionCriticalNavigation','openExperienceTestDeck','closeExperienceTestDeck','renderExperienceTestDeck'])vm.runInContext(fn(n),ctx);
  ctx.document.addEventListener=(type,fn)=>{ctx.click=fn};ctx.bindMissionCriticalNavigation();
  ctx.renderProduction=ctx.renderExperienceTestDeck;ctx.renderExperienceTestDeck=async p=>{ctx.rendered=p.id};
  return {ctx,elements,flags};

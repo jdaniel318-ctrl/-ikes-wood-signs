@@ -1,3 +1,78 @@
+// Both Engine entrances use buttons so the local code never occupies an editable field.
+const engineCodePads = (() => {
+  const pads = new WeakMap();
+
+  function render(state) {
+    const length = state.digits.length;
+    state.mask.textContent = '●'.repeat(length);
+    state.status.textContent = length === 1 ? '1 digit entered' : length + ' digits entered';
+  }
+
+  function clear(element) {
+    const state = pads.get(element);
+    if (!state) return;
+    state.digits = '';
+    state.pending = null;
+    render(state);
+  }
+
+  function mount(element, submit) {
+    if (!element || !submit || pads.has(element)) return;
+    const state = {
+      digits: '', pending: null,
+      mask: element.querySelector('[data-code-mask]'),
+      status: element.querySelector('[data-code-status]')
+    };
+    pads.set(element, state);
+    render(state);
+
+    function edit(key) {
+      if (element.disabled || state.pending) return;
+      if (key === 'delete') state.digits = state.digits.slice(0, -1);
+      else if (key === 'clear') state.digits = '';
+      else if (/^[0-9]$/.test(key) && state.digits.length < 8) state.digits += key;
+      render(state);
+    }
+    element.addEventListener('click', event => {
+      const button = event.target.closest('button[data-code-key]');
+      if (button) edit(button.dataset.codeKey);
+    });
+    element.addEventListener('keydown', event => {
+      if (event.ctrlKey || event.metaKey || event.altKey || event.isComposing || element.disabled) return;
+      if (/^[0-9]$/.test(event.key) || event.key === 'Backspace' || event.key === 'Delete') {
+        event.preventDefault();
+        if (!event.repeat) edit(event.key.length === 1 ? event.key : 'delete');
+        element.focus({preventScroll: true});
+      } else if (event.key === 'Enter' && event.target === element) {
+        event.preventDefault();
+        if (!event.repeat) submit.click();
+      }
+    });
+    window.addEventListener('pagehide', () => clear(element));
+  }
+
+  async function verify(element, check) {
+    const state = pads.get(element);
+    if (!state || element.disabled || state.pending) return null;
+    const attempt = {};
+    state.pending = attempt;
+    const code = state.digits;
+    state.digits = '';
+    render(state);
+    let result;
+    try {
+      result = await check(code);
+    } catch {
+      result = {ok: false, code: 'startup'};
+    }
+    if (state.pending !== attempt) return null;
+    state.pending = null;
+    return element.closest('.hidden') ? null : result;
+  }
+
+  return {mount, clear, verify};
+})();
+
 (() => {
   const $ = window.$ || ((id) => document.getElementById(id));
   const $$ = window.$$ || ((sel) => Array.from(document.querySelectorAll(sel)));
@@ -16,7 +91,7 @@
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
   // Component revision changes only when this module changes; installed release is loader-attested.
-  const APP_COMPONENT_REVISION='8.8.20.94';
+  const APP_COMPONENT_REVISION='8.8.20.95';
   const BUILD_VERSION=window.__darkSkyVerifiedRelease?.build;
   if(!BUILD_VERSION || BUILD_VERSION!==window.__darkSkyExpectedRelease?.build || window.__darkSkyVerifiedRelease?.seal!==window.__darkSkyExpectedRelease?.seal)throw new Error('Verified release context required before app execution.');
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
@@ -1449,8 +1524,8 @@
     closeExperienceTestDeck();
     clearHarborRescueMemory();
     clearIntegrityDiagnostic();
-    if($('enginePinInput')) $('enginePinInput').value='';
-    if($('blackFlagEntryPin')) $('blackFlagEntryPin').value='';
+    engineCodePads.clear($('enginePinInput'));
+    engineCodePads.clear($('blackFlagEntryPin'));
     document.body.classList.remove('engine-mode');
     const engineScreen = $('enginePanel');
     if(engineScreen) engineScreen.classList.add('hidden');
@@ -17796,19 +17871,19 @@ The full order and approved media remain stored with this project.`;
     if($('engineRoomBtn')) $('engineRoomBtn').addEventListener('click',async()=>{
       if(isTestAccessActive()){ await openEnginePanel(); return; }
       document.body.classList.add('modal-open');
-      $('enginePinInput').value='';
+      engineCodePads.clear($('enginePinInput'));
       $('enginePinError').textContent='';
       $('enginePinGate').classList.remove('hidden');
       setTimeout(()=>{if(pinLocked('engine'))showPinLock('engine','engineLockTimer','enginePinInput','unlockEngineBtn');else $('enginePinInput').focus()},50);
     });
-    $('cancelEngineBtn').addEventListener('click',()=>{$('enginePinInput').value='';$('enginePinGate').classList.add('hidden');document.body.classList.remove('modal-open');});
-    $('enginePinInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('unlockEngineBtn').click();});
+    $('cancelEngineBtn').addEventListener('click',()=>{engineCodePads.clear($('enginePinInput'));$('enginePinGate').classList.add('hidden');document.body.classList.remove('modal-open');});
+    engineCodePads.mount($('enginePinInput'), $('unlockEngineBtn'));
     $('unlockEngineBtn').addEventListener('click',async()=>{
-      const entered=$('enginePinInput').value.trim();
-      $('enginePinInput').value='';
-      $('enginePinInput').blur();
-      const testAccessActive=window.DarkSkyTestAccess?.isActive?.()===true;
-    const result=testAccessActive?{ok:true,code:'test-access'}:await window.BlackFlagAuth.verify(entered);
+      const result = await engineCodePads.verify($('enginePinInput'), entered =>
+        window.DarkSkyTestAccess?.isActive?.() === true
+          ? {ok: true, code: 'test-access'}
+          : window.BlackFlagAuth.verify(entered));
+      if (!result) return;
       if(!result.ok){
         if(result.code==='startup'){
         $('enginePinError').textContent='Black Flag startup is incomplete. Reload this build before entering the Engine PIN.';
@@ -17823,11 +17898,11 @@ The full order and approved media remain stored with this project.`;
             'Ye almost fooled the parrot. Almost.'
           ];
           $('enginePinError').textContent=pirateLines[Math.floor(Math.random()*pirateLines.length)];
-          $('enginePinInput').select();
+          $('enginePinInput').focus();
         }
         return;
       }
-      $('enginePinInput').value='';
+      engineCodePads.clear($('enginePinInput'));
       $('enginePinGate').classList.add('hidden');
       document.body.classList.remove('modal-open');
       await openEnginePanel();
@@ -18144,7 +18219,7 @@ document.addEventListener('click', (event) => {
       gate.classList.remove('hidden');
       document.body.classList.add('bf-entry-open');
       const input=byId('blackFlagEntryPin');
-      if(input){ input.value=''; setTimeout(()=>{input.value='';input.focus();},60); }
+      if(input){ engineCodePads.clear(input); input.focus({preventScroll:true}); }
       const err=byId('blackFlagEntryError'); if(err) err.textContent='';
       window.releaseDarkSkyFirstPaint?.('engine-entry-ready');
     }
@@ -18153,6 +18228,7 @@ document.addEventListener('click', (event) => {
   window.requireEngineEntry=requireEngineEntry;
 
   function leaveEntry(){
+    engineCodePads.clear(byId('blackFlagEntryPin'));
     const gate=byId('blackFlagEntryGate');
     if(gate) gate.classList.add('hidden');
     document.body.classList.remove('bf-entry-open');
@@ -18169,25 +18245,19 @@ document.addEventListener('click', (event) => {
 
   async function unlockFromEntry(){
     const input=byId('blackFlagEntryPin');
-    const entered=(input?.value||'').trim();
-    // Local command PINs are transient, not browser account credentials. Clear
-    // and dismiss their keyboard before verification or any route transition.
-    if(input){input.value='';input.blur();}
-
     const testAccessActive=window.DarkSkyTestAccess?.isActive?.()===true;
-    // The historical Black Flag credential is an entry invariant and must not depend
-    // on IndexedDB, migrations, project state, or a late application initializer.
-    // BlackFlagAuth remains the shared controller for alternate configured Engine PINs.
-    let result;
-    if(testAccessActive) result={ok:true,code:'test-access'};
-    else if(entered==='5615'){
-      try{ window.BlackFlagAuth?.clearPinFailures?.('engine'); }catch(_){}
-      result={ok:true,code:'recovery',recovery:true};
-    }else if(window.BlackFlagAuth?.verify){
-      result=await window.BlackFlagAuth.verify(entered);
-    }else{
-      result={ok:false,code:'startup'};
-    }
+    const result = await engineCodePads.verify(input, entered => {
+      if(testAccessActive) return {ok:true,code:'test-access'};
+      else if(entered==='5615'){
+        try{ window.BlackFlagAuth?.clearPinFailures?.('engine'); }catch(_){}
+        return {ok:true,code:'recovery',recovery:true};
+      }else if(window.BlackFlagAuth?.verify){
+        return window.BlackFlagAuth.verify(entered);
+      }else{
+        return {ok:false,code:'startup'};
+      }
+    });
+    if (!result) return;
     if(!result.ok){
       const err=byId('blackFlagEntryError');
       if(result.code==='startup'){
@@ -18197,13 +18267,12 @@ document.addEventListener('click', (event) => {
         window.showPinLock('engine','blackFlagLockTimer','blackFlagEntryPin','blackFlagEntryUnlock');
       }else{
         if(err) err.textContent=window.BlackFlagAuth.message(result);
-        if(input){ input.value=''; input.focus(); }
+        input?.focus();
       }
       return;
     }
 
     if(window.BlackFlagAuth&&!testAccessActive) window.BlackFlagAuth.unlock();
-    if(input) input.value='';
     window.pendingEngineReturnProjectId=null;
 
     // 5.7.3 atomic Engine crossing. Prepare and hide all project surfaces BEFORE
@@ -18337,7 +18406,7 @@ document.addEventListener('click', (event) => {
       const engine=byId('enginePanel');if(engine)engine.classList.add('hidden');
       requireEngineEntry();
     });
-    if(pin) pin.addEventListener('keydown',e=>{if(e.key==='Enter') unlockFromEntry();});
+    engineCodePads.mount(pin, unlock);
     if(company) company.addEventListener('click',openCompanyApp);
     if(admin) admin.addEventListener('click',openCompanyAdminGate);
     if(engineCompany) engineCompany.addEventListener('click',openCompanyApp);

@@ -7,7 +7,7 @@ function fn(name){const start=app.search(new RegExp('  (?:async )?function '+nam
 function classes(...initial){const values=new Set(initial);return {contains:x=>values.has(x),add:(...xs)=>xs.forEach(x=>values.add(x)),remove:(...xs)=>xs.forEach(x=>values.delete(x)),toggle:(x,on)=>on?values.add(x):values.delete(x)};}
 function viewport(){const frames=[],calls=[];const body={classList:classes(),dataset:{}},document={body,documentElement:{},readyState:'complete',getElementById:()=>null,querySelector:()=>null};const c={document,requestAnimationFrame:f=>frames.push(f),addEventListener(){},scrollTo:options=>calls.push(['window',options.top]),console};c.window=c;vm.createContext(c);vm.runInContext(read('fleet_viewport.js'),c);return {c,calls,frames,flush(){while(frames.length)frames.shift()();}};}
 test('local PIN gates carry no browser password field semantics and stay visually masked',()=>{
- for(const id of ['blackFlagEntryPin','enginePinInput','captainPinInput','adminPinInput','engineResetPinInput','newAdminPin','confirmAdminPin','adminCurrentPinChange','adminNewPinChange','adminConfirmPinChange']){
+ for(const id of ['captainPinInput','adminPinInput','engineResetPinInput','newAdminPin','confirmAdminPin','adminCurrentPinChange','adminNewPinChange','adminConfirmPinChange']){
   const tag=html.match(new RegExp('<input[^>]*id="'+id+'"[^>]*>'))?.[0];assert.ok(tag,id);
   assert.match(tag,/type="text"/,id+' must not be a browser account password');assert.match(tag,/data-bf-pin/,id);assert.match(tag,/inputmode="numeric"/,id);assert.match(tag,/autocomplete="off"/,id);assert.doesNotMatch(tag,/\sname=/,id);
  }
@@ -15,19 +15,80 @@ test('local PIN gates carry no browser password field semantics and stay visuall
  assert.match(app,/<input[^>]*id="ownerLoginPassword"[^>]*type="password"[^>]*autocomplete="current-password"/);
  assert.match(html,/<input[^>]*id="darkSkyAdmiralRecoveryPassword"[^>]*type="password"/);
 });
-function entry(value,result={ok:false,code:'incorrect'}){
- const events=[],input={value,blur(){events.push('blur')},focus(){events.push('focus')}},elements={blackFlagEntryPin:input,blackFlagEntryError:{textContent:''},enginePanel:{classList:classes('hidden')}};
- const c={console,byId:id=>elements[id],document:{body:{classList:classes('boot-locked')}},hideProjectSurfacesBeforeEngine(){events.push('hide')},leaveEntry(){events.push('leave')},resumeActiveCommissionVoyageAfterEngineUnlock:async()=>true,scheduleIronHullFortification(){}};
- c.window={BlackFlagAuth:{verify:async value=>{events.push(['verify',value,input.value]);return result},message:()=> 'Incorrect PIN',unlock(){events.push('unlock')}},DarkSkyBoundaryBridge:{prepareEngine(){events.push('prepare')}},scrollTo(){events.push('scroll')}};
- vm.createContext(c);vm.runInContext(fn('unlockFromEntry'),c);return {c,input,events,elements};
+function padFixture(){
+ const events=[], listeners={}, leaves={}, mask={}, status={};
+ const pad={
+   focus(){events.push('focus');}, closest(){return this.hidden ? {} : null;},
+   querySelector(selector){return selector==='[data-code-mask]' ? mask : status;},
+   addEventListener(type,callback){listeners[type]=callback;}
+ };
+ const submit={click(){events.push('submit');}};
+ const c={window:{addEventListener(type,callback){leaves[type]=callback;}}};
+ vm.createContext(c);
+ const pads=vm.runInContext(app.slice(0, app.indexOf('\n(() => {'))+'\nengineCodePads',c);
+ pads.mount(pad,submit);
+ const tap=key=>listeners.click({target:{closest:()=>({dataset:{codeKey:key}})}});
+ const type=(key,extra={})=>listeners.keydown({key,target:pad,preventDefault(){},...extra});
+ return {pad,pads,submit,tap,type,mask,status,events,leaves,c};
 }
-test('Engine reads then clears and blurs the PIN before asynchronous verification',async()=>{const f=entry('2468');await f.c.unlockFromEntry();assert.deepEqual(f.events[0],'blur');assert.deepEqual(f.events[1],['verify','2468','']);assert.equal(f.input.value,'');assert.ok(!f.events.includes('unlock'));assert.ok(f.c.document.body.classList.contains('boot-locked'));});
-test('accepted configured PIN follows the same verifier and Engine boundary',async()=>{const f=entry('2468',{ok:true});await f.c.unlockFromEntry();assert.deepEqual(f.events[1],['verify','2468','']);assert.ok(f.events.indexOf('blur')<f.events.indexOf('prepare'));assert.ok(f.events.includes('unlock'));assert.ok(f.events.includes('prepare'));assert.equal(f.input.value,'');});
-test('locked and unavailable primary gates remain closed after discarding the PIN',async()=>{for(const code of ['locked','startup']){const f=entry('2468',{ok:false,code});f.c.window.showPinLock=()=>f.events.push('lockout');await f.c.unlockFromEntry();assert.equal(f.input.value,'');assert.ok(!f.events.includes('unlock'));assert.ok(f.c.document.body.classList.contains('boot-locked'));if(code==='locked')assert.ok(f.events.includes('lockout'));else assert.match(f.elements.blackFlagEntryError.textContent,/startup is incomplete/);}});
-test('secondary Engine gate discards PIN before verification and reports startup failure safely',async()=>{
+test('both Engine entrances have labelled button keypads and no editable credential field',()=>{
+ for(const id of ['blackFlagEntryPin','enginePinInput']){
+   const markup=html.match(new RegExp('<fieldset id="'+id+'"[\\s\\S]+?</fieldset>'))?.[0];
+   assert.ok(markup,id);
+   assert.match(markup,/<legend>[^<]+<\/legend>/);
+   assert.doesNotMatch(markup,/<input\b|<textarea\b|contenteditable|type="submit"/i);
+   const keys=Array.from(markup.matchAll(/<button type="button" data-code-key="([^"]+)"/g),m=>m[1]);
+   assert.deepEqual(keys,['1','2','3','4','5','6','7','8','9','clear','0','delete']);
+ }
+});
+test('button and keyboard entry preserve leading zeroes, edit correctly and expose only the digit count',async()=>{
+ const f=padFixture(); f.tap('7'); f.tap('clear'); f.tap('0'); f.type('9'); f.type('Backspace'); f.type('2'); f.tap('8'); f.tap('delete');
+ f.type('7',{ctrlKey:true}); f.type('6',{repeat:true}); f.type('Enter');
+ assert.equal(f.mask.textContent,'●●');assert.equal(f.status.textContent,'2 digits entered');assert.equal(f.events.at(-1),'submit');
+ assert.equal('value' in f.pad,false);
+ await f.pads.verify(f.pad,code=>{assert.equal(code,'02');assert.equal(f.mask.textContent,'');return {ok:true};});
+ for(const digit of '1234567890')f.tap(digit);
+ await f.pads.verify(f.pad,code=>assert.equal(code,'12345678'));
+});
+test('lockout blocks input and submission; pending checks are single-use and page exit invalidates their result',async()=>{
+ const f=padFixture(); f.pad.disabled=true; f.tap('1'); f.type('2');
+ assert.equal(f.mask.textContent,'');assert.equal(await f.pads.verify(f.pad,()=>assert.fail()),null);
+ f.pad.disabled=false;f.tap('1');let resolve;
+ const pending=f.pads.verify(f.pad,()=>new Promise(r=>resolve=r));f.tap('5');
+ assert.equal(await f.pads.verify(f.pad,()=>assert.fail()),null);assert.equal(f.mask.textContent,'');
+ f.leaves.pagehide(); resolve({ok:true});assert.equal(await pending,null);
+ f.tap('2'); f.pads.clear(f.pad);assert.equal(f.status.textContent,'0 digits entered');
+ f.pad.hidden=true;assert.equal(await f.pads.verify(f.pad,()=>({ok:true})),null);
+});
+function entry(value,result={ok:false,code:'incorrect'}){
+ const f=padFixture(),{c,events,pad,pads,mask}=f;
+ const elements={blackFlagEntryPin:pad,blackFlagEntryError:{textContent:''},enginePanel:{classList:classes('hidden')}};
+ Object.assign(c,{console,byId:id=>elements[id],document:{body:{classList:classes('boot-locked')}},hideProjectSurfacesBeforeEngine(){events.push('hide');},leaveEntry(){pads.clear(pad);events.push('leave');},resumeActiveCommissionVoyageAfterEngineUnlock:async()=>true,scheduleIronHullFortification(){}});
+ Object.assign(c.window,{BlackFlagAuth:{verify:async code=>{events.push(['verify',code,mask.textContent]);return result;},message:()=> 'Incorrect PIN',unlock(){events.push('unlock');}},DarkSkyBoundaryBridge:{prepareEngine(){events.push('prepare');}},scrollTo(){events.push('scroll');}});
+ vm.runInContext(fn('unlockFromEntry'),c);
+ Array.from(value).forEach(f.tap);return {...f,elements};
+}
+test('incorrect configured code clears before verification and leaves the primary gate closed',async()=>{
+ const f=entry('2468');await f.c.unlockFromEntry();assert.deepEqual(f.events[0],['verify','2468','']);
+ assert.ok(!f.events.includes('unlock'));assert.ok(f.c.document.body.classList.contains('boot-locked'));
+});
+test('accepted configured code follows the existing Engine boundary',async()=>{
+ const f=entry('2468',{ok:true});await f.c.unlockFromEntry();assert.deepEqual(f.events[0],['verify','2468','']);
+ assert.ok(f.events.includes('unlock'));assert.ok(f.events.includes('prepare'));assert.equal(f.mask.textContent,'');
+});
+test('locked and unavailable primary gates remain closed after discarding the code',async()=>{
+ for(const code of ['locked','startup']){
+   const f=entry('2468',{ok:false,code});f.c.window.showPinLock=()=>f.events.push('lockout');await f.c.unlockFromEntry();
+   assert.equal(f.mask.textContent,'');assert.ok(!f.events.includes('unlock'));assert.ok(f.c.document.body.classList.contains('boot-locked'));
+   if(code==='locked')assert.ok(f.events.includes('lockout'));else assert.match(f.elements.blackFlagEntryError.textContent,/startup is incomplete/);
+ }
+});
+test('secondary Engine gate clears before verification and reports verifier failure without opening',async()=>{
  const start=app.indexOf("    $('unlockEngineBtn').addEventListener('click',async()=>{"),end=app.indexOf('\n    });',start);assert.ok(start>=0&&end>start);
- const events=[],elements={enginePinInput:{value:'2468',blur(){events.push('blur')},select(){}},enginePinError:{textContent:''},unlockEngineBtn:{addEventListener:(_,handler)=>elements.handler=handler}};
- const c={$:id=>elements[id],window:{BlackFlagAuth:{verify:async value=>{events.push(['verify',value,elements.enginePinInput.value]);return {ok:false,code:'startup'}}}}};vm.createContext(c);vm.runInContext(app.slice(start,end+8),c);await elements.handler();assert.deepEqual(events,['blur',['verify','2468','']]);assert.match(elements.enginePinError.textContent,/startup is incomplete/);
+ const f=padFixture();const elements={enginePinInput:f.pad,enginePinError:{textContent:''},unlockEngineBtn:{addEventListener:(_,handler)=>elements.handler=handler}};
+ f.c.$=id=>elements[id];f.c.window.BlackFlagAuth={verify:async code=>{assert.equal(code,'24');assert.equal(f.mask.textContent,'');throw Error('offline');}};
+ vm.runInContext(app.slice(start,end+8),f.c);f.tap('2');f.tap('4');await elements.handler();
+ assert.match(elements.enginePinError.textContent,/startup is incomplete/);
 });
 test('explicit route anchor resets its real scroll ancestors instead of only window',()=>{const f=viewport(),anchor={isConnected:true,scrollIntoView:o=>f.calls.push(['anchor',o.block])};f.c.BlackFlagViewport.enter({key:'workstation:legacy',reason:'new',anchor});f.flush();assert.deepEqual(f.calls,[['anchor','start']]);});
 test('a route invalidated before layout cannot scroll a different surface',()=>{const f=viewport();let current=true;const anchor={isConnected:true,scrollIntoView:()=>f.calls.push('anchor')};f.c.BlackFlagViewport.enter({key:'workstation:legacy',anchor,current:()=>current});current=false;f.flush();assert.deepEqual(f.calls,[]);});

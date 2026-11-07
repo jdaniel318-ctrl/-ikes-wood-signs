@@ -16632,3 +16632,83 @@ body:not(.engine-mode) #experienceTestDeck,body.boot-locked #experienceTestDeck{
 #shipIntegritySummary button{min-height:48px;white-space:normal}
 @media(max-width:800px){#shipIntegritySummary .integrity-check-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:440px){#shipIntegritySummary .integrity-check-grid{grid-template-columns:1fr}#shipIntegritySummary .v3-integrity-result{flex-wrap:wrap}#shipIntegritySummary button{width:100%}}
+
+/* Local Engine code entry. Keys stay comfortably tappable with Safari's bars open. */
+.engine-code-pad {
+  box-sizing: border-box;
+  width: min(100%, 22rem);
+  min-width: 0;
+  margin: 0 auto;
+  padding: 0;
+  border: 0;
+}
+.engine-code-pad legend {
+  float: none;
+  width: 100%;
+  padding: 0;
+  text-align: center;
+  color: inherit;
+  font-weight: 750;
+}
+#blackFlagEntryGate .engine-code-pad { color: #253f47; }
+.engine-code-pad [data-code-mask] {
+  display: block;
+  min-height: 1.6rem;
+  line-height: 1.6rem;
+  letter-spacing: .22em;
+  text-align: center;
+}
+.engine-code-pad .code-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.engine-code-keys {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 5px;
+}
+.engine-code-pad .engine-code-keys button {
+  display: block;
+  min-height: 44px;
+  width: 100%;
+  margin: 0;
+  padding: 4px;
+  border: 1px solid #809398;
+  border-radius: 9px;
+  background: #fffefa;
+  color: #15313b;
+  font: 700 1rem/1.2 system-ui, sans-serif;
+  letter-spacing: normal;
+  text-transform: none;
+  touch-action: manipulation;
+}
+.engine-code-pad .engine-code-keys button:active { background: #d5e5e7; }
+.engine-code-pad:focus-visible, .engine-code-keys button:focus-visible {
+  outline: 3px solid #2181a2; outline-offset: 2px;
+}
+.engine-code-pad:disabled .engine-code-keys { opacity: .55; }
+
+#blackFlagEntryGate .bf-engine-title-lockup > .bf-engine-primary-lockup {
+  height: auto !important;
+  max-height: clamp(64px, 12vh, 116px) !important;
+}
+@media (min-width: 761px) and (max-height: 820px) {
+  #blackFlagEntryGate .bf-entry-shell {
+    display: grid;
+    width: min(850px, 100%) !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr);
+    align-content: center;
+    column-gap: 26px;
+  }
+  #blackFlagEntryGate .bf-entry-shell > * { grid-column: 1; }
+  #blackFlagEntryGate .bf-entry-kicker { align-self: end; }
+  #blackFlagEntryGate .bf-entry-panel {
+    grid-column: 2; grid-row: 1 / span 5;
+    align-self: center; width: 100%; box-sizing: border-box;
+  }
+  #blackFlagEntryGate .bf-entry-trust { width: auto !important; }
+}

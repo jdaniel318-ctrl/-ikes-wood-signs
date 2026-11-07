@@ -15,7 +15,7 @@ fs.mkdirSync(out,{recursive:true});
    await context.route('**/*',route=>{const u=new URL(route.request().url()),rel=decodeURIComponent(u.pathname).slice(1)||'index.html',file=path.resolve(root,rel);if(u.origin==='https://waypoint.invalid'&&file.startsWith(root+path.sep)&&fs.existsSync(file)&&fs.statSync(file).isFile())return route.fulfill({body:fs.readFileSync(file),contentType:rel.endsWith('.js')?'text/javascript':rel.endsWith('.html')?'text/html':rel.endsWith('.css')?'text/css':rel.endsWith('.json')?'application/json':rel.endsWith('.png')?'image/png':'application/octet-stream'});blocked.push({path:u.pathname,method:route.request().method()});return route.abort();});
    await context.addInitScript(build=>{delete Navigator.prototype.serviceWorker;sessionStorage.setItem('darkSkyAutoProving:'+build,'done');},manifest.build);
    await page.goto('https://waypoint.invalid/index.html');await page.waitForFunction(()=>window.__darkSkyReleaseGateState==='clear');
-   await page.locator('#blackFlagEntryPin').fill('5615');await page.locator('#blackFlagEntryUnlock').click();
+   await page.locator('#blackFlagEntryPin').pressSequentially('5615');await page.locator('#blackFlagEntryUnlock').click();
    await page.waitForFunction(()=>document.body.classList.contains('engine-mode')&&!document.querySelector('#enginePanel').classList.contains('hidden'));
    await page.screenshot({path:path.join(out,name+'-home.png')});
    assert.equal(await page.locator('#engineSystemsDirectory').count(),1,'Engineering needs a direct destination directory');
