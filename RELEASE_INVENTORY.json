@@ -1,9 +1,9 @@
 {
-  "release": "Pennant",
-  "name": "Pennant",
-  "build": "8.8.20.102",
-  "seal": "pennant-8820102",
-  "file_count": 876,
+  "release": "Flagstaff",
+  "name": "Flagstaff",
+  "build": "8.8.20.103",
+  "seal": "flagstaff-8820103",
+  "file_count": 877,
   "files": [
     ".github/workflows/drydock-batch1.yml",
     "ADMIRALS_DECK_TRIAL.md",
@@ -116,6 +116,7 @@
     "FIELD_WHITESPACE_POLICY.json",
     "FIRSTLIGHT_PRESERVATION.json",
     "FIRSTLIGHT_TEST_RESULTS.json",
+    "FLAGSTAFF_EVIDENCE.json",
     "FLEETBOUND_EVIDENCE.json",
     "FLEETBOUND_GUIDE.md",
     "FLEETCARE_BASELINE.json",

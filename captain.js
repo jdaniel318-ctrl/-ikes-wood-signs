@@ -63,10 +63,12 @@ const AdmiralAccountForm = (() => {
     function reset() {
       clear();
       const saved = savedEmail();
-      if (saved) button('Continue as ' + saved, true, () => confirmEmail(saved));
-      const enter = button(saved ? 'Use another Admiral email' : 'Enter Admiral email', !saved, () => editEmail(''));
-      enter.id = prefix + 'Choose';
-      if (saved) button('Forget saved Admiral email', false, () => {
+      if (!saved) {
+        button('Enter Admiral email', true, () => editEmail('')).id = prefix + 'Choose';
+        return;
+      }
+      button('Continue as ' + saved, true, () => confirmEmail(saved)).id = prefix + 'Choose';
+      button('Forget my email on this device', false, () => {
         try { localStorage.removeItem(preferenceKey); } catch (_) {}
         reset();
         form.querySelector('button').focus();
@@ -106,7 +108,7 @@ const AdmiralAccountForm = (() => {
       form.elements.username.value = address;
       form.querySelector('[data-remember-email]').checked = (savedEmail() === address);
       button('Authenticate Admiral →', true);
-      button('Change Admiral email', false, () => editEmail(address));
+      button('Edit my sign-in email', false, () => editEmail(address));
       status.textContent = '';
       form.querySelector('[data-password-label]').focus();
     }
@@ -1090,7 +1092,7 @@ const AdmiralAccountForm = (() => {
     text('admiralGateTitle',account?'One more step.':resume?'Welcome back.':'Welcome aboard.');
     text('admiralGateDescription',account?'Your PIN is verified. Sign in with your Admiral account to open the workspace.':resume?'Your Admiral role is retained. Verify your PIN to recheck your account access; another password may not be needed.':'Your Admiral Office brings the fleet together. Verify your PIN and account to begin.');
     text('admiralEntranceFormTitle',account?'Sign in as Admiral':resume?'Verify your PIN to return':'Enter your passage PIN');
-    text('admiralEntranceFormHint',account?'Choose your Admiral email to continue.':resume?'We will recheck your account before reopening the workspace.':'First your PIN. Then your Admiral account.');
+    text('admiralEntranceFormHint',account?'Confirm your sign-in email to continue.':resume?'We will recheck your account before reopening the workspace.':'First your PIN. Then your Admiral account.');
     text('admiralEntrancePinState',account?'Verified':'Required');
     text('admiralEntranceAccountState',account?'Required':resume?'Recheck pending':'Next');
     text('admiralUnlockBtn',resume?'Verify PIN & return →':'Continue with PIN →');

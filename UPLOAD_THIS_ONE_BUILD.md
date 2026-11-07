@@ -1,11 +1,11 @@
-# Upload Pennant 8.8.20.102
+# Upload Flagstaff 8.8.20.103
 
-Use `DarkSky8820102-Pennant-Upload.zip`, not the full backup or rollback.
+Use `DarkSky8820103-Flagstaff-Upload.zip`, not the full backup or rollback.
 1. Extract the ZIP. Open its single folder. Upload ALL files inside to the existing repository ROOT; replace matching files and KEEP all other files. Commit the upload.
-2. After deployment open the Engine and confirm `8.8.20.102 · PENNANT`. Do not clear Safari data, reset records or change permissions.
-3. After the passage PIN, check the account chooser on your iPad. Choose an Admiral email, sign in, and test the optional remembered address on your next fresh sign-in.
+2. After deployment open the Engine and confirm `8.8.20.103 · FLAGSTAFF`. Do not clear Safari data, reset records or change permissions.
+3. Open Admiral My Fleet on the iPad. After the PIN, check that the remembered email offers one sign-in. Continue to see Edit my sign-in email.
 
-Admiral Office and Fleet Watchtower open with an account button. Users can choose to remember a verified Admiral email on this device.
+The Admiral can continue with the remembered sign-in email, edit it at the password step, or forget it on this device.
 The upload itself executes no database commands. Shared specialist components retain their own revision labels; this is intentional reuse, not a mixed upload. Exact SHA-256 checks still run before Engine scripts execute.
 
 Full backup: application source ONLY; not Supabase, customer media or device drafts.

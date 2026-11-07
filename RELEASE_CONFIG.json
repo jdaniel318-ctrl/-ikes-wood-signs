@@ -1,15 +1,15 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.102",
-  "name": "Pennant",
-  "seal": "pennant-8820102",
-  "base": "8.8.20.101",
-  "base_sha256": "1d638400d5f6edf3c95d06079885519cedfbcf9c33e8faf6c11175124d27ac5f",
-  "base_files": 875,
-  "prepared_at": "2026-11-07T17:12:27.678165+00:00",
+  "build": "8.8.20.103",
+  "name": "Flagstaff",
+  "seal": "flagstaff-8820103",
+  "base": "8.8.20.102",
+  "base_sha256": "627fe8adf560d00bc6dd5dd8500bf22e1ff6caf04b51949fbdb8e091c273724c",
+  "base_files": 876,
+  "prepared_at": "2026-11-07T17:33:38.139114+00:00",
   "app_component_revision": "8.8.20.99",
   "owner_helper_revision": "8.8.20.68",
-  "feature_notes": "Admiral Office and Fleet Watchtower open with an account button. Users can choose to remember a verified Admiral email on this device.",
+  "feature_notes": "The Admiral can continue with the remembered sign-in email, edit it at the password step, or forget it on this device.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -30,6 +30,6 @@
       "automatic_execution_by_upload": false
     }
   },
-  "install_step": "After the passage PIN, check the account chooser on your iPad. Choose an Admiral email, sign in, and test the optional remembered address on your next fresh sign-in.",
-  "evidence_file": "PENNANT_EVIDENCE.json"
+  "install_step": "Open Admiral My Fleet on the iPad. After the PIN, check that the remembered email offers one sign-in. Continue to see Edit my sign-in email.",
+  "evidence_file": "FLAGSTAFF_EVIDENCE.json"
 }

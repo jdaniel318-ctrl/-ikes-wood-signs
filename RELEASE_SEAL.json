@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.102",
-  "release": "Pennant",
-  "seal": "pennant-8820102",
+  "build": "8.8.20.103",
+  "release": "Flagstaff",
+  "seal": "flagstaff-8820103",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Pennant",
-  "name": "Pennant",
-  "releaseName": "Pennant"
+  "release_name": "Flagstaff",
+  "name": "Flagstaff",
+  "releaseName": "Flagstaff"
 }

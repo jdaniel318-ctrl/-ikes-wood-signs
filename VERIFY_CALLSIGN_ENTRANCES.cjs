@@ -94,7 +94,7 @@ for (const prefix of ['admiralAirlock', 'watch']) {
       await page.waitForFunction(() => attempts.length === 1);
       assert.equal(await page.locator('#watchWorkspace').isVisible(),false);
       assert.equal(await password.inputValue(),'');
-      await page.getByRole('button',{name:'Change Admiral email'}).click();
+      await page.getByRole('button',{name:'Edit my sign-in email'}).click();
       assert.equal(await password.count(),0);
       await address.fill('first@example.invalid');
       await address.press('Enter');
@@ -121,6 +121,9 @@ for (const prefix of ['admiralAirlock', 'watch']) {
       const watch = page.locator('#watchSecurityForm');
       const saved = watch.getByRole('button',{name:'Continue as admiral@example.invalid',exact:true});
       await saved.waitFor();
+      assert.deepEqual(await watch.getByRole('button').allTextContents(), [
+        'Continue as admiral@example.invalid', 'Forget my email on this device'
+      ], 'a remembered email opens one Admiral sign-in');
       assert.equal(await watch.locator('input, textarea').count(),0);
       await saved.click();
       assert.equal(await watch.locator('[name=username]').inputValue(),'admiral@example.invalid');
@@ -128,7 +131,7 @@ for (const prefix of ['admiralAirlock', 'watch']) {
       assert.equal(await page.locator('#watchWorkspace').isVisible(),false);
       await page.locator('#watchGateClose').click();
       await page.evaluate(()=>DarkSkyOpenFleetWatchtower());
-      await watch.getByRole('button',{name:'Forget saved Admiral email'}).click();
+      await watch.getByRole('button',{name:'Forget my email on this device'}).click();
       assert.equal(await saved.count(),0);
       assert.equal(await watch.getByRole('button',{name:'Enter Admiral email'}).isVisible(),true);
       assert.deepEqual(errors,[]);

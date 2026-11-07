@@ -1,0 +1,15 @@
+{
+  "build": "8.8.20.103",
+  "release": "Flagstaff",
+  "baseline": "8.8.20.102 Pennant",
+  "scope": "Remembered Admiral sign-in on both entrances",
+  "checks": {
+    "offline_release_suites": 45,
+    "chromium_entrances": 2,
+    "webkit_entrances": 2,
+    "presentation_checks": 35,
+    "watchtower_and_captain_roster_entry": "passed in Chromium with synthetic identities"
+  },
+  "native_ipad": "The returning email on Pennant was observed. Flagstaff native-device check is pending upload.",
+  "database_changes": "none"
+}
