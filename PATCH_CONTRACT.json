@@ -1,18 +1,18 @@
 {
   "schema": "blackflag-patch-contract-v1",
-  "target_build": "8.8.20.104",
-  "target_seal": "slipstream-8820104",
+  "target_build": "8.8.20.105",
+  "target_seal": "reliefwatch-8820105",
   "supported_bases": [
     {
-      "build": "8.8.20.103",
-      "source_sha256": "5a044fef674a562ddc75cf27511037b6af030d3950814dc5ab34312acb3da0b6",
-      "file_count": 877
+      "build": "8.8.20.104",
+      "source_sha256": "a96f650711edba7b457072e14cb092e8f05668448ab991deaee26d19d7cc30ed",
+      "file_count": 878
     }
   ],
   "requires_deletions": false,
   "max_upload_files": 85,
   "database_actions": "none",
-  "rule": "Upload every changed/new root file over complete 8.8.20.103. Keep everything else. This software archive executes no database commands.",
+  "rule": "Upload every changed/new root file over complete 8.8.20.104. Keep everything else. This software archive executes no database commands.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -29,6 +29,13 @@
       "project": "sjgqqtnuttnkwsoebbqf",
       "migration": "SIGNALMAN_FLEET_HELP.sql",
       "sql_sha256": "cda1e6be58f6d479867ae30e20801403c6f5e6179e11cefa57826217867ca470",
+      "status": "installed_on_connected_fleet_core",
+      "automatic_execution_by_upload": false
+    },
+    "acting_captain_help": {
+      "project": "sjgqqtnuttnkwsoebbqf",
+      "migration": "RELIEFWATCH_FLEET_HELP.sql",
+      "sql_sha256": "ccb5b38f342da5f86bf06828f3588e942f93f86a4a983f8ae0b0978d666cde7c",
       "status": "installed_on_connected_fleet_core",
       "automatic_execution_by_upload": false
     }

@@ -1,15 +1,15 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.104",
-  "name": "Slipstream",
-  "seal": "slipstream-8820104",
-  "base": "8.8.20.103",
-  "base_sha256": "5a044fef674a562ddc75cf27511037b6af030d3950814dc5ab34312acb3da0b6",
-  "base_files": 877,
-  "prepared_at": "2026-11-07T17:49:11.138980+00:00",
+  "build": "8.8.20.105",
+  "name": "Reliefwatch",
+  "seal": "reliefwatch-8820105",
+  "base": "8.8.20.104",
+  "base_sha256": "a96f650711edba7b457072e14cb092e8f05668448ab991deaee26d19d7cc30ed",
+  "base_files": 878,
+  "prepared_at": "2026-11-07T18:27:43.536927+00:00",
   "app_component_revision": "8.8.20.99",
   "owner_helper_revision": "8.8.20.68",
-  "feature_notes": "After the passage PIN, a fresh Admiral sign-in on a remembered device asks only for the password. Fleet access still requires active server-verified Admiral authority.",
+  "feature_notes": "The Admiral can work Fleet Help reports for one unassigned vessel at a time, under their own identity. Accepting a Captain appointment ends this coverage.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -28,8 +28,15 @@
       "sql_sha256": "cda1e6be58f6d479867ae30e20801403c6f5e6179e11cefa57826217867ca470",
       "status": "installed_on_connected_fleet_core",
       "automatic_execution_by_upload": false
+    },
+    "acting_captain_help": {
+      "project": "sjgqqtnuttnkwsoebbqf",
+      "migration": "RELIEFWATCH_FLEET_HELP.sql",
+      "sql_sha256": "ccb5b38f342da5f86bf06828f3588e942f93f86a4a983f8ae0b0978d666cde7c",
+      "status": "installed_on_connected_fleet_core",
+      "automatic_execution_by_upload": false
     }
   },
-  "install_step": "Open Admiral My Fleet on your iPad and enter the passage PIN. On a remembered device, a fresh sign-in now asks directly for your Admiral password.",
-  "evidence_file": "SLIPSTREAM_EVIDENCE.json"
+  "install_step": "Open Admiral My Fleet, expand Fleet help, and select Open as acting Captain on an eligible ship\u2019s report.",
+  "evidence_file": "RELIEFWATCH_EVIDENCE.json"
 }

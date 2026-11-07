@@ -1,0 +1,14 @@
+{
+  "build": "8.8.20.105",
+  "release": "Reliefwatch",
+  "baseline": "8.8.20.104 Slipstream",
+  "release_suites_passed": 45,
+  "database_fixture": "PostgreSQL 17.5 via PGlite. Applied both migrations twice. Verified distinct owner, captain and Admiral grants, same account holding both roles on different ships, pending and accepted appointments, handoff during an open report, scoped attachment reads, audit attribution, stale-version rejection, status transitions and receipt visibility.",
+  "browser_fixtures": [
+    "Chromium",
+    "WebKit"
+  ],
+  "browser_checks": "Verified read-only summary, explicit single-vessel working view, confirmed start, handoff denial during verification, removal of previous details and return to the fleet.",
+  "production_database": "Migration installed. Compared all nine installed function bodies and execute grants to the release. Only read queries used for live verification. No test report, appointment, membership or account changed.",
+  "native_ipad": "Pending after frontend installation."
+}

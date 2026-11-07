@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.20.104",
-  "version": "8.8.20.104",
-  "release_name": "Slipstream",
-  "releaseName": "Slipstream",
-  "release_seal": "slipstream-8820104",
+  "build": "8.8.20.105",
+  "version": "8.8.20.105",
+  "release_name": "Reliefwatch",
+  "releaseName": "Reliefwatch",
+  "release_seal": "reliefwatch-8820105",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -160,8 +160,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "After the passage PIN, a fresh Admiral sign-in on a remembered device asks only for the password. Fleet access still requires active server-verified Admiral authority.",
-  "release_note": "After the passage PIN, a fresh Admiral sign-in on a remembered device asks only for the password. Fleet access still requires active server-verified Admiral authority.",
+  "release_focus": "The Admiral can work Fleet Help reports for one unassigned vessel at a time, under their own identity. Accepting a Captain appointment ends this coverage.",
+  "release_note": "The Admiral can work Fleet Help reports for one unassigned vessel at a time, under their own identity. Accepting a Captain appointment ends this coverage.",
   "tax_ledger_upgrade": {
     "schema": "dark-sky-fleet-tax-ledger-v1",
     "model": "TAX_LEDGER_MODEL.json",
@@ -283,8 +283,8 @@
     "algorithm": "SHA-256",
     "files": {
       "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": {
-        "sha256": "3d4744e5a3bffbd4d4631529ac4fb01f1e4f0969dddede94dda995558ab1e403",
-        "build": "8.8.20.104",
+        "sha256": "9b94e27b7bb6ee49ab643773b7c8f33a9a630485f92835b366d94b1118997a60",
+        "build": "8.8.20.105",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -331,14 +331,14 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_COMMAND_MODEL.json": {
-        "sha256": "4a200d0ba8429420252a5345ad729ff30d4389a7f4a1aa412512722975680e4c",
-        "build": "8.8.20.104",
+        "sha256": "7a4ad7b3abb35f9ffa84b801cc06f446cac7ae59cae6de866c7b2d14ba81c71d",
+        "build": "8.8.20.105",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
       "FLEET_DOCTRINE_REGISTRY.json": {
-        "sha256": "25abce44693597f8b9ebdcf7f8b4286ec1c1f13ea5c57334a388864fe7a9cc3c",
-        "build": "8.8.20.104",
+        "sha256": "8319c4de9b9fbe60ee53bb90395485650ee20d038dcc94c672c36421eebff410",
+        "build": "8.8.20.105",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -397,8 +397,8 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "GOLDEN_VOYAGES.json": {
-        "sha256": "f2720289a65969b9afec5d21abf89f0b1ad1c782a8bbc520bb7d0d09d172f719",
-        "build": "8.8.20.104",
+        "sha256": "629af2b2c601ad86842635044a8fe835665cdb0a1d34d312c859ed0fa3bb8f03",
+        "build": "8.8.20.105",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -555,16 +555,16 @@
       "fleet_supabase.js": "ea66122cd5f138dd91989cd7a5b0abad8d008dd352a811fab1643e19b5c2ccc5",
       "ike_style_registry.js": "6b348ebceb47e172e6676f46252b19c1c6bb7532baf76febfa8dd81760a76ab7",
       "app.js": "34cc9b0406d305ee4d3be5c933b3495ef92ec6f5605c4f5d75cc3c27d5295d54",
-      "captain.js": "a5b0ddf88b13afc28f81ce857aeca261225545d8f78c52bbd359f96bdb2bf1f9",
+      "captain.js": "a3b80ec0bfbf57ecce2be457333b0f88ca8b5238f762fff1e6ba6ed668593b5d",
       "simple_books.js": "ddd76dcf5e6c579f16918a9d3e645b0fc65d8a5b4d7c66df8896d8314eea325d",
-      "owner.html": "3836f637145273d1748190e1f12e600dffd7473ffb75052ab473632d04e715ae",
-      "manifest.webmanifest": "4040fff0009bb7cc99c90a923ed9e98f06212f0d2fb16937fade11d8a649dc0a",
+      "owner.html": "509da4b9e8ba2ae54a4d769fc52f90f45c4ad10d44dccdeefea271857abe47b8",
+      "manifest.webmanifest": "d936df2ad4c751fbe12f9e9ccc58c4307c3d04edb40b95c94439bba932996386",
       "IKE_STYLE_FOUNDRY.json": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
-      "sw.js": "599067219e1504288cc7a180e271bc12f70b34cf7163e4136c365af7d6ffe44f",
-      "FLEET_DOCTRINE_REGISTRY.json": "25abce44693597f8b9ebdcf7f8b4286ec1c1f13ea5c57334a388864fe7a9cc3c",
-      "GOLDEN_VOYAGES.json": "f2720289a65969b9afec5d21abf89f0b1ad1c782a8bbc520bb7d0d09d172f719",
-      "FLEET_COMMAND_MODEL.json": "4a200d0ba8429420252a5345ad729ff30d4389a7f4a1aa412512722975680e4c",
-      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "3d4744e5a3bffbd4d4631529ac4fb01f1e4f0969dddede94dda995558ab1e403",
+      "sw.js": "ab569d9521769ba6f20206f21e36839afeac2e53fc8448623bebc6fc1b8bd21b",
+      "FLEET_DOCTRINE_REGISTRY.json": "8319c4de9b9fbe60ee53bb90395485650ee20d038dcc94c672c36421eebff410",
+      "GOLDEN_VOYAGES.json": "629af2b2c601ad86842635044a8fe835665cdb0a1d34d312c859ed0fa3bb8f03",
+      "FLEET_COMMAND_MODEL.json": "7a4ad7b3abb35f9ffa84b801cc06f446cac7ae59cae6de866c7b2d14ba81c71d",
+      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "9b94e27b7bb6ee49ab643773b7c8f33a9a630485f92835b366d94b1118997a60",
       "input_hygiene.js": "85584886dd424e619c6ee1069665e201dca51e815673839f91da0d796fcf591a",
       "business_deck.js": "5f699f4c8f8a8651dde8b4e3faee4dff1b23412a0cfbb901f3cc84e7297ad350",
       "business_deck.css": "c598dca691af9fd3791effc372f54ead2f5280a6a8bc19032fb01ee2708d593a",
@@ -638,7 +638,7 @@
       "fleet_boundary_repair.js": "a631fd0129c95d91b8cfb0a701acff8fc33991bd3dddf199909b1a4795aaef3e",
       "service_address.js": "ca2a1a60a7b29c53d3666461c2e8e9eece5120e5e945b01362b15f9644df2860",
       "service_address_fleet.js": "d31da02362f3bb60a61589f0a5bbb22ea976ffb853434d52db75eb5d4dd2b585",
-      "fleet_help.js": "e2ce115855f9de56383445562b0e772dfb0dc570e545b92bef10c518794360fe",
+      "fleet_help.js": "c6d41d00d2ca358812d241c1c8b525ea07118cc7e783117ffeb815d500806923",
       "fleet_help.css": "0adb7353483c94cd92bc19d4258a8243d2e3c1c2e17ef65e791c895ecea3cc05"
     }
   },
@@ -1074,7 +1074,7 @@
     "project_data_mutation": false,
     "field_failure_proof": "8.8.20.13 held on styles.css because packaged DEPLOYMENT_MANIFEST runtime hash did not match packaged styles.css bytes"
   },
-  "release": "Slipstream",
+  "release": "Reliefwatch",
   "clearbearing_upgrade": {
     "build": "8.8.20.22",
     "baseline": "8.8.20.14 HashLock",

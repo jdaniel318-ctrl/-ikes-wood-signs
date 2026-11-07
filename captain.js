@@ -211,10 +211,17 @@ const AdmiralAccountForm = (() => {
     const old=helpMount;helpMount=null;
     if(typeof old?.cleanup==='function')old.cleanup();else old?.cleanup?.destroy?.();
     const host=$('watchFleetHelp');if(host)host.textContent='';
+    if($('watchActingHelp')){
+      $('watchOverviewBody').textContent='';
+      $('watchOverview').classList.add('hidden');
+      $('watchOverview').setAttribute('aria-hidden','true');
+      $('watchWorkspace').inert=false;
+    }
   }
   function leaveWatch(){++watchEpoch;clearHelp();}
-  function mountHelp(turn){
-    const host=$('watchFleetHelp');
+  function mountHelp(turn,vessel=null){
+    const hostId=vessel?'watchActingHelp':'watchFleetHelp';
+    const host=$(hostId);
     if(!host||!sameWatch(turn))return;
     try{
       const config=window.BlackFlagV3Identity?.productionAuth?.readClientConfig?.();
@@ -224,18 +231,37 @@ const AdmiralAccountForm = (() => {
       const client=helpClient,session=window.DarkSkyAdmiralSession?.status(),actor=client.readSession()?.user?.id;
       if(!session?.reusable||!session.startedAt||!actor)throw Error();
       const current=()=>{const s=window.DarkSkyAdmiralSession?.status();
-        return sameWatch(turn)&&host===$('watchFleetHelp')&&host.isConnected&&shown($('watchWorkspace'))&&!shown($('watchOverview'))&&
+        const visible=vessel?shown($('watchOverview')):shown($('watchWorkspace'))&&!shown($('watchOverview'));
+        return sameWatch(turn)&&host===$(hostId)&&host.isConnected&&visible&&
           s?.reusable===true&&s.startedAt===session.startedAt&&client.readSession()?.user?.id===actor;};
       if(!current())return;
       const rpc=async(name,args={})=>{
-        if(name!=='admiral_list_fleet_help'||args===null||typeof args!=='object'||Array.isArray(args)||Object.keys(args).length||!current())
-          throw Error('This Fleet help view is read-only. Reopen My Fleet to read current outcomes.');
-        const result=await client.rpc(name,{},'Fleet help could not be read.');
+        if(!current()||!args||typeof args!=='object'||Array.isArray(args))throw Error('Reopen Fleet help.');
+        if(vessel){
+          if(args.p_project_id!==vessel.id||!['acting_captain_list_fleet_help','acting_captain_update_fleet_help','acting_captain_read_fleet_help_attachment'].includes(name))
+            throw Error('This action requires the selected vessel.');
+        }else if(name!=='admiral_list_fleet_help'||Object.keys(args).length){
+          throw Error('This Fleet help view is read-only.');
+        }
+        const result=await client.rpc(name,args,'Fleet help could not confirm this request.');
         if(!current())throw Error('The verified Fleet help view has closed.');
         return result;
       };
       helpMount={current,cleanup:null};
-      helpMount.cleanup=window.DarkSkyFleetHelp.mount(host,{role:'admiral',projectId:'',projectName:'',screen:'My Fleet Watchtower',build:window.__darkSkyVerifiedRelease.build,rpc,isCurrent:current});
+      helpMount.cleanup=window.DarkSkyFleetHelp.mount(host,{
+        role:vessel?'acting_captain':'admiral',projectId:vessel?.id||'',projectName:vessel?.name||'',
+        screen:'My Fleet Watchtower',build:window.__darkSkyVerifiedRelease.build,rpc,isCurrent:current,
+        openActingCaptain:vessel?undefined:(id,name)=>{
+          if(!current()||!id)return;
+          leaveWatch();
+          $('watchOverviewBody').innerHTML=`<section><small>Fleet Help · Acting Captain</small><h2>${safe(name)}</h2><p>You are working as Admiral until a Captain accepts this vessel.</p><div id="watchActingHelp"></div></section>`;
+          $('watchWorkspace').inert=true;
+          $('watchOverview').classList.remove('hidden');
+          $('watchOverview').setAttribute('aria-hidden','false');
+          $('watchOverviewClose').focus({preventScroll:true});
+          mountHelp(watchEpoch,{id,name});
+        }
+      });
     }catch(_){clearHelp();if(sameWatch(turn))host.textContent='Fleet help is unavailable. Refresh Watch to try again.';}
   }
   function setSecurityLayer(verified,message=''){const gate=$('watchSecurityLayer'),workspace=$('watchWorkspace'),overview=$('watchOverview');gate.classList.toggle('hidden',!!verified);gate.setAttribute('aria-hidden',String(!!verified));workspace.classList.toggle('hidden',!verified);workspace.setAttribute('aria-hidden',String(!verified));if(!verified){clearHelp();overview.classList.add('hidden');overview.setAttribute('aria-hidden','true');records=[];programs=[];spine={counts:{},vessels:[]};if(message)$('watchGateStatus').textContent=message;}}
@@ -257,7 +283,7 @@ const AdmiralAccountForm = (() => {
     document.body.classList.remove('bootstrap-fleet-open');
     if (pending) window.DarkSkyAdmiralSession?.cancelSignIn();
   }
-  function overview(id){const v=programs.find(x=>x.project_id===id)||(id===PROGRAM.project_id?PROGRAM:records.find(x=>x.project_id===id));if(!v)return;leaveWatch();const f=facts(v),program=v.mission_class==='admiral_program';$('watchOverviewBody').innerHTML=`<header>${mark(v)}<div><small>ADMIRAL OBSERVATION · EXACT PROJECT CONTEXT</small><h2>${safe(v.display_name)}</h2><p>${safe(v.project_id)}</p></div><em>READ ONLY</em></header><section class="fleet-vessel-context"><article><small>VESSEL LIFECYCLE</small><b>${safe(words(f.life).toUpperCase())}</b></article><article><small>OWNERSHIP STATUS</small><b>${safe(program?'SEPARATE PROGRAM':controlLabel(v))}</b></article><article><small>OWNER ACCOUNTS (NOT CAPTAINS)</small><b>${program?'Not applicable':Number(v.owner_auth_identity_count||0)}</b></article><article><small>SERVER SETTINGS</small><b>${program?'Not applicable':v.settings_present?'PRESENT':'MISSING'}</b></article><article><small>REPORT FRESHNESS</small><b>${safe(!f.reported?"NEVER REPORTED":f.stale?"STALE REPORT":"RECENT REPORT")}</b></article><article><small>OPERATING MODEL</small><b>${safe(words(v.operating_model).toUpperCase())}</b></article><article><small>LAST FLEET READ (NOT A NEW REPORT)</small><b>${safe(lastSync?new Date(lastSync).toLocaleString():"Not read")}</b></article><article><small>CURRENT WORK</small><b>${safe(f.work)}</b></article><article><small>CAPTAIN REPORT SAVED AT</small><b>${safe(f.activity?new Date(f.activity).toLocaleString():'Not reported')}</b></article></section>${f.summary?`<aside><b>Issue summary</b><span>${safe(f.summary)}</span></aside>`:''}<aside><b>Scoped observation established</b><span>Only ${safe(v.display_name)} (${safe(v.project_id)}) is in context. Source: ${safe(words(f.source))}. Captain appointment and ownership are separate. An unassigned owner does not cancel an accepted Captain appointment; owner authority still requires an exact-vessel owner membership. No modifying control is exposed.</span></aside>${program?'':`<section class="tb-command-access"><h3>Fleet Captain operating access</h3><p>Observation is available without a Captain appointment. Operating is a separate authority check, not an ownership transfer.</p><p class="tb-command-pending"><b>FLEET COMMAND OPERATIONS NOT ENABLED</b><br>This release does not enable operation from the Fleet Command side. This is not a backend-health warning or a publication status. An accepted, exact-vessel Captain uses their separate Captain Station; observation grants no operating permission.</p><button type="button" disabled>OPERATE AS FLEET CAPTAIN — NOT ENABLED</button><p>No appointment or membership will be created to bypass this boundary.</p></section>`}`;$('watchOverview').classList.remove('hidden');$('watchOverview').setAttribute('aria-hidden','false');$('watchOverviewClose').focus({preventScroll:true});}
+  function overview(id){const v=programs.find(x=>x.project_id===id)||(id===PROGRAM.project_id?PROGRAM:records.find(x=>x.project_id===id));if(!v)return;leaveWatch();const f=facts(v),program=v.mission_class==='admiral_program';$('watchOverviewBody').innerHTML=`<header>${mark(v)}<div><small>ADMIRAL OBSERVATION · EXACT PROJECT CONTEXT</small><h2>${safe(v.display_name)}</h2><p>${safe(v.project_id)}</p></div><em>READ ONLY</em></header><section class="fleet-vessel-context"><article><small>VESSEL LIFECYCLE</small><b>${safe(words(f.life).toUpperCase())}</b></article><article><small>OWNERSHIP STATUS</small><b>${safe(program?'SEPARATE PROGRAM':controlLabel(v))}</b></article><article><small>OWNER ACCOUNTS (NOT CAPTAINS)</small><b>${program?'Not applicable':Number(v.owner_auth_identity_count||0)}</b></article><article><small>SERVER SETTINGS</small><b>${program?'Not applicable':v.settings_present?'PRESENT':'MISSING'}</b></article><article><small>REPORT FRESHNESS</small><b>${safe(!f.reported?"NEVER REPORTED":f.stale?"STALE REPORT":"RECENT REPORT")}</b></article><article><small>OPERATING MODEL</small><b>${safe(words(v.operating_model).toUpperCase())}</b></article><article><small>LAST FLEET READ (NOT A NEW REPORT)</small><b>${safe(lastSync?new Date(lastSync).toLocaleString():"Not read")}</b></article><article><small>CURRENT WORK</small><b>${safe(f.work)}</b></article><article><small>CAPTAIN REPORT SAVED AT</small><b>${safe(f.activity?new Date(f.activity).toLocaleString():'Not reported')}</b></article></section>${f.summary?`<aside><b>Issue summary</b><span>${safe(f.summary)}</span></aside>`:''}<aside><b>Scoped observation established</b><span>Only ${safe(v.display_name)} (${safe(v.project_id)}) is in context. Source: ${safe(words(f.source))}. Captain appointment and ownership are separate. An unassigned owner does not cancel an accepted Captain appointment; owner authority still requires an exact-vessel owner membership. No modifying control is exposed.</span></aside>${program?'':`<section class="tb-command-access"><h3>Fleet Captain operating access</h3><p>Observation is available without a Captain appointment. Operating is a separate authority check, not an ownership transfer.</p><p class="tb-command-pending"><b>FLEET COMMAND OPERATIONS NOT ENABLED</b><br>For a help request on an unassigned vessel, open Fleet help in My Fleet and choose Open as acting Captain. This is not a backend-health warning or a publication status. An accepted, exact-vessel Captain uses their separate Captain Station; observation grants no operating permission.</p><button type="button" disabled>OPERATE AS FLEET CAPTAIN — NOT ENABLED</button><p>No appointment or membership will be created to bypass this boundary.</p></section>`}`;$('watchOverview').classList.remove('hidden');$('watchOverview').setAttribute('aria-hidden','false');$('watchOverviewClose').focus({preventScroll:true});}
   install();
   const watchAccount = AdmiralAccountForm.mount($('watchSecurityForm'), $('watchGateStatus'), async (email, password, current, verified) => {
     await window.DarkSkyAuthenticateAdmiral(email, password);

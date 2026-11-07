@@ -4,6 +4,7 @@
   const methods = Object.freeze({
     owner: 'owner_list_fleet_help',
     captain: 'vessel_captain_list_fleet_help',
+    acting_captain: 'acting_captain_list_fleet_help',
     admiral: 'admiral_list_fleet_help'
   });
   const titles = {open:'Open', in_progress:'In progress', verified:'Verified'};
@@ -20,7 +21,7 @@
       Number.isInteger(row.version) && row.version > 0 && Object.hasOwn(titles, row.status);
   }
   function nextActions(role, status) {
-    if (role !== 'captain') return [];
+    if (role !== 'captain' && role !== 'acting_captain') return [];
     if (status === 'open') return ['in_progress'];
     return status === 'in_progress' ? ['verified'] : [];
   }
@@ -34,6 +35,8 @@
     const msg = String(error?.message || error || '');
     if (code === 'PGRST202' || code === '42883' || /PGRST202|schema cache|could not find the function/i.test(msg))
       return 'Fleet help needs its database setup. Your business workspace is still available.';
+    if (/fleet[ _]help[ _]acting[ _]unavailable/i.test(msg))
+      return 'Acting Captain access has ended for this vessel. Return to My Fleet for its current status.';
     if (accessDenied(error))
       return 'Your account needs current access to this workspace. Sign in again to check access.';
     if (code === '22023')
@@ -140,7 +143,7 @@
       attachment.type='file'; attachment.accept='image/png,image/jpeg,image/webp';
       const extra = element('details', null, 'fh-attachment');
       extra.append(element('summary','Add a screenshot'),field('Choose image', attachment),
-        element('small','Choose an image the vessel’s owner and Captain can see. Crop out customer details.'));
+        element('small','The owner and the Captain handling this vessel can see the image. Crop out customer details.'));
       const receipt = element('small', [projectName, build && 'Build ' + build].filter(Boolean).join(' · '));
       const send = button('Send report', submit, true);
       editor.append(receipt,field('Where did it happen?',where),element('small','The Admiral can see this screen name.'),field('What happened?',description),extra,send);
@@ -174,7 +177,7 @@
           const result = await request('owner_create_fleet_help', pending);
           if (!current()) return;
           if (!validReply(result, projectId, pending.p_request_id)) throw new Error('Unexpected receipt');
-          message.textContent = 'Report saved for this vessel. Its appointed Captain can review it.';
+          message.textContent = 'Report saved for this vessel.';
           pending = null;
           description.value=''; attachment.value=''; extra.open=false;
           await refresh();
@@ -204,6 +207,11 @@
         element('span', titles[row.status], 'fh-badge fh-'+row.status));
       const metadata = [role === 'admiral' ? row.screen : '',row.build && 'Build '+row.build,dateLabel(row.updated_at)].filter(Boolean);
       item.append(line, element('small',metadata.join(' · ')));
+      if (role === 'admiral' && row.can_act_as_captain === true && options.openActingCaptain) {
+        item.append(button('Open as acting Captain', () => {
+          if (current()) options.openActingCaptain(row.project_id,row.project_name || row.project_id);
+        }));
+      }
       if (role !== 'admiral' && row.description) item.append(element('p',row.description));
       if (row.outcome) item.append(element('p','Verification note · '+row.outcome));
       if (role !== 'admiral' && row.has_attachment) {
@@ -211,7 +219,7 @@
           if (!current()) return;
           view.disabled=true;
           try {
-            const result=await request('fleet_help_read_attachment',{p_project_id:projectId,p_request_id:row.request_id});
+            const result=await request(role==='acting_captain'?'acting_captain_read_fleet_help_attachment':'fleet_help_read_attachment',{p_project_id:projectId,p_request_id:row.request_id});
             if (!current() || !item.isConnected) return;
             if (result?.request_id!==row.request_id || typeof result.attachment!=='string' ||
                 result.attachment.length>220000 || !/^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(result.attachment)) throw new Error('Attachment unavailable');
@@ -228,21 +236,40 @@
           note.rows=2; note.maxLength=600;
           item.append(field('How was the fix checked?',note),element('small','The owner and Admiral can read this note. Leave out customer details.'));
         }
-        const change=button(verify?'Verify outcome':'Start work', async () => {
+        let preview=null;
+        const change=button(verify?'Verify outcome':'Start work', () => {
           if (!current() || change.disabled) return;
           const outcome=note?.value.trim() || '';
           if (verify && outcome.length<8) {
             listState.textContent='Describe the check and its result in at least eight characters.'; note.focus(); return;
           }
+          if (role==='acting_captain') {
+            preview=element('div',null,'fh-editor');
+            change.hidden=true;
+            if (note) note.readOnly=true;
+            const confirm=button(verify?'Confirm verification':'Confirm start',()=>save(outcome),true);
+            const cancel=button('Cancel',()=>{
+              preview.remove();preview=null;change.hidden=false;
+              if(note) note.readOnly=false;
+              change.focus();
+            });
+            preview.append(element('p',projectName+' · '+row.screen+' · '+titles[row.status]+' → '+titles[action]),confirm,cancel);
+            item.append(preview);confirm.focus();return;
+          }
+          save(outcome);
+        },true);
+        async function save(outcome) {
+          if (!current() || !item.isConnected || change.disabled) return;
           change.disabled=true;
+          if (preview) preview.querySelectorAll('button').forEach(b=>b.disabled=true);
           try {
-            const result=await request('vessel_captain_update_fleet_help',{p_project_id:projectId,p_request_id:row.request_id,p_version:row.version,p_status:action,p_outcome:outcome});
+            const result=await request(role==='acting_captain'?'acting_captain_update_fleet_help':'vessel_captain_update_fleet_help',{p_project_id:projectId,p_request_id:row.request_id,p_version:row.version,p_status:action,p_outcome:outcome});
             if (!current()) return;
             if (!validReply(result,projectId,row.request_id) || result.status!==action) throw new Error('Unexpected receipt');
             await refresh();
             if (current()) message.textContent = verify?'Verification recorded.':'Work started.';
-          } catch(err) { if (current()) {listState.textContent=errorMessage(err); change.disabled=false;} }
-        },true);
+          } catch(err) { if (current()) {listState.textContent=errorMessage(err); change.disabled=false; preview?.remove(); preview=null; change.hidden=false; if(note) note.readOnly=false;} }
+        }
         item.append(change);
       }
       return item;
@@ -268,12 +295,12 @@
     if (role==='owner') addComposer();
     else body.append(message);
     const listHeading = element('div',null,'fh-line');
-    listHeading.append(element('strong',role==='admiral'?'Fleet outcomes':role==='captain'?'Vessel reports':'Recent reports'),
+    listHeading.append(element('strong',role==='admiral'?'Fleet outcomes':role!=='owner'?'Vessel reports':'Recent reports'),
       button('Refresh reports',refresh));
     body.append(listHeading,listState,records);
     panel.addEventListener('toggle',()=>{ if(panel.open) refresh(); });
     container.replaceChildren(panel);
-    if (role === 'owner') panel.open = true;
+    if (role === 'owner' || role === 'acting_captain') panel.open = true;
     function destroy() {
       active=false; ++loadVersion; received=[];
       panel.remove(); if (mounted.get(container)===destroy) mounted.delete(container);

@@ -1,15 +1,17 @@
 /* Offline integration check for the installed Watchtower and Captain Watch entry.
    Run with Playwright and Chromium; set CHROMIUM_PATH if using a system browser. */
 'use strict';
-const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),{chromium}=require('playwright');
+const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),playwright=require('playwright');
 const read=file=>fs.readFileSync(path.join(__dirname,file),'utf8');
 const source=read('captain.js'),watch=source.slice(source.indexOf('/* Dark Sky 8.8.17 Admiral Commission'),source.indexOf("\n(() => {\n  'use strict';"));
 const captain=source.slice(source.indexOf('  function ensureCaptainCommandMode()'),source.indexOf('  function prepareCinematicCabin()'));
 (async()=>{
- const b=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||undefined,args:['--no-sandbox']});
+ const engine=process.env.TEST_BROWSER || 'chromium';
+ const b=await playwright[engine].launch({executablePath:(engine==='webkit'?process.env.WEBKIT_PATH:process.env.CHROMIUM_PATH)||undefined,args:engine==='chromium'?['--no-sandbox']:[]});
  try{
   const p=await b.newPage();p.setDefaultTimeout(2500);
-  const errors=[],requests=[];let holdReply,arrived,revoked=false,helpReply={records:[{issue_id:'example',status:'resolved'}]};
+  const errors=[],requests=[];let holdReply,arrived,revoked=false,handedOff=false,helpReply={records:[{issue_id:'example',status:'resolved'}]};
+  const report={project_id:'alpha',project_name:'Alpha',request_id:'alpha-request',screen:'Owner Bridge',description:'Private fixture detail',status:'open',version:1};
   p.on('pageerror',e=>errors.push(e.message));
   await p.route('**/*',async route=>{
     const u=new URL(route.request().url()),k=u.pathname;
@@ -22,6 +24,16 @@ const captain=source.slice(source.indexOf('  function ensureCaptainCommandMode()
     if(k.startsWith('/rest/v1/rpc/')){
       requests.push({path:k,body:route.request().postDataJSON(),auth:route.request().headers().authorization});
       if(holdReply){arrived();await holdReply;}
+      if(k.includes('/acting_captain_')){
+        if(handedOff)return route.fulfill({status:403,contentType:'application/json',body:JSON.stringify({code:'42501',message:'fleet_help_acting_unavailable'})});
+        assert.equal(route.request().postDataJSON().p_project_id,'alpha');
+        if(k.endsWith('/acting_captain_update_fleet_help')){
+          const args=route.request().postDataJSON();
+          assert.equal(args.p_version,report.version);report.status=args.p_status;report.version++;
+          return reply(report);
+        }
+        return reply({records:[report]});
+      }
       return reply(helpReply);
     }
     return route.fulfill({status:404,body:''});
@@ -87,10 +99,30 @@ const captain=source.slice(source.indexOf('  function ensureCaptainCommandMode()
   await p.getByText('Verification note · Checked beta receipt',{exact:true}).waitFor();
   assert.equal(await p.getByText('Verification note · Checked alpha receipt',{exact:true}).count(),0,'a fresh list must not retain old notes');
   assert.equal(await p.locator('#watchFleetHelp textarea,#watchFleetHelp input').count(),0,'the Admiral never receives editing controls');
+  helpReply={records:[{...row('alpha',''),can_act_as_captain:true},{...row('beta',''),can_act_as_captain:false}]};
+  await p.getByRole('button',{name:'Refresh reports'}).click();
+  const enter=p.getByRole('button',{name:'Open as acting Captain'});
+  await enter.waitFor();assert.equal(await enter.count(),1);
+  assert.equal(await p.getByRole('button',{name:'Start work'}).count(),0);
+  await enter.click();await p.getByText('Private fixture detail',{exact:true}).waitFor();
+  assert.equal(await p.locator('#watchOverview h2').textContent(),'alpha');
+  await p.getByRole('button',{name:'Start work'}).click();
+  await p.getByRole('button',{name:'Confirm start'}).click();
+  await p.getByText('Work started.',{exact:true}).waitFor();
+  await p.getByLabel('How was the fix checked?').fill('Checked the fixture on tablet.');
+  await p.getByRole('button',{name:'Verify outcome'}).click();
+  handedOff=true;
+  await p.getByRole('button',{name:'Confirm verification'}).click();
+  await p.getByText(/Acting Captain access has ended/).waitFor();
+  assert.equal(await p.getByText('Private fixture detail',{exact:true}).count(),0);
+  assert.equal(await p.locator('#watchActingHelp textarea,#watchActingHelp button').count(),0);
+  await p.locator('#watchOverviewClose').click();
+  await p.locator('#watchFleetHelp summary').waitFor();
+  assert.equal(await p.locator('#watchActingHelp').count(),0);
   await p.addScriptTag({content:"const byId=id=>document.getElementById(id),UPPER_COMMAND_BUILD='test';"+captain+'\nensureCaptainCommandMode();'});
   const link=p.locator('#captainQuarters').getByRole('link',{name:/my assigned vessels/i});
   const url=new URL(await link.getAttribute('href'),'https://watch.invalid/');
   assert.equal(url.origin+url.pathname,'https://watch.invalid/owner.html');assert.deepEqual([...url.searchParams],[['surface','vessel-captain']]);
-  assert.deepEqual(errors,[]);console.log('PASS: verified Watchtower read, write denial, close, refresh, revocation, Captain roster entrance (offline Chromium).');
+  assert.deepEqual(errors,[]);console.log('PASS: verified Watchtower read, write denial, close, refresh, revocation, Captain roster entrance, scoped acting workspace and acceptance during review.');
  } finally{await b.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});
