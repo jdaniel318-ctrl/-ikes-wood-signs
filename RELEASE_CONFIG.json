@@ -1,15 +1,15 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.100",
-  "name": "Nameplate",
-  "seal": "nameplate-8820100",
-  "base": "8.8.20.99",
-  "base_sha256": "851938c1faa7c6d824cabef7409f445b8aa2051b8c2e5eaeeb6076b9dc993a7b",
-  "base_files": 872,
-  "prepared_at": "2026-11-07T15:58:21.710590+00:00",
+  "build": "8.8.20.101",
+  "name": "Callsign",
+  "seal": "callsign-8820101",
+  "base": "8.8.20.100",
+  "base_sha256": "5525a3061c70c6a889143dd5a06f3c2eb9ab79a31cd54a2b5f704aed90dd0393",
+  "base_files": 873,
+  "prepared_at": "2026-11-07T16:47:43.838881+00:00",
   "app_component_revision": "8.8.20.99",
   "owner_helper_revision": "8.8.20.68",
-  "feature_notes": "The owner page identifies known businesses before sign-in. Online owners choose an email before entering a password. An autofill change to the chosen email stops the attempt.",
+  "feature_notes": "Admiral Office and Fleet Watchtower ask for the Admiral email before showing a password field. A changed username requires fresh confirmation.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -30,6 +30,6 @@
       "automatic_execution_by_upload": false
     }
   },
-  "install_step": "Open the Legacy Plumbing owner link in a signed-out tab to check the company name and email-first sign-in.",
-  "evidence_file": "NAMEPLATE_EVIDENCE.json"
+  "install_step": "After the passage PIN, confirm the Admiral email and check that the password field appears for that account.",
+  "evidence_file": "CALLSIGN_EVIDENCE.json"
 }

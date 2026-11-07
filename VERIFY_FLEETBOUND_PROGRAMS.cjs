@@ -1,7 +1,7 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict');
 const root=path.resolve(process.argv[2]||__dirname),source=fs.readFileSync(path.join(root,'captain.js'),'utf8');
-const start=source.indexOf("  const $=id=>document.getElementById(id),safe="),end=source.indexOf('  install();window.DarkSkyOpenFleetWatchtower=open;',start);
+const start=source.indexOf("  const $=id=>document.getElementById(id),safe="),end=source.indexOf('\n  install();',start);
 assert(start>0&&end>start,'read-only watch module is locatable');
 const nodes=new Map(),node=id=>{if(!nodes.has(id))nodes.set(id,{innerHTML:'',textContent:'',classList:{add(){},remove(){},toggle(){}},setAttribute(){},focus(){}});return nodes.get(id);};
 const ctx={document:{getElementById:node,querySelectorAll:()=>[]},window:{},requestAnimationFrame:f=>f(),console};vm.createContext(ctx);
@@ -15,5 +15,5 @@ check('program overview does not present business operating controls',()=>{ctx.a
 check('business overview retains existing boundary',()=>{ctx.api.overview('core-0');assert.match(node('watchOverviewBody').innerHTML,/OPERATE AS FLEET CAPTAIN — NOT ENABLED/);});
 check('failed refresh discards previously read programs',()=>{ctx.api.failWatch('Unavailable');assert.equal(ctx.api.state().programs.length,0);assert.doesNotMatch(node('watchPrograms').innerHTML,/Wonderwake/);});
 check('locked workspace discards previously read program state',()=>{ctx.api.render(data);ctx.api.setSecurityLayer(false);assert.equal(ctx.api.state().programs.length,0);assert.equal(ctx.api.state().records.length,0);});
-check('branding update includes both program and business records',()=>{const a=source.indexOf("window.addEventListener('darksky:admiral-fleet-updated'"),b=source.indexOf('\n  async function authenticate',a);const listener=source.slice(a,b);let handler;ctx.window.addEventListener=(_name,fn)=>handler=fn;node('bootstrapFleet').classList.contains=()=>false;ctx.api.render(data);vm.runInContext(listener,ctx);handler({detail:{records:[{project_id:'wonderwake',logo_url:'wonderwake-public.png'}]}});assert.equal(ctx.api.state().programs.length,1);assert.match(node('watchPrograms').innerHTML,/wonderwake-public.png/);});
+check('branding update includes both program and business records',()=>{const a=source.indexOf("window.addEventListener('darksky:admiral-fleet-updated'"),b=source.indexOf("\n  document.addEventListener(",a);assert(a>=0&&b>a,'branding listener is locatable');const listener=source.slice(a,b);let handler;ctx.window.addEventListener=(_name,fn)=>handler=fn;node('bootstrapFleet').classList.contains=()=>false;ctx.api.render(data);vm.runInContext(listener,ctx);handler({detail:{records:[{project_id:'wonderwake',logo_url:'wonderwake-public.png'}]}});assert.equal(ctx.api.state().programs.length,1);assert.match(node('watchPrograms').innerHTML,/wonderwake-public.png/);});
 console.log(count+' Fleetbound program checks passed');

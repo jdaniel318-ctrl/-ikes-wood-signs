@@ -16748,3 +16748,11 @@ body:not(.engine-mode) #experienceTestDeck,body.boot-locked #experienceTestDeck{
 }
 #servicePreviewBar #experienceModeBanner b,#servicePreviewBar #experienceModeBanner small{font-size:12px!important}
 #servicePreviewBar #returnExperienceTestDeck{min-height:44px!important;font-size:12px!important;padding:7px 12px!important}
+
+/* Admiral account selection and password entry share the same reading order on tablet. */
+@media (min-width:761px) {
+  #watchSecurityForm {grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+#watchSecurityForm input {min-width:0;width:100%;box-sizing:border-box}
+#watchSecurityForm button {white-space:normal}
+#admiralSignInForm .hidden, #watchSecurityForm .hidden {display:none!important}
