@@ -19,7 +19,7 @@ before(async () => {
 });
 after(() => browser?.close());
 for (const prefix of ['admiralAirlock', 'watch']) {
-  test(prefix + ' chooses an account before any password request', async () => {
+  test(prefix + ' asks only for a password on a remembered device', async () => {
     const page = await browser.newPage();
     page.setDefaultTimeout(3000);
     try {
@@ -30,14 +30,18 @@ for (const prefix of ['admiralAirlock', 'watch']) {
       await page.evaluate(() => {
         window.__darkSkyVerifiedRelease = {build:'test'};
         window.attempts = [];
-        window.DarkSkyAdmiralIdentityStatus = async () => window.verified === true;
+        window.fleetReads = 0;
+        window.DarkSkyAdmiralIdentityStatus = async () => {
+          if (window.authorityUnavailable) throw Error('Authority unavailable');
+          return window.verified === true && !window.authorityDenied;
+        };
         window.DarkSkyAuthenticateAdmiral = async (email,secret) => {
           attempts.push(email);
           if (window.holdLogin) await new Promise(resolve => {window.releaseLogin = resolve;});
           if (email !== 'admiral@example.invalid' || secret !== 'fixture') throw Error('Authority denied');
           window.verified = true;
         };
-        window.DarkSkyReadAdmiralWatch = async () => ({records:[]});
+        window.DarkSkyReadAdmiralWatch = async () => { window.fleetReads++; return {records:[]}; };
         window.DarkSkyReadFleetSpine = async () => ({counts:{},vessels:[]});
       });
       await page.addScriptTag({content:entry});
@@ -46,10 +50,15 @@ for (const prefix of ['admiralAirlock', 'watch']) {
       const isOffice = prefix === 'admiralAirlock';
       const form = page.locator(isOffice ? '#admiralSignInForm' : '#watchSecurityForm');
       const choose = form.getByRole('button',{name:'Enter Admiral email',exact:true});
-      async function enter() {
+      async function openEntrance() {
         if (isOffice) {
           await page.evaluate(() => DarkSkyOpenMyFleet());
           assert.equal(await page.locator('#admiralAccountAirlock').isVisible(), false);
+          assert.equal(await password.count(),0,'no account credentials are mounted before the PIN');
+          await page.locator('#admiralPinInput').fill('000000');
+          await page.locator('#admiralUnlockBtn').click();
+          assert.equal(await page.locator('#admiralAccountAirlock').isVisible(),false);
+          assert.equal(await password.count(),0);
           await page.locator('#admiralPinInput').fill('123456');
           await page.locator('#admiralUnlockBtn').click();
         } else {
@@ -57,6 +66,9 @@ for (const prefix of ['admiralAirlock', 'watch']) {
           await page.waitForFunction(() => watchGateStatus.textContent.includes('Second security'));
         }
         await form.waitFor();
+      }
+      async function enter() {
+        await openEntrance();
         assert.equal(await form.locator('input, textarea, [contenteditable=true]').count(),0,'arrival has no editable credential target');
         await choose.click();
         assert.equal(await form.locator('input').count(),0,'manual account choice has no credential field');
@@ -115,25 +127,53 @@ for (const prefix of ['admiralAirlock', 'watch']) {
       await password.press('Enter');
       await page.locator('#watchWorkspace').waitFor();
       assert.deepEqual(await page.evaluate(() => attempts),['owner@example.invalid','first@example.invalid','admiral@example.invalid']);
-      // Both entrances share only the email explicitly remembered after verified sign-in.
       await page.locator('#watchClose').click();
-      await page.evaluate(()=>{window.verified = false;DarkSkyOpenFleetWatchtower();});
-      const watch = page.locator('#watchSecurityForm');
-      const saved = watch.getByRole('button',{name:'Continue as admiral@example.invalid',exact:true});
-      await saved.waitFor();
-      assert.deepEqual(await watch.getByRole('button').allTextContents(), [
-        'Continue as admiral@example.invalid', 'Forget my email on this device'
-      ], 'a remembered email opens one Admiral sign-in');
-      assert.equal(await watch.locator('input, textarea').count(),0);
-      await saved.click();
-      assert.equal(await watch.locator('[name=username]').inputValue(),'admiral@example.invalid');
-      assert.equal(await watch.locator('[type=password]').inputValue(),'');
+      await page.evaluate(() => { window.verified = false; });
+      await openEntrance();
+      assert.equal(await password.isVisible(),true,'remembered account opens directly at the password');
+      assert.deepEqual(await form.locator('input:visible,textarea:visible').evaluateAll(nodes => nodes.map(n => n.type)),['password']);
+      assert.equal(await form.getByRole('button',{name:/Continue as/}).count(),0);
+      assert.equal(await password.inputValue(),'');
+      assert.equal(await password.evaluate(el=>document.activeElement===el),false);
       assert.equal(await page.locator('#watchWorkspace').isVisible(),false);
-      await page.locator('#watchGateClose').click();
-      await page.evaluate(()=>DarkSkyOpenFleetWatchtower());
-      await watch.getByRole('button',{name:'Forget my email on this device'}).click();
-      assert.equal(await saved.count(),0);
-      assert.equal(await watch.getByRole('button',{name:'Enter Admiral email'}).isVisible(),true);
+      await form.getByRole('button',{name:/Authenticate Admiral/}).click();
+      assert.equal(await page.evaluate(() => attempts.length),3,'empty password cannot start a request');
+      await password.fill('wrong');
+      await password.press('Enter');
+      await page.waitForFunction(() => attempts.length === 4);
+      assert.equal(await password.inputValue(),'');
+      assert.equal(await page.locator('#watchWorkspace').isVisible(),false);
+      const readsBefore = await page.evaluate(() => fleetReads);
+      for (const failure of ['authorityDenied','authorityUnavailable']) {
+        await page.evaluate(key => { window[key] = true; }, failure);
+        await password.fill('fixture');
+        await password.press('Enter');
+        await page.waitForFunction(id => document.getElementById(id).textContent.includes('remains locked'), isOffice ? 'admiralAirlockStatus' : 'watchGateStatus');
+        assert.equal(await password.inputValue(),'');
+        assert.equal(await page.locator('#watchWorkspace').isVisible(),false);
+        assert.equal(await page.evaluate(() => fleetReads),readsBefore);
+        await page.evaluate(key => { window[key] = false; window.verified = false; }, failure);
+      }
+      await password.fill('fixture');
+      await password.press('Enter');
+      await page.locator('#watchWorkspace').waitFor();
+      assert.deepEqual(await page.evaluate(() => attempts.slice(3)),Array(4).fill('admiral@example.invalid'));
+      await page.locator('#watchClose').click();
+      // Forget on the other entrance and confirm the preference also clears here.
+      await page.evaluate(() => { window.verified = false; });
+      if (isOffice) {
+        await page.evaluate(() => DarkSkyOpenFleetWatchtower());
+      } else {
+        await page.evaluate(() => DarkSkyOpenMyFleet());
+        await page.locator('#admiralPinInput').fill('123456');
+        await page.locator('#admiralUnlockBtn').click();
+      }
+      const other = page.locator(isOffice ? '#watchSecurityForm' : '#admiralSignInForm');
+      await other.getByRole('button',{name:'Forget my email on this device'}).click();
+      assert.equal(await other.getByRole('button',{name:'Enter Admiral email'}).isVisible(),true);
+      await page.locator(isOffice ? '#watchGateClose' : '#admiralGateReturnBtn').click();
+      await enter();
+      assert.equal(await address.inputValue(),'');
       assert.deepEqual(errors,[]);
     } finally {await page.close();}
   });

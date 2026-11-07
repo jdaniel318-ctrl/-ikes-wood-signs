@@ -14,7 +14,7 @@
   window.DarkSkyAdmiralFreshGate=Object.freeze({build:'8.8.17',requiredPerDocument:true,engineAuthoritySeparate:true});
 })();
 /* Dark Sky 8.8.17 Admiral Commission — server-attested, read-only Admiral observability. */
-// The initial account chooser has no text or password control for Safari to fill.
+// Create credential controls only when their sign-in step is shown.
 const AdmiralAccountForm = (() => {
   const preferenceKey = 'blackflag.admiral.email:' + location.pathname.replace(/[^/]*$/, '');
 
@@ -62,18 +62,23 @@ const AdmiralAccountForm = (() => {
 
     function reset() {
       clear();
+      button('Enter Admiral email', true, () => editEmail('')).id = prefix + 'Choose';
+    }
+
+    function begin() {
       const saved = savedEmail();
-      if (!saved) {
-        button('Enter Admiral email', true, () => editEmail('')).id = prefix + 'Choose';
+      if (saved && form.querySelector('#' + prefix + 'Choose')) confirmEmail(saved, true);
+    }
+
+    function forgetEmail() {
+      try { localStorage.removeItem(preferenceKey); } catch (_) {}
+      if (savedEmail()) {
+        status.textContent = 'This device could not remove the saved email.';
         return;
       }
-      button('Continue as ' + saved, true, () => confirmEmail(saved)).id = prefix + 'Choose';
-      button('Forget my email on this device', false, () => {
-        try { localStorage.removeItem(preferenceKey); } catch (_) {}
-        reset();
-        form.querySelector('button').focus();
-        status.textContent = savedEmail() ? 'This device could not remove the saved email.' : 'Saved Admiral email removed.';
-      });
+      reset();
+      form.querySelector('button').focus();
+      status.textContent = 'Saved Admiral email removed.';
     }
 
     function editEmail(value, message = '') {
@@ -95,20 +100,24 @@ const AdmiralAccountForm = (() => {
       draft.select();
     }
 
-    function confirmEmail(address) {
+    function confirmEmail(address, remembered = false) {
       clear();
       selected = address;
-      form.innerHTML = `<label>Admiral email
-        <input id="${prefix}Email" name="username" type="text" readonly autocomplete="section-admiral username">
-        </label><label><span tabindex="-1" data-password-label>Admiral password</span>
+      const username = remembered
+        ? `<input id="${prefix}Email" name="username" type="hidden" autocomplete="section-admiral username">`
+        : `<label>Admiral email<input id="${prefix}Email" name="username" type="text" readonly autocomplete="section-admiral username"></label>`;
+      form.innerHTML = username + `<label><span tabindex="-1" data-password-label>${remembered ? 'Enter your Admiral password' : 'Admiral password'}</span>
         <input id="${prefix}Password" name="password" type="password" required
-          data-bf-trim="preserve" autocomplete="section-admiral current-password"></label>
-        <label class="admiral-remember-email"><input type="checkbox" data-remember-email>
-          Remember my Admiral email on this device</label>`;
+          data-bf-trim="preserve" autocomplete="section-admiral current-password"></label>`;
       form.elements.username.value = address;
-      form.querySelector('[data-remember-email]').checked = (savedEmail() === address);
+      if (!remembered) {
+        form.insertAdjacentHTML('beforeend', `<label class="admiral-remember-email"><input type="checkbox" data-remember-email>
+          Remember my Admiral email on this device</label>`);
+        form.querySelector('[data-remember-email]').checked = savedEmail() === address;
+      }
       button('Authenticate Admiral →', true);
-      button('Edit my sign-in email', false, () => editEmail(address));
+      if (remembered) button('Forget my email on this device', false, forgetEmail);
+      else button('Edit my sign-in email', false, () => editEmail(address));
       status.textContent = '';
       form.querySelector('[data-password-label]').focus();
     }
@@ -140,12 +149,12 @@ const AdmiralAccountForm = (() => {
       const turn = ++epoch;
       const current = () => turn === epoch;
       const chosen = selected;
-      const remember = form.querySelector('[data-remember-email]').checked;
+      const rememberBox = form.querySelector('[data-remember-email]');
       // Called by each route only after its live identity and authority checks pass.
       const verified = () => {
-        if (!current()) return;
+        if (!current() || !rememberBox) return;
         try {
-          if (remember) localStorage.setItem(preferenceKey, chosen);
+          if (rememberBox.checked) localStorage.setItem(preferenceKey, chosen);
           else if (savedEmail() === chosen) localStorage.removeItem(preferenceKey);
         } catch (_) { /* A device preference is optional for sign-in. */ }
       };
@@ -172,7 +181,7 @@ const AdmiralAccountForm = (() => {
       }
     };
     reset();
-    return {reset, get pending() { return pending; }};
+    return {begin, reset, get pending() { return pending; }};
   }
   return {fields, mount};
 })();
@@ -230,9 +239,15 @@ const AdmiralAccountForm = (() => {
     }catch(_){clearHelp();if(sameWatch(turn))host.textContent='Fleet help is unavailable. Refresh Watch to try again.';}
   }
   function setSecurityLayer(verified,message=''){const gate=$('watchSecurityLayer'),workspace=$('watchWorkspace'),overview=$('watchOverview');gate.classList.toggle('hidden',!!verified);gate.setAttribute('aria-hidden',String(!!verified));workspace.classList.toggle('hidden',!verified);workspace.setAttribute('aria-hidden',String(!verified));if(!verified){clearHelp();overview.classList.add('hidden');overview.setAttribute('aria-hidden','true');records=[];programs=[];spine={counts:{},vessels:[]};if(message)$('watchGateStatus').textContent=message;}}
+  function showWatchSignIn(message) {
+    setSecurityLayer(false);
+    $('watchSecurityForm').hidden = false;
+    watchAccount.begin();
+    $('watchGateStatus').textContent = message;
+  }
   async function identityVerified(){try{return !!(await window.DarkSkyAdmiralIdentityStatus?.());}catch(_){return false;}}
-  async function load(){leaveWatch();const turn=watchEpoch,status=$('watchStatus');try{const verified=await identityVerified();if(!sameWatch(turn))return;setSecurityLayer(verified,verified?'':'Second security check required. Sign in with the dedicated Admiral account; the Fleet workspace remains locked.');if(!verified)return;mountHelp(turn);status.textContent='Admiral account verified. Reading server-attested Fleet Watch…';$('watchTools').classList.remove('hidden');await window.DarkSkySyncVesselBrandIdentity?.();if(!sameWatch(turn))return;if(typeof window.DarkSkyReadAdmiralWatch!=='function'||typeof window.DarkSkyReadFleetSpine!=='function')throw new Error('Supabase Fleet readers are unavailable in this release.');const [watch,keel]=await Promise.all([window.DarkSkyReadAdmiralWatch(),window.DarkSkyReadFleetSpine()]);if(!sameWatch(turn))return;const logos=new Map((window.DarkSkyReadAdmiralFleet?.()||[]).map(v=>[v.project_id,v.logo_url])),posture=new Map((keel?.vessels||[]).map(v=>[v.project_id,v]));spine=keel||{counts:{},vessels:[]};lastSync=watch?.read_at||keel?.read_at||new Date().toISOString();render((watch?.records||[]).map(v=>({...v,...(posture.get(v.project_id)||{}),logo_url:logos.get(v.project_id)||''})));}catch(error){const message=error?.message||'Fleet Watch could not be read.';if(!sameWatch(turn))return;const verified=await identityVerified();if(!sameWatch(turn))return;if(!verified){setSecurityLayer(false,message+' The Fleet workspace remains locked.');return;}failWatch(message);status.textContent=message+' No data changed.';}}
-  function open(){watchAccount.reset();const fleet=$('bootstrapFleet');watchRoute=routeGeneration();setSecurityLayer(false);fleet.classList.remove('hidden');fleet.setAttribute('aria-hidden','false');document.body.classList.add('bootstrap-fleet-open');fleet.scrollTop=0;$('watchGateStatus').textContent='Checking the dedicated Admiral account…';load();}
+  async function load(){leaveWatch();const turn=watchEpoch,status=$('watchStatus');try{const verified=await identityVerified();if(!sameWatch(turn))return;if(!verified){showWatchSignIn('Second security check required. Sign in with your Admiral account.');return;}setSecurityLayer(true);mountHelp(turn);status.textContent='Admiral account verified. Reading server-attested Fleet Watch…';$('watchTools').classList.remove('hidden');await window.DarkSkySyncVesselBrandIdentity?.();if(!sameWatch(turn))return;if(typeof window.DarkSkyReadAdmiralWatch!=='function'||typeof window.DarkSkyReadFleetSpine!=='function')throw new Error('Supabase Fleet readers are unavailable in this release.');const [watch,keel]=await Promise.all([window.DarkSkyReadAdmiralWatch(),window.DarkSkyReadFleetSpine()]);if(!sameWatch(turn))return;const logos=new Map((window.DarkSkyReadAdmiralFleet?.()||[]).map(v=>[v.project_id,v.logo_url])),posture=new Map((keel?.vessels||[]).map(v=>[v.project_id,v]));spine=keel||{counts:{},vessels:[]};lastSync=watch?.read_at||keel?.read_at||new Date().toISOString();render((watch?.records||[]).map(v=>({...v,...(posture.get(v.project_id)||{}),logo_url:logos.get(v.project_id)||''})));}catch(error){const message=error?.message||'Fleet Watch could not be read.';if(!sameWatch(turn))return;const verified=await identityVerified();if(!sameWatch(turn))return;if(!verified){showWatchSignIn(message+' The Fleet workspace remains locked.');return;}failWatch(message);status.textContent=message+' No data changed.';}}
+  function open(){watchAccount.reset();$('watchSecurityForm').hidden=true;const fleet=$('bootstrapFleet');watchRoute=routeGeneration();setSecurityLayer(false);fleet.classList.remove('hidden');fleet.setAttribute('aria-hidden','false');document.body.classList.add('bootstrap-fleet-open');fleet.scrollTop=0;$('watchGateStatus').textContent='Checking the dedicated Admiral account…';load();}
   function close(){
     const pending = watchAccount.pending;
     watchAccount.reset();
@@ -259,7 +274,7 @@ const AdmiralAccountForm = (() => {
   window.addEventListener('darksky:admiral-session-changed',()=>{if(helpMount&&!helpMount.current())leaveWatch();});
   window.addEventListener('darksky:command-route',()=>{if(shown($('bootstrapFleet'))&&watchRoute!==routeGeneration())close();});
   window.addEventListener('darksky:admiral-fleet-updated',e=>{if($('bootstrapFleet').classList.contains('hidden')||(!records.length&&!programs.length))return;const logos=new Map((e.detail?.records||[]).map(v=>[v.project_id,v.logo_url]));render([...records,...programs].map(v=>({...v,logo_url:logos.get(v.project_id)||v.logo_url||''})));});
-  document.addEventListener('click',async e=>{const t=e.target;if(t.closest?.('#watchClose,#watchGateClose'))return close();if(t.closest?.('#watchRefresh'))return load();if(t.closest?.('#watchSignOut')){watchAccount.reset();leaveWatch();await window.DarkSkySignOutAdmiral?.();setSecurityLayer(false,'Admiral account signed out. Re-authentication is required before any fleet work can resume.');return;}const vessel=t.closest?.('[data-watch-vessel]');if(vessel)return overview(vessel.dataset.watchVessel);if(t.closest?.('#watchOverviewClose')){$('watchOverview').classList.add('hidden');$('watchOverview').setAttribute('aria-hidden','true');$('watchStatus').textContent='Returned to Fleet Watch. No vessel state changed.';load();return;}const chosen=t.closest?.('[data-watch-filter]');if(chosen){filter=chosen.dataset.watchFilter;document.querySelectorAll('[data-watch-filter]').forEach(b=>{const yes=b===chosen;b.classList.toggle('is-selected',yes);b.setAttribute('aria-pressed',String(yes));});render();}},true);
+  document.addEventListener('click',async e=>{const t=e.target;if(t.closest?.('#watchClose,#watchGateClose'))return close();if(t.closest?.('#watchRefresh'))return load();if(t.closest?.('#watchSignOut')){watchAccount.reset();leaveWatch();await window.DarkSkySignOutAdmiral?.();if(shown($('bootstrapFleet')))showWatchSignIn('Admiral account signed out. Sign in to reopen My Fleet.');return;}const vessel=t.closest?.('[data-watch-vessel]');if(vessel)return overview(vessel.dataset.watchVessel);if(t.closest?.('#watchOverviewClose')){$('watchOverview').classList.add('hidden');$('watchOverview').setAttribute('aria-hidden','true');$('watchStatus').textContent='Returned to Fleet Watch. No vessel state changed.';load();return;}const chosen=t.closest?.('[data-watch-filter]');if(chosen){filter=chosen.dataset.watchFilter;document.querySelectorAll('[data-watch-filter]').forEach(b=>{const yes=b===chosen;b.classList.toggle('is-selected',yes);b.setAttribute('aria-pressed',String(yes));});render();}},true);
   document.addEventListener('input',e=>{if(e.target.id==='watchSearch'){query=e.target.value.trim();render();}});
 })();
 
@@ -1092,7 +1107,7 @@ const AdmiralAccountForm = (() => {
     text('admiralGateTitle',account?'One more step.':resume?'Welcome back.':'Welcome aboard.');
     text('admiralGateDescription',account?'Your PIN is verified. Sign in with your Admiral account to open the workspace.':resume?'Your Admiral role is retained. Verify your PIN to recheck your account access; another password may not be needed.':'Your Admiral Office brings the fleet together. Verify your PIN and account to begin.');
     text('admiralEntranceFormTitle',account?'Sign in as Admiral':resume?'Verify your PIN to return':'Enter your passage PIN');
-    text('admiralEntranceFormHint',account?'Confirm your sign-in email to continue.':resume?'We will recheck your account before reopening the workspace.':'First your PIN. Then your Admiral account.');
+    text('admiralEntranceFormHint',account?'':resume?'We will recheck your account before reopening the workspace.':'First your PIN. Then your Admiral account.');
     text('admiralEntrancePinState',account?'Verified':'Required');
     text('admiralEntranceAccountState',account?'Required':resume?'Recheck pending':'Next');
     text('admiralUnlockBtn',resume?'Verify PIN & return →':'Continue with PIN →');
@@ -1103,7 +1118,10 @@ const AdmiralAccountForm = (() => {
     if(account){pin?.removeAttribute('aria-current');identity?.setAttribute('aria-current','step');}
     else{pin?.setAttribute('aria-current','step');identity?.removeAttribute('aria-current');}
     gate.scrollTop=0;
-    requestAnimationFrame(()=>{if(!gate.classList.contains('hidden'))byId('admiralGateTitle')?.focus({preventScroll:true});});
+    requestAnimationFrame(() => {
+      if (gate.classList.contains('hidden') || (account && byId('admiralSignInForm')?.contains(document.activeElement))) return;
+      byId('admiralGateTitle')?.focus({preventScroll:true});
+    });
   }
 
   function refreshAdmiralSessionStrip(){
@@ -1410,6 +1428,7 @@ const AdmiralAccountForm = (() => {
       const input=byId('admiralPinInput'),unlock=byId('admiralUnlockBtn'),error=byId('admiralPinError'),layer=byId('admiralAccountAirlock');
       input?.classList.add('hidden');input?.previousElementSibling?.classList.add('hidden');unlock?.classList.add('hidden');error?.classList.add('hidden');layer?.classList.remove('hidden');
       setAdmiralEntranceStep(gate,'account');
+      airlockAccount.begin();
     };
     byId('admiralUnlockBtn').onclick=async()=>{
       const button=byId('admiralUnlockBtn'),input=byId('admiralPinInput'),error=byId('admiralPinError');

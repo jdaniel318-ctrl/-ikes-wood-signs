@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.20.103",
-  "version": "8.8.20.103",
-  "release_name": "Flagstaff",
-  "releaseName": "Flagstaff",
-  "release_seal": "flagstaff-8820103",
+  "build": "8.8.20.104",
+  "version": "8.8.20.104",
+  "release_name": "Slipstream",
+  "releaseName": "Slipstream",
+  "release_seal": "slipstream-8820104",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -160,8 +160,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "The Admiral can continue with the remembered sign-in email, edit it at the password step, or forget it on this device.",
-  "release_note": "The Admiral can continue with the remembered sign-in email, edit it at the password step, or forget it on this device.",
+  "release_focus": "After the passage PIN, a fresh Admiral sign-in on a remembered device asks only for the password. Fleet access still requires active server-verified Admiral authority.",
+  "release_note": "After the passage PIN, a fresh Admiral sign-in on a remembered device asks only for the password. Fleet access still requires active server-verified Admiral authority.",
   "tax_ledger_upgrade": {
     "schema": "dark-sky-fleet-tax-ledger-v1",
     "model": "TAX_LEDGER_MODEL.json",
@@ -283,8 +283,8 @@
     "algorithm": "SHA-256",
     "files": {
       "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": {
-        "sha256": "2ef520bddc8be40f8cf2c1bd0e2a79fe804cbbfe265c5a884d2744e855062ef6",
-        "build": "8.8.20.103",
+        "sha256": "3d4744e5a3bffbd4d4631529ac4fb01f1e4f0969dddede94dda995558ab1e403",
+        "build": "8.8.20.104",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -331,14 +331,14 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_COMMAND_MODEL.json": {
-        "sha256": "47a8a3f6e99205a732acc073f07c41c8e3035caacaf14d26e016e1148e679e10",
-        "build": "8.8.20.103",
+        "sha256": "4a200d0ba8429420252a5345ad729ff30d4389a7f4a1aa412512722975680e4c",
+        "build": "8.8.20.104",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
       "FLEET_DOCTRINE_REGISTRY.json": {
-        "sha256": "c5cc95c0b1b1bf010619b8f7de26d234f585c4cb51d2a5d70cda157ec9b7edc2",
-        "build": "8.8.20.103",
+        "sha256": "25abce44693597f8b9ebdcf7f8b4286ec1c1f13ea5c57334a388864fe7a9cc3c",
+        "build": "8.8.20.104",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -397,8 +397,8 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "GOLDEN_VOYAGES.json": {
-        "sha256": "c221333769c9fd26672f2175dc123437980324a18e3746d605fb5787d4831ee8",
-        "build": "8.8.20.103",
+        "sha256": "f2720289a65969b9afec5d21abf89f0b1ad1c782a8bbc520bb7d0d09d172f719",
+        "build": "8.8.20.104",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -555,16 +555,16 @@
       "fleet_supabase.js": "ea66122cd5f138dd91989cd7a5b0abad8d008dd352a811fab1643e19b5c2ccc5",
       "ike_style_registry.js": "6b348ebceb47e172e6676f46252b19c1c6bb7532baf76febfa8dd81760a76ab7",
       "app.js": "34cc9b0406d305ee4d3be5c933b3495ef92ec6f5605c4f5d75cc3c27d5295d54",
-      "captain.js": "7344a778bb00b163be8798997b41d99df63de8e95fc24cef00ba8d4b54062189",
+      "captain.js": "a5b0ddf88b13afc28f81ce857aeca261225545d8f78c52bbd359f96bdb2bf1f9",
       "simple_books.js": "ddd76dcf5e6c579f16918a9d3e645b0fc65d8a5b4d7c66df8896d8314eea325d",
-      "owner.html": "8de10c5fb888e0b149bfb90a3a42c28f98af33ca60810f6fa768e3c7b77026d8",
-      "manifest.webmanifest": "9d2d63543f5a31f563022dcd162f3728520fd470847d53e41148cb21de6f79d2",
+      "owner.html": "3836f637145273d1748190e1f12e600dffd7473ffb75052ab473632d04e715ae",
+      "manifest.webmanifest": "4040fff0009bb7cc99c90a923ed9e98f06212f0d2fb16937fade11d8a649dc0a",
       "IKE_STYLE_FOUNDRY.json": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
-      "sw.js": "849d92f89b896d3d59d185fbd706f53d8214dcfe1a12901190e2917b42464a34",
-      "FLEET_DOCTRINE_REGISTRY.json": "c5cc95c0b1b1bf010619b8f7de26d234f585c4cb51d2a5d70cda157ec9b7edc2",
-      "GOLDEN_VOYAGES.json": "c221333769c9fd26672f2175dc123437980324a18e3746d605fb5787d4831ee8",
-      "FLEET_COMMAND_MODEL.json": "47a8a3f6e99205a732acc073f07c41c8e3035caacaf14d26e016e1148e679e10",
-      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "2ef520bddc8be40f8cf2c1bd0e2a79fe804cbbfe265c5a884d2744e855062ef6",
+      "sw.js": "599067219e1504288cc7a180e271bc12f70b34cf7163e4136c365af7d6ffe44f",
+      "FLEET_DOCTRINE_REGISTRY.json": "25abce44693597f8b9ebdcf7f8b4286ec1c1f13ea5c57334a388864fe7a9cc3c",
+      "GOLDEN_VOYAGES.json": "f2720289a65969b9afec5d21abf89f0b1ad1c782a8bbc520bb7d0d09d172f719",
+      "FLEET_COMMAND_MODEL.json": "4a200d0ba8429420252a5345ad729ff30d4389a7f4a1aa412512722975680e4c",
+      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "3d4744e5a3bffbd4d4631529ac4fb01f1e4f0969dddede94dda995558ab1e403",
       "input_hygiene.js": "85584886dd424e619c6ee1069665e201dca51e815673839f91da0d796fcf591a",
       "business_deck.js": "5f699f4c8f8a8651dde8b4e3faee4dff1b23412a0cfbb901f3cc84e7297ad350",
       "business_deck.css": "c598dca691af9fd3791effc372f54ead2f5280a6a8bc19032fb01ee2708d593a",
@@ -1074,7 +1074,7 @@
     "project_data_mutation": false,
     "field_failure_proof": "8.8.20.13 held on styles.css because packaged DEPLOYMENT_MANIFEST runtime hash did not match packaged styles.css bytes"
   },
-  "release": "Flagstaff",
+  "release": "Slipstream",
   "clearbearing_upgrade": {
     "build": "8.8.20.22",
     "baseline": "8.8.20.14 HashLock",

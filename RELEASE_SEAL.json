@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.103",
-  "release": "Flagstaff",
-  "seal": "flagstaff-8820103",
+  "build": "8.8.20.104",
+  "release": "Slipstream",
+  "seal": "slipstream-8820104",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Flagstaff",
-  "name": "Flagstaff",
-  "releaseName": "Flagstaff"
+  "release_name": "Slipstream",
+  "name": "Slipstream",
+  "releaseName": "Slipstream"
 }

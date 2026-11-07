@@ -1,9 +1,9 @@
 {
-  "release": "Flagstaff",
-  "name": "Flagstaff",
-  "build": "8.8.20.103",
-  "seal": "flagstaff-8820103",
-  "file_count": 877,
+  "release": "Slipstream",
+  "name": "Slipstream",
+  "build": "8.8.20.104",
+  "seal": "slipstream-8820104",
+  "file_count": 878,
   "files": [
     ".github/workflows/drydock-batch1.yml",
     "ADMIRALS_DECK_TRIAL.md",
@@ -367,6 +367,7 @@
     "SIGNALMAN_EVIDENCE.json",
     "SIGNALMAN_FLEET_HELP.sql",
     "SINGLE_BUILD_RELEASE_CONTRACT.md",
+    "SLIPSTREAM_EVIDENCE.json",
     "STAGE_CHECKPOINT_PROOF_882020.json",
     "STAGING_CONTRACT.md",
     "START_HERE.md",

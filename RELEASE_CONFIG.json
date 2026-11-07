@@ -1,15 +1,15 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.103",
-  "name": "Flagstaff",
-  "seal": "flagstaff-8820103",
-  "base": "8.8.20.102",
-  "base_sha256": "627fe8adf560d00bc6dd5dd8500bf22e1ff6caf04b51949fbdb8e091c273724c",
-  "base_files": 876,
-  "prepared_at": "2026-11-07T17:33:38.139114+00:00",
+  "build": "8.8.20.104",
+  "name": "Slipstream",
+  "seal": "slipstream-8820104",
+  "base": "8.8.20.103",
+  "base_sha256": "5a044fef674a562ddc75cf27511037b6af030d3950814dc5ab34312acb3da0b6",
+  "base_files": 877,
+  "prepared_at": "2026-11-07T17:49:11.138980+00:00",
   "app_component_revision": "8.8.20.99",
   "owner_helper_revision": "8.8.20.68",
-  "feature_notes": "The Admiral can continue with the remembered sign-in email, edit it at the password step, or forget it on this device.",
+  "feature_notes": "After the passage PIN, a fresh Admiral sign-in on a remembered device asks only for the password. Fleet access still requires active server-verified Admiral authority.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -30,6 +30,6 @@
       "automatic_execution_by_upload": false
     }
   },
-  "install_step": "Open Admiral My Fleet on the iPad. After the PIN, check that the remembered email offers one sign-in. Continue to see Edit my sign-in email.",
-  "evidence_file": "FLAGSTAFF_EVIDENCE.json"
+  "install_step": "Open Admiral My Fleet on your iPad and enter the passage PIN. On a remembered device, a fresh sign-in now asks directly for your Admiral password.",
+  "evidence_file": "SLIPSTREAM_EVIDENCE.json"
 }

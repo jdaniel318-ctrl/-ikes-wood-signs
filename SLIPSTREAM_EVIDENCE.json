@@ -1,0 +1,23 @@
+{
+  "build": "8.8.20.104",
+  "release": "Slipstream",
+  "baseline": "8.8.20.103 Flagstaff",
+  "scope": "Remembered Admiral password step at both entrances",
+  "verification_status": "verified offline with synthetic accounts",
+  "checks": {
+    "offline_release_suites": 45,
+    "chromium_entrances": 2,
+    "webkit_entrances": 2,
+    "presentation_checks": 35,
+    "watchtower_and_captain_roster_entry": "passed in Chromium"
+  },
+  "tested": [
+    "Wrong PIN leaves the account step closed.",
+    "Only the password field is visible for a remembered Admiral. Opening the form sends no password request.",
+    "Invalid password, denied authority and unavailable authority keep fleet reads locked.",
+    "Forgetting a saved email on one entrance returns both to manual setup.",
+    "A fresh device, username substitution and leaving during a request were checked."
+  ],
+  "native_ipad": "Flagstaff remembered account observed on iPad. Slipstream requires upload and a native-device check.",
+  "database_changes": "none"
+}
