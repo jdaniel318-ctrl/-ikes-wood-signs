@@ -1,0 +1,20 @@
+{
+  "source": "Virginia Geographic Information Network (VGIN) and Virginia local government GIS",
+  "layer": "Virginia DCR Civil Reference Layers, Address Points",
+  "url": "https://dsfmportal.dcr.virginia.gov/server/rest/services/CivilReference/Civil_Reference_Layers/MapServer/1",
+  "release": "2026 Q3",
+  "retrieved": "2026-11-07",
+  "coordinateSystem": "WGS 84 latitude, longitude; decimal degrees rounded to five places",
+  "coverage": {
+    "Chesterfield County": 188961,
+    "Hanover County": 52743,
+    "Henrico County": 139601,
+    "Richmond city": 92028
+  },
+  "sourceRecords": 473333,
+  "uniqueMappedAddresses": 472537,
+  "omittedAmbiguousLabels": 8,
+  "omittedRecords": {
+    "incomplete or out of bounds": 780
+  }
+}

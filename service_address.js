@@ -1,0 +1,188 @@
+/* Standalone address suggestions. Only public address reference data is shared. */
+(function (root) {
+  'use strict';
+  const script = root.document?.currentScript;
+  const scriptUrl = script?.src;
+  const assetBase = script?.getAttribute('data-address-base') ||
+    (scriptUrl && /^https?:/.test(scriptUrl) ? new URL('.',scriptUrl).href : '');
+  let fieldNumber = 0;
+  const dataset = 'rva-streetwise-v1';
+  // Regional contractors can opt into the same lookup through their vessel configuration.
+  function supports(project) {
+    const region = project?.customerExperience?.addressRegion ?? root.BlackFlagAddressDefaults?.[project?.id];
+    return region==='richmond-va';
+  }
+  const hashes = [
+  "d7cb07e3e907c3ebeb32c495ae654a9268039ff5548be2a02b914837532cfd5a",
+  "46028a603f89f3351a59c8031b0ea7f6a09db2e3a8a6e6a1ba25970b3258f00f",
+  "aa24746296312f0bf4d329c8d208b231edf0acf7223e394c64703a09864411a1",
+  "5f0fa357fc3f72185d2d7a0b2e996349dd497dd41c2a2f051efe46a7f0affc49",
+  "05f130405441245f56cc8a633a24c45798a41b3f1a8f0911af462eb2dceb583a",
+  "5d5b4167ad1d2ebf1f602543160bad91510be46819711bf8efbd45fc3ccc0101",
+  "2cfd5a575d0d80ab420be91b7658c8886e47fb8556cb0eebd3df40b5c152bdfe",
+  "a11f0b764c779d4d76468921671e320d51b894328604eefdf81c5cdae41a956f",
+  "aff0fcb935baf7cf9ce4ea0b322a71f46f6b3f1a82749df30dfeea5d8c497454",
+  "b784816624e192eee0992971d23109f5e16465d43087b0f1c602d690afa5f907",
+  "81aa0b96f3819a6d1b69431e6b195afc0bd845fce7441a80daddac628d8cc5e0",
+  "a159ec6ff68a4ed93c982d1b02a244f51472e64d42ea28106e7bb3ee192ecd1f",
+  "1c29f8a431262c2e2aa0ac12b0f2fb2f46e0a3d5fce6066f063976fff3a0644a",
+  "f17c02a096c5afbcd6b5625c012a19f8b4f98fa7cbbafa075aa6f42cb59e8af6",
+  "cd05e085f428bf2d7cff82ccc49c5810db1e15ddde18d38d7f6d46244510d8a0",
+  "2bd18af8722f8afabd636cd7f57168c2df62b343e344e04533318e3d30c82b0c"
+];
+  const cache = new Map();
+  const aliases = {
+    north:'n', south:'s', east:'e', west:'w', northeast:'ne', northwest:'nw', southeast:'se', southwest:'sw',
+    street:'st', road:'rd', avenue:'ave', drive:'dr', lane:'ln', boulevard:'blvd', court:'ct',
+    circle:'cir', place:'pl', terrace:'ter', highway:'hwy', parkway:'pkwy', trail:'trl', turnpike:'tpke'
+  };
+  const fullWords=Object.fromEntries(Object.entries(aliases).map(([word,abbr])=>[abbr,word]));
+  function tokens(text) {
+    return text.toLowerCase().replace(/[.'’]/g,'').match(/[a-z0-9-]+/g)?.map(t => fullWords[t] || t) || [];
+  }
+  async function load(bucket) {
+    if (!cache.has(bucket)) {
+      const digest = hashes[bucket];
+      const url = './streetwise_rva_' + String(bucket).padStart(2,'0') + '.json?v=' + digest.slice(0,12);
+      const pending = (async () => {
+        const response = await fetch(assetBase ? new URL(url,new URL(assetBase,document.baseURI)).href : url, {credentials:'same-origin'});
+        if (!response.ok) throw new Error('Address data unavailable');
+        const bytes = await response.arrayBuffer();
+        const check = await crypto.subtle.digest('SHA-256', bytes);
+        const actual = Array.from(new Uint8Array(check), b => b.toString(16).padStart(2,'0')).join('');
+        if (actual !== digest) throw new Error('Address data changed');
+        return JSON.parse(new TextDecoder().decode(bytes));
+      })();
+      cache.set(bucket, pending);
+      pending.catch(() => cache.delete(bucket));
+    }
+    return cache.get(bucket);
+  }
+  function parts(value) {
+    return value.trim().match(/^(\d{1,7}[a-z]?(?:-\d+)?)\s+(.{2,})$/i);
+  }
+  async function suggest(value) {
+    const parsed = parts(value);
+    if (!parsed) return [];
+    const number = parsed[1].toUpperCase(), query = tokens(parsed[2]);
+    if (!query.length) return [];
+    const index = await load(parseInt(number,10) % hashes.length);
+    const matches = [];
+    for (const [streetId, placeId, lat, lon] of index.numbers[number] || []) {
+      const street=index.streets[streetId], [city,zip]=index.places[placeId];
+      const label=number+' '+street+', '+city+', VA '+zip;
+      const addressWords=tokens(street+' '+city+' VA '+zip);
+      const startsAt = offset => query.every((word,i) => {
+        const candidate=addressWords[offset+i];
+        return i===query.length-1 ? candidate?.startsWith(word) : candidate===word;
+      });
+      const directional=['north','south','east','west','northeast','northwest','southeast','southwest'].includes(addressWords[0]);
+      if (!startsAt(0) && !(directional && startsAt(1))) continue;
+      matches.push({address:label, latitude:lat/100000, longitude:lon/100000, dataset});
+      if (matches.length===6) break;
+    }
+    return matches;
+  }
+  function matchesAddress(address, point) {
+    return !!point && point.dataset===dataset && String(address||'').trim()===point.address &&
+      Number.isFinite(point.latitude) && point.latitude>=36.9 && point.latitude<=38.1 &&
+      Number.isFinite(point.longitude) && point.longitude>=-78.2 && point.longitude<=-76.9;
+  }
+  function mapLink(address, point) {
+    if (!matchesAddress(address, point)) return '';
+    const location = encodeURIComponent(point.latitude+','+point.longitude);
+    return '<a href="https://www.google.com/maps/search/?api=1&amp;query='+location+'" target="_blank" rel="noopener noreferrer">Open in Maps</a>';
+  }
+  function mount(input, options = {}) {
+    if (!input || input.readOnly || input.disabled) return;
+    if (input.closest('.streetwise-field')) return;
+    const label = input.labels?.[0] || input.closest('label');
+    if (!label) return;
+    if (!input.id) input.id = 'serviceAddressField'+(++fieldNumber);
+    const field = label.contains(input) ? label : input;
+    const hint = document.createElement('small'), list = document.createElement('div');
+    hint.className='streetwise-hint'; hint.id=input.id+'MapStatus';
+    hint.setAttribute('role','status');
+    list.className='streetwise-options'; list.id=input.id+'Suggestions';
+    list.hidden=true; list.setAttribute('role','listbox');
+    list.setAttribute('aria-label','Matching addresses');
+    
+    // Keep the options under their own field in a multi-column form.
+    const group = document.createElement('div');
+    group.className='streetwise-field'; field.before(group); group.append(field);
+    if (field===label) label.append(hint); else group.append(hint);
+    group.append(list);
+    input.setAttribute('role','combobox'); input.setAttribute('aria-autocomplete','list');
+    input.setAttribute('aria-expanded','false'); input.setAttribute('aria-controls',list.id);
+    input.setAttribute('aria-describedby',[input.getAttribute('aria-describedby'),hint.id].filter(Boolean).join(' '));
+    let generation=0, timer, active=-1, choices=[];
+    let selected=matchesAddress(input.value,options.point) ? options.point : null;
+    const guidance='Choose a Richmond-area suggestion, or enter the full address manually.';
+    function status() {hint.textContent=selected ? 'Matched to an address on the map.' : guidance;}
+    function close() {
+      generation++; clearTimeout(timer); active=-1; choices=[];
+      list.replaceChildren(); list.hidden=true;
+      input.setAttribute('aria-expanded','false'); input.removeAttribute('aria-activedescendant');
+    }
+    function choose(index) {
+      const choice=choices[index];
+      if (!choice) return;
+      close(); input.value=choice.address;
+      // Update the host form through its ordinary input path before attaching the match.
+      input.dispatchEvent(new Event('input',{bubbles:true}));
+      close(); selected=choice; options.onMatch?.(choice); status();
+    }
+    function schedule() {
+      close(); status();
+      if (selected || !parts(input.value)) return;
+      const ticket=generation, value=input.value;
+      timer=setTimeout(async () => {
+        const current=()=>generation===ticket && input.isConnected && input.value===value && document.activeElement===input;
+        if (!current()) return;
+        try {
+          const rows=await suggest(value);
+          if (!current()) return;
+          choices=rows;
+          rows.forEach((row,index) => {
+            const opt=document.createElement('div'); opt.id=list.id+'-'+index;
+            opt.setAttribute('role','option'); opt.setAttribute('aria-selected','false');
+            opt.textContent=row.address;
+            opt.addEventListener('pointerdown',e=>e.preventDefault());
+            opt.addEventListener('click',()=>choose(index)); list.append(opt);
+          });
+          list.hidden=!rows.length; input.setAttribute('aria-expanded',String(!!rows.length));
+          hint.textContent=rows.length ? 'Choose a matching address.' : 'No local map match. You can enter the full address manually.';
+        } catch {
+          if (current()) hint.textContent='Address lookup is unavailable. You can enter the full address manually.';
+        }
+      },140);
+    }
+    input.addEventListener('input',()=>{selected=null;options.onMatch?.(null);schedule();});
+    input.addEventListener('focus',schedule);
+    input.addEventListener('blur',()=>{close();status();});
+    input.addEventListener('keydown',e=>{
+      if (e.key==='Escape') {close();status();return;}
+      if (!choices.length) return;
+      if (e.key==='Enter' && active>=0) {e.preventDefault();choose(active);return;}
+      if (!['ArrowDown','ArrowUp'].includes(e.key)) return;
+      e.preventDefault();
+      active=e.key==='ArrowDown' ? (active+1)%choices.length : (active<=0 ? choices.length-1 : active-1);
+      Array.from(list.children).forEach((el,i)=>el.setAttribute('aria-selected',String(i===active)));
+      const option=list.children[active];
+      input.setAttribute('aria-activedescendant',option.id); option.scrollIntoView({block:'nearest'});
+    });
+    status();
+  }
+  function staffLookup(host, address) {
+    if (!host) return;
+    const details=document.createElement('details'), summary=document.createElement('summary');
+    summary.textContent='Look up this address';
+    const label=document.createElement('label'), input=document.createElement('input');
+    label.textContent='Service address to check';
+    input.id='staffServiceAddressLookup'; input.type='text'; input.value=address; input.autocomplete='off';
+    const link=document.createElement('p');
+    label.append(input); details.append(summary,label,link); host.append(details);
+    mount(input,{onMatch:point=>{link.innerHTML=mapLink(input.value,point);}});
+  }
+  root.BlackFlagServiceAddress=Object.freeze({supports,suggest,mount,matchesAddress,mapLink,staffLookup});
+})(globalThis);

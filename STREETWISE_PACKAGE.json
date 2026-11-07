@@ -1,0 +1,23 @@
+{
+  "name": "Streetwise Service Addresses",
+  "version": "1.0.0",
+  "runtime": "Browser JavaScript served over HTTPS or localhost",
+  "entry": "service_address.js",
+  "stylesheet": "service_address.css",
+  "source": "STREETWISE_RVA_SOURCE.json",
+  "region": "richmond-va",
+  "dataFiles": "streetwise_rva_00.json through streetwise_rva_15.json",
+  "assetLocation": "The lookup resolves data files beside the script. A data-address-base attribute on the script can specify another directory.",
+  "customer": {
+    "input": "A text input with an associated label and autocomplete=street-address",
+    "attach": "BlackFlagServiceAddress.mount(input, {point: savedMatch, onMatch: point => { draft.serviceAddressPoint = point; }})",
+    "address": "Read the normal input value when saving the request. Selection dispatches a bubbling input event.",
+    "match": "A match contains address, latitude, longitude and dataset. Editing the address clears the match and calls onMatch(null).",
+    "fallback": "Manual text entry works if a match is missing, data is unavailable, or the browser is offline."
+  },
+  "staff": {
+    "display": "BlackFlagServiceAddress.mapLink(savedAddress, savedPoint) returns a coordinate-only Maps link for a matching saved record, otherwise an empty string.",
+    "manualLookup": "BlackFlagServiceAddress.staffLookup(container, savedAddress) provides a read-only lookup without updating the saved request."
+  },
+  "hosting": "Public address reference files can be shared by several sites on the same origin. The component does not store customer records or request device location."
+}

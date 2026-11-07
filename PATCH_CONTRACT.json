@@ -1,18 +1,18 @@
 {
   "schema": "blackflag-patch-contract-v1",
-  "target_build": "8.8.20.95",
-  "target_seal": "keydeck-882095",
+  "target_build": "8.8.20.96",
+  "target_seal": "streetwise-882096",
   "supported_bases": [
     {
-      "build": "8.8.20.94",
-      "source_sha256": "84ccb0ecd94f1e48d36ae89b689bc8090921aece05eba04cb0da51dc71bdcf63",
-      "file_count": 830
+      "build": "8.8.20.95",
+      "source_sha256": "dc3d0f4b7e748bbb4310503dea0b798688c51dda206b55b6d807f9a4c18c4612",
+      "file_count": 832
     }
   ],
   "requires_deletions": false,
   "max_upload_files": 85,
   "database_actions": "none",
-  "rule": "Upload every changed/new root file over complete 8.8.20.94. Keep everything else. This software archive executes no database commands.",
+  "rule": "Upload every changed/new root file over complete 8.8.20.95. Keep everything else. This software archive executes no database commands.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",

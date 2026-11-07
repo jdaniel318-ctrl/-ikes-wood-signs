@@ -16712,3 +16712,14 @@ body:not(.engine-mode) #experienceTestDeck,body.boot-locked #experienceTestDeck{
   }
   #blackFlagEntryGate .bf-entry-trust { width: auto !important; }
 }
+
+.streetwise-field { min-width: 0; align-self: start; }
+.streetwise-field > label { display: grid; gap: .35rem; margin: 0; }
+.streetwise-hint { display: block; font-size: .8rem; line-height: 1.4; }
+.streetwise-options:not([hidden]) { display: grid; margin-top: .25rem; border: 1px solid #82969f; border-radius: .6rem; overflow: hidden; background: #fff; color: #102d39; }
+.streetwise-options [role="option"] { padding: .7rem .85rem; min-height: 44px; box-sizing: border-box; cursor: pointer; font: 500 .94rem/1.35 system-ui, sans-serif; }
+.streetwise-options [role="option"] + [role="option"] { border-top: 1px solid #d7e2e5; }
+.streetwise-options [role="option"]:hover, .streetwise-options [aria-selected="true"] { background: #d9eef4; }
+
+.streetwise-unit { margin-top: .5rem; font-size: .9rem; }
+.streetwise-unit summary { cursor: pointer; padding: .4rem 0; }

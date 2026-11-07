@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.20.95",
-  "version": "8.8.20.95",
-  "release_name": "Keydeck",
-  "releaseName": "Keydeck",
-  "release_seal": "keydeck-882095",
+  "build": "8.8.20.96",
+  "version": "8.8.20.96",
+  "release_name": "Streetwise",
+  "releaseName": "Streetwise",
+  "release_seal": "streetwise-882096",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -118,7 +118,9 @@
     "countercraft_exports.js",
     "countercraft_backup.js",
     "countercraft_recognition.js",
-    "fleet_boundary_repair.js"
+    "fleet_boundary_repair.js",
+    "service_address.js",
+    "service_address_fleet.js"
   ],
   "atomic_release_contract": {
     "manifest_runtime_agreement": "required-before-execution",
@@ -279,8 +281,8 @@
     "algorithm": "SHA-256",
     "files": {
       "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": {
-        "sha256": "3786eda647d59fadb96a0d39a1df0c888bb49a7c815a8307067b7dfa8f668352",
-        "build": "8.8.20.95",
+        "sha256": "42d51d1ea877b4512c75394134fd817303a1deaddfedc2e4f5977f62b89fe294",
+        "build": "8.8.20.96",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -327,14 +329,14 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_COMMAND_MODEL.json": {
-        "sha256": "b9bdd4ad9f6f0ca4b402c1ba66e99d89c49bd7c5341416722883ff84c061f877",
-        "build": "8.8.20.95",
+        "sha256": "58387d50f0e391c2fb22b198ba4234ac91df6b570e4c6ef0380036f9a8e2f3f8",
+        "build": "8.8.20.96",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
       "FLEET_DOCTRINE_REGISTRY.json": {
-        "sha256": "002cd727d2d29eb925dd860cb88629e3211421003603c8b6eb63db489493026b",
-        "build": "8.8.20.95",
+        "sha256": "dbc0e086dff771bc0ce65d7f93716360768cf116867f1742c059426a7c677a01",
+        "build": "8.8.20.96",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -393,8 +395,8 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "GOLDEN_VOYAGES.json": {
-        "sha256": "074476c7ee40905e8a0b71c03a14b24848dddb7538b478d3417173f4f4883d05",
-        "build": "8.8.20.95",
+        "sha256": "fa6d9d01d92b826ee46cfbb2c7c6e6efc3b80ef298433822865088b97d585e97",
+        "build": "8.8.20.96",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -543,27 +545,27 @@
     "algorithm": "SHA-256",
     "serialization": "UTF-8 response body, same text executed by atomic loader",
     "files": {
-      "styles.css": "a7d7989282edaa139b991cdeeee1bd5e6ed5e65326bbe88632752623a02cb17b",
+      "styles.css": "0dda79ff05da954fe40c799fc0a152447ef46e419ef080bcda04d6018e44890d",
       "simple_books.css": "5939590021ef2d3738d5f5f7249d72f8da64cc274bf287ef8183958517b0ba46",
       "platform_core.js": "7fb1504a8b8de0fe319bfd29bed4d0875784565d45ede84a07a61c767491da68",
       "platform_v4.js": "f1596bec1fa4689f5edd75378241da7042ff04eb879401a83f3bd7a2d5cc4e9e",
       "platform_identity.js": "0beacfb452fb0e3e24aea71efd86140b1657560e98fa670a0f3bea428414232d",
       "fleet_supabase.js": "1a6909b9036d59b97fbdf1ccf96bc444705c1d5c528eb3425fdf4a52037a980c",
       "ike_style_registry.js": "6b348ebceb47e172e6676f46252b19c1c6bb7532baf76febfa8dd81760a76ab7",
-      "app.js": "10f6b9429d686a3ee941ef74795e571ab01fff2ec89043d6540857b3800ff6a8",
+      "app.js": "0691d21a51b77c205a18a92e166e72a9cbf17da9639536862c8de55318847cd3",
       "captain.js": "a4145c020aa6099c767a64b79b1d8208d271abe23229ba968b20cc30e7ca6fc1",
       "simple_books.js": "ddd76dcf5e6c579f16918a9d3e645b0fc65d8a5b4d7c66df8896d8314eea325d",
-      "owner.html": "b237e0f41b92f20b58ec0b39ea44ed45be1d27b2fcf24e5ea9211b2176bd4ecb",
-      "manifest.webmanifest": "fe3c7b03e72e80717528923bb931676f1fad87223d41ce38eedafb268ce0c63d",
+      "owner.html": "4034915bcd60cfec2f0369954b0fcc9c3e54d5c5622ace5360065a050e1f7bc4",
+      "manifest.webmanifest": "5c26f73f64b749d9feba3badbc8618ba4c266d74dbd817988b5d1b099298d92b",
       "IKE_STYLE_FOUNDRY.json": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
-      "sw.js": "9b25808892d8d43b1ac2813d029d255d98771646b007f55aac2694530fcfc39f",
-      "FLEET_DOCTRINE_REGISTRY.json": "002cd727d2d29eb925dd860cb88629e3211421003603c8b6eb63db489493026b",
-      "GOLDEN_VOYAGES.json": "074476c7ee40905e8a0b71c03a14b24848dddb7538b478d3417173f4f4883d05",
-      "FLEET_COMMAND_MODEL.json": "b9bdd4ad9f6f0ca4b402c1ba66e99d89c49bd7c5341416722883ff84c061f877",
-      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "3786eda647d59fadb96a0d39a1df0c888bb49a7c815a8307067b7dfa8f668352",
+      "sw.js": "004e00be2163fefb67a956fe22ec4c5304a8c4b7a78bc74c2703834d8b8fd3b3",
+      "FLEET_DOCTRINE_REGISTRY.json": "dbc0e086dff771bc0ce65d7f93716360768cf116867f1742c059426a7c677a01",
+      "GOLDEN_VOYAGES.json": "fa6d9d01d92b826ee46cfbb2c7c6e6efc3b80ef298433822865088b97d585e97",
+      "FLEET_COMMAND_MODEL.json": "58387d50f0e391c2fb22b198ba4234ac91df6b570e4c6ef0380036f9a8e2f3f8",
+      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "42d51d1ea877b4512c75394134fd817303a1deaddfedc2e4f5977f62b89fe294",
       "input_hygiene.js": "85584886dd424e619c6ee1069665e201dca51e815673839f91da0d796fcf591a",
-      "business_deck.js": "b243334f39ff99eefe009872c0afb5eea0939cd8c7b9308bbf199b405c2716c5",
-      "business_deck.css": "445fa81fff307d41cdd9a7d181ec86f9daae6843d24ac0d9fe14f939a25b6289",
+      "business_deck.js": "5f699f4c8f8a8651dde8b4e3faee4dff1b23412a0cfbb901f3cc84e7297ad350",
+      "business_deck.css": "0b3ac0c9c6c2edb1120d47afe31615a26ebc9e98e5e39f18ed223c06008cad5d",
       "fleet_viewport.js": "4df40c185195365a3d8b886f34df0004b493bd3f1b24c8df7fc2509f50f7f692",
       "fleet_viewport.css": "8d48158849706a79b006b5c2b50a96b18e0371309fb209a7e43e8ccea57017db",
       "headway_contracts.js": "e79286db1785fa95038bbda65c83e0d36ada63b2d402dffad695e4866062c09c",
@@ -576,7 +578,7 @@
       "quartermaster_core.js": "9a5f85005f83b820c5bcbfc9afb29475bc65e62ba84e9e8ac2f59edc20a9bebb",
       "quartermaster_fonts.js": "69b2f7fbcf0d29731cf6feea6d3f7b57d7633fafc29703123a7213ea861c9df5",
       "quartermaster_pdf.js": "7e1c51fa7d7a4ae4fcd55a2330b15ff87c6b4ec0c9db548ff2b6a72658a453a1",
-      "quartermaster.js": "39bd8a7052d3f357f7e8aa535045fb34cb8de1983e69b828930aa88d46b293c3",
+      "quartermaster.js": "ff0380ebf4358621dee56da0b02d913f044b85e3dcb2cb145aa6803a064626d2",
       "quartermaster.css": "7873d13ead95debc796a0e51d8f6eaf529488ff66da21242a8bf1135c4732c8b",
       "carve_fonts.js": "8eff084fd386b9fe63cac51924de2cef24f3af3bfeee98572c2929a7adb8fcc4",
       "carve_core.js": "428acd25f8208c66a9681e744a57665d1d0db2abf11a34704b94591c69be61f3",
@@ -631,7 +633,9 @@
       "carvewright_capture_core.js": "69287a14b19bfb4a9b5cbe5e8cc261632897429cb78557a183916bd7d637891c",
       "carvewright_capture_artwork.js": "e4e826bd09bd8138fafce52fa2638b185c14df87bf43ff5d7d33e5a6edc9920b",
       "carvewright_capture.js": "2d73f5f42f7f43411ac53cf86469137f38ada60213d0fe6524fa40b180c39aae",
-      "fleet_boundary_repair.js": "a631fd0129c95d91b8cfb0a701acff8fc33991bd3dddf199909b1a4795aaef3e"
+      "fleet_boundary_repair.js": "a631fd0129c95d91b8cfb0a701acff8fc33991bd3dddf199909b1a4795aaef3e",
+      "service_address.js": "f2d04ac716007463f68c1a7747c547096961534372716ee9a45a3a83a216d462",
+      "service_address_fleet.js": "d31da02362f3bb60a61589f0a5bbb22ea976ffb853434d52db75eb5d4dd2b585"
     }
   },
   "watchbeacon_upgrade": {
@@ -1911,7 +1915,7 @@
   "component_contract": {
     "schema": "blackflag-component-contract-v1",
     "release_binding": "verified-page-context-v1",
-    "app_revision": "8.8.20.95",
+    "app_revision": "8.8.20.96",
     "unchanged_component_policy": "Exact current-manifest SHA-256 required; no version-only rewrites",
     "owner_helper_revision": "8.8.20.68",
     "scope": "Client code identity only; no server authority"

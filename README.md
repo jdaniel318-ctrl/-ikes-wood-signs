@@ -1,10 +1,10 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Keydeck 8.8.20.95
+# Black Flag Streetwise 8.8.20.96
 
 Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
-Baseline: 8.8.20.94. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Baseline: 8.8.20.95. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
 Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
-Both Engine PIN entrances now accept keypad buttons or hardware-keyboard digits. The code stays outside editable fields and clears when checked or dismissed. See KEYDECK_GUIDE.md for the Legacy private-preview iPad retest.
+Reusable service address suggestions for contractor vessels with independent coverage settings. Richmond-area coverage is enabled for Legacy Plumbing and Signal Restoration. Other contractor vessels may opt in. Staff can open a matched job location in Maps.
 Preparation does not deploy frontend or backend changes. See PATCH_CONTRACT.json for separately managed backend prerequisites.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 

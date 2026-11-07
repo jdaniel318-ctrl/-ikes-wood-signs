@@ -1,11 +1,11 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Current architecture — Keydeck 8.8.20.95
+# Current architecture — Streetwise 8.8.20.96
 
-Source of release identity: RELEASE_CONFIG.json. Installed page/manifest/seal/worker identity is generated together. APP_COMPONENT_REVISION is 8.8.20.95; owner helper revision is 8.8.20.68. Unchanged component bodies remain byte-identical across release-only changes.
+Source of release identity: RELEASE_CONFIG.json. Installed page/manifest/seal/worker identity is generated together. APP_COMPONENT_REVISION is 8.8.20.96; owner helper revision is 8.8.20.68. Unchanged component bodies remain byte-identical across release-only changes.
 
 The Engine still verifies every required body, current governance models, app component contract and worker identity before executing the same script sequence. App and Captain bind audit/display freshness to the verified installed release. This context never grants permissions. The owner page keeps explicit helper compatibility checks.
 
-Both Engine PIN entrances now accept keypad buttons or hardware-keyboard digits. The code stays outside editable fields and clears when checked or dismissed. See KEYDECK_GUIDE.md for the Legacy private-preview iPad retest.
+Reusable service address suggestions for contractor vessels with independent coverage settings. Richmond-area coverage is enabled for Legacy Plumbing and Signal Restoration. Other contractor vessels may opt in. Staff can open a matched job location in Maps.
 Backend prerequisites are recorded separately in PATCH_CONTRACT.json. Release preparation executes no database commands. Fleet core and Admiral programs remain distinct.
 
 ## Release commands
