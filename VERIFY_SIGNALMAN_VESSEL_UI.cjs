@@ -3,15 +3,15 @@
 // Intercept every request locally. Only Fleet Help's presentation is substituted here;
 // the separate UI tests exercise the actual form/list and their response contracts.
 const {test,before,after}=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
-const {createRequire}=require('node:module'),{chromium}=createRequire(path.join(process.env.CODEX_PRIMARY_RUNTIME_NODE_MODULES||__dirname,'playwright/package.json'))('playwright');
+const {createRequire}=require('node:module'),{chromium,webkit}=createRequire(path.join(process.env.CODEX_PRIMARY_RUNTIME_NODE_MODULES||__dirname,'playwright/package.json'))('playwright');
 const root=path.resolve(process.argv[2]||__dirname),origin='https://vessel-fixture.invalid',project='beccas-bloom-shop',user={id:'fixture-person',email:'vessel@example.invalid',user_metadata:{dark_sky_owner_password_set:true}};
 let browser;
-before(async()=>{const executablePath=[process.env.CHROMIUM_PATH,chromium.executablePath(),'/usr/bin/chromium','/tmp/suretap-browser/chrome'].find(x=>x&&fs.existsSync(x));browser=await chromium.launch({headless:true,executablePath,args:['--no-sandbox','--disable-dev-shm-usage','--disable-gpu']});});
+before(async()=>{const executablePath=[process.env.CHROMIUM_PATH,chromium.executablePath(),'/usr/bin/chromium','/tmp/suretap-browser/chrome'].find(x=>x&&fs.existsSync(x));if(process.env.WEBKIT_PATH){browser=await webkit.launch({executablePath:process.env.WEBKIT_PATH,headless:true});return;}browser=await chromium.launch({headless:true,executablePath,args:['--no-sandbox','--disable-dev-shm-usage','--disable-gpu']});});
 after(async()=>browser?.close());
 const witness=`window.__mounts=[];window.DarkSkyFleetHelp={mount(host,options){const lease={host,options,ended:false};window.__mounts.push(lease);host.textContent='Fixture '+options.role+' workspace';return ()=>{lease.ended=true;host.replaceChildren()};}};`;
-async function fixture(t,{role='owner',authorized=true,authenticated=true,view='',appointment='accepted',cached=false,provisional=false,interceptHelp=null,needsSetup=false}={}){
+async function fixture(t,{role='owner',authorized=true,authenticated=true,view='',appointment='accepted',cached=false,provisional=false,interceptHelp=null,needsSetup=false,routeProject=project}={}){
  const context=await browser.newContext({viewport:{width:840,height:860}});t.after(()=>context.close());
- const scope=cached?'fixture-business':project;
+ const scope=cached?'fixture-business':routeProject;
  const identity={...user,user_metadata:{dark_sky_owner_password_set:!needsSetup}};
  const p=await context.newPage(),calls=[],redirects=[],errors=[],keys={owner:'darkSkySupabaseOwnerSessionV1',captain:'darkSkySupabaseVesselCaptainSessionV1'};
  p.setDefaultTimeout(3200);p.on('pageerror',e=>errors.push(e.message));t.after(()=>assert.deepEqual(errors,[]));
@@ -100,7 +100,7 @@ test('Captain lease immediately rejects a changed project route even before a re
 
 for(const needsSetup of [false,true])test('signed-out deep link resumes after verified '+(needsSetup?'password setup':'password sign-in'),async t=>{
  const {p}=await fixture(t,{authenticated:false,view:'fleet-help',needsSetup});
- await p.locator('#loginUser').fill(user.email);await p.locator('#loginPass').fill('fixture-password-only');await p.locator('#signIn').click();
+ await p.locator('#loginUser').fill(user.email);await p.locator('#choosePassword').click();await p.locator('#loginPass').fill('fixture-password-only');await p.locator('#signIn').click();
  if(needsSetup){
   await p.locator('#passwordSetup').waitFor();assert.equal(await p.evaluate(()=>__mounts.length),0);
   await p.locator('#newPassword').fill('new-fixture-password');await p.locator('#confirmPassword').fill('new-fixture-password');await p.locator('#savePassword').click();
@@ -119,5 +119,35 @@ test('email-link redirect preserves only an unambiguous fleet-help view for this
    backlink.hash='access_token=fixture-link&expires_in=3600&type=magiclink';
    await p.goto('about:blank');await p.goto(backlink.toString());await p.waitForFunction(()=>window.__mounts.length===1);assert.equal(await p.evaluate(()=>__mounts[0].options.isCurrent()),true);
   }
+ }
+});
+
+test('fresh Legacy owner entry names the vessel and protects the chosen email from a different saved login',async t=>{
+ const {p}=await fixture(t,{authenticated:false,routeProject:'bf-p-f92f87e8ec44',view:'fleet-help'});
+ await p.locator('#login').waitFor();
+ assert.equal(await p.locator('#loginName').innerText(),'Legacy Plumbing');
+ assert.equal(await p.locator('#login input[type=password]').count(),0);
+ const userField=p.locator('#loginUser'), tokenRequests=[];
+ p.on('request',request=>{if(new URL(request.url()).pathname==='/auth/v1/token')tokenRequests.push(request)});
+ await userField.fill('owner@legacy.example');
+ await userField.press('Enter');
+ await p.locator('#loginPass').waitFor();
+ await userField.evaluate(el=>{el.value='owner@another.example'});
+ await p.locator('#loginPass').fill('synthetic-password');
+ await p.locator('#signIn').click();
+ assert.match(await p.locator('#loginError').innerText(),/different email/i);
+ assert.equal(await userField.inputValue(),'owner@legacy.example');
+ assert.equal(await p.locator('#login input[type=password]').count(),0);
+ assert.equal(tokenRequests.length,0);
+ await p.locator('#choosePassword').click();
+ await p.locator('#changeLogin').click();
+ assert.equal(await p.locator('#login input[type=password]').count(),0);
+ assert.equal(await p.locator('#sendMagicLink').isVisible(),true);
+});
+test('fresh vessel links never borrow a different business name',async t=>{
+ for(const [id,label] of [['ikes-wood-signs',"Ike's Wood Signs"],['unlisted','Business Owner Access']]){
+  const {p}=await fixture(t,{authenticated:false,routeProject:id,view:'login&name=Legacy+Plumbing'});
+  await p.locator('#login').waitFor();
+  assert.equal(await p.locator('#loginName').innerText(),label);
  }
 });

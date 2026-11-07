@@ -1,11 +1,11 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Current architecture — Signalman 8.8.20.99
+# Current architecture — Nameplate 8.8.20.100
 
 Source of release identity: RELEASE_CONFIG.json. Installed page/manifest/seal/worker identity is generated together. APP_COMPONENT_REVISION is 8.8.20.99; owner helper revision is 8.8.20.68. Unchanged component bodies remain byte-identical across release-only changes.
 
 The Engine still verifies every required body, current governance models, app component contract and worker identity before executing the same script sequence. App and Captain bind audit/display freshness to the verified installed release. This context never grants permissions. The owner page keeps explicit helper compatibility checks.
 
-An owner can report a problem to their vessel’s appointed Captain. The Admiral can read the status and verification note. Test Center controls have their own space in the Legacy Plumbing and Signal Restoration previews.
+The owner page identifies known businesses before sign-in. Online owners choose an email before entering a password. An autofill change to the chosen email stops the attempt.
 Backend prerequisites are recorded separately in PATCH_CONTRACT.json. Release preparation executes no database commands. Fleet core and Admiral programs remain distinct.
 
 ## Release commands

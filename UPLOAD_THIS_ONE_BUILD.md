@@ -1,11 +1,11 @@
-# Upload Signalman 8.8.20.99
+# Upload Nameplate 8.8.20.100
 
-Use `DarkSky882099-Signalman-Upload.zip`, not the full backup or rollback.
+Use `DarkSky8820100-Nameplate-Upload.zip`, not the full backup or rollback.
 1. Extract the ZIP. Open its single folder. Upload ALL files inside to the existing repository ROOT; replace matching files and KEEP all other files. Commit the upload.
-2. After deployment open the Engine and confirm `8.8.20.99 · SIGNALMAN`. Do not clear Safari data, reset records or change permissions.
-3. Apply SIGNALMAN_FLEET_HELP.sql once in Fleet Core to enable shared reports.
+2. After deployment open the Engine and confirm `8.8.20.100 · NAMEPLATE`. Do not clear Safari data, reset records or change permissions.
+3. Open the Legacy Plumbing owner link in a signed-out tab to check the company name and email-first sign-in.
 
-An owner can report a problem to their vessel’s appointed Captain. The Admiral can read the status and verification note. Test Center controls have their own space in the Legacy Plumbing and Signal Restoration previews.
+The owner page identifies known businesses before sign-in. Online owners choose an email before entering a password. An autofill change to the chosen email stops the attempt.
 The upload itself executes no database commands. Shared specialist components retain their own revision labels; this is intentional reuse, not a mixed upload. Exact SHA-256 checks still run before Engine scripts execute.
 
 Full backup: application source ONLY; not Supabase, customer media or device drafts.

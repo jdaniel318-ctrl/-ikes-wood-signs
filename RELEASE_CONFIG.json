@@ -1,15 +1,15 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.99",
-  "name": "Signalman",
-  "seal": "signalman-882099",
-  "base": "8.8.20.98",
-  "base_sha256": "b78a871d9465be9a3c32419faae69f815d9eb628b5f13d7a2c39e5e74e8d0b0a",
-  "base_files": 862,
-  "prepared_at": "2026-11-07T14:48:11.499551+00:00",
+  "build": "8.8.20.100",
+  "name": "Nameplate",
+  "seal": "nameplate-8820100",
+  "base": "8.8.20.99",
+  "base_sha256": "851938c1faa7c6d824cabef7409f445b8aa2051b8c2e5eaeeb6076b9dc993a7b",
+  "base_files": 872,
+  "prepared_at": "2026-11-07T15:58:21.710590+00:00",
   "app_component_revision": "8.8.20.99",
   "owner_helper_revision": "8.8.20.68",
-  "feature_notes": "An owner can report a problem to their vessel\u2019s appointed Captain. The Admiral can read the status and verification note. Test Center controls have their own space in the Legacy Plumbing and Signal Restoration previews.",
+  "feature_notes": "The owner page identifies known businesses before sign-in. Online owners choose an email before entering a password. An autofill change to the chosen email stops the attempt.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -26,10 +26,10 @@
       "project": "sjgqqtnuttnkwsoebbqf",
       "migration": "SIGNALMAN_FLEET_HELP.sql",
       "sql_sha256": "cda1e6be58f6d479867ae30e20801403c6f5e6179e11cefa57826217867ca470",
-      "status": "source_ready_not_applied",
+      "status": "installed_on_connected_fleet_core",
       "automatic_execution_by_upload": false
     }
   },
-  "install_step": "Apply SIGNALMAN_FLEET_HELP.sql once in Fleet Core to enable shared reports.",
-  "evidence_file": "SIGNALMAN_EVIDENCE.json"
+  "install_step": "Open the Legacy Plumbing owner link in a signed-out tab to check the company name and email-first sign-in.",
+  "evidence_file": "NAMEPLATE_EVIDENCE.json"
 }

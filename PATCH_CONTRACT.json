@@ -1,18 +1,18 @@
 {
   "schema": "blackflag-patch-contract-v1",
-  "target_build": "8.8.20.99",
-  "target_seal": "signalman-882099",
+  "target_build": "8.8.20.100",
+  "target_seal": "nameplate-8820100",
   "supported_bases": [
     {
-      "build": "8.8.20.98",
-      "source_sha256": "b78a871d9465be9a3c32419faae69f815d9eb628b5f13d7a2c39e5e74e8d0b0a",
-      "file_count": 862
+      "build": "8.8.20.99",
+      "source_sha256": "851938c1faa7c6d824cabef7409f445b8aa2051b8c2e5eaeeb6076b9dc993a7b",
+      "file_count": 872
     }
   ],
   "requires_deletions": false,
   "max_upload_files": 85,
   "database_actions": "none",
-  "rule": "Upload every changed/new root file over complete 8.8.20.98. Keep everything else. This software archive executes no database commands.",
+  "rule": "Upload every changed/new root file over complete 8.8.20.99. Keep everything else. This software archive executes no database commands.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -29,7 +29,7 @@
       "project": "sjgqqtnuttnkwsoebbqf",
       "migration": "SIGNALMAN_FLEET_HELP.sql",
       "sql_sha256": "cda1e6be58f6d479867ae30e20801403c6f5e6179e11cefa57826217867ca470",
-      "status": "source_ready_not_applied",
+      "status": "installed_on_connected_fleet_core",
       "automatic_execution_by_upload": false
     }
   }

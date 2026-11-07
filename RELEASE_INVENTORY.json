@@ -1,9 +1,9 @@
 {
-  "release": "Signalman",
-  "name": "Signalman",
-  "build": "8.8.20.99",
-  "seal": "signalman-882099",
-  "file_count": 872,
+  "release": "Nameplate",
+  "name": "Nameplate",
+  "build": "8.8.20.100",
+  "seal": "nameplate-8820100",
+  "file_count": 873,
   "files": [
     ".github/workflows/drydock-batch1.yml",
     "ADMIRALS_DECK_TRIAL.md",
@@ -262,6 +262,7 @@
     "MOBILE_AUDIT_550.md",
     "MOBILE_CONTRACT.md",
     "MUSTER_TRACE_MODEL.json",
+    "NAMEPLATE_EVIDENCE.json",
     "OPERATIONAL_COHERENCE_AUDIT.md",
     "OVERVIEW_COHERENCE_REFIT_AUDIT.md",
     "OWNER_AUTHORITY_MODEL.json",

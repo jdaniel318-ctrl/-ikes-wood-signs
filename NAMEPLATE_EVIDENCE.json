@@ -1,0 +1,11 @@
+{
+  "build": "8.8.20.100",
+  "release": "Nameplate",
+  "base": "8.8.20.99 Signalman",
+  "offline_suites_passed": 45,
+  "chromium_browser_tests_passed": 17,
+  "webkit_sign_in_tests_passed": 5,
+  "scope": "Fresh vessel identity, email choice, a simulated different autofilled email, owner sign-in links and ordinary owner and Captain routes. Browser tests use synthetic accounts.",
+  "native_ipad_acceptance": "Pending on device after upload.",
+  "database_changes": "none"
+}

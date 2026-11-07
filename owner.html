@@ -149,7 +149,7 @@
 @media(max-width:700px){.tb-security-form,.tb-recovery-grid{grid-template-columns:1fr}.tb-security-form>.captain-handoff-actions{grid-column:auto}}
 </style>
 <link rel="stylesheet" href="business_deck.css?v=suretap-882097" onerror="window.__workhorseDeckStylesFailed=true">
-<script id="blackFlagPageRelease">window.__blackFlagPageRelease=Object.freeze({build:'8.8.20.99',seal:'signalman-882099',name:'Signalman'});</script>
+<script id="blackFlagPageRelease">window.__blackFlagPageRelease=Object.freeze({build:'8.8.20.100',seal:'nameplate-8820100',name:'Nameplate'});</script>
 <script src="input_hygiene.js?v=fairlead-882068"></script>
 <script src="service_address_fleet.js?v=streetwise-882096"></script>
 <script src="service_address.js?v=portolan-882098"></script>
@@ -174,17 +174,20 @@
   </section>
   <section id="login" class="route-safe hidden">
     <div class="card">
-      <div class="eyebrow">BUSINESS PORTAL</div>
+      <div class="eyebrow">BUSINESS OWNER SIGN-IN</div>
       <h1 id="loginName">Business</h1>
-      <p class="muted">Sign in to manage this business. This account is scoped to one project only.</p>
+      <p id="loginIntro" class="muted">Enter your owner email to continue.</p>
       <div class="login-grid">
-        <label>Email<input data-bf-trim="boundary" id="loginUser" spellcheck="false" autocapitalize="none" name="username" type="email" autocomplete="username" inputmode="email"></label>
-        <label id="passwordLabel">Password<input data-bf-trim="preserve" id="loginPass" name="password" type="password" autocomplete="current-password"></label>
-        <button id="signIn" class="btn primary">SIGN IN</button>
+        <label><span id="loginUserLabel">Owner email</span><input data-bf-trim="boundary" id="loginUser" spellcheck="false" autocapitalize="none" name="ownerEmail" type="email" autocomplete="email" inputmode="email" required></label>
+        <button id="choosePassword" type="button" class="btn primary">Continue with password</button>
+        <template id="passwordField"><input data-bf-trim="preserve" id="loginPass" name="password" type="password" autocomplete="current-password"></template>
+        <label id="passwordLabel" class="hidden">Password</label>
+        <button id="signIn" class="btn primary hidden">SIGN IN</button>
+        <button id="changeLogin" type="button" class="btn ghost hidden">Change email</button>
         <button id="sendMagicLink" class="btn ghost hidden">FIRST-TIME / SECURE SIGN-IN LINK</button>
         <button id="forgotPassword" class="btn ghost hidden">FORGOT PASSWORD?</button>
         <button id="useLocalRecovery" class="btn warn hidden">USE LOCAL RECOVERY</button>
-        <div id="loginError" class="error"></div>
+        <div id="loginError" role="status" class="error"></div>
       </div>
       <div id="supabaseNote" class="test-note hidden"></div>
       <div id="testNote" class="test-note hidden"></div>
@@ -225,7 +228,7 @@
   <section id="portal" class="portal hidden">
     <div class="portal-wrap">
       <header class="portal-head">
-        <div class="bd-brand-heading"><div id="businessHeaderLogo" aria-hidden="true"></div><div><div class="eyebrow" id="ownerInstalledRelease">8.8.20.99 · QUARTERMASTER</div><h1 id="portalName">Business</h1><span class="owner-badge">● SECURE OWNER SESSION</span><div id="ownerScopeNote" class="owner-scope-note">Verified for this business only</div></div></div>
+        <div class="bd-brand-heading"><div id="businessHeaderLogo" aria-hidden="true"></div><div><div class="eyebrow" id="ownerInstalledRelease">8.8.20.100 · QUARTERMASTER</div><h1 id="portalName">Business</h1><span class="owner-badge">● SECURE OWNER SESSION</span><div id="ownerScopeNote" class="owner-scope-note">Verified for this business only</div></div></div>
         <div class="head-actions"><button id="returnEngine" class="btn ghost hidden">RETURN TO BLACK FLAG</button><button id="signOut" class="btn secondary">SIGN OUT</button></div>
       </header>
       <nav id="businessDeckNav" class="bd-owner-nav" aria-label="Business workspace"></nav>
@@ -722,7 +725,15 @@ const OWNER_SESSION_KEY='blackFlagOwnerSessionV1', OWNER_AUTHORITY_WITNESS_KEY='
 const LOCAL_RECOVERY_FAILURE_KEY='darkSkyOwnerRecoveryFailuresV1', LOCAL_RECOVERY_MAX_FAILURES=5, LOCAL_RECOVERY_LOCK_MS=5*60*1000, DEFAULT_PROJECT_ADMIN_RECOVERY_PIN='4353';
 const SUPABASE_URL='https://sjgqqtnuttnkwsoebbqf.supabase.co', SUPABASE_KEY='sb_publishable_gvWfIBQg4ew2RvVr6CpJSg_8y02QmKy';
 const ownerSupabase=window.DarkSkySupabase.create({url:SUPABASE_URL,publishableKey:SUPABASE_KEY,sessionKey:SUPABASE_SESSION_KEY,guardSession:true,build:window.__blackFlagPageRelease.build});
-const FLEET_CORE_PROJECT_IDS=new Set(['beccas-bloom-shop','bf-p-f92f87e8ec44','bor-north-richmond','grizzly-bear','ikes-wood-signs','mugshot-after-dark']);
+const publicOwnerNames=new Map([
+  ['beccas-bloom-shop', "Becca's Bloom Shop"],
+  ['bf-p-f92f87e8ec44', 'Legacy Plumbing'],
+  ['bor-north-richmond', 'Signal Restoration'],
+  ['grizzly-bear', 'Grizzly Bear'],
+  ['ikes-wood-signs', "Ike's Wood Signs"],
+  ['mugshot-after-dark', 'Mugs After Dark']
+]);
+let chosenOwnerEmail='';
 const q=new URLSearchParams(location.search), projectId=String(q.get('project')||''), source=String(q.get('source')||''), requestedView=String(q.get('view')||'login');
 const engineTrialLaunch=window.CountercraftConfig.consumeTrial(new URLSearchParams(location.hash.slice(1)).get('launch'));let trialViewOpened=false;
 if(engineTrialLaunch)history.replaceState({},'',location.pathname+location.search);
@@ -736,9 +747,64 @@ function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&l
 function retireOwnerHelp(){closeOwnerHelp?.();closeOwnerHelp=null;}
 function show(id){if(id!=='portal')retireOwnerHelp();['safeShell','login','passwordSetup','localRecovery','portal','failure'].forEach(x=>$(x).classList.toggle('hidden',x!==id));}
 
-function usesSupabaseOwner(){return !project||FLEET_CORE_PROJECT_IDS.has(projectId)||project?.ownerAccess?.identityProvider==='supabase';}
+function usesSupabaseOwner(){return !project||publicOwnerNames.has(projectId)||project?.ownerAccess?.identityProvider==='supabase';}
 function ownerAccessMessage(reason=''){const name=project?.name||'this business';if(reason==='owner_membership_denied'||reason==='vessel_denied')return 'This Supabase account is not commissioned as the owner of '+name+'. Use the exact owner email assigned to this business.';if(String(reason).startsWith('membership_query_')||String(reason).startsWith('vessel_query_'))return 'The secure owner check could not complete. No business data was opened. Try again.';return 'This account is not authorized for this business.';}
-function configureOwnerLogin(){localRecoveryAttempt=false;$('passwordLabel').classList.remove('hidden');$('signIn').classList.remove('hidden');$('forgotPassword').classList.remove('hidden');$('sendMagicLink').classList.toggle('hidden',!usesSupabaseOwner());$('useLocalRecovery').classList.add('hidden');$('supabaseNote').classList.add('hidden');$('testNote').classList.add('hidden');$('loginUser').placeholder=(project?.name||'Business')+' owner email';if(usesSupabaseOwner()){$('supabaseNote').textContent='SUPABASE OWNER GATE • Use the owner email commissioned for this business • exact-vessel membership required';$('supabaseNote').classList.remove('hidden');}else{if(!$('loginUser').value)$('loginUser').value=project?.ownerAccess?.credential?.login||project?.ownerAccess?.ownerEmail||'';$('testNote').textContent='PROVISIONAL OWNER IDENTITY • Forgot Password uses exact-vessel Project Admin recovery. Server reporting remains unavailable until a Supabase owner membership is commissioned.';$('testNote').classList.remove('hidden');}}
+function setOwnerPasswordStep(showPassword){
+  const input=$('loginUser'), online=usesSupabaseOwner()&&!localRecoveryAttempt;
+  $('loginPass')?.remove();
+  input.readOnly=online && showPassword;
+  input.name=showPassword?'username':'ownerEmail';
+  input.autocomplete=showPassword?'username':'email';
+  $('choosePassword').classList.toggle('hidden',showPassword);
+  $('passwordLabel').classList.toggle('hidden',!showPassword);
+  $('signIn').classList.toggle('hidden',!showPassword);
+  $('changeLogin').classList.toggle('hidden',!online||!showPassword);
+  $('sendMagicLink').classList.toggle('hidden',!online||showPassword);
+  if(showPassword){
+    $('passwordLabel').append($('passwordField').content.cloneNode(true));
+    $('loginPass').addEventListener('keydown',event=>{
+      if(event.key==='Enter'){event.preventDefault();$('signIn').click();}
+    });
+  }
+}
+function configureOwnerLogin(){
+  localRecoveryAttempt=false;
+  chosenOwnerEmail='';
+  const online=usesSupabaseOwner(), input=$('loginUser');
+  const name=project?.name||publicOwnerNames.get(projectId);
+  $('loginIntro').textContent=online
+    ? 'Enter the owner email for '+(name||'this business')+'.'
+    : 'Sign in with your owner login for '+(name||'this business')+'.';
+  $('loginUserLabel').textContent=online?'Owner email':'Owner login';
+  input.type=online?'email':'text';
+  input.inputMode=online?'email':'text';
+  input.placeholder=online?'Email address':'Owner login';
+  $('forgotPassword').classList.remove('hidden');
+  $('useLocalRecovery').classList.add('hidden');
+  $('supabaseNote').classList.add('hidden');
+  $('testNote').classList.toggle('hidden',online);
+  if(!online){
+    if(!input.value)input.value=project?.ownerAccess?.credential?.login||project?.ownerAccess?.ownerEmail||'';
+    $('testNote').textContent='Use Project Admin recovery to reset this local owner login.';
+  }
+  setOwnerPasswordStep(!online);
+}
+function chooseOwnerPassword(){
+  const input=$('loginUser');
+  input.value=input.value.trim();
+  if(!input.reportValidity())return;
+  chosenOwnerEmail=input.value;
+  $('loginError').textContent='';
+  setOwnerPasswordStep(true);
+  $('loginPass').focus();
+}
+function editOwnerEmail(){
+  const previous=chosenOwnerEmail;
+  chosenOwnerEmail='';
+  setOwnerPasswordStep(false);
+  $('loginUser').value=previous;
+  $('loginUser').focus();
+}
 function engineUrl(){const u=new URL('./index.html',location.href);u.search='';u.hash='';return u.toString();}
 function openDb(){return new Promise((resolve,reject)=>{const r=indexedDB.open(DB_NAME);r.onupgradeneeded=()=>{r.transaction.abort();resolve(null);};r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);r.onblocked=()=>reject(new Error('Business storage is busy in another tab.'));});}
 function req(r){return new Promise((resolve,reject)=>{r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});}
@@ -812,7 +878,7 @@ function checkDisplayedOwner(){
 }
 function signOutOwner(){
   const token=supabaseSession()?.access_token;
-  clearSupabaseSession();clearSession();show('login');$('loginPass').value='';configureOwnerLogin();
+  clearSupabaseSession();clearSession();show('login');$('loginUser').value='';configureOwnerLogin();
   history.replaceState({surface:'owner',projectId},'',`owner.html?project=${encodeURIComponent(projectId)}&view=login${source==='engine'?'&source=engine':''}`);
   if(token)return fetch(SUPABASE_URL+'/auth/v1/logout?scope=local',{method:'POST',headers:supaHeaders(token)}).catch(()=>{});
 }
@@ -852,7 +918,7 @@ function localRecoveryWaitMs(){return Math.max(0,Number(localRecoveryFailures().
 function recordLocalRecoveryFailure(){const row=localRecoveryFailures(),count=Number(row.count||0)+1,locked=count>=LOCAL_RECOVERY_MAX_FAILURES;saveLocalRecoveryFailures({count:locked?0:count,lockedUntil:locked?Date.now()+LOCAL_RECOVERY_LOCK_MS:0});return {locked,remaining:locked?0:Math.max(0,LOCAL_RECOVERY_MAX_FAILURES-count)};}
 async function validProjectAdminRecoveryPin(pin){const entered=String(pin||'').trim();if(!entered)return false;if(entered===DEFAULT_PROJECT_ADMIN_RECOVERY_PIN)return true;const scoped=await getSetting(`projectAdminPin:${projectId}`);return !!scoped&&entered===String(scoped);}
 function renderLocalRecovery(){if(!project||ownerProjectFromServer)return;const wait=localRecoveryWaitMs();show('localRecovery');$('recoveryLogin').value=String($('loginUser').value||project?.ownerAccess?.credential?.login||project?.ownerAccess?.ownerEmail||'').trim();$('recoveryPin').value='';$('localNewPassword').value='';$('localConfirmPassword').value='';$('localRecoveryError').textContent=wait?`Recovery is temporarily locked. Try again in ${Math.ceil(wait/60000)} minute(s).`:'';$('saveLocalRecovery').disabled=wait>0;}
-async function resetLocalOwnerCredential(){if(!project||ownerProjectFromServer)throw new Error('Use password recovery for your online owner account.');const wait=localRecoveryWaitMs();if(wait)throw new Error(`Recovery is temporarily locked. Try again in ${Math.ceil(wait/60000)} minute(s).`);const login=String($('recoveryLogin').value||'').trim(),pin=String($('recoveryPin').value||''),a=String($('localNewPassword').value||''),b=String($('localConfirmPassword').value||'');if(!login)throw new Error('Enter the owner email or login.');if(!passwordStrongEnough(a))throw new Error('Use at least 10 characters for the new password.');if(a!==b)throw new Error('The new passwords do not match.');const currentLogin=String(project?.ownerAccess?.credential?.login||project?.ownerAccess?.ownerEmail||'').trim().toLowerCase(),recoveryMatches=await validProjectAdminRecoveryPin(pin)&&(!currentLogin||login.toLowerCase()===currentLogin);if(!recoveryMatches){const f=recordLocalRecoveryFailure();throw new Error(f.locked?'Too many incorrect recovery attempts. Recovery is locked for 5 minutes.':`The recovery details did not match this business. ${f.remaining} attempt(s) remain.`);}const now=new Date().toISOString(),salt=random().slice(0,24),prior=project.ownerAccess?.credential||{};project.ownerAccess=project.ownerAccess&&typeof project.ownerAccess==='object'?project.ownerAccess:{};project.ownerAccess.enabled=true;project.ownerAccess.status='active';project.ownerAccess.credential={login:prior.login||login,salt,passwordHash:await sha256(salt+':'+a),hashAlgorithm:'SHA-256-SALTED-LOCAL-PROTOTYPE',testMode:!!prior.testMode,createdAt:prior.createdAt||now,changedAt:now,recoveredAt:now,recoveryMode:'exact-vessel-project-admin'};project.ownerAccess.updatedAt=now;await putProject(project);clearLocalRecoveryFailures();clearSession('owner-password-recovered');ownerWitness('owner-password-recovered',null,{scopeVerified:true,recoveryMode:'exact-vessel-project-admin'});show('login');$('loginUser').value=project.ownerAccess.credential.login;$('loginPass').value='';configureOwnerLogin();$('loginError').innerHTML='<div class="recovery-success">Password reset complete for this business only. Sign in with the new password.</div>';}
+async function resetLocalOwnerCredential(){if(!project||ownerProjectFromServer)throw new Error('Use password recovery for your online owner account.');const wait=localRecoveryWaitMs();if(wait)throw new Error(`Recovery is temporarily locked. Try again in ${Math.ceil(wait/60000)} minute(s).`);const login=String($('recoveryLogin').value||'').trim(),pin=String($('recoveryPin').value||''),a=String($('localNewPassword').value||''),b=String($('localConfirmPassword').value||'');if(!login)throw new Error('Enter the owner email or login.');if(!passwordStrongEnough(a))throw new Error('Use at least 10 characters for the new password.');if(a!==b)throw new Error('The new passwords do not match.');const currentLogin=String(project?.ownerAccess?.credential?.login||project?.ownerAccess?.ownerEmail||'').trim().toLowerCase(),recoveryMatches=await validProjectAdminRecoveryPin(pin)&&(!currentLogin||login.toLowerCase()===currentLogin);if(!recoveryMatches){const f=recordLocalRecoveryFailure();throw new Error(f.locked?'Too many incorrect recovery attempts. Recovery is locked for 5 minutes.':`The recovery details did not match this business. ${f.remaining} attempt(s) remain.`);}const now=new Date().toISOString(),salt=random().slice(0,24),prior=project.ownerAccess?.credential||{};project.ownerAccess=project.ownerAccess&&typeof project.ownerAccess==='object'?project.ownerAccess:{};project.ownerAccess.enabled=true;project.ownerAccess.status='active';project.ownerAccess.credential={login:prior.login||login,salt,passwordHash:await sha256(salt+':'+a),hashAlgorithm:'SHA-256-SALTED-LOCAL-PROTOTYPE',testMode:!!prior.testMode,createdAt:prior.createdAt||now,changedAt:now,recoveredAt:now,recoveryMode:'exact-vessel-project-admin'};project.ownerAccess.updatedAt=now;await putProject(project);clearLocalRecoveryFailures();clearSession('owner-password-recovered');ownerWitness('owner-password-recovered',null,{scopeVerified:true,recoveryMode:'exact-vessel-project-admin'});show('login');$('loginUser').value=project.ownerAccess.credential.login;configureOwnerLogin();$('loginError').innerHTML='<div class="recovery-success">Password reset complete for this business only. Sign in with the new password.</div>';}
 async function resolveLiveOwnerState(){verifiedOwnerBinding=null;await exchangeHashSession();let ss=await currentSupabaseSession();if(!ss?.access_token)return {state:'signed_out'};const user=await fetchSupabaseUser(ss);if(!user){clearSupabaseSession();return {state:'signed_out'};}const proof=await verifySupabaseMembership();if(!proof.ok)return {state:'denied',reason:proof.reason};const forceSetup=ss.flow_type==='recovery'||!passwordSetupComplete(user);if(forceSetup)return {state:'password_setup',user,proof,recovery:ss.flow_type==='recovery'};const entered=await enterSupabaseOwner();return entered.ok?{state:'ready',entered,user,proof}:{state:'denied',reason:entered.reason};}
 async function verifySupabaseMembership(){
   const s=await currentSupabaseSession();
@@ -921,7 +987,7 @@ function renderPasswordSetup(recovery=false){show('passwordSetup');$('newPasswor
 function capabilities(){const a=project?.ownerAccess?.capabilities;return new Set(Array.isArray(a)&&a.length?a:['orders','customers','products','pricing','branding','kiosks','deployments','staff','reporting','notifications']);}
 async function ensureIkeTestCredential(){if(projectId!=='ikes-wood-signs')return;if(!project.ownerAccess||typeof project.ownerAccess!=='object')project.ownerAccess={};project.ownerAccess.enabled=true;let replace=!project.ownerAccess.credential;const c=project.ownerAccess.credential;if(c?.testMode&&c?.login==='joe'&&c?.salt&&c?.passwordHash){try{replace=(await sha256(c.salt+':4353'))===c.passwordHash}catch(_){}}if(replace){const salt=random().slice(0,24);project.ownerAccess.credential={login:'joe',salt,passwordHash:await sha256(salt+':8642'),hashAlgorithm:'SHA-256-SALTED-LOCAL-PROTOTYPE',testMode:true,createdAt:c?.createdAt||new Date().toISOString(),changedAt:new Date().toISOString()};project.ownerAccess.status='active';await putProject(project);}}
 async function verify(login,password){const c=project?.ownerAccess?.credential;if(!c)return false;if(String(login||'').trim().toLowerCase()!==String(c.login||'').trim().toLowerCase())return false;if(c.salt&&c.passwordHash)return await sha256(c.salt+':'+String(password||''))===c.passwordHash;if(c.password!=null)return String(c.password)===String(password||'');return false;}
-function setNames(){const n=project?.name||'Business Owner Access';$('safeName').textContent=n;$('loginName').textContent=n;$('passwordSetupName').textContent=n;$('localRecoveryName').textContent=n;$('portalName').textContent=n;$('failureName').textContent=n;$('mProject').textContent=String(project?.projectCode||projectId||'BUSINESS').toUpperCase();}
+function setNames(){const n=project?.name||publicOwnerNames.get(projectId)||'Business Owner Access';$('safeName').textContent=n;$('loginName').textContent=n;$('passwordSetupName').textContent=n;$('localRecoveryName').textContent=n;$('portalName').textContent=n;$('failureName').textContent=n;$('mProject').textContent=String(project?.projectCode||projectId||'BUSINESS').toUpperCase();}
 function ownerActive(){return project?.ownerAccess?.enabled!==false && project?.ownerAccess?.status==='active';}
 function bindEngineButtons(){for(const id of ['returnEngineFromLogin','returnEngine','failureEngine']){if(source==='engine')$(id)?.classList.remove('hidden');$(id)?.addEventListener('click',()=>location.replace(engineUrl()));}}
 function modules(){const caps=capabilities();const all=[['fleet-help','Get fleet help','Report a problem and follow its progress'],['watch','Fleet Report','Report current work and issues to the read-only Admiral watch'],['orders','Orders','Review customer orders'],['pricing','Pricing','Manage customer pricing rules'],['features','Features','Choose the business features customers can use'],['branding','Branding','Manage how customers see your business'],...(projectId==='ikes-wood-signs'?[['countercraft','Shop inbox','Customer requests, review and production'],['references','Lettering Styles','Review and manage production lettering styles']]:[]),['services','Fleet Services','See included and available Fleet capabilities'],['settings','Settings','Owner access and account controls']];return all.filter(([k])=>k==='fleet-help'?!!fleetHelpOwnerBinding():ownerProjectFromServer?['watch','services','settings','countercraft'].includes(k):['watch','features','services','settings','references','countercraft'].includes(k)||caps.has(k));}
@@ -1187,14 +1253,28 @@ async function boot(){
   }else{show('login');if(requestedView==='portal')$('loginError').textContent='Sign in to restore the Owner Control Center.';}
   configureOwnerLogin();
 }
-$('signIn').onclick=async()=>{try{$('loginError').textContent='';if(usesSupabaseOwner()&&!localRecoveryAttempt){await signInWithPassword($('loginUser').value,$('loginPass').value);const state=await resolveLiveOwnerState();if(state.state==='password_setup'){renderPasswordSetup(state.recovery);return;}if(state.state!=='ready'){clearSupabaseSession();clearSession('owner-scope-denied');throw new Error(ownerAccessMessage(state.reason));}openVerifiedOwnerHome();return;}if(!await verify($('loginUser').value,$('loginPass').value)){ $('loginError').textContent='The login or password did not match.';return;}saveSession();history.replaceState({surface:'owner',projectId},'',`owner.html?project=${encodeURIComponent(projectId)}&view=portal${source==='engine'?'&source=engine':''}`);renderPortal();}catch(e){$('loginError').textContent=String(e?.message||e);}};
+$('choosePassword').onclick=chooseOwnerPassword;
+$('changeLogin').onclick=()=>{$('loginError').textContent='';editOwnerEmail();};
+$('loginUser').addEventListener('keydown',event=>{
+  if(event.key==='Enter'&&!$('choosePassword').classList.contains('hidden')){
+    event.preventDefault();chooseOwnerPassword();
+  }
+});
+$('signIn').onclick=async()=>{try{$('loginError').textContent='';if(usesSupabaseOwner()&&!localRecoveryAttempt){
+  if(!chosenOwnerEmail||!$('loginPass'))return;
+  if($('loginUser').value.trim().toLowerCase()!==chosenOwnerEmail.toLowerCase()){
+    editOwnerEmail();
+    $('loginError').textContent='A different email was filled. Confirm your owner email and choose its saved password.';
+    return;
+  }
+  await signInWithPassword(chosenOwnerEmail,$('loginPass').value);const state=await resolveLiveOwnerState();if(state.state==='password_setup'){renderPasswordSetup(state.recovery);return;}if(state.state!=='ready'){clearSupabaseSession();clearSession('owner-scope-denied');throw new Error(ownerAccessMessage(state.reason));}openVerifiedOwnerHome();return;}if(!await verify($('loginUser').value,$('loginPass').value)){ $('loginError').textContent='The login or password did not match.';return;}saveSession();history.replaceState({surface:'owner',projectId},'',`owner.html?project=${encodeURIComponent(projectId)}&view=portal${source==='engine'?'&source=engine':''}`);renderPortal();}catch(e){$('loginError').textContent=String(e?.message||e);}};
 $('sendMagicLink').onclick=async()=>{try{$('loginError').textContent='Sending secure sign-in link…';await sendMagicLink($('loginUser').value);$('loginError').textContent='Secure sign-in link sent. Open the newest email on this device.';}catch(e){$('loginError').textContent='Secure sign-in could not start. '+String(e?.message||e);}};
-$('forgotPassword').onclick=async()=>{try{$('loginError').textContent='';if(!usesSupabaseOwner()){renderLocalRecovery();return;}const email=String($('loginUser').value||'').trim();if(!email){$('loginError').textContent='Enter your email first.';return;}$('forgotPassword').disabled=true;$('forgotPassword').textContent='SENDING RECOVERY…';await sendPasswordRecovery(email);$('loginError').innerHTML='<div class="recovery-success">If this email belongs to the owner of this business, a recovery message is on its way. Open the newest recovery email on this device.</div>';}catch(e){$('loginError').textContent='Recovery could not start. '+String(e?.message||e);}finally{$('forgotPassword').disabled=false;$('forgotPassword').textContent='FORGOT PASSWORD?';}};
+$('forgotPassword').onclick=async()=>{try{$('loginError').textContent='';if(!usesSupabaseOwner()){renderLocalRecovery();return;}const email=String(chosenOwnerEmail||$('loginUser').value||'').trim();if(!email){$('loginError').textContent='Enter your email first.';return;}$('forgotPassword').disabled=true;$('forgotPassword').textContent='SENDING RECOVERY…';await sendPasswordRecovery(email);$('loginError').innerHTML='<div class="recovery-success">If this email belongs to the owner of this business, a recovery message is on its way. Open the newest recovery email on this device.</div>';}catch(e){$('loginError').textContent='Recovery could not start. '+String(e?.message||e);}finally{$('forgotPassword').disabled=false;$('forgotPassword').textContent='FORGOT PASSWORD?';}};
 $('saveLocalRecovery').onclick=async()=>{try{$('localRecoveryError').textContent='';$('saveLocalRecovery').disabled=true;$('saveLocalRecovery').textContent='RESETTING…';await resetLocalOwnerCredential();}catch(e){$('localRecoveryError').textContent=String(e?.message||e);}finally{if(!$('localRecovery').classList.contains('hidden')){$('saveLocalRecovery').disabled=localRecoveryWaitMs()>0;$('saveLocalRecovery').textContent='RESET OWNER PASSWORD';}}};
 $('cancelLocalRecovery').onclick=()=>{show('login');$('localRecoveryError').textContent='';configureOwnerLogin();};
 $('savePassword').onclick=async()=>{try{$('passwordSetupError').textContent='';const a=$('newPassword').value,b=$('confirmPassword').value;if(!passwordStrongEnough(a)){$('passwordSetupError').textContent='Use at least 10 characters.';return;}if(a!==b){$('passwordSetupError').textContent='The passwords do not match.';return;}$('savePassword').disabled=true;$('savePassword').textContent='SECURING ACCOUNT…';await setOwnerPassword(a);const entered=await enterSupabaseOwner();if(!entered.ok)throw new Error(entered.reason||'Vessel scope could not be verified.');openVerifiedOwnerHome();}catch(e){$('passwordSetupError').textContent=String(e?.message||e);}finally{$('savePassword').disabled=false;if(!$('passwordSetup').classList.contains('hidden'))$('savePassword').textContent='CREATE PASSWORD & CONTINUE';}};
-$('useLocalRecovery').onclick=()=>{if(!project||ownerProjectFromServer)return;localRecoveryAttempt=true;$('passwordLabel').classList.remove('hidden');$('signIn').classList.remove('hidden');$('sendMagicLink').classList.add('hidden');$('forgotPassword').classList.add('hidden');$('useLocalRecovery').classList.add('hidden');$('loginUser').value='joe';$('loginError').textContent='RECOVERY-ONLY local owner bridge enabled for this attempt.';};
-$('loginPass').addEventListener('keydown',e=>{if(e.key==='Enter')$('signIn').click();});$('localConfirmPassword').addEventListener('keydown',e=>{if(e.key==='Enter')$('saveLocalRecovery').click();});$('signOut').onclick=signOutOwner;$('retry').onclick=()=>location.reload();
+$('useLocalRecovery').onclick=()=>{if(!project||ownerProjectFromServer)return;localRecoveryAttempt=true;setOwnerPasswordStep(true);$('sendMagicLink').classList.add('hidden');$('forgotPassword').classList.add('hidden');$('useLocalRecovery').classList.add('hidden');$('loginUser').value='joe';$('loginError').textContent='RECOVERY-ONLY local owner bridge enabled for this attempt.';};
+$('localConfirmPassword').addEventListener('keydown',e=>{if(e.key==='Enter')$('saveLocalRecovery').click();});$('signOut').onclick=signOutOwner;$('retry').onclick=()=>location.reload();
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkDisplayedOwner();});
 window.addEventListener('pageshow',e=>{if(e.persisted&&closeOwnerHelp)location.reload();else checkDisplayedOwner();});
 boot().catch(e=>{$('failureDetail').textContent=String(e?.message||e);if(source==='engine')$('failureEngine').classList.remove('hidden');show('failure');});
