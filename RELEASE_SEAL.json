@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.105",
-  "release": "Reliefwatch",
-  "seal": "reliefwatch-8820105",
+  "build": "8.8.20.106",
+  "release": "Spinnaker",
+  "seal": "spinnaker-8820106",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Reliefwatch",
-  "name": "Reliefwatch",
-  "releaseName": "Reliefwatch"
+  "release_name": "Spinnaker",
+  "name": "Spinnaker",
+  "releaseName": "Spinnaker"
 }

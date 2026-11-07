@@ -1,15 +1,15 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.105",
-  "name": "Reliefwatch",
-  "seal": "reliefwatch-8820105",
-  "base": "8.8.20.104",
-  "base_sha256": "a96f650711edba7b457072e14cb092e8f05668448ab991deaee26d19d7cc30ed",
-  "base_files": 878,
-  "prepared_at": "2026-11-07T18:27:43.536927+00:00",
+  "build": "8.8.20.106",
+  "name": "Spinnaker",
+  "seal": "spinnaker-8820106",
+  "base": "8.8.20.105",
+  "base_sha256": "fc0152993083d87edffc0e18d68be39b27c21f8d80a27bbd5ac88ef693f87e7d",
+  "base_files": 880,
+  "prepared_at": "2026-11-07T23:03:57.238754+00:00",
   "app_component_revision": "8.8.20.99",
   "owner_helper_revision": "8.8.20.68",
-  "feature_notes": "The Admiral can work Fleet Help reports for one unassigned vessel at a time, under their own identity. Accepting a Captain appointment ends this coverage.",
+  "feature_notes": "The Engine Room now offers Black Flag Regatta as an Admiral fleet-learning tool. A verified Admiral can open Sunset Harbor in a separate tab and compare practice runs in its Race log.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -37,6 +37,6 @@
       "automatic_execution_by_upload": false
     }
   },
-  "install_step": "Open Admiral My Fleet, expand Fleet help, and select Open as acting Captain on an eligible ship\u2019s report.",
-  "evidence_file": "RELIEFWATCH_EVIDENCE.json"
+  "install_step": "In Workspaces & programs select Open Regatta, complete the Admiral entrance, then select Enter Sunset Harbor.",
+  "evidence_file": "SPINNAKER_EVIDENCE.json"
 }

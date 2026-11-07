@@ -1360,6 +1360,25 @@ const AdmiralAccountForm = (() => {
     deck.querySelector('.admiral-session-strip')?.insertAdjacentHTML('afterend',`<section id="funProgramLaunchCard" aria-label="Admiral Programs"><div><small>ADMIRAL PROGRAMS · FUN · OUTSIDE FLEET CORE</small><b>Black Flag: Stormwake</b><p>Explore a 3D harbor, raise the bridge, and bring the chartmaker home. First Light and its lessons stay in the journal.</p></div><button id="funProgramLaunch" type="button">OPEN STORMWAKE →</button></section>`);
     const promoteLane=deck.querySelector('[data-admiral-panel="promote"]');
     promoteLane?.insertAdjacentHTML('afterbegin',`<section class="admiral-passage-card" aria-label="Commissioned Admiral Office"><small>ADMIRAL KEEL</small><h5>Commissioned rank. Separate secure sessions.</h5><ol><li><b>1</b><span>The Admiral office is now an accepted Fleet role, distinct from Captain.</span></li><li><b>2</b><span>Session timeout, logout, or readiness WATCH never demotes the rank.</span></li><li><b>3</b><span>Every entry still requires passage PIN plus server-verified Admiral identity.</span></li><li><b>4</b><span>Only an explicit server authority revocation can remove the commissioned role.</span></li></ol><p>Readiness warnings remain obligations to harden the fleet. They do not turn the Admiral back into a Captain.</p></section>`);
+    promoteLane?.insertAdjacentHTML('afterbegin', `
+      <section class="regatta-brief" aria-labelledby="regattaBriefTitle">
+        <small>ADMIRAL TOOL · FLEET LEARNING</small>
+        <h4 id="regattaBriefTitle">Black Flag Regatta</h4>
+        <p>Race the same boat twice through Sunset Harbor. Change where you use your power gust, then compare your times in the Race log.</p>
+        <a id="regattaHarborLink" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">Enter Sunset Harbor ↗</a>
+        <small>Opens the private game in a new tab.</small>
+      </section>`);
+    const regattaLink = byId('regattaHarborLink');
+    const resetRegattaLink = () => regattaLink.removeAttribute('href');
+    window.addEventListener('darksky:admiral-session-ended', resetRegattaLink);
+    window.addEventListener('darksky:admiral-session-unavailable', resetRegattaLink);
+    regattaLink.addEventListener('click', event => {
+      if (!regattaLink.hasAttribute('href') || !window.DarkSkyAdmiralSession?.status()?.reusable) {
+        event.preventDefault();
+        resetRegattaLink();
+        openAdmiralGate(deck.dataset.entrySource, 'regatta');
+      }
+    });
     loadUpperCommandVisual('admiral');
 
     const commitEngineSurface=()=>{
@@ -1436,6 +1455,15 @@ const AdmiralAccountForm = (() => {
       }
       refreshAdmiralCeremonialSurface();
       primeAdmiralFirstPaint8658();
+      regattaLink.href = 'https://black-flag-regatta.tv6m8ysvwt.chatgpt.site/';
+      if (directTarget === 'regatta') {
+        setAdmiralLane('promote');
+        requestAnimationFrame(() => {
+          if (deck.classList.contains('hidden') || !regattaLink.hasAttribute('href')) return;
+          regattaLink.focus({preventScroll: true});
+          regattaLink.scrollIntoView({block: 'center', behavior: 'instant'});
+        });
+      }
       if(directTarget==='quartermaster'){
         setAdmiralLane('govern');
         window.setTimeout(()=>{window.BlackFlagQuartermasterUI?.open?.();},0);
@@ -1651,6 +1679,7 @@ const AdmiralAccountForm = (() => {
     const deck=byId('admiralDeck');
     const input=byId('admiralPinInput');
     const fromEngine=source==='engine';
+    byId('regattaHarborLink')?.removeAttribute('href');
     if(gate){gate.dataset.entrySource=fromEngine?'engine':'captain';gate.dataset.directTarget=directTarget;}
     if(deck)deck.dataset.entrySource=fromEngine?'engine':'captain';
     const gateReturn=byId('admiralGateReturnBtn');
@@ -2024,6 +2053,7 @@ const AdmiralAccountForm = (() => {
     window.DarkSkyFleetNavigator?.register('admiral',({source,directTarget})=>renderAdmiralGate(source==='captain'?'captain':'engine',directTarget));
     document.querySelectorAll('[data-command-open="captain"]').forEach(btn=>btn.addEventListener('click',event=>{event.preventDefault();window.DarkSkyFleetNavigator?.navigate('captain',{source:'engine'})||openGate();}));
     document.querySelectorAll('[data-command-open="admiral"]').forEach(btn=>btn.addEventListener('click',event=>{event.preventDefault();window.DarkSkyFleetNavigator?.navigate('admiral',{source:'engine'})||openAdmiralGate('engine');}));
+    document.querySelector('[data-command-open="regatta"]')?.addEventListener('click', () => openAdmiralGate('engine', 'regatta'));
     document.querySelectorAll('[data-command-open="fleet-registry"]').forEach(btn=>btn.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();openAdmiralGate('engine','fleet');}));
 
     // Direct listeners are safe here because this file loads at the very end of BODY.

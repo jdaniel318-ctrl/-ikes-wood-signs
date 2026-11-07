@@ -1,10 +1,10 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Reliefwatch 8.8.20.105
+# Black Flag Spinnaker 8.8.20.106
 
 Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
-Baseline: 8.8.20.104. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Baseline: 8.8.20.105. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
 Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
-The Admiral can work Fleet Help reports for one unassigned vessel at a time, under their own identity. Accepting a Captain appointment ends this coverage.
+The Engine Room now offers Black Flag Regatta as an Admiral fleet-learning tool. A verified Admiral can open Sunset Harbor in a separate tab and compare practice runs in its Race log.
 Preparation does not deploy frontend or backend changes. See PATCH_CONTRACT.json for separately managed backend prerequisites.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 

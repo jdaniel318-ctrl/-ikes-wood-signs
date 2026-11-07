@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.20.105';
-const RELEASE_SEAL='reliefwatch-8820105';
+const RELEASE_BUILD='8.8.20.106';
+const RELEASE_SEAL='spinnaker-8820106';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.

@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-fleet-doctrine-registry-v1",
-  "build": "8.8.20.105",
+  "build": "8.8.20.106",
   "release": "Ironbound TEST",
   "status": "active",
   "principles": [

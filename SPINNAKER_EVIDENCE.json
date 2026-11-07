@@ -1,0 +1,20 @@
+{
+  "build": "8.8.20.106",
+  "base": "8.8.20.105",
+  "release_suites_passed": 46,
+  "browser_engines": [
+    "Chromium",
+    "WebKit"
+  ],
+  "browser_fixture": "Tablet touch, local Engine release and game files, synthetic accounts and mocked network responses.",
+  "checks": [
+    "Engine entry opens the Admiral gate. A Captain-only account cannot launch from the gate.",
+    "An authenticated Admiral enters the Promote lane with the harbor launcher focused.",
+    "The private game URL opens in a new tab without a referrer, opener, token or query string. The original Regatta page starts a race.",
+    "Closing the race tab returns to the open Engine. Ending the Admiral session removes the launch link."
+  ],
+  "game_destination": "https://black-flag-regatta.tv6m8ysvwt.chatgpt.site/",
+  "game_access": "Existing owner-only Site access policy inspected. Audience unchanged.",
+  "database_actions": "none",
+  "native_ipad": "pending after installation"
+}
