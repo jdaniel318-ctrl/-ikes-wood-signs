@@ -1,6 +1,6 @@
 {
   "name": "Streetwise Service Addresses",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "runtime": "Browser JavaScript served over HTTPS or localhost",
   "entry": "service_address.js",
   "stylesheet": "service_address.css",
@@ -20,5 +20,7 @@
     "manualLookup": "BlackFlagServiceAddress.staffLookup(container, savedAddress) provides a read-only lookup without updating the saved request."
   },
   "hosting": "Public address reference files can be shared by several sites on the same origin. The component does not store customer records or request device location.",
-  "coverage": "Richmond, Williamsburg, and surrounding Virginia counties. See the source file for the complete list."
+  "coverage": "Richmond, Williamsburg, and surrounding Virginia counties. See the source file for the complete list.",
+  "example": "index.html",
+  "exampleUsage": "Serve this folder on HTTPS or localhost and open index.html. To use the field in your own form, include the entry script and stylesheet, then mount them on a labelled input as shown in customer.attach."
 }

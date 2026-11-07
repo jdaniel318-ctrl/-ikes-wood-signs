@@ -16455,7 +16455,8 @@ body.engine-mode #enginePanel .waypoint-home{padding:22px!important}
 .waypoint-workspaces>header small,.waypoint-systems-directory header small{font-size:11px;letter-spacing:.13em;color:#94cbd4;font-weight:800}
 .waypoint-workspaces>header h4{font-size:19px;color:#f1f4ed;margin:4px 0 0}
 .waypoint-workspaces>header p{font-size:13px;color:#a9c1c8;margin:0}
-.waypoint-workspace-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.waypoint-workspace-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media(max-width:1199px){.waypoint-workspace-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 #clearDeckLaunchpad .waypoint-workspace{display:flex!important;flex-direction:column;justify-content:space-between;align-items:stretch;min-width:0;gap:16px;margin:0;padding:18px;border:1px solid #3f626c;border-radius:14px;background:#0b2730;box-shadow:none}
 #clearDeckLaunchpad .waypoint-workspace strong,#clearDeckLaunchpad .waypoint-workspace h4{display:block;font-size:22px;color:#f2f4ef;margin:7px 0 8px}
 #clearDeckLaunchpad .waypoint-workspace p{font-size:14px;line-height:1.5;color:#bacecf;margin:0 0 7px}

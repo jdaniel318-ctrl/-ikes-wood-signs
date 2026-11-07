@@ -14,11 +14,14 @@ async function run() {
   try {
     const page = await browser.newPage(devices['iPad Pro 11 landscape']);
     const fixture = `<meta name="viewport" content="width=device-width,initial-scale=1">
+      <style>label, input, .streetwise-hint { display:block; } [role=option], #next { width:100%; height:48px; }</style>
       <label>Address<input id="address" autocomplete="street-address"></label>
       <button id="next" type="button">Continue</button>
       <script src="/service_address.js"></script>
       <script>
         window.matches = [];
+        window.continueClicks = 0;
+        next.addEventListener('click', () => { continueClicks++; });
         window.draft = {};
         address.addEventListener('input', () => { draft.address = address.value; });
         BlackFlagServiceAddress.mount(address, {onMatch(point) { draft.point = point; if(point) matches.push(point); }});
@@ -59,8 +62,11 @@ async function run() {
     await search('101 Mounts Ba');
     await option.tap();
     assert.equal(await input.inputValue(),'101 Mounts Bay Rd, Williamsburg, VA 23185');
+    assert.equal(await page.evaluate(() => continueClicks),0,'Selecting a row must not tap the button that moves underneath');
     assert.ok(await page.evaluate(() => BlackFlagServiceAddress.mapLink(draft.address,draft.point)));
     assert.equal(await page.locator('a,iframe').count(),0);
+    await page.locator('#next').tap();
+    assert.equal(await page.evaluate(() => continueClicks),1,'A deliberate tap after selection still advances');
 
     await search('224 Ballard');
     await input.press('ArrowDown');

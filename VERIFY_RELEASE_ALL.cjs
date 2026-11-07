@@ -9,7 +9,7 @@ jobs.unshift(['VERIFY_STREETWISE.cjs',[]],['VERIFY_FREEBOARD_FLOW.cjs',[]],['VER
 let failed=0;const results=[];
 for(const [name,args]of jobs){const r=spawnSync(process.execPath,[path.join(root,name),...args],{cwd:root,encoding:'utf8',timeout:120000});fs.writeFileSync(path.join(out,name+'.log'),(r.stdout||'')+(r.stderr||''));const pass=r.status===0;failed+=!pass;results.push({name,pass,exit_code:r.status,error:r.error?.message||null});console.log(pass?'PASS':'FAIL',name);}
 const py=process.env.PYTHON||'python3';
-for(const name of ['TEST_RELEASE_PIPELINE.py','TEST_RELEASE_IDENTITY.py','TEST_SIGHTLINE_NATIVE.py']){
+for(const name of ['TEST_RELEASE_PIPELINE.py','TEST_RELEASE_IDENTITY.py','TEST_SIGHTLINE_NATIVE.py','TEST_STREETWISE_KIT.py']){
  const pr=spawnSync(py,['-B',path.join(root,name)],{cwd:root,encoding:'utf8',timeout:120000,env:{...process.env,PYTHONDONTWRITEBYTECODE:'1'}});
  fs.writeFileSync(path.join(out,name+'.log'),(pr.stdout||'')+(pr.stderr||''));
  const pp=pr.status===0;failed+=!pp;results.push({name,pass:pp,exit_code:pr.status,error:pr.error?.message||null});console.log(pp?'PASS':'FAIL',name);

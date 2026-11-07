@@ -156,6 +156,12 @@
             opt.setAttribute('role','option'); opt.setAttribute('aria-selected','false');
             opt.textContent=row.address;
             let cancelled=false;
+            let handledTouch=false;
+            opt.addEventListener('touchend',e=>{
+              // A touch selection can remove this option before the compatibility
+              // click. Prevent that click from activating the control underneath.
+              if (handledTouch && e.cancelable) e.preventDefault();
+            },{passive:false});
             opt.addEventListener('pointerdown',e=>{
               if (!e.isPrimary || e.button!==0) return;
               cancelled=false;
@@ -182,6 +188,7 @@
               if (cancelled || !opt.contains(hit) || Math.hypot(e.clientX-press.x,e.clientY-press.y)>12) {
                 cancel(e);return;
               }
+              handledTouch=e.pointerType==='touch';
               choose(index);
             });
             opt.addEventListener('click',()=>{

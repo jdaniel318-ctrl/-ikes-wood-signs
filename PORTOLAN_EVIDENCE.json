@@ -1,0 +1,276 @@
+{
+  "build": "8.8.20.98",
+  "release": "Portolan",
+  "component": "Streetwise 1.2.0",
+  "offline_suites": [
+    {
+      "name": "VERIFY_STREETWISE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FREEBOARD_FLOW.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FREEBOARD_CUSTOMER.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FREEBOARD_BOARD.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FREEBOARD_ENTRY.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_LONGWATCH_IDLE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_GLASSWAKE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_TRUEBOUND_CORE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_TRUEBOUND_UI.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_KEEPHAVEN_CORE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_KEEPHAVEN_UI.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_HELMWARD_NAVIGATION.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_HELMWARD_ASYNC.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_HELMWARD_RECOVERY.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_HARBORLIGHT_SCOPE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_HARBORLIGHT_ENGINE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FAIRWATER_PASTE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_ROSEWOOD_CORE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_SIGHTLINE_CORE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_SIGHTLINE_ARTWORK.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_SIGHTLINE_IDS.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_HOLDFAST_CORE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_HOMEPORT_ENTRY.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FLEETBOUND_PROGRAMS.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_HARBOR_ROUTES.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_HARBOR_ASYNC.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_HARBOR_STORAGE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_RELEASE_IDENTITY.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FAIRLEAD_LOADER.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FAIRLEAD_STARTUP.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_CLEARDECK_ACCOUNT.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_RELEASE_CONTRACT.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_CLEARDECK_PREFLIGHT.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_IRONHAVEN_CORE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FLEETCARE_READINESS.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FLEETCARE_NAVIGATION.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FLEETCRAFT_CORE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_LETTERCRAFT_FONTS.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_QUARTERMASTER_CORE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_STORMWAKE_CORE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "TEST_RELEASE_PIPELINE.py",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "TEST_RELEASE_IDENTITY.py",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "TEST_SIGHTLINE_NATIVE.py",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "TEST_STREETWISE_KIT.py",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    }
+  ],
+  "program": "Local dashboard login and card launch in Chromium and WebKit. Four, two and one column layouts checked at 1366, 820 and 390 CSS pixels.",
+  "distribution": "Both browsers downloaded the ZIP from the workspace. Its bytes matched the packaged asset. The extracted example ran on a second local origin with fleet and third-party requests blocked. No browser storage writes observed.",
+  "lookup": "Checked Richmond and Williamsburg touch selection, Yorktown keyboard selection, edit invalidation, and staff map link disclosure. A completed touch no longer opens a control behind a dismissed suggestion.",
+  "contractor_form": "Ran the actual Legacy Plumbing preview form renderer with test data. Chose the Williamsburg suggestion and retained its label and point after advancing and returning, in Chromium and WebKit.",
+  "physical_ipad": "User confirmed the 8.8.20.97 tap fix. 8.8.20.98 new workspace and kit were checked in local browsers only."
+}

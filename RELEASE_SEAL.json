@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.97",
-  "release": "Suretap",
-  "seal": "suretap-882097",
+  "build": "8.8.20.98",
+  "release": "Portolan",
+  "seal": "portolan-882098",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Suretap",
-  "name": "Suretap",
-  "releaseName": "Suretap"
+  "release_name": "Portolan",
+  "name": "Portolan",
+  "releaseName": "Portolan"
 }

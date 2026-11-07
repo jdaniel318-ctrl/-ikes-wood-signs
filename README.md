@@ -1,10 +1,10 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Suretap 8.8.20.97
+# Black Flag Portolan 8.8.20.98
 
 Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
-Baseline: 8.8.20.96. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Baseline: 8.8.20.97. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
 Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
-Streetwise 1.1.0 fills a tapped address and keeps its map point with the request. Local lookup covers Richmond, Williamsburg and surrounding counties. Each enabled contractor uses the same component and public data.
+The new Streetwise workspace in Workspaces & Programs lets a contractor test the regional address lookup and download the standalone kit. The kit includes a working example that runs on the contractor’s own site.
 Preparation does not deploy frontend or backend changes. See PATCH_CONTRACT.json for separately managed backend prerequisites.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 

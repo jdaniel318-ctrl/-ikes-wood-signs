@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b2832">
+  <title>Streetwise · Service addresses</title>
+  <link rel="stylesheet" href="service_address.css">
+  <style>
+    :root { color-scheme: light; font: 100%/1.55 system-ui,sans-serif; color: #183744; background: #f3f6f4; }
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    main, .mast { max-width: 56rem; margin: auto; padding: 0 clamp(1rem, 4vw, 2.5rem); }
+    header { background: #0b2832; color: #f4f7f3; border-bottom: 4px solid #deb959; padding: clamp(1.7rem, 6vw, 3.6rem) 0; }
+    h1 { font-size: clamp(2.5rem, 6vw, 4rem); line-height: 1.06; margin: 0; letter-spacing: -.04em; }
+    header p { margin: .7rem 0 0; color: #c4d9dc; }
+    main { padding-top: 1.5rem; padding-bottom: 3rem; }
+    section { background: #fff; border: 1px solid #cad7d8; border-radius: .85rem; padding: clamp(1.2rem, 4vw, 2rem); margin-bottom: 1rem; }
+    h2 { font-size: 1.35rem; line-height: 1.25; margin: 0 0 .8rem; }
+    label { font-weight: 650; }
+    input { display: block; width: 100%; min-height: 3rem; padding: .7rem .8rem; border: 1px solid #71888f; border-radius: .4rem; font: inherit; background: #fff; color: #173542; }
+    .streetwise-hint { font-weight: normal; color: #485f66; }
+    summary { min-height: 44px; padding: .6rem 0; cursor: pointer; font-weight: 650; }
+    details { margin-top: 1rem; border-top: 1px solid #d6dfe0; }
+    p { margin: .45rem 0 .9rem; }
+    a { color: #0e5871; }
+    a, summary { touch-action: manipulation; }
+    :focus-visible { outline: 3px solid #137e98; outline-offset: 3px; }
+    .download { display: inline-block; padding: .75rem 1.1rem; border-radius: .45rem; color: white; background: #124d62; font-weight: 650; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <header><div class="mast"><h1>Streetwise</h1><p>Service address lookup for Richmond, Williamsburg and the surrounding counties.</p></div></header>
+  <main>
+    <section aria-labelledby="lookup-title">
+      <h2 id="lookup-title">Try an address</h2>
+      <label for="street-address">Street address</label>
+      <input id="street-address" type="text" autocomplete="off" placeholder="Try 900 E Broad">
+      <details>
+        <summary>Crew view</summary>
+        <p id="crew-location">Choose a matching address to see its map link.</p>
+      </details>
+      <details>
+        <summary>Address coverage</summary>
+        <p>The 2026 Q3 Virginia address index includes 685,510 mapped addresses in 14 counties and five cities. Each contractor decides which places they serve.</p>
+        <p>Counties include Amelia, Charles City, Chesterfield, Dinwiddie, Goochland, Hanover, Henrico, James City, King William, New Kent, Powhatan, Prince George, Surry and York. Cities include Colonial Heights, Hopewell, Petersburg, Richmond and Williamsburg.</p>
+        <a href="STREETWISE_RVA_SOURCE.json">View the data source</a>
+      </details>
+      <noscript><p>Turn on JavaScript to see address suggestions.</p></noscript>
+    </section>
+    <!-- fleet-download-start -->
+    <section aria-labelledby="share-title">
+      <h2 id="share-title">Use Streetwise on another ship</h2>
+      <p>The kit includes the address field, the regional index and a working example. A contractor can host all three on their own website.</p>
+      <p>For fleet sites with the service-address setting, choose the Richmond and Williamsburg region under <strong>Experience Rules → Service address suggestions</strong>.</p>
+      <a class="download" href="Streetwise-1.2.0-Standalone.zip" download>Download the ship kit</a>
+    </section>
+    <!-- fleet-download-end -->
+  </main>
+  <script src="service_address.js"></script>
+  <script>
+    const addressField = document.getElementById('street-address');
+    const crewLocation = document.getElementById('crew-location');
+    const noMatch = crewLocation.textContent;
+    BlackFlagServiceAddress.mount(addressField, {
+      onMatch(point) {
+        const link = BlackFlagServiceAddress.mapLink(addressField.value, point);
+        if (link) crewLocation.innerHTML = link;
+        else crewLocation.textContent = noMatch;
+      }
+    });
+  </script>
+</body>
+</html>
