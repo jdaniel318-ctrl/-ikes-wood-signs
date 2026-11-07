@@ -16724,3 +16724,27 @@ body:not(.engine-mode) #experienceTestDeck,body.boot-locked #experienceTestDeck{
 
 .streetwise-unit { margin-top: .5rem; font-size: .9rem; }
 .streetwise-unit summary { cursor: pointer; padding: .4rem 0; }
+
+/* The private service preview uses one normal-flow row above the customer
+   shell. Both return buttons keep their original behavior. */
+#servicePreviewBar{
+  display:flex;align-items:center;flex-wrap:wrap;gap:6px 12px;box-sizing:border-box;
+  padding:6px max(12px,env(safe-area-inset-right)) 6px max(12px,env(safe-area-inset-left));
+  background:#0c222a;color:#edf5f5;
+}
+#servicePreviewBar #returnToEngineBtn.dark-sky-return-control{
+  position:static!important;transform:none!important;flex:none;margin:0!important;
+  width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important;box-shadow:none!important;
+}
+#servicePreviewBar #customerSessionIndicator{
+  position:static;flex:1 1 11rem;flex-wrap:wrap;gap:2px 8px;padding:0;
+  background:none;border:0;border-radius:0;box-shadow:none;backdrop-filter:none;
+  font:700 12px/1.35 system-ui,sans-serif;letter-spacing:.02em;
+}
+#servicePreviewBar #experienceModeBanner{
+  position:static!important;transform:none!important;flex:0 1 auto;flex-wrap:wrap;
+  width:auto!important;max-width:100%!important;margin:0!important;padding:0!important;gap:5px 12px!important;
+  background:none!important;border:0!important;box-shadow:none!important;backdrop-filter:none;
+}
+#servicePreviewBar #experienceModeBanner b,#servicePreviewBar #experienceModeBanner small{font-size:12px!important}
+#servicePreviewBar #returnExperienceTestDeck{min-height:44px!important;font-size:12px!important;padding:7px 12px!important}

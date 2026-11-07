@@ -91,7 +91,7 @@ const engineCodePads = (() => {
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
   // Component revision changes only when this module changes; installed release is loader-attested.
-  const APP_COMPONENT_REVISION='8.8.20.97';
+  const APP_COMPONENT_REVISION='8.8.20.99';
   const BUILD_VERSION=window.__darkSkyVerifiedRelease?.build;
   if(!BUILD_VERSION || BUILD_VERSION!==window.__darkSkyExpectedRelease?.build || window.__darkSkyVerifiedRelease?.seal!==window.__darkSkyExpectedRelease?.seal)throw new Error('Verified release context required before app execution.');
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
@@ -4913,7 +4913,16 @@ const engineCodePads = (() => {
     else document.body.removeAttribute('data-operator-entry');
     return ctx;
   }
+  // The platform return is a single bound button. Keep its place for other
+  // routes and move the existing controls, never a copy of their actions.
+  function releaseServicePreviewBar(){
+    const bar=document.getElementById('servicePreviewBar');if(!bar)return;
+    const back=bar.querySelector('#returnToEngineBtn');if(back)bar.before(back);
+    const banner=bar.querySelector('#experienceModeBanner');if(banner)document.body.append(banner);
+    bar.remove();
+  }
   function clearCustomerSessionContext(){
+    releaseServicePreviewBar();
     window.IkeShop?.close?.(true);
     window.__deploymentCustomerContext=null;
     document.body.removeAttribute('data-customer-session');
@@ -4921,6 +4930,7 @@ const engineCodePads = (() => {
     document.getElementById('customerSessionIndicator')?.remove();
   }
   function renderCustomerSessionIndicator(p){
+    releaseServicePreviewBar();
     document.getElementById('customerSessionIndicator')?.remove();
     const ctx=currentExperienceContext(p);
     if(!ctx||ctx.clientPreview||ctx.sessionKind==='live_customer'||ctx.state==='deployed')return;
@@ -4928,7 +4938,13 @@ const engineCodePads = (() => {
     if(!internalSources.has(String(ctx.sessionSource||'')))return;
     const badge=document.createElement('div');badge.id='customerSessionIndicator';badge.className=`customer-session-indicator ${ctx.state==='deployed'?'live':'test'}`;
     badge.innerHTML=`<span>DEPLOYMENT ${p?.publish?.status==='live'?'LIVE':'PRIVATE'}</span><strong>SESSION ${customerSessionLabel(ctx)}</strong>`;
-    document.body.appendChild(badge);
+    const back=document.getElementById('returnToEngineBtn');
+    if(back&&ctx.sessionKind==='private_preview'&&(p.id===BOR_PROJECT_ID||p.id==='bf-p-f92f87e8ec44')){
+      const bar=document.createElement('div');bar.id='servicePreviewBar';
+      back.before(bar);bar.append(back,badge);
+      const banner=document.getElementById('experienceModeBanner');
+      if(ctx.sessionSource==='experience_test_deck'&&banner&&!banner.classList.contains('hidden'))bar.append(banner);
+    }else document.body.appendChild(badge);
   }
   function liveCustomerDeploymentFor(p){
     return migrateLegacyDeployment(p).find(d=>d.state==='deployed')||null;

@@ -1,0 +1,35 @@
+.fleet-help {
+  box-sizing: border-box;
+  margin: 1rem 0;
+  border: 1px solid #89a8ae;
+  border-radius: .85rem;
+  background: #f5f9f9;
+  color: #193941;
+  text-align: left;
+  overflow-wrap: anywhere;
+  font: 1rem/1.45 system-ui, sans-serif;
+}
+.fleet-help *, .fleet-help *::before, .fleet-help *::after {box-sizing: border-box;}
+.fleet-help > summary, .fleet-help .fh-attachment > summary {display: list-item; cursor: pointer; padding: .85rem 1rem; font-weight: 700; color: #173c47;}
+.fleet-help .fh-body {padding: 0 1rem 1rem;}
+.fleet-help .fh-editor, .fleet-help .fh-records {display: grid; gap: .75rem;}
+.fleet-help .fh-editor {margin-bottom: 1rem;}
+.fleet-help label {display: grid; gap: .32rem; font: 600 .95rem/1.4 system-ui,sans-serif; color: #214650;}
+.fleet-help input, .fleet-help textarea {width: 100%; min-width: 0; height: auto; min-height: 2.75rem; padding: .6rem .75rem; color: #163740; background: white; border: 1px solid #738c91; border-radius: .45rem; font: 400 1rem/1.4 system-ui,sans-serif; text-transform: none;}
+.fleet-help small {display: block; font: 400 .83rem/1.45 system-ui,sans-serif; color: #45606a; letter-spacing: normal; text-transform: none;}
+.fleet-help .fh-attachment {margin: 0; color: #193941;}
+.fleet-help .fh-attachment > summary {padding-left: 0;}
+.fleet-help .fh-primary, .fleet-help .fh-button {width: auto; min-height: 44px; justify-self: start; padding: .55rem .9rem; border: 1px solid #47727b; border-radius: .5rem; background: white; color: #154754; font: 650 .9rem/1.4 system-ui,sans-serif; text-transform: none; letter-spacing: normal; cursor: pointer;}
+.fleet-help .fh-primary {background: #195c69; color: white;}
+.fleet-help .fh-primary:disabled, .fleet-help .fh-button:disabled {opacity: .65; cursor: wait;}
+.fleet-help :focus-visible {outline: 3px solid #0785a4; outline-offset: 2px;}
+.fleet-help .fh-status {font-size: .95rem; color: #214650; margin: .45rem 0;}
+.fleet-help .fh-status:empty {margin: 0;}
+.fleet-help .fh-line {display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .5rem;}
+.fleet-help .fh-line strong {color: #193941;}
+.fleet-help .fh-record {min-width: 0; display: grid; gap: .5rem; margin: .4rem 0 0; padding: .8rem; border: 1px solid #b7cbcf; background: white; color: #193941; border-radius: .55rem;}
+.fleet-help .fh-record p {margin: 0; white-space: pre-wrap; color: #193941;}
+.fleet-help .fh-record img {max-width: 100%; max-height: 32rem; object-fit: contain;}
+.fleet-help .fh-badge {color: #334950; background: #e7edf0; border-radius: 1rem; padding: .15rem .65rem; font-size: .8rem; font-weight: 700;}
+.fleet-help .fh-in_progress {background: #f8eccb; color: #65501b;}
+.fleet-help .fh-verified {background: #daeee2; color: #225c41;}

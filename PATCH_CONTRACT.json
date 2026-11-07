@@ -1,18 +1,18 @@
 {
   "schema": "blackflag-patch-contract-v1",
-  "target_build": "8.8.20.98",
-  "target_seal": "portolan-882098",
+  "target_build": "8.8.20.99",
+  "target_seal": "signalman-882099",
   "supported_bases": [
     {
-      "build": "8.8.20.97",
-      "source_sha256": "35a864ef3c453c0072ec0f383830aab3925c4033e8ea154a071da1c5f78e1a34",
-      "file_count": 857
+      "build": "8.8.20.98",
+      "source_sha256": "b78a871d9465be9a3c32419faae69f815d9eb628b5f13d7a2c39e5e74e8d0b0a",
+      "file_count": 862
     }
   ],
   "requires_deletions": false,
   "max_upload_files": 85,
   "database_actions": "none",
-  "rule": "Upload every changed/new root file over complete 8.8.20.97. Keep everything else. This software archive executes no database commands.",
+  "rule": "Upload every changed/new root file over complete 8.8.20.98. Keep everything else. This software archive executes no database commands.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -23,5 +23,14 @@
     "sql_sha256": "4ed61a09eb42982fa9975d2fda8b3711c1e6b749cbdc10bbf0c750b3dade1aee",
     "reason": "Existing Countercraft backend is active; this build requires idle-v1 service and SQL upgrade before customer kiosk use. No Ike publication configured at read-only audit. Old service is rejected by kiosk.",
     "edge_function_status": "upgrade_pending"
+  },
+  "backend_prerequisites": {
+    "fleet_help": {
+      "project": "sjgqqtnuttnkwsoebbqf",
+      "migration": "SIGNALMAN_FLEET_HELP.sql",
+      "sql_sha256": "cda1e6be58f6d479867ae30e20801403c6f5e6179e11cefa57826217867ca470",
+      "status": "source_ready_not_applied",
+      "automatic_execution_by_upload": false
+    }
   }
 }

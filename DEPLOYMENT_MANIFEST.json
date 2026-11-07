@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.20.98",
-  "version": "8.8.20.98",
-  "release_name": "Portolan",
-  "releaseName": "Portolan",
-  "release_seal": "portolan-882098",
+  "build": "8.8.20.99",
+  "version": "8.8.20.99",
+  "release_name": "Signalman",
+  "releaseName": "Signalman",
+  "release_seal": "signalman-882099",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -120,7 +120,9 @@
     "countercraft_recognition.js",
     "fleet_boundary_repair.js",
     "service_address.js",
-    "service_address_fleet.js"
+    "service_address_fleet.js",
+    "fleet_help.js",
+    "fleet_help.css"
   ],
   "atomic_release_contract": {
     "manifest_runtime_agreement": "required-before-execution",
@@ -158,8 +160,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "Named Wonderwake preview-vessel entry in existing Fleet Compass; reviewed capability sharing, no account or data bridge.",
-  "release_note": "Fairlead .68 adds tested software artifact generation and private startup timing within existing Engineering Systems. No lazy-loading, account, data or permission change.",
+  "release_focus": "An owner can report a problem to their vessel\u2019s appointed Captain. The Admiral can read the status and verification note. Test Center controls have their own space in the Legacy Plumbing and Signal Restoration previews.",
+  "release_note": "An owner can report a problem to their vessel\u2019s appointed Captain. The Admiral can read the status and verification note. Test Center controls have their own space in the Legacy Plumbing and Signal Restoration previews.",
   "tax_ledger_upgrade": {
     "schema": "dark-sky-fleet-tax-ledger-v1",
     "model": "TAX_LEDGER_MODEL.json",
@@ -281,8 +283,8 @@
     "algorithm": "SHA-256",
     "files": {
       "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": {
-        "sha256": "543b616b48223755e1fbacf92cd2be04c474db28dc56dec222f948dd86f58cf4",
-        "build": "8.8.20.98",
+        "sha256": "75d57675b8452dd687fa8d5d3d6daabc7e26e3c17db74c63dae336a4d000038b",
+        "build": "8.8.20.99",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -329,14 +331,14 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_COMMAND_MODEL.json": {
-        "sha256": "dae5cfc6310297cb2122af5c33880c837cdbda922782c157c047914265120971",
-        "build": "8.8.20.98",
+        "sha256": "825514d8f78f0d7bacda16a275b83d1e795b9455256d7b44a73c9188ad345b44",
+        "build": "8.8.20.99",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
       "FLEET_DOCTRINE_REGISTRY.json": {
-        "sha256": "515327c2fb14ea3aeddfce60c5bc469762c7e5de2df0d589c1003792ea1887e0",
-        "build": "8.8.20.98",
+        "sha256": "5480cb3969a9df766bd835839b4cd168ffe4836e837f4d22141836c886e1c9b9",
+        "build": "8.8.20.99",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -395,8 +397,8 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "GOLDEN_VOYAGES.json": {
-        "sha256": "f809f18c18900ed5a20e00371dc9b443e79773c26c569bae5ab6ab13857a3947",
-        "build": "8.8.20.98",
+        "sha256": "b24d18c1ce1264f7e6be8bd7b6a1db7bd20f1491ded2149ad7e3f800f26148f0",
+        "build": "8.8.20.99",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -545,24 +547,24 @@
     "algorithm": "SHA-256",
     "serialization": "UTF-8 response body, same text executed by atomic loader",
     "files": {
-      "styles.css": "411899b6553f5b54f6b806cffc788b36c941d35844d6c8251ea348ad76728db1",
+      "styles.css": "68ee06db95a9b724d5413a756b78f4c7941c1fbf7ec81dc85484387982b1b3cd",
       "simple_books.css": "5939590021ef2d3738d5f5f7249d72f8da64cc274bf287ef8183958517b0ba46",
       "platform_core.js": "7fb1504a8b8de0fe319bfd29bed4d0875784565d45ede84a07a61c767491da68",
       "platform_v4.js": "f1596bec1fa4689f5edd75378241da7042ff04eb879401a83f3bd7a2d5cc4e9e",
       "platform_identity.js": "0beacfb452fb0e3e24aea71efd86140b1657560e98fa670a0f3bea428414232d",
-      "fleet_supabase.js": "1a6909b9036d59b97fbdf1ccf96bc444705c1d5c528eb3425fdf4a52037a980c",
+      "fleet_supabase.js": "ea66122cd5f138dd91989cd7a5b0abad8d008dd352a811fab1643e19b5c2ccc5",
       "ike_style_registry.js": "6b348ebceb47e172e6676f46252b19c1c6bb7532baf76febfa8dd81760a76ab7",
-      "app.js": "64d1def52a4a7c1ba698f05f67374dd5ddf2c35d75f46237eb0125e8739c7d32",
-      "captain.js": "a4145c020aa6099c767a64b79b1d8208d271abe23229ba968b20cc30e7ca6fc1",
+      "app.js": "34cc9b0406d305ee4d3be5c933b3495ef92ec6f5605c4f5d75cc3c27d5295d54",
+      "captain.js": "e737bb48108b814c61bdd03ac5411548c99a2558004f95b7da36f6f8e38d7baf",
       "simple_books.js": "ddd76dcf5e6c579f16918a9d3e645b0fc65d8a5b4d7c66df8896d8314eea325d",
-      "owner.html": "19be33ced34f454bc605998b054532914184a854c82c7b348210ff630ddd474f",
-      "manifest.webmanifest": "4dfacab3c2d48abf7d05630d0c57ad2095a779d9f01728ea34fef76bffcea1f3",
+      "owner.html": "c1b81c367e0045517b58dacc5bb04d834ebb1d1188790ff9a0acbecf9f3b5319",
+      "manifest.webmanifest": "4e689f70044c0926aa9bed98730e670899ad15678055eaf40195cf5463c71cca",
       "IKE_STYLE_FOUNDRY.json": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
-      "sw.js": "2c47689bd0a5c564a24495bba1e8b4b20f1b0e46e1133ae7b4b6dffeeb9c0a4a",
-      "FLEET_DOCTRINE_REGISTRY.json": "515327c2fb14ea3aeddfce60c5bc469762c7e5de2df0d589c1003792ea1887e0",
-      "GOLDEN_VOYAGES.json": "f809f18c18900ed5a20e00371dc9b443e79773c26c569bae5ab6ab13857a3947",
-      "FLEET_COMMAND_MODEL.json": "dae5cfc6310297cb2122af5c33880c837cdbda922782c157c047914265120971",
-      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "543b616b48223755e1fbacf92cd2be04c474db28dc56dec222f948dd86f58cf4",
+      "sw.js": "666df07b83caeb3e39b0cc7ea1206834a78b42482495d1bc17973531b755296a",
+      "FLEET_DOCTRINE_REGISTRY.json": "5480cb3969a9df766bd835839b4cd168ffe4836e837f4d22141836c886e1c9b9",
+      "GOLDEN_VOYAGES.json": "b24d18c1ce1264f7e6be8bd7b6a1db7bd20f1491ded2149ad7e3f800f26148f0",
+      "FLEET_COMMAND_MODEL.json": "825514d8f78f0d7bacda16a275b83d1e795b9455256d7b44a73c9188ad345b44",
+      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "75d57675b8452dd687fa8d5d3d6daabc7e26e3c17db74c63dae336a4d000038b",
       "input_hygiene.js": "85584886dd424e619c6ee1069665e201dca51e815673839f91da0d796fcf591a",
       "business_deck.js": "5f699f4c8f8a8651dde8b4e3faee4dff1b23412a0cfbb901f3cc84e7297ad350",
       "business_deck.css": "c598dca691af9fd3791effc372f54ead2f5280a6a8bc19032fb01ee2708d593a",
@@ -635,7 +637,9 @@
       "carvewright_capture.js": "2d73f5f42f7f43411ac53cf86469137f38ada60213d0fe6524fa40b180c39aae",
       "fleet_boundary_repair.js": "a631fd0129c95d91b8cfb0a701acff8fc33991bd3dddf199909b1a4795aaef3e",
       "service_address.js": "ca2a1a60a7b29c53d3666461c2e8e9eece5120e5e945b01362b15f9644df2860",
-      "service_address_fleet.js": "d31da02362f3bb60a61589f0a5bbb22ea976ffb853434d52db75eb5d4dd2b585"
+      "service_address_fleet.js": "d31da02362f3bb60a61589f0a5bbb22ea976ffb853434d52db75eb5d4dd2b585",
+      "fleet_help.js": "e2ce115855f9de56383445562b0e772dfb0dc570e545b92bef10c518794360fe",
+      "fleet_help.css": "0adb7353483c94cd92bc19d4258a8243d2e3c1c2e17ef65e791c895ecea3cc05"
     }
   },
   "watchbeacon_upgrade": {
@@ -1070,7 +1074,7 @@
     "project_data_mutation": false,
     "field_failure_proof": "8.8.20.13 held on styles.css because packaged DEPLOYMENT_MANIFEST runtime hash did not match packaged styles.css bytes"
   },
-  "release": "Fairlead",
+  "release": "Signalman",
   "clearbearing_upgrade": {
     "build": "8.8.20.22",
     "baseline": "8.8.20.14 HashLock",
@@ -1915,7 +1919,7 @@
   "component_contract": {
     "schema": "blackflag-component-contract-v1",
     "release_binding": "verified-page-context-v1",
-    "app_revision": "8.8.20.97",
+    "app_revision": "8.8.20.99",
     "unchanged_component_policy": "Exact current-manifest SHA-256 required; no version-only rewrites",
     "owner_helper_revision": "8.8.20.68",
     "scope": "Client code identity only; no server authority"

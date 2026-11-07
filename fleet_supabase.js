@@ -41,7 +41,9 @@
   };
   const apiError = (problem, fallback) => {
     const message = problem?.message || problem?.msg || problem?.error_description || problem?.hint || fallback;
-    return new Error(String(message || fallback).replaceAll('_', ' '));
+    const error = new Error(String(message || fallback).replaceAll('_', ' '));
+    if (typeof problem?.code === 'string') error.code = problem.code;
+    return error;
   };
   const safeSessionRead = key => {
     try { return JSON.parse(sessionStorage.getItem(key) || 'null'); } catch (_) { return null; }
@@ -235,7 +237,7 @@
       if (!admiral) {
         const response = await fetch(`${url}${path}`, {cache:'no-store', ...init});
         const body = await guardedBody(response,path);
-        if (!response.ok) throw apiError(body, fallback);
+        if (!response.ok) {const error=apiError(body,fallback);error.status=response.status;throw error;}
         return body;
       }
       const controller = new AbortController(), generation = authGeneration;

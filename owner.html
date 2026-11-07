@@ -149,12 +149,14 @@
 @media(max-width:700px){.tb-security-form,.tb-recovery-grid{grid-template-columns:1fr}.tb-security-form>.captain-handoff-actions{grid-column:auto}}
 </style>
 <link rel="stylesheet" href="business_deck.css?v=suretap-882097" onerror="window.__workhorseDeckStylesFailed=true">
-<script id="blackFlagPageRelease">window.__blackFlagPageRelease=Object.freeze({build:'8.8.20.98',seal:'portolan-882098',name:'Portolan'});</script>
+<script id="blackFlagPageRelease">window.__blackFlagPageRelease=Object.freeze({build:'8.8.20.99',seal:'signalman-882099',name:'Signalman'});</script>
 <script src="input_hygiene.js?v=fairlead-882068"></script>
 <script src="service_address_fleet.js?v=streetwise-882096"></script>
 <script src="service_address.js?v=portolan-882098"></script>
 <script src="business_deck.js?v=streetwise-882096"></script>
-<script src="fleet_supabase.js?v=fairlead-882068"></script>
+<script src="fleet_supabase.js?v=signalman-882099"></script>
+<link rel="stylesheet" href="fleet_help.css?v=signalman-882099">
+<script src="fleet_help.js?v=signalman-882099"></script>
 <script src="fleet_recovery_core.js?v=fairlead-882068"></script>
 <link rel="stylesheet" href="fleet_viewport.css?harborhold=882049"><script src="fleet_viewport.js?harborhold=882049"></script><script src="headway_contracts.js?harborhold=882049"></script>
 <link rel="stylesheet" href="countercraft.css"><link rel="stylesheet" href="carvewright.css"><link rel="stylesheet" href="carvewright_machining.css">
@@ -223,7 +225,7 @@
   <section id="portal" class="portal hidden">
     <div class="portal-wrap">
       <header class="portal-head">
-        <div class="bd-brand-heading"><div id="businessHeaderLogo" aria-hidden="true"></div><div><div class="eyebrow" id="ownerInstalledRelease">8.8.20.98 · QUARTERMASTER</div><h1 id="portalName">Business</h1><span class="owner-badge">● SECURE OWNER SESSION</span><div id="ownerScopeNote" class="owner-scope-note">Verified for this business only</div></div></div>
+        <div class="bd-brand-heading"><div id="businessHeaderLogo" aria-hidden="true"></div><div><div class="eyebrow" id="ownerInstalledRelease">8.8.20.99 · QUARTERMASTER</div><h1 id="portalName">Business</h1><span class="owner-badge">● SECURE OWNER SESSION</span><div id="ownerScopeNote" class="owner-scope-note">Verified for this business only</div></div></div>
         <div class="head-actions"><button id="returnEngine" class="btn ghost hidden">RETURN TO BLACK FLAG</button><button id="signOut" class="btn secondary">SIGN OUT</button></div>
       </header>
       <nav id="businessDeckNav" class="bd-owner-nav" aria-label="Business workspace"></nav>
@@ -241,6 +243,53 @@
 </div>
 
 <script>
+/* Bind the shared form to one verified workspace and its existing account client. */
+window.DarkSkyVesselHelpHost=Object.freeze({
+  mount(host,{role,projectId,projectName,screen,client,userId,active}){
+    const signed=client.readSession(),token=signed?.access_token;
+    const allowed=new Set(role==='owner'
+      ?['owner_create_fleet_help','owner_list_fleet_help','fleet_help_read_attachment']
+      :['vessel_captain_list_fleet_help','vessel_captain_update_fleet_help','fleet_help_read_attachment']);
+    let ended=false,destroy=null,timer=0;
+    function isCurrent(){
+      if(ended||!host.isConnected||!active()||!userId||!token)return false;
+      const session=client.readSession(),route=new URLSearchParams(location.search);
+      return session?.access_token===token&&session.user?.id===userId&&Number(session.expires_at)>Date.now()
+        &&!window.CountercraftPrivacy?.isLocked?.()
+        &&route.getAll('project').length===1&&route.get('project')===projectId
+        &&(role==='captain'?route.getAll('surface').length===1&&route.get('surface')==='vessel-captain'
+          :!route.has('surface')&&route.getAll('view').length===1&&route.get('view')==='fleet-help');
+    }
+    async function rpc(name,args){
+      if(!isCurrent()||!allowed.has(name)||args?.p_project_id!==projectId)throw new Error('Reopen fleet help for this vessel.');
+      // Use the token checked above. A delayed refresh must never substitute a different account.
+      const result=await client.request('/rest/v1/rpc/'+name,{method:'POST',
+        headers:{...client.headers(token),Accept:'application/json'},body:JSON.stringify(args)},'Fleet help is unavailable.');
+      if(!isCurrent())throw new Error('This fleet help view has ended.');
+      return result;
+    }
+    function close(){
+      if(ended)return;ended=true;clearTimeout(timer);
+      window.removeEventListener('pagehide',close);window.removeEventListener('countercraft:locked',close);
+      window.removeEventListener('popstate',recheck);window.removeEventListener('focus',recheck);
+      document.removeEventListener('visibilitychange',recheck);
+      try{destroy?.();}finally{host.replaceChildren();}
+    }
+    function recheck(){if(!isCurrent()){close();if(host.isConnected)host.textContent='Reopen this vessel workspace to continue with fleet help.';}}
+    if(!isCurrent()||typeof window.DarkSkyFleetHelp?.mount!=='function'){
+      host.textContent='Fleet help could not open. Reload this vessel workspace to try again.';return close;
+    }
+    window.addEventListener('pagehide',close);window.addEventListener('countercraft:locked',close);
+    window.addEventListener('popstate',recheck);window.addEventListener('focus',recheck);
+    document.addEventListener('visibilitychange',recheck);
+    timer=setTimeout(recheck,Math.max(0,Number(signed.expires_at)-Date.now()+1));
+    try{destroy=window.DarkSkyFleetHelp.mount(host,{role,projectId,projectName,screen,build:window.__blackFlagPageRelease.build,rpc,isCurrent});}
+    catch(_){close();host.textContent='Fleet help could not open. Reload this vessel workspace to try again.';}
+    return close;
+  }
+});
+</script>
+<script>
 ;(()=>{
   'use strict';
   const q=new URLSearchParams(location.search);
@@ -254,7 +303,7 @@
   const root=document.getElementById('app'),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   if(!input || input.build!==HELPER_COMPONENT_BUILD){root.innerHTML='<section class="route-safe"><div class="card"><h1>Test build files do not match</h1><p>Upload the complete Quartermaster folder contents, then reopen this page. No sign-in or vessel command was sent.</p></div></section>';return;}
   const client=window.DarkSkySupabase.create({url:SUPABASE_URL,publishableKey:SUPABASE_KEY,sessionKey:SESSION_KEY,build:BUILD,guardSession:true});
-  let appointment=null,access=null,orders=[],watch=null,busy=false,stationEpoch=0,person=null,myAppointments=[],securityController=null;
+  let appointment=null,access=null,orders=[],watch=null,busy=false,stationEpoch=0,person=null,myAppointments=[],securityController=null,closeCaptainHelp=null;
 
   // Names below come from the unchanged release muster. No server roster or
   // business data is read before authentication. Names are not permissions.
@@ -445,11 +494,11 @@
     });
   }
   async function showMyVessels(){
-    if(busy)return;busy=true;++stationEpoch;projectId='';appointment=null;
+    if(busy)return;busy=true;closeCaptainHelp?.();++stationEpoch;projectId='';appointment=null;
     try{await loadAppointment();}catch(e){renderStationRecovery(String(e.message||e));}finally{busy=false;}
   }
 
-  function shell(content,view='handoff'){root.innerHTML=`<main class="captain-handoff" data-view="${esc(view)}"><div class="captain-handoff-shell">${content}</div></main>`;}
+  function shell(content,view='handoff'){closeCaptainHelp?.();closeCaptainHelp=null;root.innerHTML=`<main class="captain-handoff" data-view="${esc(view)}"><div class="captain-handoff-shell">${content}</div></main>`;}
   function header(title=destination(),sub='Vessel Captain sign-in'){
     const verified=!!(access?.project_id===projectId||appointment?.project_id===projectId);
     const note=projectId?(verified?'Vessel identity from your authenticated response.':DIRECTORY[projectId]?'Destination from the release directory. Account authority is checked after sign-in.':'Requested project: '+projectId+'. Identity must be resolved after sign-in.'):(person?'Only assignments returned for your signed-in account are shown.':'Sign in to list only your assigned vessels.');
@@ -597,9 +646,17 @@
           <div class="captain-handoff-actions"><button id="captainPublishWatch" class="btn primary">PUBLISH WATCH UPDATE</button></div>
           <p class="captain-station-last-report">${watch?.has_report?'Last report: '+new Date(watch.reported_at).toLocaleString()+' · '+esc(watch.source_label||'VESSEL CAPTAIN'):'No prior Captain watch report.'}</p>
         </section>
-      </div>${recoveryMarkup()}${accountSecurityMarkup()}`, 'station');
+      </div><div id="captainFleetHelp"></div>${recoveryMarkup()}${accountSecurityMarkup()}`, 'station');
+    const authority=access,assignment=appointment,epoch=stationEpoch,scope=projectId,userId=person?.id;
+    if(authority.ok===true&&authority.project_id===scope&&authority.vessel_id&&authority.appointment_id
+      &&assignment?.appointment_id===authority.appointment_id&&assignment.status==='accepted'&&!assignment.revoked_at){
+      closeCaptainHelp=window.DarkSkyVesselHelpHost?.mount(document.getElementById('captainFleetHelp'),{
+        role:'captain',projectId:scope,projectName:authority.display_name,screen:'Vessel Captain Station',client,userId,
+        active:()=>stationEpoch===epoch&&projectId===scope&&access===authority&&appointment===assignment&&person?.id===userId
+      });
+    }
     bindIdentityActions();bindRecovery();bindAccountSecurity();
-    document.getElementById('captainRefresh').onclick=async()=>{if(busy)return;busy=true;try{await loadAppointment();}catch(e){renderStationRecovery(String(e.message||e));}finally{busy=false;}};
+    document.getElementById('captainRefresh').onclick=async()=>{if(busy)return;busy=true;closeCaptainHelp?.();try{await loadAppointment();}catch(e){renderStationRecovery(String(e.message||e));}finally{busy=false;}};
     document.getElementById('captainStationSignOut').onclick=signOut;
     document.querySelectorAll('[data-captain-save-order]').forEach(b=>b.onclick=()=>saveOrder(b.dataset.captainSaveOrder));
     document.getElementById('captainPublishWatch').onclick=publishWatch;
@@ -651,6 +708,7 @@
     catch(e){client.clearSession();renderLogin(String(e.message||e));}
   }
 
+  window.addEventListener('pageshow',e=>{if(e.persisted&&closeCaptainHelp)location.reload();});
   boot();
 })();
 </script>
@@ -669,13 +727,14 @@ const q=new URLSearchParams(location.search), projectId=String(q.get('project')|
 const engineTrialLaunch=window.CountercraftConfig.consumeTrial(new URLSearchParams(location.hash.slice(1)).get('launch'));let trialViewOpened=false;
 if(engineTrialLaunch)history.replaceState({},'',location.pathname+location.search);
 const $=id=>document.getElementById(id); let db=null, project=null, orders=[], localRecoveryAttempt=false;
-let ownerOrderReadError='',ownerViewEpoch=0,ownerProjectFromServer=false,ownerExpiryTimer=0;
+let ownerOrderReadError='',ownerViewEpoch=0,ownerProjectFromServer=false,ownerExpiryTimer=0,closeOwnerHelp=null,ownerHelpScreen='Owner Bridge';
 // A server namespace and the browser's storage namespace are different identifiers.
 // Bind both to the same server-verified project in this document, never rewrite records.
 let verifiedOwnerBinding=null;const orderDeckState={tab:'active',query:'',sort:'oldest',page:1,pageSize:6};
 const IKE_RATES=[['pine','Pine'],['cedar','Cedar'],['red-oak','Red Oak'],['white-oak','White Oak'],['walnut','Walnut'],['hickory','Hickory']];
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-function show(id){['safeShell','login','passwordSetup','localRecovery','portal','failure'].forEach(x=>$(x).classList.toggle('hidden',x!==id));}
+function retireOwnerHelp(){closeOwnerHelp?.();closeOwnerHelp=null;}
+function show(id){if(id!=='portal')retireOwnerHelp();['safeShell','login','passwordSetup','localRecovery','portal','failure'].forEach(x=>$(x).classList.toggle('hidden',x!==id));}
 
 function usesSupabaseOwner(){return !project||FLEET_CORE_PROJECT_IDS.has(projectId)||project?.ownerAccess?.identityProvider==='supabase';}
 function ownerAccessMessage(reason=''){const name=project?.name||'this business';if(reason==='owner_membership_denied'||reason==='vessel_denied')return 'This Supabase account is not commissioned as the owner of '+name+'. Use the exact owner email assigned to this business.';if(String(reason).startsWith('membership_query_')||String(reason).startsWith('vessel_query_'))return 'The secure owner check could not complete. No business data was opened. Try again.';return 'This account is not authorized for this business.';}
@@ -713,8 +772,16 @@ function sessionValid(s){
   return (!s.namespace||!project.namespace||s.namespace===project.namespace)
     &&(!s.expiresAt||Date.parse(s.expiresAt)>Date.now());
 }
+function fleetHelpOwnerBinding(){
+  const s=ownerSession(),b=verifiedOwnerBinding;
+  if(!b||!s||!sessionValid(s)||s.identityProvider!=='supabase'||s.sessionId!==b.sessionId
+     ||s.userId!==b.userId||s.vesselId!==b.vesselId||s.namespace!==b.serverNamespace
+     ||String(project?.namespace||'')!==b.localNamespace)return null;
+  const auth=supabaseSession();
+  return auth?.user?.id===b.userId&&auth.access_token&&Number(auth.expires_at)>Date.now()?b:null;
+}
 function clearSession(reason='explicit-logout'){
-  verifiedOwnerBinding=null;ownerViewEpoch++;const s=ownerSession();
+  retireOwnerHelp();verifiedOwnerBinding=null;ownerViewEpoch++;const s=ownerSession();
   if(ownerExpiryTimer){clearTimeout(ownerExpiryTimer);ownerExpiryTimer=0;}
   if(s)ownerWitness('session-ended',s,{reason,scopeVerified:true});sessionStorage.removeItem(OWNER_SESSION_KEY);
   if(ownerProjectFromServer){
@@ -753,7 +820,20 @@ function supaHeaders(token=''){return ownerSupabase.headers(token);}
 function supabaseSession(){return ownerSupabase.readSession();}
 function saveSupabaseSession(data){return ownerSupabase.saveSession(data);}
 function clearSupabaseSession(){ownerSupabase.clearSession();}
-function liveOwnerRedirect(){const u=new URL('./owner.html',location.href);u.searchParams.set('project',projectId);u.searchParams.set('view','portal');if(source==='engine')u.searchParams.set('source','engine');return u.toString();}
+function ownerReturnView(){
+  const route=new URLSearchParams(location.search);
+  return !engineTrialLaunch&&!route.has('surface')
+    &&route.getAll('project').length===1&&route.get('project')===projectId
+    &&route.getAll('view').length===1&&route.get('view')==='fleet-help'
+    ?'fleet-help':'portal';
+}
+function openVerifiedOwnerHome(){
+  // Rendering the home replaces its URL, so capture the requested screen first.
+  const destination=ownerReturnView();
+  renderPortal();
+  if(destination==='fleet-help')openOwnerView('fleet-help');
+}
+function liveOwnerRedirect(){const u=new URL('./owner.html',location.href);u.searchParams.set('project',projectId);u.searchParams.set('view',ownerReturnView());if(source==='engine')u.searchParams.set('source','engine');return u.toString();}
 async function sendMagicLink(email){const redirect=liveOwnerRedirect();const r=await fetch(SUPABASE_URL+'/auth/v1/otp?redirect_to='+encodeURIComponent(redirect),{method:'POST',headers:supaHeaders(),body:JSON.stringify({email:String(email||'').trim(),create_user:false,gotrue_meta_security:{}})});if(!r.ok)throw new Error((await r.text())||('Supabase sign-in request failed '+r.status));return true;}
 async function exchangeHashSession(){const hash=new URLSearchParams(location.hash.replace(/^#/,''));const access=hash.get('access_token'),refresh=hash.get('refresh_token'),expires=hash.get('expires_in'),type=hash.get('type')||'';if(access){saveSupabaseSession({access_token:access,refresh_token:refresh,expires_in:expires,user:null,flow_type:type});history.replaceState(history.state,'',location.pathname+location.search);return true;}return false;}
 async function refreshSupabaseSession(s){return ownerSupabase.refreshSession(s);}
@@ -844,7 +924,7 @@ async function verify(login,password){const c=project?.ownerAccess?.credential;i
 function setNames(){const n=project?.name||'Business Owner Access';$('safeName').textContent=n;$('loginName').textContent=n;$('passwordSetupName').textContent=n;$('localRecoveryName').textContent=n;$('portalName').textContent=n;$('failureName').textContent=n;$('mProject').textContent=String(project?.projectCode||projectId||'BUSINESS').toUpperCase();}
 function ownerActive(){return project?.ownerAccess?.enabled!==false && project?.ownerAccess?.status==='active';}
 function bindEngineButtons(){for(const id of ['returnEngineFromLogin','returnEngine','failureEngine']){if(source==='engine')$(id)?.classList.remove('hidden');$(id)?.addEventListener('click',()=>location.replace(engineUrl()));}}
-function modules(){const caps=capabilities();const all=[['watch','Fleet Report','Report current work and issues to the read-only Admiral watch'],['orders','Orders','Review customer orders'],['pricing','Pricing','Manage customer pricing rules'],['features','Features','Choose the business features customers can use'],['branding','Branding','Manage how customers see your business'],...(projectId==='ikes-wood-signs'?[['countercraft','Shop inbox','Customer requests, review and production'],['references','Lettering Styles','Review and manage production lettering styles']]:[]),['services','Fleet Services','See included and available Fleet capabilities'],['settings','Settings','Owner access and account controls']];return all.filter(([k])=>ownerProjectFromServer?['watch','services','settings','countercraft'].includes(k):['watch','features','services','settings','references','countercraft'].includes(k)||caps.has(k));}
+function modules(){const caps=capabilities();const all=[['fleet-help','Get fleet help','Report a problem and follow its progress'],['watch','Fleet Report','Report current work and issues to the read-only Admiral watch'],['orders','Orders','Review customer orders'],['pricing','Pricing','Manage customer pricing rules'],['features','Features','Choose the business features customers can use'],['branding','Branding','Manage how customers see your business'],...(projectId==='ikes-wood-signs'?[['countercraft','Shop inbox','Customer requests, review and production'],['references','Lettering Styles','Review and manage production lettering styles']]:[]),['services','Fleet Services','See included and available Fleet capabilities'],['settings','Settings','Owner access and account controls']];return all.filter(([k])=>k==='fleet-help'?!!fleetHelpOwnerBinding():ownerProjectFromServer?['watch','services','settings','countercraft'].includes(k):['watch','features','services','settings','references','countercraft'].includes(k)||caps.has(k));}
 async function fleetServiceCatalog(current=ownerViewGuard()){
   if(!current())return [];
   const proof=await verifySupabaseMembership();
@@ -878,7 +958,7 @@ async function requestFleetService(entitlement,current=ownerViewGuard()){
   return true;
 }
 function serviceStatusLabel(e){if(e.status==='enabled')return 'ACTIVE';if(e.status==='entitled'&&e.commercial_mode==='standard')return 'INCLUDED WITH FLEET';if(e.status==='entitled'&&e.commercial_mode==='paid')return 'APPROVED UPGRADE';if(e.status==='pending_payment')return 'PENDING PAYMENT';if(e.request?.status==='approved')return 'APPROVED';if(e.request?.status==='requested'||e.request?.status==='reviewing'||e.status==='requested')return 'REQUESTED';if(e.commercial_mode==='standard')return 'INCLUDED WITH FLEET';return 'AVAILABLE FOR UPGRADE';}
-function renderPortal(){if(!canReadOwnerDeck())return;armOwnerExpiry();show('portal');$('portal').classList.add('workhorse-owner');renderBusinessNav();$('businessHeaderLogo').innerHTML=window.BlackFlagBusinessDeck.logo(project);$('portal').classList.remove('subview');$('mOrders').textContent=ownerProjectFromServer?'—':orders.length;$('mOwner').textContent=String(project?.ownerAccess?.status||'active').toUpperCase();$('modules').innerHTML=modules().map(([k,t,d])=>`<button class="module" data-module="${k}"><small>${k.toUpperCase()}</small><h3>${esc(t)}</h3><p>${esc(d)}</p><strong>OPEN →</strong></button>`).join('');document.querySelectorAll('[data-module]').forEach(b=>b.addEventListener('click',()=>openOwnerView(b.dataset.module)));returnToBridgeHome(false);if(engineTrialLaunch&&!trialViewOpened){trialViewOpened=true;openOwnerView('countercraft');}}function returnToBridgeHome(animate=true){if(!canReadOwnerDeck())return;ownerViewEpoch++;renderBusinessHome();markBusinessNav('portal');$('portal').classList.remove('subview');$('workspace').classList.add('hidden');$('workspace').classList.remove('stage-in');$('workspace').innerHTML='';$('ownerHome').classList.remove('hidden','stage-out');if(animate){$('ownerHome').classList.add('stage-in');setTimeout(()=>$('ownerHome').classList.remove('stage-in'),260);}if(projectId==='ikes-wood-signs'&&!ownerProjectFromServer){$('vesselStrip').classList.remove('hidden');$('ownerHomeNote').classList.remove('hidden');}history.replaceState({surface:'owner',projectId,ownerView:'portal'},'',`owner.html?project=${encodeURIComponent(projectId)}&view=portal${source==='engine'?'&source=engine':''}`);window.BlackFlagViewport?.enter({key:'owner:'+projectId,reason:'new'});}
+function renderPortal(){if(!canReadOwnerDeck())return;armOwnerExpiry();show('portal');$('portal').classList.add('workhorse-owner');renderBusinessNav();$('businessHeaderLogo').innerHTML=window.BlackFlagBusinessDeck.logo(project);$('portal').classList.remove('subview');$('mOrders').textContent=ownerProjectFromServer?'—':orders.length;$('mOwner').textContent=String(project?.ownerAccess?.status||'active').toUpperCase();$('modules').innerHTML=modules().map(([k,t,d])=>`<button class="module" data-module="${k}"><small>${k.toUpperCase()}</small><h3>${esc(t)}</h3><p>${esc(d)}</p><strong>OPEN →</strong></button>`).join('');document.querySelectorAll('[data-module]').forEach(b=>b.addEventListener('click',()=>openOwnerView(b.dataset.module)));returnToBridgeHome(false);if(engineTrialLaunch&&!trialViewOpened){trialViewOpened=true;openOwnerView('countercraft');}}function returnToBridgeHome(animate=true){if(!canReadOwnerDeck())return;retireOwnerHelp();ownerViewEpoch++;renderBusinessHome();markBusinessNav('portal');$('portal').classList.remove('subview');$('workspace').classList.add('hidden');$('workspace').classList.remove('stage-in');$('workspace').innerHTML='';$('ownerHome').classList.remove('hidden','stage-out');if(animate){$('ownerHome').classList.add('stage-in');setTimeout(()=>$('ownerHome').classList.remove('stage-in'),260);}if(projectId==='ikes-wood-signs'&&!ownerProjectFromServer){$('vesselStrip').classList.remove('hidden');$('ownerHomeNote').classList.remove('hidden');}history.replaceState({surface:'owner',projectId,ownerView:'portal'},'',`owner.html?project=${encodeURIComponent(projectId)}&view=portal${source==='engine'?'&source=engine':''}`);window.BlackFlagViewport?.enter({key:'owner:'+projectId,reason:'new'});}
 function canReadOwnerDeck(){
   const s=ownerSession(),ok=sessionValid(s);
   if(!ok){
@@ -891,7 +971,7 @@ function canReadOwnerDeck(){
   }
   return ok;
 }
-function renderBusinessNav(){const allowed=modules();const links=[['portal','Today'],...['countercraft','orders','pricing','references'].map(k=>allowed.find(m=>m[0]===k)).filter(Boolean)];$('businessDeckNav').innerHTML=links.map(([k,t])=>`<button type="button" data-owner-nav="${k}" aria-pressed="${k==='portal'}">${esc(t)}</button>`).join('');$('businessDeckNav').querySelectorAll('[data-owner-nav]').forEach(b=>b.onclick=()=>{if(!canReadOwnerDeck())return;b.dataset.ownerNav==='portal'?returnToBridgeHome(true):openOwnerView(b.dataset.ownerNav);});}
+function renderBusinessNav(){const allowed=modules();const links=[['portal','Today'],...['countercraft','orders','pricing','references','fleet-help'].map(k=>allowed.find(m=>m[0]===k)).filter(Boolean)];$('businessDeckNav').innerHTML=links.map(([k,t])=>`<button type="button" data-owner-nav="${k}" aria-pressed="${k==='portal'}">${esc(t)}</button>`).join('');$('businessDeckNav').querySelectorAll('[data-owner-nav]').forEach(b=>b.onclick=()=>{if(!canReadOwnerDeck())return;b.dataset.ownerNav==='portal'?returnToBridgeHome(true):openOwnerView(b.dataset.ownerNav);});}
 function markBusinessNav(k){$('businessDeckNav')?.querySelectorAll('[data-owner-nav]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.ownerNav===k)));}
 function renderBusinessHome(){
   if(ownerProjectFromServer){
@@ -916,7 +996,13 @@ function headwayBackupPanel(){
 }
 
 function renderOrderDeck(){workspace('Orders',"Find the right record. Keep active work separate from completed history.",'<div id="bdOrders"></div>');window.BlackFlagBusinessDeck.mountOrders({container:$('bdOrders'),project,orders,state:orderDeckState,readError:ownerOrderReadError,onDetail:o=>{if(!canReadOwnerDeck())return;workspace('Order details','The saved record for this business. Viewing does not edit, reprice or approve it.','<div id="bdOrderDetail"></div>');window.BlackFlagBusinessDeck.mountOrderDetail({container:$('bdOrderDetail'),project,order:o,onBack:()=>{if(!canReadOwnerDeck())return;renderOrderDeck();window.BlackFlagViewport?.enter({key:'owner:'+projectId+':orders',reason:'back',position:orderDeckState.scrollY||0});}});window.BlackFlagViewport?.enter({key:'owner:'+projectId,reason:'new'});}});headwayBackupPanel();}
-async function openOwnerView(k){if(!canReadOwnerDeck()||!modules().some(m=>m[0]===k))return;const generation=++ownerViewEpoch;markBusinessNav(k);$('ownerHome').classList.add('stage-out');setTimeout(async()=>{if(generation!==ownerViewEpoch||!canReadOwnerDeck())return;$('ownerHome').classList.add('hidden');$('ownerHome').classList.remove('stage-out');$('portal').classList.add('subview');$('workspace').classList.remove('hidden');$('workspace').classList.add('stage-in');await renderWorkspace(k);if(generation!==ownerViewEpoch||!sessionValid(ownerSession()))return;history.replaceState({surface:'owner',projectId,ownerView:k},'',`owner.html?project=${encodeURIComponent(projectId)}&view=${encodeURIComponent(k)}${source==='engine'?'&source=engine':''}`);window.BlackFlagViewport?.enter({key:'owner:'+projectId,reason:'new'});setTimeout(()=>$('workspace').classList.remove('stage-in'),260);},120);}
+async function openOwnerView(k){if(!canReadOwnerDeck()||!modules().some(m=>m[0]===k))return;retireOwnerHelp();
+if(k==='fleet-help'){
+ const from=modules().find(m=>m[0]===history.state?.ownerView&&m[0]!=='fleet-help');
+ ownerHelpScreen=from?'Owner Bridge · '+from[1]:'Owner Bridge';
+ history.replaceState({surface:'owner',projectId,ownerView:k},'',`owner.html?project=${encodeURIComponent(projectId)}&view=fleet-help${source==='engine'?'&source=engine':''}`);
+}
+const generation=++ownerViewEpoch;markBusinessNav(k);$('ownerHome').classList.add('stage-out');setTimeout(async()=>{if(generation!==ownerViewEpoch||!canReadOwnerDeck())return;$('ownerHome').classList.add('hidden');$('ownerHome').classList.remove('stage-out');$('portal').classList.add('subview');$('workspace').classList.remove('hidden');$('workspace').classList.add('stage-in');await renderWorkspace(k);if(generation!==ownerViewEpoch||!sessionValid(ownerSession()))return;history.replaceState({surface:'owner',projectId,ownerView:k},'',`owner.html?project=${encodeURIComponent(projectId)}&view=${encodeURIComponent(k)}${source==='engine'?'&source=engine':''}`);window.BlackFlagViewport?.enter({key:'owner:'+projectId,reason:'new'});setTimeout(()=>$('workspace').classList.remove('stage-in'),260);},120);}
 
 function workspace(title,copy,body){$('workspace').classList.remove('hidden');$('workspace').innerHTML=`<div class="workspace-head"><div><div class="eyebrow">YOUR BUSINESS TOOLS</div><h2>${esc(title)}</h2><p class="muted">${esc(copy)}</p></div><button id="backOverview" class="btn workspace-back">← OVERVIEW</button></div>${body}`;$('backOverview').onclick=()=>returnToBridgeHome(true);}
 
@@ -964,6 +1050,17 @@ function estimatedSegments(text){const chars=[...String(text||'')].filter(ch=>!(
 async function renderWorkspace(k){
 const current=ownerViewGuard();
 if(!current())return;
+if(k==='fleet-help'){
+ const binding=fleetHelpOwnerBinding(),epoch=ownerViewEpoch;
+ if(!binding)return;
+ workspace('Get fleet help','Report a problem or check a previous request for this business.','<div id="ownerFleetHelp"></div>');
+ closeOwnerHelp=window.DarkSkyVesselHelpHost?.mount($('ownerFleetHelp'),{
+   role:'owner',projectId,projectName:project.name,screen:ownerHelpScreen,client:ownerSupabase,userId:binding.userId,
+   active:()=>ownerViewEpoch===epoch&&fleetHelpOwnerBinding()===binding
+     &&!$('portal').classList.contains('hidden')&&!$('workspace').classList.contains('hidden')
+ });
+ return;
+}
 if(k==='countercraft'){
  if(projectId!=='ikes-wood-signs'||!canReadOwnerDeck())return;
  const cfg=window.CountercraftConfig,trial=!!engineTrialLaunch;
@@ -1081,7 +1178,7 @@ async function boot(){
   }
   const liveState=await resolveLiveOwnerState();
   if(liveState.state==='ready'){
-    renderPortal();history.replaceState({surface:'owner',projectId},'',`owner.html?project=${encodeURIComponent(projectId)}&view=portal${source==='engine'?'&source=engine':''}`);return;
+    openVerifiedOwnerHome();return;
   }
   if(liveState.state==='password_setup'){renderPasswordSetup(liveState.recovery);return;}
   if(liveState.state==='denied'){
@@ -1090,16 +1187,16 @@ async function boot(){
   }else{show('login');if(requestedView==='portal')$('loginError').textContent='Sign in to restore the Owner Control Center.';}
   configureOwnerLogin();
 }
-$('signIn').onclick=async()=>{try{$('loginError').textContent='';if(usesSupabaseOwner()&&!localRecoveryAttempt){await signInWithPassword($('loginUser').value,$('loginPass').value);const state=await resolveLiveOwnerState();if(state.state==='password_setup'){renderPasswordSetup(state.recovery);return;}if(state.state!=='ready'){clearSupabaseSession();clearSession('owner-scope-denied');throw new Error(ownerAccessMessage(state.reason));}history.replaceState({surface:'owner',projectId},'',`owner.html?project=${encodeURIComponent(projectId)}&view=portal${source==='engine'?'&source=engine':''}`);renderPortal();return;}if(!await verify($('loginUser').value,$('loginPass').value)){ $('loginError').textContent='The login or password did not match.';return;}saveSession();history.replaceState({surface:'owner',projectId},'',`owner.html?project=${encodeURIComponent(projectId)}&view=portal${source==='engine'?'&source=engine':''}`);renderPortal();}catch(e){$('loginError').textContent=String(e?.message||e);}};
+$('signIn').onclick=async()=>{try{$('loginError').textContent='';if(usesSupabaseOwner()&&!localRecoveryAttempt){await signInWithPassword($('loginUser').value,$('loginPass').value);const state=await resolveLiveOwnerState();if(state.state==='password_setup'){renderPasswordSetup(state.recovery);return;}if(state.state!=='ready'){clearSupabaseSession();clearSession('owner-scope-denied');throw new Error(ownerAccessMessage(state.reason));}openVerifiedOwnerHome();return;}if(!await verify($('loginUser').value,$('loginPass').value)){ $('loginError').textContent='The login or password did not match.';return;}saveSession();history.replaceState({surface:'owner',projectId},'',`owner.html?project=${encodeURIComponent(projectId)}&view=portal${source==='engine'?'&source=engine':''}`);renderPortal();}catch(e){$('loginError').textContent=String(e?.message||e);}};
 $('sendMagicLink').onclick=async()=>{try{$('loginError').textContent='Sending secure sign-in link…';await sendMagicLink($('loginUser').value);$('loginError').textContent='Secure sign-in link sent. Open the newest email on this device.';}catch(e){$('loginError').textContent='Secure sign-in could not start. '+String(e?.message||e);}};
 $('forgotPassword').onclick=async()=>{try{$('loginError').textContent='';if(!usesSupabaseOwner()){renderLocalRecovery();return;}const email=String($('loginUser').value||'').trim();if(!email){$('loginError').textContent='Enter your email first.';return;}$('forgotPassword').disabled=true;$('forgotPassword').textContent='SENDING RECOVERY…';await sendPasswordRecovery(email);$('loginError').innerHTML='<div class="recovery-success">If this email belongs to the owner of this business, a recovery message is on its way. Open the newest recovery email on this device.</div>';}catch(e){$('loginError').textContent='Recovery could not start. '+String(e?.message||e);}finally{$('forgotPassword').disabled=false;$('forgotPassword').textContent='FORGOT PASSWORD?';}};
 $('saveLocalRecovery').onclick=async()=>{try{$('localRecoveryError').textContent='';$('saveLocalRecovery').disabled=true;$('saveLocalRecovery').textContent='RESETTING…';await resetLocalOwnerCredential();}catch(e){$('localRecoveryError').textContent=String(e?.message||e);}finally{if(!$('localRecovery').classList.contains('hidden')){$('saveLocalRecovery').disabled=localRecoveryWaitMs()>0;$('saveLocalRecovery').textContent='RESET OWNER PASSWORD';}}};
 $('cancelLocalRecovery').onclick=()=>{show('login');$('localRecoveryError').textContent='';configureOwnerLogin();};
-$('savePassword').onclick=async()=>{try{$('passwordSetupError').textContent='';const a=$('newPassword').value,b=$('confirmPassword').value;if(!passwordStrongEnough(a)){$('passwordSetupError').textContent='Use at least 10 characters.';return;}if(a!==b){$('passwordSetupError').textContent='The passwords do not match.';return;}$('savePassword').disabled=true;$('savePassword').textContent='SECURING ACCOUNT…';await setOwnerPassword(a);const entered=await enterSupabaseOwner();if(!entered.ok)throw new Error(entered.reason||'Vessel scope could not be verified.');history.replaceState({surface:'owner',projectId},'',`owner.html?project=${encodeURIComponent(projectId)}&view=portal${source==='engine'?'&source=engine':''}`);renderPortal();}catch(e){$('passwordSetupError').textContent=String(e?.message||e);}finally{$('savePassword').disabled=false;if(!$('passwordSetup').classList.contains('hidden'))$('savePassword').textContent='CREATE PASSWORD & CONTINUE';}};
+$('savePassword').onclick=async()=>{try{$('passwordSetupError').textContent='';const a=$('newPassword').value,b=$('confirmPassword').value;if(!passwordStrongEnough(a)){$('passwordSetupError').textContent='Use at least 10 characters.';return;}if(a!==b){$('passwordSetupError').textContent='The passwords do not match.';return;}$('savePassword').disabled=true;$('savePassword').textContent='SECURING ACCOUNT…';await setOwnerPassword(a);const entered=await enterSupabaseOwner();if(!entered.ok)throw new Error(entered.reason||'Vessel scope could not be verified.');openVerifiedOwnerHome();}catch(e){$('passwordSetupError').textContent=String(e?.message||e);}finally{$('savePassword').disabled=false;if(!$('passwordSetup').classList.contains('hidden'))$('savePassword').textContent='CREATE PASSWORD & CONTINUE';}};
 $('useLocalRecovery').onclick=()=>{if(!project||ownerProjectFromServer)return;localRecoveryAttempt=true;$('passwordLabel').classList.remove('hidden');$('signIn').classList.remove('hidden');$('sendMagicLink').classList.add('hidden');$('forgotPassword').classList.add('hidden');$('useLocalRecovery').classList.add('hidden');$('loginUser').value='joe';$('loginError').textContent='RECOVERY-ONLY local owner bridge enabled for this attempt.';};
 $('loginPass').addEventListener('keydown',e=>{if(e.key==='Enter')$('signIn').click();});$('localConfirmPassword').addEventListener('keydown',e=>{if(e.key==='Enter')$('saveLocalRecovery').click();});$('signOut').onclick=signOutOwner;$('retry').onclick=()=>location.reload();
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkDisplayedOwner();});
-window.addEventListener('pageshow',checkDisplayedOwner);
+window.addEventListener('pageshow',e=>{if(e.persisted&&closeOwnerHelp)location.reload();else checkDisplayedOwner();});
 boot().catch(e=>{$('failureDetail').textContent=String(e?.message||e);if(source==='engine')$('failureEngine').classList.remove('hidden');show('failure');});
 })();
 </script>
