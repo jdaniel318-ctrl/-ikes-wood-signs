@@ -1,7 +1,20 @@
 /* Headway viewport adapter — presentation only. No storage, network or authority. */
 (function(root){'use strict';if(!root.document)return;let epoch=0;const noMove=new Set(['input','resize','recheck','foreground','render']);
  function prepare(){document.body?.classList.add('hw-viewport');if(document.body?.classList.contains('ikes-project')){const header=document.querySelector('#app>.brand-header'),banner=document.getElementById('experienceModeBanner');if(header&&banner&&banner.previousElementSibling!==header)header.after(banner);}}
- function enter({key='',reason='new',container=null,position=0}={}){prepare();if(noMove.has(reason))return false;const ticket=++epoch,scrollTo=reason==='back'?Math.max(0,Number(position)||0):0;requestAnimationFrame(()=>requestAnimationFrame(()=>{if(ticket!==epoch)return;const target=container&&container!==document.body&&container!==document.documentElement?container:null;if(target&&!target.isConnected)return;try{if(target)target.scrollTo({top:scrollTo,left:0,behavior:'instant'});else root.scrollTo({top:scrollTo,left:0,behavior:'instant'});}catch(_){if(target)target.scrollTop=scrollTo;else root.scrollTo(0,scrollTo);}document.body.dataset.hwSurface=String(key);}));return true;}
+ function enter({key='',reason='new',container=null,position=0,anchor=null,current=null}={}){
+  prepare();if(noMove.has(reason))return false;
+  const ticket=++epoch,scrollTo=reason==='back'?Math.max(0,Number(position)||0):0;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+   if(ticket!==epoch||(current&&!current()))return;
+   const target=container&&container!==document.body&&container!==document.documentElement?container:null;
+   if((target&&!target.isConnected)||(anchor&&!anchor.isConnected))return;
+   // An explicit route destination owns its scroll ancestors. A window-only reset
+   // leaves a nested/restored scroll plane behind on Safari. Never run on input.
+   if(anchor&&reason!=='back')anchor.scrollIntoView({block:'start',inline:'nearest',behavior:'instant'});
+   else try{if(target)target.scrollTo({top:scrollTo,left:0,behavior:'instant'});else root.scrollTo({top:scrollTo,left:0,behavior:'instant'});}catch(_){if(target)target.scrollTop=scrollTo;else root.scrollTo(0,scrollTo);}
+   document.body.dataset.hwSurface=String(key);
+  }));return true;
+ }
  const api=Object.freeze({enter,prepare,cancel:()=>{epoch++;},position:container=>container?container.scrollTop:root.scrollY});root.BlackFlagViewport=api;
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',prepare,{once:true});else prepare();
  // Only an explicit committed command navigation, never keystrokes or resize.

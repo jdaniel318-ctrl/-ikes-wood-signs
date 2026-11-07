@@ -1,13 +1,13 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Longwatch 8.8.20.93
+# Black Flag Freeboard 8.8.20.94
 
 Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
-Baseline: 8.8.20.92. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Baseline: 8.8.20.93. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
 Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
-- Engine private preview: seven minutes of inactivity before the Continue warning, then 30 seconds before reset; five additional minutes for testing.
-- Editor input counts as activity even when the editor stops event bubbling.
-- Live/trial customer expiry and owner/Engine authentication are unchanged.
-- See LONGWATCH_GUIDE.md for installation, test steps and pending field notes.
+- Direct contractor owner sign-in from a fresh browser, scoped to the selected business. The Fleet Test Center remains the private testing entrance.
+- Ike’s one-board request, contact paste cleanup, board-aware lettering, explicit placement review and compact landscape proof.
+- Camera retake within the current customer session; Safari retains control of camera permissions. Engine PIN inputs no longer identify as account passwords.
+- See FREEBOARD_GUIDE.md for installation, iPad acceptance and the scope of standalone operation.
 Preparation does not deploy frontend or backend changes. See PATCH_CONTRACT.json for separately managed backend prerequisites.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 

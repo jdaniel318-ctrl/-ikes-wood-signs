@@ -149,7 +149,7 @@
 @media(max-width:700px){.tb-security-form,.tb-recovery-grid{grid-template-columns:1fr}.tb-security-form>.captain-handoff-actions{grid-column:auto}}
 </style>
 <link rel="stylesheet" href="business_deck.css?v=fairlead-882068" onerror="window.__workhorseDeckStylesFailed=true">
-<script id="blackFlagPageRelease">window.__blackFlagPageRelease=Object.freeze({build:'8.8.20.93',seal:'longwatch-882093',name:'Longwatch'});</script>
+<script id="blackFlagPageRelease">window.__blackFlagPageRelease=Object.freeze({build:'8.8.20.94',seal:'freeboard-882094',name:'Freeboard'});</script>
 <script src="input_hygiene.js?v=fairlead-882068"></script>
 <script src="business_deck.js?v=fairlead-882068"></script>
 <script src="fleet_supabase.js?v=fairlead-882068"></script>
@@ -221,7 +221,7 @@
   <section id="portal" class="portal hidden">
     <div class="portal-wrap">
       <header class="portal-head">
-        <div class="bd-brand-heading"><div id="businessHeaderLogo" aria-hidden="true"></div><div><div class="eyebrow" id="ownerInstalledRelease">8.8.20.93 · QUARTERMASTER</div><h1 id="portalName">Business</h1><span class="owner-badge">● SECURE OWNER SESSION</span><div id="ownerScopeNote" class="owner-scope-note">Verified for this business only</div></div></div>
+        <div class="bd-brand-heading"><div id="businessHeaderLogo" aria-hidden="true"></div><div><div class="eyebrow" id="ownerInstalledRelease">8.8.20.94 · QUARTERMASTER</div><h1 id="portalName">Business</h1><span class="owner-badge">● SECURE OWNER SESSION</span><div id="ownerScopeNote" class="owner-scope-note">Verified for this business only</div></div></div>
         <div class="head-actions"><button id="returnEngine" class="btn ghost hidden">RETURN TO BLACK FLAG</button><button id="signOut" class="btn secondary">SIGN OUT</button></div>
       </header>
       <nav id="businessDeckNav" class="bd-owner-nav" aria-label="Business workspace"></nav>
@@ -661,13 +661,13 @@ const DB_NAME='blackFlagPlatformV1', STORE_PROJECTS='projects', STORE_SETTINGS='
 const OWNER_SESSION_KEY='blackFlagOwnerSessionV1', OWNER_AUTHORITY_WITNESS_KEY='darkSkyOwnerAuthorityWitnessV1', SUPABASE_SESSION_KEY='darkSkySupabaseOwnerSessionV1', OWNER_SESSION_TTL_MS=8*60*60*1000;
 const LOCAL_RECOVERY_FAILURE_KEY='darkSkyOwnerRecoveryFailuresV1', LOCAL_RECOVERY_MAX_FAILURES=5, LOCAL_RECOVERY_LOCK_MS=5*60*1000, DEFAULT_PROJECT_ADMIN_RECOVERY_PIN='4353';
 const SUPABASE_URL='https://sjgqqtnuttnkwsoebbqf.supabase.co', SUPABASE_KEY='sb_publishable_gvWfIBQg4ew2RvVr6CpJSg_8y02QmKy';
-const ownerSupabase=window.DarkSkySupabase.create({url:SUPABASE_URL,publishableKey:SUPABASE_KEY,sessionKey:SUPABASE_SESSION_KEY,build:window.__blackFlagPageRelease.build});
+const ownerSupabase=window.DarkSkySupabase.create({url:SUPABASE_URL,publishableKey:SUPABASE_KEY,sessionKey:SUPABASE_SESSION_KEY,guardSession:true,build:window.__blackFlagPageRelease.build});
 const FLEET_CORE_PROJECT_IDS=new Set(['beccas-bloom-shop','bf-p-f92f87e8ec44','bor-north-richmond','grizzly-bear','ikes-wood-signs','mugshot-after-dark']);
 const q=new URLSearchParams(location.search), projectId=String(q.get('project')||''), source=String(q.get('source')||''), requestedView=String(q.get('view')||'login');
 const engineTrialLaunch=window.CountercraftConfig.consumeTrial(new URLSearchParams(location.hash.slice(1)).get('launch'));let trialViewOpened=false;
 if(engineTrialLaunch)history.replaceState({},'',location.pathname+location.search);
 const $=id=>document.getElementById(id); let db=null, project=null, orders=[], localRecoveryAttempt=false;
-let ownerOrderReadError='',ownerViewEpoch=0;
+let ownerOrderReadError='',ownerViewEpoch=0,ownerProjectFromServer=false,ownerExpiryTimer=0;
 // A server namespace and the browser's storage namespace are different identifiers.
 // Bind both to the same server-verified project in this document, never rewrite records.
 let verifiedOwnerBinding=null;const orderDeckState={tab:'active',query:'',sort:'oldest',page:1,pageSize:6};
@@ -675,14 +675,14 @@ const IKE_RATES=[['pine','Pine'],['cedar','Cedar'],['red-oak','Red Oak'],['white
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function show(id){['safeShell','login','passwordSetup','localRecovery','portal','failure'].forEach(x=>$(x).classList.toggle('hidden',x!==id));}
 
-function usesSupabaseOwner(){return FLEET_CORE_PROJECT_IDS.has(projectId)||project?.ownerAccess?.identityProvider==='supabase';}
+function usesSupabaseOwner(){return !project||FLEET_CORE_PROJECT_IDS.has(projectId)||project?.ownerAccess?.identityProvider==='supabase';}
 function ownerAccessMessage(reason=''){const name=project?.name||'this business';if(reason==='owner_membership_denied'||reason==='vessel_denied')return 'This Supabase account is not commissioned as the owner of '+name+'. Use the exact owner email assigned to this business.';if(String(reason).startsWith('membership_query_')||String(reason).startsWith('vessel_query_'))return 'The secure owner check could not complete. No business data was opened. Try again.';return 'This account is not authorized for this business.';}
 function configureOwnerLogin(){localRecoveryAttempt=false;$('passwordLabel').classList.remove('hidden');$('signIn').classList.remove('hidden');$('forgotPassword').classList.remove('hidden');$('sendMagicLink').classList.toggle('hidden',!usesSupabaseOwner());$('useLocalRecovery').classList.add('hidden');$('supabaseNote').classList.add('hidden');$('testNote').classList.add('hidden');$('loginUser').placeholder=(project?.name||'Business')+' owner email';if(usesSupabaseOwner()){$('supabaseNote').textContent='SUPABASE OWNER GATE • Use the owner email commissioned for this business • exact-vessel membership required';$('supabaseNote').classList.remove('hidden');}else{if(!$('loginUser').value)$('loginUser').value=project?.ownerAccess?.credential?.login||project?.ownerAccess?.ownerEmail||'';$('testNote').textContent='PROVISIONAL OWNER IDENTITY • Forgot Password uses exact-vessel Project Admin recovery. Server reporting remains unavailable until a Supabase owner membership is commissioned.';$('testNote').classList.remove('hidden');}}
 function engineUrl(){const u=new URL('./index.html',location.href);u.search='';u.hash='';return u.toString();}
-function openDb(){return new Promise((resolve,reject)=>{const r=indexedDB.open(DB_NAME);r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);r.onblocked=()=>reject(new Error('Business storage is busy in another tab.'));});}
+function openDb(){return new Promise((resolve,reject)=>{const r=indexedDB.open(DB_NAME);r.onupgradeneeded=()=>{r.transaction.abort();resolve(null);};r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);r.onblocked=()=>reject(new Error('Business storage is busy in another tab.'));});}
 function req(r){return new Promise((resolve,reject)=>{r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});}
 function tx(store,mode='readonly'){return db.transaction(store,mode).objectStore(store);}
-async function getProject(){let p=await req(tx(STORE_PROJECTS).get(projectId));if(p)return p;try{const s=await req(tx(STORE_SETTINGS).get('companies'));const rows=Array.isArray(s?.value)?s.value:[];return rows.find(x=>String(x?.id||'')===projectId)||null;}catch(_){return null;}}
+async function getProject(){if(!db)return null;try{const p=await req(tx(STORE_PROJECTS).get(projectId));if(p?.id===projectId)return p;}catch(_){}try{const s=await req(tx(STORE_SETTINGS).get('companies'));const rows=Array.isArray(s?.value)?s.value:[];return rows.find(x=>String(x?.id||'')===projectId)||null;}catch(_){return null;}}
 async function putProject(p){await req(tx(STORE_PROJECTS,'readwrite').put(p));try{const s=await req(tx(STORE_SETTINGS).get('companies'));if(Array.isArray(s?.value)){const rows=s.value.map(x=>String(x?.id||'')===p.id?p:x);await req(tx(STORE_SETTINGS,'readwrite').put({key:'companies',value:rows}));}}catch(_){}}
 async function getSetting(key){try{return (await req(tx(STORE_SETTINGS).get(key)))?.value}catch(_){return undefined}}
 async function setSetting(key,value){await req(tx(STORE_SETTINGS,'readwrite').put({key,value}));}
@@ -711,7 +711,42 @@ function sessionValid(s){
   return (!s.namespace||!project.namespace||s.namespace===project.namespace)
     &&(!s.expiresAt||Date.parse(s.expiresAt)>Date.now());
 }
-function clearSession(reason='explicit-logout'){verifiedOwnerBinding=null;ownerViewEpoch++;const s=ownerSession();if(s)ownerWitness('session-ended',s,{reason,scopeVerified:true});sessionStorage.removeItem(OWNER_SESSION_KEY);}
+function clearSession(reason='explicit-logout'){
+  verifiedOwnerBinding=null;ownerViewEpoch++;const s=ownerSession();
+  if(ownerExpiryTimer){clearTimeout(ownerExpiryTimer);ownerExpiryTimer=0;}
+  if(s)ownerWitness('session-ended',s,{reason,scopeVerified:true});sessionStorage.removeItem(OWNER_SESSION_KEY);
+  if(ownerProjectFromServer){
+    project=null;orders=[];ownerProjectFromServer=false;setNames();
+  }
+  for(const id of ['businessDeckHome','workspace','modules','businessDeckNav','businessHeaderLogo','mOrders','mOwner'])$(id).textContent='';
+}
+function ownerViewGuard(){
+  const epoch=ownerViewEpoch,sessionId=ownerSession()?.sessionId;
+  return ()=>{
+    if(epoch!==ownerViewEpoch||!sessionId||ownerSession()?.sessionId!==sessionId)return false;
+    return canReadOwnerDeck();
+  };
+}
+function armOwnerExpiry(){
+  if(ownerExpiryTimer){clearTimeout(ownerExpiryTimer);ownerExpiryTimer=0;}
+  if(!ownerProjectFromServer)return;
+  if(!canReadOwnerDeck())return;
+  const receipt=ownerSession();
+  const deadline=Math.min(Date.parse(receipt.expiresAt),Number(supabaseSession().expires_at));
+  const timer=setTimeout(()=>{
+    if(ownerExpiryTimer===timer)checkDisplayedOwner();
+  },Math.max(0,deadline-Date.now()));
+  ownerExpiryTimer=timer;
+}
+function checkDisplayedOwner(){
+  if(ownerProjectFromServer)armOwnerExpiry();
+}
+function signOutOwner(){
+  const token=supabaseSession()?.access_token;
+  clearSupabaseSession();clearSession();show('login');$('loginPass').value='';configureOwnerLogin();
+  history.replaceState({surface:'owner',projectId},'',`owner.html?project=${encodeURIComponent(projectId)}&view=login${source==='engine'?'&source=engine':''}`);
+  if(token)return fetch(SUPABASE_URL+'/auth/v1/logout?scope=local',{method:'POST',headers:supaHeaders(token)}).catch(()=>{});
+}
 function supaHeaders(token=''){return ownerSupabase.headers(token);}
 function supabaseSession(){return ownerSupabase.readSession();}
 function saveSupabaseSession(data){return ownerSupabase.saveSession(data);}
@@ -734,8 +769,8 @@ function clearLocalRecoveryFailures(){sessionStorage.removeItem(LOCAL_RECOVERY_F
 function localRecoveryWaitMs(){return Math.max(0,Number(localRecoveryFailures().lockedUntil||0)-Date.now());}
 function recordLocalRecoveryFailure(){const row=localRecoveryFailures(),count=Number(row.count||0)+1,locked=count>=LOCAL_RECOVERY_MAX_FAILURES;saveLocalRecoveryFailures({count:locked?0:count,lockedUntil:locked?Date.now()+LOCAL_RECOVERY_LOCK_MS:0});return {locked,remaining:locked?0:Math.max(0,LOCAL_RECOVERY_MAX_FAILURES-count)};}
 async function validProjectAdminRecoveryPin(pin){const entered=String(pin||'').trim();if(!entered)return false;if(entered===DEFAULT_PROJECT_ADMIN_RECOVERY_PIN)return true;const scoped=await getSetting(`projectAdminPin:${projectId}`);return !!scoped&&entered===String(scoped);}
-function renderLocalRecovery(){const wait=localRecoveryWaitMs();show('localRecovery');$('recoveryLogin').value=String($('loginUser').value||project?.ownerAccess?.credential?.login||project?.ownerAccess?.ownerEmail||'').trim();$('recoveryPin').value='';$('localNewPassword').value='';$('localConfirmPassword').value='';$('localRecoveryError').textContent=wait?`Recovery is temporarily locked. Try again in ${Math.ceil(wait/60000)} minute(s).`:'';$('saveLocalRecovery').disabled=wait>0;}
-async function resetLocalOwnerCredential(){const wait=localRecoveryWaitMs();if(wait)throw new Error(`Recovery is temporarily locked. Try again in ${Math.ceil(wait/60000)} minute(s).`);const login=String($('recoveryLogin').value||'').trim(),pin=String($('recoveryPin').value||''),a=String($('localNewPassword').value||''),b=String($('localConfirmPassword').value||'');if(!login)throw new Error('Enter the owner email or login.');if(!passwordStrongEnough(a))throw new Error('Use at least 10 characters for the new password.');if(a!==b)throw new Error('The new passwords do not match.');const currentLogin=String(project?.ownerAccess?.credential?.login||project?.ownerAccess?.ownerEmail||'').trim().toLowerCase(),recoveryMatches=await validProjectAdminRecoveryPin(pin)&&(!currentLogin||login.toLowerCase()===currentLogin);if(!recoveryMatches){const f=recordLocalRecoveryFailure();throw new Error(f.locked?'Too many incorrect recovery attempts. Recovery is locked for 5 minutes.':`The recovery details did not match this business. ${f.remaining} attempt(s) remain.`);}const now=new Date().toISOString(),salt=random().slice(0,24),prior=project.ownerAccess?.credential||{};project.ownerAccess=project.ownerAccess&&typeof project.ownerAccess==='object'?project.ownerAccess:{};project.ownerAccess.enabled=true;project.ownerAccess.status='active';project.ownerAccess.credential={login:prior.login||login,salt,passwordHash:await sha256(salt+':'+a),hashAlgorithm:'SHA-256-SALTED-LOCAL-PROTOTYPE',testMode:!!prior.testMode,createdAt:prior.createdAt||now,changedAt:now,recoveredAt:now,recoveryMode:'exact-vessel-project-admin'};project.ownerAccess.updatedAt=now;await putProject(project);clearLocalRecoveryFailures();clearSession('owner-password-recovered');ownerWitness('owner-password-recovered',null,{scopeVerified:true,recoveryMode:'exact-vessel-project-admin'});show('login');$('loginUser').value=project.ownerAccess.credential.login;$('loginPass').value='';configureOwnerLogin();$('loginError').innerHTML='<div class="recovery-success">Password reset complete for this business only. Sign in with the new password.</div>';}
+function renderLocalRecovery(){if(!project||ownerProjectFromServer)return;const wait=localRecoveryWaitMs();show('localRecovery');$('recoveryLogin').value=String($('loginUser').value||project?.ownerAccess?.credential?.login||project?.ownerAccess?.ownerEmail||'').trim();$('recoveryPin').value='';$('localNewPassword').value='';$('localConfirmPassword').value='';$('localRecoveryError').textContent=wait?`Recovery is temporarily locked. Try again in ${Math.ceil(wait/60000)} minute(s).`:'';$('saveLocalRecovery').disabled=wait>0;}
+async function resetLocalOwnerCredential(){if(!project||ownerProjectFromServer)throw new Error('Use password recovery for your online owner account.');const wait=localRecoveryWaitMs();if(wait)throw new Error(`Recovery is temporarily locked. Try again in ${Math.ceil(wait/60000)} minute(s).`);const login=String($('recoveryLogin').value||'').trim(),pin=String($('recoveryPin').value||''),a=String($('localNewPassword').value||''),b=String($('localConfirmPassword').value||'');if(!login)throw new Error('Enter the owner email or login.');if(!passwordStrongEnough(a))throw new Error('Use at least 10 characters for the new password.');if(a!==b)throw new Error('The new passwords do not match.');const currentLogin=String(project?.ownerAccess?.credential?.login||project?.ownerAccess?.ownerEmail||'').trim().toLowerCase(),recoveryMatches=await validProjectAdminRecoveryPin(pin)&&(!currentLogin||login.toLowerCase()===currentLogin);if(!recoveryMatches){const f=recordLocalRecoveryFailure();throw new Error(f.locked?'Too many incorrect recovery attempts. Recovery is locked for 5 minutes.':`The recovery details did not match this business. ${f.remaining} attempt(s) remain.`);}const now=new Date().toISOString(),salt=random().slice(0,24),prior=project.ownerAccess?.credential||{};project.ownerAccess=project.ownerAccess&&typeof project.ownerAccess==='object'?project.ownerAccess:{};project.ownerAccess.enabled=true;project.ownerAccess.status='active';project.ownerAccess.credential={login:prior.login||login,salt,passwordHash:await sha256(salt+':'+a),hashAlgorithm:'SHA-256-SALTED-LOCAL-PROTOTYPE',testMode:!!prior.testMode,createdAt:prior.createdAt||now,changedAt:now,recoveredAt:now,recoveryMode:'exact-vessel-project-admin'};project.ownerAccess.updatedAt=now;await putProject(project);clearLocalRecoveryFailures();clearSession('owner-password-recovered');ownerWitness('owner-password-recovered',null,{scopeVerified:true,recoveryMode:'exact-vessel-project-admin'});show('login');$('loginUser').value=project.ownerAccess.credential.login;$('loginPass').value='';configureOwnerLogin();$('loginError').innerHTML='<div class="recovery-success">Password reset complete for this business only. Sign in with the new password.</div>';}
 async function resolveLiveOwnerState(){verifiedOwnerBinding=null;await exchangeHashSession();let ss=await currentSupabaseSession();if(!ss?.access_token)return {state:'signed_out'};const user=await fetchSupabaseUser(ss);if(!user){clearSupabaseSession();return {state:'signed_out'};}const proof=await verifySupabaseMembership();if(!proof.ok)return {state:'denied',reason:proof.reason};const forceSetup=ss.flow_type==='recovery'||!passwordSetupComplete(user);if(forceSetup)return {state:'password_setup',user,proof,recovery:ss.flow_type==='recovery'};const entered=await enterSupabaseOwner();return entered.ok?{state:'ready',entered,user,proof}:{state:'denied',reason:entered.reason};}
 async function verifySupabaseMembership(){
   const s=await currentSupabaseSession();
@@ -753,15 +788,40 @@ async function verifySupabaseMembership(){
   if(!m?.id||m.vessel_id!==v.id||m.user_id!==user.id||m.role!=='project_owner'||m.active!==true||m.revoked_at!==null)return {ok:false,reason:'owner_membership_denied'};
   assertOwnerUnlocked();return {ok:true,vessel:v,membership:m,session:s,user};
 }
-async function ownerWatchRpc(name,body){const proof=await verifySupabaseMembership();if(!proof.ok||!proof.session?.access_token)throw new Error('A live exact-vessel owner identity is required. Local recovery cannot report to Fleet Watch.');const r=await fetch(SUPABASE_URL+'/rest/v1/rpc/'+name,{method:'POST',headers:{...supaHeaders(proof.session.access_token),Accept:'application/json'},body:JSON.stringify(body)});if(!r.ok){let message='Fleet Watch refused the report. No operational truth changed.';try{const problem=await r.json();message=problem?.message||problem?.hint||message;}catch(_){}throw new Error(message.replaceAll('_',' '));}return r.json();}
-async function readOwnWatchReport(){return ownerWatchRpc('vessel_read_own_watch_report',{p_project_id:projectId});}
-async function publishOwnWatchReport(currentWork,unresolvedIssues,issueSummary){return ownerWatchRpc('vessel_publish_watch_report',{p_project_id:projectId,p_current_work:String(currentWork||'').trim(),p_unresolved_issues:Math.max(0,Math.floor(Number(unresolvedIssues)||0)),p_issue_summary:String(issueSummary||'').trim().slice(0,500),p_source_label:'OWNER CONTROL CENTER',p_detail:{build:window.__blackFlagPageRelease.build,surface:'owner-control-center',project_id:projectId}});}
+async function ownerWatchRpc(name,body,current=ownerViewGuard()){
+  if(!current())throw new Error('This owner view has ended.');
+  const proof=await verifySupabaseMembership();
+  if(!current())throw new Error('This owner view has ended.');
+  if(!proof.ok||!proof.session?.access_token)throw new Error('A live exact-vessel owner identity is required. Local recovery cannot report to Fleet Watch.');
+  const response=await fetch(SUPABASE_URL+'/rest/v1/rpc/'+name,{
+    method:'POST',headers:{...supaHeaders(proof.session.access_token),Accept:'application/json'},body:JSON.stringify(body)
+  });
+  if(!response.ok){
+    let message='Fleet Watch refused the report. No operational truth changed.';
+    try{const problem=await response.json();message=problem?.message||problem?.hint||message;}catch(_){}
+    throw new Error(message.replaceAll('_',' '));
+  }
+  return response.json();
+}
+async function readOwnWatchReport(current=ownerViewGuard()){return ownerWatchRpc('vessel_read_own_watch_report',{p_project_id:projectId},current);}
+async function publishOwnWatchReport(currentWork,unresolvedIssues,issueSummary,current=ownerViewGuard()){return ownerWatchRpc('vessel_publish_watch_report',{p_project_id:projectId,p_current_work:String(currentWork||'').trim(),p_unresolved_issues:Math.max(0,Math.floor(Number(unresolvedIssues)||0)),p_issue_summary:String(issueSummary||'').trim().slice(0,500),p_source_label:'OWNER CONTROL CENTER',p_detail:{build:window.__blackFlagPageRelease.build,surface:'owner-control-center',project_id:projectId}},current);}
 async function enterSupabaseOwner(){
   verifiedOwnerBinding=null;
   const proof=await verifySupabaseMembership();if(!proof.ok)return proof;
-  if(project?.id!==projectId)return {ok:false,reason:'vessel_denied'};
+  if(project&&project.id!==projectId)return {ok:false,reason:'vessel_denied'};
   const now=Date.now(),tokenExpiry=Number(proof.session.expires_at);
   if(!Number.isFinite(tokenExpiry)||tokenExpiry<=now)return {ok:false,reason:'no_session'};
+  assertOwnerUnlocked();
+  if(!project){
+    // Fresh devices need no Engine visit or local registry. Only the existing
+    // authenticated exact-vessel membership check can supply this identity.
+    // Keep it in this document: it is not a complete local business workspace.
+    project={id:proof.vessel.project_id,namespace:proof.vessel.namespace,
+      name:String(proof.vessel.display_name||'Business'),
+      ownerAccess:{identityProvider:'supabase',status:'verified',capabilities:[]}};
+    ownerProjectFromServer=true;
+    orders=[];
+  }
   const s={schema:'dark-sky-owner-session-v3-supabase',projectId,
     namespace:proof.vessel.namespace,authority:'project_owner',identityProvider:'supabase',
     vesselId:proof.vessel.id,userId:proof.user.id,
@@ -772,23 +832,55 @@ async function enterSupabaseOwner(){
   verifiedOwnerBinding=Object.freeze({sessionId:s.sessionId,projectId,vesselId:s.vesselId,userId:s.userId,
     serverNamespace:s.namespace,localNamespace:String(project.namespace||''),accessToken:proof.session.access_token});
   ownerWitness('supabase-session-started',s,{scopeVerified:true,vesselId:proof.vessel.id});
+  setNames();
   return {ok:true,s};
 }
 function renderPasswordSetup(recovery=false){show('passwordSetup');$('newPassword').value='';$('confirmPassword').value='';$('passwordSetupError').textContent='';$('passwordSetupCopy').textContent=recovery?'Choose a new password to recover this owner account. Vessel ownership remains unchanged.':'Your identity and exact-vessel ownership are verified. Create a password to continue.';$('savePassword').textContent=recovery?'SAVE NEW PASSWORD & CONTINUE':'CREATE PASSWORD & CONTINUE';}
 function capabilities(){const a=project?.ownerAccess?.capabilities;return new Set(Array.isArray(a)&&a.length?a:['orders','customers','products','pricing','branding','kiosks','deployments','staff','reporting','notifications']);}
 async function ensureIkeTestCredential(){if(projectId!=='ikes-wood-signs')return;if(!project.ownerAccess||typeof project.ownerAccess!=='object')project.ownerAccess={};project.ownerAccess.enabled=true;let replace=!project.ownerAccess.credential;const c=project.ownerAccess.credential;if(c?.testMode&&c?.login==='joe'&&c?.salt&&c?.passwordHash){try{replace=(await sha256(c.salt+':4353'))===c.passwordHash}catch(_){}}if(replace){const salt=random().slice(0,24);project.ownerAccess.credential={login:'joe',salt,passwordHash:await sha256(salt+':8642'),hashAlgorithm:'SHA-256-SALTED-LOCAL-PROTOTYPE',testMode:true,createdAt:c?.createdAt||new Date().toISOString(),changedAt:new Date().toISOString()};project.ownerAccess.status='active';await putProject(project);}}
 async function verify(login,password){const c=project?.ownerAccess?.credential;if(!c)return false;if(String(login||'').trim().toLowerCase()!==String(c.login||'').trim().toLowerCase())return false;if(c.salt&&c.passwordHash)return await sha256(c.salt+':'+String(password||''))===c.passwordHash;if(c.password!=null)return String(c.password)===String(password||'');return false;}
-function setNames(){const n=project?.name||"Ike's Wood Signs";$('safeName').textContent=n;$('loginName').textContent=n;$('passwordSetupName').textContent=n;$('localRecoveryName').textContent=n;$('portalName').textContent=n;$('failureName').textContent=n;$('mProject').textContent=String(project?.projectCode||projectId||'BUSINESS').toUpperCase();}
+function setNames(){const n=project?.name||'Business Owner Access';$('safeName').textContent=n;$('loginName').textContent=n;$('passwordSetupName').textContent=n;$('localRecoveryName').textContent=n;$('portalName').textContent=n;$('failureName').textContent=n;$('mProject').textContent=String(project?.projectCode||projectId||'BUSINESS').toUpperCase();}
 function ownerActive(){return project?.ownerAccess?.enabled!==false && project?.ownerAccess?.status==='active';}
 function bindEngineButtons(){for(const id of ['returnEngineFromLogin','returnEngine','failureEngine']){if(source==='engine')$(id)?.classList.remove('hidden');$(id)?.addEventListener('click',()=>location.replace(engineUrl()));}}
-function modules(){const caps=capabilities();const all=[['watch','Fleet Report','Report current work and issues to the read-only Admiral watch'],['orders','Orders','Review customer orders'],['pricing','Pricing','Manage customer pricing rules'],['features','Features','Choose the business features customers can use'],['branding','Branding','Manage how customers see your business'],...(projectId==='ikes-wood-signs'?[['countercraft','Shop inbox','Customer requests, review and production'],['references','Lettering Styles','Review and manage production lettering styles']]:[]),['services','Fleet Services','See included and available Fleet capabilities'],['settings','Settings','Owner access and account controls']];return all.filter(([k])=>['watch','features','services','settings','references','countercraft'].includes(k)||caps.has(k));}
-async function fleetServiceCatalog(){const ss=await currentSupabaseSession();if(!ss?.access_token)return [];const proof=await verifySupabaseMembership();if(!proof.ok)return [];const eh={...supaHeaders(ss.access_token),Accept:'application/json'};const er=await fetch(SUPABASE_URL+'/rest/v1/fleet_service_entitlements?select=id,commercial_mode,status,fee_label,capability_id&vessel_id=eq.'+encodeURIComponent(proof.vessel.id),{headers:eh});if(!er.ok)return [];const ents=await er.json();if(!Array.isArray(ents)||!ents.length)return [];const [cr,rr]=await Promise.all([fetch(SUPABASE_URL+'/rest/v1/fleet_capabilities?select=id,capability_key,display_name,owner_summary,lifecycle,operation_mode',{headers:eh}),fetch(SUPABASE_URL+'/rest/v1/fleet_service_requests?select=id,capability_id,status,created_at&vessel_id=eq.'+encodeURIComponent(proof.vessel.id)+'&status=in.(requested,reviewing,approved)',{headers:eh})]);if(!cr.ok)return [];const caps=await cr.json(),reqs=rr.ok?await rr.json():[],by=new Map(caps.map(c=>[c.id,c])),rq=new Map((Array.isArray(reqs)?reqs:[]).map(r=>[r.capability_id,r]));return ents.map(e=>({...e,request:rq.get(e.capability_id)||null,capability:by.get(e.capability_id)})).filter(x=>x.capability).sort((a,b)=>String(a.capability.display_name).localeCompare(String(b.capability.display_name)));}
-async function requestFleetService(entitlement){const ss=await currentSupabaseSession();if(!ss?.access_token)throw new Error('Sign in again to request this service.');const proof=await verifySupabaseMembership();if(!proof.ok)throw new Error('This vessel could not be verified.');const r=await fetch(SUPABASE_URL+'/rest/v1/fleet_service_requests',{method:'POST',headers:{...supaHeaders(ss.access_token),Prefer:'return=minimal'},body:JSON.stringify({vessel_id:proof.vessel.id,capability_id:entitlement.capability_id,status:'requested'})});if(!r.ok)throw new Error('Service request could not be recorded.');return true;}
+function modules(){const caps=capabilities();const all=[['watch','Fleet Report','Report current work and issues to the read-only Admiral watch'],['orders','Orders','Review customer orders'],['pricing','Pricing','Manage customer pricing rules'],['features','Features','Choose the business features customers can use'],['branding','Branding','Manage how customers see your business'],...(projectId==='ikes-wood-signs'?[['countercraft','Shop inbox','Customer requests, review and production'],['references','Lettering Styles','Review and manage production lettering styles']]:[]),['services','Fleet Services','See included and available Fleet capabilities'],['settings','Settings','Owner access and account controls']];return all.filter(([k])=>ownerProjectFromServer?['watch','services','settings','countercraft'].includes(k):['watch','features','services','settings','references','countercraft'].includes(k)||caps.has(k));}
+async function fleetServiceCatalog(current=ownerViewGuard()){
+  if(!current())return [];
+  const proof=await verifySupabaseMembership();
+  if(!current()||!proof.ok||!proof.session?.access_token)return [];
+  const headers={...supaHeaders(proof.session.access_token),Accept:'application/json'};
+  const vessel=encodeURIComponent(proof.vessel.id);
+  const response=await fetch(SUPABASE_URL+'/rest/v1/fleet_service_entitlements?select=id,commercial_mode,status,fee_label,capability_id&vessel_id=eq.'+vessel,{headers});
+  if(!response.ok)throw new Error('The service list could not be loaded.');
+  const entitlements=await response.json();
+  if(!current()||!Array.isArray(entitlements)||!entitlements.length)return [];
+  const [catalog,requests]=await Promise.all([
+    fetch(SUPABASE_URL+'/rest/v1/fleet_capabilities?select=id,capability_key,display_name,owner_summary,lifecycle,operation_mode',{headers}),
+    fetch(SUPABASE_URL+'/rest/v1/fleet_service_requests?select=id,capability_id,status,created_at&vessel_id=eq.'+vessel+'&status=in.(requested,reviewing,approved)',{headers})
+  ]);
+  if(!current())return [];
+  if(!catalog.ok||!requests.ok)throw new Error('The service list could not be loaded.');
+  const [capabilities,activeRequests]=await Promise.all([catalog.json(),requests.json()]);
+  const byId=new Map(capabilities.map(c=>[c.id,c])),requestByCapability=new Map(activeRequests.map(r=>[r.capability_id,r]));
+  return entitlements.map(e=>({...e,request:requestByCapability.get(e.capability_id)||null,capability:byId.get(e.capability_id)}))
+    .filter(e=>e.capability).sort((a,b)=>String(a.capability.display_name).localeCompare(String(b.capability.display_name)));
+}
+async function requestFleetService(entitlement,current=ownerViewGuard()){
+  if(!current())throw new Error('Sign in again to request this service.');
+  const proof=await verifySupabaseMembership();
+  if(!current()||!proof.ok||!proof.session?.access_token)throw new Error('This vessel could not be verified.');
+  const r=await fetch(SUPABASE_URL+'/rest/v1/fleet_service_requests',{
+    method:'POST',headers:{...supaHeaders(proof.session.access_token),Prefer:'return=minimal'},
+    body:JSON.stringify({vessel_id:proof.vessel.id,capability_id:entitlement.capability_id,status:'requested'})
+  });
+  if(!r.ok)throw new Error('Service request could not be recorded.');
+  return true;
+}
 function serviceStatusLabel(e){if(e.status==='enabled')return 'ACTIVE';if(e.status==='entitled'&&e.commercial_mode==='standard')return 'INCLUDED WITH FLEET';if(e.status==='entitled'&&e.commercial_mode==='paid')return 'APPROVED UPGRADE';if(e.status==='pending_payment')return 'PENDING PAYMENT';if(e.request?.status==='approved')return 'APPROVED';if(e.request?.status==='requested'||e.request?.status==='reviewing'||e.status==='requested')return 'REQUESTED';if(e.commercial_mode==='standard')return 'INCLUDED WITH FLEET';return 'AVAILABLE FOR UPGRADE';}
-function renderPortal(){if(!canReadOwnerDeck())return;show('portal');$('portal').classList.add('workhorse-owner');renderBusinessNav();$('businessHeaderLogo').innerHTML=window.BlackFlagBusinessDeck.logo(project);$('portal').classList.remove('subview');$('mOrders').textContent=orders.length;$('mOwner').textContent=String(project?.ownerAccess?.status||'active').toUpperCase();$('modules').innerHTML=modules().map(([k,t,d])=>`<button class="module" data-module="${k}"><small>${k.toUpperCase()}</small><h3>${esc(t)}</h3><p>${esc(d)}</p><strong>OPEN →</strong></button>`).join('');document.querySelectorAll('[data-module]').forEach(b=>b.addEventListener('click',()=>openOwnerView(b.dataset.module)));returnToBridgeHome(false);if(engineTrialLaunch&&!trialViewOpened){trialViewOpened=true;openOwnerView('countercraft');}}function returnToBridgeHome(animate=true){if(!canReadOwnerDeck())return;ownerViewEpoch++;renderBusinessHome();markBusinessNav('portal');$('portal').classList.remove('subview');$('workspace').classList.add('hidden');$('workspace').classList.remove('stage-in');$('workspace').innerHTML='';$('ownerHome').classList.remove('hidden','stage-out');if(animate){$('ownerHome').classList.add('stage-in');setTimeout(()=>$('ownerHome').classList.remove('stage-in'),260);}if(projectId==='ikes-wood-signs'){$('vesselStrip').classList.remove('hidden');$('ownerHomeNote').classList.remove('hidden');}history.replaceState({surface:'owner',projectId,ownerView:'portal'},'',`owner.html?project=${encodeURIComponent(projectId)}&view=portal${source==='engine'?'&source=engine':''}`);window.BlackFlagViewport?.enter({key:'owner:'+projectId,reason:'new'});}
+function renderPortal(){if(!canReadOwnerDeck())return;armOwnerExpiry();show('portal');$('portal').classList.add('workhorse-owner');renderBusinessNav();$('businessHeaderLogo').innerHTML=window.BlackFlagBusinessDeck.logo(project);$('portal').classList.remove('subview');$('mOrders').textContent=ownerProjectFromServer?'—':orders.length;$('mOwner').textContent=String(project?.ownerAccess?.status||'active').toUpperCase();$('modules').innerHTML=modules().map(([k,t,d])=>`<button class="module" data-module="${k}"><small>${k.toUpperCase()}</small><h3>${esc(t)}</h3><p>${esc(d)}</p><strong>OPEN →</strong></button>`).join('');document.querySelectorAll('[data-module]').forEach(b=>b.addEventListener('click',()=>openOwnerView(b.dataset.module)));returnToBridgeHome(false);if(engineTrialLaunch&&!trialViewOpened){trialViewOpened=true;openOwnerView('countercraft');}}function returnToBridgeHome(animate=true){if(!canReadOwnerDeck())return;ownerViewEpoch++;renderBusinessHome();markBusinessNav('portal');$('portal').classList.remove('subview');$('workspace').classList.add('hidden');$('workspace').classList.remove('stage-in');$('workspace').innerHTML='';$('ownerHome').classList.remove('hidden','stage-out');if(animate){$('ownerHome').classList.add('stage-in');setTimeout(()=>$('ownerHome').classList.remove('stage-in'),260);}if(projectId==='ikes-wood-signs'&&!ownerProjectFromServer){$('vesselStrip').classList.remove('hidden');$('ownerHomeNote').classList.remove('hidden');}history.replaceState({surface:'owner',projectId,ownerView:'portal'},'',`owner.html?project=${encodeURIComponent(projectId)}&view=portal${source==='engine'?'&source=engine':''}`);window.BlackFlagViewport?.enter({key:'owner:'+projectId,reason:'new'});}
 function canReadOwnerDeck(){
   const s=ownerSession(),ok=sessionValid(s);
   if(!ok){
+    if(ownerProjectFromServer)clearSession('server-owner-recheck-needed');
     ownerViewEpoch++;show('login');configureOwnerLogin();
     const expires=Date.parse(s?.expiresAt||'');
     $('loginError').textContent=Number.isFinite(expires)&&expires<=Date.now()
@@ -799,7 +891,15 @@ function canReadOwnerDeck(){
 }
 function renderBusinessNav(){const allowed=modules();const links=[['portal','Today'],...['countercraft','orders','pricing','references'].map(k=>allowed.find(m=>m[0]===k)).filter(Boolean)];$('businessDeckNav').innerHTML=links.map(([k,t])=>`<button type="button" data-owner-nav="${k}" aria-pressed="${k==='portal'}">${esc(t)}</button>`).join('');$('businessDeckNav').querySelectorAll('[data-owner-nav]').forEach(b=>b.onclick=()=>{if(!canReadOwnerDeck())return;b.dataset.ownerNav==='portal'?returnToBridgeHome(true):openOwnerView(b.dataset.ownerNav);});}
 function markBusinessNav(k){$('businessDeckNav')?.querySelectorAll('[data-owner-nav]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.ownerNav===k)));}
-function renderBusinessHome(){if(!window.BlackFlagBusinessDeck)return;window.BlackFlagBusinessDeck.mountHome({container:$('businessDeckHome'),project,orders,modules:modules(),readError:ownerOrderReadError,onOpen:openOwnerView,onOrders:tab=>{Object.assign(orderDeckState,{tab,query:'',page:1});openOwnerView('orders');}});}
+function renderBusinessHome(){
+  if(ownerProjectFromServer){
+    const home=$('businessDeckHome');
+    home.innerHTML=`<section class="bd-home"><div class="bd-hero"><div class="bd-hero-copy"><span class="bd-kicker">OWNER WORKSPACE</span><h2>${esc(project.name)}</h2><p>Your owner access is verified for this business. Choose an online tool below.</p></div></div><p class="owner-home-note">Orders, pricing and branding saved on another device are not available here. Open that device to work with those local records.</p><div class="bd-tool-grid">${modules().map(([key,title,detail])=>`<button type="button" class="bd-tool" data-owner-online="${esc(key)}"><span><strong>${esc(title)}</strong><small>${esc(detail)}</small></span><b aria-hidden="true">→</b></button>`).join('')}</div></section>`;
+    home.querySelectorAll('[data-owner-online]').forEach(button=>button.onclick=()=>openOwnerView(button.dataset.ownerOnline));
+    return;
+  }
+  if(!window.BlackFlagBusinessDeck)return;window.BlackFlagBusinessDeck.mountHome({container:$('businessDeckHome'),project,orders,modules:modules(),readError:ownerOrderReadError,onOpen:openOwnerView,onOrders:tab=>{Object.assign(orderDeckState,{tab,query:'',page:1});openOwnerView('orders');}});
+}
 
 function headwayBackupPanel(){
  const host=$('bdOrders'),H=window.BlackFlagHeadway;if(!host||!H)return;
@@ -860,15 +960,18 @@ function focusStyleFoundry(styleId,message,evidenceId){requestAnimationFrame(()=
 function rerenderFoundry(styleId,message,evidenceId){renderWorkspace('references');focusStyleFoundry(styleId,message,evidenceId);}
 function estimatedSegments(text){const chars=[...String(text||'')].filter(ch=>!(/\s/.test(ch)));if(!chars.length)return[];const left=3,right=97,step=(right-left)/chars.length,occ={};return chars.map((ch,i)=>{occ[ch]=(occ[ch]||0)+1;return {char:ch,occurrence:occ[ch],x0:left+i*step,x1:left+(i+1)*step,confidence:0.42};});}
 async function renderWorkspace(k){
+const current=ownerViewGuard();
+if(!current())return;
 if(k==='countercraft'){
  if(projectId!=='ikes-wood-signs'||!canReadOwnerDeck())return;
  const cfg=window.CountercraftConfig,trial=!!engineTrialLaunch;
  let scope=cfg.checked({...cfg.activeLocation()||cfg.scope,...engineTrialLaunch?.scope,mode:trial?'sea_trial':'live'}),mounted=null;
  workspace('Ike’s shop inbox','Requests and devices are kept within the selected location.',`<section class="cc-card"><label>Shop or mobile location code<input id="ccOwnerLocation" maxlength="80" pattern="[-a-zA-Z0-9_]+" value="${esc(scope.deploymentId)}" ${trial?'readonly':''}></label><p>${trial?'Controlled trial opened by Engine. Use synthetic customer details.':'Use a stable code, such as shop-main or market-van. Each location has its own prices, devices and requests.'}</p><button id="ccOpenLocation" class="btn secondary">OPEN LOCATION</button><p id="ccLocationState" role="status"></p></section><div id="ccLocationMount"></div>`);
- const rates=normalizeRates((await config())?.ikeSpeciesRates||[]);
+ const rates=normalizeRates((ownerProjectFromServer?null:await config())?.ikeSpeciesRates||[]);
+ if(!current())return;
  function openLocation(){
-  if(!canReadOwnerDeck())return;
-  try{scope=cfg.checked({...scope,deploymentId:$('ccOwnerLocation').value.trim()});mounted?.close();const box=document.createElement('div');$('ccLocationMount').replaceChildren(box);$('ccLocationState').textContent=(trial?'Controlled trial · ':'Shop · ')+scope.deploymentId;mounted=window.CountercraftOwner.mount({container:box,scope,guard:()=>projectId==='ikes-wood-signs'&&sessionValid(ownerSession()),getBearer:async()=>(await currentSupabaseSession())?.access_token||'',initialRates:rates});}
+  if(!current())return;
+  try{scope=cfg.checked({...scope,deploymentId:$('ccOwnerLocation').value.trim()});mounted?.close();const box=document.createElement('div');$('ccLocationMount').replaceChildren(box);$('ccLocationState').textContent=(trial?'Controlled trial · ':'Shop · ')+scope.deploymentId;mounted=window.CountercraftOwner.mount({container:box,scope,guard:current,getBearer:async()=>{const auth=current()?await currentSupabaseSession():null;return current()?auth?.access_token||'':'';},initialRates:rates});}
   catch(e){$('ccLocationState').textContent=e.message;}
  }
  $('ccOpenLocation').onclick=openLocation;openLocation();return;
@@ -876,11 +979,13 @@ if(k==='countercraft'){
 
 if(k==='watch'){
   let latest=null,live=true;
-  try{latest=await readOwnWatchReport();}catch(_){live=false;}
+  try{latest=await readOwnWatchReport(current);}catch(_){live=false;}
+  if(!current())return;
   const record=latest?.record||latest?.records?.[0]||latest||{},reportedAt=record?.reported_at?new Date(record.reported_at).toLocaleString():'Never reported';
   workspace('Fleet Report','Publish a narrow operational heartbeat for this business. Admiral can read it but cannot change it.',`<div class="watch-report"><div id="watchReportProof" class="watch-report-proof ${record?.reported_at?'is-fresh':''}"><strong>${record?.reported_at?'LAST VERIFIED REPORT':'LIVE IDENTITY REQUIRED'}</strong><br>${esc(record?.reported_at?reportedAt:live?'No report has been published for this vessel.':'Sign in with the live owner account. Local recovery remains view-only for Fleet reporting.')}</div><div class="watch-report-grid"><label>Current work<input data-bf-trim="boundary" id="watchCurrentWork" required minlength="3" maxlength="160" value="${esc(record?.current_work||'')}" placeholder="Required: what is the business working on now?"></label><label>Unresolved issues<input id="watchIssues" type="number" min="0" step="1" value="${Number.isFinite(Number(record?.unresolved_issues))?Math.max(0,Number(record.unresolved_issues)):0}"></label></div><label>Issue summary<textarea data-bf-trim="boundary" id="watchIssueSummary" maxlength="500" placeholder="Name blockers or leave blank when there are none.">${esc(record?.issue_summary||'')}</textarea></label><div class="watch-report-actions"><button id="publishWatchReport" class="btn primary" ${live?'':'disabled'}>PUBLISH VERIFIED REPORT</button><button id="refreshWatchReport" class="btn ghost">REFRESH FROM FLEET CORE</button></div><div id="watchReportState" class="save-state">${live?'Current work is required. Nothing is sent until the saved report is read back and verified.':'Reporting is locked until live owner identity is verified.'}</div></div>`);
-  $('refreshWatchReport').onclick=()=>renderWorkspace('watch');
+  $('refreshWatchReport').onclick=()=>{if(current())return openOwnerView('watch');};
   $('publishWatchReport').onclick=async()=>{
+    if(!current())return;
     const button=$('publishWatchReport'),state=$('watchReportState'),proof=$('watchReportProof'),currentInput=$('watchCurrentWork');
     const currentWork=String(currentInput.value||'').trim();
     state.classList.remove('is-fresh');
@@ -893,8 +998,10 @@ if(k==='watch'){
       button.disabled=true;
       button.textContent='VERIFYING & PUBLISHING…';
       state.textContent='Saving through Supabase, then reading the report back from Fleet Core…';
-      const result=await publishOwnWatchReport(currentWork,$('watchIssues').value,$('watchIssueSummary').value);
-      const latestSaved=await readOwnWatchReport();
+      const result=await publishOwnWatchReport(currentWork,$('watchIssues').value,$('watchIssueSummary').value,current);
+      if(!current())return;
+      const latestSaved=await readOwnWatchReport(current);
+      if(!current())return;
       const saved=latestSaved?.record||latestSaved?.records?.[0]||latestSaved||{};
       if(!result?.report_id||!saved?.reported_at||String(saved?.current_work||'').trim()!==currentWork){
         throw new Error('REPORT VERIFICATION FAILED · Fleet Core did not return the same Current work. No success was declared.');
@@ -907,6 +1014,7 @@ if(k==='watch'){
       button.disabled=false;
       button.textContent='PUBLISH UPDATED REPORT';
     }catch(error){
+      if(!current())return;
       state.textContent=error?.message||'The report was refused. No operational truth changed.';
       button.disabled=false;
       button.textContent='PUBLISH VERIFIED REPORT';
@@ -915,7 +1023,7 @@ if(k==='watch'){
   return;
 }
 if(k==='orders'){renderOrderDeck();return;}
-if(k==='pricing'){const c=await config();if(projectId==='ikes-wood-signs'){const rates=normalizeRates(c.ikeSpeciesRates);workspace('Pricing','Set the private price per linear foot by wood species. Customers see one simple final price.',`<div class="rates">${rates.map(r=>`<label class="rate"><strong>${esc(r.name)}</strong><input data-rate="${r.id}" type="number" min="0" step="0.01" value="${r.rate||''}" placeholder="Rate / ft"><span class="enabled"><input data-enabled="${r.id}" type="checkbox" ${r.enabled?'checked':''}> Active</span></label>`).join('')}</div><button id="savePricing" class="btn primary" style="margin-top:14px">SAVE SPECIES PRICING</button><div id="savePricingState" class="save-state">No unsaved changes.</div>`);$('savePricing').onclick=async()=>{const next={...c,ikeSpeciesRates:rates.map(r=>({...r,rate:Math.max(0,Number(document.querySelector(`[data-rate="${r.id}"]`)?.value||0)),enabled:!!document.querySelector(`[data-enabled="${r.id}"]`)?.checked}))};await setSetting('businessConfig:'+projectId,next);$('savePricingState').textContent='Species pricing saved. This state remains visible.';};window.BlackFlagBusinessDeck.mountPriceGuide({container:$('workspace'),rates});return;}workspace('Pricing','Manage project pricing.',`<p class="muted">Pricing controls are configured per project.</p>`);return;}
+if(k==='pricing'){const c=await config();if(!current())return;if(projectId==='ikes-wood-signs'){const rates=normalizeRates(c.ikeSpeciesRates);workspace('Pricing','Set the private price per linear foot by wood species. Customers see one simple final price.',`<div class="rates">${rates.map(r=>`<label class="rate"><strong>${esc(r.name)}</strong><input data-rate="${r.id}" type="number" min="0" step="0.01" value="${r.rate||''}" placeholder="Rate / ft"><span class="enabled"><input data-enabled="${r.id}" type="checkbox" ${r.enabled?'checked':''}> Active</span></label>`).join('')}</div><button id="savePricing" class="btn primary" style="margin-top:14px">SAVE SPECIES PRICING</button><div id="savePricingState" class="save-state">No unsaved changes.</div>`);$('savePricing').onclick=async()=>{const next={...c,ikeSpeciesRates:rates.map(r=>({...r,rate:Math.max(0,Number(document.querySelector(`[data-rate="${r.id}"]`)?.value||0)),enabled:!!document.querySelector(`[data-enabled="${r.id}"]`)?.checked}))};await setSetting('businessConfig:'+projectId,next);$('savePricingState').textContent='Species pricing saved. This state remains visible.';};window.BlackFlagBusinessDeck.mountPriceGuide({container:$('workspace'),rates});return;}workspace('Pricing','Manage project pricing.',`<p class="muted">Pricing controls are configured per project.</p>`);return;}
 if(k==='features'){const caps=capabilities(), allow=project.customization?.allowCustomColors!==false, email=!!project.notifications?.customerConfirmationEmail;workspace('Features','Choose the business features available to your customers.',`<div class="feature-list"><label class="feature"><span><strong>Custom Colors</strong><br><small>Customer color choices available for your business</small></span><input id="fColors" type="checkbox" ${allow?'checked':''} ${caps.has('branding')?'':'disabled'}></label><label class="feature"><span><strong>Confirmation Email</strong><br><small>Send customers an order confirmation email</small></span><input id="fEmail" type="checkbox" ${email?'checked':''} ${caps.has('notifications')?'':'disabled'}></label></div><button id="saveFeatures" class="btn primary" style="margin-top:14px">SAVE FEATURES</button><div id="saveFeaturesState" class="save-state">No unsaved changes.</div>`);$('saveFeatures').onclick=async()=>{project.customization={...(project.customization||{}),allowCustomColors:!!$('fColors').checked};project.notifications={...(project.notifications||{}),customerConfirmationEmail:!!$('fEmail').checked};await putProject(project);$('saveFeaturesState').textContent='Approved feature choices saved.';};return;}
 if(k==='branding'){workspace('Branding','Update how your business name and message appear to customers.',`${projectId==='ikes-wood-signs'?`<div class="brand-identity"><img src="ike_character.png" alt="Current Ike's Wood Signs identity"><div><div class="eyebrow gold">CURRENT BUSINESS IDENTITY</div><strong>${esc(project.name||"Ike's Wood Signs")}</strong><small>Approved Ike identity currently used across the Owner Bridge and customer-facing surfaces.</small></div></div>`:''}<div class="brand-grid"><label>Business name<input data-bf-trim="boundary" id="brandName" value="${esc(project.name||'')}"></label><label>Subtitle<input data-bf-trim="boundary" id="brandSub" value="${esc(project.branding?.subtitle||'')}"></label></div><button id="saveBrand" class="btn primary" style="margin-top:14px">SAVE BRANDING</button><div id="brandState" class="save-state">No unsaved changes.</div>`);$('saveBrand').onclick=async()=>{const n=String($('brandName').value||'').trim();if(n)project.name=n;project.branding={...(project.branding||{}),businessName:n||project.name,subtitle:String($('brandSub').value||'').trim()};await putProject(project);setNames();$('brandState').textContent='Branding saved.';};return;}
 if(k==='references'){const rows=styleRefs().slice().sort((a,b)=>String(b.updatedAt||'').localeCompare(String(a.updatedAt||'')));const styles=stylePackRegistry();workspace('Lettering styles','Real examples first. Keep reference evidence, exact wording and production approval distinct.',`<div class="style-foundry-state"><strong>PRODUCTION RULE</strong><br>Evidence → correct → segment → approve → assemble → benchmark → certify → publish. Draft observations never become proven geometry automatically.</div><div id="sfStatus" class="save-state">${project.styleFoundry?.compiledAt?'Last geometry compile '+esc(new Date(project.styleFoundry.compiledAt).toLocaleString()):'No GlyphForge compile yet. Bundled A/B anchor geometry remains protected.'}</div><div class="style-registry">${stylePackCards()}</div><div class="graphic-import"><h3>Create style from a graphic</h3><p class="muted">Upload a lettering graphic or finished-sign image and type the exact characters shown. The graphic starts as draft evidence. Its characters are observations until the evidence is approved and its glyph segmentation is reviewed.</p><div class="graphic-import-grid"><label>Style name<input data-bf-trim="boundary" id="sfGraphicName" placeholder="Example: Cabin Serif"></label><label>Exact wording in graphic<input data-bf-trim="preserve" id="sfGraphicText" placeholder="Type exactly what the graphic shows"></label><label>Starting geometry<select id="sfGraphicProfile"><option value="A">Bold / block seed</option><option value="B">Tall / condensed seed</option></select></label><label>Graphic<input id="sfGraphicFile" type="file" accept="image/*"></label></div><button id="sfGraphicCreate" class="btn primary" style="margin-top:10px">CREATE DRAFT STYLE FROM GRAPHIC</button></div><div class="style-new"><h3>Create empty style pack</h3><p class="muted">Use this only when there is no graphic yet. The empty style remains hidden until evidence, geometry, benchmark replay, certification, and publication are complete.</p><div class="style-new-grid"><label>Style name<input data-bf-trim="boundary" id="sfNewName" placeholder="Example: Rustic Script"></label><label>Starting geometry<select id="sfNewProfile"><option value="A">Bold / block starting profile</option><option value="B">Tall / condensed starting profile</option></select></label><label>Sample label<input data-bf-trim="preserve" id="sfNewSample" placeholder="Example wording"></label></div><button id="sfCreateStyle" class="btn secondary" style="margin-top:10px">CREATE EMPTY DRAFT STYLE</button></div><div class="style-foundry-upload"><label>Style<select id="sfStyle">${Object.values(styles).map(p=>`<option value="${esc(p.id)}">Style ${esc(p.id)} — ${esc(p.name)}</option>`).join('')}</select></label><label>Exact wording shown<input data-bf-trim="preserve" id="sfText" placeholder="Type exactly what appears in the photo"></label><label>Title<input data-bf-trim="boundary" id="sfTitle" placeholder="Finished sign example"></label><label>Image<input id="sfFile" type="file" accept="image/*"></label></div><button id="sfAdd" class="btn primary" style="margin-top:12px">ADD DRAFT EXAMPLE</button> <button id="sfCompile" class="btn warn" style="margin-top:12px">COMPILE REVIEWED GEOMETRY</button><div class="style-foundry-list">${rows.length?rows.map(r=>`<article class="style-foundry-row">${r.dataUrl?`<img src="${r.dataUrl}" alt="reference">`:'<div>NO IMAGE</div>'}<div><small>${esc(String(r.status||'draft').toUpperCase())} • STYLE ${esc(r.style||'—')}</small><h3>${esc(r.title||'Example')}</h3><p class="muted">${esc(r.sampleText||'No wording tagged')}</p></div><div>${r.status!=='approved'?`<span class="forge-badge hold">REVIEW REQUIRED</span>`:'<span class="forge-badge ready">APPROVED</span>'}</div></article>`).join(''):'<p class="muted">No uploaded examples yet. Bundled RAMJET and SMOKE HOLE! anchors remain protected starting geometry.</p>'}</div>`);
@@ -933,17 +1041,63 @@ document.querySelectorAll('[data-sf-certify]').forEach(b=>b.onclick=async()=>{co
 document.querySelectorAll('[data-sf-publish]').forEach(b=>b.onclick=async()=>{const pack=stylePackRegistry()[b.dataset.sfPublish];if(!pack)return;if(!(pack.geometryCertified&&benchmarkReplay(pack).every(t=>t.pass))){$('sfStatus').textContent='Publication blocked until certified geometry clears protected benchmarks.';return;}pack.status='published';pack.customerVisible=true;pack.publishedAt=new Date().toISOString();await putProject(project);rerenderFoundry(pack.id,`Style ${pack.id} v${pack.currentVersion||'—'} published to CX.`);});
 document.querySelectorAll('[data-sf-unpublish]').forEach(b=>b.onclick=async()=>{const pack=stylePackRegistry()[b.dataset.sfUnpublish];if(!pack)return;pack.status='compiled';pack.customerVisible=false;await putProject(project);rerenderFoundry(pack.id,`Style ${pack.id} removed from CX. Compiled geometry remains available for review.`);});
 $('sfCompile').onclick=async()=>{const style=$('sfStyle').value;await compileGlyphForge();rerenderFoundry(style,'Reviewed canonical geometry compiled into a new version. Benchmark replay and certification remain separate gates.');};window.BlackFlagBusinessDeck.mountLettering({container:$('workspace'),packs:Object.values(styles),coverages:Object.fromEntries(Object.keys(styles).map(id=>[id,styleCoverage(id)]))});return;}
-if(k==='services'){const rows=await fleetServiceCatalog();workspace('Fleet Services','Services offered to this business. Included services and requested paid upgrades remain separately governed.',`<div class="service-list">${rows.length?rows.map(e=>{const c=e.capability,status=serviceStatusLabel(e),canRequest=e.commercial_mode==='paid'&&e.status==='available'&&!e.request;const note=e.status==='enabled'?'This service is active for this business.':e.status==='entitled'&&e.commercial_mode==='standard'?'Included by the Fleet. No upgrade request is required.':e.status==='entitled'?'Approved by the Admiral. Setup can proceed without another request.':e.request?'Your request is on file. The service stays off until the Fleet approves it.':'Requesting a paid service does not turn it on. The Fleet must approve it first.';return `<article class="service-card"><div class="service-card-head"><div><div class="eyebrow">${esc(c.lifecycle.toUpperCase())}</div><h3>${esc(c.display_name)}</h3><p class="muted">${esc(c.owner_summary.replace('project-scoped','your').replace('permitted for this vessel','approved for this business'))}</p></div><strong>${esc(status)}</strong></div><div class="service-meta"><span class="service-pill ${e.commercial_mode==='standard'?'standard':'paid'}">${e.commercial_mode==='standard'?'INCLUDED':'PAID UPGRADE'}</span>${e.fee_label?`<span class="service-pill">${esc(e.fee_label)}</span>`:''}</div>${canRequest?`<button class="btn ghost service-action" data-service-request="${esc(e.id)}">REQUEST UPGRADE</button>`:''}<div class="service-note">${esc(note)}</div></article>`}).join(''):'<p class="muted">No Fleet services are currently offered to this business.</p>'}</div>`);document.querySelectorAll('[data-service-request]').forEach(b=>b.onclick=async()=>{const ent=rows.find(x=>x.id===b.dataset.serviceRequest);if(!ent)return;b.disabled=true;b.textContent='REQUESTING…';try{await requestFleetService(ent);b.textContent='REQUESTED';}catch(e){b.disabled=false;b.textContent='REQUEST SERVICE';alert(String(e?.message||e));}});return;}
+if(k==='services'){
+  let rows;
+  try{rows=await fleetServiceCatalog(current);}
+  catch(_){
+    if(current())workspace('Fleet Services','The service list could not be loaded. Reopen Fleet Services to try again.','');
+    return;
+  }
+  if(!current())return;
+  workspace('Fleet Services','Services offered to this business. Included services and requested paid upgrades remain separately governed.',`<div class="service-list">${rows.length?rows.map(e=>{const c=e.capability,status=serviceStatusLabel(e),canRequest=e.commercial_mode==='paid'&&e.status==='available'&&!e.request;const note=e.status==='enabled'?'This service is active for this business.':e.status==='entitled'&&e.commercial_mode==='standard'?'Included by the Fleet. No upgrade request is required.':e.status==='entitled'?'Approved by the Admiral. Setup can proceed without another request.':e.request?'Your request is on file. The service stays off until the Fleet approves it.':'Requesting a paid service does not turn it on. The Fleet must approve it first.';return `<article class="service-card"><div class="service-card-head"><div><div class="eyebrow">${esc(c.lifecycle.toUpperCase())}</div><h3>${esc(c.display_name)}</h3><p class="muted">${esc(c.owner_summary.replace('project-scoped','your').replace('permitted for this vessel','approved for this business'))}</p></div><strong>${esc(status)}</strong></div><div class="service-meta"><span class="service-pill ${e.commercial_mode==='standard'?'standard':'paid'}">${e.commercial_mode==='standard'?'INCLUDED':'PAID UPGRADE'}</span>${e.fee_label?`<span class="service-pill">${esc(e.fee_label)}</span>`:''}</div>${canRequest?`<button class="btn ghost service-action" data-service-request="${esc(e.id)}">REQUEST UPGRADE</button>`:''}<div class="service-note">${esc(note)}</div></article>`}).join(''):'<p class="muted">No Fleet services are currently offered to this business.</p>'}</div>`);document.querySelectorAll('[data-service-request]').forEach(b=>b.onclick=async()=>{
+    if(!current())return;
+    const ent=rows.find(x=>x.id===b.dataset.serviceRequest);if(!ent)return;
+    b.disabled=true;b.textContent='REQUESTING…';
+    try{await requestFleetService(ent,current);if(current())b.textContent='REQUESTED';}
+    catch(e){if(!current())return;b.disabled=false;b.textContent='REQUEST SERVICE';alert(String(e?.message||e));}
+  });
+  return;
+}
 if(k==='settings'){workspace('Settings','Manage your owner access for this business.',`<div class="feature-list"><div class="feature"><span><strong>Owner access</strong><br><small>Verified for ${esc(project?.name||'this business')}</small></span><strong>ACTIVE</strong></div><div class="feature"><span><strong>Fleet services</strong><br><small>Standard and paid capabilities are governed separately from owner access</small></span><strong>GOVERNED</strong></div><div class="feature"><span><strong>Fleet administration</strong><br><small>Kept separate from owner access</small></span><strong>SEPARATE</strong></div></div>`);return;}}
-async function boot(){if(!window.BlackFlagHeadway||window.BlackFlagHeadway.version!=='8.8.20.68'||!window.BlackFlagViewport)throw new Error('Strongbox workspace helpers are incomplete. Upload the complete update without clearing business data.');if(!window.BlackFlagBusinessDeck||window.BlackFlagBusinessDeck.BUILD!=='8.8.20.68'||window.BlackFlagInput?.build!=='8.8.20.68'||window.__workhorseDeckStylesFailed)throw new Error('Strongbox business workspace files are incomplete. Upload the complete matching TEST package; do not clear business data.');if(!projectId)throw new Error('Owner route is missing its project identifier.');$('safeStatus').textContent='Securing owner session…';db=await openDb();$('safeStatus').textContent='Resolving canonical project record…';project=await getProject();if(!project)throw new Error('The requested business was not found in the canonical project registry.');setNames();await ensureIkeTestCredential();orders=await getOrders();bindEngineButtons();$('safeStatus').textContent='Verifying owner authority…';const local=ownerSession();if(!usesSupabaseOwner()&&sessionValid(local)&&ownerActive()&&local.identityProvider!=='supabase'){renderPortal();history.replaceState({surface:'owner',projectId},'',`owner.html?project=${encodeURIComponent(projectId)}&view=portal${source==='engine'?'&source=engine':''}`);return;}const liveState=await resolveLiveOwnerState();if(liveState.state==='ready'){renderPortal();history.replaceState({surface:'owner',projectId},'',`owner.html?project=${encodeURIComponent(projectId)}&view=portal${source==='engine'?'&source=engine':''}`);return;}if(liveState.state==='password_setup'){renderPasswordSetup(liveState.recovery);return;}if(liveState.state==='denied'){$('safeStatus').textContent='Owner identity authenticated, but this vessel is not authorized.';clearSupabaseSession();clearSession('owner-scope-denied');show('login');$('loginError').textContent=ownerAccessMessage(liveState.reason);}else{show('login');if(requestedView==='portal')$('loginError').textContent='Sign in to restore the Owner Control Center.';}configureOwnerLogin();}
+async function boot(){
+  if(!window.BlackFlagHeadway||window.BlackFlagHeadway.version!=='8.8.20.68'||!window.BlackFlagViewport)throw new Error('Strongbox workspace helpers are incomplete. Upload the complete update without clearing business data.');
+  if(!window.BlackFlagBusinessDeck||window.BlackFlagBusinessDeck.BUILD!=='8.8.20.68'||window.BlackFlagInput?.build!=='8.8.20.68'||window.__workhorseDeckStylesFailed)throw new Error('Strongbox business workspace files are incomplete. Upload the complete matching TEST package; do not clear business data.');
+  if(!projectId)throw new Error('Owner route is missing its project identifier.');
+  $('safeStatus').textContent='Securing owner session…';
+  // Local records enrich an existing workspace; they are never a prerequisite
+  // for authenticating an exact-project owner on a new device.
+  db=await openDb().catch(()=>null);
+  project=await getProject();
+  setNames();
+  if(project){await ensureIkeTestCredential();orders=await getOrders();}
+  else{orders=[];ownerOrderReadError='Business records saved on another device are not available here.';}
+  bindEngineButtons();
+  $('safeStatus').textContent='Verifying owner authority…';
+  const local=ownerSession();
+  if(!usesSupabaseOwner()&&sessionValid(local)&&ownerActive()&&local.identityProvider!=='supabase'){
+    renderPortal();history.replaceState({surface:'owner',projectId},'',`owner.html?project=${encodeURIComponent(projectId)}&view=portal${source==='engine'?'&source=engine':''}`);return;
+  }
+  const liveState=await resolveLiveOwnerState();
+  if(liveState.state==='ready'){
+    renderPortal();history.replaceState({surface:'owner',projectId},'',`owner.html?project=${encodeURIComponent(projectId)}&view=portal${source==='engine'?'&source=engine':''}`);return;
+  }
+  if(liveState.state==='password_setup'){renderPasswordSetup(liveState.recovery);return;}
+  if(liveState.state==='denied'){
+    $('safeStatus').textContent='Owner identity authenticated, but this vessel is not authorized.';
+    clearSupabaseSession();clearSession('owner-scope-denied');show('login');$('loginError').textContent=ownerAccessMessage(liveState.reason);
+  }else{show('login');if(requestedView==='portal')$('loginError').textContent='Sign in to restore the Owner Control Center.';}
+  configureOwnerLogin();
+}
 $('signIn').onclick=async()=>{try{$('loginError').textContent='';if(usesSupabaseOwner()&&!localRecoveryAttempt){await signInWithPassword($('loginUser').value,$('loginPass').value);const state=await resolveLiveOwnerState();if(state.state==='password_setup'){renderPasswordSetup(state.recovery);return;}if(state.state!=='ready'){clearSupabaseSession();clearSession('owner-scope-denied');throw new Error(ownerAccessMessage(state.reason));}history.replaceState({surface:'owner',projectId},'',`owner.html?project=${encodeURIComponent(projectId)}&view=portal${source==='engine'?'&source=engine':''}`);renderPortal();return;}if(!await verify($('loginUser').value,$('loginPass').value)){ $('loginError').textContent='The login or password did not match.';return;}saveSession();history.replaceState({surface:'owner',projectId},'',`owner.html?project=${encodeURIComponent(projectId)}&view=portal${source==='engine'?'&source=engine':''}`);renderPortal();}catch(e){$('loginError').textContent=String(e?.message||e);}};
 $('sendMagicLink').onclick=async()=>{try{$('loginError').textContent='Sending secure sign-in link…';await sendMagicLink($('loginUser').value);$('loginError').textContent='Secure sign-in link sent. Open the newest email on this device.';}catch(e){$('loginError').textContent='Secure sign-in could not start. '+String(e?.message||e);}};
 $('forgotPassword').onclick=async()=>{try{$('loginError').textContent='';if(!usesSupabaseOwner()){renderLocalRecovery();return;}const email=String($('loginUser').value||'').trim();if(!email){$('loginError').textContent='Enter your email first.';return;}$('forgotPassword').disabled=true;$('forgotPassword').textContent='SENDING RECOVERY…';await sendPasswordRecovery(email);$('loginError').innerHTML='<div class="recovery-success">If this email belongs to the owner of this business, a recovery message is on its way. Open the newest recovery email on this device.</div>';}catch(e){$('loginError').textContent='Recovery could not start. '+String(e?.message||e);}finally{$('forgotPassword').disabled=false;$('forgotPassword').textContent='FORGOT PASSWORD?';}};
 $('saveLocalRecovery').onclick=async()=>{try{$('localRecoveryError').textContent='';$('saveLocalRecovery').disabled=true;$('saveLocalRecovery').textContent='RESETTING…';await resetLocalOwnerCredential();}catch(e){$('localRecoveryError').textContent=String(e?.message||e);}finally{if(!$('localRecovery').classList.contains('hidden')){$('saveLocalRecovery').disabled=localRecoveryWaitMs()>0;$('saveLocalRecovery').textContent='RESET OWNER PASSWORD';}}};
 $('cancelLocalRecovery').onclick=()=>{show('login');$('localRecoveryError').textContent='';configureOwnerLogin();};
 $('savePassword').onclick=async()=>{try{$('passwordSetupError').textContent='';const a=$('newPassword').value,b=$('confirmPassword').value;if(!passwordStrongEnough(a)){$('passwordSetupError').textContent='Use at least 10 characters.';return;}if(a!==b){$('passwordSetupError').textContent='The passwords do not match.';return;}$('savePassword').disabled=true;$('savePassword').textContent='SECURING ACCOUNT…';await setOwnerPassword(a);const entered=await enterSupabaseOwner();if(!entered.ok)throw new Error(entered.reason||'Vessel scope could not be verified.');history.replaceState({surface:'owner',projectId},'',`owner.html?project=${encodeURIComponent(projectId)}&view=portal${source==='engine'?'&source=engine':''}`);renderPortal();}catch(e){$('passwordSetupError').textContent=String(e?.message||e);}finally{$('savePassword').disabled=false;if(!$('passwordSetup').classList.contains('hidden'))$('savePassword').textContent='CREATE PASSWORD & CONTINUE';}};
-$('useLocalRecovery').onclick=()=>{localRecoveryAttempt=true;$('passwordLabel').classList.remove('hidden');$('signIn').classList.remove('hidden');$('sendMagicLink').classList.add('hidden');$('forgotPassword').classList.add('hidden');$('useLocalRecovery').classList.add('hidden');$('loginUser').value='joe';$('loginError').textContent='RECOVERY-ONLY local owner bridge enabled for this attempt.';};
-$('loginPass').addEventListener('keydown',e=>{if(e.key==='Enter')$('signIn').click();});$('localConfirmPassword').addEventListener('keydown',e=>{if(e.key==='Enter')$('saveLocalRecovery').click();});$('signOut').onclick=async()=>{const ss=supabaseSession();if(ss?.access_token){try{await fetch(SUPABASE_URL+'/auth/v1/logout',{method:'POST',headers:supaHeaders(ss.access_token)});}catch(_){}}clearSupabaseSession();clearSession();history.replaceState({surface:'owner',projectId},'',`owner.html?project=${encodeURIComponent(projectId)}&view=login${source==='engine'?'&source=engine':''}`);show('login');$('loginPass').value='';configureOwnerLogin();};$('retry').onclick=()=>location.reload();
+$('useLocalRecovery').onclick=()=>{if(!project||ownerProjectFromServer)return;localRecoveryAttempt=true;$('passwordLabel').classList.remove('hidden');$('signIn').classList.remove('hidden');$('sendMagicLink').classList.add('hidden');$('forgotPassword').classList.add('hidden');$('useLocalRecovery').classList.add('hidden');$('loginUser').value='joe';$('loginError').textContent='RECOVERY-ONLY local owner bridge enabled for this attempt.';};
+$('loginPass').addEventListener('keydown',e=>{if(e.key==='Enter')$('signIn').click();});$('localConfirmPassword').addEventListener('keydown',e=>{if(e.key==='Enter')$('saveLocalRecovery').click();});$('signOut').onclick=signOutOwner;$('retry').onclick=()=>location.reload();
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkDisplayedOwner();});
+window.addEventListener('pageshow',checkDisplayedOwner);
 boot().catch(e=>{$('failureDetail').textContent=String(e?.message||e);if(source==='engine')$('failureEngine').classList.remove('hidden');show('failure');});
 })();
 </script>

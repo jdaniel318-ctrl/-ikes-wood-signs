@@ -16,7 +16,7 @@
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
   // Component revision changes only when this module changes; installed release is loader-attested.
-  const APP_COMPONENT_REVISION='8.8.20.91';
+  const APP_COMPONENT_REVISION='8.8.20.94';
   const BUILD_VERSION=window.__darkSkyVerifiedRelease?.build;
   if(!BUILD_VERSION || BUILD_VERSION!==window.__darkSkyExpectedRelease?.build || window.__darkSkyVerifiedRelease?.seal!==window.__darkSkyExpectedRelease?.seal)throw new Error('Verified release context required before app execution.');
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
@@ -971,14 +971,16 @@
     return base.toString();
   }
 
-  function ownerPartnerEntryLink(projectId){
+  function ownerPartnerEntryLink(projectId,{fromEngine=false}={}){
     // 8.0.7 Rangefinder: owner authority lives on a dedicated standalone entrypoint.
     // The Engine never attempts to hydrate owner UI inside its own boot sequence.
     const p=projectById(projectId);
     const base=new URL('./owner.html',location.href.split('#')[0]);
     base.searchParams.set('project',projectId);
     base.searchParams.set('view',p?.ownerAccess?.status==='active'?'portal':'login');
-    base.searchParams.set('source','engine');
+    // Shared/bookmarked owner entrances stand alone. Only an explicit support
+    // visit from this Engine offers its return navigation; this grants no access.
+    if(fromEngine)base.searchParams.set('source','engine');
     base.hash='';
     return base.toString();
   }
@@ -6632,7 +6634,8 @@
       const navigation=engineWorkspaceNavigationToken();
       requestAnimationFrame(()=>{
         if(!engineWorkspaceNavigationCurrent(navigation)||fleetWorkstationProjectId!==id)return;
-        window.scrollTo({top:0,left:0,behavior:'instant'});
+        if(window.BlackFlagViewport)window.BlackFlagViewport.enter({key:'workstation:'+id,reason:'new',anchor:dock,current:()=>engineWorkspaceNavigationCurrent(navigation)&&fleetWorkstationProjectId===id});
+        else window.scrollTo({top:0,left:0,behavior:'instant'});
         const target=selected?.querySelector('[data-fleet-dock-action="preview"]')||cards.find(card=>card.dataset.projectId===previous)?.querySelector('[data-fleet-select]')||$('fleetDockSearch');
         target?.focus({preventScroll:true});
       });
@@ -6827,7 +6830,7 @@
           if(action==='owner'){
             const owner=ensureProjectGovernance(project).ownerAccess;
             if(!owner?.enabled){rememberEngineWorkspaceOrigin(btn);await openProjectEngineControl(projectId,'owner');return;}
-            armOwnerRoute(projectId);showFleetActionStatus(`Opening ${project.name} Owner / Partner Control Center…`,{tone:'clear',duration:5200});location.href=ownerPartnerEntryLink(projectId);return;
+            armOwnerRoute(projectId);showFleetActionStatus(`Opening ${project.name} Owner / Partner Control Center…`,{tone:'clear',duration:5200});location.href=ownerPartnerEntryLink(projectId,{fromEngine:true});return;
           }
           if(action==='preview'){await openExperienceTestDeck(projectId);return;}
         }catch(err){console.error('Fleet Compass route failed',err);showFleetActionStatus(`The selected ${project.name} route could not open. No automatic retry was sent.`,{tone:'watch',duration:8000});}
@@ -8242,7 +8245,7 @@
         const value=ownerPartnerEntryLink(p.id);
         try{await navigator.clipboard.writeText(value);}catch(_){const input=$('ownerPartnerEntryUrl');input?.focus();input?.select();}
       });
-      $('openOwnerPartnerEntry')?.addEventListener('click',()=>{armOwnerRoute(p.id);location.href=ownerPartnerEntryLink(p.id);});
+      $('openOwnerPartnerEntry')?.addEventListener('click',()=>{armOwnerRoute(p.id);location.href=ownerPartnerEntryLink(p.id,{fromEngine:true});});
 
       $('generateOwnerInvite')?.addEventListener('click',async()=>{
         if(!requireEngineProjectMutation(p,'owner.invitation.generate'))return;
@@ -15573,7 +15576,7 @@ The full order and approved media remain stored with this project.`;
         if(!p.ownerAccess.enabled){alert('Owner / Partner Access is not enabled for this project.');return;}
         // Open the same project-scoped owner gate used by a partner bookmark. No
         // Black Flag credential is carried into the owner session.
-        armOwnerRoute(p.id);location.href=ownerPartnerEntryLink(p.id);
+        armOwnerRoute(p.id);location.href=ownerPartnerEntryLink(p.id,{fromEngine:true});
         await showOwnerLogin(p.id);
         return;
       }
@@ -17802,11 +17805,13 @@ The full order and approved media remain stored with this project.`;
     $('enginePinInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('unlockEngineBtn').click();});
     $('unlockEngineBtn').addEventListener('click',async()=>{
       const entered=$('enginePinInput').value.trim();
+      $('enginePinInput').value='';
+      $('enginePinInput').blur();
       const testAccessActive=window.DarkSkyTestAccess?.isActive?.()===true;
     const result=testAccessActive?{ok:true,code:'test-access'}:await window.BlackFlagAuth.verify(entered);
       if(!result.ok){
         if(result.code==='startup'){
-        if(err) err.textContent='Black Flag startup is incomplete. Reload this build before entering the Engine PIN.';
+        $('enginePinError').textContent='Black Flag startup is incomplete. Reload this build before entering the Engine PIN.';
       }else if(result.code==='locked'){
           $('enginePinError').textContent='';
           window.showPinLock('engine','engineLockTimer','enginePinInput','unlockEngineBtn');
@@ -18165,6 +18170,9 @@ document.addEventListener('click', (event) => {
   async function unlockFromEntry(){
     const input=byId('blackFlagEntryPin');
     const entered=(input?.value||'').trim();
+    // Local command PINs are transient, not browser account credentials. Clear
+    // and dismiss their keyboard before verification or any route transition.
+    if(input){input.value='';input.blur();}
 
     const testAccessActive=window.DarkSkyTestAccess?.isActive?.()===true;
     // The historical Black Flag credential is an entry invariant and must not depend

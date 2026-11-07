@@ -97,7 +97,7 @@
     try{const base=photoCore().initialFrame(s.draft,s.boardPhoto.photo,b.quarterTurns),scale=f.w/base.w*100;setValue(s,'cweFrameScale',Number(scale.toFixed(1)));node(s,'cweFrameScaleValue').textContent=Number(scale.toFixed(1))+'%';}catch(_){node(s,'cweFrameScaleValue').textContent='Check dimensions';}
     setValue(s,'cweFrameX',f.w>=1-1e-9?50:Number((f.x/(1-f.w)*100).toFixed(1)));
     setValue(s,'cweFrameY',f.h>=1-1e-9?50:Number((f.y/(1-f.h)*100).toFixed(1)));
-    node(s,'cweFrameState').textContent=b.frameConfirmed?'Area chosen. You can adjust the lettering on your photograph.':'Use this area when its whole outline is on usable wood, or choose Use this design to confirm the current area.';
+    node(s,'cweFrameState').textContent=b.frameConfirmed?'Area chosen. You can adjust the lettering on your photograph.':s.options.customerFacing?'Place the outline on usable wood. Save this layout, then check its placement on your request.':'Use this area when its whole outline is on usable wood, or choose Use this design to confirm the current area.';
   }
   function setValue(s,id,value,force=false){const n=node(s,id);if(force||document.activeElement!==n)n.value=Number.isFinite(value)||typeof value==='string'?value:'';}
   function dimensions(s,force=false){
@@ -176,13 +176,13 @@
     node(s,'cweMachiningHelp').textContent=!s.dirty&&s.draft.revision>0&&reviewed?'Fixed-depth pockets · ShopBot, GRBL and LinuxCNC':'Review this layout, then save it before machining.';
     scene(s);controls(s);
   }
-  function changed(s,{keepFrameConfirmation=false}={}){s.draft.review=null;if(s.boardPhoto&&!keepFrameConfirmation)s.boardPhoto.board.frameConfirmed=false;s.dirty=true;s.generation++;revoke(s);refresh(s);status(s,s.layout.ok?(s.embedded?'Choose Use this design to confirm the current layout area and return to your sign request.':'Changes are local. Save the design or download a job file.'):'Resolve the layout details before review or export.');}
+  function changed(s,{keepFrameConfirmation=false}={}){s.draft.review=null;if(s.boardPhoto&&!keepFrameConfirmation)s.boardPhoto.board.frameConfirmed=false;s.dirty=true;s.generation++;revoke(s);refresh(s);status(s,s.layout.ok?(s.options.customerFacing?'Choose Use this design to save the layout. Check its placement when you return to your request.':s.embedded?'Choose Use this design to confirm the current layout area and return to your sign request.':'Changes are local. Save the design or download a job file.'):'Resolve the layout details before review or export.');}
   const snapshot=s=>({draft:clone(s.draft),selectedId:s.selectedId,board:s.boardPhoto?clone(s.boardPhoto.board):null});
   function remember(s,group=''){if(!group||s.editGroup!==group){s.undo.push(snapshot(s));if(s.undo.length>80)s.undo.shift();}s.editGroup=group;s.redo=[];}
   function applyDraft(s,draft,{selection=s.selectedId,group=''}={}){
     if(JSON.stringify(draft)===JSON.stringify(s.draft)){if(selection!==s.selectedId)selectLayer(s,selection);return;}
     remember(s,group);
-    if(s.boardPhoto&&(draft.stock.widthMm!==s.draft.stock.widthMm||draft.stock.heightMm!==s.draft.stock.heightMm)){try{s.boardPhoto.board.frame=photoCore().initialFrame(draft,s.boardPhoto.photo,s.boardPhoto.board.quarterTurns);}catch(_){/* Keep the last frame while a reference dimension is incomplete. */}}
+    if(s.boardPhoto&&(draft.stock.widthMm!==s.draft.stock.widthMm||draft.stock.heightMm!==s.draft.stock.heightMm)){try{s.boardPhoto.board.frame=photoCore().createBoard(draft,s.boardPhoto.photo,s.boardPhoto.board.quarterTurns,s.boardPhoto.boardArea).frame;}catch(_){/* Keep the last frame while a reference dimension is incomplete. */}}
     s.draft=draft;s.selectedId=selection;changed(s);
   }
   function applyBoard(s,board,group='',confirmed=false){if(!s.boardPhoto)return;const next=clone(board);next.frameConfirmed=confirmed;if(JSON.stringify(next)===JSON.stringify(s.boardPhoto.board))return;remember(s,group);s.boardPhoto.board=next;changed(s,{keepFrameConfirmation:confirmed});}
@@ -218,7 +218,7 @@
     if(s.boardPhoto&&['cwePhotoRotateLeft','cwePhotoRotateRight','cweFrameReset','cweFrameApply'].includes(b.id)){
       try{
         if(b.id==='cweFrameApply'){const check=photoCore().validate(s.draft,s.boardPhoto.photo,s.boardPhoto.board,fonts());if(!check.ok)throw Error(check.errors.join(' '));applyBoard(s,s.boardPhoto.board,'',true);status(s,'Layout area chosen. The physical board size still needs Ike’s confirmation.');}
-        else{const next=clone(s.boardPhoto.board);if(b.id!=='cweFrameReset')next.quarterTurns=(next.quarterTurns+(b.id==='cwePhotoRotateRight'?1:3))%4;next.frame=photoCore().initialFrame(s.draft,s.boardPhoto.photo,next.quarterTurns);applyBoard(s,next);status(s,'Place the blue layout area on usable wood, then choose Use this area.');}
+        else{const next=clone(s.boardPhoto.board);if(b.id!=='cweFrameReset')next.quarterTurns=(next.quarterTurns+(b.id==='cwePhotoRotateRight'?1:3))%4;next.frame=photoCore().createBoard(s.draft,s.boardPhoto.photo,next.quarterTurns,s.boardPhoto.boardArea).frame;applyBoard(s,next);status(s,'Place the blue layout area on usable wood, then choose Use this area.');}
       }catch(error){status(s,error.message,'error');}return;
     }
     if(b.dataset.panel){setPanel(s,b.dataset.panel);return;}
@@ -321,7 +321,7 @@
     const parent=options.parent||document.body;if(!parent.isConnected)throw Error('The business workspace is closed.');
     const draft=options.draft?clone(options.draft):core().createDraft(),check=core().validate(draft,fonts());if(!check.ok)throw Error(check.errors.join(' '));
     let boardPhoto=null;
-    if(options.boardPhoto){if(!photoCore()?.scene)throw Error('The board photograph editor is unavailable. Reload the complete release.');boardPhoto={photo:Object.freeze(clone(options.boardPhoto.photo)),board:clone(options.boardPhoto.board)};const check=photoCore().validate(draft,boardPhoto.photo,boardPhoto.board,fonts());if(!check.ok)throw Error(check.errors.join(' '));}
+    if(options.boardPhoto){if(!photoCore()?.scene)throw Error('The board photograph editor is unavailable. Reload the complete release.');boardPhoto={photo:Object.freeze(clone(options.boardPhoto.photo)),board:clone(options.boardPhoto.board),boardArea:options.boardPhoto.boardArea?clone(options.boardPhoto.boardArea):null};const check=photoCore().validate(draft,boardPhoto.photo,boardPhoto.board,fonts());if(!check.ok)throw Error(check.errors.join(' '));}
     const root=document.createElement('dialog');root.id='carvewrightStudio';root.className='cwe-modal';root.setAttribute('aria-labelledby','cweTitle');root.innerHTML=shell(!!options.referenceOnly);document.body.appendChild(root);
     const s={root,parent,options,embedded,origin:document.activeElement,draft,boardPhoto,photoScene:null,layout:null,store:null,unit:'in',view:'material',guides:true,panel:'lettering',selectedId:'primary',dirty:false,busy:false,closed:false,generation:0,urls:[],timer:null,undo:[],redo:[],editGroup:'',drag:null,previewFont:null};
     if(embedded){root.classList.add('cwe-embedded','cwe-ike-brand');node(s,'cweTitle').textContent='Ike’s Sign Studio';root.querySelector('.cwe-brand-icon').outerHTML='<img class="cwe-ike-character" src="ike_character.png" width="32" height="62" alt="Ike holding a wood sign">';root.querySelector('.cwe-brand small').textContent='IKE’S WOOD SIGNS';node(s,'cweClose').setAttribute('aria-label','Back to sign request');node(s,'cweClose').querySelector('span').textContent='Back to request';node(s,'cweSave').setAttribute('aria-label','Use this design');for(const id of ['cweReviewTab','cweReviewPanel','cweMachining','cweDownloadJob','cweExportSvg'])node(s,id).hidden=true;root.querySelector('.cwe-footer>div>span').textContent='Sign request · Ike confirms wood and machine setup';node(s,'cweStockPanel').querySelector('.cwe-field-note').textContent='Enter your requested blank size. Ike confirms the actual wood and dimensions before production.';}

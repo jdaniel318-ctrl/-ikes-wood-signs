@@ -1,11 +1,11 @@
 {
   "schema": "blackflag-release-gate-v1",
-  "build": "8.8.20.93",
-  "release": "Longwatch",
+  "build": "8.8.20.94",
+  "release": "Freeboard",
   "pass": true,
-  "pass_scope": "38 listed offline release suites including 18 deterministic customer timeout checks; native iPad Safari acceptance pending",
+  "pass_scope": "42 configured offline suites passed. Synthetic private preview layout measured at three viewport sizes. Native iPad Safari and hosted operation pending.",
   "verification_status": "OFFLINE_CHECKS_PASSED",
-  "evidence_file": "LONGWATCH_EVIDENCE.json",
+  "evidence_file": "FREEBOARD_EVIDENCE.json",
   "native_safari_acceptance": "PENDING",
   "database_actions": "No database commands or business-data changes.",
   "backend_prerequisite": "Harborlight idle-v1 service/SQL upgrade and owner/location configuration remain pending; this upload does not apply them",
@@ -14,6 +14,6 @@
   "frontend_deployed": false,
   "backup_restore": "Application software reconstruction/rollback checked by BUILD_RELEASE.py; no business-data restore certification.",
   "performance_improvement_claim": false,
-  "offline_suite_count": 38,
+  "offline_suite_count": 42,
   "native_compilation": "NOT_APPLICABLE_STATIC_WEB_APP"
 }

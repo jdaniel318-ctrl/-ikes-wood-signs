@@ -9,13 +9,14 @@
   <title>Engine Room — Black Flag Harbor</title>
   <style id="darkSkyZeroPaintBulkhead">
     html{background:#06151b!important;}
+    input[data-bf-pin]{-webkit-text-security:disc;}
     html.dark-sky-release-preflight body,html.dark-sky-route-preflight body,html.admiral-recovery-preflight body{background:#06151b!important;overflow:hidden!important;}
     html.dark-sky-release-preflight body>*:not(#darkSkyFirstPaintShield),html.dark-sky-route-preflight body>*:not(#darkSkyFirstPaintShield),html.admiral-recovery-preflight body>*:not(#darkSkyFirstPaintShield){visibility:hidden!important;}
     html.dark-sky-release-preflight #darkSkyFirstPaintShield,html.dark-sky-route-preflight #darkSkyFirstPaintShield,html.admiral-recovery-preflight #darkSkyFirstPaintShield{visibility:visible!important;}
   </style>
   <script id="darkSkyFirstLightBootstrap">
     // Dark Sky 8.6.23 MEMORY MUSTER — canonical release identity.
-    const DARK_SKY_RELEASE = Object.freeze({build:'8.8.20.93',seal:'longwatch-882093'});
+    const DARK_SKY_RELEASE = Object.freeze({build:'8.8.20.94',seal:'freeboard-882094'});
     const DARK_SKY_EXPECTED_BUILD = DARK_SKY_RELEASE.build;
     const DARK_SKY_RELEASE_SEAL = DARK_SKY_RELEASE.seal;
     // 8.6.23 Storage Safe Harbor — three independent channels, no silent storage failures.
@@ -599,7 +600,7 @@
 
       <div class="bf-entry-panel">
         <label for="blackFlagEntryPin">BLACK FLAG ENGINE PIN</label>
-      <input data-bf-trim="preserve" id="blackFlagEntryPin" class="bf-pin-input" type="password" inputmode="numeric" maxlength="8" autocomplete="one-time-code" autocorrect="off" autocapitalize="none" spellcheck="false" />
+      <input data-bf-trim="preserve" id="blackFlagEntryPin" class="bf-pin-input" type="text" data-bf-pin autocomplete="off" inputmode="numeric" maxlength="8" autocorrect="off" autocapitalize="none" spellcheck="false" />
         <p id="blackFlagEntryError" class="bf-entry-error" aria-live="polite"></p><p id="blackFlagLockTimer" class="pin-lock-timer hidden"></p>
         <button type="button" id="blackFlagEntryUnlock" class="bf-entry-primary">ENTER ENGINE ROOM →</button>
 <button type="button" id="closeBlackFlagEntry" class="bf-entry-secondary bf-close-entry">RETURN TO PROJECT</button>
@@ -634,7 +635,7 @@
       <h2 id="captainQuartersTitle">Captain's Quarters</h2>
       <p>A separate Captain-authority chamber above the Engine Room. Project shells remain untouched.</p>
       <label for="captainPinInput">CAPTAIN PIN</label>
-      <input data-bf-trim="preserve" id="captainPinInput" type="password" inputmode="numeric" maxlength="8" autocomplete="one-time-code" autocorrect="off" autocapitalize="none" spellcheck="false" />
+      <input data-bf-trim="preserve" id="captainPinInput" type="text" data-bf-pin autocomplete="off" inputmode="numeric" maxlength="8" autocorrect="off" autocapitalize="none" spellcheck="false" />
       <p id="captainPinError" class="captain-error" aria-live="polite"></p>
       <button id="captainUnlockBtn" class="captain-primary" type="button">ENTER CAPTAIN'S QUARTERS →</button>
       <a id="captainGateCloseBtn" class="captain-secondary captain-link-button" href="#">← RETURN TO ENGINE</a>
@@ -1185,7 +1186,7 @@
         <div id="projectAdminGateKicker" class="project-admin-gate-kicker">PROJECT ADMIN</div>
         <h2 id="pinGateTitle">Admin Access</h2>
         <p id="projectAdminGatePrompt">Enter this project's admin PIN to view saved orders and settings.</p>
-        <input data-bf-trim="preserve" id="adminPinInput" class="text-input pin-input" type="password" inputmode="numeric" maxlength="8" autocomplete="off" />
+        <input data-bf-trim="preserve" id="adminPinInput" class="text-input pin-input" type="text" data-bf-pin spellcheck="false" autocapitalize="none" autocorrect="off" autocomplete="off" inputmode="numeric" maxlength="8" />
         <p id="pinGateError" class="error-text centered" aria-live="polite"></p><p id="adminLockTimer" class="pin-lock-timer hidden"></p>
         <button type="button" id="unlockAdminBtn" class="primary-btn project-admin-gate-primary">UNLOCK ADMIN</button>
         <button type="button" id="cancelAdminPinBtn" class="secondary-btn project-admin-gate-secondary">← RETURN TO MY ORDER</button>
@@ -1278,9 +1279,9 @@
         </div>
         <div class="admin-divider"></div>
         <label for="newAdminPin">Change admin PIN</label>
-        <input data-bf-trim="preserve" id="newAdminPin" class="text-input" type="password" inputmode="numeric" maxlength="8" placeholder="Enter a new PIN" />
+        <input data-bf-trim="preserve" id="newAdminPin" class="text-input" type="text" data-bf-pin spellcheck="false" autocapitalize="none" autocorrect="off" autocomplete="off" inputmode="numeric" maxlength="8" placeholder="Enter a new PIN" />
         <label for="confirmAdminPin">Confirm new PIN</label>
-        <input data-bf-trim="preserve" id="confirmAdminPin" class="text-input" type="password" inputmode="numeric" maxlength="8" placeholder="Re-enter the new PIN" />
+        <input data-bf-trim="preserve" id="confirmAdminPin" class="text-input" type="text" data-bf-pin spellcheck="false" autocapitalize="none" autocorrect="off" autocomplete="off" inputmode="numeric" maxlength="8" placeholder="Re-enter the new PIN" />
         <p id="pinSettingsError" class="error-text" aria-live="polite"></p>
         <button type="button" id="savePinBtn" class="primary-btn small">SAVE NEW PIN</button>
         <p class="helper">Enter this project's passage PIN. The PIN opens the local doorway; the named Supabase account still determines identity and authority.</p>
@@ -1309,9 +1310,9 @@
         <div class="admin-divider"></div>
         <h4>Change Project Admin PIN</h4>
         <div class="admin-pin-change-grid">
-          <label>Current PIN<input data-bf-trim="preserve" id="adminCurrentPinChange" class="text-input pin-input" type="password" inputmode="numeric" autocomplete="off"></label>
-          <label>New PIN<input data-bf-trim="preserve" id="adminNewPinChange" class="text-input pin-input" type="password" inputmode="numeric" autocomplete="off"></label>
-          <label>Confirm new PIN<input data-bf-trim="preserve" id="adminConfirmPinChange" class="text-input pin-input" type="password" inputmode="numeric" autocomplete="off"></label>
+          <label>Current PIN<input data-bf-trim="preserve" id="adminCurrentPinChange" class="text-input pin-input" type="text" data-bf-pin spellcheck="false" autocapitalize="none" autocorrect="off" autocomplete="off" inputmode="numeric"></label>
+          <label>New PIN<input data-bf-trim="preserve" id="adminNewPinChange" class="text-input pin-input" type="text" data-bf-pin spellcheck="false" autocapitalize="none" autocorrect="off" autocomplete="off" inputmode="numeric"></label>
+          <label>Confirm new PIN<input data-bf-trim="preserve" id="adminConfirmPinChange" class="text-input pin-input" type="text" data-bf-pin spellcheck="false" autocapitalize="none" autocorrect="off" autocomplete="off" inputmode="numeric"></label>
         </div>
         <button type="button" id="saveAdminCoreSettingsBtn" class="primary-btn small">SAVE ADMIN SETTINGS</button>
         <p id="adminCoreSettingsStatus" class="helper"></p>
@@ -1356,7 +1357,7 @@
         <h2 id="enginePinTitle">Ye Be Entering the Engine Room</h2>
         <p>Only captains, code-wranglers, and suspiciously competent pirates beyond this point.</p>
         <label for="enginePinInput">Enter Captain's Code</label>
-        <input data-bf-trim="preserve" id="enginePinInput" class="text-input pin-input" type="password" inputmode="numeric" maxlength="8" autocomplete="one-time-code" autocorrect="off" autocapitalize="none" spellcheck="false" />
+        <input data-bf-trim="preserve" id="enginePinInput" class="text-input pin-input" type="text" data-bf-pin autocomplete="off" inputmode="numeric" maxlength="8" autocorrect="off" autocapitalize="none" spellcheck="false" />
         <p id="enginePinError" class="pirate-error" aria-live="polite"></p><p id="engineLockTimer" class="pin-lock-timer hidden"></p>
         <button type="button" id="unlockEngineBtn" class="pirate-primary-btn">BOARD THE ENGINE ROOM →</button>
         <button type="button" id="cancelEngineBtn" class="secondary-btn">RETURN TO PROJECT</button>
@@ -1420,7 +1421,7 @@
       </header>
 
       <section id="clearDeckLaunchpad" class="clear-deck-launchpad waypoint-home" aria-labelledby="engineNextMoveTitle">
-        <header class="clear-deck-brief"><small id="engineReleaseLabel">8.8.20.93 • LONGWATCH</small><h3 id="engineNextMoveTitle">Your fleet. A clear next move.</h3><p>Open a vessel, lead the work, see the fleet or shape what comes next.</p></header>
+        <header class="clear-deck-brief"><small id="engineReleaseLabel">8.8.20.94 • FREEBOARD</small><h3 id="engineNextMoveTitle">Your fleet. A clear next move.</h3><p>Open a vessel, lead the work, see the fleet or shape what comes next.</p></header>
         <nav class="clear-deck-primary-actions" aria-label="Fleet command offices">
           <button id="engineOperateVessels" type="button" class="clear-deck-action primary" data-clear-deck-command="projects" aria-controls="fleetCommissioningDock"><span class="clear-deck-action-number">01</span><span><strong>OPERATE VESSELS</strong><small>Choose a business and open its workstation.</small></span></button>
           <button type="button" class="clear-deck-action" data-command-open="captain"><span class="clear-deck-action-number">02</span><span><strong>CAPTAIN WATCH</strong><small>Review signals, decide the next action and record the result.</small></span></button>
@@ -2041,7 +2042,7 @@
           <h2 id="engineResetTitle">Confirm Engine Reset</h2>
           <p>Enter the Engine PIN again. You will receive one final confirmation before anything is reset.</p>
           <label for="engineResetPinInput">Engine PIN</label>
-          <input data-bf-trim="preserve" id="engineResetPinInput" class="text-input pin-input" type="password" inputmode="numeric" maxlength="8" autocomplete="off" />
+          <input data-bf-trim="preserve" id="engineResetPinInput" class="text-input pin-input" type="text" data-bf-pin spellcheck="false" autocapitalize="none" autocorrect="off" autocomplete="off" inputmode="numeric" maxlength="8" />
           <p id="engineResetError" class="pirate-error" aria-live="polite"></p><p id="engineResetLockTimer" class="pin-lock-timer hidden"></p>
           <button type="button" id="confirmEngineResetBtn" class="danger-btn">CONTINUE RESET</button>
           <button type="button" id="cancelEngineResetBtn" class="secondary-btn">CANCEL</button>

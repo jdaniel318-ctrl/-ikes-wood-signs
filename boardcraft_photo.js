@@ -36,13 +36,32 @@
     if(!plain(design?.stock)||!finite(design.stock.widthMm,25.4,3048)||!finite(design.stock.heightMm,25.4,3048))errors.push('Enter valid reference layout dimensions.');
   }
   function oriented(photo,turns){return {width:turns%2?photo.height:photo.width,height:turns%2?photo.width:photo.height};}
-  function initialFrame(design,photo,quarterTurns=0){
-    const errors=[];inputErrors(design,photo,quarterTurns,errors);if(errors.length)throw Error(errors.join(' '));
+  function frameInRegion(design,photo,quarterTurns,region){
     const p=oriented(photo,quarterTurns),ratio=design.stock.widthMm/design.stock.heightMm;
-    const width=Math.min(p.width,p.height*ratio),height=width/ratio;
-    return {x:(p.width-width)/(2*p.width),y:(p.height-height)/(2*p.height),w:width/p.width,h:height/p.height};
+    const width=Math.min(region.w*p.width,region.h*p.height*ratio),height=width/ratio;
+    return {x:region.x+(region.w-width/p.width)/2,y:region.y+(region.h-height/p.height)/2,w:width/p.width,h:height/p.height};
   }
-  function createBoard(design,photo,quarterTurns=0){return {photoId:photo.id,quarterTurns,frame:initialFrame(design,photo,quarterTurns),frameConfirmed:false,dimensionsStatus:'reference-unconfirmed'};}
+  function candidateFrame(design,photo,quarterTurns,area){
+    // Evidence describes pixels in the ORIGINAL photograph. It is a disposable
+    // visual suggestion, never a measured stock boundary or placement approval.
+    if(!plain(area)||area.photoId!==photo.id||area.source!=='woodwright-inset-candidate'||area.requiresVisualReview!==true||area.productionCertified!==false||!plain(area.region))return null;
+    const r=area.region;
+    if(!finite(r.x,0,1)||!finite(r.y,0,1)||!finite(r.w,.000001,1)||!finite(r.h,.000001,1)||r.x+r.w>1||r.y+r.h>1)return null;
+    const region=[r,{x:1-r.y-r.h,y:r.x,w:r.h,h:r.w},{x:1-r.x-r.w,y:1-r.y-r.h,w:r.w,h:r.h},{x:r.y,y:1-r.x-r.w,w:r.h,h:r.w}][quarterTurns];
+    const f=frameInRegion(design,photo,quarterTurns,region),p=oriented(photo,quarterTurns);
+    return f.w*p.width>=1&&f.h*p.height>=1?f:null;
+  }
+  function initialFrame(design,photo,quarterTurns=0,boardArea=null){
+    const errors=[];inputErrors(design,photo,quarterTurns,errors);if(errors.length)throw Error(errors.join(' '));
+    // The no-evidence form remains the full-photo limit for manual Studio scale
+    // controls. createBoard supplies the smaller unconfirmed starting fallback.
+    return candidateFrame(design,photo,quarterTurns,boardArea)||frameInRegion(design,photo,quarterTurns,{x:0,y:0,w:1,h:1});
+  }
+  function createBoard(design,photo,quarterTurns=0,boardArea=null){
+    const base=initialFrame(design,photo,quarterTurns),candidate=candidateFrame(design,photo,quarterTurns,boardArea);
+    const frame=candidate||{x:base.x+base.w*.1,y:base.y+base.h*.1,w:base.w*.8,h:base.h*.8};
+    return {photoId:photo.id,quarterTurns,frame,frameConfirmed:false,dimensionsStatus:'reference-unconfirmed'};
+  }
   function validate(design,photo,board,fonts,options){
     const errors=[];
     if(!fields(board,['photoId','quarterTurns','frame','frameConfirmed','dimensionsStatus'],'board placement',errors))return {ok:false,errors};

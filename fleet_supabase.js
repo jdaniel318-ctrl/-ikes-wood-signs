@@ -177,8 +177,8 @@
     const sessionKey = String(options.sessionKey || 'darkSkySupabaseSessionV1');
     const build = String(options.build || '8.8.20.68');
     const admiral = sessionKey === ADMIRAL_KEY;
-    // Opt-in cancellation for the separate Vessel Captain route. Owner and
-    // Admiral policies are untouched. Generation prevents late session writes.
+    // Owner and Captain clients opt into cancellation on sign-out.
+    // Each client has its own generation to prevent late session writes.
     const guarded = options.guardSession === true && !admiral;
     let localGeneration=0,privacyFailed=false;const localRequests=new Set(),authRequests=new Set();
     if (!url || !publishableKey) throw new Error('Supabase publishable client configuration is incomplete.');
@@ -222,14 +222,14 @@
       if(auth)authRequests.add(work);try{return await work;}finally{authRequests.delete(work);}
     }
     async function baseRequest(path, init = {}, fallback = 'Supabase refused the request.') {
-      // Only Admiral transport is changed by HarborMaster. Owner transport keeps its policy.
+      // Guarded account clients cancel pending requests when local authority ends.
       if (guarded) {
         const generation=localGeneration,controller=new AbortController();localRequests.add(controller);let timer;
         try{return await Promise.race([(async()=>{
           const response=await fetch(`${url}${path}`,{cache:'no-store',...init,signal:controller.signal});const body=await guardedBody(response,path);
-          if(generation!==localGeneration)throw new Error('Captain request cancelled.');
+          if(generation!==localGeneration)throw new Error('Account request cancelled.');
           if(!response.ok){const error=apiError(body,fallback);error.status=response.status;throw error;}return body;
-        })(),new Promise((_,reject)=>{timer=setTimeout(()=>{controller.abort();reject(new Error('Captain request timed out. No automatic retry was made.'));},12000);})]);}
+        })(),new Promise((_,reject)=>{timer=setTimeout(()=>{controller.abort();reject(new Error('Account request timed out. No automatic retry was made.'));},12000);})]);}
         finally{clearTimeout(timer);localRequests.delete(controller);}
       }
       if (!admiral) {

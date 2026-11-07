@@ -1,0 +1,311 @@
+{
+  "build": "8.8.20.94",
+  "release": "Freeboard",
+  "scope": "Offline application verification and browser layout using a synthetic private preview; not live account, publication, permission, or delivery certification.",
+  "browser_layout": {
+    "review": [
+      {
+        "viewport_css_px": [
+          1024,
+          668
+        ],
+        "document_height": 668,
+        "scroll_top": 0,
+        "horizontal_overflow": false,
+        "finish_button_bottom": 660
+      },
+      {
+        "viewport_css_px": [
+          1366,
+          890
+        ],
+        "document_height": 890,
+        "horizontal_overflow": false,
+        "finish_button_bottom": 880
+      },
+      {
+        "viewport_css_px": [
+          390,
+          740
+        ],
+        "document_height": 1691,
+        "horizontal_overflow": false,
+        "action_visible": true
+      }
+    ],
+    "tablet": "Typical one-line wording and short contact values: design, details and review fit at 1024 by 668. All seven review specifications, full photo, approval and finish action visible. Completion action visible and starts a new preview.",
+    "limitations": "Long text, narrow screens and zoom can scroll. Synthetic board and contact data only."
+  },
+  "field_acceptance_pending": [
+    "iPad Safari native Save Password prompt",
+    "rear camera and permission dialog behavior across customer sessions",
+    "physical plank fit",
+    "hosted contractor sign-in and real delivery"
+  ],
+  "deployment_performed": false,
+  "database_actions": "none",
+  "offline_suites": [
+    {
+      "name": "VERIFY_FREEBOARD_FLOW.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FREEBOARD_CUSTOMER.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FREEBOARD_BOARD.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FREEBOARD_ENTRY.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_LONGWATCH_IDLE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_GLASSWAKE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_TRUEBOUND_CORE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_TRUEBOUND_UI.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_KEEPHAVEN_CORE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_KEEPHAVEN_UI.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_HELMWARD_NAVIGATION.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_HELMWARD_ASYNC.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_HELMWARD_RECOVERY.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_HARBORLIGHT_SCOPE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_HARBORLIGHT_ENGINE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FAIRWATER_PASTE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_ROSEWOOD_CORE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_SIGHTLINE_CORE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_SIGHTLINE_ARTWORK.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_SIGHTLINE_IDS.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_HOLDFAST_CORE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_HOMEPORT_ENTRY.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FLEETBOUND_PROGRAMS.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_HARBOR_ROUTES.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_HARBOR_ASYNC.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_HARBOR_STORAGE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_RELEASE_IDENTITY.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FAIRLEAD_LOADER.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FAIRLEAD_STARTUP.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_CLEARDECK_ACCOUNT.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_RELEASE_CONTRACT.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_CLEARDECK_PREFLIGHT.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_IRONHAVEN_CORE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FLEETCARE_READINESS.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FLEETCARE_NAVIGATION.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FLEETCRAFT_CORE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_LETTERCRAFT_FONTS.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_QUARTERMASTER_CORE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_STORMWAKE_CORE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "TEST_RELEASE_PIPELINE.py",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "TEST_RELEASE_IDENTITY.py",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "TEST_SIGHTLINE_NATIVE.py",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    }
+  ],
+  "focused_checks": {
+    "entry_and_owner": 42,
+    "board_fit": 7,
+    "request_flow": 13,
+    "customer_controller": 11,
+    "prior_idle": 18
+  },
+  "additional_verification": {
+    "optional_historical_boardcraft_browser_runner": "Not executed: local Playwright Chromium executable unavailable. The Freeboard browser layout results above use a separate managed browser."
+  }
+}

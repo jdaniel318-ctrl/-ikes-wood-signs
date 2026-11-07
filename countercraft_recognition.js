@@ -397,6 +397,6 @@
     return {resolved:false,orientation:'',confidence:'low',score:.35,reason:'orientation-evidence-conflict'};
   }
 const api={species:ikeCombineSpeciesEvidence,length:ikeCombineLengthEvidence};
-api.analyze=async function(photo){const img=new Image();await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=reject;img.src=photo.dataUrl;});if(Math.max(img.width,img.height)/Math.max(1,Math.min(img.width,img.height))>8)return {species:null,length:null,orientation:null};const proven=ikeAnalyzePlankPixelsProven(img),length=ikeAnalyzePlankPixelsLength(img);return {species:ikeVisualSpeciesEvidence(img,proven),length:ikeLengthEvidenceFromGeometry(img,length),orientation:ikeOrientationEvidence(img,proven)};};
+api.analyze=async function(photo){const img=new Image();await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=reject;img.src=photo.dataUrl;});if(Math.max(img.width,img.height)/Math.max(1,Math.min(img.width,img.height))>8)return {species:null,length:null,orientation:null,boardArea:null};const proven=ikeAnalyzePlankPixelsProven(img),length=ikeAnalyzePlankPixelsLength(img);const r=proven?.usableRegion,boardArea=r?{photoId:photo.id,region:{x:r.x,y:r.y,w:r.w,h:r.h},source:'woodwright-inset-candidate',requiresVisualReview:true,productionCertified:false}:null;return {boardArea,species:ikeVisualSpeciesEvidence(img,proven),length:ikeLengthEvidenceFromGeometry(img,length),orientation:ikeOrientationEvidence(img,proven)};};
 g.CountercraftRecognition=Object.freeze(api);
 })(globalThis);

@@ -1,6 +1,11 @@
 /* Headway shared viewport contract. Natural vertical scrolling always retained.
    All overrides are scoped to hw-viewport; no canvas glyph/layout geometry rules. */
 body.hw-viewport {scroll-padding-top:12px;}
+/* Engine surfaces share the canvas color through Safari's changing viewport.
+   Content can grow and scroll naturally; a short workstation never reveals the
+   old cream customer page or pale app-shell below its dark panel. */
+body.hw-viewport.engine-mode,
+body.hw-viewport.engine-mode #app{background:#06151b!important;min-height:100vh;min-height:100dvh;}
 .hw-viewport :is(input,select,textarea){font-size:16px;}
 .hw-viewport :is(button,.btn){touch-action:manipulation;}
 .hw-viewport :is(.portal,.workspace,.captain-handoff-shell,.ike-plank-grid)>*{min-width:0;}
