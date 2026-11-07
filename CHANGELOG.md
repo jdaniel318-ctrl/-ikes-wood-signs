@@ -1,10 +1,10 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Streetwise 8.8.20.96
+# Black Flag Suretap 8.8.20.97
 
 Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
-Baseline: 8.8.20.95. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Baseline: 8.8.20.96. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
 Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
-Reusable service address suggestions for contractor vessels with independent coverage settings. Richmond-area coverage is enabled for Legacy Plumbing and Signal Restoration. Other contractor vessels may opt in. Staff can open a matched job location in Maps.
+Streetwise 1.1.0 fills a tapped address and keeps its map point with the request. Local lookup covers Richmond, Williamsburg and surrounding counties. Each enabled contractor uses the same component and public data.
 Preparation does not deploy frontend or backend changes. See PATCH_CONTRACT.json for separately managed backend prerequisites.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 

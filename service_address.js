@@ -6,29 +6,29 @@
   const assetBase = script?.getAttribute('data-address-base') ||
     (scriptUrl && /^https?:/.test(scriptUrl) ? new URL('.',scriptUrl).href : '');
   let fieldNumber = 0;
-  const dataset = 'rva-streetwise-v1';
+  const dataset = 'richmond-williamsburg-v2';
   // Regional contractors can opt into the same lookup through their vessel configuration.
   function supports(project) {
     const region = project?.customerExperience?.addressRegion ?? root.BlackFlagAddressDefaults?.[project?.id];
     return region==='richmond-va';
   }
   const hashes = [
-  "d7cb07e3e907c3ebeb32c495ae654a9268039ff5548be2a02b914837532cfd5a",
-  "46028a603f89f3351a59c8031b0ea7f6a09db2e3a8a6e6a1ba25970b3258f00f",
-  "aa24746296312f0bf4d329c8d208b231edf0acf7223e394c64703a09864411a1",
-  "5f0fa357fc3f72185d2d7a0b2e996349dd497dd41c2a2f051efe46a7f0affc49",
-  "05f130405441245f56cc8a633a24c45798a41b3f1a8f0911af462eb2dceb583a",
-  "5d5b4167ad1d2ebf1f602543160bad91510be46819711bf8efbd45fc3ccc0101",
-  "2cfd5a575d0d80ab420be91b7658c8886e47fb8556cb0eebd3df40b5c152bdfe",
-  "a11f0b764c779d4d76468921671e320d51b894328604eefdf81c5cdae41a956f",
-  "aff0fcb935baf7cf9ce4ea0b322a71f46f6b3f1a82749df30dfeea5d8c497454",
-  "b784816624e192eee0992971d23109f5e16465d43087b0f1c602d690afa5f907",
-  "81aa0b96f3819a6d1b69431e6b195afc0bd845fce7441a80daddac628d8cc5e0",
-  "a159ec6ff68a4ed93c982d1b02a244f51472e64d42ea28106e7bb3ee192ecd1f",
-  "1c29f8a431262c2e2aa0ac12b0f2fb2f46e0a3d5fce6066f063976fff3a0644a",
-  "f17c02a096c5afbcd6b5625c012a19f8b4f98fa7cbbafa075aa6f42cb59e8af6",
-  "cd05e085f428bf2d7cff82ccc49c5810db1e15ddde18d38d7f6d46244510d8a0",
-  "2bd18af8722f8afabd636cd7f57168c2df62b343e344e04533318e3d30c82b0c"
+  "7a8f5655cb66c67af3c83ab87732176787032f9f41ee1ed737370428834d3a26",
+  "8f0aa75625d7aef49380dbc6babbc4d60984718788c61b573208e9f7a5ba1faf",
+  "574a008270c928bca6852e859d47543cfaacbc67c95e0c92cf8b418419a4e99c",
+  "ca8d6a4cd8cfe967b218604f46631e21e0dc874dc8964373e4644551d40b8a56",
+  "25594f6dd0eba00439d5423ff18048bff5f55aa02d4ac33705e885e24ff57ffb",
+  "917297cc1387e0b05d2856622a9f0c0d2a3c4bfbcbcb035eddb59265639b7723",
+  "670040a856d643472e641277c1d17be3dd8c726986f491fc3a4bf4ad22a44cb8",
+  "57093610074d0e0bde78b6f495640b6b64ece5d565af76d0089de4882abb3177",
+  "a1ae7baa62aee8b514fe5d8cf6e97c792af8e05f3d80fa5470e82a9159e0ea80",
+  "0e9293f2c8183c9645b946f8d67efe61d6079fc1d1574e8d73c4e539b0ee50cd",
+  "a152b322f66f245b97b4f06ec754a9c293d9ad0958b499ebe0835204741d5efb",
+  "9a2505b28f1ea030e836af0801253b5478209fd118db59d6dbd73bbbf9eca3f9",
+  "3e29e0ac48a3159dcc3e3d99e61e970978ace2960d47275a2ec564e0ee6a1d12",
+  "859ba8ae8bd271b282c2c141d5455de02b727df9f4759eed361362636f64367f",
+  "4ef301bdac5e17ea31fb542bbc5528eb3d1db0d7b976485cf2dff1980569457f",
+  "eece6fa80067efdad94ad913ac03fbe474ef508fbbbfc747ceab31b5b2125d5b"
 ];
   const cache = new Map();
   const aliases = {
@@ -59,7 +59,7 @@
     return cache.get(bucket);
   }
   function parts(value) {
-    return value.trim().match(/^(\d{1,7}[a-z]?(?:-\d+)?)\s+(.{2,})$/i);
+    return value.trim().match(/^(\d{1,7}[a-z]{0,3}(?:-[a-z0-9]+)*)\s+(.{2,})$/i);
   }
   async function suggest(value) {
     const parsed = parts(value);
@@ -84,9 +84,13 @@
     return matches;
   }
   function matchesAddress(address, point) {
-    return !!point && point.dataset===dataset && String(address||'').trim()===point.address &&
-      Number.isFinite(point.latitude) && point.latitude>=36.9 && point.latitude<=38.1 &&
-      Number.isFinite(point.longitude) && point.longitude>=-78.2 && point.longitude<=-76.9;
+    if (!point || String(address||'').trim()!==point.address ||
+        !Number.isFinite(point.latitude) || !Number.isFinite(point.longitude)) return false;
+    // Preserve the bounds and map links of previously saved Richmond requests.
+    const legacy=point.dataset==='rva-streetwise-v1';
+    if (!legacy && point.dataset!==dataset) return false;
+    return point.latitude>=(legacy ? 36.9 : 36.75) && point.latitude<=38.1 &&
+      point.longitude>=(legacy ? -78.2 : -78.4) && point.longitude<=(legacy ? -76.9 : -76.2);
   }
   function mapLink(address, point) {
     if (!matchesAddress(address, point)) return '';
@@ -116,11 +120,12 @@
     input.setAttribute('aria-expanded','false'); input.setAttribute('aria-controls',list.id);
     input.setAttribute('aria-describedby',[input.getAttribute('aria-describedby'),hint.id].filter(Boolean).join(' '));
     let generation=0, timer, active=-1, choices=[];
+    let press=null;
     let selected=matchesAddress(input.value,options.point) ? options.point : null;
-    const guidance='Choose a Richmond-area suggestion, or enter the full address manually.';
+    const guidance='Choose a Richmond or Williamsburg area address, or enter it manually.';
     function status() {hint.textContent=selected ? 'Matched to an address on the map.' : guidance;}
     function close() {
-      generation++; clearTimeout(timer); active=-1; choices=[];
+      generation++; clearTimeout(timer); active=-1; choices=[]; press=null;
       list.replaceChildren(); list.hidden=true;
       input.setAttribute('aria-expanded','false'); input.removeAttribute('aria-activedescendant');
     }
@@ -128,9 +133,11 @@
       const choice=choices[index];
       if (!choice) return;
       close(); input.value=choice.address;
-      // Update the host form through its ordinary input path before attaching the match.
+      selected=choice;
+      // Save the label through the same path as ordinary typing.
       input.dispatchEvent(new Event('input',{bubbles:true}));
-      close(); selected=choice; options.onMatch?.(choice); status();
+      if (selected===choice) options.onMatch?.(choice);
+      status();
     }
     function schedule() {
       close(); status();
@@ -144,11 +151,43 @@
           if (!current()) return;
           choices=rows;
           rows.forEach((row,index) => {
-            const opt=document.createElement('div'); opt.id=list.id+'-'+index;
+            const opt=document.createElement('button');
+            opt.type='button'; opt.tabIndex=-1; opt.id=list.id+'-'+index;
             opt.setAttribute('role','option'); opt.setAttribute('aria-selected','false');
             opt.textContent=row.address;
-            opt.addEventListener('pointerdown',e=>e.preventDefault());
-            opt.addEventListener('click',()=>choose(index)); list.append(opt);
+            let cancelled=false;
+            opt.addEventListener('pointerdown',e=>{
+              if (!e.isPrimary || e.button!==0) return;
+              cancelled=false;
+              press={id:e.pointerId, x:e.clientX, y:e.clientY, query:input.value.trim()};
+              e.preventDefault();
+              if (opt.hasPointerCapture?.(e.pointerId)===false) {
+                // Synthetic and assistive clicks may have no active pointer.
+                try { opt.setPointerCapture(e.pointerId); } catch {}
+              }
+            });
+            opt.addEventListener('pointermove',e=>{
+              if (press?.id===e.pointerId && Math.hypot(e.clientX-press.x,e.clientY-press.y)>12) cancelled=true;
+            });
+            function cancel(e) {
+              if (press?.id!==e.pointerId) return;
+              press=null; cancelled=true;
+              if (document.activeElement!==input) {close();status();}
+            }
+            opt.addEventListener('pointercancel',cancel);
+            opt.addEventListener('lostpointercapture',cancel);
+            opt.addEventListener('pointerup',e=>{
+              if (press?.id!==e.pointerId) return;
+              const hit=document.elementFromPoint(e.clientX,e.clientY);
+              if (cancelled || !opt.contains(hit) || Math.hypot(e.clientX-press.x,e.clientY-press.y)>12) {
+                cancel(e);return;
+              }
+              choose(index);
+            });
+            opt.addEventListener('click',()=>{
+              if (!cancelled && choices[index]===row) choose(index);
+            });
+            list.append(opt);
           });
           list.hidden=!rows.length; input.setAttribute('aria-expanded',String(!!rows.length));
           hint.textContent=rows.length ? 'Choose a matching address.' : 'No local map match. You can enter the full address manually.';
@@ -157,9 +196,14 @@
         }
       },140);
     }
-    input.addEventListener('input',()=>{selected=null;options.onMatch?.(null);schedule();});
+    input.addEventListener('input',()=>{
+      if (selected && input.value===selected.address) return;
+      // The host can trim whitespace while focus moves to a pressed option.
+      if (press && press.query===input.value.trim()) return;
+      selected=null;options.onMatch?.(null);schedule();
+    });
     input.addEventListener('focus',schedule);
-    input.addEventListener('blur',()=>{close();status();});
+    input.addEventListener('blur',()=>{if (!press) {close();status();}});
     input.addEventListener('keydown',e=>{
       if (e.key==='Escape') {close();status();return;}
       if (!choices.length) return;

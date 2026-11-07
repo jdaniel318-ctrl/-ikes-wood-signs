@@ -6,15 +6,32 @@
   "retrieved": "2026-11-07",
   "coordinateSystem": "WGS 84 latitude, longitude; decimal degrees rounded to five places",
   "coverage": {
+    "Amelia County": 7139,
+    "Charles City County": 4006,
     "Chesterfield County": 188961,
+    "Colonial Heights city": 8933,
+    "Dinwiddie County": 13761,
+    "Goochland County": 16226,
     "Hanover County": 52743,
     "Henrico County": 139601,
-    "Richmond city": 92028
+    "Hopewell city": 10441,
+    "James City County": 45769,
+    "King William County": 9354,
+    "New Kent County": 13416,
+    "Petersburg city": 14874,
+    "Powhatan County": 13859,
+    "Prince George County": 15389,
+    "Richmond city": 92028,
+    "Surry County": 4329,
+    "Williamsburg city": 8996,
+    "York County": 38655
   },
-  "sourceRecords": 473333,
-  "uniqueMappedAddresses": 472537,
-  "omittedAmbiguousLabels": 8,
+  "sourceRecords": 698480,
+  "uniqueMappedAddresses": 685510,
+  "omittedAmbiguousLabels": 1784,
   "omittedRecords": {
-    "incomplete or out of bounds": 780
-  }
+    "incomplete or out of bounds": 780,
+    "unrecognized house number or unit format": 382
+  },
+  "coverageCounts": "Source records by jurisdiction, before filtering. Postal cities in suggestions follow the source postal address."
 }

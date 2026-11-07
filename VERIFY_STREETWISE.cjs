@@ -41,7 +41,20 @@ const lookup=ctx.BlackFlagServiceAddress;
   corrupt=true; await assert.rejects(lookup.suggest('1000 Ba'),/changed/);
   corrupt=false; assert.ok((await lookup.suggest('1000 Ba')).some(r=>r.address==='1000 Bank St, Richmond, VA 23219'));
   assert.equal(requests.length,3);
+  for (const address of [
+    '101 Mounts Bay Rd, Williamsburg, VA 23185',
+    '224 Ballard St, Yorktown, VA 23690',
+    '101 Lafayette St, Williamsburg, VA 23185'
+  ]) {
+    const point=(await lookup.suggest(address)).find(row=>row.address===address);
+    assert.ok(point && lookup.matchesAddress(address,point),address);
+    assert.ok(lookup.mapLink(address,point).includes('Open in Maps'));
+  }
+  assert.ok(lookup.matchesAddress(hall.address,{...hall,dataset:'rva-streetwise-v1'}));
+  assert.equal(lookup.matchesAddress(hall.address,{...hall,dataset:'unknown'}),false);
   const provenance=JSON.parse(read('STREETWISE_RVA_SOURCE.json'));
+  assert.ok(provenance.coverage['James City County'] && provenance.coverage['Williamsburg city']);
+  assert.equal(Object.keys(provenance.coverage).length,19);
   let total=0;
   for(let bucket=0;bucket<16;bucket++){
     const data=JSON.parse(read('streetwise_rva_'+String(bucket).padStart(2,'0')+'.json'));

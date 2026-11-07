@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.20.96';
-const RELEASE_SEAL='streetwise-882096';
+const RELEASE_BUILD='8.8.20.97';
+const RELEASE_SEAL='suretap-882097';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.

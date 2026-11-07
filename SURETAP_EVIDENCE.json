@@ -1,0 +1,298 @@
+{
+  "build": "8.8.20.97",
+  "release": "Suretap",
+  "component": "Streetwise 1.1.0",
+  "offline_suites": [
+    {
+      "name": "VERIFY_STREETWISE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FREEBOARD_FLOW.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FREEBOARD_CUSTOMER.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FREEBOARD_BOARD.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FREEBOARD_ENTRY.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_LONGWATCH_IDLE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_GLASSWAKE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_TRUEBOUND_CORE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_TRUEBOUND_UI.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_KEEPHAVEN_CORE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_KEEPHAVEN_UI.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_HELMWARD_NAVIGATION.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_HELMWARD_ASYNC.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_HELMWARD_RECOVERY.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_HARBORLIGHT_SCOPE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_HARBORLIGHT_ENGINE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FAIRWATER_PASTE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_ROSEWOOD_CORE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_SIGHTLINE_CORE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_SIGHTLINE_ARTWORK.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_SIGHTLINE_IDS.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_HOLDFAST_CORE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_HOMEPORT_ENTRY.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FLEETBOUND_PROGRAMS.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_HARBOR_ROUTES.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_HARBOR_ASYNC.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_HARBOR_STORAGE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_RELEASE_IDENTITY.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FAIRLEAD_LOADER.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FAIRLEAD_STARTUP.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_CLEARDECK_ACCOUNT.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_RELEASE_CONTRACT.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_CLEARDECK_PREFLIGHT.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_IRONHAVEN_CORE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FLEETCARE_READINESS.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FLEETCARE_NAVIGATION.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_FLEETCRAFT_CORE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_LETTERCRAFT_FONTS.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_QUARTERMASTER_CORE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "VERIFY_STORMWAKE_CORE.cjs",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "TEST_RELEASE_PIPELINE.py",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "TEST_RELEASE_IDENTITY.py",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    },
+    {
+      "name": "TEST_SIGHTLINE_NATIVE.py",
+      "pass": true,
+      "exit_code": 0,
+      "error": null
+    }
+  ],
+  "browser": [
+    "Chromium 140 with touch and WebKit 26.5 with iPad landscape emulation"
+  ],
+  "interaction": [
+    "Reproduced the reported partial input in the prior component by blurring between press and release.",
+    "Verified one commit for a tap, a mouse click and keyboard selection. Drag, pointer cancellation, Tab, Escape and tapping outside do not select.",
+    "Verified the Legacy Plumbing renderer with a local private-preview project in Chromium and WebKit: select Richmond and James City County matches, advance to Prep and return to Job with the full address and coordinates.",
+    "Verified that editing the address clears the old map point and that the customer field contains no map."
+  ],
+  "coverage": {
+    "localities": 19,
+    "indexed_addresses": 685510,
+    "new_localities_tested": [
+      "Amelia County",
+      "Charles City County",
+      "Dinwiddie County",
+      "Goochland County",
+      "James City County",
+      "King William County",
+      "New Kent County",
+      "Powhatan County",
+      "Prince George County",
+      "Surry County",
+      "York County",
+      "Colonial Heights city",
+      "Hopewell city",
+      "Petersburg city",
+      "Williamsburg city"
+    ],
+    "source": "STREETWISE_RVA_SOURCE.json"
+  },
+  "native_ipad_safari": "PENDING",
+  "deployed": false
+}

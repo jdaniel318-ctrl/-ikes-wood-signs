@@ -1,6 +1,6 @@
 {
   "name": "Streetwise Service Addresses",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "runtime": "Browser JavaScript served over HTTPS or localhost",
   "entry": "service_address.js",
   "stylesheet": "service_address.css",
@@ -19,5 +19,6 @@
     "display": "BlackFlagServiceAddress.mapLink(savedAddress, savedPoint) returns a coordinate-only Maps link for a matching saved record, otherwise an empty string.",
     "manualLookup": "BlackFlagServiceAddress.staffLookup(container, savedAddress) provides a read-only lookup without updating the saved request."
   },
-  "hosting": "Public address reference files can be shared by several sites on the same origin. The component does not store customer records or request device location."
+  "hosting": "Public address reference files can be shared by several sites on the same origin. The component does not store customer records or request device location.",
+  "coverage": "Richmond, Williamsburg, and surrounding Virginia counties. See the source file for the complete list."
 }
