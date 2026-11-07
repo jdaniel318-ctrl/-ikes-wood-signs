@@ -16464,16 +16464,63 @@ body.engine-mode #enginePanel .waypoint-home{padding:22px!important}
 #clearDeckLaunchpad .waypoint-workspace .waypoint-type{font-size:10px;letter-spacing:.1em;font-weight:800;color:#a7d1d7}
 #clearDeckLaunchpad .waypoint-workspace button,#clearDeckLaunchpad .waypoint-workspace>a{display:flex;align-items:center;justify-content:space-between;width:100%;min-height:48px;padding:12px;border:1px solid #678f9a;border-radius:8px;background:#153b48;color:#e4f1f3;text-decoration:none;text-align:left;white-space:normal;font:800 13px/1.4 system-ui,sans-serif}
 #clearDeckLaunchpad .waypoint-program{border-color:#7f744d;background:#192f30}
-#clearDeckLaunchpad .regatta-engine-entry{grid-column:1/-1}
-@media(min-width:681px){
-  #clearDeckLaunchpad .regatta-engine-entry{flex-direction:row;align-items:center}
-  #clearDeckLaunchpad .regatta-engine-entry>button{flex:0 0 auto}
+#clearDeckLaunchpad .regatta-engine-entry { grid-column: 1 / -1; }
+#admiralDeck .regatta-brief { margin: 0 0 20px; }
+:is(#clearDeckLaunchpad,#admiralDeck) .regatta-poster {
+  display: block; position: relative; isolation: isolate; container-type: inline-size;
+  min-width: 0; padding: 0; overflow: hidden; border: 1px solid #a58a52;
+  border-radius: 14px; background: #0b252d; color: #fff3d4; text-align: left;
 }
-#admiralDeck .regatta-brief{margin-bottom:20px;padding:18px;border:1px solid #82744e;border-radius:12px;background:#112c32}
-#admiralDeck .regatta-brief small{display:block;color:#b7d3d4;font-size:13px}
-#admiralDeck .regatta-brief>a{display:inline-flex;align-items:center;min-height:44px;margin:4px 0 8px;padding:6px 16px;border-radius:8px;background:#e9cc81;color:#18333c;font-weight:750;text-decoration:none}
-#admiralDeck .regatta-brief>a:focus-visible{outline:3px solid #b2ecff;outline-offset:3px}
-#clearDeckLaunchpad .regatta-engine-entry>button,#clearDeckLaunchpad .waypoint-program>a{background:#e9cc81;color:#18333c;border-color:#e9cc81}
+.regatta-poster .regatta-art {
+  position: absolute; inset: 0 0 0 auto; z-index: -1; width: 70%; height: 100%;
+  display: block; object-fit: cover; object-position: 68% 52%;
+  mask-image: linear-gradient(to right, transparent, #000 35%);
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 35%);
+}
+:is(#clearDeckLaunchpad,#admiralDeck) .regatta-copy {
+  box-sizing: border-box; width: 47%; padding: clamp(18px, 2.8cqw, 34px);
+  background: linear-gradient(to right,#0b252d 60%,transparent);
+}
+:is(#clearDeckLaunchpad,#admiralDeck) .regatta-copy small {
+  display: block; margin: 0; color: #f0cf81; font: 750 11px/1.45 system-ui,sans-serif; letter-spacing: .13em;
+}
+:is(#clearDeckLaunchpad,#admiralDeck) .regatta-copy h4 {
+  display: block; margin: 8px 0; color: #fff3d4;
+  font: 600 clamp(29px, 4.5cqw, 50px)/1.02 Georgia,serif; letter-spacing: -.035em; text-transform: none;
+}
+:is(#clearDeckLaunchpad,#admiralDeck) .regatta-copy p {
+  margin: 0; max-width: 38ch; color: #d5e0dc; font: 400 15px/1.48 system-ui,sans-serif;
+}
+:is(#clearDeckLaunchpad,#admiralDeck) .regatta-copy button {
+  display: inline-flex; align-items: center; justify-content: center; gap: 14px; width: fit-content;
+  max-width: 100%; min-width: 0; min-height: 44px; margin: 16px 0 0; padding: 10px 17px;
+  background: #efd08b; border: 1px solid #f4dc9c; border-radius: 7px; color: #132b32; text-transform: none;
+  font: 750 14px/1.35 system-ui,sans-serif; cursor: pointer; white-space: normal;
+}
+:is(#clearDeckLaunchpad,#admiralDeck) .regatta-copy button:focus-visible,
+#regattaPlayer button:focus-visible { outline: 3px solid #acebff; outline-offset: 3px; }
+#regattaStatus:empty { display: none; }
+#admiralDeck #regattaStatus:not(:empty) { margin-top: 10px; }
+@container (max-width: 575px) {
+  .regatta-poster .regatta-art { position: relative; z-index: 0; inset: auto; width: 100%;
+    height: clamp(105px, 33cqw, 170px); mask-image: none; -webkit-mask-image: none; object-position: 65% 50%; }
+  :is(#clearDeckLaunchpad,#admiralDeck) .regatta-copy { width: 100%; padding: 16px 18px 19px; }
+}
+#admiralDeck #regattaPlayer[open] {
+  position: fixed; inset: 0; display: flex; flex-direction: column; padding: 0; margin: 0;
+  width: 100%; height: 100%; height: 100dvh; max-width: none; max-height: none; overflow: hidden;
+  box-sizing: border-box; border: 0; border-radius: 0; background: #101e25; color: #f8e5b7;
+}
+#admiralDeck #regattaPlayer:not([open]) { display: none; }
+#regattaPlayer::backdrop { background: #101e25; }
+#admiralDeck #regattaPlayer > header { display: flex; flex: none; align-items: center; justify-content: space-between;
+  padding: max(4px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) 4px max(16px,env(safe-area-inset-left));
+  margin: 0; border: 0; border-bottom: 1px solid #38515a; background: #10282e; }
+#admiralDeck #regattaPlayer > header button { width: auto; min-height: 44px; margin: 0; padding: 6px 12px; color: #f8e5b7;
+  border: 1px solid #6f7770; border-radius: 7px; background: #10282e; font: 700 14px/1.4 system-ui,sans-serif; }
+#regattaPlayer header span { font: italic 18px Georgia,serif; }
+#regattaPlayer iframe { display: block; flex: 1 1 auto; min-height: 0; width: 100%; margin: 0; border: 0; }
+#clearDeckLaunchpad .waypoint-program>a{background:#e9cc81;color:#18333c;border-color:#e9cc81}
 #clearDeckLaunchpad.waypoint-home .clear-deck-support{margin-top:20px;padding-top:16px;border-top:1px solid #32515a}
 #clearDeckLaunchpad.waypoint-home .clear-deck-support b{font-size:12px}
 #clearDeckLaunchpad.waypoint-home .clear-deck-support small{font-size:13px;line-height:1.4}

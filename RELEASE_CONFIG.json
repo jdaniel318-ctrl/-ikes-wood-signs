@@ -1,15 +1,15 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.106",
-  "name": "Spinnaker",
-  "seal": "spinnaker-8820106",
-  "base": "8.8.20.105",
-  "base_sha256": "fc0152993083d87edffc0e18d68be39b27c21f8d80a27bbd5ac88ef693f87e7d",
-  "base_files": 880,
-  "prepared_at": "2026-11-07T23:03:57.238754+00:00",
+  "build": "8.8.20.107",
+  "name": "Harborrun",
+  "seal": "harborrun-8820107",
+  "base": "8.8.20.106",
+  "base_sha256": "a1e1671f8ac450930720e31a6589d274d965c47e829ef0b37d65e4e0a2e6f43e",
+  "base_files": 882,
+  "prepared_at": "2026-11-07T23:33:21.239469+00:00",
   "app_component_revision": "8.8.20.99",
   "owner_helper_revision": "8.8.20.68",
-  "feature_notes": "The Engine Room now offers Black Flag Regatta as an Admiral fleet-learning tool. A verified Admiral can open Sunset Harbor in a separate tab and compare practice runs in its Race log.",
+  "feature_notes": "Black Flag Regatta opens inside the Admiral deck using the verified Black Flag account. Illustrated Engine and Admiral entrances adapt to the available space.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -37,6 +37,6 @@
       "automatic_execution_by_upload": false
     }
   },
-  "install_step": "In Workspaces & programs select Open Regatta, complete the Admiral entrance, then select Enter Sunset Harbor.",
-  "evidence_file": "SPINNAKER_EVIDENCE.json"
+  "install_step": "Choose Open Regatta in the Engine, enter the Admiral deck, then choose Enter Sunset Harbor.",
+  "evidence_file": "HARBORRUN_EVIDENCE.json"
 }

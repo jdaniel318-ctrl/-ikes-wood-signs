@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.20.106",
-  "version": "8.8.20.106",
-  "release_name": "Spinnaker",
-  "releaseName": "Spinnaker",
-  "release_seal": "spinnaker-8820106",
+  "build": "8.8.20.107",
+  "version": "8.8.20.107",
+  "release_name": "Harborrun",
+  "releaseName": "Harborrun",
+  "release_seal": "harborrun-8820107",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -160,8 +160,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "The Engine Room now offers Black Flag Regatta as an Admiral fleet-learning tool. A verified Admiral can open Sunset Harbor in a separate tab and compare practice runs in its Race log.",
-  "release_note": "The Engine Room now offers Black Flag Regatta as an Admiral fleet-learning tool. A verified Admiral can open Sunset Harbor in a separate tab and compare practice runs in its Race log.",
+  "release_focus": "Black Flag Regatta opens inside the Admiral deck using the verified Black Flag account. Illustrated Engine and Admiral entrances adapt to the available space.",
+  "release_note": "Black Flag Regatta opens inside the Admiral deck using the verified Black Flag account. Illustrated Engine and Admiral entrances adapt to the available space.",
   "tax_ledger_upgrade": {
     "schema": "dark-sky-fleet-tax-ledger-v1",
     "model": "TAX_LEDGER_MODEL.json",
@@ -283,8 +283,8 @@
     "algorithm": "SHA-256",
     "files": {
       "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": {
-        "sha256": "014c8cc98103aee7040e37630258fbe3d219446848e9c1bfbc85c25e73ae212c",
-        "build": "8.8.20.106",
+        "sha256": "4204cee91bf2a6459e837b78e565d089083f8e92dce41d53c97f1c6d6fd368ba",
+        "build": "8.8.20.107",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -331,14 +331,14 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_COMMAND_MODEL.json": {
-        "sha256": "ae3c7b593fb9a856e8d0de2234aa834fffe1e0ffb18cd18c6f13876127a662ac",
-        "build": "8.8.20.106",
+        "sha256": "2fec103a7215369c64a22224ffe6d489d4fd0fea8c9e3aa662758b534c59e474",
+        "build": "8.8.20.107",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
       "FLEET_DOCTRINE_REGISTRY.json": {
-        "sha256": "31334026435e5fb35459fe63467f1dc79a0504fc7856ef45d6e088c42ffcb078",
-        "build": "8.8.20.106",
+        "sha256": "5bac2c66613fbe421be3a3211a8ee4ef7ee21ab7c2e36b4d5267bb929496ab81",
+        "build": "8.8.20.107",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -397,8 +397,8 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "GOLDEN_VOYAGES.json": {
-        "sha256": "67ad972cd8e93d056c792173ed7508ffe7647fd508d91d968fcf763234d51a4c",
-        "build": "8.8.20.106",
+        "sha256": "92a6d367751a4f6956bf6c1962e2b87f21a23bfb25d731662ae8169792a5b5bc",
+        "build": "8.8.20.107",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -547,7 +547,7 @@
     "algorithm": "SHA-256",
     "serialization": "UTF-8 response body, same text executed by atomic loader",
     "files": {
-      "styles.css": "1206d2217dd5d908fc6593eec2de67f9ed2da0651b5787358788a1ac8c59d5d9",
+      "styles.css": "b188870dea2664e5d6237bc6dbb3b2d659aa60447512e4341e30b13d5ce14a9d",
       "simple_books.css": "5939590021ef2d3738d5f5f7249d72f8da64cc274bf287ef8183958517b0ba46",
       "platform_core.js": "7fb1504a8b8de0fe319bfd29bed4d0875784565d45ede84a07a61c767491da68",
       "platform_v4.js": "f1596bec1fa4689f5edd75378241da7042ff04eb879401a83f3bd7a2d5cc4e9e",
@@ -555,16 +555,16 @@
       "fleet_supabase.js": "ea66122cd5f138dd91989cd7a5b0abad8d008dd352a811fab1643e19b5c2ccc5",
       "ike_style_registry.js": "6b348ebceb47e172e6676f46252b19c1c6bb7532baf76febfa8dd81760a76ab7",
       "app.js": "34cc9b0406d305ee4d3be5c933b3495ef92ec6f5605c4f5d75cc3c27d5295d54",
-      "captain.js": "0c341b894dffef8c41a78de2e83fe607a27e4493abb9ebbc82f3a00f0e572a50",
+      "captain.js": "4017ed1909b6ff2f8a21c7bba14741256fa783d75fd89b5bfef5f2f9c599b411",
       "simple_books.js": "ddd76dcf5e6c579f16918a9d3e645b0fc65d8a5b4d7c66df8896d8314eea325d",
-      "owner.html": "af5046513ac3ca35e4eaac53100254e9d717caf3470df5c6572e0ff83b0db6a7",
-      "manifest.webmanifest": "ead1799c54f982780566671ba52460cffa593fa24539f14ee0ef4a6f200f137c",
+      "owner.html": "b7312d43bc88138caf9138c51e9e66c5dbd00c2b4a74e6af21c3a20700c3f944",
+      "manifest.webmanifest": "c4ad930bd63081097b035fb6bcfddcda38bc73588d00fc0e65077b55e7300e12",
       "IKE_STYLE_FOUNDRY.json": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
-      "sw.js": "31efa9ffa2d9fcbe581333c2a3889c4d61ce260ba7c1283676db41635b98dcd0",
-      "FLEET_DOCTRINE_REGISTRY.json": "31334026435e5fb35459fe63467f1dc79a0504fc7856ef45d6e088c42ffcb078",
-      "GOLDEN_VOYAGES.json": "67ad972cd8e93d056c792173ed7508ffe7647fd508d91d968fcf763234d51a4c",
-      "FLEET_COMMAND_MODEL.json": "ae3c7b593fb9a856e8d0de2234aa834fffe1e0ffb18cd18c6f13876127a662ac",
-      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "014c8cc98103aee7040e37630258fbe3d219446848e9c1bfbc85c25e73ae212c",
+      "sw.js": "90d537687e6191b4774cb8482bafd3eaeb5d80552db11e6ef4b34aed7bd3d7cd",
+      "FLEET_DOCTRINE_REGISTRY.json": "5bac2c66613fbe421be3a3211a8ee4ef7ee21ab7c2e36b4d5267bb929496ab81",
+      "GOLDEN_VOYAGES.json": "92a6d367751a4f6956bf6c1962e2b87f21a23bfb25d731662ae8169792a5b5bc",
+      "FLEET_COMMAND_MODEL.json": "2fec103a7215369c64a22224ffe6d489d4fd0fea8c9e3aa662758b534c59e474",
+      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "4204cee91bf2a6459e837b78e565d089083f8e92dce41d53c97f1c6d6fd368ba",
       "input_hygiene.js": "85584886dd424e619c6ee1069665e201dca51e815673839f91da0d796fcf591a",
       "business_deck.js": "5f699f4c8f8a8651dde8b4e3faee4dff1b23412a0cfbb901f3cc84e7297ad350",
       "business_deck.css": "c598dca691af9fd3791effc372f54ead2f5280a6a8bc19032fb01ee2708d593a",
@@ -1074,7 +1074,7 @@
     "project_data_mutation": false,
     "field_failure_proof": "8.8.20.13 held on styles.css because packaged DEPLOYMENT_MANIFEST runtime hash did not match packaged styles.css bytes"
   },
-  "release": "Spinnaker",
+  "release": "Harborrun",
   "clearbearing_upgrade": {
     "build": "8.8.20.22",
     "baseline": "8.8.20.14 HashLock",

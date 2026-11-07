@@ -1227,6 +1227,134 @@ const AdmiralAccountForm = (() => {
     schedule();
   }
 
+  function mountRegatta(deck, launch) {
+    const status = deck.querySelector('#regattaStatus');
+    const dialog = document.createElement('dialog');
+    dialog.id = 'regattaPlayer';
+    dialog.setAttribute('aria-label', 'Black Flag Regatta');
+    dialog.innerHTML = '<header><button type="button" autofocus>← Admiral deck</button><span>Sunset Harbor</span></header>';
+    deck.appendChild(dialog);
+    let visit = null;
+    let frame = null;
+
+    function current(entry) {
+      if (!entry || entry !== visit || deck.classList.contains('hidden') || deck.inert ||
+          deck.getAttribute('aria-hidden') === 'true' || !deck.isConnected) return false;
+      const session = window.DarkSkyAdmiralSession?.status();
+      return session?.reusable && session.startedAt === entry.startedAt &&
+        entry.client.readSession()?.user?.id === entry.userId;
+    }
+
+    function leave() {
+      const old = visit;
+      visit = null;
+      old?.request.abort();
+      frame?.remove();
+      frame = null;
+      if (dialog.open) dialog.close();
+      if (old && !launch.disabled && launch.getClientRects().length) launch.focus({preventScroll:true});
+    }
+
+    function lock() {
+      launch.disabled = true;
+      leave();
+      status.textContent = 'Re-enter the Admiral deck to open the race.';
+    }
+
+    // The player can store only boat preferences, three best times and twelve race results.
+    function raceState(input) {
+      const boatId = n => Number.isInteger(n) && n >= 0 && n < 3;
+      const time = n => Number.isFinite(n) && n > 0 && n <= 86400;
+      const count = n => Number.isInteger(n) && n >= 0 && n <= 1000 ? n : 0;
+      const best = {};
+      for (let id = 0; id < 3; id++) {
+        if (time(input?.best?.[id])) best[id] = input.best[id];
+      }
+      const history = [];
+      if (Array.isArray(input?.history)) {
+        for (const row of input.history.slice(0,12)) {
+          if (boatId(row?.id) && time(row.time) && [1,2,3].includes(row.rank)) {
+            history.push({id:row.id, time:row.time, rank:row.rank, currents:count(row.currents), hits:count(row.hits)});
+          }
+        }
+      }
+      return {boat:boatId(input?.boat) ? input.boat : 0, sound:input?.sound === true, best, history};
+    }
+
+    window.addEventListener('message', event => {
+      if (!frame || event.source !== frame.contentWindow || event.origin !== 'null' || !dialog.open) return;
+      const entry = visit;
+      if (!current(entry)) { lock(); return; }
+      const key = 'blackFlagRegatta:v1:' + entry.userId;
+      switch (event.data?.type) {
+        case 'regatta:ready': {
+          let data;
+          try { data = JSON.parse(localStorage.getItem(key)); } catch (_) {}
+          frame.contentWindow.postMessage({type:'regatta:enter', state:raceState(data)}, '*');
+          break;
+        }
+        case 'regatta:save':
+          try { localStorage.setItem(key, JSON.stringify(raceState(event.data.state))); } catch (_) {
+            status.textContent = 'This browser could not save your race log.';
+          }
+          break;
+        case 'regatta:activity':
+          if (document.visibilityState === 'visible') window.DarkSkyAdmiralSession.noteProgramActivity(entry);
+          break;
+      }
+    });
+
+    launch.addEventListener('click', async () => {
+      if (visit || launch.disabled) return;
+      let entry;
+      try {
+        const config = window.BlackFlagV3Identity.productionAuth.readClientConfig();
+        const client = window.DarkSkySupabase.create({...config, sessionKey:'darkSkySupabaseAdmiralSessionV1',
+          build:window.__darkSkyVerifiedRelease.build});
+        const session = window.DarkSkyAdmiralSession.status();
+        const userId = client.readSession()?.user?.id;
+        if (!session.reusable || !userId) { lock(); openAdmiralGate(deck.dataset.entrySource, 'regatta'); return; }
+        entry = {client, userId, startedAt:session.startedAt, request:new AbortController()};
+        visit = entry;
+        status.textContent = 'Opening Sunset Harbor…';
+        if (!await window.DarkSkyAdmiralIdentityStatus() || !current(entry)) throw Error();
+        const timer = setTimeout(() => entry.request.abort(), 30000);
+        let bytes;
+        try {
+          const response = await fetch('./regatta-player.json', {signal:entry.request.signal, cache:'no-cache',
+            credentials:'omit', referrerPolicy:'no-referrer', redirect:'error'});
+          if (!response.ok) throw Error();
+          bytes = await response.arrayBuffer();
+        } finally { clearTimeout(timer); }
+        const digest = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', bytes)),
+          byte => byte.toString(16).padStart(2,'0')).join('');
+        if (digest !== '6df6b5b1694d4aa9a0eaecf0b778f0de942e178ca8b2db648e5a9fcf6c71bc05') throw Error();
+        const player = JSON.parse(new TextDecoder().decode(bytes));
+        if (!current(entry) || !launch.getClientRects().length) throw Error();
+        frame = document.createElement('iframe');
+        frame.title = 'Sunset Harbor race';
+        frame.setAttribute('sandbox','allow-scripts');
+        frame.referrerPolicy = 'no-referrer';
+        frame.srcdoc = player.document;
+        dialog.appendChild(frame);
+        dialog.showModal();
+        status.textContent = '';
+      } catch (_) {
+        if (!entry || visit === entry) {
+          leave();
+          status.textContent = 'Sunset Harbor could not open. Check your connection and try again.';
+        }
+      }
+    });
+    dialog.querySelector('button').addEventListener('click', leave);
+    dialog.addEventListener('cancel', event => { event.preventDefault(); leave(); });
+    window.addEventListener('pagehide', lock);
+    for (const name of ['ended','unavailable']) window.addEventListener('darksky:admiral-session-' + name, lock);
+    window.addEventListener('darksky:admiral-session-changed', () => { if (visit && !current(visit)) lock(); });
+    new MutationObserver(() => { if (visit && !current(visit)) lock(); })
+      .observe(deck, {attributes:true, attributeFilter:['class','hidden','inert','aria-hidden']});
+  }
+
   function ensureAdmiralDeck(){
     let gate=byId('admiralGateOverlay');
     if(gate)return gate;
@@ -1361,24 +1489,16 @@ const AdmiralAccountForm = (() => {
     const promoteLane=deck.querySelector('[data-admiral-panel="promote"]');
     promoteLane?.insertAdjacentHTML('afterbegin',`<section class="admiral-passage-card" aria-label="Commissioned Admiral Office"><small>ADMIRAL KEEL</small><h5>Commissioned rank. Separate secure sessions.</h5><ol><li><b>1</b><span>The Admiral office is now an accepted Fleet role, distinct from Captain.</span></li><li><b>2</b><span>Session timeout, logout, or readiness WATCH never demotes the rank.</span></li><li><b>3</b><span>Every entry still requires passage PIN plus server-verified Admiral identity.</span></li><li><b>4</b><span>Only an explicit server authority revocation can remove the commissioned role.</span></li></ol><p>Readiness warnings remain obligations to harden the fleet. They do not turn the Admiral back into a Captain.</p></section>`);
     promoteLane?.insertAdjacentHTML('afterbegin', `
-      <section class="regatta-brief" aria-labelledby="regattaBriefTitle">
-        <small>ADMIRAL TOOL · FLEET LEARNING</small>
-        <h4 id="regattaBriefTitle">Black Flag Regatta</h4>
-        <p>Race the same boat twice through Sunset Harbor. Change where you use your power gust, then compare your times in the Race log.</p>
-        <a id="regattaHarborLink" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">Enter Sunset Harbor ↗</a>
-        <small>Opens the private game in a new tab.</small>
-      </section>`);
+      <section class="regatta-poster regatta-brief" aria-labelledby="regattaBriefTitle">
+              <img class="regatta-art" src="./regatta-harbor.webp" alt="" loading="lazy" decoding="async">
+              <div class="regatta-copy"><small>ADMIRAL TOOL · FLEET LEARNING</small>
+                <h4 id="regattaBriefTitle">Black Flag Regatta</h4>
+                <p>Try two runs with the same boat. Use your gust in a different stretch of water, then compare your times in the race log.</p>
+                <button type="button" id="regattaHarborLink" disabled>Enter Sunset Harbor <span aria-hidden="true">→</span></button><p id="regattaStatus" role="status"></p>
+              </div>
+            </section>`);
     const regattaLink = byId('regattaHarborLink');
-    const resetRegattaLink = () => regattaLink.removeAttribute('href');
-    window.addEventListener('darksky:admiral-session-ended', resetRegattaLink);
-    window.addEventListener('darksky:admiral-session-unavailable', resetRegattaLink);
-    regattaLink.addEventListener('click', event => {
-      if (!regattaLink.hasAttribute('href') || !window.DarkSkyAdmiralSession?.status()?.reusable) {
-        event.preventDefault();
-        resetRegattaLink();
-        openAdmiralGate(deck.dataset.entrySource, 'regatta');
-      }
-    });
+    mountRegatta(deck, regattaLink);
     loadUpperCommandVisual('admiral');
 
     const commitEngineSurface=()=>{
@@ -1455,11 +1575,12 @@ const AdmiralAccountForm = (() => {
       }
       refreshAdmiralCeremonialSurface();
       primeAdmiralFirstPaint8658();
-      regattaLink.href = 'https://black-flag-regatta.tv6m8ysvwt.chatgpt.site/';
+      regattaLink.disabled = false;
+      byId('regattaStatus').textContent = '';
       if (directTarget === 'regatta') {
         setAdmiralLane('promote');
         requestAnimationFrame(() => {
-          if (deck.classList.contains('hidden') || !regattaLink.hasAttribute('href')) return;
+          if (deck.classList.contains('hidden') || regattaLink.disabled) return;
           regattaLink.focus({preventScroll: true});
           regattaLink.scrollIntoView({block: 'center', behavior: 'instant'});
         });
@@ -1679,7 +1800,8 @@ const AdmiralAccountForm = (() => {
     const deck=byId('admiralDeck');
     const input=byId('admiralPinInput');
     const fromEngine=source==='engine';
-    byId('regattaHarborLink')?.removeAttribute('href');
+    const regattaLaunch = byId('regattaHarborLink');
+    if (regattaLaunch) regattaLaunch.disabled = true;
     if(gate){gate.dataset.entrySource=fromEngine?'engine':'captain';gate.dataset.directTarget=directTarget;}
     if(deck)deck.dataset.entrySource=fromEngine?'engine':'captain';
     const gateReturn=byId('admiralGateReturnBtn');

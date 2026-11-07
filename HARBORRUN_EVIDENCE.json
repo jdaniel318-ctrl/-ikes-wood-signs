@@ -1,0 +1,31 @@
+{
+  "build": "8.8.20.107",
+  "release": "Harborrun",
+  "base": "8.8.20.106 Spinnaker",
+  "release_suites_passed": 46,
+  "presentation_checks_by_browser": {
+    "chromium": 14,
+    "webkit": 14
+  },
+  "tested_widths": [
+    320,
+    390,
+    600,
+    768,
+    820,
+    1024,
+    1366
+  ],
+  "previous_ipad_layout": "At 1366px the button extended 95px beyond the Engine card and the text column was 98px wide.",
+  "browser_fixture": "The real Engine portal and shipped race were exercised with synthetic accounts and a simulated Fleet Core.",
+  "checks": [
+    "Admiral launch in the same tab with zero ChatGPT requests",
+    "Captain-only account denied",
+    "Integrity failure blocked the player and retry recovered",
+    "Pause, finish, save a boat and result, return to the Admiral deck",
+    "Admiral session expiry ended the game"
+  ],
+  "native_ipad": "Pending after installation.",
+  "database_changes": "None.",
+  "live_deployment": false
+}
