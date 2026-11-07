@@ -1,0 +1,15 @@
+{
+  "build": "8.8.20.102",
+  "release": "Pennant",
+  "base": "8.8.20.101 Callsign",
+  "release_suites_passed": 45,
+  "admiral_entrances": {
+    "chromium": 2,
+    "webkit": 2,
+    "scope": "Button-only entrance, explicit email editing, validation, password focus and keyboard order, simulated username substitution, denied and interrupted sign-ins, verified opt-in and forgetting a saved Admiral email in synthetic sessions."
+  },
+  "presentation_checks_passed": 35,
+  "watchtower_read_only_integration": "Passed with synthetic accounts.",
+  "native_ipad": "Pending after deployment. Native Passwords suggestions are controlled by iPadOS.",
+  "database_changes": "none"
+}

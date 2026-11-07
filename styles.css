@@ -16756,3 +16756,20 @@ body:not(.engine-mode) #experienceTestDeck,body.boot-locked #experienceTestDeck{
 #watchSecurityForm input {min-width:0;width:100%;box-sizing:border-box}
 #watchSecurityForm button {white-space:normal}
 #admiralSignInForm .hidden, #watchSecurityForm .hidden {display:none!important}
+
+/* Admiral account choice, shared by the Office and Fleet Watch. */
+:is(#admiralSignInForm, #watchSecurityForm) button { overflow-wrap: anywhere; }
+:is(#admiralSignInForm, #watchSecurityForm) textarea {
+  display: block; box-sizing: border-box; width: 100%; min-height: 52px;
+  resize: vertical; padding: 14px; border: 1px solid #527680; border-radius: 10px;
+  background: #061923; color: #f7f6ed; font: inherit; font-size: 17px;
+}
+:is(#admiralSignInForm, #watchSecurityForm) textarea:focus-visible {
+  outline: 2px solid #86d0df; outline-offset: 3px;
+}
+:is(#admiralGateOverlay, #watchSecurityLayer) :is(#admiralSignInForm, #watchSecurityForm) label.admiral-remember-email {
+  display: flex; align-items: center; gap: 10px; min-height: 44px; cursor: pointer;
+}
+:is(#admiralGateOverlay, #watchSecurityLayer) form label.admiral-remember-email input[type=checkbox] {
+  width: 20px; min-width: 20px; height: 20px; min-height: 20px; margin: 0; padding: 0;
+}

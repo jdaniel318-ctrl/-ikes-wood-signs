@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.101",
-  "release": "Callsign",
-  "seal": "callsign-8820101",
+  "build": "8.8.20.102",
+  "release": "Pennant",
+  "seal": "pennant-8820102",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Callsign",
-  "name": "Callsign",
-  "releaseName": "Callsign"
+  "release_name": "Pennant",
+  "name": "Pennant",
+  "releaseName": "Pennant"
 }

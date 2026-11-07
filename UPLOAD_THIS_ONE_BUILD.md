@@ -1,11 +1,11 @@
-# Upload Callsign 8.8.20.101
+# Upload Pennant 8.8.20.102
 
-Use `DarkSky8820101-Callsign-Upload.zip`, not the full backup or rollback.
+Use `DarkSky8820102-Pennant-Upload.zip`, not the full backup or rollback.
 1. Extract the ZIP. Open its single folder. Upload ALL files inside to the existing repository ROOT; replace matching files and KEEP all other files. Commit the upload.
-2. After deployment open the Engine and confirm `8.8.20.101 · CALLSIGN`. Do not clear Safari data, reset records or change permissions.
-3. After the passage PIN, confirm the Admiral email and check that the password field appears for that account.
+2. After deployment open the Engine and confirm `8.8.20.102 · PENNANT`. Do not clear Safari data, reset records or change permissions.
+3. After the passage PIN, check the account chooser on your iPad. Choose an Admiral email, sign in, and test the optional remembered address on your next fresh sign-in.
 
-Admiral Office and Fleet Watchtower ask for the Admiral email before showing a password field. A changed username requires fresh confirmation.
+Admiral Office and Fleet Watchtower open with an account button. Users can choose to remember a verified Admiral email on this device.
 The upload itself executes no database commands. Shared specialist components retain their own revision labels; this is intentional reuse, not a mixed upload. Exact SHA-256 checks still run before Engine scripts execute.
 
 Full backup: application source ONLY; not Supabase, customer media or device drafts.

@@ -1,15 +1,15 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.101",
-  "name": "Callsign",
-  "seal": "callsign-8820101",
-  "base": "8.8.20.100",
-  "base_sha256": "5525a3061c70c6a889143dd5a06f3c2eb9ab79a31cd54a2b5f704aed90dd0393",
-  "base_files": 873,
-  "prepared_at": "2026-11-07T16:47:43.838881+00:00",
+  "build": "8.8.20.102",
+  "name": "Pennant",
+  "seal": "pennant-8820102",
+  "base": "8.8.20.101",
+  "base_sha256": "1d638400d5f6edf3c95d06079885519cedfbcf9c33e8faf6c11175124d27ac5f",
+  "base_files": 875,
+  "prepared_at": "2026-11-07T17:12:27.678165+00:00",
   "app_component_revision": "8.8.20.99",
   "owner_helper_revision": "8.8.20.68",
-  "feature_notes": "Admiral Office and Fleet Watchtower ask for the Admiral email before showing a password field. A changed username requires fresh confirmation.",
+  "feature_notes": "Admiral Office and Fleet Watchtower open with an account button. Users can choose to remember a verified Admiral email on this device.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -30,6 +30,6 @@
       "automatic_execution_by_upload": false
     }
   },
-  "install_step": "After the passage PIN, confirm the Admiral email and check that the password field appears for that account.",
-  "evidence_file": "CALLSIGN_EVIDENCE.json"
+  "install_step": "After the passage PIN, check the account chooser on your iPad. Choose an Admiral email, sign in, and test the optional remembered address on your next fresh sign-in.",
+  "evidence_file": "PENNANT_EVIDENCE.json"
 }

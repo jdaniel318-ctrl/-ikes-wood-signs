@@ -1,9 +1,9 @@
 {
-  "release": "Callsign",
-  "name": "Callsign",
-  "build": "8.8.20.101",
-  "seal": "callsign-8820101",
-  "file_count": 875,
+  "release": "Pennant",
+  "name": "Pennant",
+  "build": "8.8.20.102",
+  "seal": "pennant-8820102",
+  "file_count": 876,
   "files": [
     ".github/workflows/drydock-batch1.yml",
     "ADMIRALS_DECK_TRIAL.md",
@@ -274,6 +274,7 @@
     "OWNER_RECOVERY_MODEL.json",
     "OWNER_SIGNIN_BRIDGE_MODEL.json",
     "PATCH_CONTRACT.json",
+    "PENNANT_EVIDENCE.json",
     "PERFORMANCE_AUDIT_605.md",
     "PERFORMANCE_AUDIT_607.md",
     "PERFORMANCE_AUDIT_608.md",

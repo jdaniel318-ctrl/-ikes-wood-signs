@@ -14,85 +14,122 @@
   window.DarkSkyAdmiralFreshGate=Object.freeze({build:'8.8.17',requiredPerDocument:true,engineAuthoritySeparate:true});
 })();
 /* Dark Sky 8.8.17 Admiral Commission — server-attested, read-only Admiral observability. */
-// Both Admiral entrances use the same two-stage form on the shared fleet host.
+// The initial account chooser has no text or password control for Safari to fill.
 const AdmiralAccountForm = (() => {
+  const preferenceKey = 'blackflag.admiral.email:' + location.pathname.replace(/[^/]*$/, '');
+
+  function validAddress(value) {
+    const address = value.trim().toLowerCase();
+    if (!address || /\s/.test(address)) return '';
+    const check = document.createElement('input');
+    check.type = 'email';
+    check.value = address;
+    return check.validity.valid ? address : '';
+  }
+
+  function savedEmail() {
+    try { return validAddress(localStorage.getItem(preferenceKey) || ''); }
+    catch (_) { return ''; }
+  }
+
   function fields(prefix) {
-    return `<label>Admiral email
-      <input id="${prefix}Email" type="text" inputmode="email" autocomplete="off"
-        data-bf-trim="boundary" autocapitalize="none" spellcheck="false" required>
-    </label>
-    <template><label>Admiral password
-      <input id="${prefix}Password" name="password" type="password" required
-        data-bf-trim="preserve" autocomplete="section-admiral current-password">
-    </label></template>
-    <button id="${prefix}SignIn" class="admiral-primary" type="submit">Continue with Admiral email →</button>
-    <button type="button" class="admiral-secondary hidden" data-change-account>Change Admiral email</button>`;
+    return `<button type="button" id="${prefix}Choose" class="admiral-primary" data-enter-email>Enter Admiral email</button>`;
   }
 
   function mount(form, status, authenticate) {
-    const email = form.querySelector('input');
-    const template = form.querySelector('template');
-    const submit = form.querySelector('[type=submit]');
-    const change = form.querySelector('[data-change-account]');
-    let selected = '', epoch = 0, password = null;
+    const prefix = form.querySelector('[data-enter-email]').id.replace(/Choose$/, '');
+    let selected = '', epoch = 0, pending = false;
 
-    function reset(value = '') {
+    function clear() {
       ++epoch;
+      pending = false;
       selected = '';
-      if (password) {
-        password.value = '';
-        password.closest('label').remove();
-        password = null;
-      }
-      email.readOnly = false;
-      email.removeAttribute('name');
-      email.autocomplete = 'off';
-      email.value = value;
-      submit.textContent = 'Continue with Admiral email →';
-      submit.disabled = false;
-      change.disabled = false;
-      change.classList.add('hidden');
+      const secret = form.querySelector('[type=password]');
+      if (secret) secret.value = '';
+      form.replaceChildren();
     }
 
-    change.onclick = () => {
-      reset(selected);
+    function button(label, primary, action) {
+      const element = document.createElement('button');
+      element.type = action ? 'button' : 'submit';
+      element.className = primary ? 'admiral-primary' : 'admiral-secondary';
+      element.textContent = label;
+      if (action) element.onclick = action;
+      if (primary && !action) element.id = prefix + 'SignIn';
+      form.append(element);
+      return element;
+    }
+
+    function reset() {
+      clear();
+      const saved = savedEmail();
+      if (saved) button('Continue as ' + saved, true, () => confirmEmail(saved));
+      const enter = button(saved ? 'Use another Admiral email' : 'Enter Admiral email', !saved, () => editEmail(''));
+      enter.id = prefix + 'Choose';
+      if (saved) button('Forget saved Admiral email', false, () => {
+        try { localStorage.removeItem(preferenceKey); } catch (_) {}
+        reset();
+        form.querySelector('button').focus();
+        status.textContent = savedEmail() ? 'This device could not remove the saved email.' : 'Saved Admiral email removed.';
+      });
+    }
+
+    function editEmail(value, message = '') {
+      clear();
+      form.innerHTML = `<label>Admiral email
+        <textarea id="${prefix}Email" rows="1" inputmode="email" autocomplete="off" enterkeyhint="next"
+          data-bf-trim="boundary" autocapitalize="none" spellcheck="false" required></textarea></label>`;
+      const draft = form.querySelector('textarea');
+      draft.value = value;
+      draft.onkeydown = event => {
+        if (event.key === 'Enter' && !event.isComposing) {
+          event.preventDefault();
+          form.requestSubmit();
+        }
+      };
+      button('Continue with Admiral email →', true);
+      status.textContent = message;
+      draft.focus();
+      draft.select();
+    }
+
+    function confirmEmail(address) {
+      clear();
+      selected = address;
+      form.innerHTML = `<label>Admiral email
+        <input id="${prefix}Email" name="username" type="text" readonly autocomplete="section-admiral username">
+        </label><label><span tabindex="-1" data-password-label>Admiral password</span>
+        <input id="${prefix}Password" name="password" type="password" required
+          data-bf-trim="preserve" autocomplete="section-admiral current-password"></label>
+        <label class="admiral-remember-email"><input type="checkbox" data-remember-email>
+          Remember my Admiral email on this device</label>`;
+      form.elements.username.value = address;
+      form.querySelector('[data-remember-email]').checked = (savedEmail() === address);
+      button('Authenticate Admiral →', true);
+      button('Change Admiral email', false, () => editEmail(address));
       status.textContent = '';
-      email.focus();
-      email.select();
-    };
+      form.querySelector('[data-password-label]').focus();
+    }
+
     form.onsubmit = async event => {
       event.preventDefault();
-      if (submit.disabled) return;
-      const address = email.value.trim().toLowerCase();
-      if (!selected) {
-        const check = document.createElement('input');
-        check.type = 'email';
-        check.required = true;
-        check.value = address;
-        if (!check.validity.valid) {
-          status.textContent = 'Enter your Admiral email address.';
-          email.focus();
-          return;
+      if (pending) return;
+      const draft = form.querySelector('textarea');
+      if (draft) {
+        const address = validAddress(draft.value);
+        if (address) confirmEmail(address);
+        else {
+          status.textContent = 'Enter a single Admiral email address.';
+          draft.focus();
         }
-        selected = address;
-        email.value = selected;
-        email.readOnly = true;
-        email.name = 'username';
-        email.autocomplete = 'section-admiral username';
-        template.after(template.content.cloneNode(true));
-        password = form.querySelector('input[type=password]');
-        change.classList.remove('hidden');
-        submit.textContent = 'Authenticate Admiral →';
-        status.textContent = '';
-        password.focus();
         return;
       }
-      if (address !== selected) {
-        reset(selected);
-        status.textContent = 'The email changed. Confirm your Admiral email again.';
-        email.focus();
+      if (!selected) return;
+      if (validAddress(form.elements.username.value) !== selected) {
+        editEmail(selected, 'The email changed. Confirm your Admiral email again.');
         return;
       }
+      const password = form.elements.password;
       if (!password.value) {
         status.textContent = 'Enter the password for your Admiral account.';
         password.focus();
@@ -100,11 +137,24 @@ const AdmiralAccountForm = (() => {
       }
       const turn = ++epoch;
       const current = () => turn === epoch;
-      submit.disabled = change.disabled = true;
+      const chosen = selected;
+      const remember = form.querySelector('[data-remember-email]').checked;
+      // Called by each route only after its live identity and authority checks pass.
+      const verified = () => {
+        if (!current()) return;
+        try {
+          if (remember) localStorage.setItem(preferenceKey, chosen);
+          else if (savedEmail() === chosen) localStorage.removeItem(preferenceKey);
+        } catch (_) { /* A device preference is optional for sign-in. */ }
+      };
+      const controls = form.querySelectorAll('button, [data-remember-email]');
+      const submit = form.querySelector('[type=submit]');
+      pending = true;
+      controls.forEach(control => { control.disabled = true; });
       submit.textContent = 'Verifying Admiral…';
       status.textContent = 'Checking Admiral authority…';
       try {
-        await authenticate(selected, password.value, current);
+        await authenticate(chosen, password.value, current, verified);
         if (current()) reset();
       } catch (error) {
         if (current()) {
@@ -113,12 +163,14 @@ const AdmiralAccountForm = (() => {
         }
       } finally {
         if (current()) {
-          submit.disabled = change.disabled = false;
+          pending = false;
+          controls.forEach(control => { control.disabled = false; });
           submit.textContent = 'Authenticate Admiral →';
         }
       }
     };
-    return {reset, get pending() { return submit.disabled; }};
+    reset();
+    return {reset, get pending() { return pending; }};
   }
   return {fields, mount};
 })();
@@ -190,11 +242,13 @@ const AdmiralAccountForm = (() => {
   }
   function overview(id){const v=programs.find(x=>x.project_id===id)||(id===PROGRAM.project_id?PROGRAM:records.find(x=>x.project_id===id));if(!v)return;leaveWatch();const f=facts(v),program=v.mission_class==='admiral_program';$('watchOverviewBody').innerHTML=`<header>${mark(v)}<div><small>ADMIRAL OBSERVATION · EXACT PROJECT CONTEXT</small><h2>${safe(v.display_name)}</h2><p>${safe(v.project_id)}</p></div><em>READ ONLY</em></header><section class="fleet-vessel-context"><article><small>VESSEL LIFECYCLE</small><b>${safe(words(f.life).toUpperCase())}</b></article><article><small>OWNERSHIP STATUS</small><b>${safe(program?'SEPARATE PROGRAM':controlLabel(v))}</b></article><article><small>OWNER ACCOUNTS (NOT CAPTAINS)</small><b>${program?'Not applicable':Number(v.owner_auth_identity_count||0)}</b></article><article><small>SERVER SETTINGS</small><b>${program?'Not applicable':v.settings_present?'PRESENT':'MISSING'}</b></article><article><small>REPORT FRESHNESS</small><b>${safe(!f.reported?"NEVER REPORTED":f.stale?"STALE REPORT":"RECENT REPORT")}</b></article><article><small>OPERATING MODEL</small><b>${safe(words(v.operating_model).toUpperCase())}</b></article><article><small>LAST FLEET READ (NOT A NEW REPORT)</small><b>${safe(lastSync?new Date(lastSync).toLocaleString():"Not read")}</b></article><article><small>CURRENT WORK</small><b>${safe(f.work)}</b></article><article><small>CAPTAIN REPORT SAVED AT</small><b>${safe(f.activity?new Date(f.activity).toLocaleString():'Not reported')}</b></article></section>${f.summary?`<aside><b>Issue summary</b><span>${safe(f.summary)}</span></aside>`:''}<aside><b>Scoped observation established</b><span>Only ${safe(v.display_name)} (${safe(v.project_id)}) is in context. Source: ${safe(words(f.source))}. Captain appointment and ownership are separate. An unassigned owner does not cancel an accepted Captain appointment; owner authority still requires an exact-vessel owner membership. No modifying control is exposed.</span></aside>${program?'':`<section class="tb-command-access"><h3>Fleet Captain operating access</h3><p>Observation is available without a Captain appointment. Operating is a separate authority check, not an ownership transfer.</p><p class="tb-command-pending"><b>FLEET COMMAND OPERATIONS NOT ENABLED</b><br>This release does not enable operation from the Fleet Command side. This is not a backend-health warning or a publication status. An accepted, exact-vessel Captain uses their separate Captain Station; observation grants no operating permission.</p><button type="button" disabled>OPERATE AS FLEET CAPTAIN — NOT ENABLED</button><p>No appointment or membership will be created to bypass this boundary.</p></section>`}`;$('watchOverview').classList.remove('hidden');$('watchOverview').setAttribute('aria-hidden','false');$('watchOverviewClose').focus({preventScroll:true});}
   install();
-  const watchAccount = AdmiralAccountForm.mount($('watchSecurityForm'), $('watchGateStatus'), async (email, password, current) => {
+  const watchAccount = AdmiralAccountForm.mount($('watchSecurityForm'), $('watchGateStatus'), async (email, password, current, verified) => {
     await window.DarkSkyAuthenticateAdmiral(email, password);
     if (!current()) return;
     if (!(await identityVerified())) throw Error('Active Admiral authority was not verified.');
-    if (current()) await load();
+    if (!current()) return;
+    verified();
+    await load();
   });
   window.DarkSkyOpenFleetWatchtower=open;window.DarkSkyOpenAdmiralFleet=open;
   window.addEventListener('pagehide', () => watchAccount.reset());
@@ -1382,7 +1436,7 @@ const AdmiralAccountForm = (() => {
         showAccountAirlock();byId('admiralAirlockStatus').textContent=(problem?.message||'Server verification unavailable.')+' The workspace remains locked.';
       }finally{button.disabled=false;if(gate.dataset.authStep==='pin')setAdmiralEntranceStep(gate,'pin');}
     };
-    airlockAccount = AdmiralAccountForm.mount(byId('admiralSignInForm'), byId('admiralAirlockStatus'), async (email, password, current) => {
+    airlockAccount = AdmiralAccountForm.mount(byId('admiralSignInForm'), byId('admiralAirlockStatus'), async (email, password, current, verified) => {
       if (!admiralPassageVerified) throw Error('Verify the passage PIN before account sign-in.');
       const attempt = ++admiralGateAttempt;
       const directTarget = gate.dataset.directTarget || '';
@@ -1391,6 +1445,7 @@ const AdmiralAccountForm = (() => {
       if (!active()) return;
       if (!(await window.DarkSkyAdmiralIdentityStatus?.())) throw Error('Active Admiral authority was not verified.');
       if (!active()) return;
+      verified();
       gate.dataset.directTarget = '';
       if (directTarget === 'fleet') {
         hide('admiralGateOverlay');hide('captainQuarters');hide('captainGlobalExit');hide('admiralDeck');

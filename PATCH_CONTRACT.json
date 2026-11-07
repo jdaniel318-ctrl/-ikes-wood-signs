@@ -1,18 +1,18 @@
 {
   "schema": "blackflag-patch-contract-v1",
-  "target_build": "8.8.20.101",
-  "target_seal": "callsign-8820101",
+  "target_build": "8.8.20.102",
+  "target_seal": "pennant-8820102",
   "supported_bases": [
     {
-      "build": "8.8.20.100",
-      "source_sha256": "5525a3061c70c6a889143dd5a06f3c2eb9ab79a31cd54a2b5f704aed90dd0393",
-      "file_count": 873
+      "build": "8.8.20.101",
+      "source_sha256": "1d638400d5f6edf3c95d06079885519cedfbcf9c33e8faf6c11175124d27ac5f",
+      "file_count": 875
     }
   ],
   "requires_deletions": false,
   "max_upload_files": 85,
   "database_actions": "none",
-  "rule": "Upload every changed/new root file over complete 8.8.20.100. Keep everything else. This software archive executes no database commands.",
+  "rule": "Upload every changed/new root file over complete 8.8.20.101. Keep everything else. This software archive executes no database commands.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
