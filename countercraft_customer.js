@@ -73,14 +73,39 @@ function sweepOption(replacePhotos){
 }
 function captureStep(){
  const photo=flow.state().request.photos[0];
- const current=photo?'<img src="'+esc(photo.dataUrl)+'" alt="Your board for this sign">':'';
- const next=photo?'<button type="button" id="ccResumeBoard">Keep this board &amp; design</button>':'';
  const sample=preview?'<button type="button" id="ccSample" class="cc-inline">Try a sample board</button>':'';
- return '<h1>Let’s get to know your board.</h1><p class="cc-lead">Take a photo from above with both ends in view. We’ll check its shape and look for a match in Ike’s measured boards.</p>'+
-   '<section class="cc-card cc-capture-start">'+current+'<div><h2>'+(photo?'Your board photo':'Add your board photo')+'</h2>'+
-   '<div class="cc-buttons">'+next+'<button id="ccTake"'+(photo?' class="cc-secondary"':'')+'>'+(photo?'Retake photo':'Take a photo')+'</button><button id="ccChoose" class="cc-secondary">Choose a photo</button></div>'+
-   sample+sweepOption(Boolean(photo))+
-   '</div>'+photoInputs()+'</section>';
+ const choose='<button type="button" id="ccChoose" class="cc-secondary">Choose a photo</button>';
+ if(photo){
+   return '<h1>Your board photo</h1><p class="cc-lead">Keep working with this board, or choose a different photo.</p>'+
+     '<section class="cc-card cc-capture-start"><img src="'+esc(photo.dataUrl)+'" alt="Your board for this sign"><div>'+
+     '<div class="cc-buttons"><button type="button" id="ccResumeBoard">Keep this board &amp; design</button><button type="button" id="ccTake" class="cc-secondary">Retake photo</button>'+
+     choose+'</div>'+sample+sweepOption(true)+'</div>'+photoInputs()+'</section>';
+ }
+ return `
+   <section class="cc-photo-welcome" aria-labelledby="ccPhotoHeading">
+     <div class="cc-photo-invite">
+       <h1 id="ccPhotoHeading">Let’s see <em>your board.</em></h1>
+       <p>Take a photo of your board. Next, you’ll try your lettering right on the wood.</p>
+       <div class="cc-buttons">
+         <button type="button" id="ccTake"><span class="cc-camera-icon" aria-hidden="true"></span>Take a photo</button>
+         ${choose}
+       </div>
+       ${sample}
+     </div>
+     <figure class="cc-framing-tip">
+       <div class="cc-framing-demo" aria-hidden="true">
+         <div class="cc-photo-finder">
+           <div class="cc-drawn-plank"></div>
+         </div>
+       </div>
+       <figcaption>
+         <span class="cc-ike-tip-portrait" aria-hidden="true"></span>
+         <div><strong>Ike’s photo tip</strong><p>Hold the camera straight above the board. Leave a little room around every edge.</p></div>
+       </figcaption>
+     </figure>
+   </section>
+   <div class="cc-saved-scan">${sweepOption(false)}</div>
+   ${photoInputs()}`;
 }
 function scaleTrace(card) {
  const pair = p=>p.map(n=>Number(n).toFixed(2)).join(',');
