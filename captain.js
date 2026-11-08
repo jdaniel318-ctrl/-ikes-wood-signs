@@ -2664,7 +2664,7 @@ const AdmiralAccountForm = (() => {
 
 /* 8.8.13 Project Roster — three isolated schedules with durable local records. */
 ;(()=>{
-  const WEEKS=12,DAYS=WEEKS*5,DB_NAME='bootstrapBuildScheduleDB',DB_STORE='projects';
+  const MAX_WEEKS=52,DB_NAME='bootstrapBuildScheduleDB',DB_STORE='projects';
   const LEGACY_STORE='bootstrapBuildGroundRunV2',STORE_PREFIX='bootstrapBuildProjectScheduleV1:';
   const projects=[
     {id:'1234-A',region:'ABC',division:'CBA',community:'AB',lot:'1234',unit:'A',startWeek:0},
@@ -2676,11 +2676,161 @@ const AdmiralAccountForm = (() => {
   const el=id=>document.getElementById(id);
   const esc=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
   const project=id=>projects.find(item=>item.id===id)||projects[0];
+  const areaNames={exterior:'Exterior',interior:'Interior',general:'General / unassigned'};
+  const exteriorIds=new Set('clearing layout excavation footers footing-insp foundation foundation-insp waterproof backfill slab-prep slab-insp slab roof windows exterior driveway final-grade'.split(' '));
+  const interiorIds=new Set('rough-hvac rough-plumb rough-electric insulation predrywall drywall-delivery drywall prime cabinets hard-surface mep-final appliances carpet final-clean'.split(' '));
+  function areaOf(task) {
+    if(Object.hasOwn(areaNames,task.area))return task.area;
+    if(exteriorIds.has(task.id))return 'exterior';
+    if(interiorIds.has(task.id))return 'interior';
+    return 'general';
+  }
+  function weekCount(value=state) {
+    const weeks=Number(value?.planningWeeks);
+    return Number.isInteger(weeks)&&weeks>=12&&weeks<=MAX_WEEKS?weeks:12;
+  }
+  const areaOptions=Object.entries(areaNames).map(([key,name])=>`<option value="${key}">${name}</option>`).join('');
+  let pendingMove=null;
+  function closeMove() {
+    pendingMove=null;
+    if(el('joeMove')?.open)el('joeMove').close();
+  }
+  function openMove(task,day) {
+    const delta=day-task.start;
+    if(!delta){status('Choose a different workday to preview a move.');return;}
+    pendingMove={record:state,id:task.id,delta};
+    const area=areaOf(task);
+    const scopes=['all',...(area==='general'?['exterior','interior']:[area]),'one'];
+    const labels={all:'All',exterior:'Exterior',interior:'Interior',one:'None'};
+    el('joeScope').innerHTML='<legend>Which other tasks should move?</legend>'+scopes.map(s=>
+      `<label><input type="radio" name="joeScope" value="${s}" ${s==='one'?'checked':''}><span>${labels[s]}</span></label>`).join('');
+    el('joeForward').checked=true;
+    renderMove();
+    el('joeMove').showModal();el('joeScope').querySelector(':checked').focus();
+  }
+  function movePreview() {
+    const {id,delta}=pendingMove, scope=el('joeScope').querySelector(':checked').value;
+    const anchor=state.tasks.find(t=>t.id===id);
+    const fromAnchor=el('joeForward').checked&&scope!=='one';
+    const eligible=t=>t.id===id||((scope==='all'||areaOf(t)===scope)&&(!fromAnchor||t.start>=anchor.start));
+    const matching=state.tasks.filter(eligible);
+    const tasks=matching.filter(t=>t.locked!==true&&t.complete!==true);
+    const fixed=matching.length-tasks.length;
+    const min=Math.min(...tasks.map(t=>t.start+delta));
+    const weeks=tasks.reduce((n,t)=>Math.max(n,Math.ceil((t.start+delta+t.duration)/5)),weekCount());
+    let issue='';
+    if(!tasks.length)issue='There are no matching tasks in this lot.';
+    else if(min<0)issue='This move would start before the first project workday.';
+    else if(weeks>MAX_WEEKS)issue='This move would exceed the 52-week planning window.';
+    return {tasks,delta,weeks,issue,anchor,fixed};
+  }
+  function renderMove() {
+    if(!pendingMove)return;
+    const {tasks,delta,weeks,issue,anchor,fixed}=movePreview();
+    const startLabel=delta>0?'later':'earlier',days=Math.abs(delta);
+    el('joeMoveTitle').textContent='Move '+days+' workday'+(days===1?'':'s')+' '+startLabel;
+    el('joeMoveLot').textContent='Lot '+project(activeId).lot+' · Unit '+project(activeId).unit+' · '+anchor.title;
+    const baseline=Number.isInteger(anchor.baselineStart)?labelDate(anchor.baselineStart,true):'not recorded';
+    el('joeBaseline').textContent='Baseline '+baseline+' · Duration '+anchor.duration+' workday'+(anchor.duration===1?'':'s');
+    el('joeForwardLabel').hidden=el('joeScope').querySelector(':checked').value==='one';
+    el('joeForwardText').textContent='Only tasks starting '+labelDate(anchor.start)+' or later';
+    el('joeMoveSummary').textContent=issue||tasks.length+' task'+(tasks.length===1?'':'s')+' will move.'+(fixed?' '+fixed+' locked or complete will stay in place.':'')+(weeks>weekCount()?' The planning window will extend to '+weeks+' weeks.':'')+
+      (tasks.some(t=>t.acceleratedAssignments?.length)?' Previously booked weekend shifts keep their dates.':'');
+    const range=(s,d)=>labelDate(s,true)+(d>1?' – '+labelDate(s+d-1,true):'');
+    el('joeMoveRows').innerHTML=tasks.map(t=>`<tr><th scope="row"><span>${esc(t.title)}</span><small>${areaNames[areaOf(t)]}</small></th><td>${esc(range(t.start,t.duration))}</td><td>${issue?'—':esc(range(t.start+delta,t.duration))}</td></tr>`).join('');
+    el('joeApply').disabled=!!issue;
+    el('joeApply').textContent='Move '+tasks.length+' task'+(tasks.length===1?'':'s');
+  }
+  async function applyMove() {
+    if(!current(visit)||!pendingMove||pendingMove.record!==state){closeMove();return;}
+    const {tasks,delta,weeks,issue}=movePreview();
+    if(issue)return;
+    closeMove();
+    const at=new Date().toISOString(),batch=crypto.randomUUID?.()||String(Date.now());
+    const changes=tasks.map(t=>({id:batch+'-'+t.id,batchId:batch,at,task:t.title,vendor:t.vendor,from:labelDate(t.start,true),to:labelDate(t.start+delta,true)}));
+    for(const t of tasks)t.start+=delta;
+    for(const t of tasks)t.riskWarnings=riskWarnings(t);
+    state.planningWeeks=weeks;state.activity.unshift(...changes);
+    selectedId='';showOver(null);renderSchedule();
+    await persist(tasks.length+' task'+(tasks.length===1?'':'s')+' moved.');
+  }
+  // The example has its own dates and never enters the project cache or save queue.
+  const example={
+    planStart:'2026-10-12',planningWeeks:18,
+    closures:new Map([[54,'Site closed'],[59,'Site closed']]),
+    tasks:[
+      ['Plan review',0,6,'work'],['Utility coordination',3,4,'site'],['Permits ready',8,1,'milestone'],
+      ['Survey and staking',9,3,'site'],['Construction start',15,1,'milestone'],['Earthwork',15,4,'site'],
+      ['Form and pour footings',19,4,'work'],['Foundation inspection',23,1,'inspection'],
+      ['Foundation walls',24,4,'work'],['Backfill and compact',28,3,'site'],['Framing delivery',31,1,'delivery'],
+      ['Framing starts',32,1,'milestone'],['Framing crew',32,8,'work'],['Sheathing and roof',38,5,'site'],
+      ['Rough plumbing',42,4,'work'],['Rough electrical',43,5,'work'],['Rough inspection',48,1,'inspection'],
+      ['Insulate and seal',49,3,'work'],['Pre-drywall walk',52,1,'milestone'],['Hang and finish drywall',53,9,'work'],
+      ['Exterior finishes',60,6,'site'],['Cabinets and trim',63,6,'work'],['Finish flooring',70,4,'work'],
+      ['Fixture installation',74,4,'work'],['Landscape and grade',75,4,'site'],['Quality walk',80,1,'milestone'],
+      ['Finish corrections',81,3,'work'],['Final verification',85,1,'inspection'],['Final clean',86,2,'work'],
+      ['Settlement',89,1,'milestone']
+    ].map(([title,start,duration,type])=>({title,start,duration,type}))
+  };
+  let lookRecord=null,lookWeek=0;
+  const kindNames={work:'Work',site:'Site',inspection:'Inspection',delivery:'Delivery',milestone:'Milestone'};
+  function lookDay(index,format) {
+    const date=new Date(lookRecord.planStart+'T12:00:00');
+    date.setDate(date.getDate()+7*Math.floor(index/5)+index%5);
+    return date.toLocaleDateString(undefined,format||{month:'short',day:'numeric'});
+  }
+  function openLook(record,week=0) {
+    lookRecord=record;lookWeek=Math.max(0,Math.min(week,weekCount(record)-1));
+    el('bootstrapProjectWorkspace').classList.add('hidden');el('bootstrapProjectLanding').classList.add('hidden');
+    el('bootstrapProjectsHome').classList.remove('hidden');el('joeLongview').hidden=false;
+    el('bootstrapScheduleTitleHeading').textContent=record===example?'Example home build':'Lot '+project(activeId).lot+' · Unit '+project(activeId).unit;
+    el('bootstrapScheduleSubtitle').textContent=record===example?'Fictional 18-week schedule from permits to settlement.':'Four-week lookahead';
+    renderLook();el('bootstrapSchedule').scrollTop=0;el('joeLookTitle').focus({preventScroll:true});
+  }
+  function renderLook() {
+    const record=lookRecord,limit=weekCount(record),end=Math.min(limit,lookWeek+4),sample=record===example;
+    el('joeLookTitle').textContent=lookDay(lookWeek*5)+' – '+lookDay(end*5-1,{month:'short',day:'numeric',year:'numeric'});
+    el('joePrev').disabled=lookWeek===0;el('joeNext').disabled=end===limit;
+    el('joeWeekJump').innerHTML=Array.from({length:limit},(_,w)=>`<option value="${w}">Week ${w+1} · ${esc(lookDay(w*5))}</option>`).join('');
+    el('joeWeekJump').value=String(lookWeek);
+    const tasks=record.tasks.filter(t=>sample||!vendorView||t.vendor===vendorView);
+    el('joeJump').innerHTML='<option value="">Jump to milestone</option>'+tasks.filter(t=>t.type==='milestone').sort((a,b)=>a.start-b.start).map(t=>`<option value="${Math.floor(t.start/5)}">${esc(t.title)}</option>`).join('');
+    el('joeJump').disabled=el('joeJump').options.length===1;
+    const html=[];
+    for(let week=lookWeek;week<end;week++){
+      const first=week*5,day=index=>lookDay(index,{weekday:'short',day:'numeric'}),lanes=[];
+      const headers=Array.from({length:5},(_,c)=>{
+        const d=first+c,closed=sample&&example.closures.has(d);
+        return `<div class="joe-day${closed?' joe-closed':''}" style="grid-column:${c+1}">${esc(lookDay(d,{weekday:'short'}))} <b>${esc(lookDay(d,{day:'numeric'}))}</b>${closed?'<small>Closed</small>':''}</div>`;
+      }).join('');
+      const entries=[];
+      for(const t of tasks) {
+        const last=t.start+t.duration;
+        for(let d=Math.max(t.start,first);d<Math.min(last,first+5);) {
+          if(sample&&example.closures.has(d)){d++;continue;}
+          const start=d++;
+          while(d<Math.min(last,first+5)&&(!sample||!example.closures.has(d)))d++;
+          entries.push({t,start,end:d});
+        }
+      }
+      entries.sort((a,b)=>a.start-b.start||b.end-a.end||a.t.title.localeCompare(b.t.title));
+      const bars=entries.map(({t,start,end})=>{
+        let lane=lanes.findIndex(finish=>finish<=start);
+        if(lane<0)lane=lanes.length;lanes[lane]=end;
+        const kind=Object.hasOwn(kindNames,t.type)?t.type:'work';
+        return `<div class="joe-bar joe-${kind}" style="grid-column:${start-first+1} / span ${end-start};grid-row:${lane+2}"><small>${kindNames[kind]} · ${esc(day(start))}${end-start>1?' – '+esc(day(end-1)):''}</small><b>${start>t.start?'‹ ':''}${esc(t.title)}${end<t.start+t.duration?' ›':''}</b></div>`;
+      }).join('');
+      const closures=sample?[...example.closures].filter(([d])=>Math.floor(d/5)===week).map(([d,txt])=>`${day(d)} · ${txt}`):[];
+      const weekends=(record.acceleratedDays||[]).filter(e=>e.week===week).map(e=>weekendLabel(e)+' · '+e.shift+' · '+e.commitment);
+      html.push(`<article class="joe-week"><header><h3>Week ${week+1} <span>${esc(lookDay(first))} – ${esc(lookDay(first+4))}</span></h3>${sample?'':`<button type="button" data-edit-week="${week}">Edit week →</button>`}</header><div class="joe-grid">${headers}${bars}</div>${entries.length?'':'<p>No scheduled weekday work.</p>'}${[...closures,...weekends].map(s=>'<p>'+esc(s)+'</p>').join('')}</article>`);
+    }
+    el('joeWeeks').innerHTML=html.join('');
+  }
   function vendorFor(trade){return ({Sitework:'Piedmont Siteworks',Survey:'Cardinal Survey',Inspection:'City & County Inspections',Concrete:'Blue Ridge Concrete',Masonry:'Commonwealth Masonry',Foundation:'DryLine Foundation',Delivery:'Builder Supply Logistics',Framing:'Timberline Framing',Roofing:'Summit Roofing',Carpentry:'Heritage Carpentry',Mechanical:'AirFlow Mechanical',Plumbing:'Legacy Plumbing',Electrical:'BrightWire Electric',Insulation:'Thermal Shield',Milestone:'Bootstrap Build Team',Drywall:'Finish Line Drywall',Exterior:'Carolina Exteriors',Painting:'TrueCoat Painting',Flooring:'Piedmont Floors',Closeout:'Bootstrap Build Team'})[trade]||trade+' Partner';}
   function seedTasks(){return [
     ['clearing','Clearing & erosion control','Sitework',0,2,'site'],['layout','House layout & utility locate','Survey',1,1,'inspection'],['excavation','Excavation','Sitework',3,2,'site'],['footers','Footers formed & poured','Concrete',5,2,'work'],['footing-insp','Footing inspection','Inspection',7,1,'inspection'],['foundation','Foundation block','Masonry',8,3,'work'],['foundation-insp','Foundation inspection','Inspection',11,1,'inspection'],['waterproof','Waterproofing & drain tile','Foundation',11,2,'site'],['backfill','Backfill & rough grade','Sitework',13,2,'site'],['slab-prep','Slab prep','Concrete',14,2,'work'],['slab-insp','Slab inspection','Inspection',16,1,'inspection'],['slab','Garage slab','Concrete',17,1,'work'],['lumber','Lumber delivery','Delivery',18,1,'delivery'],['framing','Floor system & framing','Framing',19,7,'work'],['frame-check','Frame quality check','Inspection',25,1,'inspection'],['roof','Roof dry-in','Roofing',25,3,'site'],['windows','Windows & exterior doors','Carpentry',27,2,'site'],['rough-hvac','HVAC rough-in','Mechanical',28,3,'work'],['rough-plumb','Plumbing rough-in','Plumbing',29,3,'work'],['rough-electric','Electrical rough-in','Electrical',31,3,'work'],['rough-inspections','Rough trade inspections','Inspection',34,2,'inspection'],['insulation','Air seal & insulation','Insulation',36,3,'work'],['predrywall','Pre-drywall meeting','Milestone',38,1,'milestone'],['drywall-delivery','Drywall delivery','Delivery',39,1,'delivery'],['drywall','Drywall hang & finish','Drywall',40,6,'work'],['exterior','Siding & exterior trim','Exterior',41,5,'site'],['prime','Prime & first paint','Painting',46,3,'work'],['cabinets','Cabinets & interior trim','Carpentry',47,4,'work'],['hard-surface','Hard-surface install','Flooring',49,3,'work'],['mep-final','MEP final fixtures','Mechanical',50,4,'work'],['appliances','Appliance delivery & install','Delivery',53,2,'delivery'],['carpet','Carpet','Flooring',54,2,'work'],['driveway','Driveway & exterior concrete','Concrete',54,3,'site'],['final-grade','Final grade & landscaping','Sitework',56,3,'site'],['final-insp','Final inspections','Inspection',57,2,'inspection'],['punch','Punchout','Closeout',57,3,'work'],['final-clean','Final clean','Closeout',59,1,'work'],['settlement','Settlement','Milestone',59,1,'milestone']
   ].map(([id,title,trade,start,duration,type])=>({id,title,trade,start,duration,type,vendor:vendorFor(trade)}));}
-  function fresh(meta){const tasks=seedTasks();tasks.forEach(task=>task.plannedDuration=task.duration);return {version:5,projectId:meta.id,hierarchy:{region:meta.region,division:meta.division,community:meta.community,lot:meta.lot,unit:meta.unit},tasks,acceleratedDays:[],activity:[],updatedAt:null,revision:0};}
+  function fresh(meta){const tasks=seedTasks();tasks.forEach(task=>{task.plannedDuration=task.duration;task.baselineStart=task.start;});return {version:5,planningWeeks:12,projectId:meta.id,hierarchy:{region:meta.region,division:meta.division,community:meta.community,lot:meta.lot,unit:meta.unit},tasks,acceleratedDays:[],activity:[],updatedAt:null,revision:0};}
   function normalize(value,meta){if(!value||!Array.isArray(value.tasks))return null;value.version=5;value.projectId=meta.id;value.hierarchy={region:meta.region,division:meta.division,community:meta.community,lot:meta.lot,unit:meta.unit};value.activity=Array.isArray(value.activity)?value.activity:[];value.acceleratedDays=Array.isArray(value.acceleratedDays)?value.acceleratedDays:[];value.revision=Number(value.revision||0);value.tasks.forEach(task=>{task.vendor=task.vendor||vendorFor(task.trade);task.plannedDuration=Math.max(1,Number(task.plannedDuration||task.duration||1));task.acceleratedAssignments=Array.isArray(task.acceleratedAssignments)?task.acceleratedAssignments:[];});return value;}
   function openDb(){if(dbPromise)return dbPromise;dbPromise=new Promise((resolve,reject)=>{if(!window.indexedDB){reject(new Error('IndexedDB unavailable'));return;}const request=indexedDB.open(DB_NAME,1);request.onupgradeneeded=()=>{const db=request.result;if(!db.objectStoreNames.contains(DB_STORE))db.createObjectStore(DB_STORE,{keyPath:'projectId'});};request.onsuccess=()=>resolve(request.result);request.onerror=()=>reject(request.error||new Error('Schedule database unavailable'));});return dbPromise;}
   async function dbRead(id){const db=await openDb();return new Promise((resolve,reject)=>{const request=db.transaction(DB_STORE,'readonly').objectStore(DB_STORE).get(id);request.onsuccess=()=>resolve(request.result||null);request.onerror=()=>reject(request.error);});}
@@ -2766,13 +2916,63 @@ const AdmiralAccountForm = (() => {
   function workDate(index,meta=project(activeId)){const date=anchor(meta),weeks=Math.floor(index/5),weekday=index%5;date.setDate(date.getDate()+weeks*7+weekday);return date;}
   function labelDate(index,weekday=false,meta=project(activeId)){return workDate(index,meta).toLocaleDateString(undefined,weekday?{weekday:'short',month:'short',day:'numeric'}:{month:'short',day:'numeric'});}
   function status(message){if(el('bootstrapScheduleStatus'))el('bootstrapScheduleStatus').textContent=message;}
-  function install(){el('bootstrapSchedule')?.remove();document.body.insertAdjacentHTML('beforeend',`<dialog id="bootstrapSchedule" class="bootstrap-schedule bootstrap-build-schedule hidden" role="dialog" aria-modal="true" aria-hidden="true" aria-label="ScheduleJoe construction schedules"><div class="bootstrap-schedule-shell"><header class="bootstrap-schedule-head"><img src="bootstrap_build_horizontal.png" alt="Bootstrap Build"><div><small>BOOTSTRAP BUILD · ADMIRAL PROGRAM</small><h2 id="bootstrapScheduleTitleHeading">ScheduleJoe</h2><p id="bootstrapScheduleSubtitle">Choose a lot and unit to open its independent schedule.</p></div><div class="bootstrap-schedule-head-actions"><button id="bootstrapProjectsHome" class="hidden" type="button">ALL PROJECTS</button><button id="scheduleJoeFleet" type="button">FLEET REGISTRY</button><button id="bootstrapScheduleClose" type="button">CLOSE</button></div></header><section id="bootstrapProjectLanding" class="bootstrap-project-landing"><div class="bootstrap-roster-summary"><div><small>PROJECTS ON THIS DEVICE</small><strong>3 independent project schedules</strong><span>Each lot and unit keeps its own dates, vendors, changes, and saved record.</span></div></div><div class="bootstrap-project-roster-wrap"><table class="bootstrap-project-roster"><thead><tr><th>Lot and unit</th><th>Planning window</th><th>First planned task</th><th>Updated</th><th><span class="yard-visually-hidden">Open project</span></th></tr></thead><tbody id="bootstrapProjectRows"></tbody></table></div></section><section id="bootstrapProjectWorkspace" class="hidden"><nav class="bootstrap-schedule-crumbs" aria-label="Project hierarchy"><span><small>REGION</small><b id="bootstrapRegionValue"></b></span><i>›</i><span><small>DIVISION</small><b id="bootstrapDivisionValue"></b></span><i>›</i><span><small>COMMUNITY</small><b id="bootstrapCommunityValue"></b></span><i>›</i><span><small>LOT</small><b id="bootstrapLotValue"></b></span><i>›</i><span><small>UNIT</small><b id="bootstrapUnitValue"></b></span></nav><div class="bootstrap-schedule-toolbar"><div><strong id="bootstrapScheduleRange"></strong></div><div class="bootstrap-schedule-legend" aria-label="Task colors"><span data-kind="work">WORK</span><span data-kind="site">SITE</span><span data-kind="inspection">INSPECTION</span><span data-kind="delivery">DELIVERY</span><span data-kind="milestone">MILESTONE</span></div><div><button id="bootstrapScheduleAdd" type="button">+ ADD TASK</button><button id="bootstrapScheduleReset" type="button">RESET THIS PROJECT</button></div></div><form id="bootstrapScheduleForm" class="bootstrap-schedule-form bootstrap-ground-form hidden"><label>Task<input data-bf-trim="boundary" id="bootstrapScheduleTaskTitle" maxlength="80" required placeholder="Construction task"></label><label>Trade<input data-bf-trim="boundary" id="bootstrapScheduleTrade" maxlength="40" required placeholder="Trade or crew"></label><label>Type<select id="bootstrapScheduleType"><option value="work">Work</option><option value="site">Site</option><option value="inspection">Inspection</option><option value="delivery">Delivery</option><option value="milestone">Milestone</option></select></label><label>Start<select id="bootstrapScheduleDay"></select></label><label>Days<input id="bootstrapScheduleDuration" type="number" min="1" max="15" value="1"></label><button type="submit">ADD TASK</button><button id="bootstrapScheduleCancel" type="button">CANCEL</button></form><p id="bootstrapScheduleStatus" class="bootstrap-schedule-status" role="status"></p><button id="scheduleJoeRetry" type="button" hidden>Retry save</button><section id="bootstrapVendorTools" class="bootstrap-vendor-tools"><div><label>Schedule view<select id="bootstrapVendorView"><option value="">All work</option></select></label><span id="bootstrapVendorViewNote">All project work is visible.</span></div><div><label>Selected task vendor<select id="bootstrapVendorAssign"></select></label><button id="bootstrapVendorAssignButton" type="button" disabled>ASSIGN VENDOR</button></div></section><nav class="schedule-week-nav" aria-label="Schedule weeks"><label>Workweek <select id="scheduleJoeWeek"></select></label><div><button type="button" data-week-step="-1" aria-label="Previous workweek">← Previous</button><button type="button" data-week-step="1" aria-label="Next workweek">Next →</button></div></nav><div id="bootstrapScheduleBoard" class="bootstrap-ground-board"></div><section id="bootstrapVendorActivityPanel" class="bootstrap-vendor-activity"><header><div><small>VENDOR COMMUNICATION LOG</small><b>Schedule changes vendors can see</b></div><span>LOCAL TEST · NO MESSAGE SENT</span></header><div id="bootstrapVendorActivity"></div></section><footer><b>Project boundary</b><span>Each test project is stored separately on this device. Moving work in one unit cannot move work in another.</span></footer></section></div></dialog>`);}
+  function install(){el('bootstrapSchedule')?.remove();document.body.insertAdjacentHTML('beforeend',`<dialog id="bootstrapSchedule" class="bootstrap-schedule bootstrap-build-schedule hidden" role="dialog" aria-modal="true" aria-hidden="true" aria-label="ScheduleJoe construction schedules"><div class="bootstrap-schedule-shell"><header class="bootstrap-schedule-head"><img src="bootstrap_build_horizontal.png" alt="Bootstrap Build"><div><small>BOOTSTRAP BUILD · ADMIRAL PROGRAM</small><h2 id="bootstrapScheduleTitleHeading">ScheduleJoe</h2><p id="bootstrapScheduleSubtitle">Choose a lot and unit to open its independent schedule.</p></div><div class="bootstrap-schedule-head-actions"><button id="bootstrapProjectsHome" class="hidden" type="button">ALL PROJECTS</button><button id="scheduleJoeFleet" type="button">FLEET REGISTRY</button><button id="bootstrapScheduleClose" type="button">CLOSE</button></div></header><section id="bootstrapProjectLanding" class="bootstrap-project-landing"><div class="bootstrap-roster-summary"><div><small>PROJECTS ON THIS DEVICE</small><strong>3 independent project schedules</strong><span>Each lot and unit keeps its own dates, vendors, changes, and saved record.</span></div></div><div class="bootstrap-project-roster-wrap"><table class="bootstrap-project-roster"><thead><tr><th>Lot and unit</th><th>Planning window</th><th>First planned task</th><th>Updated</th><th><span class="yard-visually-hidden">Open project</span></th></tr></thead><tbody id="bootstrapProjectRows"></tbody></table></div><div class="joe-example-link"><span>Example home build · 18 weeks</span><button id="joeExample" type="button">Explore example →</button></div></section><section id="joeLongview" hidden aria-label="Four-week lookahead">
+  <div class="joe-look-head"><div><small>FOUR-WEEK LOOKAHEAD</small><h2 id="joeLookTitle" tabindex="-1"></h2></div>
+    <nav aria-label="Lookahead navigation"><button id="joePrev" type="button">← Earlier</button><button id="joeNext" type="button">Later →</button></nav></div>
+  <div class="joe-choices"><label>Starting week<select id="joeWeekJump"></select></label><label>Milestone<select id="joeJump"></select></label></div>
+  <div id="joeWeeks"></div>
+</section>
+<dialog id="joeMove" aria-labelledby="joeMoveTitle">
+  <small id="joeMoveLot"></small><h2 id="joeMoveTitle"></h2><p id="joeBaseline"></p>
+  <fieldset id="joeScope"><legend>Which other tasks should move?</legend></fieldset>
+  <label id="joeForwardLabel"><input type="checkbox" id="joeForward"><span id="joeForwardText"></span></label>
+  <p id="joeMoveSummary" role="status"></p><div class="joe-table"><table><thead><tr><th>Task</th><th>Current</th><th>Proposed</th></tr></thead><tbody id="joeMoveRows"></tbody></table></div>
+  <div class="joe-move-actions"><button id="joeCancel" type="button">Cancel</button><button id="joeApply" type="button">Apply move</button></div>
+</dialog>
+<section id="bootstrapProjectWorkspace" class="hidden"><nav class="bootstrap-schedule-crumbs" aria-label="Project hierarchy"><span><small>REGION</small><b id="bootstrapRegionValue"></b></span><i>›</i><span><small>DIVISION</small><b id="bootstrapDivisionValue"></b></span><i>›</i><span><small>COMMUNITY</small><b id="bootstrapCommunityValue"></b></span><i>›</i><span><small>LOT</small><b id="bootstrapLotValue"></b></span><i>›</i><span><small>UNIT</small><b id="bootstrapUnitValue"></b></span></nav><div class="bootstrap-schedule-toolbar"><div><strong id="bootstrapScheduleRange"></strong></div><div class="bootstrap-schedule-legend" aria-label="Task colors"><span data-kind="work">WORK</span><span data-kind="site">SITE</span><span data-kind="inspection">INSPECTION</span><span data-kind="delivery">DELIVERY</span><span data-kind="milestone">MILESTONE</span></div><div><button id="bootstrapScheduleAdd" type="button">+ ADD TASK</button><button id="bootstrapScheduleReset" type="button">RESET THIS PROJECT</button></div></div><form id="bootstrapScheduleForm" class="bootstrap-schedule-form bootstrap-ground-form hidden"><label>Task<input data-bf-trim="boundary" id="bootstrapScheduleTaskTitle" maxlength="80" required placeholder="Construction task"></label><label>Trade<input data-bf-trim="boundary" id="bootstrapScheduleTrade" maxlength="40" required placeholder="Trade or crew"></label><label>Type<select id="bootstrapScheduleType"><option value="work">Work</option><option value="site">Site</option><option value="inspection">Inspection</option><option value="delivery">Delivery</option><option value="milestone">Milestone</option></select></label><label>Work area<select id="joeAreaNew"><option value="general">General / unassigned</option><option value="exterior">Exterior</option><option value="interior">Interior</option></select></label><label>Start<select id="bootstrapScheduleDay"></select></label><label>Days<input id="bootstrapScheduleDuration" type="number" min="1" max="15" value="1"></label><button type="submit">ADD TASK</button><button id="bootstrapScheduleCancel" type="button">CANCEL</button></form><p id="bootstrapScheduleStatus" class="bootstrap-schedule-status" role="status"></p><button id="scheduleJoeRetry" type="button" hidden>Retry save</button><section id="bootstrapVendorTools" class="bootstrap-vendor-tools"><div><label>Schedule view<select id="bootstrapVendorView"><option value="">All work</option></select></label><span id="bootstrapVendorViewNote">All project work is visible.</span></div><div><label>Selected task vendor<select id="bootstrapVendorAssign"></select></label><button id="bootstrapVendorAssignButton" type="button" disabled>ASSIGN VENDOR</button></div></section><div class="joe-choices"><label class="joe-toggle"><input id="joePrompt" type="checkbox" role="switch"> Prompt on move</label><button id="joeLook" type="button">Four-week lookahead</button><button id="joeExtend" type="button">Add 4 weeks</button></div>
+<section id="joeTaskInfo" class="joe-task-info" hidden><div><strong id="joeTaskName"></strong><span id="joeTaskDates"></span></div><label>Work area<select id="joeAreaEdit">${areaOptions}</select></label><div><button id="joeEarlier" type="button">← 1 workday</button><button id="joeLater" type="button">1 workday →</button></div></section><nav class="schedule-week-nav" aria-label="Schedule weeks"><label>Workweek <select id="scheduleJoeWeek"></select></label><div><button type="button" data-week-step="-1" aria-label="Previous workweek">← Previous</button><button type="button" data-week-step="1" aria-label="Next workweek">Next →</button></div></nav><div id="bootstrapScheduleBoard" class="bootstrap-ground-board"></div><section id="bootstrapVendorActivityPanel" class="bootstrap-vendor-activity"><header><div><small>VENDOR COMMUNICATION LOG</small><b>Schedule changes vendors can see</b></div><span>LOCAL TEST · NO MESSAGE SENT</span></header><div id="bootstrapVendorActivity"></div></section><footer><b>Project boundary</b><span>Each test project is stored separately on this device. Moving work in one unit cannot move work in another.</span></footer></section></div></dialog>`);}
+  function wireLongview() {
+    const listen=(id,event,fn)=>el(id).addEventListener(event,fn);
+    listen('joeExample','click',()=>{if(current(visit))openLook(example);});
+    listen('joeLook','click',()=>{if(state)openLook(state,selectedWeek==='all'?0:selectedWeek);});
+    listen('joeWeekJump','change',e=>{lookWeek=Number(e.target.value);renderLook();});
+    listen('joeJump','change',e=>{if(e.target.value!==''){lookWeek=Number(e.target.value);renderLook();}});
+    for(const [id,step] of [['joePrev',-4],['joeNext',4]])listen(id,'click',()=>{
+      lookWeek=Math.max(0,Math.min(weekCount(lookRecord)-1,lookWeek+step));renderLook();
+    });
+    listen('joeWeeks','click',e=>{
+      const button=e.target.closest('[data-edit-week]');if(!button||!state||lookRecord!==state)return;
+      el('joeLongview').hidden=true;lookRecord=null;el('bootstrapProjectWorkspace').classList.remove('hidden');
+      selectedWeek=Number(button.dataset.editWeek);el('bootstrapScheduleSubtitle').textContent='Tap a task to select it. Drag to move it, or pull an edge to change its duration.';
+      renderSchedule();el('bootstrapSchedule').scrollTop=0;el('scheduleJoeWeek').focus({preventScroll:true});
+    });
+    listen('joeExtend','click',()=>{
+      if(!state||weekCount()>=MAX_WEEKS)return;
+      const previous=weekCount();state.planningWeeks=Math.min(MAX_WEEKS,previous+4);
+      selectedWeek=previous;renderSchedule();void persist('Planning window extended to '+state.planningWeeks+' weeks.');
+    });
+    listen('joePrompt','change',()=>{
+      if(!state)return;
+      try{localStorage.setItem('scheduleJoePrompt:'+activeId,String(el('joePrompt').checked));}catch(_){}
+      status(el('joePrompt').checked?'Prompt on. Moving a task opens a preview.':'Prompt off. A move changes the selected task only.');
+    });
+    listen('joeAreaEdit','change',e=>{
+      const t=state?.tasks.find(t=>t.id===selectedId);if(!t||!Object.hasOwn(areaNames,e.target.value))return;
+      t.area=e.target.value;renderSchedule();void persist('Work area updated.');
+    });
+    for(const [id,delta] of [['joeEarlier',-1],['joeLater',1]])listen(id,'click',()=>{
+      const t=state?.tasks.find(t=>t.id===selectedId);if(t)void move(t.id,t.start+delta);
+    });
+    listen('joeScope','change',renderMove);listen('joeForward','change',renderMove);
+    listen('joeCancel','click',closeMove);listen('joeMove','cancel',e=>{e.preventDefault();closeMove();});
+    listen('joeApply','click',()=>void applyMove());
+  }
   function installQuickPassageControls(){
     const actions=el('bootstrapSchedule')?.querySelector('.bootstrap-schedule-toolbar>div:last-child');
     if(actions&&!el('bootstrapAcceleratedToggle'))actions.insertAdjacentHTML('afterbegin','<button id="bootstrapAcceleratedToggle" type="button" aria-expanded="false">ACCELERATED DAYS</button>');
     const toolbar=el('bootstrapSchedule')?.querySelector('.bootstrap-schedule-toolbar');
     if(toolbar&&!el('bootstrapAcceleratedPanel'))toolbar.insertAdjacentHTML('afterend','<section id="bootstrapAcceleratedPanel" class="bootstrap-accelerated-panel hidden"><header><div><small>MANAGER-CONTROLLED EXCEPTION</small><b>Activate a specific weekend shift</b><span>Monday–Friday stays standard. Weekend work remains visible, optional, and auditable.</span></div><button id="bootstrapAcceleratedClose" type="button">CLOSE</button></header><div class="bootstrap-accelerated-controls"><label>Week<select id="bootstrapAcceleratedWeek"></select></label><label>Day<select id="bootstrapAcceleratedDay"><option value="sat">Saturday</option><option value="sun">Sunday</option></select></label><label>Shift<select id="bootstrapAcceleratedShift"><option value="am">AM</option><option value="pm">PM</option><option value="full">Full day</option></select></label><label>Commitment<select id="bootstrapAcceleratedCommitment"><option value="proposed">Proposed</option><option value="confirmed">Vendor confirmed</option></select></label><button id="bootstrapAcceleratedAdd" type="button">ACTIVATE DATE</button></div><p class="bootstrap-accelerated-warning">⚠ Accelerated work may compress recovery time or create trade overlap. The manager may proceed; the exception and vendor commitment are recorded.</p><div id="bootstrapAcceleratedRows" class="bootstrap-accelerated-rows"></div></section>');
-    const weeks=el('bootstrapAcceleratedWeek');if(weeks)weeks.innerHTML=Array.from({length:WEEKS},(_,week)=>'<option value="'+week+'">Week '+(week+1)+'</option>').join('');
+
   }
   function renderLanding() {
     const rows=el('bootstrapProjectRows');
@@ -2783,13 +2983,13 @@ const AdmiralAccountForm = (() => {
       const first=[...value.tasks].sort((a,b)=>a.start-b.start)[0];
       const updated=value.updatedAt?new Date(value.updatedAt).toLocaleString(undefined,{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}):'Original plan';
       return `<tr><td><b>Lot ${esc(meta.lot)} · Unit ${esc(meta.unit)}</b><small>${esc(meta.region)} / ${esc(meta.division)} / ${esc(meta.community)}</small></td>
-        <td data-label="Planning window">${esc(labelDate(0,false,meta))} – ${esc(labelDate(DAYS-1,false,meta))}</td>
+        <td data-label="Planning window">${esc(labelDate(0,false,meta))} – ${esc(labelDate(weekCount(value)*5-1,false,meta))}</td>
         <td data-label="First planned task"><b>${esc(first?.title||'No tasks')}</b><small>${esc(first?.vendor||'')}</small></td>
         <td data-label="Updated">${esc(updated)}</td>
         <td><button type="button" data-open-project="${esc(meta.id)}" aria-label="Open schedule for Lot ${esc(meta.lot)}, Unit ${esc(meta.unit)}">Open schedule →</button></td></tr>`;
     }).join('');
   }
-  function showLanding(){activeId='';state=null;selectedId='';vendorView='';el('bootstrapProjectLanding')?.classList.remove('hidden');el('bootstrapProjectWorkspace')?.classList.add('hidden');el('bootstrapProjectsHome')?.classList.add('hidden');if(el('bootstrapScheduleTitleHeading'))el('bootstrapScheduleTitleHeading').textContent='ScheduleJoe';if(el('bootstrapScheduleSubtitle'))el('bootstrapScheduleSubtitle').textContent='Choose a lot and unit to open its independent schedule.';renderLanding();}
+  function showLanding(){el('joeLongview').hidden=true;lookRecord=null;activeId='';state=null;selectedId='';vendorView='';el('bootstrapProjectLanding')?.classList.remove('hidden');el('bootstrapProjectWorkspace')?.classList.add('hidden');el('bootstrapProjectsHome')?.classList.add('hidden');if(el('bootstrapScheduleTitleHeading'))el('bootstrapScheduleTitleHeading').textContent='ScheduleJoe';if(el('bootstrapScheduleSubtitle'))el('bootstrapScheduleSubtitle').textContent='Choose a lot and unit to open its independent schedule.';renderLanding();}
   function vendors(){return [...new Set(state.tasks.map(task=>task.vendor||vendorFor(task.trade)))].sort((a,b)=>a.localeCompare(b));}
   function segmentsForWeek(week){const first=week*5,last=first+5,segments=[];state.tasks.forEach(task=>{const start=Math.max(task.start,first),end=Math.min(task.start+Math.max(1,task.duration||1),last);if(start<end)segments.push({task,start,end});});segments.sort((a,b)=>a.start-b.start||b.end-a.end||a.task.title.localeCompare(b.task.title));const lanes=[];segments.forEach(segment=>{let lane=lanes.findIndex(end=>end<=segment.start);if(lane<0){lane=lanes.length;lanes.push(segment.end);}else lanes[lane]=segment.end;segment.lane=lane;});return {segments,lanes:Math.max(2,lanes.length)};}
   function weekendDate(entry){const date=anchor(project(activeId));date.setDate(date.getDate()+entry.week*7+(entry.day==='sun'?6:5));return date;}
@@ -2811,18 +3011,33 @@ const AdmiralAccountForm = (() => {
     return '<article class="bootstrap-ground-task kind-'+esc(task.type||'work')+(selectedId===task.id?' is-selected':'')+(warnings.length?' has-risk':'')+'" draggable="true" tabindex="0" data-task-id="'+esc(task.id)+'" style="grid-column:'+(start-first+1)+' / span '+(end-start)+';grid-row:'+(lane+2)+'">'+(begins?'<button class="bootstrap-task-resize is-start" type="button" draggable="false" data-resize-edge="start" aria-label="Change start and duration of '+esc(task.title)+'">‹</button>':'')+'<small>'+esc(task.trade)+'</small><b>'+(begins?'':'← ')+esc(task.title)+(finishes?'':' →')+'</b><span>'+esc(task.duration)+' workday'+(task.duration===1?'':'s')+(weekendCount?' · '+weekendCount+' accelerated':'')+'</span><em class="bootstrap-task-vendor">'+esc(task.vendor)+'</em>'+(warnings.length?'<i class="bootstrap-task-risk" title="'+esc(warnings.join('. '))+'">!</i>':'')+(finishes?'<button class="bootstrap-task-resize is-end" type="button" draggable="false" data-resize-edge="end" aria-label="Change duration of '+esc(task.title)+'">›</button>':'')+'</article>';
   }
   function renderSchedule(){
-    if(!state)return;const meta=project(activeId);
+    if(!state)return;const meta=project(activeId),weeksTotal=weekCount(),daysTotal=weeksTotal*5;
+    if(selectedWeek!=='all')selectedWeek=Math.min(selectedWeek,weeksTotal-1);
+    const acceleratedWeek=el('bootstrapAcceleratedWeek'),previous=Number(acceleratedWeek.value)||0;
+    if(acceleratedWeek.options.length!==weeksTotal){
+      acceleratedWeek.innerHTML=Array.from({length:weeksTotal},(_,w)=>`<option value="${w}">Week ${w+1}</option>`).join('');
+      acceleratedWeek.value=String(Math.min(previous,weeksTotal-1));
+    }
+    const chosen=state.tasks.find(t=>t.id===selectedId);
+    el('joeTaskInfo').hidden=!chosen;
+    if(chosen){
+      el('joeTaskName').textContent=chosen.title;
+      el('joeTaskDates').textContent='Baseline '+(Number.isInteger(chosen.baselineStart)?labelDate(chosen.baselineStart):'not recorded')+' · Scheduled '+labelDate(chosen.start)+' · '+chosen.duration+' workday'+(chosen.duration===1?'':'s');
+      el('joeAreaEdit').value=areaOf(chosen);
+    }
+    el('joeExtend').disabled=weeksTotal>=MAX_WEEKS;
+    el('joeExtend').textContent=weeksTotal>=MAX_WEEKS?'52-week window':'Add '+Math.min(4,MAX_WEEKS-weeksTotal)+' weeks';
     [['bootstrapRegionValue','region'],['bootstrapDivisionValue','division'],['bootstrapCommunityValue','community'],['bootstrapLotValue','lot'],['bootstrapUnitValue','unit']].forEach(([id,key])=>{if(el(id))el(id).textContent=meta[key];});
-    if(el('bootstrapScheduleRange'))el('bootstrapScheduleRange').textContent=labelDate(0)+' – '+workDate(DAYS-1).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'})+' · 12 WEEKS · MON–FRI STANDARD';
-    const select=el('bootstrapScheduleDay');if(select)select.innerHTML=Array.from({length:DAYS},(_,day)=>'<option value="'+day+'">'+esc(labelDate(day,true))+'</option>').join('');
+    if(el('bootstrapScheduleRange'))el('bootstrapScheduleRange').textContent=labelDate(0)+' – '+workDate(daysTotal-1).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'})+' · '+weeksTotal+' weeks · Mon–Fri';
+    const select=el('bootstrapScheduleDay');if(select)select.innerHTML=Array.from({length:daysTotal},(_,day)=>'<option value="'+day+'">'+esc(labelDate(day,true))+'</option>').join('');
     const board=el('bootstrapScheduleBoard');if(!board)return;
     const weekSelect=el('scheduleJoeWeek');
-    weekSelect.innerHTML=Array.from({length:WEEKS},(_,week)=>`<option value="${week}">Week ${week+1} · ${esc(labelDate(week*5))} – ${esc(labelDate(week*5+4))}</option>`).join('')+'<option value="all">All 12 weeks</option>';
+    weekSelect.innerHTML=Array.from({length:weeksTotal},(_,week)=>`<option value="${week}">Week ${week+1} · ${esc(labelDate(week*5))} – ${esc(labelDate(week*5+4))}</option>`).join('')+`<option value="all">All ${weeksTotal} weeks</option>`;
     weekSelect.value=String(selectedWeek);
     for(const button of document.querySelectorAll('#bootstrapSchedule [data-week-step]')){
-      button.disabled=selectedWeek==='all'||selectedWeek+Number(button.dataset.weekStep)<0||selectedWeek+Number(button.dataset.weekStep)>=WEEKS;
+      button.disabled=selectedWeek==='all'||selectedWeek+Number(button.dataset.weekStep)<0||selectedWeek+Number(button.dataset.weekStep)>=weeksTotal;
     }
-    const weeks=selectedWeek==='all'?Array.from({length:WEEKS},(_,i)=>i):[selectedWeek];
+    const weeks=selectedWeek==='all'?Array.from({length:weeksTotal},(_,i)=>i):[selectedWeek];
     board.innerHTML=weeks.map(week=>{const first=week*5,{segments,lanes}=segmentsForWeek(week),accelerated=state.acceleratedDays.filter(entry=>entry.week===week);const heads=Array.from({length:5},(_,col)=>'<button type="button" class="bootstrap-ground-day-head'+(overDay===first+col?' is-over':'')+'" data-schedule-move="'+(first+col)+'" title="Move selected task here"><small>'+esc(workDate(first+col).toLocaleDateString(undefined,{weekday:'short'}))+'</small><b>'+esc(labelDate(first+col))+'</b></button>').join('');const cells=Array.from({length:5},(_,col)=>'<div class="bootstrap-ground-day-cell'+(overDay===first+col?' is-over':'')+'" data-schedule-day="'+(first+col)+'" style="grid-column:'+(col+1)+';grid-row:2 / span '+lanes+'"></div>').join('');const bars=segments.map(({task,start,end,lane})=>taskMarkup(task,start,end,lane,first)).join('');const acceleratedLane=accelerated.length?'<aside class="bootstrap-weekend-lane"><small>ACCELERATED EXCEPTION</small>'+accelerated.map(entry=>'<button type="button" data-open-accelerated="1"><b>'+esc(weekendLabel(entry))+'</b><span>'+esc(entry.shift.toUpperCase())+' · '+esc(entry.commitment.replace('_',' ').toUpperCase())+'</span></button>').join('')+'</aside>':'';return '<section class="bootstrap-ground-week"><header><small>WEEK '+(week+1)+'</small><b>'+esc(labelDate(first))+' – '+esc(labelDate(first+4))+'</b></header><div class="bootstrap-ground-week-grid" data-week="'+week+'" style="--task-lanes:'+lanes+'">'+heads+cells+bars+'</div>'+acceleratedLane+'</section>';}).join('');
     renderVendorLayer();renderAccelerated();
   }
@@ -2837,13 +3052,18 @@ const AdmiralAccountForm = (() => {
     const activity=el('bootstrapVendorActivity');if(activity)activity.innerHTML=state.activity.length?state.activity.slice(0,12).map(item=>'<article><b>'+esc(item.vendor||'Construction Manager')+'</b><span>'+esc(activityCopy(item))+'</span><small>'+esc(new Date(item.at).toLocaleString())+'</small></article>').join(''):'<p>No schedule changes are recorded for this project.</p>';
   }
   async function openProject(id){if(!visit||!cache.has(id))return;
+    el('joeLongview').hidden=true;lookRecord=null;
+    el('joePrompt').checked=localRead('scheduleJoePrompt:'+id)===true;
     el('scheduleJoeRetry').hidden=true;
     activeId=id;state=cache.get(id);selectedWeek=0;selectedId='';vendorView='';
     el('bootstrapScheduleForm').reset();el('bootstrapScheduleForm').classList.add('hidden');
     el('bootstrapAcceleratedPanel').classList.add('hidden');
     el('bootstrapAcceleratedToggle').setAttribute('aria-expanded','false');el('bootstrapProjectLanding')?.classList.add('hidden');el('bootstrapProjectWorkspace')?.classList.remove('hidden');el('bootstrapProjectsHome')?.classList.remove('hidden');const meta=project(id);el('bootstrapScheduleTitleHeading').textContent='Lot '+meta.lot+' · Unit '+meta.unit;el('bootstrapScheduleSubtitle').textContent='Tap a task to select it. Drag to move it, or pull an edge to change its duration.';renderSchedule();status(state._source==='recovered prior schedule'?'Prior Lot 1234 · Unit A schedule recovered. Changes now save in its independent record.':state.updatedAt?'Loaded saved revision '+state.revision+' from '+new Date(state.updatedAt).toLocaleString()+'.':'Original project plan loaded. Drag a task body to move it or an edge to change duration.');el('bootstrapSchedule').scrollTop=0;}
   async function move(id,day){
-    const task=state?.tasks.find(item=>item.id===id);if(!task)return;const from=task.start,next=Math.max(0,Math.min(DAYS-Math.max(1,task.duration||1),Number(day)));task.start=next;task.riskWarnings=riskWarnings(task);
+    const task=state?.tasks.find(item=>item.id===id);if(!task)return;
+    if(task.locked===true||task.complete===true){status('This task is locked or complete.');return;}
+    if(el('joePrompt').checked){openMove(task,Number(day));return;}
+    const from=task.start,next=Math.max(0,Math.min(weekCount()*5-Math.max(1,task.duration||1),Number(day)));task.start=next;task.riskWarnings=riskWarnings(task);
     if(from!==next)state.activity.unshift({id:'move-'+Date.now(),at:new Date().toISOString(),task:task.title,vendor:task.vendor,from:labelDate(from,true),to:labelDate(next,true)});
     state.activity=state.activity.slice(0,100);selectedId='';showOver(null);renderSchedule();document.querySelectorAll('#bootstrapSchedule [data-task-id="'+CSS.escape(task.id)+'"]').forEach(node=>node.classList.add('is-settling'));
     if(from===next){status(task.title+' already begins on '+labelDate(next,true)+'.');return;}
@@ -2851,7 +3071,7 @@ const AdmiralAccountForm = (() => {
   }
   async function resizeTask(id,edge,day){
     const task=state?.tasks.find(item=>item.id===id);if(!task)return;const oldStart=task.start,oldDuration=Math.max(1,task.duration||1),oldEnd=oldStart+oldDuration;
-    if(edge==='start'){const nextStart=Math.max(0,Math.min(oldEnd-1,Number(day)));task.start=nextStart;task.duration=oldEnd-nextStart;}else{const nextEnd=Math.max(task.start+1,Math.min(DAYS,Number(day)+1));task.duration=nextEnd-task.start;}
+    if(edge==='start'){const nextStart=Math.max(0,Math.min(oldEnd-1,Number(day)));task.start=nextStart;task.duration=oldEnd-nextStart;}else{const nextEnd=Math.max(task.start+1,Math.min(weekCount()*5,Number(day)+1));task.duration=nextEnd-task.start;}
     if(task.start===oldStart&&task.duration===oldDuration){showOver(null);renderSchedule();status('Duration unchanged. Drag the edge into another workday.');return;}
     task.riskWarnings=riskWarnings(task);state.activity.unshift({id:'resize-'+Date.now(),type:'resize',at:new Date().toISOString(),task:task.title,vendor:task.vendor,from:oldDuration+' workday'+(oldDuration===1?'':'s'),to:task.duration+' workday'+(task.duration===1?'':'s')});state.activity=state.activity.slice(0,100);selectedId=task.id;showOver(null);renderSchedule();
     const warning=task.riskWarnings.length?' Calculated-risk warning: '+task.riskWarnings.join('; ')+'. The manager may proceed.':'';status(task.title+' now runs '+task.duration+' workday'+(task.duration===1?'':'s')+'.'+warning);await persist('Duration saved.'+warning);
@@ -2875,7 +3095,7 @@ const AdmiralAccountForm = (() => {
   }
   function closeSchedule(restore=true) {
     const entry=visit,panel=el('bootstrapSchedule');
-    visit=null;
+    closeMove();lookRecord=null;visit=null;
     if(entry) clearInterval(entry.timer);
     clearTouchDrag();desktopGrab=null;showOver(null);
     activeId='';state=null;selectedId='';vendorView='';
@@ -2920,12 +3140,12 @@ const AdmiralAccountForm = (() => {
   document.addEventListener('cancel',event=>{if(event.target.id==='bootstrapSchedule'){event.preventDefault();closeSchedule();}},true);
 
   function syncDoor(){const kit=el('admiralCommissioningBrandKit');if(kit&&!el('bootstrapScheduleOpen'))kit.insertAdjacentHTML('beforeend','<button id="bootstrapScheduleOpen" class="admiral-pro-button" type="button">OPEN BOOTSTRAP BUILD SCHEDULE</button>');const doorway=el('bootstrapScheduleOpen');if(doorway&&doorway.textContent!=='OPEN BOOTSTRAP BUILD SCHEDULE')doorway.textContent='OPEN BOOTSTRAP BUILD SCHEDULE';}
-  install();installQuickPassageControls();syncDoor();new MutationObserver(syncDoor).observe(document.body,{subtree:true,childList:true});window.DarkSkyOpenBootstrapSchedule=open;
+  install();installQuickPassageControls();wireLongview();syncDoor();new MutationObserver(syncDoor).observe(document.body,{subtree:true,childList:true});window.DarkSkyOpenBootstrapSchedule=open;
   document.addEventListener('click',async event=>{const target=event.target;const opener=target.closest('#bootstrapScheduleOpen,[data-schedulejoe-open]');
     if(opener){event.preventDefault();event.stopImmediatePropagation();void open(opener);return;}if(!target.closest('#bootstrapSchedule'))return;if(target.closest('#scheduleJoeFleet')){closeSchedule(false);window.DarkSkyOpenFleetWatchtower?.();return;}if(target.closest('#bootstrapScheduleClose')){event.preventDefault();event.stopImmediatePropagation();closeSchedule();return;}if(target.closest('#bootstrapProjectsHome')){event.preventDefault();event.stopImmediatePropagation();showLanding();el('bootstrapSchedule').scrollTop=0;return;}const rowButton=target.closest('[data-open-project]');if(rowButton){event.preventDefault();event.stopImmediatePropagation();await openProject(rowButton.dataset.openProject);return;}if(!state)return;
     if(target.closest('#scheduleJoeRetry')){void persist('');return;}
     const step=target.closest('[data-week-step]');
-    if(step){selectedWeek=Math.max(0,Math.min(WEEKS-1,Number(selectedWeek)+Number(step.dataset.weekStep)));renderSchedule();return;}
+    if(step){selectedWeek=Math.max(0,Math.min(weekCount()-1,Number(selectedWeek)+Number(step.dataset.weekStep)));renderSchedule();return;}
     if(target.closest('#bootstrapScheduleAdd')){event.preventDefault();event.stopImmediatePropagation();el('bootstrapScheduleForm').classList.remove('hidden');el('bootstrapScheduleDay').value=String(selectedWeek==='all'?0:selectedWeek*5);el('bootstrapScheduleTaskTitle').focus();return;}if(target.closest('#bootstrapScheduleCancel')){event.preventDefault();event.stopImmediatePropagation();el('bootstrapScheduleForm').classList.add('hidden');return;}if(target.closest('#bootstrapScheduleReset')){event.preventDefault();event.stopImmediatePropagation();const meta=project(activeId);const prior=state;if(window.confirm('Reset only Lot '+meta.lot+' · Unit '+meta.unit+' to its original plan?')){Object.assign(state,fresh(meta),{revision:prior.revision,updatedAt:prior.updatedAt,planStart:prior.planStart});selectedId='';renderSchedule();await persist('This project was reset.');}return;}const moveButton=target.closest('[data-schedule-move]');if(moveButton&&selectedId){event.preventDefault();event.stopImmediatePropagation();move(selectedId,Number(moveButton.dataset.scheduleMove));return;}const card=target.closest('[data-task-id]');if(card){event.preventDefault();event.stopImmediatePropagation();if(Date.now()<suppressClickUntil)return;selectedId=selectedId===card.dataset.taskId?'':card.dataset.taskId;renderSchedule();status(selectedId?'Task selected. Drag the body to move, drag either edge to resize, or add an accelerated shift.':'Task selection cleared.');}},{capture:true});
   document.addEventListener('click',async event=>{
     const target=event.target;if(!target.closest?.('#bootstrapSchedule')||!state)return;
@@ -2935,18 +3155,18 @@ const AdmiralAccountForm = (() => {
     const assign=target.closest('[data-weekend-assign]');if(assign){event.preventDefault();const task=state.tasks.find(item=>item.id===selectedId),entry=state.acceleratedDays.find(item=>item.id===assign.dataset.weekendAssign);if(!task||!entry)return;task.acceleratedAssignments=Array.isArray(task.acceleratedAssignments)?task.acceleratedAssignments:[];if(!task.acceleratedAssignments.includes(entry.id))task.acceleratedAssignments.push(entry.id);state.activity.unshift({id:'weekend-'+Date.now(),type:'weekend',at:new Date().toISOString(),task:task.title,vendor:task.vendor,from:'Standard plan',to:weekendLabel(entry)+' · '+entry.shift.toUpperCase()});renderSchedule();await persist(task.title+' added to '+weekendLabel(entry)+'. Warning retained; standard weekdays remain unchanged.');return;}
     const remove=target.closest('[data-weekend-remove]');if(remove){event.preventDefault();const entry=state.acceleratedDays.find(item=>item.id===remove.dataset.weekendRemove);state.acceleratedDays=state.acceleratedDays.filter(item=>item.id!==remove.dataset.weekendRemove);state.tasks.forEach(task=>task.acceleratedAssignments=(task.acceleratedAssignments||[]).filter(id=>id!==remove.dataset.weekendRemove));renderSchedule();await persist((entry?weekendLabel(entry):'Weekend shift')+' removed; Saturday and Sunday return to off.');}
   },{capture:true});
-  document.addEventListener('submit',async event=>{if(event.target.id!=='bootstrapScheduleForm'||!state)return;event.preventDefault();event.stopImmediatePropagation();const title=el('bootstrapScheduleTaskTitle')?.value?.trim(),trade=el('bootstrapScheduleTrade')?.value?.trim(),start=Number(el('bootstrapScheduleDay')?.value||0),duration=Math.max(1,Math.min(15,Number(el('bootstrapScheduleDuration')?.value||1))),type=el('bootstrapScheduleType')?.value||'work';if(!title||!trade)return;state.tasks.push({id:'task-'+Date.now(),title,trade,start:Math.min(start,DAYS-duration),duration,plannedDuration:duration,type,vendor:vendorFor(trade),acceleratedAssignments:[]});event.target.reset();el('bootstrapScheduleDuration').value='1';event.target.classList.add('hidden');renderSchedule();await persist(title+' added to Lot '+project(activeId).lot+' · Unit '+project(activeId).unit+'.');},{capture:true});
+  document.addEventListener('submit',async event=>{if(event.target.id!=='bootstrapScheduleForm'||!state)return;event.preventDefault();event.stopImmediatePropagation();const title=el('bootstrapScheduleTaskTitle')?.value?.trim(),trade=el('bootstrapScheduleTrade')?.value?.trim(),start=Number(el('bootstrapScheduleDay')?.value||0),duration=Math.max(1,Math.min(15,Number(el('bootstrapScheduleDuration')?.value||1))),type=el('bootstrapScheduleType')?.value||'work';if(!title||!trade)return;state.tasks.push({id:'task-'+Date.now(),title,trade,start:Math.min(start,weekCount()*5-duration),duration,plannedDuration:duration,type,baselineStart:Math.min(start,weekCount()*5-duration),area:el('joeAreaNew').value,vendor:vendorFor(trade),acceleratedAssignments:[]});event.target.reset();el('bootstrapScheduleDuration').value='1';event.target.classList.add('hidden');renderSchedule();await persist(title+' added to Lot '+project(activeId).lot+' · Unit '+project(activeId).unit+'.');},{capture:true});
   document.addEventListener('dragstart',event=>{if(event.target.closest?.('[data-resize-edge]')){event.preventDefault();return;}const card=event.target.closest?.('#bootstrapSchedule [data-task-id]');if(!card||!state||touchDrag){if(touchDrag)event.preventDefault();return;}event.stopImmediatePropagation();selectedId=card.dataset.taskId;
     const task=state.tasks.find(t=>t.id===selectedId);
     const grab=dayAtPoint(event.clientX,event.clientY);
     desktopGrab={id:selectedId,offset:grab===null?0:Math.max(0,Math.min(task.duration-1,grab-task.start))};
     event.dataTransfer.effectAllowed='move';event.dataTransfer.setData('text/plain',selectedId);card.classList.add('is-dragging');},{capture:true});
-  document.addEventListener('dragover',event=>{if(!event.target.closest?.('#bootstrapSchedule')||!state)return;const day=dayAtPoint(event.clientX,event.clientY);if(day===null)return;event.preventDefault();event.stopImmediatePropagation();const task=desktopGrab&&state.tasks.find(t=>t.id===desktopGrab.id);showOver(task?Math.max(0,Math.min(DAYS-task.duration,day-desktopGrab.offset)):day);},{capture:true});
+  document.addEventListener('dragover',event=>{if(!event.target.closest?.('#bootstrapSchedule')||!state)return;const day=dayAtPoint(event.clientX,event.clientY);if(day===null)return;event.preventDefault();event.stopImmediatePropagation();const task=desktopGrab&&state.tasks.find(t=>t.id===desktopGrab.id);showOver(task?Math.max(0,Math.min(weekCount()*5-task.duration,day-desktopGrab.offset)):day);},{capture:true});
   document.addEventListener('drop',event=>{if(!event.target.closest?.('#bootstrapSchedule')||!state)return;const day=dayAtPoint(event.clientX,event.clientY);if(day===null)return;event.preventDefault();event.stopImmediatePropagation();if(desktopGrab&&desktopGrab.id===event.dataTransfer.getData('text/plain'))move(desktopGrab.id,day-desktopGrab.offset);desktopGrab=null;},{capture:true});
   document.addEventListener('dragend',event=>{if(!event.target.closest?.('#bootstrapSchedule'))return;event.stopImmediatePropagation();desktopGrab=null;showOver(null);document.querySelectorAll('.bootstrap-ground-task').forEach(node=>node.classList.remove('is-dragging'));},{capture:true});
   function dragDay(drag,event) {
     const day=dayAtPoint(event.clientX,event.clientY);
-    return day===null?null:Math.max(0,Math.min(DAYS-drag.duration,day-drag.offset));
+    return day===null?null:Math.max(0,Math.min(weekCount()*5-(el('joePrompt').checked?1:drag.duration),day-drag.offset));
   }
   document.addEventListener('pointerdown',event=>{
     const card=event.target.closest?.('#bootstrapSchedule [data-task-id]');
