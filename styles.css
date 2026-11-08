@@ -15492,6 +15492,9 @@ body[data-command-surface="admiral"] #enginePanel{display:none!important;pointer
 @media(max-width:820px){.fleet-watchtower .fleet-watch-card{grid-template-columns:82px minmax(0,1fr)}.fleet-watchtower .fleet-watch-card>img,.fleet-watchtower .fleet-watch-code-mark{width:82px;height:82px}.fleet-watchtower .fleet-watch-condition,.fleet-watchtower .fleet-watch-actions{grid-column:1/-1}.fleet-watchtower .fleet-watch-actions{grid-template-columns:1fr 1fr}}
 
 /* 8.8.17 Admiral Commission — keep Watchtower controls in flow on iPad. */
+.fleet-report-nav{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.fleet-report-nav #watchReportSteps:not([hidden]){display:flex;gap:8px}
+.fleet-report-nav button:disabled{opacity:.45;cursor:default}
 .fleet-watchtower #watchWorkspace>header{position:sticky;top:0;z-index:20;padding:12px 16px;background:rgba(4,28,35,.97);box-shadow:0 12px 28px rgba(0,0,0,.28);backdrop-filter:blur(12px)}
 .fleet-watchtower #watchWorkspace>header>img{width:86px;max-height:86px;object-fit:contain}
 .fleet-watchtower #watchWorkspace>header h2{font-size:2rem;margin:.2rem 0}
