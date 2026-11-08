@@ -623,16 +623,10 @@ html:has(#lantern-harbor[open]) { overflow:hidden; }
 
   <div id="blackFlagEntryGate" class="black-flag-entry-gate">
     <div class="bf-entry-shell">
-      <div class="bf-entry-kicker">BLACK FLAG • SECURE COMMAND ACCESS</div>
-      <div class="black-flag-engine-brand"><div class="bf-engine-title-lockup">
-      <img class="bf-engine-primary-lockup" src="black_flag_primary_lockup.png" alt="Black Flag — Business Command Platform" />
-      <div class="bf-entry-engine-title"><div class="bf-platform-name">ENGINE ACCESS</div><h1>Engine Room</h1><div class="bf-platform-subtitle">DARK SKY COMMAND</div></div>
-    </div></div>
-      <p class="bf-entry-sub">Authorized access to project operations, fleet controls, and platform command.</p><div class="bf-entry-trust"><span class="bf-entry-trust-dot"></span><strong>SECURE ENGINE ACCESS</strong><span>Session isolated • project boundaries enforced</span></div>
-
+      <header class="watchkey-head"><img src="black_flag_platform_icon.png" alt="Black Flag"><h1>Engine Room</h1></header>
       <div class="bf-entry-panel">
         <fieldset id="blackFlagEntryPin" class="engine-code-pad" tabindex="-1">
-          <legend>Black Flag Engine PIN</legend>
+          <legend>Enter your Engine PIN</legend>
           <span data-code-mask aria-hidden="true"></span>
           <span data-code-status class="code-sr-only" role="status" aria-live="polite" aria-atomic="true"></span>
           <div class="engine-code-keys">
@@ -651,7 +645,7 @@ html:has(#lantern-harbor[open]) { overflow:hidden; }
           </div>
         </fieldset>
         <p id="blackFlagEntryError" class="bf-entry-error" aria-live="polite"></p><p id="blackFlagLockTimer" class="pin-lock-timer hidden"></p>
-        <button type="button" id="blackFlagEntryUnlock" class="bf-entry-primary">ENTER ENGINE ROOM →</button>
+        <button type="button" id="blackFlagEntryUnlock" class="bf-entry-primary">Unlock Engine Room</button>
 <button type="button" id="closeBlackFlagEntry" class="bf-entry-secondary bf-close-entry">RETURN TO PROJECT</button>
 <div class="engine-entry-mode" role="group" aria-label="Engine appearance">
   <span><strong>ENGINE APPEARANCE</strong><small>Choose how the Engine Room presents itself.</small></span>
@@ -666,7 +660,7 @@ html:has(#lantern-harbor[open]) { overflow:hidden; }
       <div class="bf-pirate-atmosphere" aria-hidden="true">
         <span>☠ DARK FLAG COVE</span><span>⚓ ONE ENGINE • MANY CREWS</span><span>✦ TOTAL SEPARATION</span>
       </div>
-      <div class="bf-entry-foot">Authorized engine access only • Engine PIN required every time Black Flag is entered</div>
+
     </div>
   </div>
 

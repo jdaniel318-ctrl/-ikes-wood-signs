@@ -17213,3 +17213,20 @@ dialog#bootstrapSchedule::backdrop {background:#03151a}
 #crewMatches>div {display:grid;grid-template-columns:1.2fr 1fr .85fr 1.25fr;align-items:center;gap:8px 14px;border-top:1px solid #36545a;padding:6px 12px}
 #crewMatches span {overflow-wrap:anywhere}
 @media(max-width:720px){#crewMatches>div {grid-template-columns:1fr;gap:2px;padding:8px}#crewQuery {width:auto;flex:1;min-width:100px}}
+
+/* Engine entry shares the compact proportions of the scheduling workspace. */
+#blackFlagEntryGate .bf-entry-shell {
+  width:min(100%, 24rem)!important; min-height:0!important;
+  padding:clamp(16px,3vw,28px)!important; box-sizing:border-box;
+}
+.watchkey-head {display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:16px}
+.watchkey-head img {width:48px;height:48px;object-fit:contain}
+.watchkey-head h1 {margin:0;color:#f4efdf;font:600 30px/1.1 system-ui}
+#blackFlagEntryGate .bf-entry-panel {width:100%!important;box-sizing:border-box;padding:0!important;background:transparent!important;box-shadow:none!important;border:none!important}
+#blackFlagEntryGate .engine-code-pad {color:#e9ede6}
+#blackFlagEntryGate .engine-code-keys button {background:#16353e;border-color:#43616a;color:#f5f2e8}
+#blackFlagEntryGate .bf-entry-primary {background:#efcd80!important;color:#132d33!important;min-height:46px!important;text-transform:none}
+#blackFlagEntryGate .bf-entry-secondary {color:#d4e6e4!important;background:transparent!important;min-height:44px!important}
+#blackFlagEntryGate .bf-entry-error {color:#ffb8a7!important}
+#blackFlagEntryGate .bf-entry-error:empty {display:none}
+#joeLockNotice {position:sticky;top:0;z-index:5;margin:0;padding:10px 14px;background:#ffedc4;color:#22363a;font-weight:650}

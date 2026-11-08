@@ -3835,9 +3835,33 @@ const AdmiralAccountForm = (() => {
     if(entry) clearInterval(entry.timer);
     clearTouchDrag();desktopGrab=null;showOver(null);
     activeId='';state=null;selectedId='';vendorView='';
+    el('joeLockNotice')?.remove();
     if(panel.open) panel.close();
     panel.classList.add('hidden');panel.setAttribute('aria-hidden','true');
     if(restore && entry?.button.getClientRects().length)entry.button.focus({preventScroll:true});
+  }
+  function updateLockNotice(panel) {
+    const session=window.DarkSkyAdmiralSession?.status();
+    const warning=session?.maximumRemainingMs<=120000
+      ? 'Your sign-in expires within two minutes. Save your work before signing in again.'
+      : session?.idleRemainingMs<=120000
+        ? 'ScheduleJoe locks within two minutes of inactivity.'
+        : '';
+    let notice=el('joeLockNotice');
+    if(!warning){notice?.remove();return;}
+    const idle=session.maximumRemainingMs>120000;
+    const dialogs=Array.from(panel.querySelectorAll('dialog[open]'));
+    const host=dialogs.at(-1)||panel;
+    if(!notice){notice=document.createElement('p');notice.id='joeLockNotice';notice.setAttribute('role','status');}
+    if(notice.parentElement!==host)host.prepend(notice);
+    if(notice.dataset.message!==warning){
+      notice.dataset.message=warning;
+      notice.textContent=warning+' ';
+      if(idle){
+        const keep=document.createElement('button');keep.type='button';keep.textContent='Keep working';
+        notice.append(keep);
+      }
+    }
   }
   async function open(button) {
     if(!button?.matches?.('#bootstrapScheduleOpen,[data-schedulejoe-open]')) {
@@ -3863,6 +3887,7 @@ const AdmiralAccountForm = (() => {
       el('bootstrapScheduleClose').focus({preventScroll:true});
       entry.timer=setInterval(()=>{
         if(!current(entry)){closeSchedule(false);return;}
+        updateLockNotice(panel);
         if(!activeId&&!lookRecord&&rosterRenderedDay!==isoDate(new Date()))renderLanding();
       },550);
       await hydrate(entry);
