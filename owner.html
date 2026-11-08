@@ -148,12 +148,12 @@
 .tb-recovery-grid .btn{width:100%;min-height:46px;font-size:13px}
 @media(max-width:700px){.tb-security-form,.tb-recovery-grid{grid-template-columns:1fr}.tb-security-form>.captain-handoff-actions{grid-column:auto}}
 </style>
-<link rel="stylesheet" href="business_deck.css?v=pilotage-8820108" onerror="window.__workhorseDeckStylesFailed=true">
-<script id="blackFlagPageRelease">window.__blackFlagPageRelease=Object.freeze({build:'8.8.20.108',seal:'pilotage-8820108',name:'Pilotage'});</script>
+<link rel="stylesheet" href="business_deck.css?v=livery-8820109" onerror="window.__workhorseDeckStylesFailed=true">
+<script id="blackFlagPageRelease">window.__blackFlagPageRelease=Object.freeze({build:'8.8.20.109',seal:'livery-8820109',name:'Livery'});</script>
 <script src="input_hygiene.js?v=fairlead-882068"></script>
 <script src="service_address_fleet.js?v=streetwise-882096"></script>
 <script src="service_address.js?v=portolan-882098"></script>
-<script src="business_deck.js?v=pilotage-8820108"></script>
+<script src="business_deck.js?v=livery-8820109"></script>
 <script src="fleet_supabase.js?v=signalman-882099"></script>
 <link rel="stylesheet" href="fleet_help.css?v=signalman-882099">
 <script src="fleet_help.js?v=reliefwatch-8820105"></script>
@@ -228,7 +228,7 @@
   <section id="portal" class="portal hidden">
     <div class="portal-wrap">
       <header class="portal-head">
-        <div class="bd-brand-heading"><div id="businessHeaderLogo" aria-hidden="true"></div><div><div class="eyebrow" id="ownerInstalledRelease">8.8.20.108 · QUARTERMASTER</div><h1 id="portalName">Business</h1><span class="owner-badge">● SECURE OWNER SESSION</span><div id="ownerScopeNote" class="owner-scope-note">Verified for this business only</div></div></div>
+        <div class="bd-brand-heading"><div id="businessHeaderLogo" aria-hidden="true"></div><div><div class="eyebrow" id="ownerInstalledRelease">8.8.20.109 · QUARTERMASTER</div><h1 id="portalName" tabindex="-1">Business</h1><span class="owner-badge">● SECURE OWNER SESSION</span><div id="ownerScopeNote" class="owner-scope-note">Verified for this business only</div></div></div>
         <div class="head-actions"><button id="returnEngine" class="btn ghost hidden">RETURN TO BLACK FLAG</button><button id="signOut" class="btn secondary">SIGN OUT</button></div>
       </header>
       <nav id="businessDeckNav" class="bd-owner-nav" aria-label="Business workspace"></nav>
@@ -847,7 +847,7 @@ function fleetHelpOwnerBinding(){
   return auth?.user?.id===b.userId&&auth.access_token&&Number(auth.expires_at)>Date.now()?b:null;
 }
 function clearSession(reason='explicit-logout'){
-  retireOwnerHelp();verifiedOwnerBinding=null;ownerViewEpoch++;const s=ownerSession();
+  retireOwnerHelp();savedOwnerLogo=null;verifiedOwnerBinding=null;ownerViewEpoch++;const s=ownerSession();
   if(ownerExpiryTimer){clearTimeout(ownerExpiryTimer);ownerExpiryTimer=0;}
   if(s)ownerWitness('session-ended',s,{reason,scopeVerified:true});sessionStorage.removeItem(OWNER_SESSION_KEY);
   if(ownerProjectFromServer){
@@ -896,7 +896,7 @@ function ownerReturnView(){
 function openVerifiedOwnerHome(){
   // Rendering the home replaces its URL, so capture the requested screen first.
   const destination=ownerReturnView();
-  renderPortal();
+  renderPortal(destination==='portal');
   if(destination==='fleet-help')openOwnerView('fleet-help');
 }
 function liveOwnerRedirect(){const u=new URL('./owner.html',location.href);u.searchParams.set('project',projectId);u.searchParams.set('view',ownerReturnView());if(source==='engine')u.searchParams.set('source','engine');return u.toString();}
@@ -1024,7 +1024,77 @@ async function requestFleetService(entitlement,current=ownerViewGuard()){
   return true;
 }
 function serviceStatusLabel(e){if(e.status==='enabled')return 'ACTIVE';if(e.status==='entitled'&&e.commercial_mode==='standard')return 'INCLUDED WITH FLEET';if(e.status==='entitled'&&e.commercial_mode==='paid')return 'APPROVED UPGRADE';if(e.status==='pending_payment')return 'PENDING PAYMENT';if(e.request?.status==='approved')return 'APPROVED';if(e.request?.status==='requested'||e.request?.status==='reviewing'||e.status==='requested')return 'REQUESTED';if(e.commercial_mode==='standard')return 'INCLUDED WITH FLEET';return 'AVAILABLE FOR UPGRADE';}
-function renderPortal(){if(!canReadOwnerDeck())return;armOwnerExpiry();show('portal');$('portal').classList.add('workhorse-owner');renderBusinessNav();$('businessHeaderLogo').innerHTML=window.BlackFlagBusinessDeck.logo(project);$('portal').classList.remove('subview');$('mOrders').textContent=ownerProjectFromServer?'—':orders.length;$('mOwner').textContent=String(project?.ownerAccess?.status||'active').toUpperCase();$('modules').innerHTML=modules().map(([k,t,d])=>`<button class="module" data-module="${k}"><small>${k.toUpperCase()}</small><h3>${esc(t)}</h3><p>${esc(d)}</p><strong>OPEN →</strong></button>`).join('');document.querySelectorAll('[data-module]').forEach(b=>b.addEventListener('click',()=>openOwnerView(b.dataset.module)));returnToBridgeHome(false);if(engineTrialLaunch&&!trialViewOpened){trialViewOpened=true;openOwnerView('countercraft');}}function returnToBridgeHome(animate=true){if(!canReadOwnerDeck())return;retireOwnerHelp();ownerViewEpoch++;renderBusinessHome();markBusinessNav('portal');$('portal').classList.remove('subview');$('workspace').classList.add('hidden');$('workspace').classList.remove('stage-in');$('workspace').innerHTML='';$('ownerHome').classList.remove('hidden','stage-out');if(animate){$('ownerHome').classList.add('stage-in');setTimeout(()=>$('ownerHome').classList.remove('stage-in'),260);}if(projectId==='ikes-wood-signs'&&!ownerProjectFromServer){$('vesselStrip').classList.remove('hidden');$('ownerHomeNote').classList.remove('hidden');}history.replaceState({surface:'owner',projectId,ownerView:'portal'},'',`owner.html?project=${encodeURIComponent(projectId)}&view=portal${source==='engine'?'&source=engine':''}`);window.BlackFlagViewport?.enter({key:'owner:'+projectId,reason:'new'});}
+let savedOwnerLogo;
+function readOwnerLogo(id) {
+  // Read only the mark assigned to this vessel in the Engine graphics library.
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open('blackFlagGraphicsDB');
+    request.onupgradeneeded = () => request.transaction.abort();
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => {
+      const graphics = request.result;
+      try {
+        if (!graphics.objectStoreNames.contains('projectGraphics')) { resolve(''); return; }
+        const key = id + '::projectLogo';
+        const rowRequest = graphics.transaction('projectGraphics').objectStore('projectGraphics').get(key);
+        rowRequest.onerror = () => reject(rowRequest.error);
+        rowRequest.onsuccess = () => {
+          const row = rowRequest.result;
+          if (row?.key !== key || row.projectId !== id || row.slot !== 'projectLogo' || !(row.blob instanceof Blob)) { resolve(''); return; }
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = () => reject(reader.error);
+          reader.readAsDataURL(row.blob);
+        };
+      } catch (error) { reject(error); }
+      finally { graphics.close(); }
+    };
+  }).catch(() => '');
+}
+function mountOwnerIdentity() {
+  const deck = window.BlackFlagBusinessDeck;
+  savedOwnerLogo = readOwnerLogo(project.id);
+  deck.mountLogo($('businessHeaderLogo'), project, savedOwnerLogo);
+  const colors = deck.ownerPalette(project);
+  $('portal').style.setProperty('--owner-primary', colors.primary);
+  $('portal').style.setProperty('--owner-accent', colors.accent);
+}
+function landAtOwnerHeader() {
+  const heading = $('portalName');
+  const epoch = ownerViewEpoch;
+  let active = true;
+  const viewport = window.visualViewport;
+  const events = ['pointerdown', 'touchstart', 'wheel', 'keydown'];
+  const current = () => active && epoch === ownerViewEpoch && !$('portal').classList.contains('hidden') && document.activeElement === heading;
+  function align() {
+    if (current()) window.BlackFlagViewport?.enter({key:'owner:'+projectId, reason:'new', anchor:$('portal'), current});
+  }
+  function clipped() {
+    return current() && $('businessHeaderLogo').getBoundingClientRect().top < (viewport?.offsetTop || 0);
+  }
+  function alignIfClipped() {
+    if (clipped()) align();
+  }
+  function finish() {
+    active = false;
+    viewport?.removeEventListener('resize', align);
+    viewport?.removeEventListener('scroll', alignIfClipped);
+    events.forEach(type => window.removeEventListener(type, finish, true));
+  }
+  heading.focus({preventScroll:true});
+  align();
+  // The input keyboard can finish closing after the authenticated view is painted.
+  viewport?.addEventListener('resize', align);
+  viewport?.addEventListener('scroll', alignIfClipped);
+  events.forEach(type => window.addEventListener(type, finish, {capture:true, passive:true}));
+  setTimeout(() => {
+    if (clipped()) $('portal').scrollIntoView({block:'start', inline:'nearest', behavior:'instant'});
+    finish();
+  }, 800);
+}
+
+function renderPortal(landOnToday=true){if(!canReadOwnerDeck())return;armOwnerExpiry();show('portal');$('portal').classList.add('workhorse-owner');renderBusinessNav();mountOwnerIdentity();$('portal').classList.remove('subview');$('mOrders').textContent=ownerProjectFromServer?'—':orders.length;$('mOwner').textContent=String(project?.ownerAccess?.status||'active').toUpperCase();$('modules').innerHTML=modules().map(([k,t,d])=>`<button class="module" data-module="${k}"><small>${k.toUpperCase()}</small><h3>${esc(t)}</h3><p>${esc(d)}</p><strong>OPEN →</strong></button>`).join('');document.querySelectorAll('[data-module]').forEach(b=>b.addEventListener('click',()=>openOwnerView(b.dataset.module)));returnToBridgeHome(false);if(engineTrialLaunch&&!trialViewOpened){trialViewOpened=true;openOwnerView('countercraft');}else if(landOnToday){landAtOwnerHeader();}}
+function returnToBridgeHome(animate=true){if(!canReadOwnerDeck())return;retireOwnerHelp();ownerViewEpoch++;renderBusinessHome();markBusinessNav('portal');$('portal').classList.remove('subview');$('workspace').classList.add('hidden');$('workspace').classList.remove('stage-in');$('workspace').innerHTML='';$('ownerHome').classList.remove('hidden','stage-out');if(animate){$('ownerHome').classList.add('stage-in');setTimeout(()=>$('ownerHome').classList.remove('stage-in'),260);}if(projectId==='ikes-wood-signs'&&!ownerProjectFromServer){$('vesselStrip').classList.remove('hidden');$('ownerHomeNote').classList.remove('hidden');}history.replaceState({surface:'owner',projectId,ownerView:'portal'},'',`owner.html?project=${encodeURIComponent(projectId)}&view=portal${source==='engine'?'&source=engine':''}`);window.BlackFlagViewport?.enter({key:'owner:'+projectId,reason:'new'});}
 function canReadOwnerDeck(){
   const s=ownerSession(),ok=sessionValid(s);
   if(!ok){
@@ -1213,7 +1283,7 @@ if(k==='watch'){
 if(k==='orders'){renderOrderDeck();return;}
 if(k==='pricing'){const c=await config();if(!current())return;if(projectId==='ikes-wood-signs'){const rates=normalizeRates(c.ikeSpeciesRates);workspace('Pricing','Set the private price per linear foot by wood species. Customers see one simple final price.',`<div class="rates">${rates.map(r=>`<label class="rate"><strong>${esc(r.name)}</strong><input data-rate="${r.id}" type="number" min="0" step="0.01" value="${r.rate||''}" placeholder="Rate / ft"><span class="enabled"><input data-enabled="${r.id}" type="checkbox" ${r.enabled?'checked':''}> Active</span></label>`).join('')}</div><button id="savePricing" class="btn primary" style="margin-top:14px">SAVE SPECIES PRICING</button><div id="savePricingState" class="save-state">No unsaved changes.</div>`);$('savePricing').onclick=async()=>{const next={...c,ikeSpeciesRates:rates.map(r=>({...r,rate:Math.max(0,Number(document.querySelector(`[data-rate="${r.id}"]`)?.value||0)),enabled:!!document.querySelector(`[data-enabled="${r.id}"]`)?.checked}))};await setSetting('businessConfig:'+projectId,next);$('savePricingState').textContent='Species pricing saved. This state remains visible.';};window.BlackFlagBusinessDeck.mountPriceGuide({container:$('workspace'),rates});return;}workspace('Pricing','Manage project pricing.',`<p class="muted">Pricing controls are configured per project.</p>`);return;}
 if(k==='features'){const caps=capabilities(), allow=project.customization?.allowCustomColors!==false, email=!!project.notifications?.customerConfirmationEmail;workspace('Features','Choose the business features available to your customers.',`<div class="feature-list"><label class="feature"><span><strong>Custom Colors</strong><br><small>Customer color choices available for your business</small></span><input id="fColors" type="checkbox" ${allow?'checked':''} ${caps.has('branding')?'':'disabled'}></label><label class="feature"><span><strong>Confirmation Email</strong><br><small>Send customers an order confirmation email</small></span><input id="fEmail" type="checkbox" ${email?'checked':''} ${caps.has('notifications')?'':'disabled'}></label></div><button id="saveFeatures" class="btn primary" style="margin-top:14px">SAVE FEATURES</button><div id="saveFeaturesState" class="save-state">No unsaved changes.</div>`);$('saveFeatures').onclick=async()=>{project.customization={...(project.customization||{}),allowCustomColors:!!$('fColors').checked};project.notifications={...(project.notifications||{}),customerConfirmationEmail:!!$('fEmail').checked};await putProject(project);$('saveFeaturesState').textContent='Approved feature choices saved.';};return;}
-if(k==='branding'){workspace('Branding','Update how your business name and message appear to customers.',`${projectId==='ikes-wood-signs'?`<div class="brand-identity"><img src="ike_character.png" alt="Current Ike's Wood Signs identity"><div><div class="eyebrow gold">CURRENT BUSINESS IDENTITY</div><strong>${esc(project.name||"Ike's Wood Signs")}</strong><small>Approved Ike identity currently used across the Owner Bridge and customer-facing surfaces.</small></div></div>`:''}<div class="brand-grid"><label>Business name<input data-bf-trim="boundary" id="brandName" value="${esc(project.name||'')}"></label><label>Subtitle<input data-bf-trim="boundary" id="brandSub" value="${esc(project.branding?.subtitle||'')}"></label></div><button id="saveBrand" class="btn primary" style="margin-top:14px">SAVE BRANDING</button><div id="brandState" class="save-state">No unsaved changes.</div>`);$('saveBrand').onclick=async()=>{const n=String($('brandName').value||'').trim();if(n)project.name=n;project.branding={...(project.branding||{}),businessName:n||project.name,subtitle:String($('brandSub').value||'').trim()};await putProject(project);setNames();$('brandState').textContent='Branding saved.';};return;}
+if(k==='branding'){workspace('Branding','Update how your business name and message appear to customers.',`<div class="brand-identity"><div id="ownerBrandMark" aria-hidden="true"></div><div><div class="eyebrow">Business identity</div><strong id="ownerBrandName">${esc(project.name)}</strong></div></div><div class="brand-grid"><label>Business name<input data-bf-trim="boundary" id="brandName" value="${esc(project.name||'')}"></label><label>Subtitle<input data-bf-trim="boundary" id="brandSub" value="${esc(project.branding?.subtitle||'')}"></label></div><button id="saveBrand" class="btn primary" style="margin-top:14px">SAVE BRANDING</button><div id="brandState" class="save-state">No unsaved changes.</div>`);window.BlackFlagBusinessDeck.mountLogo($('ownerBrandMark'),project,savedOwnerLogo);$('saveBrand').onclick=async()=>{const n=String($('brandName').value||'').trim();if(n)project.name=n;project.branding={...(project.branding||{}),businessName:n||project.name,subtitle:String($('brandSub').value||'').trim()};await putProject(project);setNames();$('ownerBrandName').textContent=project.name;renderBusinessHome();$('brandState').textContent='Branding saved.';};return;}
 if(k==='references'){const rows=styleRefs().slice().sort((a,b)=>String(b.updatedAt||'').localeCompare(String(a.updatedAt||'')));const styles=stylePackRegistry();workspace('Lettering styles','Real examples first. Keep reference evidence, exact wording and production approval distinct.',`<div class="style-foundry-state"><strong>PRODUCTION RULE</strong><br>Evidence → correct → segment → approve → assemble → benchmark → certify → publish. Draft observations never become proven geometry automatically.</div><div id="sfStatus" class="save-state">${project.styleFoundry?.compiledAt?'Last geometry compile '+esc(new Date(project.styleFoundry.compiledAt).toLocaleString()):'No GlyphForge compile yet. Bundled A/B anchor geometry remains protected.'}</div><div class="style-registry">${stylePackCards()}</div><div class="graphic-import"><h3>Create style from a graphic</h3><p class="muted">Upload a lettering graphic or finished-sign image and type the exact characters shown. The graphic starts as draft evidence. Its characters are observations until the evidence is approved and its glyph segmentation is reviewed.</p><div class="graphic-import-grid"><label>Style name<input data-bf-trim="boundary" id="sfGraphicName" placeholder="Example: Cabin Serif"></label><label>Exact wording in graphic<input data-bf-trim="preserve" id="sfGraphicText" placeholder="Type exactly what the graphic shows"></label><label>Starting geometry<select id="sfGraphicProfile"><option value="A">Bold / block seed</option><option value="B">Tall / condensed seed</option></select></label><label>Graphic<input id="sfGraphicFile" type="file" accept="image/*"></label></div><button id="sfGraphicCreate" class="btn primary" style="margin-top:10px">CREATE DRAFT STYLE FROM GRAPHIC</button></div><div class="style-new"><h3>Create empty style pack</h3><p class="muted">Use this only when there is no graphic yet. The empty style remains hidden until evidence, geometry, benchmark replay, certification, and publication are complete.</p><div class="style-new-grid"><label>Style name<input data-bf-trim="boundary" id="sfNewName" placeholder="Example: Rustic Script"></label><label>Starting geometry<select id="sfNewProfile"><option value="A">Bold / block starting profile</option><option value="B">Tall / condensed starting profile</option></select></label><label>Sample label<input data-bf-trim="preserve" id="sfNewSample" placeholder="Example wording"></label></div><button id="sfCreateStyle" class="btn secondary" style="margin-top:10px">CREATE EMPTY DRAFT STYLE</button></div><div class="style-foundry-upload"><label>Style<select id="sfStyle">${Object.values(styles).map(p=>`<option value="${esc(p.id)}">Style ${esc(p.id)} — ${esc(p.name)}</option>`).join('')}</select></label><label>Exact wording shown<input data-bf-trim="preserve" id="sfText" placeholder="Type exactly what appears in the photo"></label><label>Title<input data-bf-trim="boundary" id="sfTitle" placeholder="Finished sign example"></label><label>Image<input id="sfFile" type="file" accept="image/*"></label></div><button id="sfAdd" class="btn primary" style="margin-top:12px">ADD DRAFT EXAMPLE</button> <button id="sfCompile" class="btn warn" style="margin-top:12px">COMPILE REVIEWED GEOMETRY</button><div class="style-foundry-list">${rows.length?rows.map(r=>`<article class="style-foundry-row">${r.dataUrl?`<img src="${r.dataUrl}" alt="reference">`:'<div>NO IMAGE</div>'}<div><small>${esc(String(r.status||'draft').toUpperCase())} • STYLE ${esc(r.style||'—')}</small><h3>${esc(r.title||'Example')}</h3><p class="muted">${esc(r.sampleText||'No wording tagged')}</p></div><div>${r.status!=='approved'?`<span class="forge-badge hold">REVIEW REQUIRED</span>`:'<span class="forge-badge ready">APPROVED</span>'}</div></article>`).join(''):'<p class="muted">No uploaded examples yet. Bundled RAMJET and SMOKE HOLE! anchors remain protected starting geometry.</p>'}</div>`);
 $('sfGraphicCreate').onclick=async()=>{const name=String($('sfGraphicName').value||'').trim(),sampleText=String($('sfGraphicText').value||'').trim(),f=$('sfGraphicFile').files?.[0];if(!name){$('sfStatus').textContent='Give the graphic-derived style a name.';return;}if(!sampleText){$('sfStatus').textContent='Enter the exact wording shown in the graphic.';return;}if(!f){$('sfStatus').textContent='Choose the graphic image.';return;}if(f.size>12*1024*1024){$('sfStatus').textContent='Use an image under 12 MB.';return;}const id=nextStyleId(),profile=$('sfGraphicProfile').value,now=new Date().toISOString(),dataUrl=await readFileData(f),refId='REF-'+Date.now().toString(36);styles[id]={id,name,label:`Style ${id} — ${name}`,sampleText,anchorText:sampleText,anchorImage:dataUrl,anchorSource:'owner-draft-graphic',status:'draft',customerVisible:false,geometryProfile:profile,geometryCertified:false,geometryCertificationBasis:'evidence-required',candidateFromGraphic:true,canonicalGlyphs:{},versions:[],createdAt:now};styleRefs().push({id:refId,projectId,style:id,title:`${name} graphic seed`,sampleText,dataUrl,status:'draft',kind:'lettering-graphic',role:'production-geometry-seed',createdAt:now,updatedAt:now,source:'owner-graphic'});await putProject(project);rerenderFoundry(id,`Style ${id} created from graphic as DRAFT. ${sfChars(sampleText).length} characters are observations only until approval.`,refId);};
 $('sfCreateStyle').onclick=async()=>{const name=String($('sfNewName').value||'').trim();if(!name){$('sfStatus').textContent='Give the new style a name first.';return;}const id=nextStyleId(),profile=$('sfNewProfile').value;styles[id]={id,name,label:`Style ${id} — ${name}`,sampleText:String($('sfNewSample').value||name).trim(),anchorText:'',anchorImage:'',anchorSource:'none',status:'draft',customerVisible:false,geometryProfile:profile,geometryCertified:false,geometryCertificationBasis:'evidence-required',canonicalGlyphs:{},versions:[],createdAt:new Date().toISOString()};await putProject(project);rerenderFoundry(id,`Style ${id} empty draft created. Add real evidence before geometry work.`);};

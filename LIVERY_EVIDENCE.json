@@ -1,0 +1,39 @@
+{
+  "release": "Livery",
+  "build": "8.8.20.109",
+  "baseline": "8.8.20.108",
+  "checks": {
+    "offline_suites_passed": 48,
+    "viewport_widths_px": [
+      320,
+      390,
+      820,
+      1024,
+      1366
+    ],
+    "browser_journeys": {
+      "chromium": [
+        "visible masthead at 320, 390, 820, 1024 and 1366px, late viewport resize, Orders and queue return focus",
+        "owner logo canonical",
+        "owner logo custom",
+        "owner logo wrong",
+        "owner logo broken",
+        "owner logo fresh",
+        "direct help destination"
+      ],
+      "webkit": [
+        "visible masthead at 320, 390, 820, 1024 and 1366px, late viewport resize, Orders and queue return focus",
+        "owner logo canonical",
+        "owner logo custom",
+        "owner logo wrong",
+        "owner logo broken",
+        "owner logo fresh",
+        "direct help destination"
+      ]
+    },
+    "user_navigation": "Manual scroll after sign-in is retained. Returning from a queue item restores focus to that order."
+  },
+  "environment": "Local release with synthetic credentials, service responses and order data. The bundled Legacy mark is the original release asset.",
+  "native_ipad_safari_face_id": "Pending device check after installation",
+  "production_deployment": false
+}

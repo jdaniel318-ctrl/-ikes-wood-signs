@@ -98,14 +98,70 @@
       service:text(first(o.productName,o.offerName,o.engagementLabel))
     };
   }
+  const legacyLogo = 'assets/legacy_plumbing_canonical_logo.jpeg';
+  const fleetMarks = new Map([
+    ['bf-p-f92f87e8ec44', legacyLogo],
+    ['legacy-plumbing', legacyLogo],
+    ['ikes-wood-signs', 'ike_character.png'],
+    ['bor-north-richmond', 'signal_restoration_logo.png']
+  ]);
+  function brandImage(value) {
+    const src = text(value).trim();
+    if (!src) return '';
+    if (/^data:image\/(?:png|jpe?g|webp|gif|avif|svg\+xml);base64,[a-z\d+/=\r\n]+$/i.test(src)) return src;
+    if (/^data:image\/svg\+xml;(?:charset=utf-8|utf8),%3csvg(?:%20|%0a)/i.test(src)) return src;
+    if (/^(?:\.\/)?(?:[\w-]+\/)*[\w .-]+\.(?:png|jpe?g|webp|gif|avif|svg)$/i.test(src)) return src;
+    try {
+      const url = new URL(src);
+      if (url.protocol === 'https:' && !url.username && !url.password) return url.href;
+    } catch (_) {}
+    return '';
+  }
+  function logoSources(project, uploaded) {
+    const branding = project.branding || {};
+    let intake = project.businessIntake?.visualAssets?.logo;
+    const bundled = fleetMarks.get(project.id);
+    if (bundled === legacyLogo && intake === 'https://legacyplumbingrva.com/wp-content/uploads/2026/04/LOGO.png') intake = bundled;
+    return [...new Set([uploaded, branding.logoDataUrl, branding.logoData, project.logoData, intake, bundled]
+      .map(brandImage).filter(Boolean))];
+  }
+  function ownerPalette(project) {
+    const colors = project.businessIntake?.colors || project.branding?.colors;
+    const intake = Array.isArray(colors) ? colors : [];
+    const legacy = fleetMarks.get(project.id) === legacyLogo;
+    const color = (...values) => values.find(v => typeof v === 'string' && /^#(?:[\da-f]{3}|[\da-f]{6})$/i.test(v));
+    return {
+      primary: color(project.adminTheme?.header, project.branding?.primary, intake[0]) || (legacy ? '#173e83' : '#27525b'),
+      accent: color(project.adminTheme?.accent, project.branding?.accent, intake[1]) || (legacy ? '#db9a35' : '#d4ae6a')
+    };
+  }
+  function monogram(project) {
+    const words = text(project.name).trim().split(/\s+/);
+    const initials = project.projectCode || words.slice(0, 2).map(word => word[0]).join('') || 'BF';
+    return '<span class="bd-monogram" aria-hidden="true">' + escape(text(initials).slice(0,3).toUpperCase()) + '</span>';
+  }
   function logo(project) {
-    const intake=image(project.businessIntake?.visualAssets?.logo);
-    if(intake)return '<img src="'+intake+'" alt="'+escape(project.name)+'" class="bd-business-logo">';
-    if(project.id==='ikes-wood-signs')return '<img src="ike_character.png" alt="Ike’s Wood Signs" class="bd-business-logo">';
-    const src=image(first(project.branding?.logoDataUrl,project.branding?.logoData,project.logoData));
-    if(src)return '<img src="'+src+'" alt="'+escape(project.name)+'" class="bd-business-logo">';
-    if(project.id==='bor-north-richmond')return '<img src="signal_restoration_logo.png" alt="Signal Restoration" class="bd-business-logo">';
-    return '<span class="bd-monogram" aria-hidden="true">'+escape(text(project.projectCode||project.name||'BF').slice(0,3).toUpperCase())+'</span>';
+    const [src] = logoSources(project);
+    return src ? '<img class="bd-business-logo" alt="' + escape(project.name) + '" referrerpolicy="no-referrer" src="' + escape(src) + '">' : monogram(project);
+  }
+  function mountLogo(container, project, uploaded) {
+    // A detached mount belongs to the previous view or owner session.
+    const slot = document.createElement('span');
+    container.replaceChildren(slot);
+    function paint(sources) {
+      if (!slot.isConnected) return;
+      const [src, ...remaining] = sources;
+      if (!src) { slot.innerHTML = monogram(project); return; }
+      const img = document.createElement('img');
+      img.className = 'bd-business-logo';
+      img.alt = '';
+      img.referrerPolicy = 'no-referrer';
+      img.onerror = () => { if (img.parentNode === slot) paint(remaining); };
+      slot.replaceChildren(img);
+      img.src = src;
+    }
+    paint(logoSources(project));
+    uploaded?.then(src => { if (brandImage(src)) paint(logoSources(project, src)); });
   }
   const mark=(o)=>'<span class="bd-badge bd-'+group(o)+'">'+escape(o.status||'Status not recorded')+'</span>';
   const origin=()=>'<p class="bd-origin">Order source: this browser’s saved business records. A secure owner session is not a cloud-backup claim.</p>';
@@ -122,7 +178,7 @@
     const queue=select(orders,project.id,{tab:'active',pageSize:3}).rows;
     const main=['pricing','references','features','branding'].map(k=>modules.find(m=>m[0]===k)).filter(Boolean);
     const support=modules.filter(m=>!['orders','pricing','references','branding','features'].includes(m[0]));
-    container.innerHTML=`<section class="bd-home" data-bd-home><div class="bd-hero bd-today-hero"><div class="bd-hero-copy"><span class="bd-kicker">TODAY’S WORK</span><h2>${escape(headline)}</h2>${!canOrders ? '' : readError ? '' : f.active
+    container.innerHTML=`<section class="bd-home" data-bd-home><div class="bd-hero bd-today-hero"><div class="bd-hero-copy"><span class="bd-kicker">Today at ${escape(project.name || 'your business')}</span><h2>${escape(headline)}</h2>${!canOrders ? '' : readError ? '' : f.active
       ? '<p>Open an order from the queue below or see all active work.</p><button type="button" class="btn primary" data-home-tab="active">'+itemNames.active+' <span aria-hidden="true">→</span></button>'
       : '<p>New work will appear here when it is saved on this device.</p>'+(f.closed?'<button type="button" class="btn primary" data-home-tab="closed">View completed orders →</button>':'')}</div></div>
     ${readError?'<div class="bd-notice warn" role="alert">Order records could not be read in this tab. Nothing has been deleted or reset. Reload the page before relying on a count.</div>':canOrders?`<div class="bd-kpis">${[['new','New orders'],['inprogress',itemNames.progress],['ready',itemNames.ready],['closed','Completed / closed']].map(([k,label])=>`<button type="button" data-home-tab="${k}" class="bd-kpi"><span>${label}</span><strong>${f[k]}</strong><small>View ${k==='closed'?'history':'records'} →</small></button>`).join('')}</div>`:''}
@@ -232,5 +288,5 @@
     buttons(overview,'[data-review-style]',b=>{advanced.open=true;const target=document.getElementById('style-pack-'+b.dataset.reviewStyle);target?.scrollIntoView({behavior:'smooth',block:'start'});});
     overview.querySelector('#bdAddExample').onclick=()=>{advanced.open=true;const target=advanced.querySelector('#sfStyle');target?.scrollIntoView({behavior:'smooth',block:'center'});target?.focus({preventScroll:true});};
   }
-  return {BUILD,escape,amount,money,date,scope,group,payment,facts,select,image,coverage,priceGuide,orderView,logo,mountHome,mountOrders,mountOrderDetail,mountPriceGuide,mountLettering};
+  return {BUILD,escape,amount,money,date,scope,group,payment,facts,select,image,coverage,priceGuide,orderView,logo,logoSources,ownerPalette,mountLogo,mountHome,mountOrders,mountOrderDetail,mountPriceGuide,mountLettering};
 });

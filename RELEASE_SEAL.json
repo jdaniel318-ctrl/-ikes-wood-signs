@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.108",
-  "release": "Pilotage",
-  "seal": "pilotage-8820108",
+  "build": "8.8.20.109",
+  "release": "Livery",
+  "seal": "livery-8820109",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Pilotage",
-  "name": "Pilotage",
-  "releaseName": "Pilotage"
+  "release_name": "Livery",
+  "name": "Livery",
+  "releaseName": "Livery"
 }

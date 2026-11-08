@@ -1,15 +1,15 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.108",
-  "name": "Pilotage",
-  "seal": "pilotage-8820108",
-  "base": "8.8.20.107",
-  "base_sha256": "dc4fa1cd9955f009dd5def9b69e16c8810bdf3af16fac4e6a0806966b2b20c8d",
-  "base_files": 886,
-  "prepared_at": "2026-11-08T00:13:17.376908+00:00",
+  "build": "8.8.20.109",
+  "name": "Livery",
+  "seal": "livery-8820109",
+  "base": "8.8.20.108",
+  "base_sha256": "467b2917c55c8ed1be9a253b54bbb8b43a5ad84e707e49d7ffef0878fb9741ae",
+  "base_files": 888,
+  "prepared_at": "2026-11-08T00:46:48.025470+00:00",
   "app_component_revision": "8.8.20.99",
   "owner_helper_revision": "8.8.20.68",
-  "feature_notes": "A harbor entrance leads to vessel workstations. Business tools and learning have separate sections. Today shows active work, recognizes vessel intake statuses and opens a queued order directly.",
+  "feature_notes": "Owner workspaces display the vessel logo in the masthead, carry its colors into Today, and open at the business heading following sign-in.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -37,6 +37,6 @@
       "automatic_execution_by_upload": false
     }
   },
-  "install_step": "Open Operate vessels, find a business and return. In its authorized owner workspace, open a queued order from Today and use Back to Today.",
-  "evidence_file": "PILOTAGE_EVIDENCE.json"
+  "install_step": "Open a vessel\u2019s Owner Workspace on iPad. Sign in, check the full business header on Today, then open Orders and check the same mark.",
+  "evidence_file": "LIVERY_EVIDENCE.json"
 }
