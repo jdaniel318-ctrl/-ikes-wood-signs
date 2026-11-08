@@ -1,5 +1,7 @@
 /* Headway shared viewport contract. Natural vertical scrolling always retained.
    All overrides are scoped to hw-viewport; no canvas glyph/layout geometry rules. */
+/* Arrival focus announces the title. Interactive controls keep their keyboard focus indicator. */
+:is(h1,h2,h3)[data-fleet-arrival-title][tabindex="-1"]:focus {outline:none;}
 body.hw-viewport {scroll-padding-top:12px;}
 /* Engine surfaces share the canvas color through Safari's changing viewport.
    Content can grow and scroll naturally; a short workstation never reveals the

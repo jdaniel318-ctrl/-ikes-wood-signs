@@ -6730,7 +6730,9 @@ const engineCodePads = (() => {
         if(!engineWorkspaceNavigationCurrent(navigation)||fleetWorkstationProjectId!==id)return;
         if(window.BlackFlagViewport)window.BlackFlagViewport.enter({key:'workstation:'+id,reason:'new',anchor:dock,current:()=>engineWorkspaceNavigationCurrent(navigation)&&fleetWorkstationProjectId===id});
         else window.scrollTo({top:0,left:0,behavior:'instant'});
-        const target=selected?.querySelector('[data-fleet-dock-action="preview"]')||cards.find(card=>card.dataset.projectId===previous)?.querySelector('[data-fleet-select]')||$('fleetDockSearch');
+        // On return, resume at the vessel in the list. A fresh entrance starts at its title.
+        const returningCard=!selected && previous ? cards.find(card=>card.dataset.projectId===previous) : null;
+        const target=returningCard?.querySelector('[data-fleet-select]')||title;
         target?.focus({preventScroll:true});
       });
     }

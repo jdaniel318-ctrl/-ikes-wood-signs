@@ -1,0 +1,50 @@
+{
+  "build": "8.8.20.111",
+  "release": "Crestline",
+  "baseline": "8.8.20.110",
+  "field_observation": "User reported successful top-aligned entry on iPad Safari with an existing owner session. The screenshot shows a blue rectangle around the business name.",
+  "baseline_webkit": "Restored Legacy owner session: full masthead at 12 CSS pixels and native auto outline on the title.",
+  "test_conditions": "Local WebKit and Chromium with synthetic accounts and vessel records. Real device validation of this release is pending.",
+  "offline_suites_passed": 49,
+  "browser_results": {
+    "webkit": {
+      "owner_vessels": [
+        "Legacy Plumbing",
+        "Ike\u2019s Wood Signs",
+        "Becca\u2019s Bloom Shop"
+      ],
+      "owner_header_top_css_px": 12,
+      "owner_title_outline": "none",
+      "keyboard_button_outline": "auto",
+      "delayed_scroll_and_user_scroll": [
+        "document",
+        "nested container",
+        "restored session"
+      ],
+      "direct_fleet_help": "pass",
+      "engine_vessel_picker_and_workstation": "pass",
+      "captain_roster_station_and_refresh": "pass",
+      "admiral_my_fleet_and_refresh": "pass"
+    },
+    "chromium": {
+      "owner_vessels": [
+        "Legacy Plumbing",
+        "Ike\u2019s Wood Signs",
+        "Becca\u2019s Bloom Shop"
+      ],
+      "owner_header_top_css_px": 12,
+      "owner_title_outline": "none",
+      "keyboard_button_outline": "auto",
+      "delayed_scroll_and_user_scroll": [
+        "document",
+        "nested container",
+        "restored session"
+      ],
+      "direct_fleet_help": "pass",
+      "engine_vessel_picker_and_workstation": "pass",
+      "captain_roster_station_and_refresh": "pass",
+      "admiral_my_fleet_and_refresh": "pass"
+    }
+  },
+  "idle_check": "WebKit restored Legacy owner workspace stayed at its full masthead with a clean title after 125 seconds idle and a simulated delayed 90 px scroll restoration."
+}

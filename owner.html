@@ -150,7 +150,7 @@
 @media(max-width:700px){.tb-security-form,.tb-recovery-grid{grid-template-columns:1fr}.tb-security-form>.captain-handoff-actions{grid-column:auto}}
 </style>
 <link rel="stylesheet" href="business_deck.css?v=livery-8820109" onerror="window.__workhorseDeckStylesFailed=true">
-<script id="blackFlagPageRelease">window.__blackFlagPageRelease=Object.freeze({build:'8.8.20.110',seal:'topside-8820110',name:'Topside'});</script>
+<script id="blackFlagPageRelease">window.__blackFlagPageRelease=Object.freeze({build:'8.8.20.111',seal:'crestline-8820111',name:'Crestline'});</script>
 <script src="input_hygiene.js?v=fairlead-882068"></script>
 <script src="service_address_fleet.js?v=streetwise-882096"></script>
 <script src="service_address.js?v=portolan-882098"></script>
@@ -159,7 +159,7 @@
 <link rel="stylesheet" href="fleet_help.css?v=signalman-882099">
 <script src="fleet_help.js?v=reliefwatch-8820105"></script>
 <script src="fleet_recovery_core.js?v=fairlead-882068"></script>
-<link rel="stylesheet" href="fleet_viewport.css?harborhold=882049"><script src="fleet_viewport.js?harborhold=882049"></script><script src="headway_contracts.js?harborhold=882049"></script>
+<link rel="stylesheet" href="fleet_viewport.css?crestline=8820111"><script src="fleet_viewport.js?crestline=8820111"></script><script src="headway_contracts.js?harborhold=882049"></script>
 <link rel="stylesheet" href="countercraft.css"><link rel="stylesheet" href="carvewright.css"><link rel="stylesheet" href="carvewright_machining.css">
 <script src="countercraft_config.js"></script><script src="countercraft_privacy.js"></script><script src="carve_fonts.js"></script><script src="carve_core.js"></script><script src="fleet_design_assets.js"></script><script src="carvewright_core.js"></script><script src="boardcraft_photo.js"></script><script src="carvewright_clipper.js"></script><script src="carvewright_cam.js"></script><script src="carvewright_portable.js"></script><script src="carvewright_posts.js"></script><script src="carvewright_machining.js"></script><script src="carvewright_studio.js"></script><script src="ike_shop_core.js"></script><script src="countercraft_core.js"></script><script src="countercraft_store.js"></script><script src="countercraft_client.js"></script><script src="countercraft_flow.js"></script><script src="countercraft_owner_core.js"></script><script src="countercraft_backup.js"></script><script src="countercraft_exports.js"></script><script src="countercraft_owner.js"></script>
 </head>
@@ -229,7 +229,7 @@
   <section id="portal" class="portal hidden">
     <div class="portal-wrap">
       <header class="portal-head">
-        <div class="bd-brand-heading"><div id="businessHeaderLogo" aria-hidden="true"></div><div><div class="eyebrow" id="ownerInstalledRelease">8.8.20.110 · QUARTERMASTER</div><h1 id="portalName" tabindex="-1">Business</h1><span class="owner-badge">● SECURE OWNER SESSION</span><div id="ownerScopeNote" class="owner-scope-note">Verified for this business only</div></div></div>
+        <div class="bd-brand-heading"><div id="businessHeaderLogo" aria-hidden="true"></div><div><div class="eyebrow" id="ownerInstalledRelease">8.8.20.111 · QUARTERMASTER</div><h1 id="portalName" tabindex="-1">Business</h1><span class="owner-badge">● SECURE OWNER SESSION</span><div id="ownerScopeNote" class="owner-scope-note">Verified for this business only</div></div></div>
         <div class="head-actions"><button id="returnEngine" class="btn ghost hidden">RETURN TO BLACK FLAG</button><button id="signOut" class="btn secondary">SIGN OUT</button></div>
       </header>
       <nav id="businessDeckNav" class="bd-owner-nav" aria-label="Business workspace"></nav>
@@ -490,6 +490,7 @@ window.DarkSkyVesselHelpHost=Object.freeze({
     document.title='My Assigned Vessels · Captain access';
     shell(`${header('My Assigned Vessels','Choose your vessel — no hidden default')}${identityStrip(captainAccountLabel(myAppointments))}<section class="captain-handoff-panel"><h2>Your Captain appointments</h2><p class="muted">Only appointments returned for your signed-in account are listed. Opening a vessel rechecks its current operating authority.</p><div class="tb-roster">${myAppointments.length?myAppointments.map((a,i)=>`<article><div><h3>${esc(a.vessel_name||a.project_id)}</h3><p>${esc(a.project_id)} · ${esc(a.status)}</p></div><button type="button" class="btn primary" data-tb-assignment="${i}" ${!['accepted','pending'].includes(a.status)?'disabled':''}>${a.status==='pending'?'REVIEW APPOINTMENT':a.status==='accepted'?'OPEN CAPTAIN STATION':'UNAVAILABLE'}</button></article>`).join(''):'<p class="captain-handoff-status">No current Captain appointments were returned for this account.</p>'}</div><div class="captain-handoff-actions"><button id="captainRosterRefresh" class="btn ghost">REFRESH MY VESSELS</button><button id="captainDeniedSignOut" class="btn secondary">SIGN OUT</button></div><p class="tb-command-note"><a href="${esc(commandUrl())}">Return to the Engine</a>. To test as the business owner, choose Operate Vessels and open the ship’s Owner Workspace. To handle an unassigned ship’s help request as Admiral, choose Admiral My Fleet and open Fleet help.</p></section>${accountSecurityMarkup()}`);
     bindIdentityActions();bindAccountSecurity();
+    enterCaptainWorkspace('roster');
     document.getElementById('captainRosterRefresh').onclick=showMyVessels;
     document.querySelectorAll('[data-tb-assignment]').forEach(b=>b.onclick=async()=>{
       if(busy)return;const a=myAppointments[Number(b.dataset.tbAssignment)];if(!a||!/^[a-z0-9][a-z0-9-]{0,95}$/.test(a.project_id))return;
@@ -502,7 +503,14 @@ window.DarkSkyVesselHelpHost=Object.freeze({
     try{await loadAppointment();}catch(e){renderStationRecovery(String(e.message||e));}finally{busy=false;}
   }
 
-  function shell(content,view='handoff'){closeCaptainHelp?.();closeCaptainHelp=null;root.innerHTML=`<main class="captain-handoff" data-view="${esc(view)}"><div class="captain-handoff-shell">${content}</div></main>`;}
+  let lastCaptainLanding = null;
+  let stopCaptainLanding = null;
+  function enterCaptainWorkspace(key) {
+    if (lastCaptainLanding === key) return;
+    lastCaptainLanding = key;
+    stopCaptainLanding = window.BlackFlagViewport.landAtHeader(root.querySelector('h1'));
+  }
+  function shell(content,view='handoff'){stopCaptainLanding?.();stopCaptainLanding=null;closeCaptainHelp?.();closeCaptainHelp=null;root.innerHTML=`<main class="captain-handoff" data-view="${esc(view)}"><div class="captain-handoff-shell">${content}</div></main>`;}
   function header(title=destination(),sub='Vessel Captain sign-in'){
     const verified=!!(access?.project_id===projectId||appointment?.project_id===projectId);
     const note=projectId?(verified?'Vessel identity from your authenticated response.':DIRECTORY[projectId]?'Destination from the release directory. Account authority is checked after sign-in.':'Requested project: '+projectId+'. Identity must be resolved after sign-in.'):(person?'Only assignments returned for your signed-in account are shown.':'Sign in to list only your assigned vessels.');
@@ -513,6 +521,7 @@ window.DarkSkyVesselHelpHost=Object.freeze({
   async function rpc(name,body={}){return client.rpc(name,body,'HarborMaster refused the vessel-Captain request.');}
   function missing(error){return /could not find the function|schema cache|PGRST202/i.test(String(error?.message||error));}
   function renderLogin(message='Use the account named in your vessel appointment. This is not the Admiral sign-in.'){
+    lastCaptainLanding=null;
     ++stationEpoch;person=null;appointment=null;access=null;orders=[];watch=null;myAppointments=[];
     shell(`${header()}<section class="captain-handoff-panel tb-login"><h2>${projectId?'Sign in for '+esc(destination()):'Sign in to your assigned vessels'}</h2><form id="captainLoginForm"><div class="captain-handoff-grid"><label>Email<input data-bf-trim="boundary" id="captainLoginEmail" name="username" type="email" inputmode="email" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="Captain account email" required></label><label>Password<input data-bf-trim="preserve" id="captainLoginPassword" name="password" type="password" autocomplete="current-password" placeholder="Fleet account password" required></label></div><div class="captain-handoff-actions"><button id="captainLoginBtn" type="submit" class="btn primary">SIGN IN & CHECK ACCESS</button><button id="captainMagicBtn" type="button" class="btn ghost">EMAIL SIGN-IN LINK</button></div></form><p id="captainLoginStatus" class="captain-handoff-status" role="status">${esc(message)}</p><nav class="tb-entry-nav"><a href="${esc(routeUrl())}">My assigned vessels</a><a href="${esc(commandUrl())}">Fleet Captain / Admiral entrance</a></nav><p class="tb-command-note">Fleet Command can observe unassigned vessels through My Fleet. Its separate operating authorization is not granted by this Captain sign-in.</p></section>`);
     document.getElementById('captainLoginForm').onsubmit=e=>{e.preventDefault();signIn();};
@@ -651,6 +660,7 @@ window.DarkSkyVesselHelpHost=Object.freeze({
           <p class="captain-station-last-report">${watch?.has_report?'Last report: '+new Date(watch.reported_at).toLocaleString()+' · '+esc(watch.source_label||'VESSEL CAPTAIN'):'No prior Captain watch report.'}</p>
         </section>
       </div><div id="captainFleetHelp"></div>${recoveryMarkup()}${accountSecurityMarkup()}`, 'station');
+    enterCaptainWorkspace('station:'+projectId);
     const authority=access,assignment=appointment,epoch=stationEpoch,scope=projectId,userId=person?.id;
     if(authority.ok===true&&authority.project_id===scope&&authority.vessel_id&&authority.appointment_id
       &&assignment?.appointment_id===authority.appointment_id&&assignment.status==='accepted'&&!assignment.revoked_at){
@@ -1062,47 +1072,11 @@ function mountOwnerIdentity() {
   $('portal').style.setProperty('--owner-accent', colors.accent);
 }
 function landAtOwnerHeader() {
-  stopOwnerLanding?.();
-  const heading = $('portalName');
-  const viewport = window.visualViewport;
-  const listeners = new AbortController();
-  const options = {capture:true, passive:true, signal:listeners.signal};
-  let frame = 0;
-  function finish() {
-    listeners.abort();
-    cancelAnimationFrame(frame);
-    stopOwnerLanding = null;
-  }
-  function align() {
-    frame = 0;
-    if (viewport && viewport.scale !== 1) return;
-    // AutoFill can restore the document or a containing panel after the keyboard closes.
-    for (let panel = heading.parentElement; panel && panel !== document.scrollingElement; panel = panel.parentElement) {
-      if (panel.scrollTop) panel.scrollTop = 0;
-    }
-    if (window.scrollY || viewport?.offsetTop) window.scrollTo({top:0, behavior:'instant'});
-  }
-  function schedule() {
-    if (!frame) frame = requestAnimationFrame(align);
-  }
-  stopOwnerLanding = finish;
-  for (const type of ['touchstart', 'pointerdown', 'wheel', 'keydown', 'click', 'pagehide']) {
-    window.addEventListener(type, finish, options);
-  }
-  document.addEventListener('focusin', event => {
-    if (event.target !== heading && event.target !== document.body) finish();
-  }, options);
-  window.addEventListener('scroll', schedule, options);
-  window.addEventListener('resize', schedule, options);
-  viewport?.addEventListener('scroll', schedule, options);
-  viewport?.addEventListener('resize', schedule, options);
-  heading.focus({preventScroll:true});
-  align();
-  schedule();
+  stopOwnerLanding = window.BlackFlagViewport.landAtHeader($('portalName'));
 }
 
 function renderPortal(landOnToday=true){if(!canReadOwnerDeck())return;armOwnerExpiry();show('portal');$('portal').classList.add('workhorse-owner');renderBusinessNav();mountOwnerIdentity();$('portal').classList.remove('subview');$('mOrders').textContent=ownerProjectFromServer?'—':orders.length;$('mOwner').textContent=String(project?.ownerAccess?.status||'active').toUpperCase();$('modules').innerHTML=modules().map(([k,t,d])=>`<button class="module" data-module="${k}"><small>${k.toUpperCase()}</small><h3>${esc(t)}</h3><p>${esc(d)}</p><strong>OPEN →</strong></button>`).join('');document.querySelectorAll('[data-module]').forEach(b=>b.addEventListener('click',()=>openOwnerView(b.dataset.module)));returnToBridgeHome(false);if(engineTrialLaunch&&!trialViewOpened){trialViewOpened=true;openOwnerView('countercraft');}else if(landOnToday){landAtOwnerHeader();}}
-function returnToBridgeHome(animate=true){if(!canReadOwnerDeck())return;stopOwnerLanding?.();retireOwnerHelp();ownerViewEpoch++;renderBusinessHome();markBusinessNav('portal');$('portal').classList.remove('subview');$('workspace').classList.add('hidden');$('workspace').classList.remove('stage-in');$('workspace').innerHTML='';$('ownerHome').classList.remove('hidden','stage-out');if(animate){$('ownerHome').classList.add('stage-in');setTimeout(()=>$('ownerHome').classList.remove('stage-in'),260);}if(projectId==='ikes-wood-signs'&&!ownerProjectFromServer){$('vesselStrip').classList.remove('hidden');$('ownerHomeNote').classList.remove('hidden');}history.replaceState({surface:'owner',projectId,ownerView:'portal'},'',`owner.html?project=${encodeURIComponent(projectId)}&view=portal${source==='engine'?'&source=engine':''}`);if(animate)window.BlackFlagViewport?.enter({key:'owner:'+projectId,reason:'new'});}
+function returnToBridgeHome(animate=true){if(!canReadOwnerDeck())return;stopOwnerLanding?.();retireOwnerHelp();ownerViewEpoch++;renderBusinessHome();markBusinessNav('portal');$('portal').classList.remove('subview');$('workspace').classList.add('hidden');$('workspace').classList.remove('stage-in');$('workspace').innerHTML='';$('ownerHome').classList.remove('hidden','stage-out');if(animate){$('ownerHome').classList.add('stage-in');setTimeout(()=>$('ownerHome').classList.remove('stage-in'),260);}if(projectId==='ikes-wood-signs'&&!ownerProjectFromServer){$('vesselStrip').classList.remove('hidden');$('ownerHomeNote').classList.remove('hidden');}history.replaceState({surface:'owner',projectId,ownerView:'portal'},'',`owner.html?project=${encodeURIComponent(projectId)}&view=portal${source==='engine'?'&source=engine':''}`);if(animate)landAtOwnerHeader();}
 function canReadOwnerDeck(){
   const s=ownerSession(),ok=sessionValid(s);
   if(!ok){

@@ -1,11 +1,11 @@
-# Upload Topside 8.8.20.110
+# Upload Crestline 8.8.20.111
 
-Use `DarkSky8820110-Topside-Upload.zip`, not the full backup or rollback.
+Use `DarkSky8820111-Crestline-Upload.zip`, not the full backup or rollback.
 1. Extract the ZIP. Open its single folder. Upload ALL files inside to the existing repository ROOT; replace matching files and KEEP all other files. Commit the upload.
-2. After deployment open the Engine and confirm `8.8.20.110 · TOPSIDE`. Do not clear Safari data, reset records or change permissions.
-3. Open the Owner Workspace from the Engine on iPad, sign in with AutoFill, and check that the entire branded header is visible before touching the page. Scroll down and check that it stays where you leave it.
+2. After deployment open the Engine and confirm `8.8.20.111 · CRESTLINE`. Do not clear Safari data, reset records or change permissions.
+3. Reopen an Owner Workspace in Safari, check the full logo and title on arrival, then scroll. Repeat on a second vessel you have access to.
 
-Owner Today opens with the complete business masthead visible after sign-in or session restoration. Scrolling belongs to the owner as soon as they interact.
+Vessel owners, appointed Captains and Admiral My Fleet open at a clean heading. The Engine vessel picker and workstation announce their title on entry and return focus to the selected vessel when going back.
 The upload itself executes no database commands. Shared specialist components retain their own revision labels; this is intentional reuse, not a mixed upload. Exact SHA-256 checks still run before Engine scripts execute.
 
 Full backup: application source ONLY; not Supabase, customer media or device drafts.
