@@ -2667,10 +2667,84 @@ const AdmiralAccountForm = (() => {
   const MAX_WEEKS=52,DB_NAME='bootstrapBuildScheduleDB',DB_STORE='projects';
   const LEGACY_STORE='bootstrapBuildGroundRunV2',STORE_PREFIX='bootstrapBuildProjectScheduleV1:';
   const projects=[
-    {id:'1234-A',region:'ABC',division:'CBA',community:'AB',lot:'1234',unit:'A',startWeek:0},
-    {id:'1234-B',region:'ABC',division:'CBA',community:'AB',lot:'1234',unit:'B',startWeek:1},
-    {id:'1235-A',region:'ABC',division:'CBA',community:'AB',lot:'1235',unit:'A',startWeek:2}
+    {id:'1234-A',region:'ABC',division:'CBA',community:'AB',lot:'1234',unit:'A',initialMonday:'2026-11-02'},
+    {id:'1234-B',region:'ABC',division:'CBA',community:'AB',lot:'1234',unit:'B',initialMonday:'2026-11-09'},
+    {id:'1235-A',region:'ABC',division:'CBA',community:'AB',lot:'1235',unit:'A',initialMonday:'2026-11-16'}
   ];
+  // Each added lot is its own indexed record. Its key identifies the complete job address.
+  const newProjectKey=/^job:([A-Z0-9]{3}):([A-Z0-9]{3}):([A-Z0-9]{2}):(\d{4}):([A-Z0-9]?)$/;
+  function projectKey(meta){return ['job',meta.region,meta.division,meta.community,meta.lot,meta.unit].join(':');}
+  function projectLabel(meta){return 'Lot '+meta.lot+(meta.unit?' · Unit '+meta.unit:'');}
+  function qualifiedLabel(meta){return projectLabel(meta)+' · '+[meta.region,meta.division,meta.community].join(' / ');}
+  async function discoverProjects(){
+    const keys=new Set();
+    try{
+      const db=await openDb();
+      const ids=await new Promise((resolve,reject)=>{
+        const request=db.transaction(DB_STORE).objectStore(DB_STORE).getAllKeys();
+        request.onsuccess=()=>resolve(request.result);request.onerror=()=>reject(request.error);
+      });
+      for(const id of ids)keys.add(id);
+    }catch(_){}
+    try{
+      for(let i=0;i<localStorage.length;i++){
+        const key=localStorage.key(i);
+        if(key?.startsWith(STORE_PREFIX+'job:'))keys.add(key.slice(STORE_PREFIX.length));
+      }
+    }catch(_){}
+    for(const id of [...keys].sort()){
+      const parts=newProjectKey.exec(id);
+      if(!parts||projects.some(p=>p.id===id))continue;
+      const [,region,division,community,lot,unit]=parts;
+      projects.push({id,region,division,community,lot,unit});
+    }
+  }
+  function openProjectForm(){
+    if(!current(visit)||activeId)return;
+    const form=el('newLotForm'),base=projects[0];
+    form.reset();
+    for(const key of ['region','division','community'])form.elements[key].value=base[key];
+    form.elements.startDate.value=isoDate(new Date());
+    el('newLotStatus').textContent='';el('newLotSave').disabled=false;
+    el('newLotDialog').showModal();
+  }
+  async function createProject(event){
+    event.preventDefault();
+    const entry=visit,form=event.currentTarget,save=el('newLotSave'),message=el('newLotStatus');
+    if(!current(entry)||activeId||save.disabled)return;
+    const hierarchy=Object.fromEntries(['region','division','community','lot','unit'].map(k=>[k,form.elements[k].value.trim().toUpperCase()]));
+    const id=projectKey(hierarchy),date=form.elements.startDate.value;
+    if(!newProjectKey.test(id)||!date)return;
+    const meta={...hierarchy,id};
+    const monday=new Date(date+'T12:00:00');
+    monday.setDate(monday.getDate()-(monday.getDay()+6)%7);
+    const record={...fresh(meta),planStart:isoDate(monday),rosterDetails:{startDate:date},revision:1,updatedAt:new Date().toISOString()};
+    const duplicate='This lot and unit already have a schedule in this community.';
+    const create=async()=>{
+      if(!current(entry))throw Error('Your session has ended.');
+      if(projects.some(p=>projectKey(p)===id)||localRead(STORE_PREFIX+id))throw Error(duplicate);
+      // add() rejects a competing creation instead of overwriting an existing calendar.
+      const db=await openDb();
+      await new Promise((resolve,reject)=>{
+        const tx=db.transaction(DB_STORE,'readwrite');
+        tx.objectStore(DB_STORE).add(record);
+        tx.oncomplete=resolve;tx.onabort=()=>reject(tx.error);
+      });
+      try{localWrite(record);}catch(_){}
+    };
+    save.disabled=true;el('newLotCancel').disabled=true;message.textContent='';
+    try{
+      if(navigator.locks?.request)await navigator.locks.request('schedulejoe-'+id,create);
+      else await create();
+      if(!current(entry))return;
+      if(!projects.some(p=>p.id===id))projects.push(meta);
+      cache.set(id,record);el('newLotDialog').close();renderLanding();
+      el('rosterNotice').textContent=projectLabel(meta)+' added. Open the lot to schedule its first task.';
+      el('bootstrapProjectRows').querySelector('[data-open-project="'+id+'"]')?.focus({preventScroll:true});
+    }catch(error){
+      if(current(entry))message.textContent=error?.name==='ConstraintError'||error?.message===duplicate?duplicate:'Could not create this project on this device. Your entries are here to try again.';
+    }finally{save.disabled=false;el('newLotCancel').disabled=false;}
+  }
   let activeId='',state=null,cache=new Map(),selectedId='',vendorView='',touchDrag=null,overDay=null,suppressClickUntil=0,dbPromise=null;
   let selectedWeek=0,visit=null,saveQueue=Promise.resolve(),desktopGrab=null;
   const el=id=>document.getElementById(id);
@@ -2761,7 +2835,7 @@ const AdmiralAccountForm = (() => {
     lookRecord=record;lookWeek=Math.max(0,Math.min(week,weekCount(record)-1));
     el('bootstrapProjectWorkspace').classList.add('hidden');el('bootstrapProjectLanding').classList.add('hidden');
     el('bootstrapProjectsHome').classList.remove('hidden');el('joeLongview').hidden=false;
-    el('bootstrapScheduleTitleHeading').textContent=record===example?'Example home build':'Lot '+project(activeId).lot+' · Unit '+project(activeId).unit;
+    el('bootstrapScheduleTitleHeading').textContent=record===example?'Example home build':lotLabel();
     el('bootstrapScheduleSubtitle').textContent=record===example?'Fictional 18-week schedule from permits to settlement.':'Four-week lookahead';
     renderLook();el('bootstrapSchedule').scrollTop=0;el('joeLookTitle').focus({preventScroll:true});
   }
@@ -2808,7 +2882,7 @@ const AdmiralAccountForm = (() => {
   function seedTasks(){return [
     ['clearing','Clearing & erosion control','Sitework',0,2,'site'],['layout','House layout & utility locate','Survey',1,1,'inspection'],['excavation','Excavation','Sitework',3,2,'site'],['footers','Footers formed & poured','Concrete',5,2,'work'],['footing-insp','Footing inspection','Inspection',7,1,'inspection'],['foundation','Foundation block','Masonry',8,3,'work'],['foundation-insp','Foundation inspection','Inspection',11,1,'inspection'],['waterproof','Waterproofing & drain tile','Foundation',11,2,'site'],['backfill','Backfill & rough grade','Sitework',13,2,'site'],['slab-prep','Slab prep','Concrete',14,2,'work'],['slab-insp','Slab inspection','Inspection',16,1,'inspection'],['slab','Garage slab','Concrete',17,1,'work'],['lumber','Lumber delivery','Delivery',18,1,'delivery'],['framing','Floor system & framing','Framing',19,7,'work'],['frame-check','Frame quality check','Inspection',25,1,'inspection'],['roof','Roof dry-in','Roofing',25,3,'site'],['windows','Windows & exterior doors','Carpentry',27,2,'site'],['rough-hvac','HVAC rough-in','Mechanical',28,3,'work'],['rough-plumb','Plumbing rough-in','Plumbing',29,3,'work'],['rough-electric','Electrical rough-in','Electrical',31,3,'work'],['rough-inspections','Rough trade inspections','Inspection',34,2,'inspection'],['insulation','Air seal & insulation','Insulation',36,3,'work'],['predrywall','Pre-drywall meeting','Milestone',38,1,'milestone'],['drywall-delivery','Drywall delivery','Delivery',39,1,'delivery'],['drywall','Drywall hang & finish','Drywall',40,6,'work'],['exterior','Siding & exterior trim','Exterior',41,5,'site'],['prime','Prime & first paint','Painting',46,3,'work'],['cabinets','Cabinets & interior trim','Carpentry',47,4,'work'],['hard-surface','Hard-surface install','Flooring',49,3,'work'],['mep-final','MEP final fixtures','Mechanical',50,4,'work'],['appliances','Appliance delivery & install','Delivery',53,2,'delivery'],['carpet','Carpet','Flooring',54,2,'work'],['driveway','Driveway & exterior concrete','Concrete',54,3,'site'],['final-grade','Final grade & landscaping','Sitework',56,3,'site'],['final-insp','Final inspections','Inspection',57,2,'inspection'],['punch','Punchout','Closeout',57,3,'work'],['final-clean','Final clean','Closeout',59,1,'work'],['settlement','Settlement','Milestone',59,1,'milestone']
   ].map(([id,title,trade,start,duration,type])=>({id,title,trade,start,duration,type,vendor:vendorFor(trade)}));}
-  function fresh(meta){const tasks=seedTasks();tasks.forEach(task=>{task.plannedDuration=task.duration;task.baselineStart=task.start;});return {version:5,planningWeeks:12,projectId:meta.id,hierarchy:{region:meta.region,division:meta.division,community:meta.community,lot:meta.lot,unit:meta.unit},tasks,acceleratedDays:[],activity:[],updatedAt:null,revision:0};}
+  function fresh(meta){const tasks=newProjectKey.test(meta.id)?[]:seedTasks();tasks.forEach(task=>{task.plannedDuration=task.duration;task.baselineStart=task.start;});return {version:5,planningWeeks:12,projectId:meta.id,hierarchy:{region:meta.region,division:meta.division,community:meta.community,lot:meta.lot,unit:meta.unit},tasks,acceleratedDays:[],activity:[],updatedAt:null,revision:0};}
   function normalize(value,meta){if(!value||!Array.isArray(value.tasks))return null;value.version=5;value.projectId=meta.id;value.hierarchy={region:meta.region,division:meta.division,community:meta.community,lot:meta.lot,unit:meta.unit};value.activity=Array.isArray(value.activity)?value.activity:[];value.acceleratedDays=Array.isArray(value.acceleratedDays)?value.acceleratedDays:[];value.revision=Number(value.revision||0);value.tasks.forEach(task=>{task.vendor=task.vendor||vendorFor(task.trade);task.plannedDuration=Math.max(1,Number(task.plannedDuration||task.duration||1));task.acceleratedAssignments=Array.isArray(task.acceleratedAssignments)?task.acceleratedAssignments:[];});return value;}
   function openDb(){if(dbPromise)return dbPromise;dbPromise=new Promise((resolve,reject)=>{if(!window.indexedDB){reject(new Error('IndexedDB unavailable'));return;}const request=indexedDB.open(DB_NAME,1);request.onupgradeneeded=()=>{const db=request.result;if(!db.objectStoreNames.contains(DB_STORE))db.createObjectStore(DB_STORE,{keyPath:'projectId'});};request.onsuccess=()=>resolve(request.result);request.onerror=()=>reject(request.error||new Error('Schedule database unavailable'));});return dbPromise;}
   async function dbRead(id){const db=await openDb();return new Promise((resolve,reject)=>{const request=db.transaction(DB_STORE,'readonly').objectStore(DB_STORE).get(id);request.onsuccess=()=>resolve(request.result||null);request.onerror=()=>reject(request.error);});}
@@ -2840,6 +2914,7 @@ const AdmiralAccountForm = (() => {
   }
   async function hydrate(entry) {
     await saveQueue;
+    await discoverProjects();
     const values=await Promise.all(projects.map(loadProject));
     if(visit===entry) for(const value of values) cache.set(value.projectId,value);
   }
@@ -2886,7 +2961,13 @@ const AdmiralAccountForm = (() => {
     return saveQueue;
   }
 
-  function defaultAnchor(meta){const date=new Date(),day=(date.getDay()+6)%7;date.setHours(12,0,0,0);date.setDate(date.getDate()-day+meta.startWeek*7);return date;}
+  function defaultAnchor(meta){
+    if(meta.initialMonday)return new Date(meta.initialMonday+'T12:00:00');
+    const date=new Date();
+    date.setHours(12,0,0,0);
+    date.setDate(date.getDate()-(date.getDay()+6)%7);
+    return date;
+  }
   function anchor(meta) {
     const saved=cache.get(meta.id)?.planStart;
     return saved?new Date(saved+'T12:00:00'):defaultAnchor(meta);
@@ -2895,7 +2976,9 @@ const AdmiralAccountForm = (() => {
   function labelDate(index,weekday=false,meta=project(activeId)){return workDate(index,meta).toLocaleDateString(undefined,weekday?{weekday:'short',month:'short',day:'numeric'}:{month:'short',day:'numeric'});}
   function status(message){if(el('bootstrapScheduleStatus'))el('bootstrapScheduleStatus').textContent=message;}
   function install(){el('bootstrapSchedule')?.remove();document.body.insertAdjacentHTML('beforeend',`<dialog id="bootstrapSchedule" class="bootstrap-schedule bootstrap-build-schedule hidden" role="dialog" aria-modal="true" aria-hidden="true" aria-label="ScheduleJoe construction schedules"><div class="bootstrap-schedule-shell"><header class="bootstrap-schedule-head"><img src="bootstrap_build_horizontal.png" alt="Bootstrap Build"><div><small>BOOTSTRAP BUILD · ADMIRAL PROGRAM</small><h2 id="bootstrapScheduleTitleHeading">ScheduleJoe</h2><p id="bootstrapScheduleSubtitle">Choose a lot and unit to open its independent schedule.</p></div><div class="bootstrap-schedule-head-actions"><button id="bootstrapProjectsHome" class="hidden" type="button">ALL PROJECTS</button><button id="scheduleJoeFleet" type="button">FLEET REGISTRY</button><button id="bootstrapScheduleClose" type="button">CLOSE</button></div></header><section id="bootstrapProjectLanding" class="bootstrap-project-landing">
-  <div class="bootstrap-roster-summary"><div><small>Projects on this device</small><strong>3 independent project schedules</strong></div>
+  <div class="bootstrap-roster-summary"><strong id="rosterTotal">Projects on this device</strong>
+    <div class="roster-views" role="group" aria-label="Project list view"><button type="button" id="fieldView" aria-pressed="true">Field view</button><button type="button" id="summaryView" aria-pressed="false">Summary view</button></div>
+    <button type="button" id="addRosterProject" class="desk-primary">+ Add project</button>
     <details id="rosterColumns"><summary>Columns <b id="rosterCount"></b></summary>
       <div class="roster-picker">
         <label class="roster-search">Find a column<input id="rosterFind" type="search" placeholder="Name, date, vendor…" autocomplete="off"></label>
@@ -2924,6 +3007,22 @@ const AdmiralAccountForm = (() => {
   </div>
   <p id="joeMoveSummary" role="status"></p>
   <div class="joe-move-actions"><button id="joeCancel" type="button">Cancel</button></div>
+</dialog>
+<dialog id="newLotDialog" aria-labelledby="newLotTitle">
+  <form id="newLotForm">
+    <header><h2 id="newLotTitle" tabindex="-1" autofocus>Add project</h2></header>
+    <p>Start an empty schedule for a lot on this device.</p>
+    <div class="new-lot-grid">
+      <label>Region<input name="region" readonly></label>
+      <label>Division<input name="division" required pattern="[A-Za-z0-9]{3}" minlength="3" maxlength="3" title="3 letters or digits" autocapitalize="characters"></label>
+      <label>Community<input name="community" required pattern="[A-Za-z0-9]{2}" minlength="2" maxlength="2" title="2 letters or digits" autocapitalize="characters"></label>
+      <label>Lot number<input name="lot" required inputmode="numeric" pattern="[0-9]{4}" maxlength="4" title="4 digits" placeholder="1236"></label>
+      <label>Unit (optional)<input name="unit" pattern="[A-Za-z0-9]" maxlength="1" title="1 letter or digit" autocapitalize="characters"></label>
+      <label>Project start<input name="startDate" type="date" required></label>
+    </div>
+    <p id="newLotStatus" role="status"></p>
+    <footer><button id="newLotCancel" type="button">Cancel</button><button id="newLotSave" type="submit" class="desk-primary">Create project</button></footer>
+  </form>
 </dialog>
 <dialog id="rosterDetails" aria-labelledby="rosterDetailsTitle">
   <form id="rosterDetailsForm">
@@ -3040,7 +3139,7 @@ const AdmiralAccountForm = (() => {
     if(segmentsForWeek(week).segments.some(s=>s.task===task&&s.lane>=2))expandedWeeks.add(week);
     renderSchedule();jumpWeek(week);
   }
-  const lotLabel=()=>{const p=project(activeId);return 'Lot '+p.lot+' · Unit '+p.unit;};
+  const lotLabel=()=>projectLabel(project(activeId));
   const dateRange=t=>fullDate(t.start)+(t.duration>1?' – '+fullDate(t.start+t.duration-1):'');
   function recordTaskChange(before,task) {
     const was=before?dateRange(before):'',now=dateRange(task);
@@ -3134,7 +3233,7 @@ const AdmiralAccountForm = (() => {
   }
   const digestList=rows=>rows.map(r=>{
     const meta=project(r.projectId);
-    return `<li><small>Lot ${esc(meta.lot)} · Unit ${esc(meta.unit)}</small><b>${esc(r.task)}</b><span>${esc(r.line)}</span></li>`;
+    return `<li><small>${esc(qualifiedLabel(meta))}</small><b>${esc(r.task)}</b><span>${esc(r.line)}</span></li>`;
   }).join('');
   function renderPacket() {
     const d=makeDigest();
@@ -3154,6 +3253,7 @@ const AdmiralAccountForm = (() => {
   async function refreshPacket() {
     const entry=visit,version=++packetVersion;
     await saveQueue;
+    await discoverProjects();
     const [lots,addresses,history]=await Promise.all([Promise.all(projects.map(loadProject)),readAll('contacts'),readAll('handoffs')]);
     if(version!==packetVersion||!current(entry)||!el('deskUpdates').open)return;
     records=lots.flatMap(l=>(l.vendorNotices||[]).map(n=>({...n,projectId:l.projectId})));
@@ -3194,7 +3294,7 @@ const AdmiralAccountForm = (() => {
       });
       if(recorded&&current(entry)&&el('deskUpdates').open){
         const subject='ScheduleJoe · '+d.name+' · '+saved.day;
-        const body=d.rows.map(r=>{const p=project(r.projectId);return 'Lot '+p.lot+' / Unit '+p.unit+' · '+r.task+'\n'+r.line;}).join('\n\n');
+        const body=d.rows.map(r=>{const p=project(r.projectId);return qualifiedLabel(p)+' · '+r.task+'\n'+r.line;}).join('\n\n');
         const uri='mailto:'+encodeURIComponent(d.email).replace('%40','@')+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
         if(uri.length<=1800)window.location.href=uri;
         else {
@@ -3288,7 +3388,7 @@ const AdmiralAccountForm = (() => {
   // A roster preference belongs to the signed-in user. Project details belong to the lot.
   const rosterGroups=[
     ['Project',[
-      ['lotUnit','Lot / Unit'],['division','Division'],['community','Comm desc'],['communityName','Community name','text'],
+      ['lotUnit','Lot / Unit'],['nextWorkday','Next workday'],['nextTask','Next task'],['nextVendor','Vendor / crew'],['nextDue','Due'],['division','Division'],['community','Comm desc'],['communityName','Community name','text'],
       ['region','Region'],['building','Building','text'],['product','Product','text'],['model','Model','text'],
       ['setVersion','Set / Version','text'],['houseType','House type','text'],['template','Template','text'],
       ['foundation','Template foundation','text'],['manager','Project manager','text'],
@@ -3316,19 +3416,26 @@ const AdmiralAccountForm = (() => {
   const defaultRosterColumns=['division','community','lotUnit','product','template','startDate','projectedPSD','allowedDUC',
     'currentInterior','openIssues','pjmChecklist','varianceDUC','updated','endDUC','qaiStatus'];
   const dateOnRoster=new Intl.DateTimeFormat(undefined,{month:'short',day:'numeric',year:'numeric'});
-  let rosterSelection=new Set(defaultRosterColumns),detailDraft=null;
+  const fieldDay=new Intl.DateTimeFormat(undefined,{weekday:'short',month:'short',day:'numeric',year:'numeric'});
+  const fieldColumns=['lotUnit','nextWorkday','nextTask','nextVendor','nextDue'];
+  let rosterRenderedDay='',rosterMode='field',rosterSelection=new Set(fieldColumns),detailDraft=null;
+  const rosterModeDefaults=()=>rosterMode==='field'?fieldColumns:defaultRosterColumns;
+  const modeKey=()=>rosterPrefKey()+':view';
+  const columnKey=()=>rosterMode==='summary'?rosterPrefKey():rosterPrefKey()+':field';
   function rosterPrefKey(){return 'scheduleJoeRosterColumns.v1:'+visit.actor;}
-  function loadRosterView(){
-    const saved=localRead(rosterPrefKey());
+  function loadRosterView(mode){
+    const stored=localRead(modeKey());
+    rosterMode=mode||(stored==='summary'?'summary':'field');
+    const saved=localRead(columnKey());
     const known=Array.isArray(saved)?rosterFields.filter(f=>saved.includes(f.id)).map(f=>f.id):[];
-    rosterSelection=new Set(Array.isArray(saved)&&(!saved.length||known.length)?known:defaultRosterColumns);
+    rosterSelection=new Set(Array.isArray(saved)&&(!saved.length||known.length)?known:rosterModeDefaults());
     el('rosterColumns').open=false;el('rosterFind').value='';filterRosterOptions();
     el('rosterNotice').textContent='';
   }
   function setRosterColumns(ids){
     if(!current(visit))return;
     rosterSelection=new Set(ids);
-    try{localStorage.setItem(rosterPrefKey(),JSON.stringify([...rosterSelection]));}
+    try{localStorage.setItem(columnKey(),JSON.stringify([...rosterSelection]));}
     catch(_){el('rosterNotice').textContent='Your view is active for this visit. This browser could not save the column choices.';}
     renderLanding();
   }
@@ -3354,13 +3461,43 @@ const AdmiralAccountForm = (() => {
       projectedPSD:dateFor('psd',['psd','psd (customer meeting)']),endDUC:dateFor('end-duc',['end of duc']),
       settlement:dateFor('settlement',['settlement']),qaiDate:dateFor('qai',['qai'])};
   }
-  function rosterFacts(meta,record){
+  function nextWork(meta,record,today){
+    const nextWeekday=new Date(today+'T12:00:00');
+    const dow=nextWeekday.getDay();
+    if(dow===0||dow===6)nextWeekday.setDate(nextWeekday.getDate()+(dow===0?1:2));
+    const weekday=isoDate(nextWeekday);
+    const shifts=new Map(record.acceleratedDays.map(s=>{
+      const d=workDate(5*s.week,meta);d.setDate(d.getDate()+(s.day==='sun'?6:5));
+      return [s.id,{day:isoDate(d),confirmed:s.commitment==='confirmed'}];
+    }));
+    let first='',work=[];
+    for(const task of record.tasks){
+      if(task.complete===true)continue;
+      const start=isoDate(workDate(task.start,meta)),finish=isoDate(workDate(task.start+task.duration-1,meta));
+      let date=finish>=weekday?(start>weekday?start:weekday):'';
+      let proposed=false,due=finish;
+      for(const id of task.acceleratedAssignments||[]){
+        const shift=shifts.get(id);
+        if(!shift)continue;
+        if(shift.day>due)due=shift.day;
+        if(shift.day<today)continue;
+        if(!date||shift.day<date){date=shift.day;proposed=!shift.confirmed;}
+        else if(shift.day===date&&shift.confirmed)proposed=false;
+      }
+      if(!date||(first&&date>first))continue;
+      if(date!==first){first=date;work=[];}
+      work.push({task,finish:due,proposed});
+    }
+    return {nextWorkday:first,nextTask:work.length?work.map(w=>w.task.title+(w.proposed?' (proposed shift)':'')):(record.tasks.length?'No upcoming work':'No tasks scheduled'),
+      nextVendor:work.map(w=>w.task.vendor||'Unassigned'),nextDue:work.map(w=>fieldDay.format(new Date(w.finish+'T12:00:00')))};
+  }
+  function rosterFacts(meta,record,today){
     const tasks=record.tasks,details=record.rosterDetails||{};
     const first=tasks.reduce((best,t)=>!best||t.start<best.start?t:best,null);
     const dates=rosterMilestones(meta,tasks);
     for(const key of Object.keys(dates))dates[key]=dates[key]||details[key];
     dates.startDate=dates.startDate||record.planStart;
-    const today=isoDate(new Date()),weekday=new Date(today+'T12:00:00').getDay();
+    const weekday=new Date(today+'T12:00:00').getDay();
     const weekendShifts=new Set(record.acceleratedDays.filter(shift=>{
       const day=workDate(5*shift.week,meta);day.setDate(day.getDate()+(shift.day==='sun'?6:5));return isoDate(day)===today;
     }).map(shift=>shift.id));
@@ -3368,7 +3505,7 @@ const AdmiralAccountForm = (() => {
       ?isoDate(workDate(t.start,meta))<=today&&isoDate(workDate(t.start+t.duration-1,meta))>=today
       :t.acceleratedAssignments?.some(id=>weekendShifts.has(id))));
     const currentArea=area=>currentTasks.filter(t=>areaOf(t)===area).map(t=>t.title).join(' · ');
-    return {...details,lotUnit:'Lot '+meta.lot+' · Unit '+meta.unit,region:meta.region,division:meta.division,community:meta.community,
+    return {...details,...nextWork(meta,record,today),lotUnit:projectLabel(meta),region:meta.region,division:meta.division,community:meta.community,
       planningWindow:labelDate(0,false,meta)+' – '+labelDate(weekCount(record)*5-1,false,meta),firstTask:first?.title,firstVendor:first?.vendor,
       currentInterior:currentArea('interior'),currentExterior:currentArea('exterior'),taskCount:tasks.length,
       ...dates,
@@ -3380,25 +3517,45 @@ const AdmiralAccountForm = (() => {
       const link=rosterDocumentUrl(value);
       return link?'<a href="'+esc(link)+'" target="_blank" rel="noopener noreferrer">Open docs ↗</a>':'—';
     }
-    if(field.kind==='date'){
+    if(field.kind==='date'||field.id==='nextWorkday'){
       const d=new Date(value+'T12:00:00');
-      if(Number.isFinite(d.getTime()))value=dateOnRoster.format(d);
+      if(Number.isFinite(d.getTime()))value=(field.id==='nextWorkday'?fieldDay:dateOnRoster).format(d);
     }
     if(field.kind==='signed'&&Number(value)>0)value='+'+value;
     return esc(value);
   }
   function renderLanding(){
+    rosterRenderedDay=isoDate(new Date());
     const selected=rosterFields.filter(f=>rosterSelection.has(f.id));
+    const hasLot=rosterSelection.has('lotUnit');
+    el('rosterTotal').textContent=projects.length+' projects on this device';
+    el('fieldView').setAttribute('aria-pressed',String(rosterMode==='field'));
+    el('summaryView').setAttribute('aria-pressed',String(rosterMode==='summary'));
     el('rosterCount').textContent=selected.length;
     for(const box of el('rosterChoices').querySelectorAll('input'))box.checked=rosterSelection.has(box.value);
-    el('rosterHeaders').innerHTML=selected.map(f=>'<th scope="col" data-column="'+f.id+'">'+esc(f.label)+'</th>').join('')+'<th scope="col" class="roster-action">Project actions</th>';
+    el('rosterHeaders').innerHTML=(hasLot?'':'<th scope="col">Schedule</th>')+selected.map(f=>'<th scope="col" data-column="'+f.id+'">'+esc(f.label)+'</th>').join('');
     el('bootstrapProjectRows').innerHTML=projects.map(meta=>{
-      const record=cache.get(meta.id);if(!record)return '';
-      const facts=rosterFacts(meta,record),lot=esc(facts.lotUnit);
-      const cells=selected.map(f=>'<td data-column="'+f.id+'" data-label="'+esc(f.label)+'">'+rosterCell(f,facts[f.id])+'</td>').join('');
-      return '<tr data-roster-project="'+esc(meta.id)+'">'+cells+'<td class="roster-action">'+(rosterSelection.has('lotUnit')?'':'<b>'+lot+'</b>')+
-        '<button type="button" data-open-project="'+esc(meta.id)+'" aria-label="Open schedule for Lot '+esc(meta.lot)+', Unit '+esc(meta.unit)+'">Open schedule →</button>'+
-        '<button class="roster-details-link" type="button" data-roster-details="'+esc(meta.id)+'" aria-label="Project details for '+lot+'">Project details</button></td></tr>';
+      const record=cache.get(meta.id);
+      if(!record)return '';
+      const facts=rosterFacts(meta,record,rosterRenderedDay),lot=esc(projectLabel(meta)),id=esc(meta.id);
+      const hasTwin=projects.some(p=>p.id!==meta.id&&p.lot===meta.lot&&p.unit===meta.unit);
+      const job='<button class="roster-lot-link" type="button" data-open-project="'+id+'" aria-label="Open schedule for '+esc(qualifiedLabel(meta))+'">'+lot+'</button>'+
+        (hasTwin?'<small>'+esc([meta.region,meta.division,meta.community].join(' / '))+'</small>':'')+
+        '<button class="roster-details-link" type="button" data-roster-details="'+id+'" aria-label="Project details for '+esc(qualifiedLabel(meta))+'">Details</button>';
+      const bookingColumns=['nextTask','nextVendor','nextDue'];
+      const count=selected.some(f=>bookingColumns.includes(f.id))?Math.max(1,facts.nextVendor.length):1;
+      const span=count>1?' rowspan="'+count+'"':'';
+      return Array.from({length:count},(_,index)=>{
+        const cells=selected.map(f=>{
+          const booking=bookingColumns.includes(f.id),value=facts[f.id];
+          if(index&&!booking)return '';
+          const content=f.id==='lotUnit'?job:rosterCell(f,booking&&Array.isArray(value)?value[index]:value);
+          return '<td data-column="'+f.id+'" data-label="'+esc(f.label)+'"'+(booking?'':span)+'>'+content+'</td>';
+        }).join('');
+        const attr=index?'data-roster-booking="'+id+'"':'data-roster-project="'+id+'"';
+        return '<tr '+attr+'>'+(!hasLot&&!index?'<td class="roster-identity"'+span+'>'+job+'</td>':'')+cells+'</tr>';
+      }).join('');
+
     }).join('');
   }
   function projectInput(f,details,dates){
@@ -3417,7 +3574,7 @@ const AdmiralAccountForm = (() => {
     const record=cache.get(id),meta=project(id),details=record.rosterDetails||{};
     const dates=rosterMilestones(meta,record.tasks);
     detailDraft={record,visit};
-    el('rosterDetailsTitle').textContent='Lot '+meta.lot+' · Unit '+meta.unit;
+    el('rosterDetailsTitle').textContent=projectLabel(meta);
     el('rosterFields').innerHTML=rosterGroups.map(g=>'<fieldset><legend>'+esc(g.name)+'</legend><div>'+
       g.fields.filter(f=>f.kind).map(f=>'<label>'+esc(f.label)+projectInput(f,details,dates)+'</label>').join('')+'</div></fieldset>').join('');
     el('rosterDetailStatus').textContent='';el('rosterSave').disabled=false;
@@ -3453,7 +3610,7 @@ const AdmiralAccountForm = (() => {
       el('rosterDetailStatus').textContent='This device could not save the details. Your entries are here to retry.';return;
     }
     dismissRosterDetails();renderLanding();
-    el('rosterNotice').textContent=saved?'Project details saved for Lot '+record.hierarchy.lot+' · Unit '+record.hierarchy.unit+'.':'A newer project record is open. Reopen Project details to edit it.';
+    el('rosterNotice').textContent=saved?'Project details saved for '+projectLabel(record.hierarchy)+'.':'A newer project record is open. Reopen Project details to edit it.';
     el('bootstrapProjectRows').querySelector('[data-roster-details="'+record.projectId+'"]')?.focus({preventScroll:true});
   }
   function bindRoster(){
@@ -3463,7 +3620,17 @@ const AdmiralAccountForm = (() => {
     choices.onchange=()=>setRosterColumns([...choices.querySelectorAll('input:checked')].map(box=>box.value));
     el('rosterFind').oninput=filterRosterOptions;
     el('rosterAll').onclick=()=>setRosterColumns(rosterFields.map(f=>f.id));
-    el('rosterDefaults').onclick=()=>setRosterColumns(defaultRosterColumns);
+    el('rosterDefaults').onclick=()=>setRosterColumns(rosterModeDefaults());
+    for(const mode of ['field','summary'])el(mode+'View').onclick=()=>{
+      if(!current(visit)||mode===rosterMode)return;
+      loadRosterView(mode);renderLanding();
+      el('bootstrapProjectLanding').querySelector('.bootstrap-project-roster-wrap').scrollLeft=0;
+      try{localStorage.setItem(modeKey(),JSON.stringify(mode));}catch(_){el('rosterNotice').textContent='View selected for this visit.';}
+    };
+    el('addRosterProject').onclick=openProjectForm;
+    el('newLotCancel').onclick=()=>el('newLotDialog').close();
+    el('newLotDialog').oncancel=e=>{if(el('newLotSave').disabled)e.preventDefault();};
+    el('newLotForm').onsubmit=createProject;
     const closeChooser=()=>{chooser.open=false;chooser.querySelector('summary').focus({preventScroll:true});};
     el('rosterDone').onclick=closeChooser;
     el('bootstrapSchedule').addEventListener('keydown',e=>{
@@ -3580,7 +3747,7 @@ const AdmiralAccountForm = (() => {
     activeId=id;state=cache.get(id);selectedWeek=0;selectedId='';vendorView='';
     el('bootstrapSchedule').classList.add('desk-open');expandedWeeks.clear();el('deskSettings').open=false;el('deskHistory').open=false;
     el('bootstrapAcceleratedPanel').classList.add('hidden');
-    el('bootstrapAcceleratedToggle').setAttribute('aria-expanded','false');el('bootstrapProjectLanding')?.classList.add('hidden');el('bootstrapProjectWorkspace')?.classList.remove('hidden');el('bootstrapProjectsHome')?.classList.remove('hidden');const meta=project(id);el('bootstrapScheduleTitleHeading').textContent='Lot '+meta.lot+' · Unit '+meta.unit;el('bootstrapScheduleSubtitle').textContent='Tap a task to select it. Drag to move it, or pull an edge to change its duration.';renderSchedule();jumpWeek(0);status(state._source==='recovered prior schedule'?'Prior Lot 1234 · Unit A schedule recovered. Changes now save in its independent record.':state.updatedAt?'Loaded saved revision '+state.revision+' from '+new Date(state.updatedAt).toLocaleString()+'.':'Tap a date to add work or a task to edit it.');el('bootstrapSchedule').scrollTop=0;}
+    el('bootstrapAcceleratedToggle').setAttribute('aria-expanded','false');el('bootstrapProjectLanding')?.classList.add('hidden');el('bootstrapProjectWorkspace')?.classList.remove('hidden');el('bootstrapProjectsHome')?.classList.remove('hidden');const meta=project(id);el('bootstrapScheduleTitleHeading').textContent=projectLabel(meta);el('bootstrapScheduleSubtitle').textContent='Tap a task to select it. Drag to move it, or pull an edge to change its duration.';renderSchedule();jumpWeek(0);status(state._source==='recovered prior schedule'?'Prior Lot 1234 · Unit A schedule recovered. Changes now save in its independent record.':state.updatedAt?'Loaded saved revision '+state.revision+' from '+new Date(state.updatedAt).toLocaleString()+'.':'Tap a date to add work or a task to edit it.');el('bootstrapSchedule').scrollTop=0;}
   async function move(id,day){
     const task=state?.tasks.find(item=>item.id===id);if(!task)return;
     if(task.locked===true||task.complete===true){status('This task is locked or complete.');return;}
@@ -3619,7 +3786,7 @@ const AdmiralAccountForm = (() => {
   }
   function closeSchedule(restore=true) {
     const entry=visit,panel=el('bootstrapSchedule');
-    closeMove();dismissEditor();dismissRosterDetails();el('rosterColumns').open=false;if(el('deskUpdates').open)el('deskUpdates').close();lookRecord=null;visit=null;
+    closeMove();dismissEditor();dismissRosterDetails();if(el('newLotDialog').open)el('newLotDialog').close();el('rosterColumns').open=false;if(el('deskUpdates').open)el('deskUpdates').close();lookRecord=null;visit=null;
     if(entry) clearInterval(entry.timer);
     clearTouchDrag();desktopGrab=null;showOver(null);
     activeId='';state=null;selectedId='';vendorView='';
@@ -3649,7 +3816,10 @@ const AdmiralAccountForm = (() => {
       loadRosterView();showLanding();el('bootstrapProjectRows').innerHTML='<tr><td colspan="'+(rosterSelection.size+1)+'">Opening project records…</td></tr>';
       panel.showModal();panel.scrollTop=0;
       el('bootstrapScheduleClose').focus({preventScroll:true});
-      entry.timer=setInterval(()=>{if(!current(entry))closeSchedule(false);},550);
+      entry.timer=setInterval(()=>{
+        if(!current(entry)){closeSchedule(false);return;}
+        if(!activeId&&!lookRecord&&rosterRenderedDay!==isoDate(new Date()))renderLanding();
+      },550);
       await hydrate(entry);
       if(current(entry))renderLanding();
     } catch (_) {
@@ -3670,13 +3840,23 @@ const AdmiralAccountForm = (() => {
     if(target.closest('#scheduleJoeRetry')){void persist('');return;}
     const step=target.closest('[data-week-step]');
     if(step){jumpWeek(Math.max(0,Math.min(weekCount()-1,selectedWeek+Number(step.dataset.weekStep))));return;}
-    if(target.closest('#bootstrapScheduleAdd')){openEditor(null,selectedWeek*5);return;}
+    if(target.closest('#bootstrapScheduleAdd')){
+      let day=selectedWeek*5;
+      const start=state.rosterDetails?.startDate;
+      if(selectedWeek===0&&!state.tasks.length&&start){
+        const first=new Date(start+'T12:00:00'),weekday=first.getDay();
+        if(weekday===0||weekday===6)first.setDate(first.getDate()+(weekday===0?1:2));
+        const index=workIndex(isoDate(first));
+        if(index>=0&&index<weekCount()*5)day=index;
+      }
+      openEditor(null,day);return;
+    }
     if(target.closest('#bootstrapScheduleCancel')){dismissEditor();return;}
     const more=target.closest('[data-expand-week]');
     if(more){const week=Number(more.dataset.expandWeek);if(expandedWeeks.has(week))expandedWeeks.delete(week);else expandedWeeks.add(week);renderSchedule();return;}
     const cell=target.closest('[data-schedule-move],[data-schedule-day],[data-desk-day]');
     if(cell){if(Date.now()<suppressClickUntil)return;openEditor(null,Number(cell.dataset.scheduleMove??cell.dataset.scheduleDay??cell.dataset.deskDay));return;}
-    if(target.closest('#bootstrapScheduleReset')){event.preventDefault();event.stopImmediatePropagation();const meta=project(activeId);const prior=state;if(window.confirm('Reset only Lot '+meta.lot+' · Unit '+meta.unit+' to its original plan?')){const reset=fresh(meta),originals=new Map(reset.tasks.map(t=>[t.id,t]));
+    if(target.closest('#bootstrapScheduleReset')){event.preventDefault();event.stopImmediatePropagation();const meta=project(activeId);const prior=state;if(window.confirm('Reset '+projectLabel(meta)+' to its original plan?')){const reset=fresh(meta),originals=new Map(reset.tasks.map(t=>[t.id,t]));
       for(const task of state.tasks){
         const restored=originals.get(task.id);
         if(restored){

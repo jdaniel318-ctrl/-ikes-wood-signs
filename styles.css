@@ -17154,3 +17154,52 @@ dialog#bootstrapSchedule::backdrop {background:#03151a}
 @media(max-width:500px){
   #rosterFields fieldset>div {grid-template-columns:minmax(0,1fr)}
 }
+
+/* ScheduleJoe project navigation */
+#bootstrapSchedule:not(.desk-open) .bootstrap-schedule-head {padding:8px 14px;gap:13px;grid-template-columns:144px minmax(0,1fr) auto}
+#bootstrapSchedule:not(.desk-open) .bootstrap-schedule-head img {height:46px}
+#bootstrapSchedule:not(.desk-open) .bootstrap-schedule-head h2 {font-size:1.55rem;margin:2px 0}
+#bootstrapSchedule:not(.desk-open) .bootstrap-schedule-head p {font-size:.86rem}
+#bootstrapProjectLanding .bootstrap-roster-summary {justify-content:flex-start;gap:8px 14px;padding:9px 12px}
+#bootstrapProjectLanding .bootstrap-roster-summary>strong {font-size:1rem;margin-right:auto}
+#bootstrapProjectLanding .roster-views {display:flex;gap:1px;padding:2px;border:1px solid #44656a;border-radius:8px;background:#061e25}
+#bootstrapProjectLanding .roster-views button {min-height:40px;border:0;border-radius:5px;background:transparent;color:#b4ccc9;padding:6px 11px}
+#bootstrapProjectLanding .roster-views [aria-pressed=true] {color:#fff1c8;background:#25525b;box-shadow:inset 0 -2px #e6c980}
+#rosterColumns {margin-left:0}
+#bootstrapProjectLanding #addRosterProject {min-height:44px;background:#efd18f;color:#10272c;border:1px solid #efd18f}
+#bootstrapProjectLanding .bootstrap-project-roster td {padding:5px 12px}
+#bootstrapProjectLanding .bootstrap-project-roster .roster-lot-link,#bootstrapProjectLanding .bootstrap-project-roster .roster-details-link {display:block;width:fit-content;border:0!important;background:transparent!important;box-shadow:none!important;text-align:left;text-transform:none;letter-spacing:0;padding:0 3px!important;text-decoration:underline;text-underline-offset:3px}
+#bootstrapProjectLanding .bootstrap-project-roster .roster-lot-link {font-size:.95rem;min-height:32px!important;color:#f6dc9c!important;font-weight:750}
+#bootstrapProjectLanding .bootstrap-project-roster .roster-details-link {font-size:.8rem;min-height:26px!important;color:#b2dedf!important}
+#bootstrapProjectLanding tr[data-roster-booking] td:first-child {border-left-color:#345459}
+@media(max-width:720px){
+  #bootstrapProjectLanding tr:has(+tr[data-roster-booking]) {margin-bottom:0;border-bottom:0;border-bottom-left-radius:0;border-bottom-right-radius:0}
+  #bootstrapProjectLanding tr[data-roster-booking] {border-top-style:dashed;border-top-left-radius:0;border-top-right-radius:0}
+}
+#bootstrapSchedule #newLotDialog {width:min(500px,calc(100% - 28px));box-sizing:border-box;padding:0;margin:auto;border:1px solid #62868a;border-radius:12px;background:#0b2b31;color:#edf2ea;max-height:88dvh}
+#newLotDialog:not([open]) {display:none!important}
+#newLotDialog::backdrop {background:#001116b8}
+#newLotForm {padding:clamp(15px,3vw,24px);display:grid;gap:14px}
+#newLotForm h2,#newLotForm p {margin:0}
+#newLotForm p {color:#c3d4ce}
+#newLotForm .new-lot-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#newLotForm label {display:grid;gap:5px;text-align:left}
+#newLotForm input {box-sizing:border-box;width:100%;min-width:0;min-height:44px;padding:7px 9px;background:#071e25;color:#eff4ed;border:1px solid #749195;border-radius:7px;font:inherit;color-scheme:dark}
+#newLotForm input:read-only {color:#b2c5bd;background:#103037}
+#newLotStatus:empty {display:none}
+#newLotForm footer {display:flex;justify-content:flex-end;gap:8px}
+@media(max-width:720px){
+  #bootstrapSchedule:not(.desk-open) .bootstrap-schedule-head {display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:5px 8px;padding:9px}
+  #bootstrapSchedule:not(.desk-open) .bootstrap-schedule-head h2 {font-size:1.25rem}
+  #bootstrapSchedule:not(.desk-open) .bootstrap-schedule-head-actions button {padding:6px 9px;letter-spacing:0}
+  #bootstrapSchedule:not(.desk-open) .bootstrap-schedule-head>img {display:none}
+  #bootstrapSchedule:not(.desk-open) .bootstrap-schedule-head>div:not(.bootstrap-schedule-head-actions) {grid-column:1;grid-row:1}
+  #bootstrapSchedule:not(.desk-open) .bootstrap-schedule-head p,#bootstrapSchedule:not(.desk-open) .bootstrap-schedule-head small {display:none}
+  #bootstrapProjectLanding .bootstrap-roster-summary {display:grid;grid-template-columns:1fr auto;gap:7px}
+  #bootstrapProjectLanding .roster-views {grid-column:1;grid-row:2;width:fit-content}
+  #bootstrapProjectLanding #addRosterProject {grid-row:1;grid-column:2}
+  #rosterColumns {grid-row:2;grid-column:2;justify-self:end}
+  #bootstrapProjectLanding .bootstrap-project-roster td {padding:0}
+  #bootstrapProjectLanding .bootstrap-project-roster td[data-column=lotUnit],#bootstrapProjectLanding .roster-identity {display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  #bootstrapSchedule #bootstrapProjectLanding .bootstrap-project-roster td[data-column=lotUnit]::before {content:none}
+}
