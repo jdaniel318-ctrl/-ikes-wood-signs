@@ -2697,55 +2697,30 @@ const AdmiralAccountForm = (() => {
   }
   function openMove(task,day,values=null) {
     const delta=day-task.start;
-    if(!delta){status('Choose a different workday to preview a move.');return;}
+    if(!delta)return;
     pendingMove={record:state,id:task.id,delta,values};
-    const area=values?.area||areaOf(task);
-    const scopes=['all',...(area==='general'?['exterior','interior']:[area]),'one'];
-    const labels={all:'All',exterior:'Exterior',interior:'Interior',one:'None'};
-    el('joeScope').innerHTML='<legend>Which other tasks should move?</legend>'+scopes.map(s=>
-      `<label><input type="radio" name="joeScope" value="${s}" ${s==='one'?'checked':''}><span>${labels[s]}</span></label>`).join('');
+    el('joeMoveLot').textContent=lotLabel()+' · '+task.title;
+    el('joeForwardText').textContent='Limit other tasks to '+labelDate(task.start,true)+' or later';
     el('joeForward').checked=true;
-    renderMove();
-    el('joeMove').showModal();el('joeScope').querySelector(':checked').focus();
+    el('joeMoveSummary').textContent='';
+    el('joeMove').showModal();
   }
-  function movePreview() {
-    const {id,delta}=pendingMove, scope=el('joeScope').querySelector(':checked').value;
-    const anchor=state.tasks.find(t=>t.id===id);
-    const fromAnchor=el('joeForward').checked&&scope!=='one';
-    const eligible=t=>t.id===id||((scope==='all'||areaOf(t)===scope)&&(!fromAnchor||t.start>=anchor.start));
-    const matching=state.tasks.filter(eligible);
-    const tasks=matching.filter(t=>t.locked!==true&&t.complete!==true);
-    const fixed=matching.length-tasks.length;
-    const min=Math.min(...tasks.map(t=>t.start+delta));
-    const weeks=tasks.reduce((n,t)=>Math.max(n,Math.ceil((t.start+delta+(t.id===id&&pendingMove.values?pendingMove.values.duration:t.duration))/5)),weekCount());
-    let issue='';
-    if(!tasks.length)issue='There are no matching tasks in this lot.';
-    else if(min<0)issue='This move would start before the first project workday.';
-    else if(weeks>MAX_WEEKS)issue='This move would exceed the 52-week planning window.';
-    return {tasks,delta,weeks,issue,anchor,fixed};
-  }
-  function renderMove() {
-    if(!pendingMove)return;
-    const {tasks,delta,weeks,issue,anchor,fixed}=movePreview();
-    const startLabel=delta>0?'later':'earlier',days=Math.abs(delta);
-    el('joeMoveTitle').textContent='Move '+days+' workday'+(days===1?'':'s')+' '+startLabel;
-    el('joeMoveLot').textContent='Lot '+project(activeId).lot+' · Unit '+project(activeId).unit+' · '+anchor.title;
-    const baseline=Number.isInteger(anchor.baselineStart)?labelDate(anchor.baselineStart,true):'not recorded';
-    el('joeBaseline').textContent='Baseline '+baseline+' · Duration '+anchor.duration+' workday'+(anchor.duration===1?'':'s');
-    el('joeForwardLabel').hidden=el('joeScope').querySelector(':checked').value==='one';
-    el('joeForwardText').textContent='Only tasks starting '+labelDate(anchor.start)+' or later';
-    el('joeMoveSummary').textContent=issue||tasks.length+' task'+(tasks.length===1?'':'s')+' will move.'+(fixed?' '+fixed+' locked or complete will stay in place.':'')+(weeks>weekCount()?' The planning window will extend to '+weeks+' weeks.':'')+
-      (tasks.some(t=>t.acceleratedAssignments?.length)?' Previously booked weekend shifts keep their dates.':'');
-    const range=(s,d)=>labelDate(s,true)+(d>1?' – '+labelDate(s+d-1,true):'');
-    el('joeMoveRows').innerHTML=tasks.map(t=>`<tr><th scope="row"><span>${esc(t.title)}</span><small>${areaNames[areaOf(t)]}</small></th><td>${esc(range(t.start,t.duration))}</td><td>${issue?'—':esc(range(t.start+delta,t===anchor&&pendingMove.values?pendingMove.values.duration:t.duration))}</td></tr>`).join('');
-    el('joeApply').disabled=!!issue;
-    el('joeApply').textContent='Move '+tasks.length+' task'+(tasks.length===1?'':'s');
-  }
-  async function applyMove() {
+  async function applyMove(scope) {
     if(!current(visit)||!pendingMove||pendingMove.record!==state){closeMove();return;}
-    const {tasks,delta,weeks,issue,anchor}=movePreview();
-    if(issue)return;
-    const {values}=pendingMove;
+    const {id,delta,values}=pendingMove;
+    const anchor=state.tasks.find(t=>t.id===id);
+    if(!anchor||anchor.locked===true||anchor.complete===true){closeMove();return;}
+    const fromAnchor=el('joeForward').checked;
+    const tasks=state.tasks.filter(t=>{
+      if(t===anchor)return true;
+      if(t.locked===true||t.complete===true||scope==='one')return false;
+      return (!fromAnchor||t.start>=anchor.start)&&(scope==='all'||areaOf(t)===scope);
+    });
+    const weeks=tasks.reduce((n,t)=>Math.max(n,Math.ceil((t.start+delta+(t===anchor&&values?values.duration:t.duration))/5)),weekCount());
+    let issue='';
+    if(tasks.some(t=>t.start+delta<0))issue='This move would start before the first project workday.';
+    else if(weeks>MAX_WEEKS)issue='This move would exceed the 52-week planning window.';
+    if(issue){el('joeMoveSummary').textContent=issue;return;}
     closeMove();
     for(const t of tasks){
       const previous={...t};
@@ -2926,15 +2901,20 @@ const AdmiralAccountForm = (() => {
   <div id="joeWeeks"></div>
 </section>
 <dialog id="joeMove" aria-labelledby="joeMoveTitle">
-  <small id="joeMoveLot"></small><h2 id="joeMoveTitle"></h2><p id="joeBaseline"></p>
-  <fieldset id="joeScope"><legend>Which other tasks should move?</legend></fieldset>
+  <small id="joeMoveLot"></small><h2 id="joeMoveTitle" tabindex="-1" autofocus>Move other tasks too?</h2>
   <label id="joeForwardLabel"><input type="checkbox" id="joeForward"><span id="joeForwardText"></span></label>
-  <p id="joeMoveSummary" role="status"></p><div class="joe-table"><table><thead><tr><th>Task</th><th>Current</th><th>Proposed</th></tr></thead><tbody id="joeMoveRows"></tbody></table></div>
-  <div class="joe-move-actions"><button id="joeCancel" type="button">Cancel</button><button id="joeApply" type="button">Apply move</button></div>
+  <div id="joeScope" role="group" aria-labelledby="joeMoveTitle">
+    <button type="button" data-move-scope="one">This task only</button>
+    <button type="button" data-move-scope="interior">Interior</button>
+    <button type="button" data-move-scope="exterior">Exterior</button>
+    <button type="button" data-move-scope="all">All</button>
+  </div>
+  <p id="joeMoveSummary" role="status"></p>
+  <div class="joe-move-actions"><button id="joeCancel" type="button">Cancel</button></div>
 </dialog>
 <dialog id="joeEditor" aria-labelledby="deskEditorTitle">
   <form id="bootstrapScheduleForm">
-    <header><div><small id="deskLot"></small><h2 id="deskEditorTitle"></h2></div><button type="button" id="bootstrapScheduleCancel" aria-label="Close task editor">Close</button></header>
+    <header><div><small id="deskLot"></small><h2 id="deskEditorTitle" tabindex="-1" autofocus></h2></div><button type="button" id="bootstrapScheduleCancel" aria-label="Close task editor">Close</button></header>
     <label>Task name<input id="bootstrapScheduleTaskTitle" maxlength="100" required autocomplete="off" placeholder="e.g. Footing inspection"></label>
     <div class="desk-fields"><label>Start date<input id="bootstrapScheduleDay" type="date" required></label><label>Duration in workdays<input id="bootstrapScheduleDuration" type="number" min="1" max="260" step="1" required></label></div>
     <p id="deskFinish" role="status"></p>
@@ -2997,7 +2977,6 @@ const AdmiralAccountForm = (() => {
     input.value=isoDate(workDate(task?.start??day));el('bootstrapScheduleDuration').value=task?.duration||1;
     el('deskBaseline').textContent=task?'Original plan · '+(Number.isInteger(task.baselineStart)?fullDate(task.baselineStart):'Date unrecorded')+' · '+task.plannedDuration+' workday(s)':'';
     el('joeEditor').showModal();refreshEditor();
-    (task?el('bootstrapScheduleDay'):el('bootstrapScheduleTaskTitle')).focus({preventScroll:true});
   }
   function editorValues() {
     return {title:el('bootstrapScheduleTaskTitle').value.trim(),start:workIndex(el('bootstrapScheduleDay').value),
@@ -3015,7 +2994,7 @@ const AdmiralAccountForm = (() => {
     const overlap=v.vendor!=='Unassigned'&&state.tasks.find(t=>t!==draft.task&&t.vendor===v.vendor&&t.start<v.start+v.duration&&v.start<t.start+t.duration);
     el('deskTaskWarning').textContent=fixed?'This task is locked or complete.':!error&&overlap?'Crew also scheduled on '+overlap.title+'.':'';
     el('deskSave').disabled=!!error||fixed||!v.title;
-    el('deskSave').textContent=draft.task&&v.start!==draft.task.start&&el('joePrompt').checked?'Review move':draft.task?'Save changes':'Add task';
+    el('deskSave').textContent=draft.task?'Save changes':'Add task';
   }
   function saveEditor(event) {
     event.preventDefault();
@@ -3250,8 +3229,7 @@ const AdmiralAccountForm = (() => {
     });
     listen('joePrompt','change',()=>{
       if(!state)return;
-      try{localStorage.setItem('scheduleJoePrompt:'+activeId,String(el('joePrompt').checked));}catch(_){}
-      status(el('joePrompt').checked?'Prompt on. Moving a task opens a preview.':'Prompt off. A move changes the selected task only.');
+      status(el('joePrompt').checked?'Prompt on. Choose which other tasks move with this one.':'Prompt off. A move changes the selected task only.');
     });
     el('bootstrapScheduleForm').addEventListener('input',refreshEditor);
     el('bootstrapScheduleForm').addEventListener('submit',saveEditor);
@@ -3272,9 +3250,12 @@ const AdmiralAccountForm = (() => {
       renderAccelerated();el('bootstrapAcceleratedWeek').focus();
     };
     bindUpdates();
-    listen('joeScope','change',renderMove);listen('joeForward','change',renderMove);
+    listen('joeScope','click',event=>{
+      const choice=event.target.closest('[data-move-scope]');
+      if(choice)void applyMove(choice.dataset.moveScope);
+    });
+    listen('joeForward','change',()=>{el('joeMoveSummary').textContent='';});
     listen('joeCancel','click',closeMove);listen('joeMove','cancel',e=>{e.preventDefault();closeMove();});
-    listen('joeApply','click',()=>void applyMove());
   }
   function installQuickPassageControls(){
     const actions=el('bootstrapSchedule')?.querySelector('.bootstrap-schedule-toolbar>div:last-child');
@@ -3395,7 +3376,7 @@ const AdmiralAccountForm = (() => {
   }
   async function openProject(id){if(!visit||!cache.has(id))return;
     el('joeLongview').hidden=true;lookRecord=null;
-    el('joePrompt').checked=localRead('scheduleJoePrompt:'+id)===true;
+    el('joePrompt').checked=false;
     el('scheduleJoeRetry').hidden=true;
     activeId=id;state=cache.get(id);selectedWeek=0;selectedId='';vendorView='';
     el('bootstrapSchedule').classList.add('desk-open');expandedWeeks.clear();el('deskSettings').open=false;el('deskHistory').open=false;

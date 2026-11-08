@@ -16975,18 +16975,13 @@ dialog#bootstrapSchedule::backdrop {background:#03151a}
 #bootstrapSchedule #joeMove {box-sizing:border-box;inset:0;margin:auto;width:min(600px,calc(100% - 24px));height:fit-content;max-height:88dvh;overflow:auto;border:1px solid #749594;border-radius:16px;padding:clamp(14px,3vw,26px);background:#0b292f;color:#eef4eb;box-shadow:0 18px 80px #001217aa}
 #joeMove:not([open]){display:none!important}#joeMove::backdrop {background:#001215bc}
 #joeMove h2 {margin:4px 0 16px;color:#ffe8b6}#joeMove>small {color:#b6d5ce}
-#joeScope {border:none;margin:0;padding:0;display:flex;gap:8px;flex-wrap:wrap}
-#joeScope legend {margin:0 0 8px;padding:0;font-weight:650}
-#joeScope label {position:relative}#joeScope input {position:absolute;opacity:0}
-#joeScope span {display:grid;place-items:center;min-width:64px;min-height:44px;padding:0 10px;border:1px solid #80a5a4;border-radius:7px;cursor:pointer}
-#joeScope input:checked+span,#bootstrapSchedule #joeApply {color:#182b2b;background:#f0cf83;border-color:#f0cf83}
-#joeScope input:focus-visible+span{outline:3px solid white;outline-offset:2px}
-#joeForwardLabel {display:flex;gap:8px;align-items:center}#joeMoveSummary {line-height:1.4}
-#joeMove .joe-table {max-height:32vh;overflow:auto;border:1px solid #476569;border-radius:8px}
-#joeMove table {width:100%;border-collapse:collapse;table-layout:fixed;font-size:.9rem}
-#joeMove th,#joeMove td {text-align:left;padding:7px 9px;border-bottom:1px solid #36565c;overflow-wrap:anywhere}
-#joeMove th:first-child {width:44%}#joeMove thead th {background:#173c42;position:sticky;top:0}
-#joeMoveRows small {display:block;font-weight:400;color:#bfd1ce}
+#joeScope {display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+#joeScope button {min-height:44px}
+#joeScope [data-move-scope="one"] {color:#182b2b;background:#f0cf83;border-color:#f0cf83}
+#joeScope button:focus-visible {outline:3px solid white;outline-offset:2px}
+#joeForwardLabel {display:flex;gap:8px;align-items:center}
+#joeMoveSummary {line-height:1.4}
+#joeMoveSummary:empty {display:none}
 .joe-move-actions {display:flex;justify-content:flex-end;gap:9px;margin-top:14px}
 @media(max-width:650px){
   #bootstrapSchedule .joe-choices label {flex-wrap:wrap}
@@ -16994,7 +16989,6 @@ dialog#bootstrapSchedule::backdrop {background:#03151a}
   .joe-bar {display:flex;align-items:center;gap:12px}.joe-bar small {width:37%;flex-shrink:0}.joe-bar b {font-size:.9rem}
   #bootstrapSchedule .joe-task-info {align-items:flex-start}
 }
-#joeMove #joeBaseline {margin:-6px 0 14px;color:#c2d8d6;font-size:.92rem}
 
 /* ScheduleJoe field calendar. The week grid and the phone agenda use the same task records. */
 #bootstrapSchedule.desk-open {padding:6px}
