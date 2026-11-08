@@ -2738,7 +2738,7 @@ const AdmiralAccountForm = (() => {
       else await create();
       if(!current(entry))return;
       if(!projects.some(p=>p.id===id))projects.push(meta);
-      cache.set(id,record);el('newLotDialog').close();renderLanding();
+      cache.set(id,record);el('newLotDialog').close();el('crewQuery').value='';renderLanding();
       el('rosterNotice').textContent=projectLabel(meta)+' added. Open the lot to schedule its first task.';
       el('bootstrapProjectRows').querySelector('[data-open-project="'+id+'"]')?.focus({preventScroll:true});
     }catch(error){
@@ -2988,6 +2988,8 @@ const AdmiralAccountForm = (() => {
       </div>
     </details>
   </div>
+  <div class="crew-search"><label for="crewQuery">Find work</label><input type="search" id="crewQuery" placeholder="Lot, task or vendor" autocomplete="off"><button type="button" id="crewClear" hidden>Clear</button></div>
+  <section id="crewResults" hidden aria-label="Search results"><p id="crewCount" role="status"></p><div id="crewMatches"></div></section>
   <p id="rosterNotice" role="status"></p>
   <div class="bootstrap-project-roster-wrap" tabindex="0" role="region" aria-label="Project summary columns"><table class="bootstrap-project-roster" aria-label="Project schedules"><thead><tr id="rosterHeaders"></tr></thead><tbody id="bootstrapProjectRows"></tbody></table></div>
 <div class="joe-example-link"><span>Example home build · 18 weeks</span><button id="joeExample" type="button">Explore example →</button></div></section><section id="joeLongview" hidden aria-label="Four-week lookahead">
@@ -3488,7 +3490,7 @@ const AdmiralAccountForm = (() => {
       if(date!==first){first=date;work=[];}
       work.push({task,finish:due,proposed});
     }
-    return {nextWorkday:first,nextTask:work.length?work.map(w=>w.task.title+(w.proposed?' (proposed shift)':'')):(record.tasks.length?'No upcoming work':'No tasks scheduled'),
+    return {nextIds:work.map(w=>w.task.id),nextWorkday:first,nextTask:work.length?work.map(w=>w.task.title+(w.proposed?' (proposed shift)':'')):(record.tasks.length?'No upcoming work':'No tasks scheduled'),
       nextVendor:work.map(w=>w.task.vendor||'Unassigned'),nextDue:work.map(w=>fieldDay.format(new Date(w.finish+'T12:00:00')))};
   }
   function rosterFacts(meta,record,today){
@@ -3549,13 +3551,54 @@ const AdmiralAccountForm = (() => {
         const cells=selected.map(f=>{
           const booking=bookingColumns.includes(f.id),value=facts[f.id];
           if(index&&!booking)return '';
-          const content=f.id==='lotUnit'?job:rosterCell(f,booking&&Array.isArray(value)?value[index]:value);
+          let content=f.id==='lotUnit'?job:rosterCell(f,booking&&Array.isArray(value)?value[index]:value);
+          if(f.id==='nextTask'&&facts.nextIds[index]){
+            content=taskShortcut(meta.id,facts.nextIds[index],content);
+          }
           return '<td data-column="'+f.id+'" data-label="'+esc(f.label)+'"'+(booking?'':span)+'>'+content+'</td>';
         }).join('');
         const attr=index?'data-roster-booking="'+id+'"':'data-roster-project="'+id+'"';
         return '<tr '+attr+'>'+(!hasLot&&!index?'<td class="roster-identity"'+span+'>'+job+'</td>':'')+cells+'</tr>';
       }).join('');
 
+    }).join('');
+    renderWorkSearch();
+  }
+  function taskShortcut(projectId,taskId,escapedLabel){
+    return '<button type="button" class="crew-task" data-job="'+esc(projectId)+'" data-crew-task="'+esc(taskId)+'">'+escapedLabel+'</button>';
+  }
+  function renderWorkSearch(){
+    const query=el('crewQuery').value.trim().toLowerCase(),results=el('crewResults');
+    results.hidden=!query;el('crewClear').hidden=!query;
+    el('bootstrapProjectLanding').querySelector('.bootstrap-project-roster-wrap').hidden=Boolean(query);
+    if(!query){el('crewMatches').replaceChildren();el('crewCount').textContent='';return;}
+    const unit=query.match(/\bunit\s+([a-z0-9])\b/);
+    const address=query.match(/\b(\d{4})[-/]([a-z0-9])\b/);
+    const words=query.replace(/\b(\d{4})[-/]([a-z0-9])\b/g,'$1 unit $2').split(/\s+/),matches=[];
+    for(const meta of projects){
+      const record=cache.get(meta.id);
+      if(!record)continue;
+      if(unit&&meta.unit.toLowerCase()!==unit[1])continue;
+      if(address&&(meta.lot!==address[1]||meta.unit.toLowerCase()!==address[2]))continue;
+      const identity=qualifiedLabel(meta),jobText=identity.toLowerCase();
+      if(words.every(word=>jobText.includes(word))){
+        matches.push({projectId:meta.id,identity});
+        continue;
+      }
+      for(const task of record.tasks){
+        const haystack=[jobText,task.title,task.vendor,task.trade].join(' ').toLowerCase();
+        if(words.every(word=>haystack.includes(word))){
+          matches.push({projectId:meta.id,identity,task,start:isoDate(workDate(task.start,meta)),end:isoDate(workDate(task.start+task.duration-1,meta))});
+        }
+      }
+    }
+    matches.sort((a,b)=>(a.start||'').localeCompare(b.start||'')||a.identity.localeCompare(b.identity));
+    el('crewCount').textContent=matches.length?matches.length+(matches.length===1?' match':' matches'):'No matching work. Try a lot number, task name or vendor.';
+    el('crewMatches').innerHTML=matches.map(({projectId,identity,task,start,end})=>{
+      if(!task)return '<div><button type="button" class="crew-task" data-open-project="'+esc(projectId)+'">'+esc(identity)+'</button></div>';
+      const day=value=>fieldDay.format(new Date(value+'T12:00:00'));
+      const dates=day(start)+(end!==start?' – '+day(end):'');
+      return '<div>'+taskShortcut(projectId,task.id,esc(task.title))+'<span>'+esc(identity)+'</span><span>'+esc(task.vendor||'Unassigned')+'</span><span>'+esc(dates)+(task.complete?' · Complete':'')+'</span></div>';
     }).join('');
   }
   function projectInput(f,details,dates){
@@ -3619,6 +3662,8 @@ const AdmiralAccountForm = (() => {
       '<label><input type="checkbox" value="'+f.id+'">'+esc(f.label)+'</label>').join('')+'</fieldset>').join('');
     choices.onchange=()=>setRosterColumns([...choices.querySelectorAll('input:checked')].map(box=>box.value));
     el('rosterFind').oninput=filterRosterOptions;
+    el('crewQuery').oninput=renderWorkSearch;
+    el('crewClear').onclick=()=>{el('crewQuery').value='';renderWorkSearch();el('crewQuery').focus();};
     el('rosterAll').onclick=()=>setRosterColumns(rosterFields.map(f=>f.id));
     el('rosterDefaults').onclick=()=>setRosterColumns(rosterModeDefaults());
     for(const mode of ['field','summary'])el(mode+'View').onclick=()=>{
@@ -3813,7 +3858,7 @@ const AdmiralAccountForm = (() => {
       panel.classList.remove('hidden');panel.setAttribute('aria-hidden','false');
       el('bootstrapScheduleClose').textContent=fleet?'← Back to My Fleet':'← Back';
       el('scheduleJoeFleet').hidden=!!fleet;
-      loadRosterView();showLanding();el('bootstrapProjectRows').innerHTML='<tr><td colspan="'+(rosterSelection.size+1)+'">Opening project records…</td></tr>';
+      el('crewQuery').value='';loadRosterView();showLanding();el('bootstrapProjectRows').innerHTML='<tr><td colspan="'+(rosterSelection.size+1)+'">Opening project records…</td></tr>';
       panel.showModal();panel.scrollTop=0;
       el('bootstrapScheduleClose').focus({preventScroll:true});
       entry.timer=setInterval(()=>{
@@ -3836,7 +3881,16 @@ const AdmiralAccountForm = (() => {
   function syncDoor(){const kit=el('admiralCommissioningBrandKit');if(kit&&!el('bootstrapScheduleOpen'))kit.insertAdjacentHTML('beforeend','<button id="bootstrapScheduleOpen" class="admiral-pro-button" type="button">OPEN BOOTSTRAP BUILD SCHEDULE</button>');const doorway=el('bootstrapScheduleOpen');if(doorway&&doorway.textContent!=='OPEN BOOTSTRAP BUILD SCHEDULE')doorway.textContent='OPEN BOOTSTRAP BUILD SCHEDULE';}
   install();installQuickPassageControls();wireLongview();bindRoster();syncDoor();new MutationObserver(syncDoor).observe(document.body,{subtree:true,childList:true});window.DarkSkyOpenBootstrapSchedule=open;
   document.addEventListener('click',async event=>{const target=event.target;const opener=target.closest('#bootstrapScheduleOpen,[data-schedulejoe-open]');
-    if(opener){event.preventDefault();event.stopImmediatePropagation();void open(opener);return;}if(!target.closest('#bootstrapSchedule'))return;if(target.closest('#scheduleJoeFleet')){closeSchedule(false);window.DarkSkyOpenFleetWatchtower?.();return;}if(target.closest('#bootstrapScheduleClose')){event.preventDefault();event.stopImmediatePropagation();closeSchedule();return;}if(target.closest('#bootstrapProjectsHome')){event.preventDefault();event.stopImmediatePropagation();showLanding();el('bootstrapSchedule').scrollTop=0;return;}const rowButton=target.closest('[data-open-project]');if(rowButton){event.preventDefault();event.stopImmediatePropagation();await openProject(rowButton.dataset.openProject);return;}if(!state)return;
+    if(opener){event.preventDefault();event.stopImmediatePropagation();void open(opener);return;}if(!target.closest('#bootstrapSchedule'))return;if(target.closest('#scheduleJoeFleet')){closeSchedule(false);window.DarkSkyOpenFleetWatchtower?.();return;}if(target.closest('#bootstrapScheduleClose')){event.preventDefault();event.stopImmediatePropagation();closeSchedule();return;}if(target.closest('#bootstrapProjectsHome')){event.preventDefault();event.stopImmediatePropagation();showLanding();el('bootstrapSchedule').scrollTop=0;return;}const shortcut=target.closest('[data-crew-task]');
+    if(shortcut){
+      event.preventDefault();event.stopImmediatePropagation();
+      const id=shortcut.dataset.job,task=cache.get(id)?.tasks.find(t=>String(t.id)===shortcut.dataset.crewTask);
+      if(!current(visit)||!task)return;
+      await openProject(id);
+      if(current(visit)&&activeId===id){jumpWeek(Math.floor(task.start/5));openEditor(task);}
+      return;
+    }
+    const rowButton=target.closest('[data-open-project]');if(rowButton){event.preventDefault();event.stopImmediatePropagation();await openProject(rowButton.dataset.openProject);return;}if(!state)return;
     if(target.closest('#scheduleJoeRetry')){void persist('');return;}
     const step=target.closest('[data-week-step]');
     if(step){jumpWeek(Math.max(0,Math.min(weekCount()-1,selectedWeek+Number(step.dataset.weekStep))));return;}

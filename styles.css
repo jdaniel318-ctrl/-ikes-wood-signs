@@ -17203,3 +17203,13 @@ dialog#bootstrapSchedule::backdrop {background:#03151a}
   #bootstrapProjectLanding .bootstrap-project-roster td[data-column=lotUnit],#bootstrapProjectLanding .roster-identity {display:flex;gap:8px;align-items:center;flex-wrap:wrap}
   #bootstrapSchedule #bootstrapProjectLanding .bootstrap-project-roster td[data-column=lotUnit]::before {content:none}
 }
+
+#bootstrapProjectLanding .crew-search {display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:12px 0}
+#bootstrapProjectLanding .crew-search label {font-weight:700;color:#efdda9}
+#crewQuery {width:min(23rem,100%);min-height:44px;padding:8px 12px;border:1px solid #61828a;border-radius:8px;background:#071f25;color:#eff5ef;font:inherit}
+#bootstrapProjectLanding .crew-task {font:inherit;font-weight:650;text-align:left;text-decoration:underline;text-underline-offset:3px;color:#aedddb;background:transparent;border:0;padding:5px 0;min-height:38px;text-transform:none;letter-spacing:0;box-shadow:none}
+#crewResults[hidden],#crewClear[hidden],#bootstrapProjectLanding .bootstrap-project-roster-wrap[hidden] {display:none!important}
+#crewCount {color:#c6d8d6}
+#crewMatches>div {display:grid;grid-template-columns:1.2fr 1fr .85fr 1.25fr;align-items:center;gap:8px 14px;border-top:1px solid #36545a;padding:6px 12px}
+#crewMatches span {overflow-wrap:anywhere}
+@media(max-width:720px){#crewMatches>div {grid-template-columns:1fr;gap:2px;padding:8px}#crewQuery {width:auto;flex:1;min-width:100px}}
