@@ -193,7 +193,11 @@ const AdmiralAccountForm = (() => {
   const words=v=>String(v||'not_reported').replaceAll('_',' '),BUNDLED_MARKS={'ikes-wood-signs':'ike_character.png','bor-north-richmond':'signal_restoration_logo.png','bf-p-f92f87e8ec44':'https://legacyplumbingrva.com/wp-content/uploads/2026/04/LOGO.png'};
   function mark(v){const src=v.logo_url&&!/black_flag_(primary_lockup|platform_icon)/.test(v.logo_url)?v.logo_url:BUNDLED_MARKS[v.project_id]||'',code=({'beccas-bloom-shop':'BBS','grizzly-bear':'GRZ','mugshot-after-dark':'MUG'}[v.project_id]||String(v.display_name||'V').split(/\s+/).map(x=>x[0]).join('').slice(0,3)).toUpperCase();return src?`<img src="${safe(src)}" alt="${safe(v.display_name)} canonical vessel mark">`:`<div class="fleet-watch-code-mark" aria-label="${safe(v.display_name)} project mark"><b>${safe(code)}</b><span>${safe(v.display_name)}</span></div>`;}
   function facts(v){const life=String(v.lifecycle_state||'unknown').toLowerCase(),activity=v.reported_at||'',age=activity?Date.now()-Date.parse(activity):Infinity,reported=!!activity&&Number.isFinite(age),stale=reported&&age>604800000,attention=!reported||stale||Number(v.unresolved_issues)>0||['hold','blocked','suspended'].includes(life),ready=!reported?'NEVER REPORTED':stale?'STALE REPORT':life==='active'||life==='live'?'ACTIVE · SERVER':life==='suspended'?'SUSPENDED · ATTENTION':life==='retired'?'RETIRED':life==='staging'?'STAGING · VERIFIED':life==='commissioning'?'COMMISSIONING · VERIFIED':'VERIFIED',hasIssues=v.unresolved_issues!==null&&v.unresolved_issues!==undefined&&Number.isFinite(Number(v.unresolved_issues));return {life,activity,reported,stale,attention,ready,work:v.current_work||'Not reported',issues:hasIssues?Number(v.unresolved_issues):null,summary:v.issue_summary||'',source:reported?(v.truth_source||'vessel_report'):'not_reported'};}
-  function install(){$('bootstrapFleet')?.remove();document.body.insertAdjacentHTML('beforeend',`<section id="bootstrapFleet" class="bootstrap-fleet fleet-watchtower hidden" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Black Flag Admiral security and Fleet Watchtower"><section id="watchSecurityLayer" class="admiral-security-layer" aria-labelledby="watchSecurityTitle"><div class="admiral-security-card"><header><img src="black_flag_primary_lockup.png" alt="Black Flag"><button id="watchGateClose" type="button">CLOSE</button></header><div class="admiral-security-heading"><small>${window.__darkSkyVerifiedRelease.build} · QUARTERMASTER</small><h2 id="watchSecurityTitle">Admiral Security Layer</h2><p>The passage PIN opened the Admiral doorway. A dedicated Supabase Admiral account must now be authenticated before fleet data can open.</p></div><ol class="admiral-security-steps" aria-label="Admiral authentication progress"><li class="is-complete"><span>01</span><div><small>PASSAGE PIN</small><b>VERIFIED</b></div></li><li class="is-current"><span>02</span><div><small>ADMIRAL ACCOUNT</small><b>REQUIRED</b></div></li><li><span>03</span><div><small>FLEET WORKSPACE</small><b>LOCKED</b></div></li></ol><form id="watchSecurityForm" class="admiral-security-form" autocomplete="off" novalidate>${AdmiralAccountForm.fields('watch')}</form><p id="watchGateStatus" class="admiral-security-status" role="status">Second security check required. The Fleet workspace remains locked.</p><aside><b>Two credentials. Two purposes.</b><span>The passage PIN opens the doorway. Supabase verifies identity and global Admiral read authority. An owner account cannot open this workspace.</span></aside></div></section><div id="watchWorkspace" class="bootstrap-fleet-shell hidden" aria-hidden="true"><header><img src="black_flag_primary_lockup.png" alt="Black Flag"><div><small>${window.__darkSkyVerifiedRelease.build} · QUARTERMASTER</small><h2 id="watchFleetTitle">My Fleet</h2><p>Authenticated, read-only operational truth across independent vessels.</p></div><div><button type="button" data-watch-arcade>Play Lantern Run</button><button id="watchRefresh">REFRESH WATCH</button><button id="watchSignOut">SIGN OUT</button><button id="watchClose">CLOSE</button></div></header><p id="watchStatus" class="bootstrap-fleet-status" role="status" aria-live="polite">Reading Fleet Watch…</p><div id="watchFleetHelp"></div><section id="watchKeel" class="fleet-supabase-keel hidden" aria-label="Supabase fleet commissioning posture"></section><section id="watchTools" class="fleet-watch-tools hidden"><label>Search the fleet<input data-bf-trim="boundary" id="watchSearch" type="search" placeholder="Vessel name, key, or operating model"></label><div>${[['all','ALL'],['attention','ACTION QUEUE'],['stale','STALE'],['commissioning','COMMISSIONING'],['staging','STAGING'],['active','ACTIVE'],['owner','OWNER-OPERATED'],['fleet','FLEET-OPERATED']].map(([v,l],i)=>`<button data-watch-filter="${v}" data-watch-label="${l}" class="${i?'':'is-selected'}" aria-pressed="${i?'false':'true'}">${l}</button>`).join('')}</div></section><section class="fleet-watch-section"><header><div><small>FLEET CORE</small><h3>Independent vessels</h3></div><span id="watchCount">0 VESSELS</span></header><div id="watchRows" class="bootstrap-fleet-rows"></div></section><section class="fleet-watch-section fleet-watch-programs"><header><div><small>ADMIRAL PROGRAMS</small><h3>Programs outside Fleet Core</h3></div><button type="button" data-watch-arcade>Play Lantern Run</button></header><div id="watchPrograms" class="bootstrap-fleet-rows"></div></section><aside class="bootstrap-fleet-passage"><b>Admiral Observability</b><span>Observation is read-only and never becomes ownership. Any modifying command remains exact-vessel, previewed, authenticated, reasoned, and audited.</span></aside><footer><b>Read-only Watchtower boundary</b><span>No control here can rename, commission, publish, entitle, schedule, or otherwise change a vessel.</span></footer></div><section id="watchOverview" class="fleet-vessel-overview hidden" role="dialog" aria-modal="true" aria-hidden="true"><div class="fleet-vessel-overview-shell"><nav class="fleet-report-nav" aria-label="Report navigation">
+  function install(){$('bootstrapFleet')?.remove();document.body.insertAdjacentHTML('beforeend',`<section id="bootstrapFleet" class="bootstrap-fleet fleet-watchtower hidden" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Black Flag Admiral security and Fleet Watchtower"><section id="watchSecurityLayer" class="admiral-security-layer" aria-labelledby="watchSecurityTitle"><div class="admiral-security-card"><header><img src="black_flag_primary_lockup.png" alt="Black Flag"><button id="watchGateClose" type="button">CLOSE</button></header><div class="admiral-security-heading"><small>${window.__darkSkyVerifiedRelease.build} · QUARTERMASTER</small><h2 id="watchSecurityTitle">Admiral Security Layer</h2><p>The passage PIN opened the Admiral doorway. A dedicated Supabase Admiral account must now be authenticated before fleet data can open.</p></div><ol class="admiral-security-steps" aria-label="Admiral authentication progress"><li class="is-complete"><span>01</span><div><small>PASSAGE PIN</small><b>VERIFIED</b></div></li><li class="is-current"><span>02</span><div><small>ADMIRAL ACCOUNT</small><b>REQUIRED</b></div></li><li><span>03</span><div><small>FLEET WORKSPACE</small><b>LOCKED</b></div></li></ol><form id="watchSecurityForm" class="admiral-security-form" autocomplete="off" novalidate>${AdmiralAccountForm.fields('watch')}</form><p id="watchGateStatus" class="admiral-security-status" role="status">Second security check required. The Fleet workspace remains locked.</p><aside><b>Two credentials. Two purposes.</b><span>The passage PIN opens the doorway. Supabase verifies identity and global Admiral read authority. An owner account cannot open this workspace.</span></aside></div></section><div id="watchWorkspace" class="bootstrap-fleet-shell hidden" aria-hidden="true"><header><img src="black_flag_primary_lockup.png" alt="Black Flag"><div><small>${window.__darkSkyVerifiedRelease.build} · QUARTERMASTER</small><h2 id="watchFleetTitle">My Fleet</h2><p>Authenticated, read-only operational truth across independent vessels.</p></div><div><button id="watchRefresh">REFRESH WATCH</button><button id="watchSignOut">SIGN OUT</button><button id="watchClose">CLOSE</button></div>
+<nav class="fleet-directory" aria-label="Fleet navigation">
+  <div><strong>Fleet directory</strong><button type="button" data-fleet-jump="watchVesselTitle">Vessel reports</button><button type="button" data-fleet-jump="watchProgramTitle">Admiral programs</button></div>
+  <div><strong>Workspaces</strong><button type="button" data-schedulejoe-open>Open ScheduleJoe</button><button type="button" data-watch-arcade>Play Lantern Run</button></div>
+</nav></header><p id="watchStatus" class="bootstrap-fleet-status" role="status" aria-live="polite">Reading Fleet Watch…</p><div id="watchFleetHelp"></div><section id="watchKeel" class="fleet-supabase-keel hidden" aria-label="Supabase fleet commissioning posture"></section><section id="watchTools" class="fleet-watch-tools hidden"><label>Find a vessel<input data-bf-trim="boundary" id="watchSearch" type="search" placeholder="Vessel name, key, or operating model"></label><div>${[['all','ALL'],['attention','ACTION QUEUE'],['stale','STALE'],['commissioning','COMMISSIONING'],['staging','STAGING'],['active','ACTIVE'],['owner','OWNER-OPERATED'],['fleet','FLEET-OPERATED']].map(([v,l],i)=>`<button data-watch-filter="${v}" data-watch-label="${l}" class="${i?'':'is-selected'}" aria-pressed="${i?'false':'true'}">${l}</button>`).join('')}</div></section><section class="fleet-watch-section"><header><div><small>FLEET CORE</small><h3 id="watchVesselTitle" tabindex="-1">Independent vessels</h3></div><span id="watchCount">0 VESSELS</span></header><div id="watchRows" class="bootstrap-fleet-rows"></div></section><section class="fleet-watch-section fleet-watch-programs"><header><div><small>ADMIRAL PROGRAMS</small><h3 id="watchProgramTitle" tabindex="-1">Programs outside Fleet Core</h3></div><button type="button" data-watch-arcade>Play Lantern Run</button></header><div class="fleet-schedule-entry"><img src="bootstrap_build_icon.png" alt=""><div><b>ScheduleJoe</b><span>Bootstrap Build · Construction schedules</span></div><button type="button" data-schedulejoe-open>Open schedules</button></div><div id="watchPrograms" class="bootstrap-fleet-rows"></div></section><aside class="bootstrap-fleet-passage"><b>Admiral Observability</b><span>Observation is read-only and never becomes ownership. Any modifying command remains exact-vessel, previewed, authenticated, reasoned, and audited.</span></aside><footer><b>Read-only Watchtower boundary</b><span>No control here can rename, commission, publish, entitle, schedule, or otherwise change a vessel.</span></footer></div><section id="watchOverview" class="fleet-vessel-overview hidden" role="dialog" aria-modal="true" aria-hidden="true"><div class="fleet-vessel-overview-shell"><nav class="fleet-report-nav" aria-label="Report navigation">
     <button type="button" id="watchOverviewClose">← Back to My Fleet</button>
     <div id="watchReportSteps" hidden>
       <button type="button" id="watchPrevReport" data-watch-step="-1">← Previous</button>
@@ -412,6 +416,15 @@ const AdmiralAccountForm = (() => {
     }
     return;
   }if(t.closest?.('#watchRefresh'))return load();if(t.closest?.('#watchSignOut')){watchAccount.reset();leaveWatch();await window.DarkSkySignOutAdmiral?.();if(shown($('bootstrapFleet')))showWatchSignIn('Admiral account signed out. Sign in to reopen My Fleet.');return;}const vessel=t.closest?.('[data-watch-vessel]');if(vessel)return overview(vessel.dataset.watchVessel);if(t.closest?.('#watchOverviewClose'))return backToWatch();
+    const jump=t.closest?.('button[data-fleet-jump]');
+    if(jump && shown($('watchWorkspace'))){
+      const heading=$(jump.dataset.fleetJump),fleet=$('bootstrapFleet');
+      const header=$('watchWorkspace').querySelector('header');
+      const inset=getComputedStyle(header).position==='sticky' ? header.offsetHeight : 0;
+      fleet.scrollTop+=heading.getBoundingClientRect().top-fleet.getBoundingClientRect().top-inset-20;
+      heading.focus({preventScroll:true});
+      return;
+    }
     const step=t.closest?.('button[data-watch-step]');
     if(step&&!step.disabled)return stepReport(Number(step.dataset.watchStep));
     const chosen=t.closest?.('[data-watch-filter]');if(chosen){filter=chosen.dataset.watchFilter;document.querySelectorAll('[data-watch-filter]').forEach(b=>{const yes=b===chosen;b.classList.toggle('is-selected',yes);b.setAttribute('aria-pressed',String(yes));});render();}},true);
@@ -1599,7 +1612,7 @@ const AdmiralAccountForm = (() => {
       </div>`;
     document.body.appendChild(deck);
     // FUN is a separate Admiral program, never a Fleet Core vessel or game authority grant.
-    deck.querySelector('.admiral-session-strip')?.insertAdjacentHTML('afterend',`<section id="funProgramLaunchCard" aria-label="Admiral Programs"><div><small>ADMIRAL PROGRAMS · FUN · OUTSIDE FLEET CORE</small><b>Black Flag: Stormwake</b><p>Explore a 3D harbor, raise the bridge, and bring the chartmaker home. First Light and its lessons stay in the journal.</p></div><button id="funProgramLaunch" type="button">OPEN STORMWAKE →</button></section><section id="lanternRunCard" aria-label="Lantern Run arcade"><div><h3>Lantern Run</h3><p>Sail six mazes with Riptail, from Moonbeam Bay to the Homeward Light.</p></div><button id="lanternRunLaunch" type="button">PLAY LANTERN RUN →</button></section>`);
+    deck.querySelector('.admiral-session-strip')?.insertAdjacentHTML('afterend',`<section class="fleet-schedule-entry"><img src="bootstrap_build_icon.png" alt=""><div><b>ScheduleJoe</b><span>Bootstrap Build · Construction schedules</span></div><button type="button" data-schedulejoe-open>Open ScheduleJoe</button></section><section id="funProgramLaunchCard" aria-label="Admiral Programs"><div><small>ADMIRAL PROGRAMS · FUN · OUTSIDE FLEET CORE</small><b>Black Flag: Stormwake</b><p>Explore a 3D harbor, raise the bridge, and bring the chartmaker home. First Light and its lessons stay in the journal.</p></div><button id="funProgramLaunch" type="button">OPEN STORMWAKE →</button></section><section id="lanternRunCard" aria-label="Lantern Run arcade"><div><h3>Lantern Run</h3><p>Sail six mazes with Riptail, from Moonbeam Bay to the Homeward Light.</p></div><button id="lanternRunLaunch" type="button">PLAY LANTERN RUN →</button></section>`);
     const promoteLane=deck.querySelector('[data-admiral-panel="promote"]');
     promoteLane?.insertAdjacentHTML('afterbegin',`<section class="admiral-passage-card" aria-label="Commissioned Admiral Office"><small>ADMIRAL KEEL</small><h5>Commissioned rank. Separate secure sessions.</h5><ol><li><b>1</b><span>The Admiral office is now an accepted Fleet role, distinct from Captain.</span></li><li><b>2</b><span>Session timeout, logout, or readiness WATCH never demotes the rank.</span></li><li><b>3</b><span>Every entry still requires passage PIN plus server-verified Admiral identity.</span></li><li><b>4</b><span>Only an explicit server authority revocation can remove the commissioned role.</span></li></ol><p>Readiness warnings remain obligations to harden the fleet. They do not turn the Admiral back into a Captain.</p></section>`);
     promoteLane?.insertAdjacentHTML('afterbegin', `
@@ -2659,6 +2672,7 @@ const AdmiralAccountForm = (() => {
     {id:'1235-A',region:'ABC',division:'CBA',community:'AB',lot:'1235',unit:'A',startWeek:2}
   ];
   let activeId='',state=null,cache=new Map(),selectedId='',vendorView='',touchDrag=null,overDay=null,suppressClickUntil=0,dbPromise=null;
+  let selectedWeek=0,visit=null,saveQueue=Promise.resolve(),desktopGrab=null;
   const el=id=>document.getElementById(id);
   const esc=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
   const project=id=>projects.find(item=>item.id===id)||projects[0];
@@ -2673,14 +2687,86 @@ const AdmiralAccountForm = (() => {
   async function dbWrite(value){const db=await openDb();return new Promise((resolve,reject)=>{const tx=db.transaction(DB_STORE,'readwrite');tx.objectStore(DB_STORE).put(value);tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error);});}
   function localRead(key){try{return JSON.parse(localStorage.getItem(key)||'null');}catch(_){return null;}}
   function localWrite(value){localStorage.setItem(STORE_PREFIX+value.projectId,JSON.stringify(value));}
-  async function loadProject(meta){let value=null,source='new';try{value=normalize(await dbRead(meta.id),meta);if(value)source='database';}catch(_){}if(!value){value=normalize(localRead(STORE_PREFIX+meta.id),meta);if(value)source='local mirror';}if(!value&&meta.id==='1234-A'){value=normalize(localRead(LEGACY_STORE),meta);if(value)source='recovered prior schedule';}if(!value)value=fresh(meta);cache.set(meta.id,value);try{localWrite(value);await dbWrite(value);}catch(_){}value._source=source;return value;}
-  async function hydrate(){await Promise.all(projects.map(async meta=>{if(!cache.has(meta.id))await loadProject(meta);}));}
-  async function persist(message){if(!state)return false;state.updatedAt=new Date().toISOString();state.revision=Number(state.revision||0)+1;cache.set(state.projectId,state);let localOk=true,dbOk=true;try{localWrite(state);}catch(_){localOk=false;}try{await dbWrite(state);}catch(_){dbOk=false;}renderLanding();if(localOk&&dbOk){status((message?message+' ':'')+'Saved '+new Date(state.updatedAt).toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit',second:'2-digit'})+'.');return true;}status('This change is visible, but its durable save failed. Do not refresh; try again.');return false;}
-  function anchor(meta){const date=new Date(),day=(date.getDay()+6)%7;date.setHours(12,0,0,0);date.setDate(date.getDate()-day+meta.startWeek*7);return date;}
+  function newer(a,b) {
+    return a && (!b || a.revision>b.revision ||
+      (a.revision===b.revision && String(a.updatedAt||'')>String(b.updatedAt||'')));
+  }
+  async function loadProject(meta) {
+    let database=null;
+    try { database=normalize(await dbRead(meta.id),meta); } catch (_) {}
+    const mirror=normalize(localRead(STORE_PREFIX+meta.id),meta);
+    const useMirror=newer(mirror,database);
+    let value=useMirror?mirror:database;
+    let source=useMirror?'local mirror':'database';
+    if (!value && meta.id==='1234-A') {
+      value=normalize(localRead(LEGACY_STORE),meta);
+      source='recovered prior schedule';
+    }
+    if (!value) { value=fresh(meta); source='new'; }
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(value.planStart||'')) {
+      const day=defaultAnchor(meta);
+      value.planStart=[day.getFullYear(),String(day.getMonth()+1).padStart(2,'0'),String(day.getDate()).padStart(2,'0')].join('-');
+    }
+    value._source=source;
+    return value;
+  }
+  async function hydrate(entry) {
+    await saveQueue;
+    const values=await Promise.all(projects.map(loadProject));
+    if(visit===entry) for(const value of values) cache.set(value.projectId,value);
+  }
+  const lastSave=new WeakMap();
+  function persist(message) {
+    if(!state) return Promise.resolve(false);
+    const edited=state,meta=project(edited.projectId);
+    const copy=JSON.parse(JSON.stringify(edited));
+    delete copy._source;
+    lastSave.set(edited,copy);
+    const save=async()=>{
+      if(cache.get(meta.id)!==edited) return false;
+      const stored=await loadProject(meta);
+      if(stored.revision!==edited.revision || stored.updatedAt!==edited.updatedAt) {
+        cache.set(meta.id,stored);
+        if(state===edited) {
+          state=stored;selectedId='';renderSchedule();
+          el('scheduleJoeRetry').hidden=true;
+          status('Another view saved this schedule. Its latest revision is open. Review it before applying your change again.');
+        }
+        return false;
+      }
+      copy.revision=edited.revision+1;
+      copy.updatedAt=new Date().toISOString();
+      let localOk=false,dbOk=false;
+      try { localWrite(copy);localOk=true; } catch (_) {}
+      try { await dbWrite(copy);dbOk=true; } catch (_) {}
+      if(!localOk&&!dbOk) throw Error('Device storage unavailable');
+      edited.revision=copy.revision;edited.updatedAt=copy.updatedAt;
+      if(state===edited && lastSave.get(edited)===copy) {
+        el('scheduleJoeRetry').hidden=true;
+        status((message?message+' ':'')+'Saved on this device.');
+      }
+      return true;
+    };
+    const run=()=>navigator.locks?.request?navigator.locks.request('schedulejoe-'+meta.id,save):save();
+    saveQueue=saveQueue.then(run).catch(()=>{
+      if(state===edited && lastSave.get(edited)===copy) {
+        el('scheduleJoeRetry').hidden=false;
+        status('This change is still in this view. Retry saving before you leave.');
+      }
+      return false;
+    });
+    return saveQueue;
+  }
+
+  function defaultAnchor(meta){const date=new Date(),day=(date.getDay()+6)%7;date.setHours(12,0,0,0);date.setDate(date.getDate()-day+meta.startWeek*7);return date;}
+  function anchor(meta) {
+    const saved=cache.get(meta.id)?.planStart;
+    return saved?new Date(saved+'T12:00:00'):defaultAnchor(meta);
+  }
   function workDate(index,meta=project(activeId)){const date=anchor(meta),weeks=Math.floor(index/5),weekday=index%5;date.setDate(date.getDate()+weeks*7+weekday);return date;}
   function labelDate(index,weekday=false,meta=project(activeId)){return workDate(index,meta).toLocaleDateString(undefined,weekday?{weekday:'short',month:'short',day:'numeric'}:{month:'short',day:'numeric'});}
   function status(message){if(el('bootstrapScheduleStatus'))el('bootstrapScheduleStatus').textContent=message;}
-  function install(){el('bootstrapSchedule')?.remove();document.body.insertAdjacentHTML('beforeend',`<section id="bootstrapSchedule" class="bootstrap-schedule bootstrap-build-schedule hidden" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Bootstrap Build project schedules"><div class="bootstrap-schedule-shell"><header class="bootstrap-schedule-head"><img src="bootstrap_build_horizontal.png" alt="Bootstrap Build"><div><small>ADMIRAL-LEVEL PROGRAM · PROJECT SCHEDULES</small><h2 id="bootstrapScheduleTitleHeading">Construction Projects</h2><p id="bootstrapScheduleSubtitle">Choose a lot and unit to open its independent schedule.</p></div><div class="bootstrap-schedule-head-actions"><button id="bootstrapProjectsHome" class="hidden" type="button">ALL PROJECTS</button><button id="bootstrapFleetOpenFromSchedule" type="button">FLEET REGISTRY</button><button id="bootstrapScheduleClose" type="button">CLOSE</button></div></header><section id="bootstrapProjectLanding" class="bootstrap-project-landing"><div class="bootstrap-roster-summary"><div><small>ACTIVE TEST BUILDS</small><strong>3 independent project schedules</strong><span>Each lot and unit keeps its own dates, vendors, changes, and saved record.</span></div><span class="bootstrap-roster-badge">PROJECT ROSTER</span></div><div class="bootstrap-project-roster-wrap"><table class="bootstrap-project-roster"><thead><tr><th>Project</th><th>Division</th><th>Community</th><th>Start</th><th>Projected completion</th><th>Current task</th><th>Open issues</th><th>Schedule</th><th>Updated</th><th></th></tr></thead><tbody id="bootstrapProjectRows"></tbody></table></div></section><section id="bootstrapProjectWorkspace" class="hidden"><nav class="bootstrap-schedule-crumbs" aria-label="Project hierarchy"><span><small>REGION</small><b id="bootstrapRegionValue"></b></span><i>›</i><span><small>DIVISION</small><b id="bootstrapDivisionValue"></b></span><i>›</i><span><small>COMMUNITY</small><b id="bootstrapCommunityValue"></b></span><i>›</i><span><small>LOT</small><b id="bootstrapLotValue"></b></span><i>›</i><span><small>UNIT</small><b id="bootstrapUnitValue"></b></span></nav><div class="bootstrap-schedule-toolbar"><div><strong id="bootstrapScheduleRange"></strong></div><div class="bootstrap-schedule-legend" aria-label="Task colors"><span data-kind="work">WORK</span><span data-kind="site">SITE</span><span data-kind="inspection">INSPECTION</span><span data-kind="delivery">DELIVERY</span><span data-kind="milestone">MILESTONE</span></div><div><button id="bootstrapScheduleAdd" type="button">+ ADD TASK</button><button id="bootstrapScheduleReset" type="button">RESET THIS PROJECT</button></div></div><form id="bootstrapScheduleForm" class="bootstrap-schedule-form bootstrap-ground-form hidden"><label>Task<input data-bf-trim="boundary" id="bootstrapScheduleTaskTitle" maxlength="80" required placeholder="Construction task"></label><label>Trade<input data-bf-trim="boundary" id="bootstrapScheduleTrade" maxlength="40" required placeholder="Trade or crew"></label><label>Type<select id="bootstrapScheduleType"><option value="work">Work</option><option value="site">Site</option><option value="inspection">Inspection</option><option value="delivery">Delivery</option><option value="milestone">Milestone</option></select></label><label>Start<select id="bootstrapScheduleDay"></select></label><label>Days<input id="bootstrapScheduleDuration" type="number" min="1" max="15" value="1"></label><button type="submit">ADD TASK</button><button id="bootstrapScheduleCancel" type="button">CANCEL</button></form><p id="bootstrapScheduleStatus" class="bootstrap-schedule-status" role="status"></p><section id="bootstrapVendorTools" class="bootstrap-vendor-tools"><div><label>Schedule view<select id="bootstrapVendorView"><option value="">All work</option></select></label><span id="bootstrapVendorViewNote">All project work is visible.</span></div><div><label>Selected task vendor<select id="bootstrapVendorAssign"></select></label><button id="bootstrapVendorAssignButton" type="button" disabled>ASSIGN VENDOR</button></div></section><div id="bootstrapScheduleBoard" class="bootstrap-ground-board"></div><section id="bootstrapVendorActivityPanel" class="bootstrap-vendor-activity"><header><div><small>VENDOR COMMUNICATION LOG</small><b>Schedule changes vendors can see</b></div><span>LOCAL TEST · NO MESSAGE SENT</span></header><div id="bootstrapVendorActivity"></div></section><footer><b>Project boundary</b><span>Each test project is stored separately on this device. Moving work in one unit cannot move work in another.</span></footer></section></div></section>`);}
+  function install(){el('bootstrapSchedule')?.remove();document.body.insertAdjacentHTML('beforeend',`<dialog id="bootstrapSchedule" class="bootstrap-schedule bootstrap-build-schedule hidden" role="dialog" aria-modal="true" aria-hidden="true" aria-label="ScheduleJoe construction schedules"><div class="bootstrap-schedule-shell"><header class="bootstrap-schedule-head"><img src="bootstrap_build_horizontal.png" alt="Bootstrap Build"><div><small>BOOTSTRAP BUILD · ADMIRAL PROGRAM</small><h2 id="bootstrapScheduleTitleHeading">ScheduleJoe</h2><p id="bootstrapScheduleSubtitle">Choose a lot and unit to open its independent schedule.</p></div><div class="bootstrap-schedule-head-actions"><button id="bootstrapProjectsHome" class="hidden" type="button">ALL PROJECTS</button><button id="scheduleJoeFleet" type="button">FLEET REGISTRY</button><button id="bootstrapScheduleClose" type="button">CLOSE</button></div></header><section id="bootstrapProjectLanding" class="bootstrap-project-landing"><div class="bootstrap-roster-summary"><div><small>PROJECTS ON THIS DEVICE</small><strong>3 independent project schedules</strong><span>Each lot and unit keeps its own dates, vendors, changes, and saved record.</span></div></div><div class="bootstrap-project-roster-wrap"><table class="bootstrap-project-roster"><thead><tr><th>Lot and unit</th><th>Planning window</th><th>First planned task</th><th>Updated</th><th><span class="yard-visually-hidden">Open project</span></th></tr></thead><tbody id="bootstrapProjectRows"></tbody></table></div></section><section id="bootstrapProjectWorkspace" class="hidden"><nav class="bootstrap-schedule-crumbs" aria-label="Project hierarchy"><span><small>REGION</small><b id="bootstrapRegionValue"></b></span><i>›</i><span><small>DIVISION</small><b id="bootstrapDivisionValue"></b></span><i>›</i><span><small>COMMUNITY</small><b id="bootstrapCommunityValue"></b></span><i>›</i><span><small>LOT</small><b id="bootstrapLotValue"></b></span><i>›</i><span><small>UNIT</small><b id="bootstrapUnitValue"></b></span></nav><div class="bootstrap-schedule-toolbar"><div><strong id="bootstrapScheduleRange"></strong></div><div class="bootstrap-schedule-legend" aria-label="Task colors"><span data-kind="work">WORK</span><span data-kind="site">SITE</span><span data-kind="inspection">INSPECTION</span><span data-kind="delivery">DELIVERY</span><span data-kind="milestone">MILESTONE</span></div><div><button id="bootstrapScheduleAdd" type="button">+ ADD TASK</button><button id="bootstrapScheduleReset" type="button">RESET THIS PROJECT</button></div></div><form id="bootstrapScheduleForm" class="bootstrap-schedule-form bootstrap-ground-form hidden"><label>Task<input data-bf-trim="boundary" id="bootstrapScheduleTaskTitle" maxlength="80" required placeholder="Construction task"></label><label>Trade<input data-bf-trim="boundary" id="bootstrapScheduleTrade" maxlength="40" required placeholder="Trade or crew"></label><label>Type<select id="bootstrapScheduleType"><option value="work">Work</option><option value="site">Site</option><option value="inspection">Inspection</option><option value="delivery">Delivery</option><option value="milestone">Milestone</option></select></label><label>Start<select id="bootstrapScheduleDay"></select></label><label>Days<input id="bootstrapScheduleDuration" type="number" min="1" max="15" value="1"></label><button type="submit">ADD TASK</button><button id="bootstrapScheduleCancel" type="button">CANCEL</button></form><p id="bootstrapScheduleStatus" class="bootstrap-schedule-status" role="status"></p><button id="scheduleJoeRetry" type="button" hidden>Retry save</button><section id="bootstrapVendorTools" class="bootstrap-vendor-tools"><div><label>Schedule view<select id="bootstrapVendorView"><option value="">All work</option></select></label><span id="bootstrapVendorViewNote">All project work is visible.</span></div><div><label>Selected task vendor<select id="bootstrapVendorAssign"></select></label><button id="bootstrapVendorAssignButton" type="button" disabled>ASSIGN VENDOR</button></div></section><nav class="schedule-week-nav" aria-label="Schedule weeks"><label>Workweek <select id="scheduleJoeWeek"></select></label><div><button type="button" data-week-step="-1" aria-label="Previous workweek">← Previous</button><button type="button" data-week-step="1" aria-label="Next workweek">Next →</button></div></nav><div id="bootstrapScheduleBoard" class="bootstrap-ground-board"></div><section id="bootstrapVendorActivityPanel" class="bootstrap-vendor-activity"><header><div><small>VENDOR COMMUNICATION LOG</small><b>Schedule changes vendors can see</b></div><span>LOCAL TEST · NO MESSAGE SENT</span></header><div id="bootstrapVendorActivity"></div></section><footer><b>Project boundary</b><span>Each test project is stored separately on this device. Moving work in one unit cannot move work in another.</span></footer></section></div></dialog>`);}
   function installQuickPassageControls(){
     const actions=el('bootstrapSchedule')?.querySelector('.bootstrap-schedule-toolbar>div:last-child');
     if(actions&&!el('bootstrapAcceleratedToggle'))actions.insertAdjacentHTML('afterbegin','<button id="bootstrapAcceleratedToggle" type="button" aria-expanded="false">ACCELERATED DAYS</button>');
@@ -2688,8 +2774,22 @@ const AdmiralAccountForm = (() => {
     if(toolbar&&!el('bootstrapAcceleratedPanel'))toolbar.insertAdjacentHTML('afterend','<section id="bootstrapAcceleratedPanel" class="bootstrap-accelerated-panel hidden"><header><div><small>MANAGER-CONTROLLED EXCEPTION</small><b>Activate a specific weekend shift</b><span>Monday–Friday stays standard. Weekend work remains visible, optional, and auditable.</span></div><button id="bootstrapAcceleratedClose" type="button">CLOSE</button></header><div class="bootstrap-accelerated-controls"><label>Week<select id="bootstrapAcceleratedWeek"></select></label><label>Day<select id="bootstrapAcceleratedDay"><option value="sat">Saturday</option><option value="sun">Sunday</option></select></label><label>Shift<select id="bootstrapAcceleratedShift"><option value="am">AM</option><option value="pm">PM</option><option value="full">Full day</option></select></label><label>Commitment<select id="bootstrapAcceleratedCommitment"><option value="proposed">Proposed</option><option value="confirmed">Vendor confirmed</option></select></label><button id="bootstrapAcceleratedAdd" type="button">ACTIVATE DATE</button></div><p class="bootstrap-accelerated-warning">⚠ Accelerated work may compress recovery time or create trade overlap. The manager may proceed; the exception and vendor commitment are recorded.</p><div id="bootstrapAcceleratedRows" class="bootstrap-accelerated-rows"></div></section>');
     const weeks=el('bootstrapAcceleratedWeek');if(weeks)weeks.innerHTML=Array.from({length:WEEKS},(_,week)=>'<option value="'+week+'">Week '+(week+1)+'</option>').join('');
   }
-  function renderLanding(){const rows=el('bootstrapProjectRows');if(!rows)return;rows.innerHTML=projects.map(meta=>{const value=cache.get(meta.id)||fresh(meta),current=[...value.tasks].sort((a,b)=>a.start-b.start)[0],updated=value.updatedAt?new Date(value.updatedAt).toLocaleString(undefined,{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}):'Original plan';return '<tr><td><b>Lot '+esc(meta.lot)+' · Unit '+esc(meta.unit)+'</b><small>'+esc(meta.region)+' / '+esc(meta.division)+' / '+esc(meta.community)+'</small></td><td>'+esc(meta.division)+'</td><td>'+esc(meta.community)+'</td><td>'+esc(labelDate(0,true,meta))+'</td><td>'+esc(labelDate(DAYS-1,true,meta))+'</td><td><b>'+esc(current?.title||'No work')+'</b><small>'+esc(current?.trade||'')+'</small></td><td><span class="bootstrap-count-zero">0</span></td><td><span class="bootstrap-roster-status">PLANNED</span></td><td>'+esc(updated)+'</td><td><button type="button" data-open-project="'+esc(meta.id)+'">OPEN SCHEDULE</button></td></tr>';}).join('');}
-  function showLanding(){activeId='';state=null;selectedId='';vendorView='';el('bootstrapProjectLanding')?.classList.remove('hidden');el('bootstrapProjectWorkspace')?.classList.add('hidden');el('bootstrapProjectsHome')?.classList.add('hidden');if(el('bootstrapScheduleTitleHeading'))el('bootstrapScheduleTitleHeading').textContent='Construction Projects';if(el('bootstrapScheduleSubtitle'))el('bootstrapScheduleSubtitle').textContent='Choose a lot and unit to open its independent schedule.';renderLanding();}
+  function renderLanding() {
+    const rows=el('bootstrapProjectRows');
+    if(!rows) return;
+    rows.innerHTML=projects.map(meta=>{
+      const value=cache.get(meta.id);
+      if(!value) return '';
+      const first=[...value.tasks].sort((a,b)=>a.start-b.start)[0];
+      const updated=value.updatedAt?new Date(value.updatedAt).toLocaleString(undefined,{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}):'Original plan';
+      return `<tr><td><b>Lot ${esc(meta.lot)} · Unit ${esc(meta.unit)}</b><small>${esc(meta.region)} / ${esc(meta.division)} / ${esc(meta.community)}</small></td>
+        <td data-label="Planning window">${esc(labelDate(0,false,meta))} – ${esc(labelDate(DAYS-1,false,meta))}</td>
+        <td data-label="First planned task"><b>${esc(first?.title||'No tasks')}</b><small>${esc(first?.vendor||'')}</small></td>
+        <td data-label="Updated">${esc(updated)}</td>
+        <td><button type="button" data-open-project="${esc(meta.id)}" aria-label="Open schedule for Lot ${esc(meta.lot)}, Unit ${esc(meta.unit)}">Open schedule →</button></td></tr>`;
+    }).join('');
+  }
+  function showLanding(){activeId='';state=null;selectedId='';vendorView='';el('bootstrapProjectLanding')?.classList.remove('hidden');el('bootstrapProjectWorkspace')?.classList.add('hidden');el('bootstrapProjectsHome')?.classList.add('hidden');if(el('bootstrapScheduleTitleHeading'))el('bootstrapScheduleTitleHeading').textContent='ScheduleJoe';if(el('bootstrapScheduleSubtitle'))el('bootstrapScheduleSubtitle').textContent='Choose a lot and unit to open its independent schedule.';renderLanding();}
   function vendors(){return [...new Set(state.tasks.map(task=>task.vendor||vendorFor(task.trade)))].sort((a,b)=>a.localeCompare(b));}
   function segmentsForWeek(week){const first=week*5,last=first+5,segments=[];state.tasks.forEach(task=>{const start=Math.max(task.start,first),end=Math.min(task.start+Math.max(1,task.duration||1),last);if(start<end)segments.push({task,start,end});});segments.sort((a,b)=>a.start-b.start||b.end-a.end||a.task.title.localeCompare(b.task.title));const lanes=[];segments.forEach(segment=>{let lane=lanes.findIndex(end=>end<=segment.start);if(lane<0){lane=lanes.length;lanes.push(segment.end);}else lanes[lane]=segment.end;segment.lane=lane;});return {segments,lanes:Math.max(2,lanes.length)};}
   function weekendDate(entry){const date=anchor(project(activeId));date.setDate(date.getDate()+entry.week*7+(entry.day==='sun'?6:5));return date;}
@@ -2716,7 +2816,14 @@ const AdmiralAccountForm = (() => {
     if(el('bootstrapScheduleRange'))el('bootstrapScheduleRange').textContent=labelDate(0)+' – '+workDate(DAYS-1).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'})+' · 12 WEEKS · MON–FRI STANDARD';
     const select=el('bootstrapScheduleDay');if(select)select.innerHTML=Array.from({length:DAYS},(_,day)=>'<option value="'+day+'">'+esc(labelDate(day,true))+'</option>').join('');
     const board=el('bootstrapScheduleBoard');if(!board)return;
-    board.innerHTML=Array.from({length:WEEKS},(_,week)=>{const first=week*5,{segments,lanes}=segmentsForWeek(week),accelerated=state.acceleratedDays.filter(entry=>entry.week===week);const heads=Array.from({length:5},(_,col)=>'<button type="button" class="bootstrap-ground-day-head'+(overDay===first+col?' is-over':'')+'" data-schedule-move="'+(first+col)+'" title="Move selected task here"><small>'+esc(workDate(first+col).toLocaleDateString(undefined,{weekday:'short'}))+'</small><b>'+esc(labelDate(first+col))+'</b></button>').join('');const cells=Array.from({length:5},(_,col)=>'<div class="bootstrap-ground-day-cell'+(overDay===first+col?' is-over':'')+'" data-schedule-day="'+(first+col)+'" style="grid-column:'+(col+1)+';grid-row:2 / span '+lanes+'"></div>').join('');const bars=segments.map(({task,start,end,lane})=>taskMarkup(task,start,end,lane,first)).join('');const acceleratedLane=accelerated.length?'<aside class="bootstrap-weekend-lane"><small>ACCELERATED EXCEPTION</small>'+accelerated.map(entry=>'<button type="button" data-open-accelerated="1"><b>'+esc(weekendLabel(entry))+'</b><span>'+esc(entry.shift.toUpperCase())+' · '+esc(entry.commitment.replace('_',' ').toUpperCase())+'</span></button>').join('')+'</aside>':'';return '<section class="bootstrap-ground-week"><header><small>WEEK '+(week+1)+'</small><b>'+esc(labelDate(first))+' – '+esc(labelDate(first+4))+'</b></header><div class="bootstrap-ground-week-grid" data-week="'+week+'" style="--task-lanes:'+lanes+'">'+heads+cells+bars+'</div>'+acceleratedLane+'</section>';}).join('');
+    const weekSelect=el('scheduleJoeWeek');
+    weekSelect.innerHTML=Array.from({length:WEEKS},(_,week)=>`<option value="${week}">Week ${week+1} · ${esc(labelDate(week*5))} – ${esc(labelDate(week*5+4))}</option>`).join('')+'<option value="all">All 12 weeks</option>';
+    weekSelect.value=String(selectedWeek);
+    for(const button of document.querySelectorAll('#bootstrapSchedule [data-week-step]')){
+      button.disabled=selectedWeek==='all'||selectedWeek+Number(button.dataset.weekStep)<0||selectedWeek+Number(button.dataset.weekStep)>=WEEKS;
+    }
+    const weeks=selectedWeek==='all'?Array.from({length:WEEKS},(_,i)=>i):[selectedWeek];
+    board.innerHTML=weeks.map(week=>{const first=week*5,{segments,lanes}=segmentsForWeek(week),accelerated=state.acceleratedDays.filter(entry=>entry.week===week);const heads=Array.from({length:5},(_,col)=>'<button type="button" class="bootstrap-ground-day-head'+(overDay===first+col?' is-over':'')+'" data-schedule-move="'+(first+col)+'" title="Move selected task here"><small>'+esc(workDate(first+col).toLocaleDateString(undefined,{weekday:'short'}))+'</small><b>'+esc(labelDate(first+col))+'</b></button>').join('');const cells=Array.from({length:5},(_,col)=>'<div class="bootstrap-ground-day-cell'+(overDay===first+col?' is-over':'')+'" data-schedule-day="'+(first+col)+'" style="grid-column:'+(col+1)+';grid-row:2 / span '+lanes+'"></div>').join('');const bars=segments.map(({task,start,end,lane})=>taskMarkup(task,start,end,lane,first)).join('');const acceleratedLane=accelerated.length?'<aside class="bootstrap-weekend-lane"><small>ACCELERATED EXCEPTION</small>'+accelerated.map(entry=>'<button type="button" data-open-accelerated="1"><b>'+esc(weekendLabel(entry))+'</b><span>'+esc(entry.shift.toUpperCase())+' · '+esc(entry.commitment.replace('_',' ').toUpperCase())+'</span></button>').join('')+'</aside>':'';return '<section class="bootstrap-ground-week"><header><small>WEEK '+(week+1)+'</small><b>'+esc(labelDate(first))+' – '+esc(labelDate(first+4))+'</b></header><div class="bootstrap-ground-week-grid" data-week="'+week+'" style="--task-lanes:'+lanes+'">'+heads+cells+bars+'</div>'+acceleratedLane+'</section>';}).join('');
     renderVendorLayer();renderAccelerated();
   }
   function activityCopy(item){if(item.assignment)return item.task+' reassigned from '+item.from+' to '+item.to+'.';if(item.type==='resize')return item.task+' duration changed from '+item.from+' to '+item.to+'.';if(item.type==='weekend')return item.task+' added to '+item.to+' as an accelerated exception.';if(item.type==='weekend-open')return item.to+' activated for accelerated work.';return item.task+' moved from '+item.from+' to '+item.to+'.';}
@@ -2729,7 +2836,12 @@ const AdmiralAccountForm = (() => {
     document.querySelectorAll('#bootstrapSchedule [data-task-id]').forEach(card=>{const task=state.tasks.find(item=>item.id===card.dataset.taskId);card.classList.toggle('vendor-hidden',!!vendorView&&task?.vendor!==vendorView);});
     const activity=el('bootstrapVendorActivity');if(activity)activity.innerHTML=state.activity.length?state.activity.slice(0,12).map(item=>'<article><b>'+esc(item.vendor||'Construction Manager')+'</b><span>'+esc(activityCopy(item))+'</span><small>'+esc(new Date(item.at).toLocaleString())+'</small></article>').join(''):'<p>No schedule changes are recorded for this project.</p>';
   }
-  async function openProject(id){activeId=id;state=cache.get(id)||await loadProject(project(id));selectedId='';vendorView='';el('bootstrapProjectLanding')?.classList.add('hidden');el('bootstrapProjectWorkspace')?.classList.remove('hidden');el('bootstrapProjectsHome')?.classList.remove('hidden');const meta=project(id);el('bootstrapScheduleTitleHeading').textContent='Lot '+meta.lot+' · Unit '+meta.unit;el('bootstrapScheduleSubtitle').textContent='Move task bodies, resize from either edge, and authorize only the accelerated weekends you need.';renderSchedule();status(state._source==='recovered prior schedule'?'Prior Lot 1234 · Unit A schedule recovered. Changes now save in its independent record.':state.updatedAt?'Loaded saved revision '+state.revision+' from '+new Date(state.updatedAt).toLocaleString()+'.':'Original project plan loaded. Drag a task body to move it or an edge to change duration.');el('bootstrapSchedule').scrollTop=0;}
+  async function openProject(id){if(!visit||!cache.has(id))return;
+    el('scheduleJoeRetry').hidden=true;
+    activeId=id;state=cache.get(id);selectedWeek=0;selectedId='';vendorView='';
+    el('bootstrapScheduleForm').reset();el('bootstrapScheduleForm').classList.add('hidden');
+    el('bootstrapAcceleratedPanel').classList.add('hidden');
+    el('bootstrapAcceleratedToggle').setAttribute('aria-expanded','false');el('bootstrapProjectLanding')?.classList.add('hidden');el('bootstrapProjectWorkspace')?.classList.remove('hidden');el('bootstrapProjectsHome')?.classList.remove('hidden');const meta=project(id);el('bootstrapScheduleTitleHeading').textContent='Lot '+meta.lot+' · Unit '+meta.unit;el('bootstrapScheduleSubtitle').textContent='Tap a task to select it. Drag to move it, or pull an edge to change its duration.';renderSchedule();status(state._source==='recovered prior schedule'?'Prior Lot 1234 · Unit A schedule recovered. Changes now save in its independent record.':state.updatedAt?'Loaded saved revision '+state.revision+' from '+new Date(state.updatedAt).toLocaleString()+'.':'Original project plan loaded. Drag a task body to move it or an edge to change duration.');el('bootstrapSchedule').scrollTop=0;}
   async function move(id,day){
     const task=state?.tasks.find(item=>item.id===id);if(!task)return;const from=task.start,next=Math.max(0,Math.min(DAYS-Math.max(1,task.duration||1),Number(day)));task.start=next;task.riskWarnings=riskWarnings(task);
     if(from!==next)state.activity.unshift({id:'move-'+Date.now(),at:new Date().toISOString(),task:task.title,vendor:task.vendor,from:labelDate(from,true),to:labelDate(next,true)});
@@ -2747,32 +2859,149 @@ const AdmiralAccountForm = (() => {
   function gridRects(){return [...document.querySelectorAll('.bootstrap-ground-week-grid')].map(grid=>({week:Number(grid.dataset.week),rect:grid.getBoundingClientRect()}));}
   function dayAtPoint(x,y,rects=gridRects()){for(const item of rects){const r=item.rect;if(x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom)return item.week*5+Math.max(0,Math.min(4,Math.floor((x-r.left)/(r.width/5))));}return null;}
   function showOver(day){if(day===overDay)return;const prior=overDay;overDay=day;if(prior!==null)document.querySelectorAll('[data-schedule-day="'+prior+'"],[data-schedule-move="'+prior+'"]').forEach(node=>node.classList.remove('is-over'));if(day!==null)document.querySelectorAll('[data-schedule-day="'+day+'"],[data-schedule-move="'+day+'"]').forEach(node=>node.classList.add('is-over'));}
-  function makeDragGhost(card,event){const rect=card.getBoundingClientRect(),ghost=card.cloneNode(true);ghost.removeAttribute('draggable');ghost.removeAttribute('tabindex');ghost.classList.remove('is-selected');ghost.classList.add('bootstrap-drag-ghost');ghost.style.width=rect.width+'px';ghost.style.left=rect.left+'px';ghost.style.top=rect.top+'px';document.body.appendChild(ghost);return {node:ghost,offsetX:event.clientX-rect.left,offsetY:event.clientY-rect.top};}
+  function makeDragGhost(card,event){const rect=card.getBoundingClientRect(),ghost=card.cloneNode(true);ghost.removeAttribute('draggable');ghost.removeAttribute('tabindex');ghost.classList.remove('is-selected');ghost.classList.add('bootstrap-drag-ghost');ghost.style.width=rect.width+'px';ghost.style.left=rect.left+'px';ghost.style.top=rect.top+'px';el('bootstrapSchedule').appendChild(ghost);return {node:ghost,offsetX:event.clientX-rect.left,offsetY:event.clientY-rect.top};}
   function moveDragGhost(drag,event){if(!drag?.ghost)return;drag.ghost.node.style.transform='translate3d('+(event.clientX-drag.ghost.offsetX-parseFloat(drag.ghost.node.style.left))+'px,'+(event.clientY-drag.ghost.offsetY-parseFloat(drag.ghost.node.style.top))+'px,0)';}
-  function clearTouchDrag(){touchDrag?.ghost?.node?.remove();touchDrag=null;}
-  async function open(){const panel=el('bootstrapSchedule');if(!panel)return;panel.classList.remove('hidden');panel.setAttribute('aria-hidden','false');panel.scrollTop=0;if(el('bootstrapProjectRows'))el('bootstrapProjectRows').innerHTML='<tr><td colspan="10" class="bootstrap-roster-loading">Opening project records…</td></tr>';showLanding();await hydrate();showLanding();requestAnimationFrame(()=>el('bootstrapScheduleClose')?.focus({preventScroll:true}));}
+  function clearTouchDrag(){
+    touchDrag?.ghost?.node?.remove();
+    touchDrag?.card?.classList.remove('is-dragging','is-resizing');
+    touchDrag=null;
+  }
+  function current(entry) {
+    if(!entry || entry!==visit || !entry.button.isConnected ||
+       entry.button.closest('[hidden],.hidden,[inert],[aria-hidden="true"]')) return false;
+    const session=window.DarkSkyAdmiralSession?.status();
+    return session?.reusable && session.startedAt===entry.stamp &&
+      entry.client.readSession()?.user?.id===entry.actor;
+  }
+  function closeSchedule(restore=true) {
+    const entry=visit,panel=el('bootstrapSchedule');
+    visit=null;
+    if(entry) clearInterval(entry.timer);
+    clearTouchDrag();desktopGrab=null;showOver(null);
+    activeId='';state=null;selectedId='';vendorView='';
+    if(panel.open) panel.close();
+    panel.classList.add('hidden');panel.setAttribute('aria-hidden','true');
+    if(restore && entry?.button.getClientRects().length)entry.button.focus({preventScroll:true});
+  }
+  async function open(button) {
+    if(!button?.matches?.('#bootstrapScheduleOpen,[data-schedulejoe-open]')) {
+      button=[...document.querySelectorAll('#bootstrapScheduleOpen,[data-schedulejoe-open]')].find(node=>node.getClientRects().length);
+    }
+    if(visit || !button?.getClientRects().length)return;
+    const panel=el('bootstrapSchedule'),fleet=button.closest('#watchWorkspace');
+    const host=fleet||button.closest('#admiralDeck,[role="dialog"]')||button.parentElement;
+    const feedback=(fleet?el('watchStatus'):el('admiralDeckNotice'));
+    let entry;
+    try {
+      const config=window.BlackFlagV3Identity.productionAuth.readClientConfig();
+      const client=window.DarkSkySupabase.create({...config,sessionKey:'darkSkySupabaseAdmiralSessionV1',build:window.__darkSkyVerifiedRelease.build});
+      entry={button,client,actor:client.readSession()?.user?.id,stamp:window.DarkSkyAdmiralSession?.status()?.startedAt};
+      visit=entry;
+      if(!entry.actor||!current(entry)||!await window.DarkSkyAdmiralIdentityStatus()||!current(entry))throw Error();
+      host.appendChild(panel);
+      panel.classList.remove('hidden');panel.setAttribute('aria-hidden','false');
+      el('bootstrapScheduleClose').textContent=fleet?'← Back to My Fleet':'← Back';
+      el('scheduleJoeFleet').hidden=!!fleet;
+      showLanding();el('bootstrapProjectRows').innerHTML='<tr><td colspan="5">Opening project records…</td></tr>';
+      panel.showModal();panel.scrollTop=0;
+      el('bootstrapScheduleClose').focus({preventScroll:true});
+      entry.timer=setInterval(()=>{if(!current(entry))closeSchedule(false);},550);
+      await hydrate(entry);
+      if(current(entry))renderLanding();
+    } catch (_) {
+      if(visit!==entry)return;
+      closeSchedule();
+      if(feedback)feedback.textContent='Reopen the Admiral workspace to verify access to ScheduleJoe.';
+    }
+  }
+  for(const name of ['darksky:admiral-session-ended','darksky:admiral-session-unavailable','darksky:command-route','pagehide'])
+    window.addEventListener(name,()=>{if(visit)closeSchedule(false);});
+  window.addEventListener('darksky:admiral-session-changed',()=>{if(visit&&!current(visit))closeSchedule(false);});
+  document.addEventListener('cancel',event=>{if(event.target.id==='bootstrapSchedule'){event.preventDefault();closeSchedule();}},true);
+
   function syncDoor(){const kit=el('admiralCommissioningBrandKit');if(kit&&!el('bootstrapScheduleOpen'))kit.insertAdjacentHTML('beforeend','<button id="bootstrapScheduleOpen" class="admiral-pro-button" type="button">OPEN BOOTSTRAP BUILD SCHEDULE</button>');const doorway=el('bootstrapScheduleOpen');if(doorway&&doorway.textContent!=='OPEN BOOTSTRAP BUILD SCHEDULE')doorway.textContent='OPEN BOOTSTRAP BUILD SCHEDULE';}
   install();installQuickPassageControls();syncDoor();new MutationObserver(syncDoor).observe(document.body,{subtree:true,childList:true});window.DarkSkyOpenBootstrapSchedule=open;
-  document.addEventListener('click',async event=>{const target=event.target;if(target.closest('#bootstrapScheduleOpen')){event.preventDefault();event.stopImmediatePropagation();open();return;}if(!target.closest('#bootstrapSchedule'))return;if(target.closest('#bootstrapFleetOpenFromSchedule'))return;if(target.closest('#bootstrapScheduleClose')){event.preventDefault();event.stopImmediatePropagation();el('bootstrapSchedule').classList.add('hidden');el('bootstrapSchedule').setAttribute('aria-hidden','true');return;}if(target.closest('#bootstrapProjectsHome')){event.preventDefault();event.stopImmediatePropagation();showLanding();el('bootstrapSchedule').scrollTop=0;return;}const rowButton=target.closest('[data-open-project]');if(rowButton){event.preventDefault();event.stopImmediatePropagation();await openProject(rowButton.dataset.openProject);return;}if(!state)return;if(target.closest('#bootstrapScheduleAdd')){event.preventDefault();event.stopImmediatePropagation();el('bootstrapScheduleForm').classList.remove('hidden');el('bootstrapScheduleTaskTitle').focus();return;}if(target.closest('#bootstrapScheduleCancel')){event.preventDefault();event.stopImmediatePropagation();el('bootstrapScheduleForm').classList.add('hidden');return;}if(target.closest('#bootstrapScheduleReset')){event.preventDefault();event.stopImmediatePropagation();const meta=project(activeId);if(window.confirm('Reset only Lot '+meta.lot+' · Unit '+meta.unit+' to its original plan?')){state=fresh(meta);cache.set(activeId,state);selectedId='';renderSchedule();await persist('This project was reset.');}return;}const moveButton=target.closest('[data-schedule-move]');if(moveButton&&selectedId){event.preventDefault();event.stopImmediatePropagation();move(selectedId,Number(moveButton.dataset.scheduleMove));return;}const card=target.closest('[data-task-id]');if(card){event.preventDefault();event.stopImmediatePropagation();if(Date.now()<suppressClickUntil)return;selectedId=selectedId===card.dataset.taskId?'':card.dataset.taskId;renderSchedule();status(selectedId?'Task selected. Drag the body to move, drag either edge to resize, or add an accelerated shift.':'Task selection cleared.');}},{capture:true});
+  document.addEventListener('click',async event=>{const target=event.target;const opener=target.closest('#bootstrapScheduleOpen,[data-schedulejoe-open]');
+    if(opener){event.preventDefault();event.stopImmediatePropagation();void open(opener);return;}if(!target.closest('#bootstrapSchedule'))return;if(target.closest('#scheduleJoeFleet')){closeSchedule(false);window.DarkSkyOpenFleetWatchtower?.();return;}if(target.closest('#bootstrapScheduleClose')){event.preventDefault();event.stopImmediatePropagation();closeSchedule();return;}if(target.closest('#bootstrapProjectsHome')){event.preventDefault();event.stopImmediatePropagation();showLanding();el('bootstrapSchedule').scrollTop=0;return;}const rowButton=target.closest('[data-open-project]');if(rowButton){event.preventDefault();event.stopImmediatePropagation();await openProject(rowButton.dataset.openProject);return;}if(!state)return;
+    if(target.closest('#scheduleJoeRetry')){void persist('');return;}
+    const step=target.closest('[data-week-step]');
+    if(step){selectedWeek=Math.max(0,Math.min(WEEKS-1,Number(selectedWeek)+Number(step.dataset.weekStep)));renderSchedule();return;}
+    if(target.closest('#bootstrapScheduleAdd')){event.preventDefault();event.stopImmediatePropagation();el('bootstrapScheduleForm').classList.remove('hidden');el('bootstrapScheduleDay').value=String(selectedWeek==='all'?0:selectedWeek*5);el('bootstrapScheduleTaskTitle').focus();return;}if(target.closest('#bootstrapScheduleCancel')){event.preventDefault();event.stopImmediatePropagation();el('bootstrapScheduleForm').classList.add('hidden');return;}if(target.closest('#bootstrapScheduleReset')){event.preventDefault();event.stopImmediatePropagation();const meta=project(activeId);const prior=state;if(window.confirm('Reset only Lot '+meta.lot+' · Unit '+meta.unit+' to its original plan?')){Object.assign(state,fresh(meta),{revision:prior.revision,updatedAt:prior.updatedAt,planStart:prior.planStart});selectedId='';renderSchedule();await persist('This project was reset.');}return;}const moveButton=target.closest('[data-schedule-move]');if(moveButton&&selectedId){event.preventDefault();event.stopImmediatePropagation();move(selectedId,Number(moveButton.dataset.scheduleMove));return;}const card=target.closest('[data-task-id]');if(card){event.preventDefault();event.stopImmediatePropagation();if(Date.now()<suppressClickUntil)return;selectedId=selectedId===card.dataset.taskId?'':card.dataset.taskId;renderSchedule();status(selectedId?'Task selected. Drag the body to move, drag either edge to resize, or add an accelerated shift.':'Task selection cleared.');}},{capture:true});
   document.addEventListener('click',async event=>{
     const target=event.target;if(!target.closest?.('#bootstrapSchedule')||!state)return;
-    const toggle=target.closest('#bootstrapAcceleratedToggle,[data-open-accelerated]');if(toggle){event.preventDefault();const panel=el('bootstrapAcceleratedPanel'),opening=panel?.classList.contains('hidden');panel?.classList.toggle('hidden',!opening);el('bootstrapAcceleratedToggle')?.setAttribute('aria-expanded',opening?'true':'false');if(opening){renderAccelerated();panel?.scrollIntoView({behavior:'smooth',block:'nearest'});}return;}
+    const toggle=target.closest('#bootstrapAcceleratedToggle,[data-open-accelerated]');if(toggle){event.preventDefault();const panel=el('bootstrapAcceleratedPanel'),opening=panel?.classList.contains('hidden');panel?.classList.toggle('hidden',!opening);el('bootstrapAcceleratedToggle')?.setAttribute('aria-expanded',opening?'true':'false');if(opening){if(selectedWeek!=='all')el('bootstrapAcceleratedWeek').value=String(selectedWeek);renderAccelerated();panel?.scrollIntoView({behavior:'smooth',block:'nearest'});}return;}
     if(target.closest('#bootstrapAcceleratedClose')){event.preventDefault();el('bootstrapAcceleratedPanel')?.classList.add('hidden');el('bootstrapAcceleratedToggle')?.setAttribute('aria-expanded','false');return;}
     if(target.closest('#bootstrapAcceleratedAdd')){event.preventDefault();const week=Number(el('bootstrapAcceleratedWeek')?.value||0),day=el('bootstrapAcceleratedDay')?.value==='sun'?'sun':'sat',shift=el('bootstrapAcceleratedShift')?.value||'am',commitment=el('bootstrapAcceleratedCommitment')?.value||'proposed',id='weekend-'+week+'-'+day;let entry=state.acceleratedDays.find(item=>item.id===id);if(entry){entry.shift=shift;entry.commitment=commitment;}else{entry={id,week,day,shift,commitment,createdAt:new Date().toISOString()};state.acceleratedDays.push(entry);}state.activity.unshift({id:'weekend-open-'+Date.now(),type:'weekend-open',at:new Date().toISOString(),vendor:'Construction Manager',task:'Accelerated shift',from:'Weekend off',to:weekendLabel(entry)+' · '+shift.toUpperCase()+' · '+commitment.replace('_',' ')});renderSchedule();await persist(weekendLabel(entry)+' activated as an accelerated '+shift.toUpperCase()+' exception.');return;}
     const assign=target.closest('[data-weekend-assign]');if(assign){event.preventDefault();const task=state.tasks.find(item=>item.id===selectedId),entry=state.acceleratedDays.find(item=>item.id===assign.dataset.weekendAssign);if(!task||!entry)return;task.acceleratedAssignments=Array.isArray(task.acceleratedAssignments)?task.acceleratedAssignments:[];if(!task.acceleratedAssignments.includes(entry.id))task.acceleratedAssignments.push(entry.id);state.activity.unshift({id:'weekend-'+Date.now(),type:'weekend',at:new Date().toISOString(),task:task.title,vendor:task.vendor,from:'Standard plan',to:weekendLabel(entry)+' · '+entry.shift.toUpperCase()});renderSchedule();await persist(task.title+' added to '+weekendLabel(entry)+'. Warning retained; standard weekdays remain unchanged.');return;}
     const remove=target.closest('[data-weekend-remove]');if(remove){event.preventDefault();const entry=state.acceleratedDays.find(item=>item.id===remove.dataset.weekendRemove);state.acceleratedDays=state.acceleratedDays.filter(item=>item.id!==remove.dataset.weekendRemove);state.tasks.forEach(task=>task.acceleratedAssignments=(task.acceleratedAssignments||[]).filter(id=>id!==remove.dataset.weekendRemove));renderSchedule();await persist((entry?weekendLabel(entry):'Weekend shift')+' removed; Saturday and Sunday return to off.');}
   },{capture:true});
   document.addEventListener('submit',async event=>{if(event.target.id!=='bootstrapScheduleForm'||!state)return;event.preventDefault();event.stopImmediatePropagation();const title=el('bootstrapScheduleTaskTitle')?.value?.trim(),trade=el('bootstrapScheduleTrade')?.value?.trim(),start=Number(el('bootstrapScheduleDay')?.value||0),duration=Math.max(1,Math.min(15,Number(el('bootstrapScheduleDuration')?.value||1))),type=el('bootstrapScheduleType')?.value||'work';if(!title||!trade)return;state.tasks.push({id:'task-'+Date.now(),title,trade,start:Math.min(start,DAYS-duration),duration,plannedDuration:duration,type,vendor:vendorFor(trade),acceleratedAssignments:[]});event.target.reset();el('bootstrapScheduleDuration').value='1';event.target.classList.add('hidden');renderSchedule();await persist(title+' added to Lot '+project(activeId).lot+' · Unit '+project(activeId).unit+'.');},{capture:true});
-  document.addEventListener('dragstart',event=>{if(event.target.closest?.('[data-resize-edge]')){event.preventDefault();return;}const card=event.target.closest?.('#bootstrapSchedule [data-task-id]');if(!card||!state)return;event.stopImmediatePropagation();selectedId=card.dataset.taskId;event.dataTransfer.effectAllowed='move';event.dataTransfer.setData('text/plain',selectedId);card.classList.add('is-dragging');},{capture:true});
-  document.addEventListener('dragover',event=>{if(!event.target.closest?.('#bootstrapSchedule')||!state)return;const day=dayAtPoint(event.clientX,event.clientY);if(day===null)return;event.preventDefault();event.stopImmediatePropagation();showOver(day);},{capture:true});
-  document.addEventListener('drop',event=>{if(!event.target.closest?.('#bootstrapSchedule')||!state)return;const day=dayAtPoint(event.clientX,event.clientY);if(day===null)return;event.preventDefault();event.stopImmediatePropagation();move(event.dataTransfer.getData('text/plain')||selectedId,day);},{capture:true});
-  document.addEventListener('dragend',event=>{if(!event.target.closest?.('#bootstrapSchedule'))return;event.stopImmediatePropagation();showOver(null);document.querySelectorAll('.bootstrap-ground-task').forEach(node=>node.classList.remove('is-dragging'));},{capture:true});
-  document.addEventListener('pointerdown',event=>{const card=event.target.closest?.('#bootstrapSchedule [data-task-id]');if(!card||!state)return;const handle=event.target.closest?.('[data-resize-edge]');if(event.pointerType==='mouse'&&!handle)return;event.preventDefault();event.stopImmediatePropagation();selectedId=card.dataset.taskId;const mode=handle?'resize-'+handle.dataset.resizeEdge:'move';touchDrag={id:selectedId,mode,pointerId:event.pointerId,rects:gridRects(),ghost:handle?null:makeDragGhost(card,event)};(handle||card).setPointerCapture?.(event.pointerId);card.classList.add(handle?'is-resizing':'is-dragging');if(!handle)moveDragGhost(touchDrag,event);},{capture:true});
-  document.addEventListener('pointermove',event=>{if(!touchDrag||event.pointerId!==touchDrag.pointerId)return;event.preventDefault();event.stopImmediatePropagation();if(touchDrag.mode==='move')moveDragGhost(touchDrag,event);showOver(dayAtPoint(event.clientX,event.clientY,touchDrag.rects));},{capture:true,passive:false});
-  document.addEventListener('pointerup',event=>{if(!touchDrag||event.pointerId!==touchDrag.pointerId)return;event.preventDefault();event.stopImmediatePropagation();const drag=touchDrag,id=drag.id,mode=drag.mode,day=dayAtPoint(event.clientX,event.clientY,drag.rects);clearTouchDrag();suppressClickUntil=Date.now()+350;if(day!==null){if(mode.startsWith('resize-'))resizeTask(id,mode.replace('resize-',''),day);else move(id,day);}else{showOver(null);renderSchedule();status(mode.startsWith('resize-')?'Duration unchanged. Drag an edge across a workday.':'Task selected. Tap a workday heading to move it.');}},{capture:true});
-  document.addEventListener('pointercancel',event=>{if(!touchDrag)return;event.stopImmediatePropagation();clearTouchDrag();showOver(null);renderSchedule();},{capture:true});
+  document.addEventListener('dragstart',event=>{if(event.target.closest?.('[data-resize-edge]')){event.preventDefault();return;}const card=event.target.closest?.('#bootstrapSchedule [data-task-id]');if(!card||!state||touchDrag){if(touchDrag)event.preventDefault();return;}event.stopImmediatePropagation();selectedId=card.dataset.taskId;
+    const task=state.tasks.find(t=>t.id===selectedId);
+    const grab=dayAtPoint(event.clientX,event.clientY);
+    desktopGrab={id:selectedId,offset:grab===null?0:Math.max(0,Math.min(task.duration-1,grab-task.start))};
+    event.dataTransfer.effectAllowed='move';event.dataTransfer.setData('text/plain',selectedId);card.classList.add('is-dragging');},{capture:true});
+  document.addEventListener('dragover',event=>{if(!event.target.closest?.('#bootstrapSchedule')||!state)return;const day=dayAtPoint(event.clientX,event.clientY);if(day===null)return;event.preventDefault();event.stopImmediatePropagation();const task=desktopGrab&&state.tasks.find(t=>t.id===desktopGrab.id);showOver(task?Math.max(0,Math.min(DAYS-task.duration,day-desktopGrab.offset)):day);},{capture:true});
+  document.addEventListener('drop',event=>{if(!event.target.closest?.('#bootstrapSchedule')||!state)return;const day=dayAtPoint(event.clientX,event.clientY);if(day===null)return;event.preventDefault();event.stopImmediatePropagation();if(desktopGrab&&desktopGrab.id===event.dataTransfer.getData('text/plain'))move(desktopGrab.id,day-desktopGrab.offset);desktopGrab=null;},{capture:true});
+  document.addEventListener('dragend',event=>{if(!event.target.closest?.('#bootstrapSchedule'))return;event.stopImmediatePropagation();desktopGrab=null;showOver(null);document.querySelectorAll('.bootstrap-ground-task').forEach(node=>node.classList.remove('is-dragging'));},{capture:true});
+  function dragDay(drag,event) {
+    const day=dayAtPoint(event.clientX,event.clientY);
+    return day===null?null:Math.max(0,Math.min(DAYS-drag.duration,day-drag.offset));
+  }
+  document.addEventListener('pointerdown',event=>{
+    const card=event.target.closest?.('#bootstrapSchedule [data-task-id]');
+    if(!card||!state||touchDrag||event.button!==0)return;
+    const handle=event.target.closest('[data-resize-edge]');
+    if(event.pointerType==='mouse'&&!handle)return;
+    const task=state.tasks.find(item=>item.id===card.dataset.taskId);
+    const day=dayAtPoint(event.clientX,event.clientY);
+    if(!task||day===null)return;
+    event.preventDefault();event.stopImmediatePropagation();
+    touchDrag={card,id:task.id,pointerId:event.pointerId,edge:handle?.dataset.resizeEdge,
+      x:event.clientX,y:event.clientY,offset:Math.max(0,Math.min(task.duration-1,day-task.start)),
+      duration:task.duration,moved:false,ghost:null};
+    if(event.isTrusted)card.setPointerCapture(event.pointerId);
+  },{capture:true});
+  function updateDrag(event) {
+    const drag=touchDrag;
+    if(!drag.moved && Math.hypot(event.clientX-drag.x,event.clientY-drag.y)>=8) {
+      drag.moved=true;selectedId=drag.id;
+      drag.card.classList.add(drag.edge?'is-resizing':'is-dragging');
+      if(!drag.edge)drag.ghost=makeDragGhost(drag.card,{clientX:drag.x,clientY:drag.y});
+    }
+    if(!drag.moved)return;
+    moveDragGhost(drag,event);
+    showOver(drag.edge?dayAtPoint(event.clientX,event.clientY):dragDay(drag,event));
+  }
+  document.addEventListener('pointermove',event=>{
+    if(touchDrag?.pointerId!==event.pointerId)return;
+    event.preventDefault();event.stopImmediatePropagation();updateDrag(event);
+  },{capture:true,passive:false});
+  document.addEventListener('pointerup',event=>{
+    if(touchDrag?.pointerId!==event.pointerId)return;
+    event.preventDefault();event.stopImmediatePropagation();
+    updateDrag(event);
+    const drag=touchDrag,day=drag.edge?dayAtPoint(event.clientX,event.clientY):dragDay(drag,event);
+    clearTouchDrag();showOver(null);suppressClickUntil=Date.now()+350;
+    if(drag.moved&&day!==null) {
+      if(drag.edge)resizeTask(drag.id,drag.edge,day);else move(drag.id,day);
+      return;
+    }
+    selectedId=!drag.moved&&selectedId===drag.id?'':drag.id;
+    renderSchedule();status(selectedId?'Task selected. Tap a workday heading to move it.':'Task selection cleared.');
+  },{capture:true});
+  for(const name of ['pointercancel','lostpointercapture'])document.addEventListener(name,event=>{
+    if(touchDrag?.pointerId!==event.pointerId)return;
+    clearTouchDrag();showOver(null);renderSchedule();
+  },{capture:true});
+
   document.addEventListener('keydown',event=>{const card=event.target.closest?.('#bootstrapSchedule [data-task-id]');if(!card||!state||!['ArrowLeft','ArrowRight'].includes(event.key))return;event.preventDefault();event.stopImmediatePropagation();const task=state.tasks.find(item=>item.id===card.dataset.taskId),handle=event.target.closest?.('[data-resize-edge]');if(!task)return;if(handle){const edge=handle.dataset.resizeEdge,day=edge==='start'?task.start+(event.key==='ArrowRight'?1:-1):task.start+task.duration-1+(event.key==='ArrowRight'?1:-1);resizeTask(task.id,edge,day);}else move(task.id,task.start+(event.key==='ArrowRight'?1:-1));},{capture:true});
-  document.addEventListener('change',event=>{if(event.target.id!=='bootstrapVendorView'||!state)return;vendorView=event.target.value;renderSchedule();status(vendorView?'Vendor view opened for '+vendorView+'.':'All project work is visible.');},{capture:true});
+  document.addEventListener('change',event=>{
+    if(event.target.id==='scheduleJoeWeek'&&state){
+      selectedWeek=event.target.value==='all'?'all':Number(event.target.value);
+      renderSchedule();return;
+    }
+    if(event.target.id!=='bootstrapVendorView'||!state)return;vendorView=event.target.value;renderSchedule();status(vendorView?'Vendor view opened for '+vendorView+'.':'All project work is visible.');},{capture:true});
   document.addEventListener('click',async event=>{if(!event.target.closest?.('#bootstrapVendorAssignButton')||!state)return;event.preventDefault();event.stopImmediatePropagation();const task=state.tasks.find(item=>item.id===selectedId),vendor=el('bootstrapVendorAssign')?.value;if(!task||!vendor)return;const prior=task.vendor;task.vendor=vendor;state.activity.unshift({id:'assign-'+Date.now(),at:new Date().toISOString(),task:task.title,vendor,from:prior,to:vendor,assignment:true});selectedId='';renderSchedule();await persist(task.title+' assigned to '+vendor+'.');},{capture:true});
 })();
 

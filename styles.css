@@ -16890,3 +16890,59 @@ body:not(.engine-mode) #experienceTestDeck,body.boot-locked #experienceTestDeck{
   #clearDeckLaunchpad .pilotage-offices, #clearDeckLaunchpad .pilotage-tools {grid-template-columns: minmax(0, 1fr) !important}
   #clearDeckLaunchpad .pilotage-offices .pilotage-vessels {grid-row: auto; min-height: 195px !important}
 }
+
+/* My Fleet directory and ScheduleJoe workspaces */
+.fleet-watchtower #watchWorkspace>header .fleet-directory {
+  grid-column:1/-1; display:flex; align-items:center; justify-content:space-between;
+  gap:8px 20px; flex-wrap:wrap; border-top:1px solid #34545b; padding-top:10px;
+}
+.fleet-directory>div {display:flex; align-items:center; gap:7px; flex-wrap:wrap}
+.fleet-directory strong {color:#a9c6c8; font-size:.82rem; margin-right:5px}
+.fleet-directory button {white-space:normal}
+.fleet-directory [data-schedulejoe-open],.fleet-schedule-entry [data-schedulejoe-open] {
+  background:#ead08a!important; color:#142d31!important; border:1px solid #d9bd79!important;
+}
+.fleet-schedule-entry {
+  display:flex; align-items:center; gap:14px; border:1px solid #436169; border-radius:14px;
+  padding:14px 18px; margin:12px 0; background:#0a2830; color:#f3eddf;
+}
+.fleet-schedule-entry img {width:48px;height:48px;object-fit:contain}
+.fleet-schedule-entry div {flex:1;min-width:0}
+.fleet-schedule-entry b,.fleet-schedule-entry span {display:block}
+.fleet-schedule-entry b {font-size:1.12rem}.fleet-schedule-entry span {color:#bad0cf;font-size:.9rem}
+.fleet-schedule-entry button {min-height:44px; padding:8px 14px;border-radius:8px;font-weight:750}
+dialog#bootstrapSchedule {width:100%;height:100%;max-width:none;max-height:none;margin:0;border:0}
+dialog#bootstrapSchedule::backdrop {background:#03151a}
+#bootstrapSchedule [hidden]{display:none!important}
+#bootstrapSchedule .bootstrap-project-roster {min-width:0}
+#bootstrapSchedule .bootstrap-project-roster td {white-space:normal}
+.schedule-week-nav {display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:12px 0}
+.schedule-week-nav label,.schedule-week-nav>div{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.schedule-week-nav select {min-height:44px;max-width:100%;padding:7px 12px;border:1px solid #64868b;border-radius:8px;background:#092930;color:#eef5ed;font:inherit}
+.yard-visually-hidden {position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+@media(max-width:720px) {
+  .fleet-directory>div {display:grid;grid-template-columns:1fr 1fr;width:100%}
+  .fleet-directory strong {grid-column:1/-1}
+  .fleet-schedule-entry {flex-wrap:wrap}
+  #bootstrapSchedule .bootstrap-project-roster-wrap {border:0;margin:0;overflow:visible;background:transparent}
+  #bootstrapSchedule .bootstrap-project-roster,#bootstrapSchedule .bootstrap-project-roster tbody {display:block;width:100%}
+  #bootstrapSchedule .bootstrap-project-roster thead {position:absolute;clip-path:inset(50%);width:1px;height:1px;overflow:hidden}
+  #bootstrapSchedule .bootstrap-project-roster tr {display:grid;gap:8px;background:#0b2a31;border:1px solid #456569;border-radius:12px;padding:14px;margin-bottom:10px}
+  #bootstrapSchedule .bootstrap-project-roster td {display:block;padding:0;border:0;background:transparent}
+  #bootstrapSchedule .bootstrap-project-roster td[data-label]::before {content:attr(data-label);display:block;color:#a2babb;font-size:.74rem}
+  #bootstrapSchedule .bootstrap-project-roster button {width:100%}
+  .schedule-week-nav label {width:100%;justify-content:space-between}
+}
+
+#watchWorkspace>header>div:has(>#watchRefresh) {display:flex;flex-wrap:wrap;gap:7px}
+@media(max-width:820px) {
+  #watchWorkspace>header>div:has(>#watchRefresh) {grid-column:1/-1}
+  #watchWorkspace>header .fleet-directory {width:100%}
+}
+@media(max-width:720px) {
+  #bootstrapSchedule .bootstrap-schedule-head {grid-template-columns:minmax(0,1fr) auto;gap:8px 12px}
+  #bootstrapSchedule .bootstrap-schedule-head>img {width:144px;height:48px;grid-column:1;grid-row:1;object-fit:contain}
+  #bootstrapSchedule .bootstrap-schedule-head>div:not(.bootstrap-schedule-head-actions) {grid-column:1/-1;grid-row:2}
+  #bootstrapSchedule .bootstrap-schedule-head-actions {grid-column:2;grid-row:1;display:flex;flex-wrap:wrap;justify-content:flex-end}
+  #bootstrapSchedule .bootstrap-schedule-head-actions button {min-height:44px;width:auto;font-size:.8rem}
+}
