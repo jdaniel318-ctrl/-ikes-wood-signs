@@ -184,7 +184,7 @@ window.BlackFlagFUNProgram=Object.freeze({open,openLegacy:()=>open(true),close,i
 document.addEventListener('click',e=>{if(e.target instanceof Element&&e.target.closest('#funProgramLaunch')){e.preventDefault();open();}});
 
 // Lantern Run uses the same Admiral entrance as Stormwake, and its own game data.
-const LANTERN_DIGEST = '1298ae96b4e0bdbaae77541b595e208d0fa076fc2c0ef9d751f3915aeec69931';
+const LANTERN_DIGEST = '8d02fb4a37cf0916bd1f41eed955294c35ff1620af4197c9b3caac7fdf8945e0';
 let lanternSource = '';
 async function lanternPlayerSource(signal) {
   if (lanternSource) return lanternSource;
@@ -198,7 +198,7 @@ async function lanternPlayerSource(signal) {
   const actual = Array.from(new Uint8Array(hash), byte => byte.toString(16).padStart(2,'0')).join('');
   if (actual !== LANTERN_DIGEST) throw Error('The game file and the Admiral launcher are different editions. Upload the matching package.');
   const program = JSON.parse(new TextDecoder().decode(bytes));
-  if (program.format !== 'blackflag.arcade-player.v1' || program.id !== 'lantern-run' || program.edition !== 4 || program.levels !== 6 || typeof program.player !== 'string') throw Error('The Lantern Run game package could not be read.');
+  if (program.format !== 'blackflag.arcade-player.v1' || program.id !== 'lantern-run' || program.edition !== 5 || program.levels !== 6 || typeof program.player !== 'string') throw Error('The Lantern Run game package could not be read.');
   lanternSource = program.player;
   return lanternSource;
 }
