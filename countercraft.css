@@ -273,40 +273,55 @@ body.cc-customer{display:flex;flex-direction:column;min-height:100vh;min-height:
   .cc-ike-portrait { width: 84%; height: 141px; margin: 0; }
 }
 
-/* A framing guide for the first photo, before any customer board exists. */
+/* The customer's blank board stays separate from this framing illustration. */
 .cc-photo-welcome {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, .95fr);
-  gap: clamp(24px, 5vw, 75px);
+  grid-template-columns: minmax(0, .88fr) minmax(0, 1.12fr);
   align-items: center;
-  margin-top: clamp(16px, 2.7vw, 38px);
-  padding: clamp(22px, 4vw, 58px);
+  gap: clamp(16px, 3.5vw, 46px);
+  padding: 12px;
+  margin: clamp(16px, 2.1vw, 28px) 0 0;
+  border: 1px solid #c7bea7;
+  border-radius: 18px;
   background: #fff9e9;
-  border: 1px solid #c9bfa3;
-  border-radius: 16px;
-  box-shadow: 0 4px 0 #e7dfc8;
+  box-shadow: 0 3px 0 #dcd4bc, 0 9px 25px -22px #614e2b;
+}
+.cc-photo-invite {
+  padding: clamp(16px, 2.4vw, 34px) 0 clamp(16px, 2.4vw, 34px) clamp(12px, 2.8vw, 38px);
 }
 .cc-photo-invite #ccPhotoHeading {
   margin: 0;
   color: #173953;
-  font: bold clamp(40px, 4.8vw, 70px)/1.03 Georgia, "Times New Roman", serif;
-  letter-spacing: -.045em;
+  font: bold clamp(46px, 5.2vw, 74px)/.98 Georgia, serif;
+  letter-spacing: -.048em;
 }
 .cc-photo-invite h1 em { display: block; color: #205c57; }
-.cc-photo-invite p {
-  max-width: 36ch;
-  margin: 18px 0 24px;
-  color: #384d57;
-  font-size: clamp(16px, 1.35vw, 19px);
-  line-height: 1.5;
+.cc-photo-advice {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 38ch;
+  margin: clamp(17px, 2vw, 27px) 0;
 }
-.cc-photo-invite .cc-buttons { display: flex; flex-wrap: wrap; gap: 10px; margin: 0; }
+.cc-photo-advice strong { color: #284c45; font: bold 17px/1.2 Georgia, serif; }
+.cc-photo-advice p { margin: 2px 0 0; color: #425657; font-size: 15px; line-height: 1.42; }
+.cc-ike-tip-portrait {
+  flex: 0 0 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid #c5a650;
+  background: #ffda3c url("ike_character.png") 24% 10% / 240% auto no-repeat;
+}
+.cc-photo-invite .cc-buttons { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; }
 .cc-photo-invite .cc-buttons button {
   min-height: 48px;
   border-radius: 9px;
-  padding-inline: 18px;
+  padding-inline: 16px;
+  line-height: 1.25;
 }
-.cc-photo-invite #ccTake { display: inline-flex; align-items: center; gap: 10px; }
+.cc-photo-invite #ccTake { display: inline-flex; justify-content: center; align-items: center; gap: 8px; }
+.cc-photo-invite #ccChoose { border-color: #99a9af; background: #fffdf7; }
+.cc-photo-invite #ccSample { margin: 3px 0 -8px; padding-inline: 0; font-size: 14px; text-underline-offset: 3px; }
 .cc-camera-icon {
   display: inline-grid;
   place-items: center;
@@ -332,96 +347,118 @@ body.cc-customer{display:flex;flex-direction:column;min-height:100vh;min-height:
   border-radius: 50%;
   border: 1.5px solid currentColor;
 }
-.cc-photo-invite #ccSample {
-  margin-top: 7px;
-  padding-inline: 0;
-  font-size: 15px;
-  text-underline-offset: 3px;
-}
-.cc-framing-tip { margin: 0; min-width: 0; }
+
 .cc-framing-demo {
   display: grid;
   place-items: center;
-  aspect-ratio: 2 / 1;
-  border-radius: 12px 12px 0 0;
-  background-color: #194e49;
+  position: relative;
+  align-self: stretch;
+  min-height: 230px;
+  isolation: isolate;
+  overflow: hidden;
+  border: 1px solid #1e4d44;
+  border-radius: 10px;
+  background-color: #194c42;
   background-image:
-    linear-gradient(90deg, #d2e8ce0b 1px, transparent 1px),
-    linear-gradient(#d2e8ce0b 1px, transparent 1px);
-  background-size: 18px 18px;
+    linear-gradient(90deg, #cfe6c211 1px, transparent 1px),
+    linear-gradient(#cfe6c211 1px, transparent 1px),
+    radial-gradient(ellipse at 38% 30%, #376d58, #22574b 48%, #123e38 96%);
+  background-size: 22px 22px, 22px 22px, 100% 100%;
+}
+.cc-framing-demo::before {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border: 1px solid #d4e1bd38;
+  border-radius: 4px;
+  pointer-events: none;
 }
 .cc-photo-finder {
-  --mark: #ffe9a0;
-  --arm: 17px;
+  --arm: clamp(14px, 1.4vw, 20px);
+  --mark: #f8df91;
   position: relative;
   display: grid;
   place-items: center;
-  width: 78%;
-  height: 67%;
+  width: 84%;
+  aspect-ratio: 2.04;
   background:
-    linear-gradient(var(--mark),var(--mark)) left top / var(--arm) 2px,
-    linear-gradient(var(--mark),var(--mark)) left top / 2px var(--arm),
-    linear-gradient(var(--mark),var(--mark)) right top / var(--arm) 2px,
-    linear-gradient(var(--mark),var(--mark)) right top / 2px var(--arm),
-    linear-gradient(var(--mark),var(--mark)) left bottom / var(--arm) 2px,
-    linear-gradient(var(--mark),var(--mark)) left bottom / 2px var(--arm),
-    linear-gradient(var(--mark),var(--mark)) right bottom / var(--arm) 2px,
-    linear-gradient(var(--mark),var(--mark)) right bottom / 2px var(--arm);
+    linear-gradient(var(--mark), var(--mark)) left top / var(--arm) 2px,
+    linear-gradient(var(--mark), var(--mark)) left top / 2px var(--arm),
+    linear-gradient(var(--mark), var(--mark)) right top / var(--arm) 2px,
+    linear-gradient(var(--mark), var(--mark)) right top / 2px var(--arm),
+    linear-gradient(var(--mark), var(--mark)) left bottom / var(--arm) 2px,
+    linear-gradient(var(--mark), var(--mark)) left bottom / 2px var(--arm),
+    linear-gradient(var(--mark), var(--mark)) right bottom / var(--arm) 2px,
+    linear-gradient(var(--mark), var(--mark)) right bottom / 2px var(--arm);
   background-repeat: no-repeat;
-  filter: drop-shadow(0 3px 1px #0b211e33);
 }
+.cc-plank-shadow {
+  width: 87%;
+  transform: rotate(-6deg);
+  filter: drop-shadow(1px 4px 1px #112b2480) drop-shadow(0 12px 10px #102e2580);
+}
+/* The illustration uses the grain from Ike's cedar reference; the outline is drawn. */
 .cc-drawn-plank {
   position: relative;
-  overflow: hidden;
-  width: 83%;
-  aspect-ratio: 3.9;
-  transform: rotate(-5deg);
-  clip-path: polygon(0 6%, 12% 3%, 25% 8%, 41% 7%, 55% 2%, 69% 7%, 82% 4%, 96% 0, 100% 2%, 100% 89%, 94% 88%, 77% 96%, 63% 92%, 50% 93%, 31% 100%, 16% 94%, 0 98%);
-  background:
-    repeating-radial-gradient(ellipse 53% 16% at 73% 60%, transparent 0 22%, #93582477 24% 27%, transparent 30% 72%),
-    linear-gradient(178deg, #f4d99d 0 13%, #d49c58 14%, #ecc384 35%, #d59e64 65%, #f5d797 90%);
+  width: 100%;
+  aspect-ratio: 3.35;
+  background: linear-gradient(178deg, #e7ae69 0%, #d19b5e 46%, #9c6639 83%, #79522e 97%);
+  clip-path: polygon(.5% 7%, 4% 6%, 9% 3%, 16% 2.8%, 23% 5.5%, 30% 6%, 41% 5%, 47% 2%, 55% 2.8%, 61% 4.5%, 71% 5.3%, 82% 3%, 90% 2%, 96% 3.4%, 99.5% 3%, 100% 92%, 95% 92.5%, 89% 95.8%, 83% 97%, 75% 95.3%, 65% 94.4%, 57% 96%, 52% 98.5%, 44% 97.8%, 38% 96%, 29% 96%, 22% 99%, 14% 98%, 6% 94.5%, 0 94%);
 }
-/* The streaks come from the plank in Ike’s original illustration. */
-.cc-drawn-plank::after {
+.cc-drawn-plank::before, .cc-drawn-plank::after {
   content: "";
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 25.65%;
-  height: 390%;
-  transform: translate(-50%, -50%) rotate(90deg);
-  background: url("ike_character.png") 81% 75% / 400% auto no-repeat;
-  opacity: .34;
+  inset: 0;
 }
-.cc-framing-tip figcaption {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  padding: 13px 16px;
-  border-radius: 0 0 12px 12px;
-  background: #e9ede1;
-  color: #21413e;
+.cc-drawn-plank::before {
+  background: linear-gradient(171deg, #fbe2ab, #e8bb79 52%, #f1cf93 85%);
+  clip-path: polygon(0 0,100% 0,100% 88%, 92% 89%, 86% 93%, 79% 92.4%, 68% 90%, 60% 90.8%, 52% 94%, 44% 93.2%, 35% 91.6%, 29% 92%, 22% 95%, 14% 94%, 5% 90%, 0 89%);
 }
-.cc-ike-tip-portrait {
-  flex: 0 0 50px;
-  height: 50px;
-  background: #ffd938 url("ike_character.png") 24% 10% / 240% auto no-repeat;
-  border-radius: 50%;
-  border: 1px solid #cab25e;
+.cc-drawn-plank::after {
+  background-color: #d09c64;
+  background-image: linear-gradient(115deg, #edc49548, transparent 50%, #e2a46030), url("ike_calibration_2ft_cedar_reference.jpg");
+  background-size: 100% 100%, 274% auto;
+  background-position: center, 47% 60.2%;
+  background-repeat: no-repeat;
+  background-blend-mode: soft-light, luminosity;
+  filter: brightness(1.17) saturate(.86);
+  clip-path: polygon(0 13%, 7% 12.5%, 16% 8.5%, 23% 12.2%, 28% 13.5%, 36% 11.4%, 43% 11%, 49% 7%, 57% 9%, 64% 11%, 73% 11.4%, 82% 7.2%, 90% 8%, 97% 6.5%, 100% 7.2%, 100% 80.8%, 93% 82%, 85% 88%, 78% 86.2%, 70% 84%, 63% 85.2%, 56% 88%, 51% 90%, 46% 90.5%, 38% 86.8%, 30% 86.8%, 23% 90.5%, 18% 90.3%, 12% 87.5%, 5% 85%, 0 86%);
 }
-.cc-framing-tip figcaption strong { font: bold 17px/1.2 Georgia, "Times New Roman", serif; }
-.cc-framing-tip figcaption p { margin: 2px 0 0; font-size: 15px; line-height: 1.35; }
-.cc-saved-scan { margin: 12px 3px 0; }
-.cc-saved-scan .cc-sweep-option { margin: 0; color: #3e5758; font-size: 15px; }
-.cc-saved-scan summary { width: fit-content; min-height: 44px; }
-@media (max-width: 735px) {
-  .cc-photo-welcome { grid-template-columns: 1fr; gap: 18px; padding: 20px; margin-top: 16px; }
+.cc-saved-scan { margin: 8px 3px 0; }
+.cc-saved-scan .cc-sweep-option { margin: 0; color: #405c58; font-size: 15px; }
+.cc-saved-scan summary { min-height: 44px; width: fit-content; }
+@media (max-width: 780px) {
+  .cc-photo-welcome { grid-template-columns: 1fr; gap: 12px; padding: 12px; margin-top: 16px; }
+  .cc-photo-invite { padding: 10px 8px 0; }
+  .cc-photo-invite #ccPhotoHeading { font-size: clamp(34px, 6.2vw, 50px); }
   .cc-photo-invite h1 em { display: inline-block; }
-  .cc-photo-invite p { margin: 12px 0 16px; }
-  .cc-framing-demo { aspect-ratio: 2.8 / 1; }
+  .cc-photo-advice { margin: 12px 0 15px; }
+  .cc-framing-demo { min-height: 0; aspect-ratio: 2.55; }
+  .cc-photo-finder { width: 80%; height: 73%; aspect-ratio: auto; }
+  .cc-plank-shadow { width: 81%; }
 }
-@media (min-width: 350px) and (max-width: 520px) {
-  .cc-photo-invite .cc-buttons { gap: 7px; }
-  .cc-photo-invite .cc-buttons button { padding-inline: 11px; font-size: 15px; }
-  .cc-photo-invite #ccTake { gap: 7px; }
+@media (max-width: 520px) {
+  .cc-photo-invite .cc-buttons { gap: 6px; }
+  .cc-photo-invite .cc-buttons button { padding-inline: 10px; font-size: 15px; }
+  .cc-photo-invite #ccTake { gap: 6px; }
+  .cc-ike-tip-portrait { flex-basis: 39px; height: 39px; }
+}
+
+@media (max-width: 520px) {
+  .cc-plank-screen .cc-header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 2px 8px;
+    padding: 7px 14px 2px;
+  }
+  .cc-plank-screen .cc-mode-tools { flex-direction: column; align-items: flex-end; gap: 3px; }
+  .cc-plank-screen .cc-mode-tools .cc-chip { font-size: 10px; text-align: center; }
+  .cc-plank-screen .cc-return-header { margin: 0; padding: 6px 10px; min-height: 44px; }
+  .cc-plank-screen .cc-header .cc-quiet { min-height: 44px; margin: 0; padding: 5px; font-size: 14px; }
+  .cc-plank-screen .cc-header #ccExit { justify-self: start; }
+  .cc-plank-screen .cc-header #ccHelp { justify-self: end; }
+}
+@media (min-width: 370px) and (max-width: 520px) {
+  .cc-photo-invite .cc-buttons { display: grid; grid-template-columns: 1.05fr 1fr; max-width: 350px; }
+  .cc-photo-invite .cc-buttons button { min-width: 0; padding-inline: 6px; }
 }

@@ -85,24 +85,21 @@ function captureStep(){
    <section class="cc-photo-welcome" aria-labelledby="ccPhotoHeading">
      <div class="cc-photo-invite">
        <h1 id="ccPhotoHeading">Let’s see <em>your board.</em></h1>
-       <p>Take a photo of your board. Next, you’ll try your lettering right on the wood.</p>
+       <div class="cc-photo-advice">
+         <span class="cc-ike-tip-portrait" aria-hidden="true"></span>
+         <div><strong>Ike’s photo tip</strong><p>Hold the camera straight above your board. Leave room around every edge.</p></div>
+       </div>
        <div class="cc-buttons">
          <button type="button" id="ccTake"><span class="cc-camera-icon" aria-hidden="true"></span>Take a photo</button>
          ${choose}
        </div>
        ${sample}
      </div>
-     <figure class="cc-framing-tip">
-       <div class="cc-framing-demo" aria-hidden="true">
-         <div class="cc-photo-finder">
-           <div class="cc-drawn-plank"></div>
-         </div>
+     <div class="cc-framing-demo" role="img" aria-label="A blank plank with space between every edge and the camera frame">
+       <div class="cc-photo-finder">
+         <div class="cc-plank-shadow"><div class="cc-drawn-plank"></div></div>
        </div>
-       <figcaption>
-         <span class="cc-ike-tip-portrait" aria-hidden="true"></span>
-         <div><strong>Ike’s photo tip</strong><p>Hold the camera straight above the board. Leave a little room around every edge.</p></div>
-       </figcaption>
-     </figure>
+     </div>
    </section>
    <div class="cc-saved-scan">${sweepOption(false)}</div>
    ${photoInputs()}`;
