@@ -9,6 +9,28 @@ async function openDesign(f){
 }
 let count=0;async function test(name,fn){await fn();count++;console.log('PASS',name);}
 (async()=>{
+await test('an empty kiosk opens without a plank picture or a required scale card',async()=>{
+ for(const mode of ['preview','sea_trial']){
+  const f=fixture(mode);await f.start();
+  const html=f.el('ccApp').innerHTML;
+  assert.doesNotMatch(html,/<img |index card|keep this board/i);
+  assert.match(html,/Take a photo/);assert.match(html,/Choose a photo/);
+  assert.equal(html.includes('Try a sample board'),mode==='preview');
+ }
+});
+await test('an unrecognized plank offers a card-free scan from the size result',async()=>{
+ const f=fixture('preview',c=>{c.CountercraftRecognition={length:()=>({needsSecondPhoto:true}),species:()=>({})};});
+ await openDesign(f);const html=f.el('ccApp').innerHTML;
+ assert.match(html,/Board size still open/);assert.match(html,/ccChooseSweep/);
+ assert.doesNotMatch(html,/Looks like [0-9] ft stock/);
+});
+await test('ordinary photos retain supported visual stock sizes without assigning exact measurements',async()=>{
+ for(const feet of [2,4,6]){
+  const f=fixture('preview',c=>{c.CountercraftRecognition={length:()=>({resolved:true,feet}),species:()=>({speciesResolved:false})};});
+  await openDesign(f);const html=f.el('ccApp').innerHTML;
+  assert(html.includes(feet+' ft stock'));assert.equal(f.flow().state().boardSpec,null);
+ }
+});
 await test('contact input removes leading paste spaces in the visible field',async()=>{const f=fixture();await f.start();f.emit('input',false,'ccEmail',' \u00a0fleet.tester@example.com');assert.equal(f.el('ccEmail').value,'fleet.tester@example.com');assert.equal(f.flow().state().request.customer.email,'fleet.tester@example.com');});
 await test('typing a two-word name preserves the temporary trailing space',async()=>{const f=fixture();await f.start();f.emit('input',false,'ccName','Fleet ');assert.equal(f.el('ccName').value,'Fleet ');f.emit('input',false,'ccName','Fleet Tester');assert.equal(f.flow().state().request.customer.name,'Fleet Tester');});
 await test('edited sign visibly unchecks placement',async()=>{const f=fixture();await f.start();f.flow().state().request.board={frameConfirmed:true};f.el('ccPlacement').checked=true;f.emit('input',false,'ccWording','Fleet Test 4');assert.equal(f.el('ccPlacement').checked,false);});

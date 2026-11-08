@@ -45,6 +45,11 @@ function photoSizeNote(s){
  if(s.stockId||!e||!stock||e.photoId!==s.request.photos?.[0]?.id||e.lengthMm!==stock.widthMm||e.widthMm!==stock.heightMm)return '';
  if(e.source==='matched-tape'&&e.referenceId==='CW-20a94bae-17ee-4598-8279-f900f6f8c15a'&&e.thicknessMm===stock.thicknessMm&&e.lengthMm===598.4875&&e.widthMm===234.95&&e.thicknessMm===34.925)
    return '23 9/16 in long × 9 1/4 in wide at center · 1 3/8 in thick at center. From the matched board’s tape record.';
+ if(e.source==='native-sweep'){
+   const scan=s.plankEvidence[0].nativeScan;
+   if(scan&&s.plankEvidence[0].photoId===e.photoId&&e.captureId===scan.captureId&&e.lengthMm===scan.lengthMm&&e.widthMm===scan.widthMm&&[e.lengthMm,e.widthMm].every(v=>Number.isFinite(v)&&v>=25.4&&v<=3048))
+     return 'About '+(e.lengthMm/25.4).toFixed(1)+' in long × '+(e.widthMm/25.4).toFixed(1)+' in wide. Sightline scan · thickness to check.';
+ }
  if(e.source==='photo-card'&&s.request.photos.some(p=>p.id===e.scalePhotoId)&&[e.lengthMm,e.widthMm].every(v=>Number.isFinite(v)&&v>=25.4&&v<=3048))
    return 'About '+(e.lengthMm/25.4).toFixed(1)+' in long × '+(e.widthMm/25.4).toFixed(1)+' in wide at center. Card-scaled photo · thickness to check.';
  return '';

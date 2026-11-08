@@ -33,6 +33,18 @@ function testPhotoRuler() {
 }
 (async()=>{
  testPhotoRuler();
+ const sweepFlow=Flow.create(),sweepState=sweepFlow.state();
+ const scanPhoto={id:'scan-photo',mime:'image/jpeg',sha256:'a'.repeat(64),width:800,height:400,dataUrl:'data:image/jpeg;base64,/9j/2Q=='};
+ sweepState.request.photos=[scanPhoto];
+ sweepState.plankEvidence=[{photoId:scanPhoto.id,nativeScan:{captureId:'fixture',lengthMm:609.6,widthMm:228.6}}];
+ const sweepSize={source:'native-sweep',captureId:'fixture',lengthMm:609.6,widthMm:228.6};
+ assert.throws(()=>sweepFlow.applyPhotoSize({...sweepSize,captureId:'other'}));
+ sweepFlow.applyPhotoSize(sweepSize);
+ assert.match(C.photoSizeNote(sweepState),/24.0 in long × 9.0 in wide.*Sightline/);
+ assert.equal(sweepState.boardSpec,null);
+ assert.throws(()=>C.checkBoard(sweepState,null,true),/measured shop board/);
+ sweepFlow.clearPhotoSize();assert.equal(C.photoSizeNote(sweepState),'');
+
  assert.equal(typeof C.boardSpec,'function','Measured stock provenance must be available');
  assert.deepEqual(C.measurementsFromInches(['30','9','.75']),[762,228.6,19.05]);
  assert.equal(C.measurementsFromInches(['','','']),null);

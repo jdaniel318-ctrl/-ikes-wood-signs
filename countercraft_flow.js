@@ -29,10 +29,14 @@ function applyPhotoSize(size){
  const first=state.plankEvidence[0],r=state.request;
  if(!first||!r.photos[0]||state.stockId)throw Error('Use the photographed board to set a photo size.');
  const values=[size.lengthMm,size.widthMm];
- if(values.some(v=>!Number.isFinite(v)||v<25.4||v>3048)||!['photo-card','matched-tape'].includes(size.source))throw Error('Invalid photo dimensions.');
+ if(values.some(v=>!Number.isFinite(v)||v<25.4||v>3048)||!['photo-card','matched-tape','native-sweep'].includes(size.source))throw Error('Invalid photo dimensions.');
  if(size.source==='matched-tape'&&(!Number.isFinite(size.thicknessMm)||size.thicknessMm<1||size.thicknessMm>150))throw Error('Invalid recorded thickness.');
  if(size.source==='photo-card'&&(!['index-3x5','index-4x6'].includes(size.referenceType)||!r.photos.some(p=>p.id===size.scalePhotoId)))throw Error('Select the scale photo and its card size.');
  if(size.source==='matched-tape'&&(!size.referenceId||size.referenceId!==first.sizeScan?.reference))throw Error('The photographed board could not be matched.');
+ if(size.source==='native-sweep'){
+  const scan=first.nativeScan;
+  if(!scan||first.photoId!==r.photos[0].id||size.captureId!==scan.captureId||size.lengthMm!==scan.lengthMm||size.widthMm!==scan.widthMm)throw Error('Use the measurements from this board’s Sightline scan.');
+ }
  const stock=r.design.stock;
  stock.widthMm=size.lengthMm;stock.heightMm=size.widthMm;
  stock.thicknessMm=size.source==='matched-tape'?size.thicknessMm:S.createRequest().design.stock.thicknessMm;

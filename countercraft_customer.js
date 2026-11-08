@@ -66,12 +66,21 @@ function letteringChoices(selected) {
 function photoInputs(){
  return '<input hidden id="ccFile" type="file" accept="image/*"><input hidden id="ccCameraFile" type="file" accept="image/*" capture="environment">';
 }
+function sweepOption(replacePhotos){
+ const hint=replacePhotos?'Use the scan’s board photo and face measurements in place of your current board photos. Your wording carries over.':'Use a scan from the Sightline app to bring in a rectangular board’s photo and measured face dimensions.';
+ return '<details class="cc-sweep-option"><summary>Have a saved Sightline scan?</summary><p>'+hint+'</p>'+
+   '<button type="button" id="ccChooseSweep" class="cc-secondary">Open saved scan</button><input type="file" id="ccSweepFile" accept=".json,application/json" hidden></details>';
+}
 function captureStep(){
- return '<h1>Let’s get to know your board.</h1><p class="cc-lead">Photograph the whole board from above. To measure it, lay a blank 3 × 5 or 4 × 6 in index card flat near the middle of the wood.</p>'+
-  '<section class="cc-card cc-capture-start"><img src="'+esc(flow.state().request.photos[0]?.dataUrl||'ike_calibration_2ft_cedar_reference.jpg')+'" alt="'+(flow.state().request.photos.length?'Your board':'Example shop board')+'">'+
-  '<div><h2>'+(flow.state().request.photos.length?'Your board photo':'Add your board photo')+'</h2><div class="cc-buttons"><button id="ccTake">Take a photo</button><button id="ccChoose" class="cc-secondary">Choose a photo</button></div>'+
-  (preview?'<button id="ccSample" class="cc-secondary">Try a sample board</button>':'')+
-  (flow.state().request.photos.length?'<button id="ccResumeBoard" class="cc-secondary">Keep this board &amp; design</button>':'')+'</div>'+photoInputs()+'</section>';
+ const photo=flow.state().request.photos[0];
+ const current=photo?'<img src="'+esc(photo.dataUrl)+'" alt="Your board for this sign">':'';
+ const next=photo?'<button type="button" id="ccResumeBoard">Keep this board &amp; design</button>':'';
+ const sample=preview?'<button type="button" id="ccSample" class="cc-inline">Try a sample board</button>':'';
+ return '<h1>Let’s get to know your board.</h1><p class="cc-lead">Take a photo from above with both ends in view. We’ll check its shape and look for a match in Ike’s measured boards.</p>'+
+   '<section class="cc-card cc-capture-start">'+current+'<div><h2>'+(photo?'Your board photo':'Add your board photo')+'</h2>'+
+   '<div class="cc-buttons">'+next+'<button id="ccTake"'+(photo?' class="cc-secondary"':'')+'>'+(photo?'Retake photo':'Take a photo')+'</button><button id="ccChoose" class="cc-secondary">Choose a photo</button></div>'+
+   sample+sweepOption(Boolean(photo))+
+   '</div>'+photoInputs()+'</section>';
 }
 function scaleTrace(card) {
  const pair = p=>p.map(n=>Number(n).toFixed(2)).join(',');
@@ -94,16 +103,25 @@ function scaleMarkup(st){
    return '<div class="cc-size-result"><strong>'+esc(applied)+'</strong>'+trace+'<button class="cc-inline" id="ccClearSize">Clear this size</button></div>';
  }
  const matched=first.sizeScan?.reference&&first.sizeScan.reference===g.IkePhotoSize?.referenceId&&!first.dismissedMatch;
- const length=g.CountercraftRecognition?.length(first.length,st.plankEvidence[1]?.length);
- const headline=matched?'Looks like your measured board':length?.resolved&&length.feet===2?'Shape resembles 2 ft stock':'Board size';
- const matchChoice=matched?'<p>23 9/16 in long × 9 1/4 in wide at center. From the saved tape readings.</p><div class="cc-buttons"><button type="button" id="ccUseMatch" class="cc-secondary">Use these measurements</button><button id="ccDifferent" class="cc-inline">Different board</button></div>':'';
+ const secondary=st.plankEvidence[1];
+ const length=g.CountercraftRecognition?.length(first.length,secondary?.length);
+ const knownFamily=length?.resolved&&[2,4,6].includes(length.feet);
+ const possibleFamily=!knownFamily&&[2,4,6].includes(length?.candidateFeet)&&length.score>=.62;
+ const headline=first.nativeScan?'Sightline measurement':matched?'Looks like your measured board':
+   knownFamily||possibleFamily?'Looks like '+(knownFamily?length.feet:length.candidateFeet)+' ft stock':'Board size still open';
+ const hint=knownFamily||possibleFamily?'This is a stock length suggested by the board’s shape. Ike checks the exact size.':'You can start lettering on this photo now.';
+ const species=g.CountercraftRecognition?.species(first.species,secondary?.species);
+ const wood=species?.speciesResolved?'<p>Photo suggests '+esc(species.speciesName)+'.</p>':'';
+ const moreView=!secondary&&length?.needsSecondPhoto&&photos.length<3?'<button type="button" id="ccSecondView" class="cc-inline">Add another view of this board</button>':'';
+ const result=first.nativeScan?'<p>'+esc((first.nativeScan.lengthMm/25.4).toFixed(1))+' × '+esc((first.nativeScan.widthMm/25.4).toFixed(1))+' in from your saved scan.</p><button class="cc-secondary" id="ccUseSweep">Use scan measurements</button>':matched?'':'<p>'+hint+'</p>'+wood+moreView;
+ const matchChoice=matched&&!first.nativeScan?'<p>23 9/16 in long × 9 1/4 in wide at center. From the saved tape readings.</p><div class="cc-buttons"><button type="button" id="ccUseMatch" class="cc-secondary">Use these measurements</button><button id="ccDifferent" class="cc-inline">Different board</button></div>':'';
  const replace=scaleIndex===1;
  const upload=(replace||photos.length<3)?'<button id="ccScaleView" class="cc-secondary">'+(replace?'Replace scale photo':'Add scale photo')+'</button>':'';
  const detected=card?'<p>Check the yellow card outline and the two blue board measurements. Select the actual size of your card.</p>'+scaleImage(photo,card)+'<div class="cc-buttons">'+
    ['3x5','4x6'].map(size=>'<button class="cc-secondary" data-card-size="index-'+size+'" data-photo="'+scaleIndex+'">'+size.replace('x',' × ')+' in</button>').join('')+'</div>':'';
  const manual=photo?'<button id="ccMarkEdges" class="cc-inline">Mark the edges yourself</button><div id="ccEdgePicker"></div>':'';
- return '<div class="cc-size-result"><strong>'+esc(headline)+'</strong>'+matchChoice+
-  '<details '+(card&&!matched?'open':'')+'><summary>Measure with a card</summary>'+
+ return '<div class="cc-size-result"><strong>'+esc(headline)+'</strong>'+result+matchChoice+(!first.nativeScan&&!matched?sweepOption(true):'')+
+  '<details '+(card&&info.scaleView?'open':'')+'><summary>Optional index-card measurement</summary>'+
   '<p>Lay a blank 3 × 5 or 4 × 6 in index card flat on the wood, near the middle. Take a photo straight down with both ends in view.</p>'+detected+upload+manual+'</details></div>';
 }
 function openEdgePicker(photo,info,stillCurrent) {
@@ -222,13 +240,34 @@ function bind(){const boundEpoch=sessionEpoch,sessionCurrent=()=>boundEpoch===se
    if(!info)return;
    openEdgePicker(st.request.photos[i],info,sessionCurrent);
  };
+ if($('ccChooseSweep'))$('ccChooseSweep').onclick=()=>{if(sessionCurrent())$('ccSweepFile').click();};
+ if($('ccSweepFile'))$('ccSweepFile').onchange=e=>{
+   const file=e.target.files?.[0];e.target.value='';
+   if(file&&sessionCurrent())return run(()=>importSweep(file));
+ };
+ if($('ccUseSweep'))$('ccUseSweep').onclick=()=>run(async()=>{
+   if(!sessionCurrent())return;
+   const scan=flow.state().plankEvidence[0]?.nativeScan;
+   if(scan){flow.applyPhotoSize({source:'native-sweep',...scan});changed();await checkpoint();render();}
+ });
+ if($('ccSecondView'))$('ccSecondView').onclick=()=>{if(sessionCurrent()){$('ccFile').dataset.extra='1';$('ccFile').click();}};
  if($('ccScaleView'))$('ccScaleView').onclick=()=>{if(sessionCurrent()){$('ccFile').dataset.extra='scale';$('ccFile').click();}};
  if($('ccStock'))$('ccStock').onchange=()=>run(async()=>{flow.selectStock(pub,$('ccStock').value);changed();await checkpoint();render();status(flow.state().boardSpec?'Your shop board’s measurements are ready. Position your design on the photo.':'Board selected. Continue your design; measurements remain to be confirmed.');});
  if($('ccPlacement'))$('ccPlacement').onchange=()=>{if(boundEpoch!==sessionEpoch||!started||ending||expired)return;flow.state().request.board.frameConfirmed=$('ccPlacement').checked;changed();status('');};
  if($('ccApproval'))$('ccApproval').onchange=()=>{if(sessionCurrent())status('');};
  if($('ccLayout'))$('ccLayout').onclick=()=>{if(!sessionCurrent()||busy||editing)return;const epoch=sessionEpoch,st=flow.state(),photo=st.request.photos[0];editing=true;readyControls();try{g.CarvewrightStudio.openEmbedded({customerFacing:true,draft:S.clone(st.request.design),measuredStock:st.boardSpec,boardPhoto:{photo:S.clone(photo),board:S.clone(st.request.board),boardArea:S.clone(st.plankEvidence[0]?.boardArea||null)},parent:$('ccApp'),guard:()=>epoch===sessionEpoch&&started&&!receipt&&!flow.state().frozen,onUse:(design,board)=>{if(epoch!==sessionEpoch)return;flow.useDesign(design,board);changed();},onClose:()=>{if(epoch!==sessionEpoch)return;editing=false;render();}});}catch(e){editing=false;status(e.message,true);readyControls();}};
  if($('ccTake'))$('ccTake').onclick=()=>sessionCurrent()&&run(openCamera);if($('ccChoose'))$('ccChoose').onclick=()=>{$('ccFile').dataset.extra='';$('ccFile').click();};if($('ccAddReference'))$('ccAddReference').onclick=()=>{$('ccFile').dataset.extra='1';$('ccFile').click();};for(const id of ['ccFile','ccCameraFile'])if($(id))$(id).onchange=e=>{if(!sessionCurrent())return;const f=e.target.files?.[0],extra=e.target.dataset.extra||false;if(f)run(()=>addPhoto(f,extra));};if($('ccRotate'))$('ccRotate').onclick=()=>run(async()=>{const r=flow.state().request;r.board=B.createBoard(r.design,r.photos[0],((r.board?.quarterTurns||0)+1)%4,flow.state().plankEvidence[0]?.boardArea);changed();render();status('Board orientation updated. Check the lettering on your board.');});}
-async function addPhoto(file,extra=false,sample=false){
+async function importSweep(file){
+ if(file.size>9*1024*1024)throw Error('Choose a Sightline scan smaller than 9 MB.');
+ const input=await active(file.text());
+ let packet;
+ try{packet=JSON.parse(input);}catch{throw Error('Choose the JSON file saved by Sightline.');}
+ const measurement=g.CarvewrightCapture.readNative(packet);
+ const jpeg=Uint8Array.from(atob(packet.imageJpegBase64),ch=>ch.charCodeAt(0));
+ const face={captureId:measurement.captureId,lengthMm:measurement.widthMm,widthMm:measurement.heightMm};
+ await addPhoto(new File([jpeg],'sightline-board.jpg',{type:'image/jpeg'}),false,false,face);
+}
+async function addPhoto(file,extra=false,sample=false,nativeScan=null){
  const p=await active(S.normalizePhoto(file)),st=flow.state(),r=st.request;
  const info=await active(g.CountercraftRecognition.analyze(p).catch(()=>({species:null,length:null,orientation:null})));
  if(g.IkePhotoSize){
@@ -239,6 +278,7 @@ async function addPhoto(file,extra=false,sample=false){
    }catch(e){if(e.code==='STALE_CUSTOMER')throw e;}
  }
  info.photoId=p.id;
+ if(nativeScan)info.nativeScan=nativeScan;
  if(extra){
    if(extra==='scale'&&r.photos[1]){
      // Keep references supplied for other purposes when replacing a scale photo.
@@ -260,6 +300,7 @@ async function addPhoto(file,extra=false,sample=false){
    if(preview)pub=sample?{...emptyPublication,stocks:[sampleStock],rates:[{species:'Cedar',centsPerFoot:1500}]}:emptyPublication;
    flow.selectStock(pub,sample?sampleStock.id:'');
    r.board=B.createBoard(r.design,p,0,info.boardArea);
+   if(nativeScan)flow.applyPhotoSize({source:'native-sweep',...nativeScan});
    if(st.step===0)flow.next();
  }
  changed();await checkpoint();render();

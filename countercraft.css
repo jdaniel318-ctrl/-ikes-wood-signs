@@ -164,3 +164,6 @@ body.cc-customer{display:flex;flex-direction:column;min-height:100vh;min-height:
 .cc-actions:empty{display:none}
 .cc-scale-image{display:block;width:100%;height:auto;margin-block:8px;border-radius:6px;background:#f2ebdc}
 #ccEdgePicker .cc-scale-image{cursor:crosshair;touch-action:manipulation}
+
+.cc-capture-start .cc-inline{background:transparent;color:var(--cc-blue);padding-inline:0;text-decoration:underline}
+.cc-sweep-option{margin-top:12px}.cc-sweep-option summary{cursor:pointer;padding-block:10px}
