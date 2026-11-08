@@ -357,7 +357,19 @@ function welcome(){
  document.body.classList.remove('cc-plank-screen');
  started=false;
  $('ccExit').hidden=true;
- app.innerHTML='<section class="cc-welcome"><div><div class="cc-eyebrow">Choose your board. Make it yours.</div><h1 id="ccWelcomeTitle">Your words.<br>Ike’s craftsmanship.</h1><p class="cc-lead">Choose a board from Ike’s shop, create your design, and see your sign take shape.</p><button id="ccBegin">Design my sign →</button><div class="cc-promise"><span>Boards from Ike’s shop</span><span>Your exact wording</span><span>Ike’s personal review</span></div></div><img class="cc-welcome-art" src="ike_character.png" alt="Ike, ready to help make your sign"></section>';
+ app.innerHTML=`
+   <section class="cc-welcome" aria-labelledby="ccWelcomeTitle">
+     <div class="cc-welcome-copy">
+       <h1 id="ccWelcomeTitle">Make a sign<br><em>with Ike.</em></h1>
+       <p class="cc-lead">Start with a photo of your board. See your words on the wood before Ike reviews your design.</p>
+       <button id="ccBegin" type="button">Design my sign <span aria-hidden="true">→</span></button>
+     </div>
+     <div class="cc-ike-panel">
+       <div class="cc-ike-portrait">
+         <img src="ike_character.png" alt="Ike in his blue shop shirt, leaning on a wooden plank." width="240" height="460">
+       </div>
+     </div>
+   </section>`;
  $('ccActions').replaceChildren();
  if(g.BlackFlagViewport)g.BlackFlagViewport.landAtHeader($('ccWelcomeTitle'));
  else window.scrollTo({top:0,behavior:'instant'});
