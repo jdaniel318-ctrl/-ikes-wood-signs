@@ -1,27 +1,13 @@
-WONDERWAKE — FIRST LIGHT 0.1.0
-A NEW LEARNING SHIP. NOT A HARBOR UPDATE.
+WONDERWAKE 15 · LANTERN HARBOR · DANIEL SCHOOL OF EXCELLENCE
 
-DO NOT upload these files into -ikes-wood-signs or overwrite its index.html.
+1. In the existing Wonderwake, choose each explorer and tap “Keep a progress copy” to back up their work. Save any open painting.
+2. Unzip the new package. Open Wonderwake15-LanternHarbor and upload all the top-level files inside that folder together to the root of the existing wonderwake repository. Keep the verification and recovery folders on your device.
+3. When GitHub Pages finishes, open https://jdaniel318-ctrl.github.io/wonderwake/ in your usual browser and refresh. Look for “LANTERN HARBOR · FAMILY EDITION 0.11.0” in the footer.
 
-1. Create a NEW GitHub repository named wonderwake in your account.
-2. Extract Wonderwake01.zip. Open its one folder. Upload ALL files INSIDE to the new repository root and commit.
-3. In that NEW repository: Settings > Pages > Deploy from a branch > main > /(root) > Save.
+PLAY WITH TWO LEARNERS
+Choose “+ Add learner” for each child and use a nickname. Up to 24 local profiles can use the same browser, including three starter explorers. Tap the current explorer’s name at the top to switch. Work in one active game tab. Progress files can be carried to another device using the existing per-learner export and import.
 
-For account jdaniel318-ctrl, the expected address AFTER successful deployment is:
-https://jdaniel318-ctrl.github.io/wonderwake/
-This address is not live or verified by this package. GitHub Pages shows the actual published URL.
+Try counting the spare lanterns in K–2 math as one child and building a bell pattern in music as another. Switch back and use “Continue my adventure.” Use the K–12 curriculum map to explore suggested goals in each grade. The first playable collection contains 24 lessons across the four grade bands.
 
-Harbor stays 8.8.20.71. No fleet source, database, permissions or records are changed.
-Wonderwake has not been commissioned on the fleet server or added to the six-member Fleet Core.
-
-The learner picker opens first. Start with Starling (the star princess), use the other starter profiles, or choose Add learner. Up to 24 local learners are supported; use nicknames rather than personal information. Choose Skybridge, Wordforge, Letter Trails, Maker Grove or Star Glider.
-Grown-ups can change starting math and spelling levels separately, choose another character, reduce motion and export progress.
-Maker Grove does not require answers or points. It has a pumpkin, celebration tree and robot.
-
-Progress is local to this device and browser, not cloud synchronized. Save success requires readback.
-If saving fails, use 'Keep a progress copy' before leaving. Do not clear Safari website data.
-Exported progress is not encrypted. Keep it privately. Never upload learner exports to a public repository.
-The preview page itself has no access-control gate and is public if published.
-
-Native iPad Safari, Apple Pencil, actual IndexedDB persistence and browser speech still need acceptance testing.
-This is a playable first expedition with K–12 seed practice, NOT a complete or independently reviewed K–12 curriculum.
+RECOVERY
+Keep a fresh progress copy for each explorer before changing releases. recovery/Wonderwake14-Skybloom.zip holds the preceding application code. The older app predates school checkpoints. To restore a Lantern Harbor progress file and keep its school work, install Lantern Harbor first. Keep your website data on this device.

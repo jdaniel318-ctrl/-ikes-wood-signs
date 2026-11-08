@@ -1,8 +1,10 @@
-# Multiple learners — Wonderwake First Light
+# Multiple learners — Wonderwake Lantern Harbor
 
 The learner picker opens when the page starts. Select a starter profile (Starling, Comet or Aurora), or use **Add learner**. Up to **24 local profiles total** are supported for this family preview, including the three starters. Use nicknames, not real names or dates of birth.
 
 Each learner has a stable ID separate from their nickname. Mathematics, spelling, practice evidence, discovery sparks, studio creations, character, sound, motion and lighting settings belong to that learner. A teenager can start with high-school sample challenges while another learner practices counting. Choosing an advanced starting challenge does not mark earlier topics mastered.
+
+Lantern Harbor keeps an individual checkpoint, subject paths, practice history and selected grade band for every explorer. A completed lesson can be replayed. Earlier-band review preserves a higher level already in progress for that subject. A school checkpoint travels in the same individual progress file as the explorer’s other work. Workbench experiments are temporary; use Colorwake to keep a painting in the gallery.
 
 ## Switch and manage
 

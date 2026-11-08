@@ -1,0 +1,12 @@
+LANTERN HARBOR 0.11.0
+
+All 24 school lessons and 72 challenges completed in Chromium and WebKit browser engines. From the normal picker, two new explorers were created and tested for isolated progress after switching and reloading. The tests cover reviewing an earlier lesson with an active higher level, resuming that higher level, exporting and reading back a single explorer’s progress, and displaying all six illustrated subject cards. The hub, a lesson and the grade map were checked at 390 pixels wide. The main family tests used a 1024 × 768 tablet viewport. Native iPad Safari and Pencil were not exercised.
+
+Run the core tests with Node:
+  node --test verification/*unit.cjs
+Run the family flow with Playwright installed:
+  node verification/lantern-family-browser.cjs chromium
+  node verification/lantern-family-browser.cjs webkit
+WW_BROWSER_BIN can point to the chosen browser executable.
+
+Skybloom and older test reports in verification/ are historical.

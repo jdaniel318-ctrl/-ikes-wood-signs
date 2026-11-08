@@ -35,7 +35,7 @@ function shuffled(a,r){a=a.slice();for(let i=a.length-1;i>0;i--){let j=Math.floo
 function mathQuestion(index,seed=1){const s=math[index];if(!s)throw Error('Unknown math skill');const r=rng(seed+index*3517),ri=(a,b)=>a+Math.floor(r()*(b-a+1));let a,b,c,answer,prompt,hint,explanation,visual={type:'crystal'},options;
 switch(s.key){
 case'count':a=ri(1,10);answer=a;prompt='How many crystals are glowing?';hint='Touch each crystal once and say one number each time.';explanation=`There are ${a} crystals. The last counting number tells how many.`;visual={type:'count',n:a};break;
-case'compare':a=ri(1,8);b=ri(a+1,10);answer=b;prompt=`Which number is greater: ${a} or ${b}?`;hint='A group with more objects has the greater number.';explanation=`${b} is greater than ${a} because it is farther along the number line.`;visual={type:'groups',a,b,op:'or'};break;
+case'compare':a=ri(1,8);b=ri(a+1,10);if(r()<.5)[a,b]=[b,a];answer=Math.max(a,b);options=[a,b];prompt=`Which number is greater: ${a} or ${b}?`;hint='A group with more objects has the greater number.';explanation=`${answer} is greater than ${Math.min(a,b)} because it is farther along the number line.`;visual={type:'groups',a,b,op:'or'};break;
 case'add10':a=ri(1,5);b=ri(1,10-a);answer=a+b;prompt=`${a} + ${b} = ?`;hint='Join both groups. Count all the crystals.';explanation=`${a} crystals and ${b} more make ${answer}.`;visual={type:'groups',a,b};break;
 case'sub10':a=ri(3,10);b=ri(1,a);answer=a-b;prompt=`${a} − ${b} = ?`;hint=`Start with ${a}. Take ${b} away, then count what remains.`;explanation=`Taking ${b} from ${a} leaves ${answer}.`;visual={type:'take',n:a,removed:b};break;
 case'shapes':a=ri(0,3);const names=['triangle','square','pentagon','hexagon'];answer=names[a];prompt='What is the name of this shape?';hint='Count the straight sides. A square has four equal sides and four right angles.';explanation=`This ${answer} has ${a+3} sides${a===1?' and four right angles':''}.`;options=names;visual={type:'polygon',sides:a+3};break;
@@ -69,7 +69,7 @@ if(!options){const set=new Set([answer]);for(let k=1;set.size<4;k++)set.add(Math
 // Compare mathematical values, not just strings: 1/2 and 2/4 are one choice.
 const optionValue=x=>{if(typeof x==='string'&&x.includes('/')){const z=x.split('/').map(Number);return Math.round(z[0]/z[1]*1e9)/1e9;}const n=Number(x);return Number.isFinite(n)?Math.round(n*1e9)/1e9:String(x);};
 const unique=new Map();for(const option of options)unique.set(optionValue(option),option);
-for(let k=1;unique.size<4;k++){const extra=Number(answer)+k;if(Number.isFinite(extra))unique.set(optionValue(extra),extra);else unique.set('option-'+k,'option-'+k);}
+for(let k=1;unique.size<(s.key==='compare'?2:4);k++){const extra=Number(answer)+k;if(Number.isFinite(extra))unique.set(optionValue(extra),extra);else unique.set('option-'+k,'option-'+k);}
 options=[...unique.values()].slice(0,4);
 return {id:s.id,skill:s.title,band:s.band,prompt,answer,options:shuffled(options,r),hint,explanation,visual,signature:s.id+':'+prompt+':'+JSON.stringify(visual)};
 }

@@ -1,0 +1,77 @@
+/* Daniel School workbenches are self-contained and inherit the lesson typeface. */
+.dschool-studio {
+  --studio-bg: #0d2932;
+  --studio-panel: #143742;
+  --studio-stroke: #46707a;
+  --studio-text: #f4f4e9;
+  --studio-dim: #c4d8d7;
+  --studio-gold: #ffde92;
+  margin: 1rem 0;
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--studio-stroke);
+  border-radius: 14px;
+  background: var(--studio-bg);
+  color: var(--studio-text);
+  color-scheme: dark;
+  text-align: left;
+  line-height: 1.45;
+}
+.dschool-studio, .dschool-studio * { box-sizing: border-box; }
+.dschool-studio > summary {
+  display: list-item;
+  min-height: 48px;
+  padding: 12px 16px;
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--studio-text);
+}
+.dschool-studio > summary::marker { color: var(--studio-gold); }
+.dschool-studio[open] > summary { border-bottom: 1px solid var(--studio-stroke); }
+.dschool-studio .ds-tray { display: grid; gap: .8rem; padding: .9rem; }
+.dschool-studio p { margin: 0; font-size: .95rem; color: var(--studio-dim); }
+.dschool-studio .ds-row { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; }
+.dschool-studio .ds-button, .dschool-studio select, .dschool-studio input[type=text] {
+  appearance: none; font: inherit; line-height: 1.2; min-height: 44px;
+  padding: .48rem .75rem; border: 1px solid var(--studio-stroke);
+  border-radius: 8px; background: var(--studio-panel); color: var(--studio-text);
+}
+.dschool-studio .ds-button { cursor: pointer; font-weight: 650; width: auto; min-width: 44px; margin: 0; }
+.dschool-studio .ds-button:disabled { opacity: .55; cursor: default; }
+.dschool-studio button[aria-pressed=true], .dschool-studio .ds-beat.ds-now {
+  background: #ffe09b; border-color: #ffedc5; color: #172e35;
+}
+.dschool-studio :focus-visible { outline: 3px solid #a5eeee; outline-offset: 2px; }
+.dschool-studio output { display: block; color: var(--studio-gold); font-weight: 700; font-size: .98rem; }
+.dschool-studio .ds-small { font-size: .83rem; color: var(--studio-dim); }
+.dschool-studio .ds-palette .ds-button { display: inline-flex; align-items: center; gap: .4em; }
+.dschool-studio .ds-swatch { width: .75rem; height: .75rem; border: 1px solid #869294; border-radius: 50%; display: inline-block; }
+.dschool-studio .ds-paper {
+  display: block; width: 100%; max-width: 52rem; height: auto; aspect-ratio: 2 / 1; border: 1px solid #b0c2bb;
+  border-radius: 9px; touch-action: none; background: #fcf3dc; cursor: crosshair;
+}
+.dschool-studio .ds-grid { display: grid; max-width: 36rem; gap: .38rem; }
+.dschool-studio .ds-frames { grid-template-columns: repeat(5,minmax(0,1fr)); }
+.dschool-studio .ds-lamp[aria-pressed=true] { box-shadow: inset 0 -3px 0 #d68a3c; }
+.dschool-studio .ds-lamp { width: 100%; }
+.dschool-studio .ds-frac { grid-template-columns: repeat(var(--parts,4),minmax(0,1fr)); gap: 3px; }
+.dschool-studio .ds-frac .ds-button { width: 100%; min-width: 0; padding-inline: 0; }
+.dschool-studio .ds-scale, .dschool-studio .ds-control { display: grid; gap: .25rem; font-size: .87rem; }
+.dschool-studio input[type=range] { accent-color: #ffdd94; width: 100%; min-height: 38px; margin: 0; }
+.dschool-studio .ds-chart { width: 100%; height: 190px; background: #10333d; border-radius: 8px; }
+.dschool-studio .ds-beats { grid-template-columns: repeat(4,minmax(0,1fr)); }
+.dschool-studio .ds-beat { display: grid; justify-items: center; gap: 2px; width: 100%; }
+.dschool-studio .ds-beat span { font-size: .78rem; font-weight: 500; }
+.dschool-studio .ds-beat.ds-now { outline: 3px double #fff; outline-offset: 0; }
+.dschool-studio .ds-field { display: grid; gap: .25rem; font-size: .9rem; }
+.dschool-studio .ds-field input { min-width: 0; width: 100%; }
+.dschool-studio .ds-answer { min-height: 2.5rem; border-left: 3px solid #edc880; background: #152f34;
+  padding: .55rem .7rem; overflow-wrap: anywhere; color: var(--studio-text); font-weight: 600; }
+@media (min-width: 540px) {
+  .dschool-studio .ds-beats.ds-eight { grid-template-columns: repeat(8,minmax(0,1fr)); }
+  .dschool-studio .ds-twin { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+}
+@media (max-width:360px) {
+  .dschool-studio .ds-tray { padding: .65rem; }
+  .dschool-studio .ds-frac { grid-template-columns: repeat(4,minmax(0,1fr)); }
+}

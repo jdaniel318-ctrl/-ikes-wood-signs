@@ -2,8 +2,8 @@
   "schema": "blackflag-draft-vessel-descriptor-v1",
   "project_key": "wonderwake",
   "display_name": "Wonderwake",
-  "release": "First Light",
-  "version": "0.1.0",
+  "release": "Lantern Harbor",
+  "version": "0.11.0",
   "lifecycle": "draft_family_preview",
   "commissioned_on_server": false,
   "fleet_core_membership_changed": false,
@@ -23,18 +23,42 @@
     "math_seed_skills": 30,
     "spelling_words": 120,
     "complete_k12": false,
-    "teacher_review": "pending"
+    "teacher_review": "pending",
+    "school": "Daniel School of Excellence",
+    "playable_school_lessons": 24,
+    "school_challenges": 72,
+    "school_grade_goals": 78,
+    "school_grade_bands": [
+      "K–2",
+      "3–5",
+      "6–8",
+      "9–12"
+    ],
+    "school_subjects": [
+      "Math",
+      "Spelling",
+      "Grammar",
+      "Science",
+      "Art",
+      "Music"
+    ]
   },
   "modules": [
     "mathematics",
     "spelling",
     "letter_trails",
     "maker_grove",
-    "star_glider"
+    "star_glider",
+    "colorwake_painting",
+    "learner_picture_gallery",
+    "guided_drawing_answers",
+    "lantern_trail",
+    "lantern_harbor_school",
+    "subject_workbenches",
+    "grade_map"
   ],
   "future_modules_not_implemented": [
     "comprehensive_reviewed_k12",
-    "science",
     "contextual_writing",
     "cloud_progress",
     "parent_accounts",
@@ -49,6 +73,83 @@
     "separate_creations": true,
     "cloud_sync": false,
     "parent_account_security": false,
-    "multi_tab_editing_supported": false
+    "multi_tab_editing_supported": false,
+    "separate_school_checkpoints": true
+  },
+  "fleet_connection": {
+    "type": "explicit-preview-launch",
+    "no_authority_transfer": true,
+    "no_learner_transfer": true,
+    "not_server_commissioning": true,
+    "public_passport": "manual, static release metadata only",
+    "last_recorded_engine_build": "8.8.20.72",
+    "current_engine_verified": false,
+    "handoff": "FLEET_HANDOFF.md"
+  },
+  "creative_exchange": {
+    "format": "restricted SVG subset to learner-owned PNG",
+    "source_limit_bytes": 262144,
+    "image_max_pixels": 512,
+    "upstream_runtime_embedded": false,
+    "native_vectorcraft_roundtrip_verified": false,
+    "artcraft_services_included": false,
+    "default_dinosaur": "Fern the triceratops"
+  },
+  "creative_controls": {
+    "custom_colors_per_learner": 16,
+    "size_range": [
+      1,
+      40
+    ],
+    "tool_sizes_remembered": true,
+    "outside_gesture_dismisses_without_drawing": true,
+    "strokes_per_picture": 2000,
+    "sampled_points_per_picture": 50000,
+    "layers_per_picture": 6,
+    "neutral_gray_values": 256,
+    "per_tool_opacity_range": [
+      1,
+      100
+    ],
+    "soft_shading_brush": true,
+    "layer_local_eraser": true,
+    "editable_gallery_pictures": true
+  },
+  "lantern_trail": {
+    "chapters": 3,
+    "puzzles_per_chapter": 3,
+    "types": [
+      "bridge-fit",
+      "drawn-path",
+      "lantern-reveal-code"
+    ],
+    "sparks_once_per_chapter": 10,
+    "max_path_points": 1200,
+    "local_checkpoint_resume": true,
+    "backup_included": true,
+    "academic_mastery_awarded": false
+  },
+  "maker_grove": {
+    "shape_and_draw_modes": true,
+    "finger_draw_switches_tool": true,
+    "ink_per_learner": true,
+    "strokes_per_creation": 2000,
+    "points_per_creation": 50000
+  },
+  "guided_answers": {
+    "dots_and_written_numbers": true,
+    "handwriting_automatically_recognized": false,
+    "written_number_confirmed_by_child": true
+  },
+  "star_glider": {
+    "distinct_targets_per_flight": 5,
+    "number_range": [
+      1,
+      12
+    ],
+    "wrong_hit_penalty": false,
+    "academic_mastery_awarded": false,
+    "dedicated_landing": true,
+    "readback_checked_save": true
   }
 }

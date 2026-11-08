@@ -1,4 +1,8 @@
-# Wonderwake learning contract and expansion map
+# Daniel School of Excellence · Lantern Harbor
+
+The school offers 24 original lessons, with three challenges and a subject workbench in every grade band for math, spelling, grammar, science, visual art and music. The curriculum map suggests six goals for each of the 13 grades. See the references in the map. Learners choose their own grade band in each subject and can revisit material. The third challenge tests the same idea in a new context. Completing it records practice; grade placement and certification need independent assessment. Educator review is pending.
+
+## Earlier islands and their learning design
 
 ## Scope: seeds now, not a completed school curriculum
 

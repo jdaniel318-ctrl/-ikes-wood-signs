@@ -1,0 +1,104 @@
+.school-arrival-art{display:block;width:100%;height:100%;max-height:290px;object-fit:cover;object-position:50% 51%}
+.ds,.ds-entry{--sea:#163d45;--paper:#fcf8ec;--rule:#cfceba;--muted:#526b69;--gold:#f8d28c;color:var(--sea);font-family:'Avenir Next',system-ui,sans-serif}
+.ds{background:#f6f2e6;min-height:70vh;padding:clamp(16px,3.5vw,52px);margin:0 auto}
+.ds button,.ds-entry button,.ds select{font:inherit;cursor:pointer}
+.ds-top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:16px;color:#365653;font-weight:700;font-size:.88rem}
+.ds h1,.ds-entry h1,.ds h2,.ds h3{font-family:Georgia,'Times New Roman',serif;line-height:1.06}
+.ds h1,.ds h2,.ds h3,.ds p,.ds-entry h1,.ds-entry p{margin:0}
+.ds h1:focus,.ds h2:focus{outline:0}
+.ds-hero,.ds-place{position:relative;isolation:isolate;background:#19383b;border-radius:16px;overflow:hidden;color:#fff7e1}
+.ds-entry{margin:0 0 24px}
+.ds-hero::before{content:"";position:absolute;inset:0;background-image:linear-gradient(90deg,rgba(9,37,42,.96) 1%,rgba(9,37,42,.78) 27%,rgba(8,32,35,.09) 60%),url('lantern-harbor.webp');background-position:center,50% 55%;background-size:cover;z-index:-1}
+.ds-hero.ds-older::before{background-image:linear-gradient(90deg,rgba(10,29,32,.87) 0%,rgba(10,29,32,.50) 36%,rgba(10,29,32,0) 70%),url('tide-room.webp');background-position:center,50% 58%}
+.ds-cover{padding:clamp(22px,4vw,68px);max-width:31rem;min-height:clamp(220px,25vw,355px);display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:10px}
+.ds-cover>span,.ds-label{font:750 .71rem/1.3 system-ui,sans-serif;letter-spacing:.12em;text-transform:uppercase}
+.ds-cover>span,.ds-place .ds-label{color:#ffe0a0}
+.ds-cover h1,.ds-entry .ds-cover h1{font:500 clamp(2.55rem,5.2vw,5rem)/.97 Georgia,serif;color:#fff5db;letter-spacing:-.045em}
+.ds-cover p,.ds-entry .ds-cover p,.ds-place p{font-size:1rem;line-height:1.48;color:#fff6e4;max-width:36ch;text-wrap:pretty}
+.ds-cover small{color:#f8dcaa}
+.ds button.ds-primary,.ds-entry button.ds-primary,.ds .ds-back,.ds .ds-link,.ds .ds-bands button{min-height:44px;font-weight:700;line-height:1.25}
+.ds button.ds-primary,.ds-entry button.ds-primary{padding:12px 20px;border-radius:8px;background:#fed28d;color:#15383d;border:1px solid #fbe4ae}
+.ds .ds-back{background:#fffdf3;border:1px solid #acb5a8;border-radius:8px;color:#204c50;padding:8px 13px}
+.ds .ds-link{background:transparent;color:#305958;text-decoration:underline;text-underline-offset:.2em;text-align:left;padding:4px 0}
+.ds .ds-bands{display:flex;gap:5px;flex-wrap:wrap}
+.ds .ds-bands button{background:transparent;color:#305050;border:1px solid #bdc8b9;border-radius:22px;padding:8px 13px;font-size:.84rem}
+.ds .ds-bands button[aria-pressed=true]{background:#17444b;color:#fff7e6;border-color:#17444b}
+.ds-shelf{display:flex;align-items:end;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:24px 0 15px}
+.ds-shelf h2,.ds-wrap h2,.ds-map h2{font-size:clamp(1.6rem,2.5vw,2.4rem);letter-spacing:-.025em}
+.ds-shelf p{font-size:.85rem;color:var(--muted);margin-top:5px}
+.ds-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(12px,1.8vw,24px)}
+.ds .ds-card{position:relative;background:var(--paper);border:1px solid var(--rule);border-radius:12px;padding:0;display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;overflow:hidden;color:var(--sea);text-align:left;min-width:0;box-shadow:0 3px 7px #403b2010}
+.ds-station-picture{display:block;width:100%;object-fit:cover;height:auto;aspect-ratio:2.6 / 1;border-bottom:1px solid #3f3b2529}
+.ds-card .ds-card-body{padding:13px 37px 16px 15px;position:relative}
+.ds-arrow{position:absolute;right:13px;bottom:13px;color:#42665f;font-size:1.2rem}
+.ds .ds-card:hover,.ds .ds-card:focus-visible{border-color:#417673;background:#fffdf6}
+.ds-card-body{flex:1;min-width:0;display:grid;align-content:start;gap:5px}
+.ds-card .ds-label,.ds-map>.ds-label,.ds-qmeta>.ds-label{color:#456a65}
+.ds-card strong{font:700 clamp(1.15rem,1.7vw,1.55rem)/1.16 Georgia,serif}
+.ds-card small,.ds-card em{font-size:.85rem;line-height:1.4}
+.ds-card small{color:#3c5653}.ds-card em{font-style:normal;font-weight:700;color:#336c55}
+.ds-play-grid{display:grid;grid-template-columns:minmax(0,.86fr) minmax(0,1.14fr);gap:clamp(14px,3vw,34px)}
+.ds-place{min-height:270px;display:flex;align-items:end}
+.ds-place>div{padding:clamp(16px,3vw,40px);max-width:31rem}.ds-place h1{font-size:clamp(2rem,3.3vw,3.8rem);margin:7px 0 12px}
+.ds-question,.ds-wrap{background:var(--paper);padding:clamp(15px,2.7vw,34px);border:1px solid var(--rule);border-radius:12px}
+.ds-question h2{font-size:clamp(1.5rem,2.4vw,2.1rem);line-height:1.22;text-wrap:pretty}
+.ds-qmeta,.ds-actions{display:flex;align-items:center;gap:10px 18px;flex-wrap:wrap;justify-content:space-between}
+.ds-answers{display:grid;gap:8px;margin:15px 0}
+.ds .ds-answers button{min-height:45px;text-align:left;color:#244846;background:#fffdf6;border:1px solid #a5b8ac;padding:10px 16px;border-radius:8px;font-weight:650}
+.ds .ds-answers button:disabled{opacity:.65}.ds .ds-answers .ds-correct{background:#ceefd9;opacity:1;border-color:#397251}
+.ds-feedback:not(:empty),.ds-coach{border-left:3px solid #9e7542;background:#f5edd8;color:#3d473d;padding:9px 12px;margin:12px 0;line-height:1.45}
+.ds-coach p{margin:6px 0}
+.ds-lamps{background:#183842;display:inline-flex;gap:9px;border-radius:12px;padding:8px 16px;margin-top:14px}
+.ds-lamps span{color:#b0c1c1;font-size:1.25rem;opacity:.6}.ds-lamps .bright{color:#ffdf85;text-shadow:0 0 10px #ffcc60;opacity:1}
+.ds-map{max-width:1000px}.ds-map>.ds-back{display:block;margin-bottom:22px}.ds-map h1{font-size:clamp(2.2rem,5vw,3.8rem);margin:8px 0 12px}.ds-map p{max-width:66ch;line-height:1.5}.ds-map label{display:flex;align-items:center;gap:10px;margin:20px 0;font-weight:700}.ds-map select{min-height:44px;border-radius:6px;padding:6px 14px;border:1px solid #a6b3a7;color:#183f43;background:#fffdf6}
+.ds-map dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.ds-map dl>div{border-top:1px solid #b9c6b9;padding:10px 0}.ds-map dt{font-weight:750}.ds-map dd{margin:6px 0;line-height:1.5}.ds-map details{margin-top:20px}.ds-map summary{cursor:pointer;padding:10px 0;font-weight:700}.ds-map details a{display:block;text-decoration:underline;padding:8px 0}
+.ds-wrap{margin-top:15px}.ds-wrap p{margin:10px 0;line-height:1.5}.ds-wrap .ds-actions{justify-content:flex-start}
+body.night .ds{background:#112e36;color:#eff4e9}body.night .ds-top,body.night .ds .ds-link,body.night .ds-shelf p,body.night .ds-map>.ds-label{color:#d0e6d8}body.night .ds-question,body.night .ds-wrap{color:#163d45}body.night .ds-question .ds-link,body.night .ds-wrap .ds-link{color:#305958}body.night .ds-bands button{color:#e8f4df}
+@media(max-width:940px){.ds-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.ds-play-grid{grid-template-columns:minmax(0,.7fr) minmax(0,1.3fr)}}
+@media(max-width:620px){.ds-cards,.ds-play-grid,.ds-map dl{grid-template-columns:1fr}.ds-entry{margin-bottom:10px}.ds-hero::before{background-image:linear-gradient(90deg,#09252ad9,#09252a96 58%,#09252a30),url('lantern-harbor.webp')}.ds-hero.ds-older::before{background-image:linear-gradient(90deg,#09252ad9,#09252a96 58%,#09252a30),url('tide-room.webp')}.ds-place{min-height:155px}.ds-place>div{padding:14px 18px}.ds-place h1{margin:4px 0}.ds-place p{font-size:.9rem}.ds .ds-band button{font-size:.8rem}.ds-shelf{gap:10px}.ds-card-body{gap:3px}.ds-top{margin-bottom:9px}.school-arrival-art{max-height:150px}.topbar{flex-wrap:wrap}.topbar nav{max-width:100%;flex-wrap:wrap;gap:5px}}
+
+/* The same station illustration carries the learner from the shelf to the workbench. */
+.ds-math { --station-art:url('station-math.webp'); --station-x:30%; }
+.ds-spelling { --station-art:url('station-spelling.webp'); --station-x:48%; }
+.ds-grammar { --station-art:url('station-grammar.webp'); --station-x:34%; }
+.ds-science { --station-art:url('station-science.webp'); --station-x:47%; }
+.ds-art { --station-art:url('station-art.webp'); --station-x:42%; }
+.ds-music { --station-art:url('station-music.webp'); --station-x:62%; }
+.ds-place::before { content:"";position:absolute;inset:0;z-index:-1;background-image:linear-gradient(0deg,#082429 2%,#0c282df0 18%,#0c282d1c 70%),var(--station-art);background-size:cover;background-position:center,var(--station-x) 50%; }
+.ds-tools .dschool-studio>summary{position:relative;isolation:isolate;overflow:hidden;min-height:68px;padding:23px 20px;border-radius:13px;color:#fff5d9;text-shadow:0 1px 5px #001b22}
+.ds-tools .dschool-studio>summary::before{content:"";position:absolute;inset:0;z-index:-1;background-image:linear-gradient(90deg,#09272bf7 10%,#102f31c9 44%,#0b2f2b18 95%),var(--station-art);background-size:cover;background-position:center,var(--station-x) 48%}
+.ds-shortcuts{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin:0 0 26px}
+.ds-shortcuts .ds-shortcut{position:relative;isolation:isolate;display:block;overflow:hidden;min-width:0;border:1px solid #47615d;padding:0;border-radius:10px;background:#193b3f}
+.ds-shortcut img{display:block;width:100%;height:auto;object-fit:cover;aspect-ratio:1.85 / 1}
+.ds-shortcut span{position:absolute;inset:auto 0 0;text-align:left;padding:14px 10px 7px;background:linear-gradient(transparent,#0a2a2eec);color:#fff8e5;font:700 1rem Georgia}
+.profiles .profile-card{padding:0;overflow:hidden;display:flex;flex-direction:column;align-items:stretch;text-align:left}
+.profiles .profile-card>div{padding:0 15px 15px}
+.profiles .profile-card p{margin:3px 0 10px;max-width:none}
+.ds-explorer-scene{position:relative;display:block;overflow:hidden;width:100%;height:98px;background-size:cover;background-position:center 60%;isolation:isolate}
+.ds-explorer-scene::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(0deg,#15373d9e,transparent 70%)}
+.profiles .profile-card canvas{position:absolute;bottom:3px;left:8px;width:110px;height:74px;filter:drop-shadow(0 2px 2px #19363dcc)}
+.ds .ds-card:focus-visible,.ds-shortcuts button:focus-visible{outline:3px solid #248074;outline-offset:2px}
+.ds-lamps{gap:12px;padding:14px 18px;min-height:58px;align-items:center}
+.ds-lamps span{display:block;position:relative;width:21px;height:27px;border:2px dashed #bcc5be;border-radius:5px 5px 8px 8px;opacity:.9;background:#30474a}
+.ds-lamps span::before{content:"";position:absolute;width:10px;height:7px;left:50%;top:-8px;transform:translateX(-50%);border:2px solid #bca172;border-bottom:0;border-radius:7px 7px 0 0}
+.ds-lamps span::after{content:"";position:absolute;bottom:-4px;left:-2px;right:-2px;height:4px;border-radius:3px;background:#aa9168}
+.ds-lamps .bright{background:radial-gradient(ellipse at center,#ffffc2 12%,#ffd675 52%,#bd6a23);border:2px solid #e4b96f;box-shadow:0 0 12px #ffd87e61}
+.ds-flags span,.ds-flags .bright{height:23px;width:23px;border-radius:0 3px 8px 0;box-shadow:none}
+.ds-flags span::before{left:-3px;top:-4px;transform:none;border:0;border-radius:2px;background:#ddbd85;width:3px;height:30px}
+.ds-flags span::after{display:none}
+@media(max-width:940px){.ds-shortcuts{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:620px){
+ .ds .ds-card{display:grid;grid-template-columns:32% minmax(0,1fr);align-items:stretch;min-height:106px}
+ .ds-station-picture{height:100%;width:100%;aspect-ratio:auto;border-bottom:0;object-position:var(--station-x) center}
+ .ds-card .ds-card-body{padding:12px 20px 12px 12px}.ds-arrow{right:6px;bottom:6px}
+ .ds-shortcuts{gap:6px;margin-bottom:16px}.ds-shortcut img{aspect-ratio:1.5 / 1}
+ .ds-place::before{background-image:linear-gradient(90deg,#0b262bf2 0%,#0c282db0 55%,#0c282d16 100%),var(--station-art)}
+ .profiles .profile-card{display:grid;grid-template-columns:31% minmax(0,1fr);gap:8px}
+ .profiles .profile-card>div{padding:4px 12px 9px 3px}.profiles .profile-card h3{margin:5px 0}
+ .ds-explorer-scene{height:100%;min-height:78px}
+ .profiles .profile-card canvas{width:80px;height:58px;left:3px}
+}
+@media(prefers-reduced-motion:no-preference) and (hover:hover) {
+ body:not(.motion-off) .ds-station-picture,body:not(.motion-off) .ds-shortcut img{transition:filter .18s ease}
+ body:not(.motion-off) .ds-card:hover .ds-station-picture,body:not(.motion-off) .ds-shortcut:hover img{filter:brightness(1.08)}
+}
