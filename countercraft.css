@@ -147,3 +147,20 @@ body.cc-customer{display:flex;flex-direction:column;min-height:100vh;min-height:
 .cc-customer main .cc-preview{display:flex;align-items:center;justify-content:center}
 .cc-customer main .cc-preview :is(img,svg){min-height:0;min-width:0}
 @media(min-width:960px) and (max-height:740px){.cc-customer main[data-step="3"]>.cc-eyebrow{display:none}}
+.cc-mode-tools,.cc-capture-start{display:flex;align-items:center;gap:14px}
+.cc-capture-start{gap:clamp(18px,4vw,60px);overflow:hidden}
+.cc-capture-start img{object-fit:contain;width:50%;max-height:44svh;border-radius:8px;background:#f3eee3}
+.cc-board-work>.cc-preview{background:#f4efe5}
+.cc-customer .cc-words{margin-top:12px}
+.cc-customer .cc-words textarea{min-height:46px}
+.cc-size-result{padding:14px 16px;background:#f0f5ed;border-left:4px solid var(--cc-green);border-radius:5px;color:var(--cc-ink)}
+.cc-size-result strong{font-size:1.09rem}.cc-size-result p{margin:6px 0}
+.cc-customer .cc-inline{background:transparent;color:var(--cc-blue);text-decoration:underline;min-height:44px;padding:5px 8px}
+.cc-board-settings details{margin-block:9px}.cc-board-settings summary{cursor:pointer;padding-block:9px;font-weight:700}
+.cc-photo-tools .cc-buttons{flex-wrap:wrap}
+@media(min-width:740px){.cc-design-grid{grid-template-columns:minmax(0,1.55fr) minmax(285px,1fr)}}
+@media(max-width:739px){.cc-capture-start{flex-direction:column;align-items:stretch}.cc-capture-start img{width:100%;max-height:28svh}.cc-mode-tools{gap:5px;flex-wrap:wrap}.cc-header{flex-wrap:wrap}.cc-board-work .cc-preview{min-height:0;height:clamp(145px,30svh,270px)}.cc-board-work .cc-preview svg{height:100%}}
+
+.cc-actions:empty{display:none}
+.cc-scale-image{display:block;width:100%;height:auto;margin-block:8px;border-radius:6px;background:#f2ebdc}
+#ccEdgePicker .cc-scale-image{cursor:crosshair;touch-action:manipulation}

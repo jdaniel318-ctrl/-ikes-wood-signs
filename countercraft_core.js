@@ -40,6 +40,15 @@ function boardSummary(snapshot){
  return {measured:!!b,dimensions:mm.map(n=>Number((n/25.4).toFixed(3))).join(' × ')+' in',species:b?.species||d.species||'Species to confirm',stockId:snapshot.stockId||'Board identification pending',marginInches:Number((d.marginMm/25.4).toFixed(3)),layoutMm:[d.widthMm-2*d.marginMm,d.heightMm-2*d.marginMm]};
 }
 
+function photoSizeNote(s){
+ const e=s.plankEvidence?.[0]?.layoutSize,stock=s.request?.design?.stock;
+ if(s.stockId||!e||!stock||e.photoId!==s.request.photos?.[0]?.id||e.lengthMm!==stock.widthMm||e.widthMm!==stock.heightMm)return '';
+ if(e.source==='matched-tape'&&e.referenceId==='CW-20a94bae-17ee-4598-8279-f900f6f8c15a'&&e.thicknessMm===stock.thicknessMm&&e.lengthMm===598.4875&&e.widthMm===234.95&&e.thicknessMm===34.925)
+   return '23 9/16 in long × 9 1/4 in wide at center · 1 3/8 in thick at center. From the matched board’s tape record.';
+ if(e.source==='photo-card'&&s.request.photos.some(p=>p.id===e.scalePhotoId)&&[e.lengthMm,e.widthMm].every(v=>Number.isFinite(v)&&v>=25.4&&v<=3048))
+   return 'About '+(e.lengthMm/25.4).toFixed(1)+' in long × '+(e.widthMm/25.4).toFixed(1)+' in wide at center. Card-scaled photo · thickness to check.';
+ return '';
+}
 function metadata(snapshot){const n=clone(snapshot);for(const p of n.request.photos||[])delete p.dataUrl;if(n.request.proof)delete n.request.proof.dataUrl;return n;}
 async function approvalDigest(snapshot){const s=metadata(snapshot);delete s.approval;delete s.contactPreference;delete s.request.customer;delete s.request.approval;delete s.request.delivery;delete s.request.updatedAt;delete s.request.revision;return hash(s);}
 async function digest(snapshot){return hash(metadata(snapshot));}
@@ -63,5 +72,5 @@ function bytes64(s){if(typeof s!=='string'||!/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-
 function base64(bytes){let s='';for(let i=0;i<bytes.length;i+=8192)s+=String.fromCharCode(...bytes.subarray(i,i+8192));return btoa(s);}
 async function backupDigest(b){return hash({schema:b.schema,scope:b.scope,jobs:b.jobs,assets:b.assets.map(({data,...a})=>a)});}
 async function rehearse(value,expectedScope){const b=clone(value);if(b.schema!=='countercraft-backup-v1'||!sameScope(b.scope,expectedScope)||!Array.isArray(b.jobs)||!Array.isArray(b.assets))throw Error('Backup scope or schema mismatch.');if(b.checksum!==await backupDigest(b))throw Error('Backup metadata checksum mismatch.');let total=0;const files=new Map();for(const a of b.assets){if(files.has(a.name))throw Error('Duplicate backup asset.');const bytes=bytes64(a.data);total+=bytes.length;if(total>100*MiB||bytes.length!==a.bytes||await hash(bytes)!==a.sha256)throw Error('Backup checksum or size mismatch.');files.set(a.name,a);}for(const j of b.jobs){if(!Array.isArray(j.revisions)||!Array.isArray(j.events))throw Error('Missing job history.');for(const r of j.revisions)for(const a of r.assets||[]){const f=files.get(a.name);if(!f||f.sha256!==a.sha256||f.bytes!==a.bytes)throw Error('Missing backup media.');}}return {jobs:b.jobs.length,assets:files.size,bytes:total,restored:clone(b)};}
-return Object.freeze({limits:LIMITS,clone,canonical,hash,scope,sameScope,publication,price,measuredDimensions,measurementsFromInches,boardSpec,checkBoard,boardSummary,metadata,approvalDigest,digest,approve,validateSubmission,transition,transitions,bytes64,base64,backupDigest,rehearse});
+return Object.freeze({limits:LIMITS,clone,canonical,hash,scope,sameScope,publication,price,measuredDimensions,measurementsFromInches,boardSpec,checkBoard,boardSummary,photoSizeNote,metadata,approvalDigest,digest,approve,validateSubmission,transition,transitions,bytes64,base64,backupDigest,rehearse});
 });

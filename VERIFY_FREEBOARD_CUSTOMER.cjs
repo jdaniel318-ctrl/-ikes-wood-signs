@@ -1,19 +1,26 @@
 'use strict';
 const assert=require('node:assert/strict'),{fixture}=require('./VERIFY_LONGWATCH_IDLE.cjs');
+async function openDesign(f){
+ await f.start();
+ const st=f.flow().state();
+ st.request.photos.push({id:'fixture',width:800,height:400,dataUrl:'data:image/jpeg;base64,/9j/2Q=='});
+ await f.el('ccResumeBoard').onclick();
+ assert.match(f.el('ccApp').innerHTML,/Design your sign/);
+}
 let count=0;async function test(name,fn){await fn();count++;console.log('PASS',name);}
 (async()=>{
 await test('contact input removes leading paste spaces in the visible field',async()=>{const f=fixture();await f.start();f.emit('input',false,'ccEmail',' \u00a0fleet.tester@example.com');assert.equal(f.el('ccEmail').value,'fleet.tester@example.com');assert.equal(f.flow().state().request.customer.email,'fleet.tester@example.com');});
 await test('typing a two-word name preserves the temporary trailing space',async()=>{const f=fixture();await f.start();f.emit('input',false,'ccName','Fleet ');assert.equal(f.el('ccName').value,'Fleet ');f.emit('input',false,'ccName','Fleet Tester');assert.equal(f.flow().state().request.customer.name,'Fleet Tester');});
 await test('edited sign visibly unchecks placement',async()=>{const f=fixture();await f.start();f.flow().state().request.board={frameConfirmed:true};f.el('ccPlacement').checked=true;f.emit('input',false,'ccWording','Fleet Test 4');assert.equal(f.el('ccPlacement').checked,false);});
-await test('design screen has one finish field and no quantity choice',async()=>{const f=fixture();await f.start();f.flow().state().step=2;await f.el('ccBack').onclick();assert(!f.el('ccApp').innerHTML.includes('ccQuantity'));assert.match(f.el('ccActions').innerHTML,/Add contact info/);});
-await test('contact validation appears beside the fields and clears on correction',async()=>{const f=fixture();await f.start();f.flow().state().step=2;f.flow().set('name','');await f.el('ccNext').onclick();assert.match(f.el('ccFieldError').textContent,/Enter your name/);assert.equal(f.el('ccFieldError').hidden,false);f.emit('input',false,'ccName','Fleet Tester');assert.equal(f.el('ccFieldError').hidden,true);});
-await test('retake reuses disabled camera only inside the same customer session',async()=>{
- const f=fixture('preview',c=>{c.IkeShopCore={...c.IkeShopCore,normalizePhoto:async()=>({id:'fixture-photo',width:800,height:600,mime:'image/jpeg',dataUrl:'data:image/jpeg;base64,/9j/2Q==',sha256:'a'.repeat(64)})};});await f.start();let requests=0,stops=0;const track={readyState:'live',enabled:true,stop(){stops++;this.readyState='ended';}},stream={getTracks:()=>[track],getVideoTracks:()=>[track]};
- f.c.navigator.mediaDevices={getUserMedia:async()=>{requests++;return stream;}};f.c.File=File;f.c.document.createElement=()=>({getContext:()=>({drawImage(){}}),toBlob:cb=>cb(new Blob(['fixture']))});
+await test('design screen has one finish field and no quantity choice',async()=>{const f=fixture();await openDesign(f);f.flow().state().step=2;await f.el('ccBack').onclick();assert(!f.el('ccApp').innerHTML.includes('ccQuantity'));assert.match(f.el('ccActions').innerHTML,/Add contact info/);});
+await test('contact validation appears beside the fields and clears on correction',async()=>{const f=fixture();await openDesign(f);f.flow().state().step=2;f.flow().set('name','');await f.el('ccNext').onclick();assert.match(f.el('ccFieldError').textContent,/Enter your name/);assert.equal(f.el('ccFieldError').hidden,false);f.emit('input',false,'ccName','Fleet Tester');assert.equal(f.el('ccFieldError').hidden,true);});
+await test('shutter releases the camera and retake acquires a new stream',async()=>{
+ const f=fixture('preview',c=>{c.IkeShopCore={...c.IkeShopCore,normalizePhoto:async()=>({id:'fixture-photo',width:800,height:600,mime:'image/jpeg',dataUrl:'data:image/jpeg;base64,/9j/2Q==',sha256:'a'.repeat(64)})};});await f.start();const tracks=[];
+ f.c.navigator.mediaDevices={getUserMedia:async()=>{const track={readyState:'live',enabled:true,stop(){this.readyState='ended';}};tracks.push(track);return {getTracks:()=>[track],getVideoTracks:()=>[track]};}};f.c.File=File;f.c.document.createElement=()=>({getContext:()=>({drawImage(){}}),toBlob:cb=>cb(new Blob(['fixture']))});
  f.c.CountercraftRecognition={analyze:async()=>({boardArea:null}),species:()=>({}),length:()=>({})};
  await f.el('ccTake').onclick();assert.equal(f.el('ccCamera').open,true);f.el('ccVideo').videoWidth=800;f.el('ccVideo').videoHeight=600;
- await f.el('ccCapture').onclick();assert.equal(f.el('ccCamera').open,false);assert.equal(track.enabled,false);assert.equal(stops,0);
- await f.el('ccTake').onclick();assert.equal(requests,1);assert.equal(track.enabled,true);await f.el('ccExit').onclick();assert.equal(stops,1);assert.equal(f.el('ccVideo').srcObject,null);
+ await f.el('ccCapture').onclick();assert.equal(f.el('ccCamera').open,false);assert.equal(tracks[0].readyState,'ended');
+ await f.el('ccTake').onclick();assert.equal(tracks.length,2);assert.equal(tracks[1].readyState,'live');await f.el('ccExit').onclick();assert.equal(tracks[1].readyState,'ended');assert.equal(f.el('ccVideo').srcObject,null);
 });
 await test('background cancels a pending camera permission result',async()=>{const f=fixture();await f.start();let resolve,stopped=false;f.c.navigator.mediaDevices={getUserMedia:()=>new Promise(r=>resolve=r)};const pending=f.el('ccTake').onclick();f.c.document.hidden=true;f.emit('visibilitychange');resolve({getTracks:()=>[{stop(){stopped=true;}}]});await pending;assert.equal(stopped,true);assert.equal(f.el('ccCamera').open,false);});
 await test('late prior-customer file picker cannot attach its file to a new session',async()=>{let normalized=0;const f=fixture('preview',c=>{c.IkeShopCore={...c.IkeShopCore,normalizePhoto:async()=>{normalized++;throw Error('Should not read abandoned picker');}};});await f.start();const old=f.el('ccFile').onchange;await f.el('ccExit').onclick();await f.el('ccBegin').onclick();old({target:{files:[{}],dataset:{}}});assert.equal(normalized,0);});

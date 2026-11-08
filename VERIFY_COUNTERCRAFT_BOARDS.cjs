@@ -2,7 +2,37 @@
 const assert=require('node:assert/strict'),C=require('./countercraft_core.js'),Flow=require('./countercraft_flow.js');
 const scope={projectId:'ikes-wood-signs',backend:'https://sjgqqtnuttnkwsoebbqf.supabase.co',environment:'staging',site:'https://jdaniel318-ctrl.github.io/-ikes-wood-signs/',deploymentId:'countercraft-pilot-1',mode:'sea_trial'};
 const pub={scope,revision:7,enabled:true,rates:[{species:'Walnut',centsPerFoot:1800}],stocks:[{id:'W30',revision:2,species:'Walnut',nominalInches:30,available:true,actualMm:[762,228.6,19.05]},{id:'U24',revision:1,species:'Pine',nominalInches:24,available:true,actualMm:null}]};
+function testPhotoRuler() {
+ const size=require('./ike_photo_size.js'),wood=require('./woodwright_fit.js'),capture=require('./carvewright_capture_core.js');
+ function mockPhoto(cards) {
+  const w=560,h=270,pixels=new Uint8ClampedArray(w*h*4);
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++){
+    const on=x>=40&&x<520&&y>=45&&y<225;
+    const card=cards.some(([a,b,end,bottom])=>x>=a&&x<end&&y>=b&&y<bottom);
+    const color=card?[240,240,238]:on?[147,89,48]:[90,115,138];
+    pixels.set([...color,255],(y*w+x)*4);
+  }
+  return size.inspect(pixels,w,h,wood);
+ }
+ for(const [type,corners] of [['index-3x5',[131,102,231,162]],['index-4x6',[151,89,271,169]]]){
+  const scan=mockPhoto([corners]);assert(scan.card);assert.equal(scan.reference,null);
+  const r=size.measure(scan.card,type,capture);assert(Math.abs(r.lengthMm/25.4-24)<.15);assert(Math.abs(r.widthMm/25.4-9)<.15);
+  assert.equal(r.thicknessMm,undefined);
+ }
+ assert.equal(mockPhoto([]).card,null);
+ assert.equal(mockPhoto([[110,78,210,138],[285,110,385,170]]).card,null);
+ const scene={w:800,h:600,reference:[[220,140],[320,140],[320,200],[220,200]],across:[[100,230],[580,230]],down:[[340,140],[340,320]]};
+
+ function project([x,y]){const k=1+.00015*x+.00016*y;return [(1.1*x+.08*y+15)/k,(-.06*x+1.12*y+50)/k];}
+ for(const k of ['reference','across','down'])scene[k]=scene[k].map(project);
+ const measured=size.measure(scene,'index-3x5',capture);
+ assert(Math.abs(measured.lengthMm/25.4-24)<.001);assert(Math.abs(measured.widthMm/25.4-9)<.001);
+ assert.throws(()=>size.measure({...scene,down:scene.across},'index-3x5',capture),/middle/);
+ assert.throws(()=>size.measure(scene,'unknown',capture),/card/);
+ console.log('PASS synthetic 3×5 and 4×6, perspective-correct dimensions, no card, ambiguous cards, no identity by shape, no inferred thickness, invalid lines.');
+}
 (async()=>{
+ testPhotoRuler();
  assert.equal(typeof C.boardSpec,'function','Measured stock provenance must be available');
  assert.deepEqual(C.measurementsFromInches(['30','9','.75']),[762,228.6,19.05]);
  assert.equal(C.measurementsFromInches(['','','']),null);
