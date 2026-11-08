@@ -167,3 +167,6 @@ body.cc-customer{display:flex;flex-direction:column;min-height:100vh;min-height:
 
 .cc-capture-start .cc-inline{background:transparent;color:var(--cc-blue);padding-inline:0;text-decoration:underline}
 .cc-sweep-option{margin-top:12px}.cc-sweep-option summary{cursor:pointer;padding-block:10px}
+
+/* Arrival focus announces the welcome title while the shop header is visible. */
+#ccWelcomeTitle[data-fleet-arrival-title]:focus{outline:none}

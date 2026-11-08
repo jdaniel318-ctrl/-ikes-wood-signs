@@ -9,6 +9,25 @@ async function openDesign(f){
 }
 let count=0;async function test(name,fn){await fn();count++;console.log('PASS',name);}
 (async()=>{
+await test('the welcome lands at the full shop header for each new customer',async()=>{
+ const html=require('node:fs').readFileSync(__dirname+'/countercraft.html','utf8');
+ assert.match(html,/<script src="fleet_viewport\.js"><\/script>[\s\S]*<script src="countercraft_customer\.js">/);
+ for(const mode of ['preview','live','sea_trial']){
+  const arrivals=[];
+  const f=fixture(mode,c=>{
+   c.history.scrollRestoration='auto';
+   c.BlackFlagViewport={landAtHeader(title){
+    const main=c.document.getElementById('ccApp');
+    assert(main.innerHTML.includes('id="'+title.id+'"'));
+    arrivals.push(main.dataset.step);
+   }};
+  });
+  assert.equal(f.c.history.scrollRestoration,'manual');
+  assert.deepEqual(arrivals,['welcome']);
+  await f.start();assert.equal(arrivals.length,1);
+  await f.el('ccExit').onclick();assert.deepEqual(arrivals,['welcome','welcome']);
+ }
+});
 await test('an empty kiosk opens without a plank picture or a required scale card',async()=>{
  for(const mode of ['preview','sea_trial']){
   const f=fixture(mode);await f.start();
