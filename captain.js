@@ -2695,11 +2695,11 @@ const AdmiralAccountForm = (() => {
     pendingMove=null;
     if(el('joeMove')?.open)el('joeMove').close();
   }
-  function openMove(task,day) {
+  function openMove(task,day,values=null) {
     const delta=day-task.start;
     if(!delta){status('Choose a different workday to preview a move.');return;}
-    pendingMove={record:state,id:task.id,delta};
-    const area=areaOf(task);
+    pendingMove={record:state,id:task.id,delta,values};
+    const area=values?.area||areaOf(task);
     const scopes=['all',...(area==='general'?['exterior','interior']:[area]),'one'];
     const labels={all:'All',exterior:'Exterior',interior:'Interior',one:'None'};
     el('joeScope').innerHTML='<legend>Which other tasks should move?</legend>'+scopes.map(s=>
@@ -2717,7 +2717,7 @@ const AdmiralAccountForm = (() => {
     const tasks=matching.filter(t=>t.locked!==true&&t.complete!==true);
     const fixed=matching.length-tasks.length;
     const min=Math.min(...tasks.map(t=>t.start+delta));
-    const weeks=tasks.reduce((n,t)=>Math.max(n,Math.ceil((t.start+delta+t.duration)/5)),weekCount());
+    const weeks=tasks.reduce((n,t)=>Math.max(n,Math.ceil((t.start+delta+(t.id===id&&pendingMove.values?pendingMove.values.duration:t.duration))/5)),weekCount());
     let issue='';
     if(!tasks.length)issue='There are no matching tasks in this lot.';
     else if(min<0)issue='This move would start before the first project workday.';
@@ -2737,21 +2737,23 @@ const AdmiralAccountForm = (() => {
     el('joeMoveSummary').textContent=issue||tasks.length+' task'+(tasks.length===1?'':'s')+' will move.'+(fixed?' '+fixed+' locked or complete will stay in place.':'')+(weeks>weekCount()?' The planning window will extend to '+weeks+' weeks.':'')+
       (tasks.some(t=>t.acceleratedAssignments?.length)?' Previously booked weekend shifts keep their dates.':'');
     const range=(s,d)=>labelDate(s,true)+(d>1?' – '+labelDate(s+d-1,true):'');
-    el('joeMoveRows').innerHTML=tasks.map(t=>`<tr><th scope="row"><span>${esc(t.title)}</span><small>${areaNames[areaOf(t)]}</small></th><td>${esc(range(t.start,t.duration))}</td><td>${issue?'—':esc(range(t.start+delta,t.duration))}</td></tr>`).join('');
+    el('joeMoveRows').innerHTML=tasks.map(t=>`<tr><th scope="row"><span>${esc(t.title)}</span><small>${areaNames[areaOf(t)]}</small></th><td>${esc(range(t.start,t.duration))}</td><td>${issue?'—':esc(range(t.start+delta,t===anchor&&pendingMove.values?pendingMove.values.duration:t.duration))}</td></tr>`).join('');
     el('joeApply').disabled=!!issue;
     el('joeApply').textContent='Move '+tasks.length+' task'+(tasks.length===1?'':'s');
   }
   async function applyMove() {
     if(!current(visit)||!pendingMove||pendingMove.record!==state){closeMove();return;}
-    const {tasks,delta,weeks,issue}=movePreview();
+    const {tasks,delta,weeks,issue,anchor}=movePreview();
     if(issue)return;
+    const {values}=pendingMove;
     closeMove();
-    const at=new Date().toISOString(),batch=crypto.randomUUID?.()||String(Date.now());
-    const changes=tasks.map(t=>({id:batch+'-'+t.id,batchId:batch,at,task:t.title,vendor:t.vendor,from:labelDate(t.start,true),to:labelDate(t.start+delta,true)}));
-    for(const t of tasks)t.start+=delta;
-    for(const t of tasks)t.riskWarnings=riskWarnings(t);
-    state.planningWeeks=weeks;state.activity.unshift(...changes);
-    selectedId='';showOver(null);renderSchedule();
+    for(const t of tasks){
+      const previous={...t};
+      if(t===anchor&&values)Object.assign(t,values);else t.start+=delta;
+      recordTaskChange(previous,t);
+    }
+    state.planningWeeks=weeks;selectedId='';showOver(null);
+    finishEdit(anchor);
     await persist(tasks.length+' task'+(tasks.length===1?'':'s')+' moved.');
   }
   // The example has its own dates and never enters the project cache or save queue.
@@ -2780,6 +2782,7 @@ const AdmiralAccountForm = (() => {
     return date.toLocaleDateString(undefined,format||{month:'short',day:'numeric'});
   }
   function openLook(record,week=0) {
+    el('bootstrapSchedule').classList.remove('desk-open');
     lookRecord=record;lookWeek=Math.max(0,Math.min(week,weekCount(record)-1));
     el('bootstrapProjectWorkspace').classList.add('hidden');el('bootstrapProjectLanding').classList.add('hidden');
     el('bootstrapProjectsHome').classList.remove('hidden');el('joeLongview').hidden=false;
@@ -2878,7 +2881,7 @@ const AdmiralAccountForm = (() => {
       if(stored.revision!==edited.revision || stored.updatedAt!==edited.updatedAt) {
         cache.set(meta.id,stored);
         if(state===edited) {
-          state=stored;selectedId='';renderSchedule();
+          closeMove();dismissEditor();if(el('deskUpdates').open)el('deskUpdates').close();state=stored;selectedId='';renderSchedule();
           el('scheduleJoeRetry').hidden=true;
           status('Another view saved this schedule. Its latest revision is open. Review it before applying your change again.');
         }
@@ -2929,8 +2932,302 @@ const AdmiralAccountForm = (() => {
   <p id="joeMoveSummary" role="status"></p><div class="joe-table"><table><thead><tr><th>Task</th><th>Current</th><th>Proposed</th></tr></thead><tbody id="joeMoveRows"></tbody></table></div>
   <div class="joe-move-actions"><button id="joeCancel" type="button">Cancel</button><button id="joeApply" type="button">Apply move</button></div>
 </dialog>
-<section id="bootstrapProjectWorkspace" class="hidden"><nav class="bootstrap-schedule-crumbs" aria-label="Project hierarchy"><span><small>REGION</small><b id="bootstrapRegionValue"></b></span><i>›</i><span><small>DIVISION</small><b id="bootstrapDivisionValue"></b></span><i>›</i><span><small>COMMUNITY</small><b id="bootstrapCommunityValue"></b></span><i>›</i><span><small>LOT</small><b id="bootstrapLotValue"></b></span><i>›</i><span><small>UNIT</small><b id="bootstrapUnitValue"></b></span></nav><div class="bootstrap-schedule-toolbar"><div><strong id="bootstrapScheduleRange"></strong></div><div class="bootstrap-schedule-legend" aria-label="Task colors"><span data-kind="work">WORK</span><span data-kind="site">SITE</span><span data-kind="inspection">INSPECTION</span><span data-kind="delivery">DELIVERY</span><span data-kind="milestone">MILESTONE</span></div><div><button id="bootstrapScheduleAdd" type="button">+ ADD TASK</button><button id="bootstrapScheduleReset" type="button">RESET THIS PROJECT</button></div></div><form id="bootstrapScheduleForm" class="bootstrap-schedule-form bootstrap-ground-form hidden"><label>Task<input data-bf-trim="boundary" id="bootstrapScheduleTaskTitle" maxlength="80" required placeholder="Construction task"></label><label>Trade<input data-bf-trim="boundary" id="bootstrapScheduleTrade" maxlength="40" required placeholder="Trade or crew"></label><label>Type<select id="bootstrapScheduleType"><option value="work">Work</option><option value="site">Site</option><option value="inspection">Inspection</option><option value="delivery">Delivery</option><option value="milestone">Milestone</option></select></label><label>Work area<select id="joeAreaNew"><option value="general">General / unassigned</option><option value="exterior">Exterior</option><option value="interior">Interior</option></select></label><label>Start<select id="bootstrapScheduleDay"></select></label><label>Days<input id="bootstrapScheduleDuration" type="number" min="1" max="15" value="1"></label><button type="submit">ADD TASK</button><button id="bootstrapScheduleCancel" type="button">CANCEL</button></form><p id="bootstrapScheduleStatus" class="bootstrap-schedule-status" role="status"></p><button id="scheduleJoeRetry" type="button" hidden>Retry save</button><section id="bootstrapVendorTools" class="bootstrap-vendor-tools"><div><label>Schedule view<select id="bootstrapVendorView"><option value="">All work</option></select></label><span id="bootstrapVendorViewNote">All project work is visible.</span></div><div><label>Selected task vendor<select id="bootstrapVendorAssign"></select></label><button id="bootstrapVendorAssignButton" type="button" disabled>ASSIGN VENDOR</button></div></section><div class="joe-choices"><label class="joe-toggle"><input id="joePrompt" type="checkbox" role="switch"> Prompt on move</label><button id="joeLook" type="button">Four-week lookahead</button><button id="joeExtend" type="button">Add 4 weeks</button></div>
-<section id="joeTaskInfo" class="joe-task-info" hidden><div><strong id="joeTaskName"></strong><span id="joeTaskDates"></span></div><label>Work area<select id="joeAreaEdit">${areaOptions}</select></label><div><button id="joeEarlier" type="button">← 1 workday</button><button id="joeLater" type="button">1 workday →</button></div></section><nav class="schedule-week-nav" aria-label="Schedule weeks"><label>Workweek <select id="scheduleJoeWeek"></select></label><div><button type="button" data-week-step="-1" aria-label="Previous workweek">← Previous</button><button type="button" data-week-step="1" aria-label="Next workweek">Next →</button></div></nav><div id="bootstrapScheduleBoard" class="bootstrap-ground-board"></div><section id="bootstrapVendorActivityPanel" class="bootstrap-vendor-activity"><header><div><small>VENDOR COMMUNICATION LOG</small><b>Schedule changes vendors can see</b></div><span>LOCAL TEST · NO MESSAGE SENT</span></header><div id="bootstrapVendorActivity"></div></section><footer><b>Project boundary</b><span>Each test project is stored separately on this device. Moving work in one unit cannot move work in another.</span></footer></section></div></dialog>`);}
+<dialog id="joeEditor" aria-labelledby="deskEditorTitle">
+  <form id="bootstrapScheduleForm">
+    <header><div><small id="deskLot"></small><h2 id="deskEditorTitle"></h2></div><button type="button" id="bootstrapScheduleCancel" aria-label="Close task editor">Close</button></header>
+    <label>Task name<input id="bootstrapScheduleTaskTitle" maxlength="100" required autocomplete="off" placeholder="e.g. Footing inspection"></label>
+    <div class="desk-fields"><label>Start date<input id="bootstrapScheduleDay" type="date" required></label><label>Duration in workdays<input id="bootstrapScheduleDuration" type="number" min="1" max="260" step="1" required></label></div>
+    <p id="deskFinish" role="status"></p>
+    <label>Vendor or crew<input id="deskVendor" list="deskCrews" maxlength="100" placeholder="Choose or enter a crew" autocomplete="off"><datalist id="deskCrews"></datalist></label>
+    <div class="desk-fields"><label>Work area<select id="joeAreaNew">${areaOptions}</select></label><label>Task type<select id="bootstrapScheduleType">${Object.entries(kindNames).map(([key,label])=>`<option value="${key}">${label}</option>`).join('')}</select></label></div>
+    <details><summary>Task details</summary><label>Trade<input id="bootstrapScheduleTrade" maxlength="60" placeholder="e.g. Concrete"></label><p id="deskBaseline"></p><button type="button" id="deskWeekend">Assign a weekend shift…</button></details>
+    <footer><span id="deskTaskWarning"></span><button id="deskSave" class="desk-primary" type="submit">Save task</button></footer>
+  </form>
+</dialog>
+<dialog id="deskUpdates" aria-labelledby="deskUpdatesTitle">
+  <header><div><small>ScheduleJoe · All project schedules on this device</small><h2 id="deskUpdatesTitle">Daily vendor digests</h2></div><button id="deskUpdatesClose" type="button">Close</button></header>
+  <p class="desk-digest-rule">One digest per vendor at the 4:00 p.m. Eastern cutoff. Each task shows its latest dates. Later changes roll into the next day.</p><label>Vendor<select id="deskRecipient"></select></label>
+  <div id="deskAddressRow"><label>Email for this vendor<input id="deskAddress" type="email" autocomplete="off" maxlength="254" placeholder="crew@example.com"></label><button id="deskSaveAddress" type="button">Save address</button></div>
+  <div id="deskPacket"></div>
+  <div id="deskSendControls"><button type="button" id="deskMail" class="desk-primary">Prepare daily email</button></div>
+  <p id="deskSendStatus" role="status"></p>
+</dialog>
+<section id="bootstrapProjectWorkspace" class="hidden">
+  <nav class="desk-nav" aria-label="Schedule weeks">
+    <div><select aria-label="Jump to workweek" id="scheduleJoeWeek"></select><button type="button" data-week-step="-1" aria-label="Previous workweek">‹</button><button type="button" data-week-step="1" aria-label="Next workweek">›</button></div>
+    <div><label class="desk-prompt"><input id="joePrompt" type="checkbox" role="switch">Prompt on move</label><button id="deskUpdatesOpen" type="button">Vendor updates</button><button id="bootstrapScheduleAdd" class="desk-primary" type="button">+ Add task</button></div>
+  </nav>
+  <div id="bootstrapScheduleBoard" class="bootstrap-ground-board" role="region" aria-label="Scrollable workweeks" tabindex="0"></div>
+  <div class="desk-feedback"><p id="bootstrapScheduleStatus" role="status"></p><button id="scheduleJoeRetry" type="button" hidden>Retry save</button></div>
+  <details id="deskSettings"><summary>Schedule options</summary>
+    <div class="bootstrap-schedule-toolbar"><div><strong id="bootstrapScheduleRange"></strong></div><label>Filter by vendor<select id="bootstrapVendorView"></select></label>
+      <div><button id="joeLook" type="button">Four-week lookahead</button><button id="joeExtend" type="button">Add 4 weeks</button><button id="bootstrapScheduleReset" type="button">Reset this project</button></div></div>
+  </details>
+  <details id="deskHistory"><summary>Change history</summary><div id="bootstrapVendorActivityPanel" class="bootstrap-vendor-activity"><div id="bootstrapVendorActivity"></div></div></details>
+</section>
+</div></dialog>`);}
+  let draft=null;
+  const isoDate=date=>[date.getFullYear(),String(date.getMonth()+1).padStart(2,'0'),String(date.getDate()).padStart(2,'0')].join('-');
+  const fullDate=day=>workDate(day).toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric',year:'numeric'});
+  function workIndex(value) {
+    const distance=(Date.parse(value+'T00:00:00Z')-Date.parse(isoDate(workDate(0))+'T00:00:00Z'))/86400000;
+    if(!Number.isInteger(distance)||distance<0||distance%7>4)return -1;
+    return Math.floor(distance/7)*5+distance%7;
+  }
+  function dismissEditor() {
+    draft=null;
+    if(el('joeEditor').open)el('joeEditor').close();
+  }
+  function openEditor(task,day) {
+    if(!state||!current(visit)||el('joeEditor').open)return;
+    draft={record:state,task};
+    selectedId=task?.id||'';
+    const form=el('bootstrapScheduleForm');
+    form.reset();form.querySelector('details').open=false;
+    el('deskEditorTitle').textContent=task?'Edit task':'Add task';
+    el('deskLot').textContent=lotLabel();
+    el('deskWeekend').hidden=!task||task.locked===true||task.complete===true;
+    el('bootstrapScheduleTaskTitle').value=task?.title||'';
+    el('bootstrapScheduleTrade').value=task?.trade||'';
+    el('deskCrews').innerHTML=vendors().map(name=>`<option value="${esc(name)}"></option>`).join('');
+    el('deskVendor').value=task?.vendor||vendorView||'';
+    el('bootstrapScheduleType').value=task?.type||'work';el('joeAreaNew').value=task?areaOf(task):'general';
+    const input=el('bootstrapScheduleDay');
+    input.min=isoDate(workDate(0));input.max=isoDate(workDate(MAX_WEEKS*5-1));
+    input.value=isoDate(workDate(task?.start??day));el('bootstrapScheduleDuration').value=task?.duration||1;
+    el('deskBaseline').textContent=task?'Original plan · '+(Number.isInteger(task.baselineStart)?fullDate(task.baselineStart):'Date unrecorded')+' · '+task.plannedDuration+' workday(s)':'';
+    el('joeEditor').showModal();refreshEditor();
+    (task?el('bootstrapScheduleDay'):el('bootstrapScheduleTaskTitle')).focus({preventScroll:true});
+  }
+  function editorValues() {
+    return {title:el('bootstrapScheduleTaskTitle').value.trim(),start:workIndex(el('bootstrapScheduleDay').value),
+      duration:el('bootstrapScheduleDuration').valueAsNumber,vendor:el('deskVendor').value.trim()||'Unassigned',
+      trade:el('bootstrapScheduleTrade').value.trim(),area:el('joeAreaNew').value,type:el('bootstrapScheduleType').value};
+  }
+  function refreshEditor() {
+    if(!draft)return;
+    const v=editorValues(),fixed=draft.task?.locked===true||draft.task?.complete===true;
+    let error='';
+    if(v.start<0)error='Choose a weekday on or after '+fullDate(0)+'.';
+    else if(!Number.isInteger(v.duration)||v.duration<1)error='Enter a whole number of workdays.';
+    else if(v.start+v.duration>MAX_WEEKS*5)error='The task must finish within the 52-week planning window.';
+    el('deskFinish').textContent=error||'Finishes '+fullDate(v.start+v.duration-1)+(v.start+v.duration>weekCount()*5?' · Extends the planning window':'');
+    const overlap=v.vendor!=='Unassigned'&&state.tasks.find(t=>t!==draft.task&&t.vendor===v.vendor&&t.start<v.start+v.duration&&v.start<t.start+t.duration);
+    el('deskTaskWarning').textContent=fixed?'This task is locked or complete.':!error&&overlap?'Crew also scheduled on '+overlap.title+'.':'';
+    el('deskSave').disabled=!!error||fixed||!v.title;
+    el('deskSave').textContent=draft.task&&v.start!==draft.task.start&&el('joePrompt').checked?'Review move':draft.task?'Save changes':'Add task';
+  }
+  function saveEditor(event) {
+    event.preventDefault();
+    if(!draft||draft.record!==state||!current(visit))return;
+    refreshEditor();if(el('deskSave').disabled)return;
+    const values=editorValues(),old=draft.task;
+    if(old&&values.start!==old.start&&el('joePrompt').checked){openMove(old,values.start,values);return;}
+    if(old&&Object.keys(values).every(key=>values[key]===(key==='area'?areaOf(old):old[key]))){dismissEditor();return;}
+    const task=old||{id:'task-'+crypto.randomUUID(),baselineStart:values.start,plannedDuration:values.duration,acceleratedAssignments:[]};
+    const before=old?{...old}:null;
+    Object.assign(task,values);
+    if(!old)state.tasks.push(task);
+    state.planningWeeks=Math.max(weekCount(),Math.ceil((task.start+task.duration)/5));
+    recordTaskChange(before,task);finishEdit(task);
+    void persist(task.title+' '+(old?'updated.':'added.'));
+  }
+  function finishEdit(task) {
+    for(const t of state.tasks)t.riskWarnings=riskWarnings(t);
+    dismissEditor();
+    if(vendorView&&task.vendor!==vendorView)vendorView='';
+    const week=Math.floor(task.start/5);
+    if(segmentsForWeek(week).segments.some(s=>s.task===task&&s.lane>=2))expandedWeeks.add(week);
+    renderSchedule();jumpWeek(week);
+  }
+  const lotLabel=()=>{const p=project(activeId);return 'Lot '+p.lot+' · Unit '+p.unit;};
+  const dateRange=t=>fullDate(t.start)+(t.duration>1?' – '+fullDate(t.start+t.duration-1):'');
+  function recordTaskChange(before,task) {
+    const was=before?dateRange(before):'',now=dateRange(task);
+    const switchover=before&&before.vendor!==task.vendor;
+    const description=before?(was===now?'Scheduled '+now:was+' → '+now):'New task · '+now;
+    const extra=[];
+    if(before&&before.title!==task.title)extra.push('Previously '+before.title);
+    if(switchover)extra.push('Crew changed from '+before.vendor+' to '+task.vendor);
+    const note={id:crypto.randomUUID(),at:new Date().toISOString(),type:'task-update',task:task.title,vendor:task.vendor,summary:[description,...extra].join('. ')};
+    state.activity.unshift(note);
+    const notices=state.vendorNotices??=[];
+    function queue(vendor,summary,startPlan,endPlan) {
+      if(vendor&&vendor!=='Unassigned')notices.push({...note,id:crypto.randomUUID(),taskId:task.id,vendor,summary,before:startPlan,after:endPlan});
+    }
+    if(switchover)queue(before.vendor,'Assignment removed · previously '+was,was,null);
+    queue(task.vendor,switchover?'Assigned to your crew · '+now+(was!==now?' (previously '+was+')':''):description+(extra.length?'. '+extra.join('. '):''),switchover||!before?null:was,now);
+  }
+  function queueVendorNotice(task,summary,shiftKey) {
+    if(task.vendor&&task.vendor!=='Unassigned')(state.vendorNotices??=[]).push({id:crypto.randomUUID(),at:new Date().toISOString(),task:task.title,taskId:task.id,shiftKey,vendor:task.vendor,summary});
+  }
+  // Keep one handoff ledger per device, independent of lot edits and project resets.
+  const eastern=new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'});
+  function businessTime(value) {
+    const p=Object.fromEntries(eastern.formatToParts(value).map(v=>[v.type,v.value]));
+    return {day:p.year+'-'+p.month+'-'+p.day,time:p.hour+':'+p.minute+':'+p.second};
+  }
+  const vendorKey=s=>s.trim().toLowerCase();
+  let ledgerDb,records=[],contacts=[],receipts=[],deliveryBusy=false,packetVersion=0,timer;
+  function digestDb() {
+    if(!ledgerDb)ledgerDb=new Promise((resolve,reject)=>{
+      const r=indexedDB.open('scheduleJoeVendorDigests',1);
+      r.onupgradeneeded=()=>{r.result.createObjectStore('contacts',{keyPath:'key'});r.result.createObjectStore('handoffs',{keyPath:'key'});};
+      r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);
+    }).catch(err=>{ledgerDb=null;throw err;});
+    return ledgerDb;
+  }
+  async function readAll(table) {
+    const db=await digestDb();
+    return new Promise((resolve,reject)=>{
+      const r=db.transaction(table).objectStore(table).getAll();r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);
+    });
+  }
+  function updateVendorCount() {el('deskUpdatesOpen').textContent='Vendor digests';}
+  function contact(name) {return contacts.find(c=>c.key===vendorKey(name))?.email||'';}
+  async function saveContact() {
+    const input=el('deskAddress'),email=input.value.trim().toLowerCase(),name=el('deskRecipient').value;
+    if(!name||!input.reportValidity()||!current(visit)||deliveryBusy)return;
+    try{
+      const db=await digestDb();
+      await new Promise((resolve,reject)=>{
+        const tx=db.transaction('contacts','readwrite'),store=tx.objectStore('contacts');
+        if(email)store.put({key:vendorKey(name),email});else store.delete(vendorKey(name));
+        tx.oncomplete=resolve;tx.onerror=tx.onabort=()=>reject(tx.error);
+      });
+      await refreshPacket();el('deskSendStatus').textContent='Vendor contact saved on this device.';
+    }catch(_){el('deskSendStatus').textContent='Could not save the vendor address. Try again.';}
+  }
+  function digestGroups(rows) {
+    const byTask=new Map();
+    for(const n of rows){
+      const key=n.projectId+'|'+(n.taskId||n.id)+'|'+(n.shiftKey||'schedule');
+      const first=byTask.get(key);
+      if(first){first.after=n.after;first.task=n.task;first.summary=n.summary;}
+      else byTask.set(key,{...n});
+    }
+    const lines=[];
+    for(const n of byTask.values()){
+      let line=n.summary;
+      if('before' in n){
+        if(n.before===n.after)continue;
+        if(n.before&&n.after)line=n.before+' → '+n.after;
+        else line=n.after?'Scheduled · '+n.after:'Removed · previously '+n.before;
+      }
+      lines.push({projectId:n.projectId,task:n.task,line});
+    }
+    return lines.sort((a,b)=>a.projectId.localeCompare(b.projectId)||a.task.localeCompare(b.task));
+  }
+  function makeDigest(now=new Date()) {
+    const clock=businessTime(now),name=el('deskRecipient').value,email=contact(name);
+    const members=new Set([vendorKey(name),...contacts.filter(c=>email&&c.email===email).map(c=>c.key)]);
+    const valid=n=>members.has(vendorKey(n.vendor));
+    const previous=receipts.filter(r=>(email&&r.email===email)||r.vendors.some(k=>members.has(k)));
+    const used=new Set(receipts.flatMap(r=>r.ids));
+    const waiting=records.filter(n=>valid(n)&&!used.has(n.id)).sort((a,b)=>a.at.localeCompare(b.at));
+    const ready=waiting.filter(n=>{
+      const changed=businessTime(new Date(n.at));
+      return changed.day<clock.day||(changed.day===clock.day&&changed.time<'16:00:00');
+    });
+    const rows=digestGroups(ready),today=previous.find(r=>r.day===clock.day);
+    return {name,email,clock,ready,waiting,rows,today,previous,members};
+  }
+  const digestList=rows=>rows.map(r=>{
+    const meta=project(r.projectId);
+    return `<li><small>Lot ${esc(meta.lot)} · Unit ${esc(meta.unit)}</small><b>${esc(r.task)}</b><span>${esc(r.line)}</span></li>`;
+  }).join('');
+  function renderPacket() {
+    const d=makeDigest();
+    el('deskAddressRow').hidden=!d.name;el('deskAddress').value=d.email;
+    const preview=d.today?.rows||d.rows;
+    let label=d.today?'Prepared today':d.clock.time<'16:00:00'?'Building today’s digest':'Ready for today’s digest';
+    const queued=d.today?digestGroups(d.waiting).length:digestGroups(d.waiting.filter(n=>!d.ready.includes(n))).length;
+    el('deskPacket').innerHTML=(preview.length?`<h3>${label}</h3><ol>${digestList(preview)}</ol>`:'<p>No schedule changes due for this crew.</p>')+
+      (queued?`<p>${queued} task update${queued===1?'':'s'} queued for the next cutoff.</p>`:'')+
+      (d.previous.some(r=>r!==d.today)?'<details><summary>Earlier digests</summary>'+d.previous.filter(r=>r!==d.today).reverse().map(r=>'<h3>'+esc(r.day)+'</h3><ol>'+digestList(r.rows)+'</ol>').join('')+'</details>':'');
+    const allowed=!!(d.name&&d.email&&d.rows.length&&!d.today&&d.clock.time>='16:00:00');
+    el('deskMail').disabled=!allowed||deliveryBusy;
+    el('deskSendStatus').textContent=d.today?'Today’s email draft has been prepared on this device.':
+      !d.name?'Assigned tasks appear here when their schedule changes.':!d.email?'Save this vendor’s email address to prepare their digest.':
+      d.clock.time<'16:00:00'?'Available at 4:00 p.m. Eastern.':'An email draft opens for you to review and send.';
+  }
+  async function refreshPacket() {
+    const entry=visit,version=++packetVersion;
+    await saveQueue;
+    const [lots,addresses,history]=await Promise.all([Promise.all(projects.map(loadProject)),readAll('contacts'),readAll('handoffs')]);
+    if(version!==packetVersion||!current(entry)||!el('deskUpdates').open)return;
+    records=lots.flatMap(l=>(l.vendorNotices||[]).map(n=>({...n,projectId:l.projectId})));
+    contacts=addresses;receipts=history;
+    const picker=el('deskRecipient'),prior=picker.value,names=[...new Set(records.map(n=>n.vendor))].sort((a,b)=>a.localeCompare(b));
+    picker.innerHTML=names.map(n=>'<option>'+esc(n)+'</option>').join('');picker.disabled=!names.length||deliveryBusy;
+    if(names.includes(prior))picker.value=prior;
+    renderPacket();
+  }
+  function unavailable() {
+    el('deskMail').disabled=true;
+    el('deskSendStatus').textContent='The saved digest history is unavailable. Reopen Vendor digests to try again.';
+  }
+  async function prepareDigest() {
+    if(deliveryBusy||!current(visit))return;
+    if(el('deskAddress').value.trim().toLowerCase()!==contact(el('deskRecipient').value)){
+      el('deskSendStatus').textContent='Save the changed address first.';return;
+    }
+    const requested=el('deskRecipient').value,requestedEmail=contact(requested);
+    deliveryBusy=true;el('deskMail').disabled=true;el('deskRecipient').disabled=true;
+    const entry=visit;
+    try {
+      await refreshPacket();
+      if(!current(entry)||!el('deskUpdates').open)return;
+      const d=makeDigest();
+      if(d.name!==requested||d.email!==requestedEmail||d.today||!d.email||!d.rows.length||d.clock.time<'16:00:00')return;
+      const db=await digestDb(),saved={key:d.clock.day+'|'+d.email,day:d.clock.day,email:d.email,vendors:[...d.members],
+        ids:d.ready.map(n=>n.id),at:new Date().toISOString(),rows:d.rows};
+      // The check and reservation are one IndexedDB transaction across all tabs.
+      const recorded=await new Promise((resolve,reject)=>{
+        const tx=db.transaction('handoffs','readwrite'),table=tx.objectStore('handoffs'),r=table.getAll();let inserted=false;
+        r.onsuccess=()=>{
+          const conflict=r.result.some(h=>h.day===saved.day&&(h.email===saved.email||h.vendors.some(k=>d.members.has(k))));
+          if(conflict||!current(entry)||!el('deskUpdates').open)return;
+          table.add(saved);inserted=true;
+        };
+        tx.oncomplete=()=>resolve(inserted);tx.onerror=tx.onabort=()=>reject(tx.error);
+      });
+      if(recorded&&current(entry)&&el('deskUpdates').open){
+        const subject='ScheduleJoe · '+d.name+' · '+saved.day;
+        const body=d.rows.map(r=>{const p=project(r.projectId);return 'Lot '+p.lot+' / Unit '+p.unit+' · '+r.task+'\n'+r.line;}).join('\n\n');
+        const uri='mailto:'+encodeURIComponent(d.email).replace('%40','@')+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+        if(uri.length<=1800)window.location.href=uri;
+        else {
+          const encoded=s=>btoa(Array.from(new TextEncoder().encode(s),n=>String.fromCharCode(n)).join(''));
+          const mime='X-Unsent: 1\r\nTo: '+d.email+'\r\nSubject: =?UTF-8?B?'+encoded(subject)+'?=\r\nMIME-Version: 1.0\r\nContent-Type: text/plain; charset=utf-8\r\nContent-Transfer-Encoding: base64\r\n\r\n'+encoded(body).match(/.{1,76}/g).join('\r\n');
+          const a=document.createElement('a'),url=URL.createObjectURL(new Blob([mime],{type:'message/rfc822'}));
+          a.href=url;a.download='ScheduleJoe-'+saved.day+'.eml';a.click();setTimeout(()=>URL.revokeObjectURL(url),30000);
+        }
+      }
+      await refreshPacket();
+    }catch(_){unavailable();return;}
+    finally{
+      deliveryBusy=false;
+      el('deskRecipient').disabled=!el('deskRecipient').options.length;
+    }
+    if(current(entry)&&el('deskUpdates').open)renderPacket();
+  }
+  function bindUpdates() {
+    el('deskUpdatesOpen').onclick=()=>{
+      if(!current(visit))return;
+      el('deskRecipient').replaceChildren();el('deskPacket').replaceChildren();
+      el('deskAddressRow').hidden=true;el('deskMail').disabled=true;el('deskSendStatus').textContent='Loading vendor updates…';
+      el('deskUpdates').showModal();void refreshPacket().catch(unavailable);
+      let slot='';
+      timer=setInterval(()=>{
+        const b=businessTime(new Date()),next=b.day+String(b.time>='16:00:00');
+        if(slot&&slot!==next)void refreshPacket().catch(unavailable);slot=next;
+      },1000);
+    };
+    el('deskUpdatesClose').onclick=()=>el('deskUpdates').close();
+    el('deskUpdates').onclose=()=>{clearInterval(timer);++packetVersion;records=[];};
+    el('deskRecipient').onchange=renderPacket;el('deskSaveAddress').onclick=saveContact;el('deskMail').onclick=prepareDigest;
+  }
   function wireLongview() {
     const listen=(id,event,fn)=>el(id).addEventListener(event,fn);
     listen('joeExample','click',()=>{if(current(visit))openLook(example);});
@@ -2943,26 +3240,38 @@ const AdmiralAccountForm = (() => {
     listen('joeWeeks','click',e=>{
       const button=e.target.closest('[data-edit-week]');if(!button||!state||lookRecord!==state)return;
       el('joeLongview').hidden=true;lookRecord=null;el('bootstrapProjectWorkspace').classList.remove('hidden');
-      selectedWeek=Number(button.dataset.editWeek);el('bootstrapScheduleSubtitle').textContent='Tap a task to select it. Drag to move it, or pull an edge to change its duration.';
-      renderSchedule();el('bootstrapSchedule').scrollTop=0;el('scheduleJoeWeek').focus({preventScroll:true});
+      el('bootstrapSchedule').classList.add('desk-open');const week=Number(button.dataset.editWeek);
+      renderSchedule();jumpWeek(week);el('bootstrapSchedule').scrollTop=0;el('scheduleJoeWeek').focus({preventScroll:true});
     });
     listen('joeExtend','click',()=>{
       if(!state||weekCount()>=MAX_WEEKS)return;
       const previous=weekCount();state.planningWeeks=Math.min(MAX_WEEKS,previous+4);
-      selectedWeek=previous;renderSchedule();void persist('Planning window extended to '+state.planningWeeks+' weeks.');
+      renderSchedule();jumpWeek(previous);void persist('Planning window extended to '+state.planningWeeks+' weeks.');
     });
     listen('joePrompt','change',()=>{
       if(!state)return;
       try{localStorage.setItem('scheduleJoePrompt:'+activeId,String(el('joePrompt').checked));}catch(_){}
       status(el('joePrompt').checked?'Prompt on. Moving a task opens a preview.':'Prompt off. A move changes the selected task only.');
     });
-    listen('joeAreaEdit','change',e=>{
-      const t=state?.tasks.find(t=>t.id===selectedId);if(!t||!Object.hasOwn(areaNames,e.target.value))return;
-      t.area=e.target.value;renderSchedule();void persist('Work area updated.');
-    });
-    for(const [id,delta] of [['joeEarlier',-1],['joeLater',1]])listen(id,'click',()=>{
-      const t=state?.tasks.find(t=>t.id===selectedId);if(t)void move(t.id,t.start+delta);
-    });
+    el('bootstrapScheduleForm').addEventListener('input',refreshEditor);
+    el('bootstrapScheduleForm').addEventListener('submit',saveEditor);
+    el('joeEditor').addEventListener('cancel',e=>{e.preventDefault();dismissEditor();});
+    el('bootstrapScheduleBoard').addEventListener('scroll',syncWeek,{passive:true});
+    const layout=new ResizeObserver(fitCalendar);
+    layout.observe(el('bootstrapSchedule').querySelector('.bootstrap-schedule-head'));
+    layout.observe(el('bootstrapProjectWorkspace').querySelector('.desk-nav'));
+    window.addEventListener('resize',fitCalendar);
+    el('deskWeekend').onclick=()=>{
+      if(!draft?.task)return;
+      const id=draft.task.id,values=editorValues();
+      if(Object.keys(values).some(key=>values[key]!== (key==='area'?areaOf(draft.task):draft.task[key]))){
+        el('deskTaskWarning').textContent='Save your task changes before assigning a weekend shift.';return;
+      }
+      dismissEditor();selectedId=id;el('deskSettings').open=true;
+      if(el('bootstrapAcceleratedPanel').classList.contains('hidden'))el('bootstrapAcceleratedToggle').click();
+      renderAccelerated();el('bootstrapAcceleratedWeek').focus();
+    };
+    bindUpdates();
     listen('joeScope','change',renderMove);listen('joeForward','change',renderMove);
     listen('joeCancel','click',closeMove);listen('joeMove','cancel',e=>{e.preventDefault();closeMove();});
     listen('joeApply','click',()=>void applyMove());
@@ -2989,9 +3298,9 @@ const AdmiralAccountForm = (() => {
         <td><button type="button" data-open-project="${esc(meta.id)}" aria-label="Open schedule for Lot ${esc(meta.lot)}, Unit ${esc(meta.unit)}">Open schedule →</button></td></tr>`;
     }).join('');
   }
-  function showLanding(){el('joeLongview').hidden=true;lookRecord=null;activeId='';state=null;selectedId='';vendorView='';el('bootstrapProjectLanding')?.classList.remove('hidden');el('bootstrapProjectWorkspace')?.classList.add('hidden');el('bootstrapProjectsHome')?.classList.add('hidden');if(el('bootstrapScheduleTitleHeading'))el('bootstrapScheduleTitleHeading').textContent='ScheduleJoe';if(el('bootstrapScheduleSubtitle'))el('bootstrapScheduleSubtitle').textContent='Choose a lot and unit to open its independent schedule.';renderLanding();}
+  function showLanding(){el('bootstrapSchedule').classList.remove('desk-open');el('joeLongview').hidden=true;lookRecord=null;activeId='';state=null;selectedId='';vendorView='';el('bootstrapProjectLanding')?.classList.remove('hidden');el('bootstrapProjectWorkspace')?.classList.add('hidden');el('bootstrapProjectsHome')?.classList.add('hidden');if(el('bootstrapScheduleTitleHeading'))el('bootstrapScheduleTitleHeading').textContent='ScheduleJoe';if(el('bootstrapScheduleSubtitle'))el('bootstrapScheduleSubtitle').textContent='Choose a lot and unit to open its independent schedule.';renderLanding();}
   function vendors(){return [...new Set(state.tasks.map(task=>task.vendor||vendorFor(task.trade)))].sort((a,b)=>a.localeCompare(b));}
-  function segmentsForWeek(week){const first=week*5,last=first+5,segments=[];state.tasks.forEach(task=>{const start=Math.max(task.start,first),end=Math.min(task.start+Math.max(1,task.duration||1),last);if(start<end)segments.push({task,start,end});});segments.sort((a,b)=>a.start-b.start||b.end-a.end||a.task.title.localeCompare(b.task.title));const lanes=[];segments.forEach(segment=>{let lane=lanes.findIndex(end=>end<=segment.start);if(lane<0){lane=lanes.length;lanes.push(segment.end);}else lanes[lane]=segment.end;segment.lane=lane;});return {segments,lanes:Math.max(2,lanes.length)};}
+  function segmentsForWeek(week){const first=week*5,last=first+5,segments=[];state.tasks.forEach(task=>{if(vendorView&&task.vendor!==vendorView)return;const start=Math.max(task.start,first),end=Math.min(task.start+Math.max(1,task.duration||1),last);if(start<end)segments.push({task,start,end});});segments.sort((a,b)=>a.start-b.start||b.end-a.end||a.task.title.localeCompare(b.task.title));const lanes=[];segments.forEach(segment=>{let lane=lanes.findIndex(end=>end<=segment.start);if(lane<0){lane=lanes.length;lanes.push(segment.end);}else lanes[lane]=segment.end;segment.lane=lane;});return {segments,lanes:Math.max(2,lanes.length)};}
   function weekendDate(entry){const date=anchor(project(activeId));date.setDate(date.getDate()+entry.week*7+(entry.day==='sun'?6:5));return date;}
   function weekendLabel(entry){return weekendDate(entry).toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'});}
   function renderAccelerated(){
@@ -3002,7 +3311,7 @@ const AdmiralAccountForm = (() => {
   function riskWarnings(task){
     const warnings=[];
     if(task.duration<Math.max(1,task.plannedDuration||task.duration))warnings.push('Duration is shorter than the original plan');
-    const conflict=state.tasks.find(other=>other.id!==task.id&&other.vendor===task.vendor&&task.start<other.start+other.duration&&other.start<task.start+task.duration);
+    const conflict=task.vendor!=='Unassigned'&&state.tasks.find(other=>other.id!==task.id&&other.vendor===task.vendor&&task.start<other.start+other.duration&&other.start<task.start+task.duration);
     if(conflict)warnings.push(task.vendor+' overlaps '+conflict.title);
     return warnings;
   }
@@ -3010,70 +3319,105 @@ const AdmiralAccountForm = (() => {
     const begins=start===task.start,finishes=end===task.start+task.duration,warnings=Array.isArray(task.riskWarnings)?task.riskWarnings:[],weekendCount=task.acceleratedAssignments?.length||0;
     return '<article class="bootstrap-ground-task kind-'+esc(task.type||'work')+(selectedId===task.id?' is-selected':'')+(warnings.length?' has-risk':'')+'" draggable="true" tabindex="0" data-task-id="'+esc(task.id)+'" style="grid-column:'+(start-first+1)+' / span '+(end-start)+';grid-row:'+(lane+2)+'">'+(begins?'<button class="bootstrap-task-resize is-start" type="button" draggable="false" data-resize-edge="start" aria-label="Change start and duration of '+esc(task.title)+'">‹</button>':'')+'<small>'+esc(task.trade)+'</small><b>'+(begins?'':'← ')+esc(task.title)+(finishes?'':' →')+'</b><span>'+esc(task.duration)+' workday'+(task.duration===1?'':'s')+(weekendCount?' · '+weekendCount+' accelerated':'')+'</span><em class="bootstrap-task-vendor">'+esc(task.vendor)+'</em>'+(warnings.length?'<i class="bootstrap-task-risk" title="'+esc(warnings.join('. '))+'">!</i>':'')+(finishes?'<button class="bootstrap-task-resize is-end" type="button" draggable="false" data-resize-edge="end" aria-label="Change duration of '+esc(task.title)+'">›</button>':'')+'</article>';
   }
-  function renderSchedule(){
-    if(!state)return;const meta=project(activeId),weeksTotal=weekCount(),daysTotal=weeksTotal*5;
-    if(selectedWeek!=='all')selectedWeek=Math.min(selectedWeek,weeksTotal-1);
-    const acceleratedWeek=el('bootstrapAcceleratedWeek'),previous=Number(acceleratedWeek.value)||0;
-    if(acceleratedWeek.options.length!==weeksTotal){
-      acceleratedWeek.innerHTML=Array.from({length:weeksTotal},(_,w)=>`<option value="${w}">Week ${w+1}</option>`).join('');
-      acceleratedWeek.value=String(Math.min(previous,weeksTotal-1));
-    }
-    const chosen=state.tasks.find(t=>t.id===selectedId);
-    el('joeTaskInfo').hidden=!chosen;
-    if(chosen){
-      el('joeTaskName').textContent=chosen.title;
-      el('joeTaskDates').textContent='Baseline '+(Number.isInteger(chosen.baselineStart)?labelDate(chosen.baselineStart):'not recorded')+' · Scheduled '+labelDate(chosen.start)+' · '+chosen.duration+' workday'+(chosen.duration===1?'':'s');
-      el('joeAreaEdit').value=areaOf(chosen);
-    }
-    el('joeExtend').disabled=weeksTotal>=MAX_WEEKS;
-    el('joeExtend').textContent=weeksTotal>=MAX_WEEKS?'52-week window':'Add '+Math.min(4,MAX_WEEKS-weeksTotal)+' weeks';
-    [['bootstrapRegionValue','region'],['bootstrapDivisionValue','division'],['bootstrapCommunityValue','community'],['bootstrapLotValue','lot'],['bootstrapUnitValue','unit']].forEach(([id,key])=>{if(el(id))el(id).textContent=meta[key];});
-    if(el('bootstrapScheduleRange'))el('bootstrapScheduleRange').textContent=labelDate(0)+' – '+workDate(daysTotal-1).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'})+' · '+weeksTotal+' weeks · Mon–Fri';
-    const select=el('bootstrapScheduleDay');if(select)select.innerHTML=Array.from({length:daysTotal},(_,day)=>'<option value="'+day+'">'+esc(labelDate(day,true))+'</option>').join('');
-    const board=el('bootstrapScheduleBoard');if(!board)return;
-    const weekSelect=el('scheduleJoeWeek');
-    weekSelect.innerHTML=Array.from({length:weeksTotal},(_,week)=>`<option value="${week}">Week ${week+1} · ${esc(labelDate(week*5))} – ${esc(labelDate(week*5+4))}</option>`).join('')+`<option value="all">All ${weeksTotal} weeks</option>`;
-    weekSelect.value=String(selectedWeek);
-    for(const button of document.querySelectorAll('#bootstrapSchedule [data-week-step]')){
-      button.disabled=selectedWeek==='all'||selectedWeek+Number(button.dataset.weekStep)<0||selectedWeek+Number(button.dataset.weekStep)>=weeksTotal;
-    }
-    const weeks=selectedWeek==='all'?Array.from({length:weeksTotal},(_,i)=>i):[selectedWeek];
-    board.innerHTML=weeks.map(week=>{const first=week*5,{segments,lanes}=segmentsForWeek(week),accelerated=state.acceleratedDays.filter(entry=>entry.week===week);const heads=Array.from({length:5},(_,col)=>'<button type="button" class="bootstrap-ground-day-head'+(overDay===first+col?' is-over':'')+'" data-schedule-move="'+(first+col)+'" title="Move selected task here"><small>'+esc(workDate(first+col).toLocaleDateString(undefined,{weekday:'short'}))+'</small><b>'+esc(labelDate(first+col))+'</b></button>').join('');const cells=Array.from({length:5},(_,col)=>'<div class="bootstrap-ground-day-cell'+(overDay===first+col?' is-over':'')+'" data-schedule-day="'+(first+col)+'" style="grid-column:'+(col+1)+';grid-row:2 / span '+lanes+'"></div>').join('');const bars=segments.map(({task,start,end,lane})=>taskMarkup(task,start,end,lane,first)).join('');const acceleratedLane=accelerated.length?'<aside class="bootstrap-weekend-lane"><small>ACCELERATED EXCEPTION</small>'+accelerated.map(entry=>'<button type="button" data-open-accelerated="1"><b>'+esc(weekendLabel(entry))+'</b><span>'+esc(entry.shift.toUpperCase())+' · '+esc(entry.commitment.replace('_',' ').toUpperCase())+'</span></button>').join('')+'</aside>':'';return '<section class="bootstrap-ground-week"><header><small>WEEK '+(week+1)+'</small><b>'+esc(labelDate(first))+' – '+esc(labelDate(first+4))+'</b></header><div class="bootstrap-ground-week-grid" data-week="'+week+'" style="--task-lanes:'+lanes+'">'+heads+cells+bars+'</div>'+acceleratedLane+'</section>';}).join('');
-    renderVendorLayer();renderAccelerated();
+  function fitCalendar() {
+    const board=el('bootstrapScheduleBoard'),panel=el('bootstrapSchedule');
+    if(!board?.getClientRects().length||!panel.open)return;
+    const top=board.getBoundingClientRect().top-panel.getBoundingClientRect().top+panel.scrollTop;
+    const height=Math.floor((panel.clientHeight-top-46)/3);
+    board.style.setProperty('--desk-week',Math.max(135,Math.min(height,250))+'px');
   }
-  function activityCopy(item){if(item.assignment)return item.task+' reassigned from '+item.from+' to '+item.to+'.';if(item.type==='resize')return item.task+' duration changed from '+item.from+' to '+item.to+'.';if(item.type==='weekend')return item.task+' added to '+item.to+' as an accelerated exception.';if(item.type==='weekend-open')return item.to+' activated for accelerated work.';return item.task+' moved from '+item.from+' to '+item.to+'.';}
+  const expandedWeeks=new Set();
+  function weekTop(node) {
+    const board=el('bootstrapScheduleBoard');
+    return board.scrollTop+node.getBoundingClientRect().top-board.getBoundingClientRect().top;
+  }
+  function syncWeek() {
+    if(!state)return;
+    const board=el('bootstrapScheduleBoard');
+    if(!board.clientHeight)return;
+    const nodes=board.querySelectorAll('.bootstrap-ground-week');
+    let week=0;
+    for(const node of nodes){if(weekTop(node)>board.scrollTop+3)break;week=Number(node.dataset.weekNumber);}
+    selectedWeek=week;el('scheduleJoeWeek').value=String(week);
+    for(const b of el('bootstrapProjectWorkspace').querySelectorAll('[data-week-step]')){
+      b.disabled=Number(b.dataset.weekStep)<0?week===0:week===weekCount()-1;
+    }
+  }
+  function jumpWeek(week) {
+    const board=el('bootstrapScheduleBoard');
+    const node=board.querySelector('[data-week-number="'+week+'"]');
+    if(node){board.scrollTop=Math.max(0,weekTop(node));syncWeek();}
+  }
+  function fieldWeek(week) {
+    const first=week*5,{segments,lanes}=segmentsForWeek(week),expanded=expandedWeeks.has(week);
+    const extra=segments.filter(s=>s.lane>=2).length;
+    const heads=[],cells=[],agenda=[];
+    for(let col=0;col<5;col++){
+      const day=first+col,weekday=workDate(day).toLocaleDateString(undefined,{weekday:'short'}),date=labelDate(day);
+      const label='Add task on '+fullDate(day);
+      heads.push(`<button type="button" class="bootstrap-ground-day-head" data-schedule-move="${day}" aria-label="${esc(label)}"><small>${weekday}</small><b>${esc(date)}</b></button>`);
+      cells.push(`<div class="bootstrap-ground-day-cell" data-schedule-day="${day}" style="grid-column:${col+1};grid-row:2 / span ${expanded?lanes:2}"></div>`);
+      const items=segments.filter(s=>s.start<=day&&s.end>day);
+      agenda.push(`<section><button class="desk-date" type="button" data-desk-day="${day}" aria-label="${esc(label)}">${weekday} · ${esc(date)} ＋</button><div>${items.map(({task})=>
+        `<button type="button" class="desk-agenda-task" data-edit-task="${esc(task.id)}"><b>${esc(task.title)}</b><span>${esc(task.vendor)}</span></button>`).join('')}</div></section>`);
+    }
+    const bars=segments.filter(s=>expanded||s.lane<2).map(s=>taskMarkup(s.task,s.start,s.end,s.lane,first)).join('');
+    const shifts=state.acceleratedDays.filter(s=>s.week===week).map(s=>`<button type="button" data-open-accelerated="1">${esc(weekendLabel(s))} · ${esc(s.shift.toUpperCase())}</button>`).join('');
+    const more=extra?`<button type="button" class="desk-more" data-expand-week="${week}" aria-expanded="${expanded}">${expanded?'Show fewer tasks':'Show '+extra+' more task'+(extra===1?'':'s')}</button>`:'';
+    return `<section class="bootstrap-ground-week" data-week-number="${week}">
+      <header><small>Week ${week+1}</small><b>${esc(labelDate(first))} – ${esc(labelDate(first+4))}</b>${more}</header>
+      <div class="bootstrap-ground-week-grid" data-week="${week}" style="--task-lanes:${expanded?lanes:2}">${heads.join('')}${cells.join('')}${bars}</div>
+      <div class="desk-agenda">${agenda.join('')}</div>${shifts?'<aside class="desk-shifts">'+shifts+'</aside>':''}</section>`;
+  }
+  function renderSchedule(){
+    if(!state)return;
+    const board=el('bootstrapScheduleBoard'),top=board.scrollTop,weeks=weekCount(),meta=project(activeId);
+    el('bootstrapScheduleSubtitle').textContent='ScheduleJoe · '+[meta.region,meta.division,meta.community].join(' / ');
+    el('joeExtend').disabled=weeks>=MAX_WEEKS;
+    el('bootstrapScheduleRange').textContent=labelDate(0)+' – '+fullDate(weeks*5-1)+' · '+weeks+' weeks';
+    const options=Array.from({length:weeks},(_,w)=>`<option value="${w}">Week ${w+1} · ${labelDate(w*5)} – ${labelDate(w*5+4)}</option>`).join('');
+    const weekdayPicker=el('scheduleJoeWeek'),shiftWeek=el('bootstrapAcceleratedWeek');
+    if(weekdayPicker.options.length!==weeks||weekdayPicker.dataset.project!==activeId){weekdayPicker.innerHTML=options;weekdayPicker.dataset.project=activeId;}
+    if(shiftWeek.options.length!==weeks||shiftWeek.dataset.project!==activeId){
+      const v=shiftWeek.dataset.project===activeId?shiftWeek.value:'0';
+      shiftWeek.innerHTML=options;shiftWeek.dataset.project=activeId;shiftWeek.value=v||'0';
+    }
+    board.innerHTML=Array.from({length:weeks},(_,w)=>fieldWeek(w)).join('');
+    fitCalendar();board.scrollTop=top;syncWeek();renderVendorLayer();renderAccelerated();updateVendorCount();
+  }
+  function activityCopy(item){if(item.summary)return item.task+' · '+item.summary;if(item.assignment)return item.task+' reassigned from '+item.from+' to '+item.to+'.';if(item.type==='resize')return item.task+' duration changed from '+item.from+' to '+item.to+'.';if(item.type==='weekend')return item.task+' added to '+item.to+' as an accelerated exception.';if(item.type==='weekend-open')return item.to+' activated for accelerated work.';return item.task+' moved from '+item.from+' to '+item.to+'.';}
   function renderVendorLayer(){
-    if(!state)return;const options=vendors(),view=el('bootstrapVendorView'),assign=el('bootstrapVendorAssign');
-    if(view){view.innerHTML='<option value="">All work</option>'+options.map(v=>'<option value="'+esc(v)+'">'+esc(v)+'</option>').join('');view.value=vendorView;}
-    if(assign){assign.innerHTML=options.map(v=>'<option value="'+esc(v)+'">'+esc(v)+'</option>').join('');const chosen=state.tasks.find(task=>task.id===selectedId);if(chosen)assign.value=chosen.vendor;}
-    if(el('bootstrapVendorAssignButton'))el('bootstrapVendorAssignButton').disabled=!selectedId;
-    if(el('bootstrapVendorViewNote'))el('bootstrapVendorViewNote').textContent=vendorView?vendorView+' sees only its assigned work and schedule changes.':'Select a task to move it, resize it, assign a vendor, or add an accelerated shift.';
-    document.querySelectorAll('#bootstrapSchedule [data-task-id]').forEach(card=>{const task=state.tasks.find(item=>item.id===card.dataset.taskId);card.classList.toggle('vendor-hidden',!!vendorView&&task?.vendor!==vendorView);});
-    const activity=el('bootstrapVendorActivity');if(activity)activity.innerHTML=state.activity.length?state.activity.slice(0,12).map(item=>'<article><b>'+esc(item.vendor||'Construction Manager')+'</b><span>'+esc(activityCopy(item))+'</span><small>'+esc(new Date(item.at).toLocaleString())+'</small></article>').join(''):'<p>No schedule changes are recorded for this project.</p>';
+    if(!state)return;
+    const options=vendors(),view=el('bootstrapVendorView');
+    view.innerHTML='<option value="">All crews</option>'+options.map(v=>'<option value="'+esc(v)+'">'+esc(v)+'</option>').join('');
+    view.value=vendorView;
+    const activity=el('bootstrapVendorActivity');if(activity)activity.innerHTML=state.activity.length?state.activity.filter(item=>!vendorView||item.vendor===vendorView).map(item=>'<article><b>'+esc(item.vendor||'Construction Manager')+'</b><span>'+esc(activityCopy(item))+'</span><small>'+esc(new Date(item.at).toLocaleString())+'</small></article>').join(''):'<p>No schedule changes are recorded for this project.</p>';
   }
   async function openProject(id){if(!visit||!cache.has(id))return;
     el('joeLongview').hidden=true;lookRecord=null;
     el('joePrompt').checked=localRead('scheduleJoePrompt:'+id)===true;
     el('scheduleJoeRetry').hidden=true;
     activeId=id;state=cache.get(id);selectedWeek=0;selectedId='';vendorView='';
-    el('bootstrapScheduleForm').reset();el('bootstrapScheduleForm').classList.add('hidden');
+    el('bootstrapSchedule').classList.add('desk-open');expandedWeeks.clear();el('deskSettings').open=false;el('deskHistory').open=false;
     el('bootstrapAcceleratedPanel').classList.add('hidden');
-    el('bootstrapAcceleratedToggle').setAttribute('aria-expanded','false');el('bootstrapProjectLanding')?.classList.add('hidden');el('bootstrapProjectWorkspace')?.classList.remove('hidden');el('bootstrapProjectsHome')?.classList.remove('hidden');const meta=project(id);el('bootstrapScheduleTitleHeading').textContent='Lot '+meta.lot+' · Unit '+meta.unit;el('bootstrapScheduleSubtitle').textContent='Tap a task to select it. Drag to move it, or pull an edge to change its duration.';renderSchedule();status(state._source==='recovered prior schedule'?'Prior Lot 1234 · Unit A schedule recovered. Changes now save in its independent record.':state.updatedAt?'Loaded saved revision '+state.revision+' from '+new Date(state.updatedAt).toLocaleString()+'.':'Original project plan loaded. Drag a task body to move it or an edge to change duration.');el('bootstrapSchedule').scrollTop=0;}
+    el('bootstrapAcceleratedToggle').setAttribute('aria-expanded','false');el('bootstrapProjectLanding')?.classList.add('hidden');el('bootstrapProjectWorkspace')?.classList.remove('hidden');el('bootstrapProjectsHome')?.classList.remove('hidden');const meta=project(id);el('bootstrapScheduleTitleHeading').textContent='Lot '+meta.lot+' · Unit '+meta.unit;el('bootstrapScheduleSubtitle').textContent='Tap a task to select it. Drag to move it, or pull an edge to change its duration.';renderSchedule();jumpWeek(0);status(state._source==='recovered prior schedule'?'Prior Lot 1234 · Unit A schedule recovered. Changes now save in its independent record.':state.updatedAt?'Loaded saved revision '+state.revision+' from '+new Date(state.updatedAt).toLocaleString()+'.':'Tap a date to add work or a task to edit it.');el('bootstrapSchedule').scrollTop=0;}
   async function move(id,day){
     const task=state?.tasks.find(item=>item.id===id);if(!task)return;
     if(task.locked===true||task.complete===true){status('This task is locked or complete.');return;}
     if(el('joePrompt').checked){openMove(task,Number(day));return;}
-    const from=task.start,next=Math.max(0,Math.min(weekCount()*5-Math.max(1,task.duration||1),Number(day)));task.start=next;task.riskWarnings=riskWarnings(task);
-    if(from!==next)state.activity.unshift({id:'move-'+Date.now(),at:new Date().toISOString(),task:task.title,vendor:task.vendor,from:labelDate(from,true),to:labelDate(next,true)});
-    state.activity=state.activity.slice(0,100);selectedId='';showOver(null);renderSchedule();document.querySelectorAll('#bootstrapSchedule [data-task-id="'+CSS.escape(task.id)+'"]').forEach(node=>node.classList.add('is-settling'));
-    if(from===next){status(task.title+' already begins on '+labelDate(next,true)+'.');return;}
-    const warning=task.riskWarnings.length?' Warning recorded: '+task.riskWarnings.join('; ')+'.':'';status(task.title+' moved to '+labelDate(next,true)+'.'+warning+' Saving this project…');await persist(task.duration+'-workday duration preserved; '+task.vendor+' can see the change.'+warning);
+    const next=Number(day);
+    if(next===task.start)return;
+    if(!Number.isInteger(next)||next<0||next+task.duration>MAX_WEEKS*5){status('Choose a workday inside the planning window.');return;}
+    const before={...task};task.start=next;
+    state.planningWeeks=Math.max(weekCount(),Math.ceil((next+task.duration)/5));recordTaskChange(before,task);
+    finishEdit(task);await persist(task.title+' moved to '+fullDate(next)+'.');
   }
   async function resizeTask(id,edge,day){
-    const task=state?.tasks.find(item=>item.id===id);if(!task)return;const oldStart=task.start,oldDuration=Math.max(1,task.duration||1),oldEnd=oldStart+oldDuration;
+    const task=state?.tasks.find(item=>item.id===id);if(!task||task.locked===true||task.complete===true)return;const before={...task},oldStart=task.start,oldDuration=Math.max(1,task.duration||1),oldEnd=oldStart+oldDuration;
     if(edge==='start'){const nextStart=Math.max(0,Math.min(oldEnd-1,Number(day)));task.start=nextStart;task.duration=oldEnd-nextStart;}else{const nextEnd=Math.max(task.start+1,Math.min(weekCount()*5,Number(day)+1));task.duration=nextEnd-task.start;}
     if(task.start===oldStart&&task.duration===oldDuration){showOver(null);renderSchedule();status('Duration unchanged. Drag the edge into another workday.');return;}
-    task.riskWarnings=riskWarnings(task);state.activity.unshift({id:'resize-'+Date.now(),type:'resize',at:new Date().toISOString(),task:task.title,vendor:task.vendor,from:oldDuration+' workday'+(oldDuration===1?'':'s'),to:task.duration+' workday'+(task.duration===1?'':'s')});state.activity=state.activity.slice(0,100);selectedId=task.id;showOver(null);renderSchedule();
+    recordTaskChange(before,task);for(const t of state.tasks)t.riskWarnings=riskWarnings(t);
+    selectedId=task.id;showOver(null);renderSchedule();
     const warning=task.riskWarnings.length?' Calculated-risk warning: '+task.riskWarnings.join('; ')+'. The manager may proceed.':'';status(task.title+' now runs '+task.duration+' workday'+(task.duration===1?'':'s')+'.'+warning);await persist('Duration saved.'+warning);
   }
   function gridRects(){return [...document.querySelectorAll('.bootstrap-ground-week-grid')].map(grid=>({week:Number(grid.dataset.week),rect:grid.getBoundingClientRect()}));}
@@ -3095,7 +3439,7 @@ const AdmiralAccountForm = (() => {
   }
   function closeSchedule(restore=true) {
     const entry=visit,panel=el('bootstrapSchedule');
-    closeMove();lookRecord=null;visit=null;
+    closeMove();dismissEditor();if(el('deskUpdates').open)el('deskUpdates').close();lookRecord=null;visit=null;
     if(entry) clearInterval(entry.timer);
     clearTouchDrag();desktopGrab=null;showOver(null);
     activeId='';state=null;selectedId='';vendorView='';
@@ -3145,17 +3489,35 @@ const AdmiralAccountForm = (() => {
     if(opener){event.preventDefault();event.stopImmediatePropagation();void open(opener);return;}if(!target.closest('#bootstrapSchedule'))return;if(target.closest('#scheduleJoeFleet')){closeSchedule(false);window.DarkSkyOpenFleetWatchtower?.();return;}if(target.closest('#bootstrapScheduleClose')){event.preventDefault();event.stopImmediatePropagation();closeSchedule();return;}if(target.closest('#bootstrapProjectsHome')){event.preventDefault();event.stopImmediatePropagation();showLanding();el('bootstrapSchedule').scrollTop=0;return;}const rowButton=target.closest('[data-open-project]');if(rowButton){event.preventDefault();event.stopImmediatePropagation();await openProject(rowButton.dataset.openProject);return;}if(!state)return;
     if(target.closest('#scheduleJoeRetry')){void persist('');return;}
     const step=target.closest('[data-week-step]');
-    if(step){selectedWeek=Math.max(0,Math.min(weekCount()-1,Number(selectedWeek)+Number(step.dataset.weekStep)));renderSchedule();return;}
-    if(target.closest('#bootstrapScheduleAdd')){event.preventDefault();event.stopImmediatePropagation();el('bootstrapScheduleForm').classList.remove('hidden');el('bootstrapScheduleDay').value=String(selectedWeek==='all'?0:selectedWeek*5);el('bootstrapScheduleTaskTitle').focus();return;}if(target.closest('#bootstrapScheduleCancel')){event.preventDefault();event.stopImmediatePropagation();el('bootstrapScheduleForm').classList.add('hidden');return;}if(target.closest('#bootstrapScheduleReset')){event.preventDefault();event.stopImmediatePropagation();const meta=project(activeId);const prior=state;if(window.confirm('Reset only Lot '+meta.lot+' · Unit '+meta.unit+' to its original plan?')){Object.assign(state,fresh(meta),{revision:prior.revision,updatedAt:prior.updatedAt,planStart:prior.planStart});selectedId='';renderSchedule();await persist('This project was reset.');}return;}const moveButton=target.closest('[data-schedule-move]');if(moveButton&&selectedId){event.preventDefault();event.stopImmediatePropagation();move(selectedId,Number(moveButton.dataset.scheduleMove));return;}const card=target.closest('[data-task-id]');if(card){event.preventDefault();event.stopImmediatePropagation();if(Date.now()<suppressClickUntil)return;selectedId=selectedId===card.dataset.taskId?'':card.dataset.taskId;renderSchedule();status(selectedId?'Task selected. Drag the body to move, drag either edge to resize, or add an accelerated shift.':'Task selection cleared.');}},{capture:true});
+    if(step){jumpWeek(Math.max(0,Math.min(weekCount()-1,selectedWeek+Number(step.dataset.weekStep))));return;}
+    if(target.closest('#bootstrapScheduleAdd')){openEditor(null,selectedWeek*5);return;}
+    if(target.closest('#bootstrapScheduleCancel')){dismissEditor();return;}
+    const more=target.closest('[data-expand-week]');
+    if(more){const week=Number(more.dataset.expandWeek);if(expandedWeeks.has(week))expandedWeeks.delete(week);else expandedWeeks.add(week);renderSchedule();return;}
+    const cell=target.closest('[data-schedule-move],[data-schedule-day],[data-desk-day]');
+    if(cell){if(Date.now()<suppressClickUntil)return;openEditor(null,Number(cell.dataset.scheduleMove??cell.dataset.scheduleDay??cell.dataset.deskDay));return;}
+    if(target.closest('#bootstrapScheduleReset')){event.preventDefault();event.stopImmediatePropagation();const meta=project(activeId);const prior=state;if(window.confirm('Reset only Lot '+meta.lot+' · Unit '+meta.unit+' to its original plan?')){const reset=fresh(meta),originals=new Map(reset.tasks.map(t=>[t.id,t]));
+      for(const task of state.tasks){
+        const restored=originals.get(task.id);
+        if(restored){
+          if(task.start!==restored.start||task.duration!==restored.duration||task.vendor!==restored.vendor||task.title!==restored.title)recordTaskChange(task,restored);
+        }else queueVendorNotice(task,'Task removed in project reset · previously '+dateRange(task),'reset');
+        for(const id of task.acceleratedAssignments||[]){
+          const shift=state.acceleratedDays.find(item=>item.id===id);
+          if(shift)queueVendorNotice(task,'Weekend shift removed in project reset · '+weekendLabel(shift),shift.id);
+        }
+      }
+      Object.assign(state,reset,{revision:prior.revision,updatedAt:prior.updatedAt,planStart:prior.planStart,activity:prior.activity});
+      selectedId='';vendorView='';renderSchedule();jumpWeek(0);await persist('This project was reset.');}return;}const card=target.closest('[data-task-id],[data-edit-task]');
+    if(card&&Date.now()>=suppressClickUntil){event.preventDefault();event.stopImmediatePropagation();openEditor(state.tasks.find(t=>t.id===(card.dataset.taskId||card.dataset.editTask)));}},{capture:true});
   document.addEventListener('click',async event=>{
     const target=event.target;if(!target.closest?.('#bootstrapSchedule')||!state)return;
-    const toggle=target.closest('#bootstrapAcceleratedToggle,[data-open-accelerated]');if(toggle){event.preventDefault();const panel=el('bootstrapAcceleratedPanel'),opening=panel?.classList.contains('hidden');panel?.classList.toggle('hidden',!opening);el('bootstrapAcceleratedToggle')?.setAttribute('aria-expanded',opening?'true':'false');if(opening){if(selectedWeek!=='all')el('bootstrapAcceleratedWeek').value=String(selectedWeek);renderAccelerated();panel?.scrollIntoView({behavior:'smooth',block:'nearest'});}return;}
+    const toggle=target.closest('#bootstrapAcceleratedToggle,[data-open-accelerated]');if(toggle){event.preventDefault();const panel=el('bootstrapAcceleratedPanel'),opening=panel?.classList.contains('hidden');panel?.classList.toggle('hidden',!opening);el('bootstrapAcceleratedToggle')?.setAttribute('aria-expanded',opening?'true':'false');if(opening){el('deskSettings').open=true;if(selectedWeek!=='all')el('bootstrapAcceleratedWeek').value=String(selectedWeek);renderAccelerated();panel?.scrollIntoView({behavior:'smooth',block:'nearest'});}return;}
     if(target.closest('#bootstrapAcceleratedClose')){event.preventDefault();el('bootstrapAcceleratedPanel')?.classList.add('hidden');el('bootstrapAcceleratedToggle')?.setAttribute('aria-expanded','false');return;}
-    if(target.closest('#bootstrapAcceleratedAdd')){event.preventDefault();const week=Number(el('bootstrapAcceleratedWeek')?.value||0),day=el('bootstrapAcceleratedDay')?.value==='sun'?'sun':'sat',shift=el('bootstrapAcceleratedShift')?.value||'am',commitment=el('bootstrapAcceleratedCommitment')?.value||'proposed',id='weekend-'+week+'-'+day;let entry=state.acceleratedDays.find(item=>item.id===id);if(entry){entry.shift=shift;entry.commitment=commitment;}else{entry={id,week,day,shift,commitment,createdAt:new Date().toISOString()};state.acceleratedDays.push(entry);}state.activity.unshift({id:'weekend-open-'+Date.now(),type:'weekend-open',at:new Date().toISOString(),vendor:'Construction Manager',task:'Accelerated shift',from:'Weekend off',to:weekendLabel(entry)+' · '+shift.toUpperCase()+' · '+commitment.replace('_',' ')});renderSchedule();await persist(weekendLabel(entry)+' activated as an accelerated '+shift.toUpperCase()+' exception.');return;}
-    const assign=target.closest('[data-weekend-assign]');if(assign){event.preventDefault();const task=state.tasks.find(item=>item.id===selectedId),entry=state.acceleratedDays.find(item=>item.id===assign.dataset.weekendAssign);if(!task||!entry)return;task.acceleratedAssignments=Array.isArray(task.acceleratedAssignments)?task.acceleratedAssignments:[];if(!task.acceleratedAssignments.includes(entry.id))task.acceleratedAssignments.push(entry.id);state.activity.unshift({id:'weekend-'+Date.now(),type:'weekend',at:new Date().toISOString(),task:task.title,vendor:task.vendor,from:'Standard plan',to:weekendLabel(entry)+' · '+entry.shift.toUpperCase()});renderSchedule();await persist(task.title+' added to '+weekendLabel(entry)+'. Warning retained; standard weekdays remain unchanged.');return;}
-    const remove=target.closest('[data-weekend-remove]');if(remove){event.preventDefault();const entry=state.acceleratedDays.find(item=>item.id===remove.dataset.weekendRemove);state.acceleratedDays=state.acceleratedDays.filter(item=>item.id!==remove.dataset.weekendRemove);state.tasks.forEach(task=>task.acceleratedAssignments=(task.acceleratedAssignments||[]).filter(id=>id!==remove.dataset.weekendRemove));renderSchedule();await persist((entry?weekendLabel(entry):'Weekend shift')+' removed; Saturday and Sunday return to off.');}
+    if(target.closest('#bootstrapAcceleratedAdd')){event.preventDefault();const week=Number(el('bootstrapAcceleratedWeek')?.value||0),day=el('bootstrapAcceleratedDay')?.value==='sun'?'sun':'sat',shift=el('bootstrapAcceleratedShift')?.value||'am',commitment=el('bootstrapAcceleratedCommitment')?.value||'proposed',id='weekend-'+week+'-'+day;let entry=state.acceleratedDays.find(item=>item.id===id);if(entry){if(entry.shift!==shift||entry.commitment!==commitment)state.tasks.filter(t=>t.acceleratedAssignments?.includes(id)).forEach(t=>queueVendorNotice(t,weekendLabel(entry)+' shift updated · '+entry.shift.toUpperCase()+' / '+entry.commitment+' → '+shift.toUpperCase()+' / '+commitment,id));entry.shift=shift;entry.commitment=commitment;}else{entry={id,week,day,shift,commitment,createdAt:new Date().toISOString()};state.acceleratedDays.push(entry);}state.activity.unshift({id:'weekend-open-'+Date.now(),type:'weekend-open',at:new Date().toISOString(),vendor:'Construction Manager',task:'Accelerated shift',from:'Weekend off',to:weekendLabel(entry)+' · '+shift.toUpperCase()+' · '+commitment.replace('_',' ')});renderSchedule();await persist(weekendLabel(entry)+' activated as an accelerated '+shift.toUpperCase()+' exception.');return;}
+    const assign=target.closest('[data-weekend-assign]');if(assign){event.preventDefault();const task=state.tasks.find(item=>item.id===selectedId),entry=state.acceleratedDays.find(item=>item.id===assign.dataset.weekendAssign);if(!task||!entry)return;task.acceleratedAssignments=Array.isArray(task.acceleratedAssignments)?task.acceleratedAssignments:[];if(task.acceleratedAssignments.includes(entry.id))return;task.acceleratedAssignments.push(entry.id);queueVendorNotice(task,'Additional shift · '+weekendLabel(entry)+' · '+entry.shift.toUpperCase(),entry.id);state.activity.unshift({id:'weekend-'+Date.now(),type:'weekend',at:new Date().toISOString(),task:task.title,vendor:task.vendor,from:'Standard plan',to:weekendLabel(entry)+' · '+entry.shift.toUpperCase()});renderSchedule();await persist(task.title+' added to '+weekendLabel(entry)+'. Warning retained; standard weekdays remain unchanged.');return;}
+    const remove=target.closest('[data-weekend-remove]');if(remove){event.preventDefault();const entry=state.acceleratedDays.find(item=>item.id===remove.dataset.weekendRemove);if(entry)state.tasks.filter(t=>t.acceleratedAssignments?.includes(entry.id)).forEach(t=>queueVendorNotice(t,'Weekend shift removed · '+weekendLabel(entry)+' · '+entry.shift.toUpperCase(),entry.id));state.acceleratedDays=state.acceleratedDays.filter(item=>item.id!==remove.dataset.weekendRemove);state.tasks.forEach(task=>task.acceleratedAssignments=(task.acceleratedAssignments||[]).filter(id=>id!==remove.dataset.weekendRemove));renderSchedule();await persist((entry?weekendLabel(entry):'Weekend shift')+' removed; Saturday and Sunday return to off.');}
   },{capture:true});
-  document.addEventListener('submit',async event=>{if(event.target.id!=='bootstrapScheduleForm'||!state)return;event.preventDefault();event.stopImmediatePropagation();const title=el('bootstrapScheduleTaskTitle')?.value?.trim(),trade=el('bootstrapScheduleTrade')?.value?.trim(),start=Number(el('bootstrapScheduleDay')?.value||0),duration=Math.max(1,Math.min(15,Number(el('bootstrapScheduleDuration')?.value||1))),type=el('bootstrapScheduleType')?.value||'work';if(!title||!trade)return;state.tasks.push({id:'task-'+Date.now(),title,trade,start:Math.min(start,weekCount()*5-duration),duration,plannedDuration:duration,type,baselineStart:Math.min(start,weekCount()*5-duration),area:el('joeAreaNew').value,vendor:vendorFor(trade),acceleratedAssignments:[]});event.target.reset();el('bootstrapScheduleDuration').value='1';event.target.classList.add('hidden');renderSchedule();await persist(title+' added to Lot '+project(activeId).lot+' · Unit '+project(activeId).unit+'.');},{capture:true});
   document.addEventListener('dragstart',event=>{if(event.target.closest?.('[data-resize-edge]')){event.preventDefault();return;}const card=event.target.closest?.('#bootstrapSchedule [data-task-id]');if(!card||!state||touchDrag){if(touchDrag)event.preventDefault();return;}event.stopImmediatePropagation();selectedId=card.dataset.taskId;
     const task=state.tasks.find(t=>t.id===selectedId);
     const grab=dayAtPoint(event.clientX,event.clientY);
@@ -3179,12 +3541,15 @@ const AdmiralAccountForm = (() => {
     event.preventDefault();event.stopImmediatePropagation();
     touchDrag={card,id:task.id,pointerId:event.pointerId,edge:handle?.dataset.resizeEdge,
       x:event.clientX,y:event.clientY,offset:Math.max(0,Math.min(task.duration-1,day-task.start)),
-      duration:task.duration,moved:false,ghost:null};
+      duration:task.duration,moved:false,ghost:null,started:event.timeStamp,scrolling:false,
+      scrollTop:el('bootstrapScheduleBoard').scrollTop};
     if(event.isTrusted)card.setPointerCapture(event.pointerId);
   },{capture:true});
   function updateDrag(event) {
-    const drag=touchDrag;
-    if(!drag.moved && Math.hypot(event.clientX-drag.x,event.clientY-drag.y)>=8) {
+    const drag=touchDrag,dx=event.clientX-drag.x,dy=event.clientY-drag.y;
+    if(!drag.moved&&!drag.edge&&event.pointerType==='touch'&&event.timeStamp-drag.started<220&&Math.abs(dy)>8&&Math.abs(dy)>1.3*Math.abs(dx))drag.scrolling=true;
+    if(drag.scrolling){el('bootstrapScheduleBoard').scrollTop=drag.scrollTop-dy;return;}
+    if(!drag.moved && Math.hypot(dx,dy)>=8) {
       drag.moved=true;selectedId=drag.id;
       drag.card.classList.add(drag.edge?'is-resizing':'is-dragging');
       if(!drag.edge)drag.ghost=makeDragGhost(drag.card,{clientX:drag.x,clientY:drag.y});
@@ -3203,26 +3568,24 @@ const AdmiralAccountForm = (() => {
     updateDrag(event);
     const drag=touchDrag,day=drag.edge?dayAtPoint(event.clientX,event.clientY):dragDay(drag,event);
     clearTouchDrag();showOver(null);suppressClickUntil=Date.now()+350;
+    if(drag.scrolling)return;
     if(drag.moved&&day!==null) {
       if(drag.edge)resizeTask(drag.id,drag.edge,day);else move(drag.id,day);
       return;
     }
-    selectedId=!drag.moved&&selectedId===drag.id?'':drag.id;
-    renderSchedule();status(selectedId?'Task selected. Tap a workday heading to move it.':'Task selection cleared.');
+    if(!drag.moved)openEditor(state.tasks.find(t=>t.id===drag.id));
   },{capture:true});
   for(const name of ['pointercancel','lostpointercapture'])document.addEventListener(name,event=>{
     if(touchDrag?.pointerId!==event.pointerId)return;
     clearTouchDrag();showOver(null);renderSchedule();
   },{capture:true});
 
-  document.addEventListener('keydown',event=>{const card=event.target.closest?.('#bootstrapSchedule [data-task-id]');if(!card||!state||!['ArrowLeft','ArrowRight'].includes(event.key))return;event.preventDefault();event.stopImmediatePropagation();const task=state.tasks.find(item=>item.id===card.dataset.taskId),handle=event.target.closest?.('[data-resize-edge]');if(!task)return;if(handle){const edge=handle.dataset.resizeEdge,day=edge==='start'?task.start+(event.key==='ArrowRight'?1:-1):task.start+task.duration-1+(event.key==='ArrowRight'?1:-1);resizeTask(task.id,edge,day);}else move(task.id,task.start+(event.key==='ArrowRight'?1:-1));},{capture:true});
+  document.addEventListener('keydown',event=>{const card=event.target.closest?.('#bootstrapSchedule [data-task-id]');if(!card||!state)return;if(['Enter',' '].includes(event.key)){event.preventDefault();openEditor(state.tasks.find(t=>t.id===card.dataset.taskId));return;}if(!['ArrowLeft','ArrowRight'].includes(event.key))return;event.preventDefault();event.stopImmediatePropagation();const task=state.tasks.find(item=>item.id===card.dataset.taskId),handle=event.target.closest?.('[data-resize-edge]');if(!task)return;if(handle){const edge=handle.dataset.resizeEdge,day=edge==='start'?task.start+(event.key==='ArrowRight'?1:-1):task.start+task.duration-1+(event.key==='ArrowRight'?1:-1);resizeTask(task.id,edge,day);}else move(task.id,task.start+(event.key==='ArrowRight'?1:-1));},{capture:true});
   document.addEventListener('change',event=>{
     if(event.target.id==='scheduleJoeWeek'&&state){
-      selectedWeek=event.target.value==='all'?'all':Number(event.target.value);
-      renderSchedule();return;
+      jumpWeek(Number(event.target.value));return;
     }
     if(event.target.id!=='bootstrapVendorView'||!state)return;vendorView=event.target.value;renderSchedule();status(vendorView?'Vendor view opened for '+vendorView+'.':'All project work is visible.');},{capture:true});
-  document.addEventListener('click',async event=>{if(!event.target.closest?.('#bootstrapVendorAssignButton')||!state)return;event.preventDefault();event.stopImmediatePropagation();const task=state.tasks.find(item=>item.id===selectedId),vendor=el('bootstrapVendorAssign')?.value;if(!task||!vendor)return;const prior=task.vendor;task.vendor=vendor;state.activity.unshift({id:'assign-'+Date.now(),at:new Date().toISOString(),task:task.title,vendor,from:prior,to:vendor,assignment:true});selectedId='';renderSchedule();await persist(task.title+' assigned to '+vendor+'.');},{capture:true});
 })();
 
 // v2.9.61 — Captain's five command doors, robust boot.
