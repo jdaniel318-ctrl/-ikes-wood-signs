@@ -48,7 +48,22 @@
     const r=area.region;
     if(!finite(r.x,0,1)||!finite(r.y,0,1)||!finite(r.w,.000001,1)||!finite(r.h,.000001,1)||r.x+r.w>1||r.y+r.h>1)return null;
     const region=[r,{x:1-r.y-r.h,y:r.x,w:r.h,h:r.w},{x:1-r.x-r.w,y:1-r.y-r.h,w:r.w,h:r.h},{x:r.y,y:1-r.x-r.w,w:r.h,h:r.w}][quarterTurns];
-    const f=frameInRegion(design,photo,quarterTurns,region),p=oriented(photo,quarterTurns);
+    const p=oriented(photo,quarterTurns);
+    const f=frameInRegion(design,photo,quarterTurns,region);
+    // Woodwright already inset this rectangle from the live edges. Map the
+    // usable design area into it once. The outside frame still fits the photo.
+    if(area.fit==='stock-interior'){
+      const {widthMm,heightMm,marginMm}=design.stock;
+      if(finite(marginMm,0,Math.min(widthMm,heightMm)/2)&&2*marginMm<Math.min(widthMm,heightMm)){
+        const cx=region.x+region.w/2,cy=region.y+region.h/2;
+        const scale=Math.min(region.w*p.width/(widthMm-2*marginMm),region.h*p.height/(heightMm-2*marginMm),
+          2*Math.min(cx,1-cx)*p.width/widthMm,2*Math.min(cy,1-cy)*p.height/heightMm);
+        f.w=widthMm*scale/p.width;
+        f.h=heightMm*scale/p.height;
+        f.x=Math.max(0,cx-f.w/2);
+        f.y=Math.max(0,cy-f.h/2);
+      }
+    }
     return f.w*p.width>=1&&f.h*p.height>=1?f:null;
   }
   function initialFrame(design,photo,quarterTurns=0,boardArea=null){

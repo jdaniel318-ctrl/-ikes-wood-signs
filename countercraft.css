@@ -462,3 +462,13 @@ body.cc-customer{display:flex;flex-direction:column;min-height:100vh;min-height:
   .cc-photo-invite .cc-buttons { display: grid; grid-template-columns: 1.05fr 1fr; max-width: 350px; }
   .cc-photo-invite .cc-buttons button { min-width: 0; padding-inline: 6px; }
 }
+
+.cc-board-work .cc-font-choices {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  margin: 0 0 10px;
+}
+@media (max-width: 410px) {
+  .cc-board-work .cc-font-choices { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

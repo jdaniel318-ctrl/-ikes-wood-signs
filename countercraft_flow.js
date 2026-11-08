@@ -1,5 +1,9 @@
 (function(g,f){const a=f(typeof module==='object'&&module.exports?require('./ike_shop_core.js'):g.IkeShopCore,typeof module==='object'&&module.exports?require('./countercraft_core.js'):g.CountercraftCore,typeof module==='object'&&module.exports?require('./boardcraft_photo.js'):g.BoardcraftPhoto);if(typeof module==='object'&&module.exports)module.exports=a;g.CountercraftFlow=a;})(globalThis,function(S,C,B){'use strict';
-function create(){let state;function reset(){state={step:0,request:S.createRequest(),stockId:'',boardSpec:null,contactPreference:'email',requestedPickup:'',plankEvidence:[],lettering:null,frozen:false};return state;}reset();function editable(){if(state.frozen)throw Error('Check the pending submission before editing.');}function invalidate(){state.request.approval=null;state.request.proof=null;}function set(field,value){
+function create(){let state;function reset(){
+ const request=S.createRequest();
+ request.design.text.sizePercent=100;
+ request.design.text.fontId='berkshire-swash';
+ state={step:0,request,stockId:'',boardSpec:null,contactPreference:'email',requestedPickup:'',plankEvidence:[],lettering:null,frozen:false};return state;}reset();function editable(){if(state.frozen)throw Error('Check the pending submission before editing.');}function invalidate(){state.request.approval=null;state.request.proof=null;}function set(field,value){
  editable();const r=state.request;let target,key,placement=false;
  if(['name','email','phone'].includes(field)){target=r.customer;key=field;value=String(value).trim();}
  else if(field==='wording'){target=r.design.text;key='value';placement=true;}

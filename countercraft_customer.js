@@ -50,8 +50,8 @@ function buttons(next){$('ccActions').innerHTML=(flow.state().step?'<button id="
 function proofMarkup(){const r=flow.state().request;if(r.proof)return '<img src="'+r.proof.dataUrl+'" alt="The exact sign proof for this request">';if(!r.board&&!r.design.text.value.trim()&&!r.design.layers?.length)return '<div class="cc-empty"><b>Your words here</b><p>Your sign starts blank. Make it yours.</p></div>';try{return r.board?B.scene(r.design,r.photos.find(p=>p.id===r.board.photoId),r.board,F).svg:D.toSvg(r.design,F);}catch(e){return '<p class="cc-note">'+esc(e.message)+'</p>';}}
 const swatches = new Map();
 function letteringChoices(selected) {
- const styles = [['studio-sans','Block'],['rye','Western'],['lobster','Script']];
- return '<div class="cc-buttons" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:0 0 10px" role="group" aria-label="Lettering samples">'+styles.map(([id,label])=>{
+ const styles = [['berkshire-swash','Swash'],['studio-sans','Block'],['rye','Western'],['lobster','Script']];
+ return '<div class="cc-buttons cc-font-choices" role="group" aria-label="Lettering samples">'+styles.map(([id,label])=>{
    const name=F.fonts[id].name;
    if(!swatches.has(id)){
      const draft=D.createDraft();
@@ -321,6 +321,7 @@ async function addPhoto(file,extra=false,sample=false,nativeScan=null){
    r.photos=[p];st.plankEvidence=[info];
    if(preview)pub=sample?{...emptyPublication,stocks:[sampleStock],rates:[{species:'Cedar',centsPerFoot:1500}]}:emptyPublication;
    flow.selectStock(pub,sample?sampleStock.id:'');
+   if(info.boardArea)info.boardArea.fit='stock-interior';
    r.board=B.createBoard(r.design,p,0,info.boardArea);
    if(nativeScan)flow.applyPhotoSize({source:'native-sweep',...nativeScan});
    if(st.step===0)flow.next();

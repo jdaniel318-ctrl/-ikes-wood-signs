@@ -5,6 +5,8 @@
 .cwe-modal button,.cwe-modal input,.cwe-modal select,.cwe-modal textarea{font:inherit;color:inherit;letter-spacing:normal;text-transform:none}
 .cwe-modal button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;min-width:44px;padding:10px 13px;border:1px solid var(--cwe-line);border-radius:8px;background:#fff;color:#25434b;box-shadow:0 1px 2px #102e3610;cursor:pointer;line-height:1.2;font-weight:650;transition:background .12s,border-color .12s;touch-action:manipulation}
 .cwe-modal button:hover{background:#eff6f4;border-color:#a5c5c0}.cwe-modal button:active{background:#dfedeb}.cwe-modal button:disabled{opacity:.43;cursor:default}
+/* The dialog titles receive focus on entry so assistive technology can announce the new screen. */
+#cwTitle:focus, #cweTitle:focus { outline: none; }
 .cwe-modal button:focus-visible,.cwe-modal input:focus-visible,.cwe-modal textarea:focus-visible,.cwe-modal select:focus-visible,.cwe-modal a:focus-visible,.cwe-modal summary:focus-visible{outline:3px solid #4eafa9;outline-offset:2px}
 .cwe-modal button svg,.cwe-modal .cwe-card-icon svg,.cwe-modal .cwe-brand-icon svg,.cwe-modal .cwe-layer-symbol svg{display:block;width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
 .cwe-modal .cwe-primary{background:var(--cwe-teal);border-color:var(--cwe-teal);color:#fff;box-shadow:0 3px 8px #087c7022}.cwe-modal .cwe-primary:hover{background:#076b61;border-color:#076b61}

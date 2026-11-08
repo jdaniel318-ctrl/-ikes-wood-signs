@@ -76,3 +76,24 @@ test('actual Studio reset and dimension handlers retain evidence while manual sc
  const next=clone(d);next.stock.widthMm=304.8;context.applyDraft(s,next);assert.deepEqual(s.boardPhoto.board.frame,B.createBoard(next,p,1,area).frame);assert.equal(s.boardPhoto.board.frameConfirmed,false);
  s.boardPhoto.boardArea=null;await click('cweFrameReset');assert.deepEqual(s.boardPhoto.board.frame,B.createBoard(next,p,1).frame);
 });
+
+test('full-board fit maps the stock interior once and keeps a centered frame within the photo',()=>{
+ const d=draft(),p=photo(),unit={x:0,y:0,w:1,h:1};
+ d.stock.marginMm=10;
+ for(const region of [{x:.15,y:.24,w:.67,h:.49},{x:0,y:.01,w:.65,h:.25}]){
+  const area={...evidence(p,{region}),fit:'stock-interior'};
+  for(const turn of [0,1,2,3]){
+   const r=rotated(region,turn),board=B.createBoard(d,p,turn,area),f=board.frame;
+   const insetX=f.w*d.stock.marginMm/d.stock.widthMm,insetY=f.h*d.stock.marginMm/d.stock.heightMm;
+   inside(f,unit);
+   const interior={x:f.x+insetX,y:f.y+insetY,w:f.w-2*insetX,h:f.h-2*insetY};
+   inside(interior,r);
+   approx(f.x+f.w/2,r.x+r.w/2);
+   approx(f.y+f.h/2,r.y+r.h/2);
+   const fillsInterior=Math.min(Math.abs(interior.w-r.w),Math.abs(interior.h-r.h))<1e-9;
+   const hitsPhoto=Math.min(f.x,f.y,1-f.x-f.w,1-f.y-f.h)<1e-9;
+   assert(fillsInterior||hitsPhoto);
+   assert.equal(board.frameConfirmed,false);
+  }
+ }
+});
