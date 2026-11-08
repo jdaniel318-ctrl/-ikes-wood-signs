@@ -2289,13 +2289,13 @@ html:has(#lantern-harbor[open]) { overflow:hidden; }
     const assetPaths=[]; // Root Keel: visual/route assets never block Engine boot; route surfaces verify/fallback when opened.
     // The seal makes every release URL immutable. Normal entry may safely reuse
     // bytes from this exact seal; recovery explicitly reloads them from network.
-    function releaseUrl(path){const u=new URL(path,location.href);u.searchParams.set('releaseSeal',SEAL);return u.toString();}
-    async function fetchResponse(path,{fresh=false}={}){
+    function releaseUrl(path,contentHash){const u=new URL(path,location.href);u.searchParams.set('releaseSeal',SEAL);if(/^[a-f0-9]{64}$/.test(contentHash||''))u.searchParams.set('sha256',contentHash);return u.toString();}
+    async function fetchResponse(path,{fresh=false,contentHash}={}){
       // HashLock: release identity documents must never be satisfied by a stale
       // browser/CDN entry. This lets an older HTML shell discover the newly deployed
       // atomic release before executable-body verification begins.
       const identityDoc=/^(DEPLOYMENT_MANIFEST|RELEASE_SEAL|RELEASE_INVENTORY)\.json$/.test(path);
-      const r=await fetch(releaseUrl(path),{cache:(fresh||identityDoc)?'reload':'default',credentials:'same-origin',redirect:'follow'});
+      const r=await fetch(releaseUrl(path,contentHash),{cache:(fresh||identityDoc)?'reload':'default',credentials:'same-origin',redirect:'follow'});
       if(!r.ok)throw new Error(`${path} returned HTTP ${r.status}`);
       return r;
     }
@@ -2556,7 +2556,7 @@ html:has(#lantern-harbor[open]) { overflow:hidden; }
       if(String(inventory?.build||'')!==EXPECTED||String(inventory?.seal||'')!==SEAL)throw Object.assign(new Error('RELEASE_INVENTORY.json does not match this page.'),{manifestBuild});
       const fetched={};
       const requiredPaths=[...snapshotPaths,...presencePaths];
-      const requiredBodies=await Promise.all(requiredPaths.map(path=>fetchText(path,requestOptions)));
+      const requiredBodies=await Promise.all(requiredPaths.map(path=>fetchText(path,{...requestOptions,contentHash:manifest.runtime_integrity?.files?.[path]})));
       requiredPaths.forEach((path,index)=>{fetched[path]=requiredBodies[index];});
       // KeelGuard: compare the exact UTF-8 bodies that will be executed, not just version strings.
       if(manifest.runtime_integrity?.algorithm!=='SHA-256'||!crypto?.subtle)throw new Error('Runtime integrity verification unavailable; the complete HTTPS release is required.');

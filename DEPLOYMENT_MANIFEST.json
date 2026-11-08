@@ -557,7 +557,7 @@
       "fleet_supabase.js": "ea66122cd5f138dd91989cd7a5b0abad8d008dd352a811fab1643e19b5c2ccc5",
       "ike_style_registry.js": "6b348ebceb47e172e6676f46252b19c1c6bb7532baf76febfa8dd81760a76ab7",
       "app.js": "bc570a50781eb21323033e5881b96d19072ba3e19ede90f417cea20c52a51d1c",
-      "captain.js": "b7d1640eea3046bdda86bba9dd61403f1ee3418cf3919eb616fc4f32e2dcccd8",
+      "captain.js": "388629b007fe4d911641243be816353d4a0878da6e3fffbf7e3d2fe16863e3a5",
       "simple_books.js": "ddd76dcf5e6c579f16918a9d3e645b0fc65d8a5b4d7c66df8896d8314eea325d",
       "owner.html": "417c0fa6719c1054406e4bfecb4ad43019d47901c99f2cb20d15963f12383bd1",
       "manifest.webmanifest": "31aeb50acb63b54a7fa9d96aa3d6af0f4e94167d825f504cdf9588e81c0a3b6b",
@@ -575,8 +575,8 @@
       "headway_contracts.js": "e79286db1785fa95038bbda65c83e0d36ada63b2d402dffad695e4866062c09c",
       "woodwright_fit.js": "a4efdadf635608419a2bd82f12a701fd2991ec5dc3d14d282fd846680d40606f",
       "fun_core.js": "b21a909fa3dccf44b2d02d4a8243a91fd260b70db2edfc35338f3fd330c810e4",
-      "fun_program.js": "061fe382139acd7a2195445fb73dfd79e4a2fca8c8e492895d640a0ebf17ca97",
-      "fun_program.css": "0be9fb1e66ac0d04bc446b4f0d92d866aaa09848f6de86ce2bfdb83f2b4d55c3",
+      "fun_program.js": "27180ca384c4deb316eeed6e7e54e492c7be2439e9952165bd0f888abd78788a",
+      "fun_program.css": "62a3de9c5422ea65fb0a22b8da93d1e60cc063781c4767a19f97569507e2373a",
       "fun_player.html": "fcfc2d06cdf204f4591a9717968a027facf170e6e0be32d9151ef847870a0fb7",
       "stormwake_core.js": "b0193108053c9ddd067dc100bb9d820292e970ad2c316512b8456e359820b405",
       "quartermaster_core.js": "9a5f85005f83b820c5bcbfc9afb29475bc65e62ba84e9e8ac2f59edc20a9bebb",
@@ -1269,6 +1269,11 @@
     "iPad_fps_claim": false
   },
   "lazy_program_assets": {
+    "lantern-run.ship.json": {
+      "sha256": "e2c5847ea13ac10c0666d82361301c32b8711ab5bb20cc879aad4d687830e783",
+      "load": "after existing verified Admiral entry",
+      "bytes": 44564
+    },
     "stormwake_player.html": {
       "sha256": "a7b35dec4de61eed5f9a90e3dbd817c0724ae85827b5fcf5cc125326cb81dc9c",
       "load": "after existing verified Admiral entry",

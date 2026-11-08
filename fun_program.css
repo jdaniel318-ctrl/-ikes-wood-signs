@@ -16,3 +16,11 @@
 #funSaveState[data-state=saved],#funSaveState[data-state=recovered]{color:#a6e0c6;border-color:#80b7a8a0;background:#143c39}
 #funSaveState[data-state=unavailable],#funSaveState[data-state=invalid],#funSaveState[data-state=conflict]{color:#ffe0a0;border-color:#e5b65e;background:#483719}
 #funProgram button:active{transform:translateY(1px);background:#306071}
+
+#lanternRunCard{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin:12px 0;padding:14px 18px;border:1px solid #587a72;border-radius:14px;background:#12312f;color:#f3ebd2}
+#lanternRunCard h3{margin:0;font-size:20px;color:#f3ebd2}#lanternRunCard p{margin:3px 0 0;font-size:14px}
+#lanternRunCard button,#lanternArcade button{min-height:44px;padding:8px 15px;border:1px solid #e4c078;border-radius:8px;background:#efcc82;color:#142928;cursor:pointer;font-weight:700}
+#lanternArcade[open]{display:flex;flex-direction:column;position:fixed;inset:0;width:100%;height:100%;height:100dvh;max-width:none;max-height:none;margin:0;padding:0;border:0;background:#091a1d;color:#f3ebd2}
+#lanternArcade header{display:flex;align-items:center;justify-content:space-between;padding:5px max(16px,env(safe-area-inset-right)) 5px max(16px,env(safe-area-inset-left));gap:12px;background:#10272b;font:600 12px system-ui;letter-spacing:.08em}
+#lanternArcade header button{font:600 14px system-ui}#lanternArcade iframe{flex:1;width:100%;min-height:0;border:0}#lanternArcade p{padding:16px}#lanternArcade::backdrop{background:#071718}
+@media(max-width:600px){#lanternRunCard{align-items:stretch;flex-direction:column}}

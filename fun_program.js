@@ -182,4 +182,134 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkDevic
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&dialog&&!dialog.hidden){e.preventDefault();e.stopImmediatePropagation();close();}},true);
 window.BlackFlagFUNProgram=Object.freeze({open,openLegacy:()=>open(true),close,isOpen:()=>!!frame&&!!dialog&&!dialog.hidden,build:'8.8.20.68',mode:'admiral-solo-prototype'});
 document.addEventListener('click',e=>{if(e.target instanceof Element&&e.target.closest('#funProgramLaunch')){e.preventDefault();open();}});
+
+// Lantern Run uses the same Admiral entrance as Stormwake, and its own game data.
+const LANTERN_DIGEST = 'e2c5847ea13ac10c0666d82361301c32b8711ab5bb20cc879aad4d687830e783';
+let lanternSource = '';
+async function lanternPlayerSource(signal) {
+  if (lanternSource) return lanternSource;
+  const response = await fetch('lantern-run.ship.json?v=' + LANTERN_DIGEST, {
+    credentials:'omit', redirect:'error', signal
+  });
+  if (!response.ok) throw Error('Lantern Run could not load. Check that the game file was uploaded with the fleet package.');
+  const bytes = await response.arrayBuffer();
+  if (bytes.byteLength > 250000) throw Error('Lantern Run has an unexpected package size.');
+  const hash = await crypto.subtle.digest('SHA-256',bytes);
+  const actual = Array.from(new Uint8Array(hash), byte => byte.toString(16).padStart(2,'0')).join('');
+  if (actual !== LANTERN_DIGEST) throw Error('The game file and the Admiral launcher are different editions. Upload the matching package.');
+  const program = JSON.parse(new TextDecoder().decode(bytes));
+  if (program.format !== 'blackflag.arcade-player.v1' || program.id !== 'lantern-run' || program.edition !== 3 || program.levels !== 6 || typeof program.player !== 'string') throw Error('The Lantern Run game package could not be read.');
+  lanternSource = program.player;
+  return lanternSource;
+}
+const LANTERN_LEVEL_COUNT = 6;
+function lanternCleared(run) {
+  // A one-way flag for each cleared maze permits simultaneous runs without regressing progress.
+  let cleared = 0;
+  try {
+    while (cleared < LANTERN_LEVEL_COUNT && localStorage.getItem(run.routeKey + (cleared+1)) === '1') cleared++;
+  } catch { run.canSave = false; }
+  return Math.max(cleared, run.cleared || 0);
+}
+let lanternSession = null;
+function lanternAccess(run) {
+  if (lanternSession !== run || !run.panel.isConnected || !deckVisible()) return false;
+  try {
+    const session = window.DarkSkyAdmiralSession.status();
+    const account = client().readSession();
+    return !!account?.access_token && session.reusable && session.startedAt === run.who.stamp &&
+      account.user.id === run.who.id && scopeFor(account.user.id).key === run.who.context.key;
+  } catch { return false; }
+}
+function leaveLantern(run) {
+  if (lanternSession !== run) return;
+  lanternSession = null;
+  clearInterval(run.timer);
+  clearTimeout(run.loadTimer);
+  run.controller.abort();
+  run.panel.remove();
+  if (deckVisible()) run.button.focus({preventScroll:true});
+}
+function lanternBest(run) {
+  try { return Number(localStorage.getItem(run.key)) || 0; } catch { return 0; }
+}
+async function openLantern(button) {
+  if (lanternSession || !deckVisible()) return;
+  const panel = document.createElement('dialog');
+  panel.id = 'lanternArcade';
+  panel.setAttribute('aria-label','Lantern Run');
+  panel.innerHTML = '<header><strong>BLACK FLAG · ADMIRAL ARCADE</strong><button type="button">← Back to Admiral</button></header><p role="status">Checking Admiral access…</p>';
+  const run = {panel, button, timer:0, loadTimer:0, player:null, controller:new AbortController()};
+  lanternSession = run;
+  $('admiralDeck').appendChild(panel);
+  panel.querySelector('button').onclick = () => leaveLantern(run);
+  panel.addEventListener('cancel', e => { e.preventDefault(); leaveLantern(run); });
+  panel.showModal();
+  const status = panel.querySelector('p');
+  try {
+    run.who = await verified(epoch);
+    if (lanternSession !== run) return;
+    if (!lanternAccess(run)) throw Error('Reopen Lantern Run from your signed-in Admiral Deck.');
+    status.textContent = 'Opening Lantern Run…';
+    run.timer = setInterval(() => { if (!lanternAccess(run)) leaveLantern(run); }, 500);
+    run.loadTimer = setTimeout(() => run.controller.abort(),15000);
+    const playerSource = await lanternPlayerSource(run.controller.signal);
+    clearTimeout(run.loadTimer);
+    if (!lanternAccess(run)) { leaveLantern(run); return; }
+    run.channel = crypto.randomUUID();
+    run.key = 'blackflag.lantern-run.best.v1:' + encodeURIComponent(JSON.stringify(run.who.context.scope));
+    run.routeKey = 'blackflag.lantern-run.voyage.v1:' + encodeURIComponent(JSON.stringify(run.who.context.scope)) + ':';
+    run.canSave = true;
+    run.cleared = lanternCleared(run);
+    const player = document.createElement('iframe');
+    run.player = player;
+    player.title = 'Lantern Run harbor chase';
+    player.setAttribute('sandbox','allow-scripts');
+    player.setAttribute('allow',"camera 'none'; microphone 'none'; geolocation 'none'; payment 'none'");
+    player.referrerPolicy = 'no-referrer';
+    player.onload = () => {
+      if (!lanternAccess(run)) { leaveLantern(run); return; }
+      player.contentWindow.postMessage({type:'init',channel:run.channel,best:lanternBest(run),cleared:run.cleared,canSave:run.canSave},'*');
+    };
+    player.srcdoc = playerSource;
+    status.replaceWith(player);
+  } catch (error) {
+    clearTimeout(run.loadTimer);
+    if (lanternSession === run) status.textContent = error.name === 'AbortError'
+      ? 'The game took too long to load. Return to the Admiral Deck and try again.'
+      : error.message || 'Admiral access could not be checked. Return to the deck to try again.';
+  }
+}
+document.addEventListener('click', event => {
+  const button = event.target instanceof Element && event.target.closest('#lanternRunLaunch');
+  if (button) { event.preventDefault(); openLantern(button); }
+});
+window.addEventListener('darksky:admiral-session-ended', () => { if (lanternSession) leaveLantern(lanternSession); });
+document.addEventListener('visibilitychange', () => {
+  const run = lanternSession;
+  if (!run?.player) return;
+  if (!lanternAccess(run)) { leaveLantern(run); return; }
+  if (document.hidden) run.player.contentWindow.postMessage({type:'pause',channel:run.channel},'*');
+});
+window.addEventListener('message', event => {
+  const run = lanternSession;
+  if (!run?.player || event.source !== run.player.contentWindow || event.origin !== 'null' || event.data?.channel !== run.channel) return;
+  if (!lanternAccess(run)) { leaveLantern(run); return; }
+  if (event.data.type === 'activity' && !document.hidden && run.panel.open) {
+    window.DarkSkyAdmiralSession.noteProgramActivity?.({userId:run.who.id, startedAt:run.who.stamp});
+  } else if (event.data.type === 'maze-cleared') {
+    const stage = event.data.level;
+    if (!Number.isInteger(stage) || stage < 1 || stage > LANTERN_LEVEL_COUNT) return;
+    const previous = lanternCleared(run);
+    if (stage > previous + 1) return;
+    run.cleared = Math.max(previous,stage);
+    try { localStorage.setItem(run.routeKey+stage,'1'); } catch { run.canSave=false; }
+    run.player.contentWindow.postMessage({type:'route-saved',channel:run.channel,cleared:run.cleared,canSave:run.canSave},'*');
+  } else if (event.data.type === 'best') {
+    const score = event.data.score;
+    if (Number.isSafeInteger(score) && score > 0 && score <= 1000000 && score > lanternBest(run)) {
+      try { localStorage.setItem(run.key,String(score)); } catch { /* The run still plays without durable storage. */ }
+    }
+  }
+});
 })();
