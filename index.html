@@ -16,7 +16,7 @@
   </style>
   <script id="darkSkyFirstLightBootstrap">
     // Dark Sky 8.6.23 MEMORY MUSTER — canonical release identity.
-    const DARK_SKY_RELEASE = Object.freeze({build:'8.8.20.107',seal:'harborrun-8820107'});
+    const DARK_SKY_RELEASE = Object.freeze({build:'8.8.20.108',seal:'pilotage-8820108'});
     const DARK_SKY_EXPECTED_BUILD = DARK_SKY_RELEASE.build;
     const DARK_SKY_RELEASE_SEAL = DARK_SKY_RELEASE.seal;
     // 8.6.23 Storage Safe Harbor — three independent channels, no silent storage failures.
@@ -1455,29 +1455,38 @@
       </header>
 
       <section id="clearDeckLaunchpad" class="clear-deck-launchpad waypoint-home" aria-labelledby="engineNextMoveTitle">
-        <header class="clear-deck-brief"><small id="engineReleaseLabel">8.8.20.107 • HARBORRUN</small><h3 id="engineNextMoveTitle">Your fleet. A clear next move.</h3><p>Open a vessel, lead the work, see the fleet or shape what comes next.</p></header>
-        <nav class="clear-deck-primary-actions" aria-label="Fleet command offices">
-          <button id="engineOperateVessels" type="button" class="clear-deck-action primary" data-clear-deck-command="projects" aria-controls="fleetCommissioningDock"><span class="clear-deck-action-number">01</span><span><strong>OPERATE VESSELS</strong><small>Choose a business and open its workstation.</small></span></button>
-          <button type="button" class="clear-deck-action" data-command-open="captain"><span class="clear-deck-action-number">02</span><span><strong>CAPTAIN WATCH</strong><small>Review signals, decide the next action and record the result.</small></span></button>
-          <button type="button" class="clear-deck-action fleet-express" data-command-open="fleet-registry"><span class="clear-deck-action-number">03</span><span><strong>ADMIRAL MY FLEET</strong><small>Read-only fleet reports and readiness, after Admiral sign-in.</small></span></button>
-          <button type="button" class="clear-deck-action govern" data-command-open="admiral"><span class="clear-deck-action-number">04</span><span><strong>BUILD &amp; GOVERN</strong><small>Shape standards, commission vessels and manage programs.</small></span></button>
+        <header class="clear-deck-brief"><small id="engineReleaseLabel">8.8.20.108 • PILOTAGE</small><h3 id="engineNextMoveTitle">Fleet operations</h3></header>
+        <nav class="clear-deck-primary-actions pilotage-offices" aria-label="Fleet command offices">
+          <button id="engineOperateVessels" type="button" class="clear-deck-action primary pilotage-vessels" data-clear-deck-command="projects" aria-controls="fleetCommissioningDock">
+            <img src="./regatta-harbor.webp" alt="" decoding="async" class="pilotage-harbor">
+            <span class="pilotage-vessel-copy"><strong>Operate vessels</strong><small>Open a business workstation to test its site or work with its owner.</small><span class="pilotage-action-label">Choose a vessel <span aria-hidden="true">→</span></span></span>
+          </button>
+          <button type="button" class="clear-deck-action" data-command-open="captain"><span><strong>Captain Watch</strong><small>Review signals and record the next action.</small></span><span class="pilotage-chevron" aria-hidden="true">→</span></button>
+          <button type="button" class="clear-deck-action fleet-express" data-command-open="fleet-registry"><span><strong>Admiral My Fleet</strong><small>Read vessel reports and see what needs attention.</small></span><span class="pilotage-chevron" aria-hidden="true">→</span></button>
+          <button type="button" class="clear-deck-action govern" data-command-open="admiral"><span><strong>Build &amp; Govern</strong><small>Commission vessels and manage Admiral programs.</small></span><span class="pilotage-chevron" aria-hidden="true">→</span></button>
         </nav>
         <nav class="waypoint-assigned" aria-label="Assigned Captain entrance"><a href="owner.html?surface=vessel-captain" class="tb-assigned-entry">My assigned vessels →</a><span>For appointed Captains</span></nav>
 
         <section class="waypoint-workspaces" aria-labelledby="engineWorkspacesTitle">
-          <header><div><small>WORKSPACES &amp; PROGRAMS</small><h4 id="engineWorkspacesTitle">Open the right tools for the job.</h4></div><p>Each keeps its own work and purpose.</p></header>
-          <div class="waypoint-workspace-grid">
+          <header><h4 id="engineWorkspacesTitle">Business tools</h4></header>
+          <div class="waypoint-workspace-grid pilotage-tools">
             <!-- HEADWAY_PLAN_LINK_START -->
             <article class="qm-engine-entry waypoint-workspace"><div><small class="waypoint-type">BUSINESS SUPPORT</small><strong>Quotes &amp; invoices</strong><p>Catalogs, quantities and saved documents for HouseHull and each business.</p><small id="qmEntryStatus" role="status" aria-live="polite"></small></div><button id="quartermasterEngineOpen" type="button">OPEN QUOTES &amp; INVOICES →</button></article>
             <article class="qm-engine-entry carvewright-engine-entry waypoint-workspace"><div><small class="waypoint-type">DESIGN &amp; MACHINING</small><strong>Carvewright</strong><p>Sign layout, board setup and CNC handoff in its independent workspace.</p><small>Registration pending</small><small id="carvewrightEntryStatus" role="status" aria-live="polite"></small></div><button id="carvewrightEngineOpen" type="button">OPEN CARVEWRIGHT →</button></article>
             <!-- HEADWAY_PLAN_LINK_END -->
-            <!-- FLEETBOUND_LAUNCH_START -->
-            <article id="wonderwakeFleetLaunch" class="waypoint-workspace waypoint-program" aria-labelledby="wonderwakeFleetLaunchTitle"><div><small class="waypoint-type">ADMIRAL PROGRAM · LEARN &amp; CREATE</small><h4 id="wonderwakeFleetLaunchTitle">Wonderwake</h4><p>Spelling, numbers and a creative playground. A little light. A big adventure.</p><small>Family preview · separate from Fleet Core</small></div><a id="launchWonderwakeFromEngine" href="https://jdaniel318-ctrl.github.io/wonderwake/" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">OPEN WONDERWAKE ↗</a></article>
-            <!-- FLEETBOUND_LAUNCH_END -->
             <article class="waypoint-workspace waypoint-program" aria-labelledby="streetwiseFleetTitle">
               <div><small class="waypoint-type">ADMIRAL TOOL · FIELD SERVICE</small><h4 id="streetwiseFleetTitle">Streetwise</h4><p>Look up a service address or bring address suggestions to another ship.</p></div>
               <a href="./streetwise.html" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">OPEN STREETWISE ↗</a>
             </article>
+          </div>
+        </section>
+
+        <section class="waypoint-workspaces" aria-labelledby="engineLearningTitle">
+          <header><h4 id="engineLearningTitle">Learning &amp; practice</h4></header>
+          <div class="waypoint-workspace-grid pilotage-programs">
+            <!-- FLEETBOUND_LAUNCH_START -->
+            <article id="wonderwakeFleetLaunch" class="waypoint-workspace waypoint-program" aria-labelledby="wonderwakeFleetLaunchTitle"><div><small class="waypoint-type">ADMIRAL PROGRAM · LEARN &amp; CREATE</small><h4 id="wonderwakeFleetLaunchTitle">Wonderwake</h4><p>Spelling, numbers and a creative playground. A little light. A big adventure.</p><small>Family preview · separate from Fleet Core</small></div><a id="launchWonderwakeFromEngine" href="https://jdaniel318-ctrl.github.io/wonderwake/" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">OPEN WONDERWAKE ↗</a></article>
+            <!-- FLEETBOUND_LAUNCH_END -->
             <article class="regatta-poster regatta-engine-entry" aria-labelledby="regattaEngineTitle">
               <img class="regatta-art" src="./regatta-sail.webp" alt="" loading="lazy" decoding="async">
               <div class="regatta-copy"><small>ADMIRAL TOOL · FLEET LEARNING</small>
@@ -1728,7 +1737,7 @@
         </header>
         <div id="fleetCommissioningSummary" class="fleet-commissioning-summary"></div>
         <div class="fleet-dock-toolbar" aria-label="Fleet Dock search and filters">
-          <label class="fleet-dock-search"><span class="sr-only">Search fleet</span><input data-bf-trim="boundary" id="fleetDockSearch" aria-controls="fleetCommissioningFleet" type="search" placeholder="Search by vessel name, callsign or ID…" autocomplete="off"></label>
+          <label class="fleet-dock-search"><span class="pilotage-search-label">Find a vessel</span><input data-bf-trim="boundary" id="fleetDockSearch" aria-controls="fleetCommissioningFleet" type="search" placeholder="Search by vessel name, callsign or ID…" autocomplete="off"></label>
           <button type="button" id="fleetDockClearSearch" class="secondary-btn small" hidden>Clear search</button>
           <div id="fleetDockFilters" class="fleet-dock-filters" role="group" aria-label="Fleet Dock filter">
             <button type="button" class="active" data-fleet-dock-filter="all">ALL</button>

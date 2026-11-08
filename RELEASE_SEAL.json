@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.107",
-  "release": "Harborrun",
-  "seal": "harborrun-8820107",
+  "build": "8.8.20.108",
+  "release": "Pilotage",
+  "seal": "pilotage-8820108",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Harborrun",
-  "name": "Harborrun",
-  "releaseName": "Harborrun"
+  "release_name": "Pilotage",
+  "name": "Pilotage",
+  "releaseName": "Pilotage"
 }

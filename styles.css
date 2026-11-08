@@ -16829,3 +16829,61 @@ body:not(.engine-mode) #experienceTestDeck,body.boot-locked #experienceTestDeck{
 :is(#admiralGateOverlay, #watchSecurityLayer) form label.admiral-remember-email input[type=checkbox] {
   width: 20px; min-width: 20px; height: 20px; min-height: 20px; margin: 0; padding: 0;
 }
+
+
+/* Pilotage • task entrances and vessel selection */
+#clearDeckLaunchpad .pilotage-offices {
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) !important;
+  gap: 10px;
+}
+#clearDeckLaunchpad .pilotage-offices .clear-deck-action {
+  grid-template-columns: minmax(0, 1fr) auto;
+  min-height: 72px !important;
+  padding: 14px 20px !important;
+}
+#clearDeckLaunchpad .pilotage-offices .clear-deck-action strong {
+  text-transform: none; letter-spacing: normal; font-size: 18px !important;
+}
+#clearDeckLaunchpad .pilotage-offices .pilotage-vessels {
+  position: relative; isolation: isolate; overflow: hidden; display: flex !important;
+  grid-column: 1 !important; grid-row: 1 / span 3; align-items: end;
+  padding: clamp(20px, 3vw, 34px) !important;
+  border-color: #6c9290 !important; background: #10323d !important;
+}
+.pilotage-harbor {
+  position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%;
+  object-fit: cover; object-position: 76% 52%; pointer-events: none;
+}
+#clearDeckLaunchpad .pilotage-vessels::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  background: linear-gradient(90deg, rgba(7, 31, 38, .98), rgba(7, 31, 38, .87) 40%, rgba(7, 31, 38, .14) 90%),
+              linear-gradient(0deg, rgba(4, 24, 30, .75), transparent 70%);
+}
+#clearDeckLaunchpad .pilotage-vessel-copy {display: grid; justify-items: start; gap: 10px; max-width: 31ch}
+#clearDeckLaunchpad .pilotage-offices .pilotage-vessels strong {
+  font: 650 clamp(29px, 3.4vw, 46px)/1.05 Georgia, serif !important; color: #fff2d6;
+}
+#clearDeckLaunchpad .pilotage-vessel-copy small {color: #e4eeea}
+.pilotage-action-label {
+  display: inline-flex; gap: 12px; align-items: center; padding: 10px 14px;
+  margin-top: 5px; border-radius: 6px; background: #ecd28c; color: #112b31;
+  font-size: 15px; font-weight: 750; letter-spacing: normal; text-transform: none;
+}
+.pilotage-chevron {color: #e8cd87; font-size: 20px}
+#clearDeckLaunchpad .pilotage-offices button:focus-visible {
+  outline: 3px solid #fff0b4 !important; outline-offset: 2px;
+}
+#clearDeckLaunchpad .pilotage-tools {grid-template-columns: repeat(3, minmax(0, 1fr))}
+#clearDeckLaunchpad .pilotage-programs {grid-template-columns: minmax(0, 1fr) minmax(0, 2fr)}
+#clearDeckLaunchpad .pilotage-programs .regatta-engine-entry {grid-column: auto !important}
+#fleetCommissioningDock .pilotage-search-label {
+  display: block; margin-bottom: 6px; font-size: 14px; font-weight: 700; color: #cadeda;
+}
+#fleetCommissioningDock .fleet-dock-toolbar {align-items: end}
+@media (max-width: 850px) {
+  #clearDeckLaunchpad .pilotage-programs {grid-template-columns: minmax(0, 1fr)}
+}
+@media (max-width: 680px) {
+  #clearDeckLaunchpad .pilotage-offices, #clearDeckLaunchpad .pilotage-tools {grid-template-columns: minmax(0, 1fr) !important}
+  #clearDeckLaunchpad .pilotage-offices .pilotage-vessels {grid-row: auto; min-height: 195px !important}
+}

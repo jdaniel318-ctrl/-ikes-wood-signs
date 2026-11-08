@@ -1,10 +1,10 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Harborrun 8.8.20.107
+# Black Flag Pilotage 8.8.20.108
 
 Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
-Baseline: 8.8.20.106. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Baseline: 8.8.20.107. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
 Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
-Black Flag Regatta opens inside the Admiral deck using the verified Black Flag account. Illustrated Engine and Admiral entrances adapt to the available space.
+A harbor entrance leads to vessel workstations. Business tools and learning have separate sections. Today shows active work, recognizes vessel intake statuses and opens a queued order directly.
 Preparation does not deploy frontend or backend changes. See PATCH_CONTRACT.json for separately managed backend prerequisites.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 

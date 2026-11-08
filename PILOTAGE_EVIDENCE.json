@@ -1,0 +1,54 @@
+{
+  "release": "Pilotage",
+  "build": "8.8.20.108",
+  "baseline": "8.8.20.107",
+  "checks": {
+    "offline_suites_passed": 47,
+    "covered_widths_px": [
+      320,
+      390,
+      768,
+      820,
+      1024,
+      1366
+    ],
+    "local_browser_journeys": {
+      "chromium": [
+        "Engine layout and grouped destinations 320",
+        "Engine layout and grouped destinations 390",
+        "Engine layout and grouped destinations 768",
+        "Engine layout and grouped destinations 820",
+        "Engine layout and grouped destinations 1024",
+        "Engine layout and grouped destinations 1366",
+        "Engine → searched vessel → workstation → filtered roster → Engine, focus restored",
+        "Today layout and queue touch targets 320",
+        "Today layout and queue touch targets 390",
+        "Today layout and queue touch targets 768",
+        "Today layout and queue touch targets 820",
+        "Today layout and queue touch targets 1024",
+        "Today layout and queue touch targets 1366",
+        "owner credential flow, queue ordering, scoped counts, two direct opens, return focus and filtered list round-trip"
+      ],
+      "webkit": [
+        "Engine layout and grouped destinations 320",
+        "Engine layout and grouped destinations 390",
+        "Engine layout and grouped destinations 768",
+        "Engine layout and grouped destinations 820",
+        "Engine layout and grouped destinations 1024",
+        "Engine layout and grouped destinations 1366",
+        "Engine → searched vessel → workstation → filtered roster → Engine, focus restored",
+        "Today layout and queue touch targets 320",
+        "Today layout and queue touch targets 390",
+        "Today layout and queue touch targets 768",
+        "Today layout and queue touch targets 820",
+        "Today layout and queue touch targets 1024",
+        "Today layout and queue touch targets 1366",
+        "owner credential flow, queue ordering, scoped counts, two direct opens, return focus and filtered list round-trip"
+      ]
+    }
+  },
+  "environment": "Local release in Chromium and WebKit with simulated accounts, API responses and synthetic order records.",
+  "scope": "Engine destinations, business and learning groups, Fleet Dock search and return, shared local owner dashboard totals, direct queue navigation and order status filters.",
+  "native_ipad_safari": "Pending device check after installation",
+  "production_deployment": false
+}

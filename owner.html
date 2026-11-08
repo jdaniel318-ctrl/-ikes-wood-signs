@@ -148,12 +148,12 @@
 .tb-recovery-grid .btn{width:100%;min-height:46px;font-size:13px}
 @media(max-width:700px){.tb-security-form,.tb-recovery-grid{grid-template-columns:1fr}.tb-security-form>.captain-handoff-actions{grid-column:auto}}
 </style>
-<link rel="stylesheet" href="business_deck.css?v=suretap-882097" onerror="window.__workhorseDeckStylesFailed=true">
-<script id="blackFlagPageRelease">window.__blackFlagPageRelease=Object.freeze({build:'8.8.20.107',seal:'harborrun-8820107',name:'Harborrun'});</script>
+<link rel="stylesheet" href="business_deck.css?v=pilotage-8820108" onerror="window.__workhorseDeckStylesFailed=true">
+<script id="blackFlagPageRelease">window.__blackFlagPageRelease=Object.freeze({build:'8.8.20.108',seal:'pilotage-8820108',name:'Pilotage'});</script>
 <script src="input_hygiene.js?v=fairlead-882068"></script>
 <script src="service_address_fleet.js?v=streetwise-882096"></script>
 <script src="service_address.js?v=portolan-882098"></script>
-<script src="business_deck.js?v=streetwise-882096"></script>
+<script src="business_deck.js?v=pilotage-8820108"></script>
 <script src="fleet_supabase.js?v=signalman-882099"></script>
 <link rel="stylesheet" href="fleet_help.css?v=signalman-882099">
 <script src="fleet_help.js?v=reliefwatch-8820105"></script>
@@ -228,7 +228,7 @@
   <section id="portal" class="portal hidden">
     <div class="portal-wrap">
       <header class="portal-head">
-        <div class="bd-brand-heading"><div id="businessHeaderLogo" aria-hidden="true"></div><div><div class="eyebrow" id="ownerInstalledRelease">8.8.20.107 · QUARTERMASTER</div><h1 id="portalName">Business</h1><span class="owner-badge">● SECURE OWNER SESSION</span><div id="ownerScopeNote" class="owner-scope-note">Verified for this business only</div></div></div>
+        <div class="bd-brand-heading"><div id="businessHeaderLogo" aria-hidden="true"></div><div><div class="eyebrow" id="ownerInstalledRelease">8.8.20.108 · QUARTERMASTER</div><h1 id="portalName">Business</h1><span class="owner-badge">● SECURE OWNER SESSION</span><div id="ownerScopeNote" class="owner-scope-note">Verified for this business only</div></div></div>
         <div class="head-actions"><button id="returnEngine" class="btn ghost hidden">RETURN TO BLACK FLAG</button><button id="signOut" class="btn secondary">SIGN OUT</button></div>
       </header>
       <nav id="businessDeckNav" class="bd-owner-nav" aria-label="Business workspace"></nav>
@@ -1046,7 +1046,7 @@ function renderBusinessHome(){
     home.querySelectorAll('[data-owner-online]').forEach(button=>button.onclick=()=>openOwnerView(button.dataset.ownerOnline));
     return;
   }
-  if(!window.BlackFlagBusinessDeck)return;window.BlackFlagBusinessDeck.mountHome({container:$('businessDeckHome'),project,orders,modules:modules(),readError:ownerOrderReadError,onOpen:openOwnerView,onOrders:tab=>{Object.assign(orderDeckState,{tab,query:'',page:1});openOwnerView('orders');}});
+  if(!window.BlackFlagBusinessDeck)return;window.BlackFlagBusinessDeck.mountHome({container:$('businessDeckHome'),project,orders,modules:modules(),readError:ownerOrderReadError,onOpen:openOwnerView,onDetail:order=>openOwnerView('orders',order),onOrders:tab=>{Object.assign(orderDeckState,{tab,query:'',page:1});openOwnerView('orders');}});
 }
 
 function headwayBackupPanel(){
@@ -1061,14 +1061,37 @@ function headwayBackupPanel(){
  file.onchange=async()=>{const f=file.files?.[0];if(!f||exp.disabled||!valid())return;check.disabled=true;exp.disabled=true;showLegacy(null);try{if(f.size>100000000)throw Error('Backup exceeds the 100 MB rehearsal limit');const b=JSON.parse(await f.text());if(!valid())return;const v=await H.rehearse(b,projectId);if(!valid())return;status.textContent='Isolated restore comparison passed: '+v.records+' records. '+v.missingSourcePhotos+' without a stored source photo; '+v.missingPreviews+' without a stored preview. Genuine legacy gaps remain gaps. The original database was not touched.';showLegacy(v);}catch(e){if(panel.isConnected)status.textContent='Backup rejected: '+String(e.message||e)+'. Original records are unchanged.';}finally{check.disabled=false;exp.disabled=false;file.value='';}};
 }
 
-function renderOrderDeck(){workspace('Orders',"Find the right record. Keep active work separate from completed history.",'<div id="bdOrders"></div>');window.BlackFlagBusinessDeck.mountOrders({container:$('bdOrders'),project,orders,state:orderDeckState,readError:ownerOrderReadError,onDetail:o=>{if(!canReadOwnerDeck())return;workspace('Order details','The saved record for this business. Viewing does not edit, reprice or approve it.','<div id="bdOrderDetail"></div>');window.BlackFlagBusinessDeck.mountOrderDetail({container:$('bdOrderDetail'),project,order:o,onBack:()=>{if(!canReadOwnerDeck())return;renderOrderDeck();window.BlackFlagViewport?.enter({key:'owner:'+projectId+':orders',reason:'back',position:orderDeckState.scrollY||0});}});window.BlackFlagViewport?.enter({key:'owner:'+projectId,reason:'new'});}});headwayBackupPanel();}
-async function openOwnerView(k){if(!canReadOwnerDeck()||!modules().some(m=>m[0]===k))return;retireOwnerHelp();
+function renderBusinessOrder(order,fromToday=false){
+  const deck=window.BlackFlagBusinessDeck;
+  if(!canReadOwnerDeck()||!modules().some(m=>m[0]==='orders')||!deck.scope([order],projectId).length)return;
+  workspace('Order details','Saved for '+project.name+'.','<div id="bdOrderDetail"></div>');
+  deck.mountOrderDetail({container:$('bdOrderDetail'),project,order,backLabel:fromToday?'Back to Today':'Back to orders',onBack:()=>{
+    if(!canReadOwnerDeck())return;
+    if(fromToday){
+      returnToBridgeHome(true);
+      const index=deck.select(orders,projectId,{tab:'active',pageSize:3}).rows.indexOf(order);
+      const target=document.querySelector('[data-today-order="'+index+'"]')||document.querySelector('[data-owner-nav="portal"]');
+      requestAnimationFrame(()=>target?.isConnected && target.focus());
+    }else{
+      renderOrderDeck();
+      window.BlackFlagViewport?.enter({key:'owner:'+projectId+':orders',reason:'back',position:orderDeckState.scrollY||0});
+    }
+  }});
+  window.BlackFlagViewport?.enter({key:'owner:'+projectId,reason:'new'});
+  $('bdBackOrders')?.focus({preventScroll:true});
+}
+function renderOrderDeck(){
+  workspace('Orders','Search by customer or order number, or filter by status.','<div id="bdOrders"></div>');
+  window.BlackFlagBusinessDeck.mountOrders({container:$('bdOrders'),project,orders,state:orderDeckState,readError:ownerOrderReadError,onDetail:order=>renderBusinessOrder(order)});
+  headwayBackupPanel();
+}
+async function openOwnerView(k,todayOrder=null){if(!canReadOwnerDeck()||!modules().some(m=>m[0]===k))return;retireOwnerHelp();
 if(k==='fleet-help'){
  const from=modules().find(m=>m[0]===history.state?.ownerView&&m[0]!=='fleet-help');
  ownerHelpScreen=from?'Owner Bridge · '+from[1]:'Owner Bridge';
  history.replaceState({surface:'owner',projectId,ownerView:k},'',`owner.html?project=${encodeURIComponent(projectId)}&view=fleet-help${source==='engine'?'&source=engine':''}`);
 }
-const generation=++ownerViewEpoch;markBusinessNav(k);$('ownerHome').classList.add('stage-out');setTimeout(async()=>{if(generation!==ownerViewEpoch||!canReadOwnerDeck())return;$('ownerHome').classList.add('hidden');$('ownerHome').classList.remove('stage-out');$('portal').classList.add('subview');$('workspace').classList.remove('hidden');$('workspace').classList.add('stage-in');await renderWorkspace(k);if(generation!==ownerViewEpoch||!sessionValid(ownerSession()))return;history.replaceState({surface:'owner',projectId,ownerView:k},'',`owner.html?project=${encodeURIComponent(projectId)}&view=${encodeURIComponent(k)}${source==='engine'?'&source=engine':''}`);window.BlackFlagViewport?.enter({key:'owner:'+projectId,reason:'new'});setTimeout(()=>$('workspace').classList.remove('stage-in'),260);},120);}
+const generation=++ownerViewEpoch;markBusinessNav(k);$('ownerHome').classList.add('stage-out');setTimeout(async()=>{if(generation!==ownerViewEpoch||!canReadOwnerDeck())return;$('ownerHome').classList.add('hidden');$('ownerHome').classList.remove('stage-out');$('portal').classList.add('subview');$('workspace').classList.remove('hidden');$('workspace').classList.add('stage-in');if(k==='orders' && todayOrder && !ownerProjectFromServer && !ownerOrderReadError && orders.includes(todayOrder))renderBusinessOrder(todayOrder,true);else await renderWorkspace(k);if(generation!==ownerViewEpoch||!sessionValid(ownerSession()))return;history.replaceState({surface:'owner',projectId,ownerView:k},'',`owner.html?project=${encodeURIComponent(projectId)}&view=${encodeURIComponent(k)}${source==='engine'?'&source=engine':''}`);window.BlackFlagViewport?.enter({key:'owner:'+projectId,reason:'new'});setTimeout(()=>$('workspace').classList.remove('stage-in'),260);},120);}
 
 function workspace(title,copy,body){$('workspace').classList.remove('hidden');$('workspace').innerHTML=`<div class="workspace-head"><div><div class="eyebrow">YOUR BUSINESS TOOLS</div><h2>${esc(title)}</h2><p class="muted">${esc(copy)}</p></div><button id="backOverview" class="btn workspace-back">← OVERVIEW</button></div>${body}`;$('backOverview').onclick=()=>returnToBridgeHome(true);}
 
