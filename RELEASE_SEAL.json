@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.109",
-  "release": "Livery",
-  "seal": "livery-8820109",
+  "build": "8.8.20.110",
+  "release": "Topside",
+  "seal": "topside-8820110",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Livery",
-  "name": "Livery",
-  "releaseName": "Livery"
+  "release_name": "Topside",
+  "name": "Topside",
+  "releaseName": "Topside"
 }

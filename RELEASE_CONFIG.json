@@ -1,15 +1,15 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.109",
-  "name": "Livery",
-  "seal": "livery-8820109",
-  "base": "8.8.20.108",
-  "base_sha256": "467b2917c55c8ed1be9a253b54bbb8b43a5ad84e707e49d7ffef0878fb9741ae",
-  "base_files": 888,
-  "prepared_at": "2026-11-08T00:46:48.025470+00:00",
+  "build": "8.8.20.110",
+  "name": "Topside",
+  "seal": "topside-8820110",
+  "base": "8.8.20.109",
+  "base_sha256": "65311c2dbb8187ddc29d1145128a72f564044ca1febad394a756f7fa93019949",
+  "base_files": 890,
+  "prepared_at": "2026-11-08T01:10:30.607401+00:00",
   "app_component_revision": "8.8.20.99",
   "owner_helper_revision": "8.8.20.68",
-  "feature_notes": "Owner workspaces display the vessel logo in the masthead, carry its colors into Today, and open at the business heading following sign-in.",
+  "feature_notes": "Owner Today opens with the complete business masthead visible after sign-in or session restoration. Scrolling belongs to the owner as soon as they interact.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -37,6 +37,6 @@
       "automatic_execution_by_upload": false
     }
   },
-  "install_step": "Open a vessel\u2019s Owner Workspace on iPad. Sign in, check the full business header on Today, then open Orders and check the same mark.",
-  "evidence_file": "LIVERY_EVIDENCE.json"
+  "install_step": "Open the Owner Workspace from the Engine on iPad, sign in with AutoFill, and check that the entire branded header is visible before touching the page. Scroll down and check that it stays where you leave it.",
+  "evidence_file": "TOPSIDE_EVIDENCE.json"
 }

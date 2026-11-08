@@ -28,7 +28,8 @@
 @media(max-width:700px){.evidence-edit{grid-template-columns:1fr}.candidate-grid{grid-template-columns:1fr}.version-row,.benchmark-row{align-items:flex-start;flex-direction:column}.evidence-tools{justify-content:flex-start}}
 
 /* Fleet Services Framework 8.8.17 */
-.portal{overflow-x:hidden}.owner-stage{transition:opacity .18s ease,transform .18s ease}.owner-stage.stage-out{opacity:0;transform:translateX(-14px)}.owner-stage.stage-in{animation:ownerBridgeIn .22s ease-out}@keyframes ownerBridgeIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:none}}
+.shell,.route-safe,.portal{min-height:100dvh}
+.portal{overflow-x:hidden;overflow-x:clip}.owner-stage{transition:opacity .18s ease,transform .18s ease}.owner-stage.stage-out{opacity:0;transform:translateX(-14px)}.owner-stage.stage-in{animation:ownerBridgeIn .22s ease-out}@keyframes ownerBridgeIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:none}}
 .vessel-strip{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;margin:14px 0 10px;padding:13px 16px;border:1px solid #34515c;border-radius:18px;background:linear-gradient(135deg,#102832,#0a1c23)}.vessel-strip img{width:62px;height:62px;object-fit:contain;border-radius:13px;background:#0a171d;padding:5px;border:1px solid #35525c}.vessel-strip h2{margin:2px 0 3px;font-size:23px}.vessel-strip p{margin:0;color:var(--muted);line-height:1.35}.vessel-chip{padding:7px 10px;border:1px solid #80672b;border-radius:999px;color:#f0cf76;background:#241d0d;font-size:10px;font-weight:900;letter-spacing:.08em;white-space:nowrap}.owner-home-note{margin:0 0 12px;padding:10px 14px;border-left:3px solid var(--gold);background:#0b2028;border-radius:0 12px 12px 0;color:#c8d6d6;line-height:1.4}.brand-identity{display:grid;grid-template-columns:78px 1fr;gap:14px;align-items:center;padding:14px;margin:14px 0;border:1px solid #34515c;border-radius:14px;background:#0d242c}.brand-identity img{width:78px;height:78px;object-fit:contain;border-radius:12px;background:#08171c;padding:5px;border:1px solid #35525c}.brand-identity strong{display:block;font-size:18px;margin:2px 0 4px}.brand-identity small{color:var(--muted);line-height:1.4}.workspace{margin-top:0;min-height:calc(100vh - 180px)}.workspace-head{position:sticky;top:10px;z-index:4;background:#0a1c23;padding:4px 0 14px}.workspace-back{background:#e9efed!important;color:#17313a!important;box-shadow:0 8px 24px #0004}.portal.subview .metrics,.portal.subview .modules,.portal.subview .vessel-strip,.portal.subview .owner-home-note{display:none}.portal.subview .portal-head{margin-bottom:16px}.portal.subview #workspace{display:block}.owner-badge{letter-spacing:.05em}.module{transition:transform .12s ease,border-color .12s ease,background .12s ease}.module:active{transform:scale(.985)}.module:hover{border-color:#4c7180;background:#0e2630}.owner-scope-note{color:#8cdfa7;font-size:12px;font-weight:800;margin-top:6px}
 @media(max-width:700px){.vessel-strip{grid-template-columns:auto 1fr}.vessel-chip{grid-column:1/-1;width:max-content}.vessel-strip img{width:58px;height:58px}.workspace-head{position:static}}
 
@@ -149,7 +150,7 @@
 @media(max-width:700px){.tb-security-form,.tb-recovery-grid{grid-template-columns:1fr}.tb-security-form>.captain-handoff-actions{grid-column:auto}}
 </style>
 <link rel="stylesheet" href="business_deck.css?v=livery-8820109" onerror="window.__workhorseDeckStylesFailed=true">
-<script id="blackFlagPageRelease">window.__blackFlagPageRelease=Object.freeze({build:'8.8.20.109',seal:'livery-8820109',name:'Livery'});</script>
+<script id="blackFlagPageRelease">window.__blackFlagPageRelease=Object.freeze({build:'8.8.20.110',seal:'topside-8820110',name:'Topside'});</script>
 <script src="input_hygiene.js?v=fairlead-882068"></script>
 <script src="service_address_fleet.js?v=streetwise-882096"></script>
 <script src="service_address.js?v=portolan-882098"></script>
@@ -228,7 +229,7 @@
   <section id="portal" class="portal hidden">
     <div class="portal-wrap">
       <header class="portal-head">
-        <div class="bd-brand-heading"><div id="businessHeaderLogo" aria-hidden="true"></div><div><div class="eyebrow" id="ownerInstalledRelease">8.8.20.109 · QUARTERMASTER</div><h1 id="portalName" tabindex="-1">Business</h1><span class="owner-badge">● SECURE OWNER SESSION</span><div id="ownerScopeNote" class="owner-scope-note">Verified for this business only</div></div></div>
+        <div class="bd-brand-heading"><div id="businessHeaderLogo" aria-hidden="true"></div><div><div class="eyebrow" id="ownerInstalledRelease">8.8.20.110 · QUARTERMASTER</div><h1 id="portalName" tabindex="-1">Business</h1><span class="owner-badge">● SECURE OWNER SESSION</span><div id="ownerScopeNote" class="owner-scope-note">Verified for this business only</div></div></div>
         <div class="head-actions"><button id="returnEngine" class="btn ghost hidden">RETURN TO BLACK FLAG</button><button id="signOut" class="btn secondary">SIGN OUT</button></div>
       </header>
       <nav id="businessDeckNav" class="bd-owner-nav" aria-label="Business workspace"></nav>
@@ -734,6 +735,7 @@ const publicOwnerNames=new Map([
   ['mugshot-after-dark', 'Mugs After Dark']
 ]);
 let chosenOwnerEmail='';
+let stopOwnerLanding = null;
 const q=new URLSearchParams(location.search), projectId=String(q.get('project')||''), source=String(q.get('source')||''), requestedView=String(q.get('view')||'login');
 const engineTrialLaunch=window.CountercraftConfig.consumeTrial(new URLSearchParams(location.hash.slice(1)).get('launch'));let trialViewOpened=false;
 if(engineTrialLaunch)history.replaceState({},'',location.pathname+location.search);
@@ -745,7 +747,7 @@ let verifiedOwnerBinding=null;const orderDeckState={tab:'active',query:'',sort:'
 const IKE_RATES=[['pine','Pine'],['cedar','Cedar'],['red-oak','Red Oak'],['white-oak','White Oak'],['walnut','Walnut'],['hickory','Hickory']];
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function retireOwnerHelp(){closeOwnerHelp?.();closeOwnerHelp=null;}
-function show(id){if(id!=='portal')retireOwnerHelp();['safeShell','login','passwordSetup','localRecovery','portal','failure'].forEach(x=>$(x).classList.toggle('hidden',x!==id));}
+function show(id){if(id!=='portal'){stopOwnerLanding?.();retireOwnerHelp();}['safeShell','login','passwordSetup','localRecovery','portal','failure'].forEach(x=>$(x).classList.toggle('hidden',x!==id));}
 
 function usesSupabaseOwner(){return !project||publicOwnerNames.has(projectId)||project?.ownerAccess?.identityProvider==='supabase';}
 function ownerAccessMessage(reason=''){const name=project?.name||'this business';if(reason==='owner_membership_denied'||reason==='vessel_denied')return 'This Supabase account is not commissioned as the owner of '+name+'. Use the exact owner email assigned to this business.';if(String(reason).startsWith('membership_query_')||String(reason).startsWith('vessel_query_'))return 'The secure owner check could not complete. No business data was opened. Try again.';return 'This account is not authorized for this business.';}
@@ -1060,41 +1062,47 @@ function mountOwnerIdentity() {
   $('portal').style.setProperty('--owner-accent', colors.accent);
 }
 function landAtOwnerHeader() {
+  stopOwnerLanding?.();
   const heading = $('portalName');
-  const epoch = ownerViewEpoch;
-  let active = true;
   const viewport = window.visualViewport;
-  const events = ['pointerdown', 'touchstart', 'wheel', 'keydown'];
-  const current = () => active && epoch === ownerViewEpoch && !$('portal').classList.contains('hidden') && document.activeElement === heading;
-  function align() {
-    if (current()) window.BlackFlagViewport?.enter({key:'owner:'+projectId, reason:'new', anchor:$('portal'), current});
-  }
-  function clipped() {
-    return current() && $('businessHeaderLogo').getBoundingClientRect().top < (viewport?.offsetTop || 0);
-  }
-  function alignIfClipped() {
-    if (clipped()) align();
-  }
+  const listeners = new AbortController();
+  const options = {capture:true, passive:true, signal:listeners.signal};
+  let frame = 0;
   function finish() {
-    active = false;
-    viewport?.removeEventListener('resize', align);
-    viewport?.removeEventListener('scroll', alignIfClipped);
-    events.forEach(type => window.removeEventListener(type, finish, true));
+    listeners.abort();
+    cancelAnimationFrame(frame);
+    stopOwnerLanding = null;
   }
+  function align() {
+    frame = 0;
+    if (viewport && viewport.scale !== 1) return;
+    // AutoFill can restore the document or a containing panel after the keyboard closes.
+    for (let panel = heading.parentElement; panel && panel !== document.scrollingElement; panel = panel.parentElement) {
+      if (panel.scrollTop) panel.scrollTop = 0;
+    }
+    if (window.scrollY || viewport?.offsetTop) window.scrollTo({top:0, behavior:'instant'});
+  }
+  function schedule() {
+    if (!frame) frame = requestAnimationFrame(align);
+  }
+  stopOwnerLanding = finish;
+  for (const type of ['touchstart', 'pointerdown', 'wheel', 'keydown', 'click', 'pagehide']) {
+    window.addEventListener(type, finish, options);
+  }
+  document.addEventListener('focusin', event => {
+    if (event.target !== heading && event.target !== document.body) finish();
+  }, options);
+  window.addEventListener('scroll', schedule, options);
+  window.addEventListener('resize', schedule, options);
+  viewport?.addEventListener('scroll', schedule, options);
+  viewport?.addEventListener('resize', schedule, options);
   heading.focus({preventScroll:true});
   align();
-  // The input keyboard can finish closing after the authenticated view is painted.
-  viewport?.addEventListener('resize', align);
-  viewport?.addEventListener('scroll', alignIfClipped);
-  events.forEach(type => window.addEventListener(type, finish, {capture:true, passive:true}));
-  setTimeout(() => {
-    if (clipped()) $('portal').scrollIntoView({block:'start', inline:'nearest', behavior:'instant'});
-    finish();
-  }, 800);
+  schedule();
 }
 
 function renderPortal(landOnToday=true){if(!canReadOwnerDeck())return;armOwnerExpiry();show('portal');$('portal').classList.add('workhorse-owner');renderBusinessNav();mountOwnerIdentity();$('portal').classList.remove('subview');$('mOrders').textContent=ownerProjectFromServer?'—':orders.length;$('mOwner').textContent=String(project?.ownerAccess?.status||'active').toUpperCase();$('modules').innerHTML=modules().map(([k,t,d])=>`<button class="module" data-module="${k}"><small>${k.toUpperCase()}</small><h3>${esc(t)}</h3><p>${esc(d)}</p><strong>OPEN →</strong></button>`).join('');document.querySelectorAll('[data-module]').forEach(b=>b.addEventListener('click',()=>openOwnerView(b.dataset.module)));returnToBridgeHome(false);if(engineTrialLaunch&&!trialViewOpened){trialViewOpened=true;openOwnerView('countercraft');}else if(landOnToday){landAtOwnerHeader();}}
-function returnToBridgeHome(animate=true){if(!canReadOwnerDeck())return;retireOwnerHelp();ownerViewEpoch++;renderBusinessHome();markBusinessNav('portal');$('portal').classList.remove('subview');$('workspace').classList.add('hidden');$('workspace').classList.remove('stage-in');$('workspace').innerHTML='';$('ownerHome').classList.remove('hidden','stage-out');if(animate){$('ownerHome').classList.add('stage-in');setTimeout(()=>$('ownerHome').classList.remove('stage-in'),260);}if(projectId==='ikes-wood-signs'&&!ownerProjectFromServer){$('vesselStrip').classList.remove('hidden');$('ownerHomeNote').classList.remove('hidden');}history.replaceState({surface:'owner',projectId,ownerView:'portal'},'',`owner.html?project=${encodeURIComponent(projectId)}&view=portal${source==='engine'?'&source=engine':''}`);window.BlackFlagViewport?.enter({key:'owner:'+projectId,reason:'new'});}
+function returnToBridgeHome(animate=true){if(!canReadOwnerDeck())return;stopOwnerLanding?.();retireOwnerHelp();ownerViewEpoch++;renderBusinessHome();markBusinessNav('portal');$('portal').classList.remove('subview');$('workspace').classList.add('hidden');$('workspace').classList.remove('stage-in');$('workspace').innerHTML='';$('ownerHome').classList.remove('hidden','stage-out');if(animate){$('ownerHome').classList.add('stage-in');setTimeout(()=>$('ownerHome').classList.remove('stage-in'),260);}if(projectId==='ikes-wood-signs'&&!ownerProjectFromServer){$('vesselStrip').classList.remove('hidden');$('ownerHomeNote').classList.remove('hidden');}history.replaceState({surface:'owner',projectId,ownerView:'portal'},'',`owner.html?project=${encodeURIComponent(projectId)}&view=portal${source==='engine'?'&source=engine':''}`);if(animate)window.BlackFlagViewport?.enter({key:'owner:'+projectId,reason:'new'});}
 function canReadOwnerDeck(){
   const s=ownerSession(),ok=sessionValid(s);
   if(!ok){
@@ -1155,7 +1163,7 @@ function renderOrderDeck(){
   window.BlackFlagBusinessDeck.mountOrders({container:$('bdOrders'),project,orders,state:orderDeckState,readError:ownerOrderReadError,onDetail:order=>renderBusinessOrder(order)});
   headwayBackupPanel();
 }
-async function openOwnerView(k,todayOrder=null){if(!canReadOwnerDeck()||!modules().some(m=>m[0]===k))return;retireOwnerHelp();
+async function openOwnerView(k,todayOrder=null){if(!canReadOwnerDeck()||!modules().some(m=>m[0]===k))return;stopOwnerLanding?.();retireOwnerHelp();
 if(k==='fleet-help'){
  const from=modules().find(m=>m[0]===history.state?.ownerView&&m[0]!=='fleet-help');
  ownerHelpScreen=from?'Owner Bridge · '+from[1]:'Owner Bridge';

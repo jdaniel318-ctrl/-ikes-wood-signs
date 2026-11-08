@@ -1,0 +1,142 @@
+{
+  "build": "8.8.20.110",
+  "release": "Topside",
+  "baseline": "8.8.20.109",
+  "field_observation": "Owner supplied screenshots of the masthead clipped on entry and fully visible after scrolling up in iPad Safari.",
+  "baseline_webkit": "With delayed document scroll restored to 75 CSS pixels, the masthead remained at -63 CSS pixels.",
+  "test_conditions": "Synthetic owner account and service responses. Local browser engines, 1366 by 891 CSS pixels. Applied a 75 pixel scroll after 1150 ms to reproduce late restoration in a scrollable workspace. Physical Face ID and Safari toolbar timing remain a device check.",
+  "offline_suites_passed": 49,
+  "browser_journeys": {
+    "webkit": {
+      "arrival_measurements_in_css_pixels": {
+        "document": {
+          "target": {
+            "doc": 0,
+            "app": 0,
+            "header": 12,
+            "view": 0,
+            "logo": 30.890625
+          },
+          "displaced": 75,
+          "settled": {
+            "doc": 0,
+            "app": 0,
+            "header": 12,
+            "view": 0,
+            "logo": 30.890625
+          }
+        },
+        "nested": {
+          "target": {
+            "doc": 0,
+            "app": 0,
+            "header": 12,
+            "view": 0,
+            "logo": 30.890625
+          },
+          "displaced": 75,
+          "settled": {
+            "doc": 0,
+            "app": 0,
+            "header": 12,
+            "view": 0,
+            "logo": 30.890625
+          }
+        },
+        "restored": {
+          "target": {
+            "doc": 0,
+            "app": 0,
+            "header": 12,
+            "view": 0,
+            "logo": 30.890625
+          },
+          "displaced": 75,
+          "settled": {
+            "doc": 0,
+            "app": 0,
+            "header": 12,
+            "view": 0,
+            "logo": 30.890625
+          }
+        }
+      },
+      "manual_scroll_and_direct_help": "passed",
+      "prior_livery_regressions": [
+        "PASS visible masthead at 320, 390, 820, 1024 and 1366px, late viewport resize, Orders and queue return focus",
+        "PASS owner logo canonical",
+        "PASS owner logo custom",
+        "PASS owner logo wrong",
+        "PASS owner logo broken",
+        "PASS owner logo fresh",
+        "PASS direct help destination"
+      ]
+    },
+    "chromium": {
+      "arrival_measurements_in_css_pixels": {
+        "document": {
+          "target": {
+            "doc": 0,
+            "app": 0,
+            "header": 12,
+            "view": 0,
+            "logo": 30.890625
+          },
+          "displaced": 75,
+          "settled": {
+            "doc": 0,
+            "app": 0,
+            "header": 12,
+            "view": 0,
+            "logo": 30.890625
+          }
+        },
+        "nested": {
+          "target": {
+            "doc": 0,
+            "app": 0,
+            "header": 12,
+            "view": 0,
+            "logo": 30.890625
+          },
+          "displaced": 75,
+          "settled": {
+            "doc": 0,
+            "app": 0,
+            "header": 12,
+            "view": 0,
+            "logo": 30.890625
+          }
+        },
+        "restored": {
+          "target": {
+            "doc": 0,
+            "app": 0,
+            "header": 12,
+            "view": 0,
+            "logo": 30.890625
+          },
+          "displaced": 75,
+          "settled": {
+            "doc": 0,
+            "app": 0,
+            "header": 12,
+            "view": 0,
+            "logo": 30.890625
+          }
+        }
+      },
+      "manual_scroll_and_direct_help": "passed",
+      "prior_livery_regressions": [
+        "PASS visible masthead at 320, 390, 820, 1024 and 1366px, late viewport resize, Orders and queue return focus",
+        "PASS owner logo canonical",
+        "PASS owner logo custom",
+        "PASS owner logo wrong",
+        "PASS owner logo broken",
+        "PASS owner logo fresh",
+        "PASS direct help destination"
+      ]
+    }
+  },
+  "deployed": false
+}
