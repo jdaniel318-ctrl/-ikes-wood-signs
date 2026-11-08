@@ -169,7 +169,7 @@ function removeImport(){importPending=null;$('funImportConfirm')?.remove();}
 async function loadStormwake(turn){if(cachedStormwake)return cachedStormwake;const abort=new AbortController(),stop=setTimeout(()=>abort.abort(),45000);try{const response=await fetch('stormwake_player.html?harborhold=882049',{cache:'no-store',signal:abort.signal,credentials:'omit'});if(!response.ok)throw Error('Stormwake player is not deployed yet.');const bytes=await response.arrayBuffer();if(bytes.byteLength>8388608)throw Error('Unexpected game package size.');const digest=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),x=>x.toString(16).padStart(2,'0')).join('');if(turn!==epoch)throw Error('Game entry cancelled.');if(digest!==STORMWAKE_SHA)throw Error('Stormwake package does not match this release. Re-upload the complete update; do not clear business data.');cachedStormwake=new TextDecoder().decode(bytes);return cachedStormwake;}finally{clearTimeout(stop);}}
 function lock(reason){removeImport();epoch++;stopDeviceWork();pending=false;op=false;frame?.remove();frame=null;channel='';clearInterval(timer);timer=0;observer?.disconnect();observer=null;controls(false);if(dialog&&!dialog.hidden){$('funProgramHold').hidden=false;const copy=deviceCopies.get(voyageKey),saved=!!copy?.data&&!copy.blocked&&memo.has(voyageKey)&&copy.data===G.serialize(memo.get(voyageKey));text('funProgramHoldTitle',saved?'Your voyage is waiting':'The voyage is paused');text('funProgramHoldText',reason+(saved?' Your mission is saved on this device. Sign back in with the same account, then open Stormwake to resume at your safe dock.':' Your current run is held in this page. '+(memo.has(voyageKey)?recoveryText():'')));if($('funSaveState')){$('funSaveState').dataset.state='held';text('funSaveState',saved?'SAVED · SIGN IN TO RESUME':'ACCESS HELD');}text('funProgramStatus',saved?'Your voyage is saved. Return through Admiral access to continue.':'Re-enter through Admiral access to continue.');}}
 function close(){removeImport();epoch++;stopDeviceWork();pending=false;op=false;frame?.remove();frame=null;channel='';clearInterval(timer);timer=0;observer?.disconnect();observer=null,legacyMode=false,importPending=null;if(dialog)dialog.hidden=true;controls(false);try{priorFocus?.focus({preventScroll:true});}catch(_){}}
-async function verified(turn){if(!deckVisible()||!window.DarkSkyAdmiralSession?.status()?.reusable)throw Error('Enter the Admiral workspace with its existing PIN and account verification first. FUN does not grant access.');const c=client(),before=c.readSession();if(!before?.user?.id)throw Error('The Admiral account is not available.');const stamp=window.DarkSkyAdmiralSession.status().startedAt,context=scopeFor(before.user.id);const ok=await c.verifyAdmiralAuthority();const after=c.readSession();if(turn!==epoch)throw Error('Program entry cancelled.');if(!ok||!deckVisible()||!window.DarkSkyAdmiralSession.status().reusable||after?.user?.id!==before.user.id||window.DarkSkyAdmiralSession.status().startedAt!==stamp||scopeFor(after?.user?.id).key!==context.key)throw Error('The Admiral account or authority could not be verified. No game was opened.');return {id:after.user.id,stamp,context};}
+async function verified(turn,visible=deckVisible){if(!visible()||!window.DarkSkyAdmiralSession?.status()?.reusable)throw Error('Enter the Admiral workspace with its existing PIN and account verification first. FUN does not grant access.');const c=client(),before=c.readSession();if(!before?.user?.id)throw Error('The Admiral account is not available.');const stamp=window.DarkSkyAdmiralSession.status().startedAt,context=scopeFor(before.user.id);const ok=await c.verifyAdmiralAuthority();const after=c.readSession();if(turn!==epoch)throw Error('Program entry cancelled.');if(!ok||!visible()||!window.DarkSkyAdmiralSession.status().reusable||after?.user?.id!==before.user.id||window.DarkSkyAdmiralSession.status().startedAt!==stamp||scopeFor(after?.user?.id).key!==context.key)throw Error('The Admiral account or authority could not be verified. No game was opened.');return {id:after.user.id,stamp,context};}
 async function open(originalOnly=false){if(pending||(frame&&dialog&&!dialog.hidden))return;mount();if(!dialog?.isConnected)return;priorFocus=document.activeElement;dialog.hidden=false;$('funProgramHold').hidden=false;text('funProgramHoldTitle','Preparing the voyage');text('funProgramHoldText','Checking your existing Admiral account. No new account, vessel or permissions are created.');text('funProgramStatus','Verifying Admiral access…');if($('funSaveState')){$('funSaveState').dataset.state='held';text('funSaveState','VERIFYING ACCESS');}pending=true;const turn=++epoch;actor='';startedAt=0;voyageKey='';voyageScope=null;try{const who=await verified(turn);if(turn!==epoch)return;if(!G||!playerHtml)throw Error('Game assets are missing. Upload the complete Stormwake update; no saved business data needs clearing.');actor=who.id;startedAt=who.stamp;voyageKey=who.context.key;voyageScope=who.context.scope;await restoreDevice(contextNow());if(turn!==epoch||!localValid())throw Error('Admiral session changed during device recovery.');legacyMode=originalOnly||!SW;const html=legacyMode?playerHtml:await loadStormwake(turn);if(turn!==epoch||!localValid())throw Error('Admiral session changed while the game was loading.');attachPlayer(html,turn);$('funProgramHold').hidden=true;controls(true);showSaveState(true);timer=setInterval(()=>{if(frame&&!localValid())lock('The Admiral session expired or changed.');},1000);observer=new MutationObserver(()=>{if(frame&&!deckVisible())lock('The Admiral workspace closed. Re-enter through Admiral Programs.');});observer.observe($('admiralDeck'),{attributes:true,attributeFilter:['class','hidden','aria-hidden']});$('funExit').focus({preventScroll:true});}catch(e){if(turn===epoch){lock(String(e.message||e));if(SW){const b=document.createElement('button');b.type='button';b.textContent='PLAY ORIGINAL FIRST LIGHT';b.onclick=()=>{close();open(true);};$('funProgramHold')?.appendChild(b);}}}finally{if(turn===epoch)pending=false;}}
 async function exportFile(){if(op||!frame)return;op=true;controls(false);const turn=epoch,id=actor;try{const who=await verified(turn);if(who.id!==id||!localValid())throw Error('Account changed. No file was downloaded.');const data=G.serialize(memo.get(voyageKey)),url=URL.createObjectURL(new Blob([data],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download=(SW?'BlackFlag-Stormwake-':'FUN-FirstDraft-')+new Date().toISOString().replace(/[:.]/g,'-')+'.json';document.body.appendChild(a);a.click();a.remove();fileCopies.set(voyageKey,{data,kind:'prepared'});showSaveState();setTimeout(()=>URL.revokeObjectURL(url),60000);text('funProgramStatus','Game file prepared. Confirm the JSON reached Downloads. '+recoveryText());}catch(e){if(turn===epoch){text('funProgramStatus','Game file not saved: '+String(e.message||e));if(!localValid())lock('Admiral access needs rechecking before saving.');}}finally{if(turn===epoch){op=false;controls(!!frame&&localValid());}}}
 async function importFile(file){if(!file||op||!frame)return;op=true;controls(false);const turn=epoch,id=actor;try{if(file.size>8192)throw Error('Choose a small FUN save, not the private business backup. Nothing was imported.');const next=G.restore(await file.text());const who=await verified(turn);if(who.id!==id||!frame||!localValid())throw Error('Account changed. No game was replaced.');if(!SW){await applyVoyage(next);text('funProgramStatus','Game file loaded. '+recoveryText());return;}const voyage=SW.voyageSummary(next);removeImport();importPending={next,turn,id};frame.contentWindow.postMessage({channel,type:'pause'},'*');const box=document.createElement('section');box.id='funImportConfirm';box.setAttribute('role','alertdialog');box.setAttribute('aria-modal','true');box.setAttribute('aria-label','Replace the current game with this save?');box.innerHTML='<div><h2>Load this saved voyage?</h2><p>This replaces the current voyage and its automatic save on this device. The original JSON file is unchanged. Stormwake returns to the named safe dock.</p><p id="funImportSummary"></p><button id="funCancelImport" type="button">KEEP CURRENT GAME</button><button id="funConfirmImport" type="button">LOAD SAVED VOYAGE</button></div>';dialog.appendChild(box);text('funImportSummary','The Broken Passage · '+voyage.stage+'/'+voyage.stageCount+'\n'+voyage.objective+'\nSafe return: '+voyage.safeDock+'\n'+(next.legacy.completed?'First Light complete · '+next.legacy.pennant+' pennant.':'First Light: not complete.'));$('funCancelImport').onclick=()=>{if(op)return;removeImport();text('funProgramStatus','Import cancelled. Current voyage kept. '+recoveryText());};$('funConfirmImport').onclick=confirmImport;$('funCancelImport').focus({preventScroll:true});}catch(e){if(turn===epoch)text('funProgramStatus','Game file not loaded: '+String(e.message||e));}finally{if(turn===epoch){if($('funImport'))$('funImport').value='';op=false;controls(!!frame&&localValid());}}}
@@ -211,9 +211,14 @@ function lanternCleared(run) {
   } catch { run.canSave = false; }
   return Math.max(cleared, run.cleared || 0);
 }
+function fleetArcadeVisible(){
+  const fleet=$('bootstrapFleet'),workspace=$('watchWorkspace');
+  return !!workspace && fleet?.contains(workspace) && workspace.getAttribute('aria-hidden')==='false' &&
+    fleet.getAttribute('aria-hidden')==='false' && !workspace.closest('[hidden],.hidden,[inert]');
+}
 let lanternSession = null;
 function lanternAccess(run) {
-  if (lanternSession !== run || !run.panel.isConnected || !deckVisible()) return false;
+  if (lanternSession !== run || !run.panel.isConnected || !run.visible()) return false;
   try {
     const session = window.DarkSkyAdmiralSession.status();
     const account = client().readSession();
@@ -228,26 +233,29 @@ function leaveLantern(run) {
   clearTimeout(run.loadTimer);
   run.controller.abort();
   run.panel.remove();
-  if (deckVisible()) run.button.focus({preventScroll:true});
+  if (run.visible()) run.button.focus({preventScroll:true});
 }
 function lanternBest(run) {
   try { return Number(localStorage.getItem(run.key)) || 0; } catch { return 0; }
 }
 async function openLantern(button) {
-  if (lanternSession || !deckVisible()) return;
+  const fromFleet=button.matches('[data-watch-arcade]') && $('watchWorkspace')?.contains(button);
+  const visible=fromFleet?fleetArcadeVisible:deckVisible;
+  if (lanternSession || !visible()) return;
   const panel = document.createElement('dialog');
   panel.id = 'lanternArcade';
   panel.setAttribute('aria-label','Lantern Run');
   panel.innerHTML = '<header><strong>BLACK FLAG · ADMIRAL ARCADE</strong><button type="button">← Back to Admiral</button></header><p role="status">Checking Admiral access…</p>';
-  const run = {panel, button, timer:0, loadTimer:0, player:null, controller:new AbortController()};
+  if(fromFleet)panel.querySelector('button').textContent='← Back to My Fleet';
+  const run = {panel, button, visible, timer:0, loadTimer:0, player:null, controller:new AbortController()};
   lanternSession = run;
-  $('admiralDeck').appendChild(panel);
+  (fromFleet?$('watchWorkspace'):$('admiralDeck')).appendChild(panel);
   panel.querySelector('button').onclick = () => leaveLantern(run);
   panel.addEventListener('cancel', e => { e.preventDefault(); leaveLantern(run); });
   panel.showModal();
   const status = panel.querySelector('p');
   try {
-    run.who = await verified(epoch);
+    run.who = await verified(epoch,visible);
     if (lanternSession !== run) return;
     if (!lanternAccess(run)) throw Error('Reopen Lantern Run from your signed-in Admiral Deck.');
     status.textContent = 'Opening Lantern Run…';
@@ -281,7 +289,7 @@ async function openLantern(button) {
   }
 }
 document.addEventListener('click', event => {
-  const button = event.target instanceof Element && event.target.closest('#lanternRunLaunch');
+  const button = event.target instanceof Element && event.target.closest('#lanternRunLaunch,[data-watch-arcade]');
   if (button) { event.preventDefault(); openLantern(button); }
 });
 window.addEventListener('darksky:admiral-session-ended', () => { if (lanternSession) leaveLantern(lanternSession); });
