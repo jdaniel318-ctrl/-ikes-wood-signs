@@ -2844,9 +2844,9 @@ const AdmiralAccountForm = (() => {
     if(visit===entry) for(const value of values) cache.set(value.projectId,value);
   }
   const lastSave=new WeakMap();
-  function persist(message) {
-    if(!state) return Promise.resolve(false);
-    const edited=state,meta=project(edited.projectId);
+  function persist(message,edited=state) {
+    if(!edited) return Promise.resolve(false);
+    const meta=project(edited.projectId);
     const copy=JSON.parse(JSON.stringify(edited));
     delete copy._source;
     lastSave.set(edited,copy);
@@ -2894,7 +2894,20 @@ const AdmiralAccountForm = (() => {
   function workDate(index,meta=project(activeId)){const date=anchor(meta),weeks=Math.floor(index/5),weekday=index%5;date.setDate(date.getDate()+weeks*7+weekday);return date;}
   function labelDate(index,weekday=false,meta=project(activeId)){return workDate(index,meta).toLocaleDateString(undefined,weekday?{weekday:'short',month:'short',day:'numeric'}:{month:'short',day:'numeric'});}
   function status(message){if(el('bootstrapScheduleStatus'))el('bootstrapScheduleStatus').textContent=message;}
-  function install(){el('bootstrapSchedule')?.remove();document.body.insertAdjacentHTML('beforeend',`<dialog id="bootstrapSchedule" class="bootstrap-schedule bootstrap-build-schedule hidden" role="dialog" aria-modal="true" aria-hidden="true" aria-label="ScheduleJoe construction schedules"><div class="bootstrap-schedule-shell"><header class="bootstrap-schedule-head"><img src="bootstrap_build_horizontal.png" alt="Bootstrap Build"><div><small>BOOTSTRAP BUILD · ADMIRAL PROGRAM</small><h2 id="bootstrapScheduleTitleHeading">ScheduleJoe</h2><p id="bootstrapScheduleSubtitle">Choose a lot and unit to open its independent schedule.</p></div><div class="bootstrap-schedule-head-actions"><button id="bootstrapProjectsHome" class="hidden" type="button">ALL PROJECTS</button><button id="scheduleJoeFleet" type="button">FLEET REGISTRY</button><button id="bootstrapScheduleClose" type="button">CLOSE</button></div></header><section id="bootstrapProjectLanding" class="bootstrap-project-landing"><div class="bootstrap-roster-summary"><div><small>PROJECTS ON THIS DEVICE</small><strong>3 independent project schedules</strong><span>Each lot and unit keeps its own dates, vendors, changes, and saved record.</span></div></div><div class="bootstrap-project-roster-wrap"><table class="bootstrap-project-roster"><thead><tr><th>Lot and unit</th><th>Planning window</th><th>First planned task</th><th>Updated</th><th><span class="yard-visually-hidden">Open project</span></th></tr></thead><tbody id="bootstrapProjectRows"></tbody></table></div><div class="joe-example-link"><span>Example home build · 18 weeks</span><button id="joeExample" type="button">Explore example →</button></div></section><section id="joeLongview" hidden aria-label="Four-week lookahead">
+  function install(){el('bootstrapSchedule')?.remove();document.body.insertAdjacentHTML('beforeend',`<dialog id="bootstrapSchedule" class="bootstrap-schedule bootstrap-build-schedule hidden" role="dialog" aria-modal="true" aria-hidden="true" aria-label="ScheduleJoe construction schedules"><div class="bootstrap-schedule-shell"><header class="bootstrap-schedule-head"><img src="bootstrap_build_horizontal.png" alt="Bootstrap Build"><div><small>BOOTSTRAP BUILD · ADMIRAL PROGRAM</small><h2 id="bootstrapScheduleTitleHeading">ScheduleJoe</h2><p id="bootstrapScheduleSubtitle">Choose a lot and unit to open its independent schedule.</p></div><div class="bootstrap-schedule-head-actions"><button id="bootstrapProjectsHome" class="hidden" type="button">ALL PROJECTS</button><button id="scheduleJoeFleet" type="button">FLEET REGISTRY</button><button id="bootstrapScheduleClose" type="button">CLOSE</button></div></header><section id="bootstrapProjectLanding" class="bootstrap-project-landing">
+  <div class="bootstrap-roster-summary"><div><small>Projects on this device</small><strong>3 independent project schedules</strong></div>
+    <details id="rosterColumns"><summary>Columns <b id="rosterCount"></b></summary>
+      <div class="roster-picker">
+        <label class="roster-search">Find a column<input id="rosterFind" type="search" placeholder="Name, date, vendor…" autocomplete="off"></label>
+        <div id="rosterChoices"></div><p id="rosterNoMatch" hidden>No matching columns.</p>
+        <div class="roster-picker-footer"><button id="rosterAll" type="button">Show all</button><button id="rosterDefaults" type="button">Reset view</button><button id="rosterDone" type="button">Done</button></div>
+        <small>Personal view on this device</small>
+      </div>
+    </details>
+  </div>
+  <p id="rosterNotice" role="status"></p>
+  <div class="bootstrap-project-roster-wrap" tabindex="0" role="region" aria-label="Project summary columns"><table class="bootstrap-project-roster" aria-label="Project schedules"><thead><tr id="rosterHeaders"></tr></thead><tbody id="bootstrapProjectRows"></tbody></table></div>
+<div class="joe-example-link"><span>Example home build · 18 weeks</span><button id="joeExample" type="button">Explore example →</button></div></section><section id="joeLongview" hidden aria-label="Four-week lookahead">
   <div class="joe-look-head"><div><small>FOUR-WEEK LOOKAHEAD</small><h2 id="joeLookTitle" tabindex="-1"></h2></div>
     <nav aria-label="Lookahead navigation"><button id="joePrev" type="button">← Earlier</button><button id="joeNext" type="button">Later →</button></nav></div>
   <div class="joe-choices"><label>Starting week<select id="joeWeekJump"></select></label><label>Milestone<select id="joeJump"></select></label></div>
@@ -2911,6 +2924,14 @@ const AdmiralAccountForm = (() => {
   </div>
   <p id="joeMoveSummary" role="status"></p>
   <div class="joe-move-actions"><button id="joeCancel" type="button">Cancel</button></div>
+</dialog>
+<dialog id="rosterDetails" aria-labelledby="rosterDetailsTitle">
+  <form id="rosterDetailsForm">
+    <header><div><small>Project details</small><h2 id="rosterDetailsTitle" tabindex="-1" autofocus></h2></div><button id="rosterDetailsClose" type="button">Close</button></header>
+    <p>Enter the reported values for this lot. A dash in the project list means a value is unavailable.</p>
+    <div id="rosterFields"></div>
+    <footer><span id="rosterDetailStatus" role="status"></span><button id="rosterSave" type="submit" class="desk-primary">Save details</button></footer>
+  </form>
 </dialog>
 <dialog id="joeEditor" aria-labelledby="deskEditorTitle">
   <form id="bootstrapScheduleForm">
@@ -3264,20 +3285,198 @@ const AdmiralAccountForm = (() => {
     if(toolbar&&!el('bootstrapAcceleratedPanel'))toolbar.insertAdjacentHTML('afterend','<section id="bootstrapAcceleratedPanel" class="bootstrap-accelerated-panel hidden"><header><div><small>MANAGER-CONTROLLED EXCEPTION</small><b>Activate a specific weekend shift</b><span>Monday–Friday stays standard. Weekend work remains visible, optional, and auditable.</span></div><button id="bootstrapAcceleratedClose" type="button">CLOSE</button></header><div class="bootstrap-accelerated-controls"><label>Week<select id="bootstrapAcceleratedWeek"></select></label><label>Day<select id="bootstrapAcceleratedDay"><option value="sat">Saturday</option><option value="sun">Sunday</option></select></label><label>Shift<select id="bootstrapAcceleratedShift"><option value="am">AM</option><option value="pm">PM</option><option value="full">Full day</option></select></label><label>Commitment<select id="bootstrapAcceleratedCommitment"><option value="proposed">Proposed</option><option value="confirmed">Vendor confirmed</option></select></label><button id="bootstrapAcceleratedAdd" type="button">ACTIVATE DATE</button></div><p class="bootstrap-accelerated-warning">⚠ Accelerated work may compress recovery time or create trade overlap. The manager may proceed; the exception and vendor commitment are recorded.</p><div id="bootstrapAcceleratedRows" class="bootstrap-accelerated-rows"></div></section>');
 
   }
-  function renderLanding() {
-    const rows=el('bootstrapProjectRows');
-    if(!rows) return;
-    rows.innerHTML=projects.map(meta=>{
-      const value=cache.get(meta.id);
-      if(!value) return '';
-      const first=[...value.tasks].sort((a,b)=>a.start-b.start)[0];
-      const updated=value.updatedAt?new Date(value.updatedAt).toLocaleString(undefined,{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}):'Original plan';
-      return `<tr><td><b>Lot ${esc(meta.lot)} · Unit ${esc(meta.unit)}</b><small>${esc(meta.region)} / ${esc(meta.division)} / ${esc(meta.community)}</small></td>
-        <td data-label="Planning window">${esc(labelDate(0,false,meta))} – ${esc(labelDate(weekCount(value)*5-1,false,meta))}</td>
-        <td data-label="First planned task"><b>${esc(first?.title||'No tasks')}</b><small>${esc(first?.vendor||'')}</small></td>
-        <td data-label="Updated">${esc(updated)}</td>
-        <td><button type="button" data-open-project="${esc(meta.id)}" aria-label="Open schedule for Lot ${esc(meta.lot)}, Unit ${esc(meta.unit)}">Open schedule →</button></td></tr>`;
+  // A roster preference belongs to the signed-in user. Project details belong to the lot.
+  const rosterGroups=[
+    ['Project',[
+      ['lotUnit','Lot / Unit'],['division','Division'],['community','Comm desc'],['communityName','Community name','text'],
+      ['region','Region'],['building','Building','text'],['product','Product','text'],['model','Model','text'],
+      ['setVersion','Set / Version','text'],['houseType','House type','text'],['template','Template','text'],
+      ['foundation','Template foundation','text'],['manager','Project manager','text'],
+      ['status','Status','select',['Backlog','Under construction','Archive']],['docsUrl','Schedule docs','url']
+    ]],
+    ['Site',[
+      ['address','Address','text'],['city','City','text'],['state','State','text'],['zip','ZIP','text'],
+      ['permit','Permit','text'],['elevation','Elevation','text'],['handing','Handing','text']
+    ]],
+    ['Schedule',[
+      ['startDate','Start','date'],['projectedPSD','Projected PSD','date'],['allowedDUC','Allowed DUC','count'],
+      ['varianceDUC','DUC over / under','signed'],['endDUC','End of DUC','date'],['settlement','Settlement date','date'],
+      ['currentInterior','Current interior task'],['currentExterior','Current exterior task'],
+      ['planningWindow','Planning window'],['firstTask','First planned task'],['firstVendor','First task vendor'],
+      ['taskCount','Scheduled tasks'],['updated','Updated']
+    ]],
+    ['Field tracking',[
+      ['openIssues','Open issues','count'],['pjmChecklist','PJM checklist','count'],
+      ['vendorChecklist','Vendor checklist','count'],['openWO','Open work orders','count'],['pendingWO','Pending work orders','count'],
+      ['qaiStatus','QAI verification status','select',['Pending','Pass','Fail','Recheck']],
+      ['qaiDate','QAI date','date']
+    ]]
+  ].map(([name,fields])=>({name,fields:fields.map(([id,label,kind,options])=>({id,label,kind,options}))}));
+  const rosterFields=rosterGroups.flatMap(group=>group.fields);
+  const defaultRosterColumns=['division','community','lotUnit','product','template','startDate','projectedPSD','allowedDUC',
+    'currentInterior','openIssues','pjmChecklist','varianceDUC','updated','endDUC','qaiStatus'];
+  const dateOnRoster=new Intl.DateTimeFormat(undefined,{month:'short',day:'numeric',year:'numeric'});
+  let rosterSelection=new Set(defaultRosterColumns),detailDraft=null;
+  function rosterPrefKey(){return 'scheduleJoeRosterColumns.v1:'+visit.actor;}
+  function loadRosterView(){
+    const saved=localRead(rosterPrefKey());
+    const known=Array.isArray(saved)?rosterFields.filter(f=>saved.includes(f.id)).map(f=>f.id):[];
+    rosterSelection=new Set(Array.isArray(saved)&&(!saved.length||known.length)?known:defaultRosterColumns);
+    el('rosterColumns').open=false;el('rosterFind').value='';filterRosterOptions();
+    el('rosterNotice').textContent='';
+  }
+  function setRosterColumns(ids){
+    if(!current(visit))return;
+    rosterSelection=new Set(ids);
+    try{localStorage.setItem(rosterPrefKey(),JSON.stringify([...rosterSelection]));}
+    catch(_){el('rosterNotice').textContent='Your view is active for this visit. This browser could not save the column choices.';}
+    renderLanding();
+  }
+  function filterRosterOptions(){
+    const term=el('rosterFind').value.trim().toLowerCase();
+    const groups=el('rosterChoices').querySelectorAll('fieldset');
+    for(const group of groups){
+      const labels=[...group.querySelectorAll('label')];
+      for(const label of labels)label.hidden=!label.textContent.toLowerCase().includes(term);
+      group.hidden=labels.every(label=>label.hidden);
+    }
+    el('rosterNoMatch').hidden=[...groups].some(group=>!group.hidden);
+  }
+  function rosterDocumentUrl(raw){
+    try{const u=new URL(raw);return u.protocol==='https:'&&!u.username&&!u.password?u.href:'';}catch(_){return '';}
+  }
+  function rosterMilestones(meta,tasks){
+    const dateFor=(id,names)=>{
+      const task=tasks.find(t=>t.id===id)||tasks.find(t=>names.includes(String(t.title).trim().toLowerCase()));
+      return task?isoDate(workDate(task.start,meta)):'';
+    };
+    return {startDate:dateFor('construction-start',['construction start','start date']),
+      projectedPSD:dateFor('psd',['psd','psd (customer meeting)']),endDUC:dateFor('end-duc',['end of duc']),
+      settlement:dateFor('settlement',['settlement']),qaiDate:dateFor('qai',['qai'])};
+  }
+  function rosterFacts(meta,record){
+    const tasks=record.tasks,details=record.rosterDetails||{};
+    const first=tasks.reduce((best,t)=>!best||t.start<best.start?t:best,null);
+    const dates=rosterMilestones(meta,tasks);
+    for(const key of Object.keys(dates))dates[key]=dates[key]||details[key];
+    dates.startDate=dates.startDate||record.planStart;
+    const today=isoDate(new Date()),weekday=new Date(today+'T12:00:00').getDay();
+    const weekendShifts=new Set(record.acceleratedDays.filter(shift=>{
+      const day=workDate(5*shift.week,meta);day.setDate(day.getDate()+(shift.day==='sun'?6:5));return isoDate(day)===today;
+    }).map(shift=>shift.id));
+    const currentTasks=tasks.filter(t=>t.complete!==true&&(weekday>0&&weekday<6
+      ?isoDate(workDate(t.start,meta))<=today&&isoDate(workDate(t.start+t.duration-1,meta))>=today
+      :t.acceleratedAssignments?.some(id=>weekendShifts.has(id))));
+    const currentArea=area=>currentTasks.filter(t=>areaOf(t)===area).map(t=>t.title).join(' · ');
+    return {...details,lotUnit:'Lot '+meta.lot+' · Unit '+meta.unit,region:meta.region,division:meta.division,community:meta.community,
+      planningWindow:labelDate(0,false,meta)+' – '+labelDate(weekCount(record)*5-1,false,meta),firstTask:first?.title,firstVendor:first?.vendor,
+      currentInterior:currentArea('interior'),currentExterior:currentArea('exterior'),taskCount:tasks.length,
+      ...dates,
+      updated:record.updatedAt?new Date(record.updatedAt).toLocaleString(undefined,{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'}):'Original plan'};
+  }
+  function rosterCell(field,value){
+    if(value===null||value===undefined||value==='')return '<span class="roster-empty" aria-label="No value">—</span>';
+    if(field.kind==='url'){
+      const link=rosterDocumentUrl(value);
+      return link?'<a href="'+esc(link)+'" target="_blank" rel="noopener noreferrer">Open docs ↗</a>':'—';
+    }
+    if(field.kind==='date'){
+      const d=new Date(value+'T12:00:00');
+      if(Number.isFinite(d.getTime()))value=dateOnRoster.format(d);
+    }
+    if(field.kind==='signed'&&Number(value)>0)value='+'+value;
+    return esc(value);
+  }
+  function renderLanding(){
+    const selected=rosterFields.filter(f=>rosterSelection.has(f.id));
+    el('rosterCount').textContent=selected.length;
+    for(const box of el('rosterChoices').querySelectorAll('input'))box.checked=rosterSelection.has(box.value);
+    el('rosterHeaders').innerHTML=selected.map(f=>'<th scope="col" data-column="'+f.id+'">'+esc(f.label)+'</th>').join('')+'<th scope="col" class="roster-action">Project actions</th>';
+    el('bootstrapProjectRows').innerHTML=projects.map(meta=>{
+      const record=cache.get(meta.id);if(!record)return '';
+      const facts=rosterFacts(meta,record),lot=esc(facts.lotUnit);
+      const cells=selected.map(f=>'<td data-column="'+f.id+'" data-label="'+esc(f.label)+'">'+rosterCell(f,facts[f.id])+'</td>').join('');
+      return '<tr data-roster-project="'+esc(meta.id)+'">'+cells+'<td class="roster-action">'+(rosterSelection.has('lotUnit')?'':'<b>'+lot+'</b>')+
+        '<button type="button" data-open-project="'+esc(meta.id)+'" aria-label="Open schedule for Lot '+esc(meta.lot)+', Unit '+esc(meta.unit)+'">Open schedule →</button>'+
+        '<button class="roster-details-link" type="button" data-roster-details="'+esc(meta.id)+'" aria-label="Project details for '+lot+'">Project details</button></td></tr>';
     }).join('');
+  }
+  function projectInput(f,details,dates){
+    if(dates[f.id])return '<input type="date" name="'+f.id+'" value="'+esc(dates[f.id])+'" readonly><small>From the lot calendar</small>';
+    const value=details[f.id]??'';
+    if(f.kind==='select')return '<select name="'+f.id+'"><option value="">Not recorded</option>'+
+      f.options.map(v=>'<option'+(v===value?' selected':'')+'>'+esc(v)+'</option>').join('')+'</select>';
+    let attrs='maxlength="140"';
+    if(f.kind==='count'||f.kind==='signed')attrs='type="number" step="1"'+(f.kind==='count'?' min="0"':'');
+    else if(f.kind==='date')attrs='type="date"';
+    else if(f.kind==='url')attrs='type="url" maxlength="2048" placeholder="https://…"';
+    return '<input name="'+f.id+'" '+attrs+' value="'+esc(value)+'">';
+  }
+  function openRosterDetails(id){
+    if(!current(visit)||activeId||!cache.has(id))return;
+    const record=cache.get(id),meta=project(id),details=record.rosterDetails||{};
+    const dates=rosterMilestones(meta,record.tasks);
+    detailDraft={record,visit};
+    el('rosterDetailsTitle').textContent='Lot '+meta.lot+' · Unit '+meta.unit;
+    el('rosterFields').innerHTML=rosterGroups.map(g=>'<fieldset><legend>'+esc(g.name)+'</legend><div>'+
+      g.fields.filter(f=>f.kind).map(f=>'<label>'+esc(f.label)+projectInput(f,details,dates)+'</label>').join('')+'</div></fieldset>').join('');
+    el('rosterDetailStatus').textContent='';el('rosterSave').disabled=false;
+    el('rosterDetails').showModal();el('rosterFields').scrollTop=0;
+  }
+  function dismissRosterDetails(){
+    detailDraft=null;
+    if(el('rosterDetails').open)el('rosterDetails').close();
+  }
+  async function saveRosterDetails(event){
+    event.preventDefault();
+    const draft=detailDraft;
+    if(!draft||!current(draft.visit)||el('rosterSave').disabled)return;
+    const record=draft.record,previous=record.rosterDetails||{},next={...previous};
+    const form=event.currentTarget;
+    const docs=form.elements.docsUrl;
+    if(docs.value&&!rosterDocumentUrl(docs.value)){
+      docs.setCustomValidity('Enter an HTTPS link to this project’s documents.');docs.reportValidity();return;
+    }
+    for(const f of rosterFields.filter(f=>f.kind)){
+      if(form.elements[f.id].readOnly)continue;
+      const raw=form.elements[f.id].value.trim();
+      if(!raw)delete next[f.id];
+      else next[f.id]=f.kind==='count'||f.kind==='signed'?Number(raw):raw;
+    }
+    if(JSON.stringify(previous)===JSON.stringify(next)){dismissRosterDetails();return;}
+    record.rosterDetails=next;el('rosterSave').disabled=true;
+    const saved=await persist('',record);
+    if(!saved&&record.rosterDetails===next)record.rosterDetails=previous;
+    if(detailDraft!==draft||!current(draft.visit))return;
+    el('rosterSave').disabled=false;
+    if(!saved&&cache.get(record.projectId)===record){
+      el('rosterDetailStatus').textContent='This device could not save the details. Your entries are here to retry.';return;
+    }
+    dismissRosterDetails();renderLanding();
+    el('rosterNotice').textContent=saved?'Project details saved for Lot '+record.hierarchy.lot+' · Unit '+record.hierarchy.unit+'.':'A newer project record is open. Reopen Project details to edit it.';
+    el('bootstrapProjectRows').querySelector('[data-roster-details="'+record.projectId+'"]')?.focus({preventScroll:true});
+  }
+  function bindRoster(){
+    const chooser=el('rosterColumns'),choices=el('rosterChoices');
+    choices.innerHTML=rosterGroups.map(g=>'<fieldset><legend>'+esc(g.name)+'</legend>'+g.fields.map(f=>
+      '<label><input type="checkbox" value="'+f.id+'">'+esc(f.label)+'</label>').join('')+'</fieldset>').join('');
+    choices.onchange=()=>setRosterColumns([...choices.querySelectorAll('input:checked')].map(box=>box.value));
+    el('rosterFind').oninput=filterRosterOptions;
+    el('rosterAll').onclick=()=>setRosterColumns(rosterFields.map(f=>f.id));
+    el('rosterDefaults').onclick=()=>setRosterColumns(defaultRosterColumns);
+    const closeChooser=()=>{chooser.open=false;chooser.querySelector('summary').focus({preventScroll:true});};
+    el('rosterDone').onclick=closeChooser;
+    el('bootstrapSchedule').addEventListener('keydown',e=>{
+      if(e.key==='Escape'&&chooser.open){e.preventDefault();e.stopPropagation();closeChooser();}
+    });
+    document.addEventListener('pointerdown',e=>{if(chooser.open&&!chooser.contains(e.target))chooser.open=false;});
+    el('bootstrapProjectRows').addEventListener('click',e=>{
+      const button=e.target.closest('[data-roster-details]');if(button)openRosterDetails(button.dataset.rosterDetails);
+    });
+    el('rosterDetailsClose').onclick=dismissRosterDetails;
+    el('rosterDetails').oncancel=e=>{e.preventDefault();dismissRosterDetails();};
+    el('rosterDetailsForm').oninput=e=>{if(e.target.name==='docsUrl')e.target.setCustomValidity('');};
+    el('rosterDetailsForm').onsubmit=saveRosterDetails;
   }
   function showLanding(){el('bootstrapSchedule').classList.remove('desk-open');el('joeLongview').hidden=true;lookRecord=null;activeId='';state=null;selectedId='';vendorView='';el('bootstrapProjectLanding')?.classList.remove('hidden');el('bootstrapProjectWorkspace')?.classList.add('hidden');el('bootstrapProjectsHome')?.classList.add('hidden');if(el('bootstrapScheduleTitleHeading'))el('bootstrapScheduleTitleHeading').textContent='ScheduleJoe';if(el('bootstrapScheduleSubtitle'))el('bootstrapScheduleSubtitle').textContent='Choose a lot and unit to open its independent schedule.';renderLanding();}
   function vendors(){return [...new Set(state.tasks.map(task=>task.vendor||vendorFor(task.trade)))].sort((a,b)=>a.localeCompare(b));}
@@ -3420,7 +3619,7 @@ const AdmiralAccountForm = (() => {
   }
   function closeSchedule(restore=true) {
     const entry=visit,panel=el('bootstrapSchedule');
-    closeMove();dismissEditor();if(el('deskUpdates').open)el('deskUpdates').close();lookRecord=null;visit=null;
+    closeMove();dismissEditor();dismissRosterDetails();el('rosterColumns').open=false;if(el('deskUpdates').open)el('deskUpdates').close();lookRecord=null;visit=null;
     if(entry) clearInterval(entry.timer);
     clearTouchDrag();desktopGrab=null;showOver(null);
     activeId='';state=null;selectedId='';vendorView='';
@@ -3447,7 +3646,7 @@ const AdmiralAccountForm = (() => {
       panel.classList.remove('hidden');panel.setAttribute('aria-hidden','false');
       el('bootstrapScheduleClose').textContent=fleet?'← Back to My Fleet':'← Back';
       el('scheduleJoeFleet').hidden=!!fleet;
-      showLanding();el('bootstrapProjectRows').innerHTML='<tr><td colspan="5">Opening project records…</td></tr>';
+      loadRosterView();showLanding();el('bootstrapProjectRows').innerHTML='<tr><td colspan="'+(rosterSelection.size+1)+'">Opening project records…</td></tr>';
       panel.showModal();panel.scrollTop=0;
       el('bootstrapScheduleClose').focus({preventScroll:true});
       entry.timer=setInterval(()=>{if(!current(entry))closeSchedule(false);},550);
@@ -3465,7 +3664,7 @@ const AdmiralAccountForm = (() => {
   document.addEventListener('cancel',event=>{if(event.target.id==='bootstrapSchedule'){event.preventDefault();closeSchedule();}},true);
 
   function syncDoor(){const kit=el('admiralCommissioningBrandKit');if(kit&&!el('bootstrapScheduleOpen'))kit.insertAdjacentHTML('beforeend','<button id="bootstrapScheduleOpen" class="admiral-pro-button" type="button">OPEN BOOTSTRAP BUILD SCHEDULE</button>');const doorway=el('bootstrapScheduleOpen');if(doorway&&doorway.textContent!=='OPEN BOOTSTRAP BUILD SCHEDULE')doorway.textContent='OPEN BOOTSTRAP BUILD SCHEDULE';}
-  install();installQuickPassageControls();wireLongview();syncDoor();new MutationObserver(syncDoor).observe(document.body,{subtree:true,childList:true});window.DarkSkyOpenBootstrapSchedule=open;
+  install();installQuickPassageControls();wireLongview();bindRoster();syncDoor();new MutationObserver(syncDoor).observe(document.body,{subtree:true,childList:true});window.DarkSkyOpenBootstrapSchedule=open;
   document.addEventListener('click',async event=>{const target=event.target;const opener=target.closest('#bootstrapScheduleOpen,[data-schedulejoe-open]');
     if(opener){event.preventDefault();event.stopImmediatePropagation();void open(opener);return;}if(!target.closest('#bootstrapSchedule'))return;if(target.closest('#scheduleJoeFleet')){closeSchedule(false);window.DarkSkyOpenFleetWatchtower?.();return;}if(target.closest('#bootstrapScheduleClose')){event.preventDefault();event.stopImmediatePropagation();closeSchedule();return;}if(target.closest('#bootstrapProjectsHome')){event.preventDefault();event.stopImmediatePropagation();showLanding();el('bootstrapSchedule').scrollTop=0;return;}const rowButton=target.closest('[data-open-project]');if(rowButton){event.preventDefault();event.stopImmediatePropagation();await openProject(rowButton.dataset.openProject);return;}if(!state)return;
     if(target.closest('#scheduleJoeRetry')){void persist('');return;}
