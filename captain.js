@@ -1255,7 +1255,7 @@ const AdmiralAccountForm = (() => {
     gate.dataset.authStep=account?'account':'pin';
     gate.dataset.sessionIntent=resume?'resume':'new';
     const text=(id,value)=>{const n=byId(id);if(n&&n.textContent!==value)n.textContent=value;};
-    const reasons={idle:'The 15-minute inactivity limit was reached. Admiral rank is retained; only the secure workspace locked.', 'maximum-age':'The one-hour workspace limit was reached. Admiral rank is retained; start a new secure session.', 'clock-changed':'The device clock changed; reverify the secure Admiral workspace.', 'authority-denied':'The server no longer verified active Admiral authority.', 'account-changed':'The account identity changed; reverify the Admiral office.', 'verification-unavailable':'Server verification could not be completed. Admiral rank was not inferred from browser state.', 'signed-out':'The secure Admiral workspace ended in this page. Rank is retained unless server authority is explicitly revoked.', cancelled:'The previous secure-session sign-in was cancelled.'};
+    const reasons={idle:'The workspace locked after inactivity.', 'maximum-age':'The one-hour workspace limit was reached. Admiral rank is retained; start a new secure session.', 'clock-changed':'The device clock changed; reverify the secure Admiral workspace.', 'authority-denied':'The server no longer verified active Admiral authority.', 'account-changed':'The account identity changed; reverify the Admiral office.', 'verification-unavailable':'Server verification could not be completed. Admiral rank was not inferred from browser state.', 'signed-out':'The secure Admiral workspace ended in this page. Rank is retained unless server authority is explicitly revoked.', cancelled:'The previous secure-session sign-in was cancelled.'};
     text('admiralEntranceStep',account?'STEP 2 OF 2 · ACCOUNT VERIFICATION':resume?'WELCOME BACK · VERIFY YOUR ACCESS':'STEP 1 OF 2 · PASSAGE PIN');
     text('admiralGateTitle',account?'One more step.':resume?'Welcome back.':'Welcome aboard.');
     text('admiralGateDescription',account?'Your PIN is verified. Sign in with your Admiral account to open the workspace.':resume?'Your Admiral role is retained. Verify your PIN to recheck your account access; another password may not be needed.':'Your Admiral Office brings the fleet together. Verify your PIN and account to begin.');
@@ -1264,7 +1264,7 @@ const AdmiralAccountForm = (() => {
     text('admiralEntrancePinState',account?'Verified':'Required');
     text('admiralEntranceAccountState',account?'Required':resume?'Recheck pending':'Next');
     text('admiralUnlockBtn',resume?'Verify PIN & return →':'Continue with PIN →');
-    text('admiralSessionReuseNote',(reasons[s?.reason]?reasons[s.reason]+' ':'')+'Workspace limits: 15 minutes inactive or 60 minutes from full sign-in. Browser lock only; server session expiry is not verified.');
+    text('admiralSessionReuseNote',(reasons[s?.reason]?reasons[s.reason]+' ':'')+'ScheduleJoe locks after 30 minutes without activity. Other Admiral workspaces lock after 15 minutes. Sign in again after one hour.');
     text('admiralVisualStatus',resume?'Account verification required to resume.':'Your fleet stays private until access is verified.');
     const pin=byId('admiralEntrancePinStep'),identity=byId('admiralEntranceAccountStep');
     pin?.classList.toggle('is-complete',account);
@@ -1507,7 +1507,7 @@ const AdmiralAccountForm = (() => {
               <li id="admiralEntrancePinStep" aria-current="step"><span aria-hidden="true">01</span><div><b>Passage PIN</b><small id="admiralEntrancePinState">Required</small></div></li>
               <li id="admiralEntranceAccountStep"><span aria-hidden="true">02</span><div><b>Admiral account</b><small id="admiralEntranceAccountState">Next</small></div></li>
             </ol>
-            <p class="admiral-entrance-boundary" id="admiralVisualStatus">Workspace locked until account authority is verified.</p><details class="admiral-session-help"><summary>Session limits: 15 min idle · 60 min total</summary><p id="admiralSessionReuseNote" class="admiral-reuse-note"></p></details>
+            <p class="admiral-entrance-boundary" id="admiralVisualStatus">Workspace locked until account authority is verified.</p><details class="admiral-session-help"><summary>Workspace time limits</summary><p id="admiralSessionReuseNote" class="admiral-reuse-note"></p></details>
           </header>
           <div class="admiral-entrance-form">
             <div class="admiral-entrance-form-head"><b id="admiralEntranceFormTitle">Verify your passage PIN</b><span id="admiralEntranceFormHint">This opens the account sign-in, not fleet authority.</span></div>
@@ -1704,6 +1704,10 @@ const AdmiralAccountForm = (() => {
       primeAdmiralFirstPaint8658();
       regattaLink.disabled = false;
       byId('regattaStatus').textContent = '';
+      if (directTarget === 'schedulejoe') {
+        const opener = deck.querySelector('[data-schedulejoe-open]');
+        if (opener) window.DarkSkyOpenBootstrapSchedule?.(opener);
+      }
       if (directTarget === 'lantern-run') byId('lanternRunLaunch')?.click();
       if (directTarget === 'regatta') {
         setAdmiralLane('promote');
@@ -2303,25 +2307,27 @@ const AdmiralAccountForm = (() => {
     window.DarkSkyFleetNavigator?.register('admiral',({source,directTarget})=>renderAdmiralGate(source==='captain'?'captain':'engine',directTarget));
     document.querySelectorAll('[data-command-open="captain"]').forEach(btn=>btn.addEventListener('click',event=>{event.preventDefault();window.DarkSkyFleetNavigator?.navigate('captain',{source:'engine'})||openGate();}));
     document.querySelectorAll('[data-command-open="admiral"]').forEach(btn=>btn.addEventListener('click',event=>{event.preventDefault();window.DarkSkyFleetNavigator?.navigate('admiral',{source:'engine'})||openAdmiralGate('engine');}));
-    const arcadeLink=new URL(location.href);
-    if(arcadeLink.searchParams.get('surface')==='engine' && arcadeLink.searchParams.get('play')==='riptail' && !arcadeLink.hash){
+    const link=new URL(location.href);
+    const program=link.searchParams.get('work')==='schedulejoe' ? 'schedulejoe' :
+      link.searchParams.get('play')==='riptail' ? 'lantern-run' : '';
+    if(link.searchParams.get('surface')==='engine' && program && !link.hash){
       // The link selects a destination only. Enter through the existing Engine and Admiral gates.
       const engine=byId('enginePanel');
-      const enterArcade=()=>{
+      const enterProgram=()=>{
         if(!document.body.classList.contains('engine-mode') || document.body.classList.contains('boot-locked') ||
            document.body.classList.contains('bf-entry-open') || engine.classList.contains('hidden') ||
            !(window.BlackFlagAuth?.isUnlocked?.() || window.DarkSkyTestAccess?.isActive?.()))return;
         observer.disconnect();
         const url=new URL(location.href);
-        url.searchParams.delete('play');
+        url.searchParams.delete(program==='schedulejoe'?'work':'play');
         history.replaceState(history.state,'',url);
-        openAdmiralGate('engine','lantern-run');
+        openAdmiralGate('engine',program);
       };
-      const observer=new MutationObserver(enterArcade);
+      const observer=new MutationObserver(enterProgram);
       if(engine){
         observer.observe(document.body,{attributes:true,attributeFilter:['class']});
         observer.observe(engine,{attributes:true,attributeFilter:['class']});
-        enterArcade();
+        enterProgram();
       }
     }
     document.querySelector('[data-command-open="regatta"]')?.addEventListener('click', () => openAdmiralGate('engine', 'regatta'));
@@ -3723,6 +3729,15 @@ const AdmiralAccountForm = (() => {
     const board=el('bootstrapScheduleBoard');
     return board.scrollTop+node.getBoundingClientRect().top-board.getBoundingClientRect().top;
   }
+  function weekPositionKey() {
+    return 'scheduleJoeWeek.v1:'+JSON.stringify([visit.actor,activeId]);
+  }
+  function rememberedWeek() {
+    try {
+      const week=Number(sessionStorage.getItem(weekPositionKey()));
+      return Number.isInteger(week) && week>=0 && week<weekCount() ? week : 0;
+    } catch (_) { return 0; }
+  }
   function syncWeek() {
     if(!state)return;
     const board=el('bootstrapScheduleBoard');
@@ -3730,6 +3745,9 @@ const AdmiralAccountForm = (() => {
     const nodes=board.querySelectorAll('.bootstrap-ground-week');
     let week=0;
     for(const node of nodes){if(weekTop(node)>board.scrollTop+3)break;week=Number(node.dataset.weekNumber);}
+    if(visit && selectedWeek!==week){
+      try { sessionStorage.setItem(weekPositionKey(),String(week)); } catch (_) {}
+    }
     selectedWeek=week;el('scheduleJoeWeek').value=String(week);
     for(const b of el('bootstrapProjectWorkspace').querySelectorAll('[data-week-step]')){
       b.disabled=Number(b.dataset.weekStep)<0?week===0:week===weekCount()-1;
@@ -3789,10 +3807,10 @@ const AdmiralAccountForm = (() => {
     el('joeLongview').hidden=true;lookRecord=null;
     el('joePrompt').checked=false;
     el('scheduleJoeRetry').hidden=true;
-    activeId=id;state=cache.get(id);selectedWeek=0;selectedId='';vendorView='';
+    activeId=id;state=cache.get(id);const firstWeek=rememberedWeek();selectedWeek=0;selectedId='';vendorView='';
     el('bootstrapSchedule').classList.add('desk-open');expandedWeeks.clear();el('deskSettings').open=false;el('deskHistory').open=false;
     el('bootstrapAcceleratedPanel').classList.add('hidden');
-    el('bootstrapAcceleratedToggle').setAttribute('aria-expanded','false');el('bootstrapProjectLanding')?.classList.add('hidden');el('bootstrapProjectWorkspace')?.classList.remove('hidden');el('bootstrapProjectsHome')?.classList.remove('hidden');const meta=project(id);el('bootstrapScheduleTitleHeading').textContent=projectLabel(meta);el('bootstrapScheduleSubtitle').textContent='Tap a task to select it. Drag to move it, or pull an edge to change its duration.';renderSchedule();jumpWeek(0);status(state._source==='recovered prior schedule'?'Prior Lot 1234 · Unit A schedule recovered. Changes now save in its independent record.':state.updatedAt?'Loaded saved revision '+state.revision+' from '+new Date(state.updatedAt).toLocaleString()+'.':'Tap a date to add work or a task to edit it.');el('bootstrapSchedule').scrollTop=0;}
+    el('bootstrapAcceleratedToggle').setAttribute('aria-expanded','false');el('bootstrapProjectLanding')?.classList.add('hidden');el('bootstrapProjectWorkspace')?.classList.remove('hidden');el('bootstrapProjectsHome')?.classList.remove('hidden');const meta=project(id);el('bootstrapScheduleTitleHeading').textContent=projectLabel(meta);el('bootstrapScheduleSubtitle').textContent='Tap a task to select it. Drag to move it, or pull an edge to change its duration.';renderSchedule();jumpWeek(firstWeek);status(state._source==='recovered prior schedule'?'Prior Lot 1234 · Unit A schedule recovered. Changes now save in its independent record.':state.updatedAt?'Loaded saved revision '+state.revision+' from '+new Date(state.updatedAt).toLocaleString()+'.':'Tap a date to add work or a task to edit it.');el('bootstrapSchedule').scrollTop=0;}
   async function move(id,day){
     const task=state?.tasks.find(item=>item.id===id);if(!task)return;
     if(task.locked===true||task.complete===true){status('This task is locked or complete.');return;}
@@ -3833,6 +3851,7 @@ const AdmiralAccountForm = (() => {
     const entry=visit,panel=el('bootstrapSchedule');
     closeMove();dismissEditor();dismissRosterDetails();if(el('newLotDialog').open)el('newLotDialog').close();el('rosterColumns').open=false;if(el('deskUpdates').open)el('deskUpdates').close();lookRecord=null;visit=null;
     if(entry) clearInterval(entry.timer);
+    entry?.leaveScheduleWindow?.();
     clearTouchDrag();desktopGrab=null;showOver(null);
     activeId='';state=null;selectedId='';vendorView='';
     el('joeLockNotice')?.remove();
@@ -3884,6 +3903,7 @@ const AdmiralAccountForm = (() => {
       el('scheduleJoeFleet').hidden=!!fleet;
       el('crewQuery').value='';loadRosterView();showLanding();el('bootstrapProjectRows').innerHTML='<tr><td colspan="'+(rosterSelection.size+1)+'">Opening project records…</td></tr>';
       panel.showModal();panel.scrollTop=0;
+      entry.leaveScheduleWindow=window.DarkSkyAdmiralSession?.enterSchedule?.(panel,entry.actor,entry.stamp);
       el('bootstrapScheduleClose').focus({preventScroll:true});
       entry.timer=setInterval(()=>{
         if(!current(entry)){closeSchedule(false);return;}

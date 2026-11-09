@@ -58,7 +58,7 @@
   // HarborMaster bounds this document's Admiral workspace. This is a client
   // defense, NOT a server session-expiry policy, token revocation or a role grant.
   const ADMIRAL_KEY = 'darkSkySupabaseAdmiralSessionV1';
-  const IDLE_MS = 15 * 60_000, MAX_MS = 60 * 60_000;
+  const IDLE_MS = 15 * 60_000, SCHEDULE_IDLE_MS = 30 * 60_000, MAX_MS = 60 * 60_000;
   let admiralWindow = null, authGeneration = 0, refreshFlight = null;
   let endReason = 'new-document', lastReceipt = '', windowTimer = 0;
   let lastWall = Date.now(), monoBase = typeof performance !== 'undefined' ? performance.now() : 0, wallBase = lastWall;
@@ -82,21 +82,28 @@
     lastReceipt = reason === 'signed-out' ? 'Admiral access ended in this page.' : '';
     emitWindow('ended');
   }
+  function scheduleIsOpen(panel) {
+    if (!panel?.open || !panel.isConnected || panel.closest('[hidden],.hidden,[inert],[aria-hidden="true"]')) return false;
+    const host = panel.closest('#bootstrapFleet, #admiralDeck');
+    if (host?.id === 'bootstrapFleet') return document.getElementById('watchSecurityLayer')?.classList.contains('hidden') === true;
+    return host?.id === 'admiralDeck';
+  }
   function windowState() {
     const now = windowNow();
+    const idleMs = scheduleIsOpen(admiralWindow?.schedulePanel) ? SCHEDULE_IDLE_MS : IDLE_MS;
     if (admiralWindow) {
       if (now >= admiralWindow.startedAt + MAX_MS) endWindow('maximum-age');
-      else if (now >= admiralWindow.lastActivityAt + IDLE_MS) endWindow('idle');
+      else if (now >= admiralWindow.lastActivityAt + idleMs) endWindow('idle');
     }
     const w = admiralWindow;
     return Object.freeze({
       available: !!w, reusable: !!w && !!w.verifiedAt,
       startedAt: w?.startedAt || null, lastActivityAt: w?.lastActivityAt || null,
       checkedAt: w?.verifiedAt || null,
-      idleRemainingMs: w ? Math.max(0, w.lastActivityAt + IDLE_MS - now) : 0,
+      idleRemainingMs: w ? Math.max(0, w.lastActivityAt + idleMs - now) : 0,
       maximumRemainingMs: w ? Math.max(0, w.startedAt + MAX_MS - now) : 0,
       reason: endReason, receipt: lastReceipt,
-      idleLimitMinutes: 15, maximumLimitMinutes: 60,
+      idleLimitMinutes: w ? idleMs / 60_000 : IDLE_MS / 60_000, maximumLimitMinutes: MAX_MS / 60_000,
       enforcement: 'browser-workspace-only', serverTimeoutVerified: false
     });
   }
@@ -125,6 +132,20 @@
     admiralWindow.verifiedAt = windowNow();
     if (first) lastReceipt = 'Commissioned Admiral authority verified. Secure workspace open.';
     emitWindow(); return true;
+  }
+  // ScheduleJoe calls this after its account check. Opening the schedule does
+  // not renew activity or move the original full sign-in deadline.
+  function enterSchedule(panel, userId, startedAt) {
+    if (!windowState().reusable || admiralWindow.userId !== userId || admiralWindow.startedAt !== startedAt) return;
+    if (panel !== document.getElementById('bootstrapSchedule') || !scheduleIsOpen(panel)) return;
+    const active = admiralWindow;
+    active.schedulePanel = panel;
+    scheduleWindow();
+    return () => {
+      if (admiralWindow !== active) return;
+      active.schedulePanel = null;
+      scheduleWindow();
+    };
   }
   function noteResumed() {
     if (!windowState().reusable) return false;
@@ -169,7 +190,7 @@
   window.addEventListener('pagehide', () => endWindow('document-left'));
   window.addEventListener('pageshow', e => { if (e.persisted) endWindow('document-restored'); });
   window.DarkSkyAdmiralSession = Object.freeze({
-    status: windowState, end: endWindow, cancelSignIn, noteResumed, noteProgramActivity,
+    status: windowState, end: endWindow, cancelSignIn, noteResumed, noteProgramActivity, enterSchedule,
     receipt: message => { lastReceipt = String(message || ''); emitWindow(); }
   });
 
