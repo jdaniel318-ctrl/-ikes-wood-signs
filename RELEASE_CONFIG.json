@@ -1,15 +1,15 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.112",
-  "name": "Pennant Park",
-  "seal": "pennant-park-8820112",
-  "base": "8.8.20.111",
-  "base_sha256": "118d1489cb034c110346fc12d3f60fa2dfb2f1fb4b5ac5c73ee3a1e18273bca4",
-  "base_files": 981,
-  "prepared_at": "2026-11-10T06:00:00Z",
+  "build": "8.8.20.113",
+  "name": "Harbor Ninth",
+  "seal": "harbor-ninth-8820113",
+  "base": "8.8.20.112",
+  "base_sha256": "e767bd8a25b5a549aa71c4572177e8e260b61c0b33f4f53fc15f49cbb896eb1a",
+  "base_files": 983,
+  "prepared_at": "2026-11-10T20:13:22Z",
   "app_component_revision": "8.8.20.99",
   "owner_helper_revision": "8.8.20.68",
-  "feature_notes": "Harbor Sluggers joins Fleet Arcade. The arcade, Lantern Run, Stormwake and Wonderwake receive play, drawing and navigation improvements. The Engine, Captain and owner workspaces receive focused navigation and data-entry repairs, with updates to customer form handling and selected shop tools.",
+  "feature_notes": "Harbor Sluggers adds Bottom of the Ninth with a live count, Contact and Power swings, fielding, baserunning decisions and home run replay.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -38,7 +38,7 @@
     }
   },
   "install_step": "Confirm the Engine release label, open the affected vessel and run its acceptance steps.",
-  "evidence_file": "PENNANT_PARK_EVIDENCE.json",
-  "base_git_tree": "ded573e2186c8bfd6776a1ca88d48045faac65b0",
-  "base_git_commit": "224c3b097a04b6091a7be456595a10b522b35a73"
+  "evidence_file": "HARBOR_NINTH_EVIDENCE.json",
+  "base_git_tree": "243db8a2467a56efd567d65131d247b7acc3ed37",
+  "base_git_commit": "da4fbb9358de7b9e3d57afc566d73ede6242e8ec"
 }

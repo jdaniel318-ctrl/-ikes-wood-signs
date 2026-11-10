@@ -187,7 +187,7 @@ document.addEventListener('click',e=>{if(e.target instanceof Element&&e.target.c
 const LANTERN_LEVEL_COUNT = 36;
 const arcadeEditions = {
   lantern: {name:'Lantern Run', file:'lantern-run.ship.json', id:'lantern-run', edition:7, levels:LANTERN_LEVEL_COUNT, limit:250000, digest:'4f8add355a2eee41badb12234ff3afa205934646e42f1fd02316f1d2b3cbe53a'},
-  collection: {name:'Fleet Arcade', file:'fleet-arcade.ship.json', id:'six-bells', edition:3, levels:21, limit:1800000, digest:'0804a58e3538b0e8fc5370cf3dbf732ae4f7bbad0514754a18084d80a348f729'}
+  collection: {name:'Fleet Arcade', file:'fleet-arcade.ship.json', id:'six-bells', edition:4, levels:22, limit:1800000, digest:'74110cdddfda673e0f86590aa7b933adf37e0fe1a4f56c67b7f7dc28e3f4dc88'}
 };
 const arcadeSources = new Map();
 async function arcadePlayerSource(edition,signal) {
@@ -205,6 +205,7 @@ async function arcadePlayerSource(edition,signal) {
   return pack.player;
 }
 const arcadeGames = new Set(['sluggers','riptail','skullwater','pipeworks','deepbell','chalkwing','dockmaster']);
+function arcadeLevelCount(id){return id==='sluggers'?4:3;}
 function arcadeSaveKey(run,id,level){
   return 'blackflag.six-bells.v1:'+encodeURIComponent(JSON.stringify(run.who.context.scope))+':'+id+'.'+level;
 }
@@ -218,7 +219,7 @@ function readArcadeRecord(run,id,level){
 }
 function arcadeRecords(run){
   const records={};
-  for(const id of arcadeGames)for(let level=0;level<3;level++){
+  for(const id of arcadeGames)for(let level=0;level<arcadeLevelCount(id);level++){
     const record=readArcadeRecord(run,id,level);
     if(Object.keys(record).length)records[id+'.'+level]=record;
   }
@@ -246,7 +247,7 @@ function writeArcadeRecord(run,msg){
 }
 
 function saveArcadeRecord(run,msg){
-  if(!arcadeGames.has(msg.id)||!Number.isInteger(msg.level)||msg.level<0||msg.level>2)return;
+  if(!arcadeGames.has(msg.id)||!Number.isInteger(msg.level)||msg.level<0||msg.level>=arcadeLevelCount(msg.id))return;
   const locks=window.navigator?.locks;
   if(!locks){writeArcadeRecord(run,msg);return;}
   locks.request(arcadeSaveKey(run,msg.id,msg.level),()=>writeArcadeRecord(run,msg)).catch(()=>{

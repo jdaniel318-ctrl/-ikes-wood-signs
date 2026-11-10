@@ -1,9 +1,9 @@
 {
-  "release": "Pennant Park",
-  "name": "Pennant Park",
-  "build": "8.8.20.112",
-  "seal": "pennant-park-8820112",
-  "file_count": 983,
+  "release": "Harbor Ninth",
+  "name": "Harbor Ninth",
+  "build": "8.8.20.113",
+  "seal": "harbor-ninth-8820113",
+  "file_count": 984,
   "files": [
     ".github/workflows/drydock-batch1.yml",
     "01-Review.pdf",
@@ -190,6 +190,7 @@
     "HARBOR_EVIDENCE.json",
     "HARBOR_GUIDE.md",
     "HARBOR_LIGHT_BOOT_CONTRACT.md",
+    "HARBOR_NINTH_EVIDENCE.json",
     "HARBOR_PILOT_BOOT_CONTRACT.md",
     "HARBOR_TEST_FIXTURE.js",
     "HARDENING_AUDIT_610.md",

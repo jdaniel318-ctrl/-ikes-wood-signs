@@ -1,0 +1,18 @@
+{
+  "build": "8.8.20.113",
+  "base_commit": "da4fbb9358de7b9e3d57afc566d73ede6242e8ec",
+  "game_asset_sha256": "74110cdddfda673e0f86590aa7b933adf37e0fe1a4f56c67b7f7dc28e3f4dc88",
+  "previous_slots": "Same arcade id, save key, scope and three preexisting indices. New inning is sluggers.3.",
+  "simulated_checks": [
+    "Ball outside and strike looking",
+    "Foul at two strikes and caught fly",
+    "Walks and forced advancement",
+    "Third out and walk-off endings",
+    "Held runner, coach timeout, safe and out at home",
+    "Home run replay and all three existing rounds"
+  ],
+  "hardware_pending": [
+    "iPad touch timing and Safari fullscreen in the new mode",
+    "physical standard controller and audio levels"
+  ]
+}
