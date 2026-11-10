@@ -16198,6 +16198,7 @@ dialog.cg-workspace::backdrop{background:#061c24;}
 /* SteadyHand 8.8.20.31 — keep the clarified observation labels readable on mobile. */
 #watchOverviewBody,#watchOverviewBody header>div,.fleet-vessel-context>article{min-width:0}
 #watchOverviewBody header{grid-template-columns:92px minmax(0,1fr) auto}
+#watchOverviewBody header>img{width:100%;height:auto;aspect-ratio:1;object-fit:contain}
 #watchOverviewBody header h2,#watchOverviewBody header p,.fleet-vessel-context b{overflow-wrap:anywhere}
 #watchOverviewBody header em{box-sizing:border-box;max-width:100%;justify-self:start}
 #watchOverviewBody .tb-command-access button{max-width:100%;white-space:normal;overflow-wrap:anywhere}

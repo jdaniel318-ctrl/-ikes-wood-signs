@@ -187,11 +187,29 @@ const AdmiralAccountForm = (() => {
 })();
 /* End Admiral account form */
 
+const admiralVesselLogos = new Map([
+  ['beccas-bloom-shop', 'fleet-becca.webp'],
+  ['grizzly-bear', 'fleet-grizzly.webp'],
+  ['mugshot-after-dark', 'fleet-mugs.webp'],
+  ['bf-p-42be92cbac12', 'fleet-voyagekeeper.webp'],
+  ['ikes-wood-signs', 'ike_character.png'],
+  ['bor-north-richmond', 'signal_restoration_logo.png'],
+  ['bf-p-f92f87e8ec44', 'https://legacyplumbingrva.com/wp-content/uploads/2026/04/LOGO.png'],
+  ['construction-scheduling-01', 'bootstrap_build_logo.png']
+]);
+
+
 ;(()=>{
   const $=id=>document.getElementById(id),safe=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),PROGRAM={reference_only:true,project_id:'bootstrap-build',display_name:'Bootstrap Build',mission_class:'admiral_program',operating_model:'fleet_operated',ownership_model:'admiral_owned',lifecycle_state:'commissioning',logo_url:'bootstrap_build_icon.png'};
   let records=[],programs=[],query='',filter='all',lastSync='',spine={counts:{},vessels:[]};
-  const words=v=>String(v||'not_reported').replaceAll('_',' '),BUNDLED_MARKS={'ikes-wood-signs':'ike_character.png','bor-north-richmond':'signal_restoration_logo.png','bf-p-f92f87e8ec44':'https://legacyplumbingrva.com/wp-content/uploads/2026/04/LOGO.png'};
-  function mark(v){const src=v.logo_url&&!/black_flag_(primary_lockup|platform_icon)/.test(v.logo_url)?v.logo_url:BUNDLED_MARKS[v.project_id]||'',code=({'beccas-bloom-shop':'BBS','grizzly-bear':'GRZ','mugshot-after-dark':'MUG'}[v.project_id]||String(v.display_name||'V').split(/\s+/).map(x=>x[0]).join('').slice(0,3)).toUpperCase();return src?`<img src="${safe(src)}" alt="${safe(v.display_name)} canonical vessel mark">`:`<div class="fleet-watch-code-mark" aria-label="${safe(v.display_name)} project mark"><b>${safe(code)}</b><span>${safe(v.display_name)}</span></div>`;}
+  const words=v=>String(v||'not_reported').replaceAll('_',' ');
+  function mark(v){
+    const src = v.logo_url && !/black_flag_(primary_lockup|platform_icon)/.test(v.logo_url)
+      ? v.logo_url : admiralVesselLogos.get(v.project_id);
+    if (src) return `<img src="${safe(src)}" alt="${safe(v.display_name)} canonical vessel mark">`;
+    const code = String(v.display_name || 'V').split(/\s+/).map(word => word[0]).join('').slice(0,3).toUpperCase();
+    return `<div class="fleet-watch-code-mark" aria-label="${safe(v.display_name)} project mark"><b>${safe(code)}</b><span>${safe(v.display_name)}</span></div>`;
+  }
   function facts(v){const life=String(v.lifecycle_state||'unknown').toLowerCase(),activity=v.reported_at||'',age=activity?Date.now()-Date.parse(activity):Infinity,reported=!!activity&&Number.isFinite(age),stale=reported&&age>604800000,attention=!reported||stale||Number(v.unresolved_issues)>0||['hold','blocked','suspended'].includes(life),ready=!reported?'NEVER REPORTED':stale?'STALE REPORT':life==='active'||life==='live'?'ACTIVE · SERVER':life==='suspended'?'SUSPENDED · ATTENTION':life==='retired'?'RETIRED':life==='staging'?'STAGING · VERIFIED':life==='commissioning'?'COMMISSIONING · VERIFIED':'VERIFIED',hasIssues=v.unresolved_issues!==null&&v.unresolved_issues!==undefined&&Number.isFinite(Number(v.unresolved_issues));return {life,activity,reported,stale,attention,ready,work:v.current_work||'Not reported',issues:hasIssues?Number(v.unresolved_issues):null,summary:v.issue_summary||'',source:reported?(v.truth_source||'vessel_report'):'not_reported'};}
   const filterLabels = {
     all:'All vessels', attention:'Needs attention', issues:'With open issues', held:'Held or blocked',
@@ -2648,7 +2666,7 @@ const AdmiralAccountForm = (() => {
   function setResult(message,verified=false){const node=el('admiralBrandResult');if(!node)return;node.textContent=message;node.classList.toggle('is-verified',verified);}
   function setBusy(next){busy=next;const verified=el('admiralBrandStation')?.classList.contains('identity-verified');if(el('admiralBrandVessel'))el('admiralBrandVessel').disabled=next||!verified;if(el('admiralBrandFile'))el('admiralBrandFile').disabled=next||!verified;if(el('admiralBrandIntent'))el('admiralBrandIntent').disabled=next||!verified;if(el('admiralBrandSave'))el('admiralBrandSave').disabled=next||!verified||!draftFile;if(el('admiralBrandRestore'))el('admiralBrandRestore').disabled=next||!verified||!selected()?.logo_storage_path;}
   function selected(){return vessels.find(item=>item.project_id===el('admiralBrandVessel')?.value)||vessels[0]||null;}
-  const defaultLogo=projectId=>({'construction-scheduling-01':'bootstrap_build_logo.png','ikes-wood-signs':'ike_character.png','bor-north-richmond':'signal_restoration_logo.png','bf-p-f92f87e8ec44':'https://legacyplumbingrva.com/wp-content/uploads/2026/04/LOGO.png'}[projectId]||'');
+  const defaultLogo=projectId=>admiralVesselLogos.get(projectId)||'';
   function publicLogo(path){if(!path)return '';const c=cfg();return c?.url+'/storage/v1/object/public/fleet-branding/'+path.split('/').map(encodeURIComponent).join('/');}
   function paint(){const vessel=selected(),image=el('admiralBrandImage');if(!vessel){if(el('admiralBrandName'))el('admiralBrandName').textContent='No Fleet Core vessel available';return;}const src=draftUrl||publicLogo(vessel.logo_storage_path)||defaultLogo(vessel.project_id);if(image){image.src=src;image.alt=vessel.display_name+' canonical logo preview';}if(el('admiralBrandName'))el('admiralBrandName').textContent=vessel.display_name;if(el('admiralBrandState'))el('admiralBrandState').textContent=(vessel.lifecycle_state||'fleet').toUpperCase()+' · '+vessel.project_id;if(el('admiralBrandSource'))el('admiralBrandSource').textContent=draftUrl?'Local preview · not saved':vessel.logo_storage_path?'Custom canonical logo · Fleet Core verified':vessel.project_id==='construction-scheduling-01'?'Approved Bootstrap Build default':'Approved fleet default';setBusy(busy);}
   async function signIn(){const email=el('admiralBrandEmail')?.value||'',password=el('admiralBrandPassword')?.value||'';await stationClient().signInWithPassword(email,password);try{if(!(await verifyAdmiral()))throw new Error('This account does not hold active Admiral authority.');}catch(error){clearSession();throw error;}finally{if(el('admiralBrandPassword'))el('admiralBrandPassword').value='';}}
