@@ -23,7 +23,7 @@ def config_check(config,files):
  if config.get('schema')!='blackflag-release-config-v1':raise ValueError('Unsupported release configuration')
  for field in ['build','base','app_component_revision','owner_helper_revision']:
   if not re.fullmatch(r'\d+(?:\.\d+){2,5}',str(config.get(field,''))):raise ValueError('Invalid '+field)
- if not re.fullmatch(r'[A-Za-z][A-Za-z0-9]{1,39}',str(config.get('name',''))):raise ValueError('Invalid name')
+ if not re.fullmatch(r'[A-Za-z](?:[A-Za-z0-9]| (?=[A-Za-z0-9])){1,39}',str(config.get('name',''))):raise ValueError('Invalid name')
  if not re.fullmatch(r'[a-z][a-z0-9-]{2,79}',str(config.get('seal',''))):raise ValueError('Invalid seal')
  if not re.fullmatch(r'[0-9a-f]{64}',str(config.get('base_sha256',''))):raise ValueError('Invalid base digest')
  if not isinstance(config.get('base_files'),int) or config['base_files']<1:raise ValueError('Invalid base files')
@@ -39,6 +39,7 @@ def current_block(files,name,body):
  if start in text:
   text,n=re.subn(re.escape(start)+r'.*?'+re.escape(end)+r'\n?',lambda _:block,text,flags=re.S)
   if n!=1:raise ValueError('Ambiguous current release block '+name)
+ elif text.startswith(('# Wonderwake ', '# 0.11.0 ')):text=block+'\n## Wonderwake program notes\n\n'+text
  else:text=block+'\n## Retained historical notes\n\n'+text
  files[name]=text.encode('utf-8')
 def seal(files):
@@ -58,7 +59,7 @@ def seal(files):
  return out
 
 def prepare(files,config):
- config_check(config,files);out=dict(files);build=config['build'];name=config['name'];release_seal=config['seal'];base=config['base'];feature_notes=config.get('feature_notes','Feature scope is documented in the current release guide.');prefix='DarkSky'+build.replace('.','')+'-'+name
+ config_check(config,files);out=dict(files);build=config['build'];name=config['name'];release_seal=config['seal'];base=config['base'];feature_notes=config.get('feature_notes','Feature scope is documented in the current release guide.');prefix='DarkSky'+build.replace('.','')+'-'+name.replace(' ','')
  out['RELEASE_CONFIG.json']=jb(config)
  changed_text(out,'index.html',r"const DARK_SKY_RELEASE = Object.freeze\(\{build:'[^']+',seal:'[^']+'\}\);",f"const DARK_SKY_RELEASE = Object.freeze({{build:'{build}',seal:'{release_seal}'}});")
  changed_text(out,'index.html',r'<small id="engineReleaseLabel">[^<]+</small>',f'<small id="engineReleaseLabel">{build} • {name.upper()}</small>')
@@ -75,6 +76,8 @@ def prepare(files,config):
   doc=get(out,model);doc['build']=build;out[model]=jb(doc)
  out['CURRENT_BASELINE.json']=jb({'schema':'blackflag-current-baseline-v1','build':build,'release':name,'seal':release_seal,'base':base,'base_source_files':config['base_files'],'base_sha256':config['base_sha256'],'prepared_at':config['prepared_at'],'upload':prefix+'-Upload.zip','full_source_backup':prefix+'-FullBackup.zip','database_backup':False,'canonical_instructions':'UPLOAD_THIS_ONE_BUILD.md','release_config':'RELEASE_CONFIG.json','verification_runner':'VERIFY_RELEASE_ALL.cjs','check_command':'node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence','prepare_command':'python3 -B PREPARE_RELEASE.py .','package_command':f'python3 -B BUILD_RELEASE.py . --baseline /path/to/DarkSky{base.replace(".","")}-FullBackup.zip --out ../release-output','native_acceptance':'pending','component_versions':'Retained component revisions may differ from the installed release; exact hashes still required'})
  contract=get(out,'PATCH_CONTRACT.json');contract.update(target_build=build,target_seal=release_seal,supported_bases=[{'build':base,'source_sha256':config['base_sha256'],'file_count':config['base_files']}],requires_deletions=False,database_actions='none',rule=f'Upload every changed/new root file over complete {base}. Keep everything else. This software archive executes no database commands.');contract['backend_prerequisite']=config.get('backend_prerequisite')
+ if 'base_git_tree' in config:
+  contract['supported_bases'][0].update(source_format='git-tree-regular-v1',git_tree_sha1=config['base_git_tree'],git_commit=config['base_git_commit'])
  contract['backend_prerequisites']=config.get('backend_prerequisites',{})
  out['PATCH_CONTRACT.json']=jb(contract)
  gate=get(out,'RELEASE_GATE.json');gate.update(build=build,release=name,**{'pass':False},verification_status='PREPARED_NOT_TESTED',native_safari_acceptance='PENDING',evidence_file=config.get('evidence_file','TRIMLINE_EVIDENCE.json'),production_certification=False);out['RELEASE_GATE.json']=jb(gate)

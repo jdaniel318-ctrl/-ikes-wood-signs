@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.20.111",
-  "version": "8.8.20.111",
-  "release_name": "Crestline",
-  "releaseName": "Crestline",
-  "release_seal": "crestline-8820111",
+  "build": "8.8.20.112",
+  "version": "8.8.20.112",
+  "release_name": "Pennant Park",
+  "releaseName": "Pennant Park",
+  "release_seal": "pennant-park-8820112",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -162,8 +162,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "Vessel owners, appointed Captains and Admiral My Fleet open at a clean heading. The Engine vessel picker and workstation announce their title on entry and return focus to the selected vessel when going back.",
-  "release_note": "Vessel owners, appointed Captains and Admiral My Fleet open at a clean heading. The Engine vessel picker and workstation announce their title on entry and return focus to the selected vessel when going back.",
+  "release_focus": "Harbor Sluggers joins Fleet Arcade. The arcade, Lantern Run, Stormwake and Wonderwake receive play, drawing and navigation improvements. The Engine, Captain and owner workspaces receive focused navigation and data-entry repairs, with updates to customer form handling and selected shop tools.",
+  "release_note": "Harbor Sluggers joins Fleet Arcade. The arcade, Lantern Run, Stormwake and Wonderwake receive play, drawing and navigation improvements. The Engine, Captain and owner workspaces receive focused navigation and data-entry repairs, with updates to customer form handling and selected shop tools.",
   "tax_ledger_upgrade": {
     "schema": "dark-sky-fleet-tax-ledger-v1",
     "model": "TAX_LEDGER_MODEL.json",
@@ -285,8 +285,8 @@
     "algorithm": "SHA-256",
     "files": {
       "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": {
-        "sha256": "27f0d08b566667c5696f1d75a63bfca41ceb4801e9bf5d2a10692f2ad66cb7c8",
-        "build": "8.8.20.111",
+        "sha256": "84a3f8f3bdcffc49ec7a9a5b9a19ad455d96ddcfac81b7ff83ca7722856d770b",
+        "build": "8.8.20.112",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -333,14 +333,14 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_COMMAND_MODEL.json": {
-        "sha256": "08685c515b79cf63ad64dae0e983e77f4d281fc10b7dd31d01e248a67eab6cb8",
-        "build": "8.8.20.111",
+        "sha256": "55fa064239a4d40bb8565a063783be840143713ad5738b11ed7eaa735d16e1b8",
+        "build": "8.8.20.112",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
       "FLEET_DOCTRINE_REGISTRY.json": {
-        "sha256": "a6fbcbb64833172edaac4f320927b29b0deb319458fa86c1c387bf36aebcba35",
-        "build": "8.8.20.111",
+        "sha256": "d7ccb07946e4e0245a51cb064a7365d43e4bacd3be1288180721a980a455a398",
+        "build": "8.8.20.112",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -399,8 +399,8 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "GOLDEN_VOYAGES.json": {
-        "sha256": "b858c2c9d647722dd04137500a6a5565d39a3843f1213ce7fa8521496757e259",
-        "build": "8.8.20.111",
+        "sha256": "bf85e0e3464950b6f00df049d7b7ad9a0adf340402b6dfe8884036f7ee83aecf",
+        "build": "8.8.20.112",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -556,33 +556,33 @@
       "platform_identity.js": "0beacfb452fb0e3e24aea71efd86140b1657560e98fa670a0f3bea428414232d",
       "fleet_supabase.js": "f4b93e3db718daca7403d8f12077a961f57456f9a3f2a961dd0fca01cabe6757",
       "ike_style_registry.js": "6b348ebceb47e172e6676f46252b19c1c6bb7532baf76febfa8dd81760a76ab7",
-      "app.js": "c03b2f7b39dc8df157cc732365e8e0b591c6acca0ec197be37b26cd0f397fa0e",
-      "captain.js": "1d59b72a92212eb3050f0bb8f3e2517498f677cbac8928e49cd9548eaa0df4af",
+      "app.js": "c7948218726e4c5c30f320f2a1ae747ffe445b89c807f0f384a488273617900d",
+      "captain.js": "cd7d61c518b93e3a1744170c3f85a013066d7758719840b5a28872076bfd7a3c",
       "simple_books.js": "ddd76dcf5e6c579f16918a9d3e645b0fc65d8a5b4d7c66df8896d8314eea325d",
-      "owner.html": "417c0fa6719c1054406e4bfecb4ad43019d47901c99f2cb20d15963f12383bd1",
-      "manifest.webmanifest": "31aeb50acb63b54a7fa9d96aa3d6af0f4e94167d825f504cdf9588e81c0a3b6b",
+      "owner.html": "a1034b715a8ceafc9b8e9bdd10ae92f1e0b598a363a1184f93399e347772de7c",
+      "manifest.webmanifest": "95e9b0e190366d8c87d0e056aeb95c5f9c5b8b1e6dc0848ec2cb55253e4eb873",
       "IKE_STYLE_FOUNDRY.json": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
-      "sw.js": "2ec3ff06a61913668fdeba134cf7ba5130f4592550e2387078befb67a2c60ac2",
-      "FLEET_DOCTRINE_REGISTRY.json": "a6fbcbb64833172edaac4f320927b29b0deb319458fa86c1c387bf36aebcba35",
-      "GOLDEN_VOYAGES.json": "b858c2c9d647722dd04137500a6a5565d39a3843f1213ce7fa8521496757e259",
-      "FLEET_COMMAND_MODEL.json": "08685c515b79cf63ad64dae0e983e77f4d281fc10b7dd31d01e248a67eab6cb8",
-      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "27f0d08b566667c5696f1d75a63bfca41ceb4801e9bf5d2a10692f2ad66cb7c8",
-      "input_hygiene.js": "85584886dd424e619c6ee1069665e201dca51e815673839f91da0d796fcf591a",
+      "sw.js": "e7b7fa8b4349e94a0bfca36d72d8e1238ef46a643d4f1970d27010f03668bc47",
+      "FLEET_DOCTRINE_REGISTRY.json": "d7ccb07946e4e0245a51cb064a7365d43e4bacd3be1288180721a980a455a398",
+      "GOLDEN_VOYAGES.json": "bf85e0e3464950b6f00df049d7b7ad9a0adf340402b6dfe8884036f7ee83aecf",
+      "FLEET_COMMAND_MODEL.json": "55fa064239a4d40bb8565a063783be840143713ad5738b11ed7eaa735d16e1b8",
+      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "84a3f8f3bdcffc49ec7a9a5b9a19ad455d96ddcfac81b7ff83ca7722856d770b",
+      "input_hygiene.js": "e54a78fe75567db53c9682d4d039f53609fdcd0d43448f0534faec61def7edae",
       "business_deck.js": "63b1531524c46d73646a8265c7beabc1be430b9c613895a83c3e0f4bc696342f",
       "business_deck.css": "e28a49dcf16d35b3c7e0b4e69dd4892881cba564aeebc3e62e4b4eea90fca8d5",
       "fleet_viewport.js": "5eef4c55250c33a2f7af1247ab7b2ec72d560e2490e3644b6e489818f4597556",
-      "fleet_viewport.css": "12e4b4b146e96b48c6d3fa3e2694f85bc535da483b27752beb596a496a6e8c67",
+      "fleet_viewport.css": "e3645eb5e7c848d741960ca7a32fff6a2c80309bc23b7d3ccea2bd43c722e174",
       "headway_contracts.js": "e79286db1785fa95038bbda65c83e0d36ada63b2d402dffad695e4866062c09c",
       "woodwright_fit.js": "a4efdadf635608419a2bd82f12a701fd2991ec5dc3d14d282fd846680d40606f",
       "fun_core.js": "b21a909fa3dccf44b2d02d4a8243a91fd260b70db2edfc35338f3fd330c810e4",
-      "fun_program.js": "c664b3b5347238618c66d7e7bd49b161e8dd0f1970955261858d12d9d355c285",
+      "fun_program.js": "ad966ddc7bf04decd3cda7f675ee0b0b998b2dc7913575aee429ea57a181e93d",
       "fun_program.css": "5426df73fe625f936bcc5f114ea6706aa316641db30e012c9633121432288fd3",
       "fun_player.html": "fcfc2d06cdf204f4591a9717968a027facf170e6e0be32d9151ef847870a0fb7",
       "stormwake_core.js": "b0193108053c9ddd067dc100bb9d820292e970ad2c316512b8456e359820b405",
       "quartermaster_core.js": "9a5f85005f83b820c5bcbfc9afb29475bc65e62ba84e9e8ac2f59edc20a9bebb",
       "quartermaster_fonts.js": "69b2f7fbcf0d29731cf6feea6d3f7b57d7633fafc29703123a7213ea861c9df5",
       "quartermaster_pdf.js": "7e1c51fa7d7a4ae4fcd55a2330b15ff87c6b4ec0c9db548ff2b6a72658a453a1",
-      "quartermaster.js": "ff0380ebf4358621dee56da0b02d913f044b85e3dcb2cb145aa6803a064626d2",
+      "quartermaster.js": "793b11a2413e770c9295b6c8a63647589456c552e7b908ab8529e3b7cd702ac1",
       "quartermaster.css": "7873d13ead95debc796a0e51d8f6eaf529488ff66da21242a8bf1135c4732c8b",
       "carve_fonts.js": "8eff084fd386b9fe63cac51924de2cef24f3af3bfeee98572c2929a7adb8fcc4",
       "carve_core.js": "428acd25f8208c66a9681e744a57665d1d0db2abf11a34704b94591c69be61f3",
@@ -594,7 +594,7 @@
       "carvewright_core.js": "6bdbc40817183e32187e1702035ea11ba7183081b41a04a2a0736db5f9c29fe6",
       "carvewright_store.js": "3ab158e100e16b01a5a3a3fb139d961b580bee31ca1cc4f5ff4024f7b2b18df1",
       "carvewright_studio.js": "0acf6f2babd2b1395a8dd27fb0758156a97c3810d02bf03c262c9ebc48622972",
-      "carvewright_app.js": "60ea4c61d8ed93bc0eeb9d59c302ea809a02680ed766c1adb914f74c3b263544",
+      "carvewright_app.js": "11ee85644caa4acd951ce58d48d27db2364d51aade6330ca643220b28830ebab",
       "carvewright_fleet.js": "29c96da62a7af141fd77802dcf99e27bc889fee3354411b7fffd0869f8bf78d6",
       "carvewright.css": "ab0cb19fcf04e002cf4b3d238e306aec4d131c9d606acc3b6def9e724e11e248",
       "carvewright.html": "f40aa305eddd5088dd14a776f2cd909e3bdd80dd3e614baa89044a2fb098d353",
@@ -608,7 +608,7 @@
       "ike_shop_core.js": "a5de2cd141c0e53694271bbe38ad7e1127ac9d0b56fa4faca001767530eb4269",
       "ike_shop_store.js": "c22f1fb8d15c738a5e57b604912bf2896d4ddd7ef5de08823d98adda743771ec",
       "ike_shop_delivery.js": "ea33278ddd6c96ddedfaaa8693c8485d44a6d90845d391c68bdce00d0ad03b4a",
-      "ike_shop.js": "80220b8e804397fcbc7197b412cef365f9ec433e3271605e2a9f3fa9396f3752",
+      "ike_shop.js": "879d46b47fb05dab6e9c5ebbd77f41675298183090b1b31116f392ede1ff2ca5",
       "ike_shop.css": "62304eb2154e82c45909d5c1e7ec688391f3a2e85bea460400eb26ecca905019",
       "boardcraft_photo.js": "568a5db01ba955522e748ca9b25b11c9efc4d9975fc0879c6f0b9058f319d449",
       "fleetguard_admiral_core.js": "866cb9f0bd9b972cf2ec3e34088a8b6ffabf929809a887da4badcda7b0992acf",
@@ -637,9 +637,9 @@
       "carvewright_capture.css": "91f3d8ea1adc0508f2345c65d60bc58dce619e6e69ee5300579fa7e948e7a8d9",
       "carvewright_capture_core.js": "69287a14b19bfb4a9b5cbe5e8cc261632897429cb78557a183916bd7d637891c",
       "carvewright_capture_artwork.js": "e4e826bd09bd8138fafce52fa2638b185c14df87bf43ff5d7d33e5a6edc9920b",
-      "carvewright_capture.js": "2d73f5f42f7f43411ac53cf86469137f38ada60213d0fe6524fa40b180c39aae",
+      "carvewright_capture.js": "3cfadae851492e6efd87c899f52240b91e1dd82e05ee38550688dbd8c2a3d8d1",
       "fleet_boundary_repair.js": "a631fd0129c95d91b8cfb0a701acff8fc33991bd3dddf199909b1a4795aaef3e",
-      "service_address.js": "ca2a1a60a7b29c53d3666461c2e8e9eece5120e5e945b01362b15f9644df2860",
+      "service_address.js": "3debc50fadbcdba89531d39481820c266b62326f44264e65df1cedc7ccb81b29",
       "service_address_fleet.js": "d31da02362f3bb60a61589f0a5bbb22ea976ffb853434d52db75eb5d4dd2b585",
       "fleet_help.js": "3b083e8230c10bb5fa52760c414fa3baf9e0a6c1a1b0b50921af05c75c8c8a2d",
       "fleet_help.css": "c6fae5da4d413120a681aea48ebcb004e0a84dfcafa1c1438b778c8aa8247694"
@@ -1077,7 +1077,7 @@
     "project_data_mutation": false,
     "field_failure_proof": "8.8.20.13 held on styles.css because packaged DEPLOYMENT_MANIFEST runtime hash did not match packaged styles.css bytes"
   },
-  "release": "Crestline",
+  "release": "Pennant Park",
   "clearbearing_upgrade": {
     "build": "8.8.20.22",
     "baseline": "8.8.20.14 HashLock",
@@ -1270,19 +1270,19 @@
   },
   "lazy_program_assets": {
     "lantern-run.ship.json": {
-      "sha256": "e6056fd9aeb2b6933de5052eadc0151f343b7e1c0441203d6f6931148d391322",
+      "sha256": "4f8add355a2eee41badb12234ff3afa205934646e42f1fd02316f1d2b3cbe53a",
       "load": "after existing verified Admiral entry",
-      "bytes": 82762
+      "bytes": 85819
     },
     "stormwake_player.html": {
-      "sha256": "a7b35dec4de61eed5f9a90e3dbd817c0724ae85827b5fcf5cc125326cb81dc9c",
+      "sha256": "c2cce8ce01883c2a22106b360e3a320f23757cd02b66ba67b301393b4caea23c",
       "load": "after existing verified Admiral entry",
-      "bytes": 5008483
+      "bytes": 5015096
     },
     "fleet-arcade.ship.json": {
-      "sha256": "bdf859d42bba0f06ef7591064b61f89a9a0d2c2c083d327714f298069f1aed77",
+      "sha256": "0804a58e3538b0e8fc5370cf3dbf732ae4f7bbad0514754a18084d80a348f729",
       "load": "after existing verified Admiral entry",
-      "bytes": 812424
+      "bytes": 1411613
     }
   },
   "blacktide_upgrade": {

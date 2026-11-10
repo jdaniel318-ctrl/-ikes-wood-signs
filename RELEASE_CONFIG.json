@@ -1,15 +1,15 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.111",
-  "name": "Crestline",
-  "seal": "crestline-8820111",
-  "base": "8.8.20.110",
-  "base_sha256": "b37638d9f5372ff68398bf1b48eaa88aa4806aaf9a138f450b303627959028ca",
-  "base_files": 892,
-  "prepared_at": "2026-11-08T01:27:16.939934+00:00",
+  "build": "8.8.20.112",
+  "name": "Pennant Park",
+  "seal": "pennant-park-8820112",
+  "base": "8.8.20.111",
+  "base_sha256": "118d1489cb034c110346fc12d3f60fa2dfb2f1fb4b5ac5c73ee3a1e18273bca4",
+  "base_files": 981,
+  "prepared_at": "2026-11-10T06:00:00Z",
   "app_component_revision": "8.8.20.99",
   "owner_helper_revision": "8.8.20.68",
-  "feature_notes": "Vessel owners, appointed Captains and Admiral My Fleet open at a clean heading. The Engine vessel picker and workstation announce their title on entry and return focus to the selected vessel when going back.",
+  "feature_notes": "Harbor Sluggers joins Fleet Arcade. The arcade, Lantern Run, Stormwake and Wonderwake receive play, drawing and navigation improvements. The Engine, Captain and owner workspaces receive focused navigation and data-entry repairs, with updates to customer form handling and selected shop tools.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -37,6 +37,8 @@
       "automatic_execution_by_upload": false
     }
   },
-  "install_step": "Reopen an Owner Workspace in Safari, check the full logo and title on arrival, then scroll. Repeat on a second vessel you have access to.",
-  "evidence_file": "CRESTLINE_EVIDENCE.json"
+  "install_step": "Confirm the Engine release label, open the affected vessel and run its acceptance steps.",
+  "evidence_file": "PENNANT_PARK_EVIDENCE.json",
+  "base_git_tree": "ded573e2186c8bfd6776a1ca88d48045faac65b0",
+  "base_git_commit": "224c3b097a04b6091a7be456595a10b522b35a73"
 }

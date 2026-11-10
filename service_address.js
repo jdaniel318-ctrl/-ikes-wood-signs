@@ -120,7 +120,7 @@
     input.setAttribute('aria-expanded','false'); input.setAttribute('aria-controls',list.id);
     input.setAttribute('aria-describedby',[input.getAttribute('aria-describedby'),hint.id].filter(Boolean).join(' '));
     let generation=0, timer, active=-1, choices=[];
-    let press=null;
+    let press=null, dismissedValue=null;
     let selected=matchesAddress(input.value,options.point) ? options.point : null;
     const guidance='Choose a Richmond or Williamsburg area address, or enter it manually.';
     function status() {hint.textContent=selected ? 'Matched to an address on the map.' : guidance;}
@@ -139,7 +139,15 @@
       if (selected===choice) options.onMatch?.(choice);
       status();
     }
-    function schedule() {
+    function highlight(index) {
+      active=index;
+      Array.from(list.children).forEach((el,i)=>el.setAttribute('aria-selected',String(i===active)));
+      const option=list.children[active];
+      input.setAttribute('aria-activedescendant',option.id);
+      option.scrollIntoView({block:'nearest'});
+    }
+    function schedule(highlightFirst=false) {
+      dismissedValue=null;
       close(); status();
       if (selected || !parts(input.value)) return;
       const ticket=generation, value=input.value;
@@ -197,6 +205,7 @@
             list.append(opt);
           });
           list.hidden=!rows.length; input.setAttribute('aria-expanded',String(!!rows.length));
+          if (highlightFirst===true && rows.length) highlight(0);
           hint.textContent=rows.length ? 'Choose a matching address.' : 'No local map match. You can enter the full address manually.';
         } catch {
           if (current()) hint.textContent='Address lookup is unavailable. You can enter the full address manually.';
@@ -212,15 +221,23 @@
     input.addEventListener('focus',schedule);
     input.addEventListener('blur',()=>{if (!press) {close();status();}});
     input.addEventListener('keydown',e=>{
-      if (e.key==='Escape') {close();status();return;}
+      if (e.isComposing) return;
+      if (e.key==='Escape') {
+        if (!list.hidden) {
+          e.preventDefault();
+          e.stopPropagation();
+          dismissedValue=input.value;
+        }
+        close();status();return;
+      }
+      if (e.key==='ArrowDown' && dismissedValue!==null && dismissedValue===input.value) {
+        e.preventDefault();schedule(true);return;
+      }
       if (!choices.length) return;
       if (e.key==='Enter' && active>=0) {e.preventDefault();choose(active);return;}
       if (!['ArrowDown','ArrowUp'].includes(e.key)) return;
       e.preventDefault();
-      active=e.key==='ArrowDown' ? (active+1)%choices.length : (active<=0 ? choices.length-1 : active-1);
-      Array.from(list.children).forEach((el,i)=>el.setAttribute('aria-selected',String(i===active)));
-      const option=list.children[active];
-      input.setAttribute('aria-activedescendant',option.id); option.scrollIntoView({block:'nearest'});
+      highlight(e.key==='ArrowDown' ? (active+1)%choices.length : (active<=0 ? choices.length-1 : active-1));
     });
     status();
   }

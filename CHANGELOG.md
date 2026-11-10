@@ -1,3 +1,15 @@
+<!-- BLACKFLAG_CURRENT_RELEASE_START -->
+# Black Flag Pennant Park 8.8.20.112
+
+Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
+Baseline: 8.8.20.111. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
+Harbor Sluggers joins Fleet Arcade. The arcade, Lantern Run, Stormwake and Wonderwake receive play, drawing and navigation improvements. The Engine, Captain and owner workspaces receive focused navigation and data-entry repairs, with updates to customer form handling and selected shop tools.
+Preparation does not deploy frontend or backend changes. See PATCH_CONTRACT.json for separately managed backend prerequisites.
+<!-- BLACKFLAG_CURRENT_RELEASE_END -->
+
+## Wonderwake program notes
+
 # 0.11.0 · Lantern Harbor
 
 Added the Daniel School of Excellence, two original illustrated harbor settings, six original station paintings, a six-subject K–12 goal map and 24 playable banded lessons. Six interactive workbenches use counting and models, spelling, editing, science experiments, art and music. Individual explorers keep checked activity checkpoints and subject paths in their existing local profile and progress copy. Existing games, pictures and learner IDs carry forward.

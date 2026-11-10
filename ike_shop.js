@@ -36,7 +36,23 @@
       let error='';
       if(s.step===0&&!s.request.photos.length)error='Add a photo of your board before continuing.';
       if(s.step===1){const layout=g.CarvewrightCore.layout(s.request.design,fonts());if(!layout.ok||layout.blank)error='Add your words or artwork before continuing.';}
-      if(s.step===2){const check=completeCheck(s);if(!check.ok)error=check.errors.join(' ');}
+      if(s.step===2){
+        const check=completeCheck(s);
+        if(!check.ok){
+          error=check.errors.join(' ');
+          const fields={
+            'Enter the customer name (up to 160 characters).':'ishName',
+            'Enter a valid customer email address.':'ishEmail',
+            'Enter a valid contact phone number.':'ishPhone',
+            'Enter an email address or phone number for Ike to reply.':'ishEmail'
+          };
+          const first=check.errors.find(message=>fields[message]);
+          if(first&&g.BlackFlagInput?.showFieldError){
+            const alternative=first==='Enter an email address or phone number for Ike to reply.'?node(s,'ishPhone'):null;
+            g.BlackFlagInput.showFieldError(node(s,fields[first]),first,alternative);
+          }
+        }
+      }
       if(error){status(s,error,'error');return;}
     }
     s.step=Math.max(0,Math.min(s.bundle?4:3,step));controls(s);
@@ -190,8 +206,39 @@
     catch(error){s.editing=false;controls(s);throw error;}
   }
   async function addPhotos(s,files,valid){
-    if(locked(s)||s.conflict)return;if(s.request.photos.length+files.length>3)throw Error('Keep at most three reference photographs. Remove a photograph before adding another.');
-    const added=[];for(const file of files){if(file.size>10*1024*1024)throw Error('Each original photograph must be 10 MiB or smaller.');const photo=await core().normalizePhoto(file);valid();added.push(photo);}valid();s.request.photos.push(...added);if(!s.request.board&&added.length)s.request.board=g.BoardcraftPhoto.createBoard(s.request.design,added[0]);invalidate(s);valid.acceptContentChange();status(s,'Your photo is ready. Open the sign editor to add your words and place the design on your board.');
+    if(locked(s)||s.conflict||!files.length)return;
+    if(files.length>3)throw Error('Choose up to three photographs at a time.');
+    const known=new Set(s.request.photos.map(photo=>photo.originalSha256).filter(Boolean));
+    const added=[];
+    let duplicates=0;
+    for(const file of files){
+      let photo;
+      try{
+        if(file.size>10*1024*1024)throw Error('Each original photograph must be 10 MiB or smaller.');
+        photo=await core().normalizePhoto(file);
+      }catch(error){
+        valid();
+        throw Error((file.name||'Selected photo')+' — '+(error.message||'Choose another photograph.'));
+      }
+      valid();
+      if(known.has(photo.originalSha256)){
+        duplicates++;
+        continue;
+      }
+      known.add(photo.originalSha256);
+      added.push(photo);
+    }
+    if(!added.length){
+      status(s,'Already added. Your existing board and references are ready to use.');
+      return;
+    }
+    if(s.request.photos.length+added.length>3)throw Error('Keep up to three different photographs. Choose fewer pictures or remove an existing reference.');
+    const board=s.request.board||g.BoardcraftPhoto.createBoard(s.request.design,added[0]);
+    s.request.photos.push(...added);
+    s.request.board=board;
+    invalidate(s);
+    valid.acceptContentChange();
+    status(s,(added.length===1?'One photo added.':added.length+' photos added.')+(duplicates?' Repeated pictures were skipped.':'')+' Open the sign editor to place your words on your board.');
   }
   async function download(s,valid){
     await recheck(s,valid);valid();revoke(s);const url=URL.createObjectURL(new Blob([s.bundle.bytes],{type:'application/zip'}));s.urls.push(url);const link=document.createElement('a');link.href=url;link.download=s.bundle.name;link.rel='noopener';link.hidden=true;

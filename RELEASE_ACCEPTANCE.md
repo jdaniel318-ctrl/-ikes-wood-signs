@@ -1,3 +1,9 @@
+# Pennant Park 8.8.20.112 acceptance
+
+The current upload guide is UPLOAD_THIS_ONE_BUILD.md. The offline verification summary is PENNANT_PARK_EVIDENCE.json. Physical iPad/Safari and controller acceptance remains pending. No hosted accounts or database changes were exercised.
+
+## Historical test releases
+
 # Harborhold 8.8.20.49 TEST — device save repair
 
 Upload package: **DarkSky882049-Harborhold-Upload45-TEST.zip** — **45 changed/new files** over complete Homeward 8.8.20.48. Retain all other files.

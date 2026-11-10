@@ -1,3 +1,15 @@
+<!-- BLACKFLAG_CURRENT_RELEASE_START -->
+# Black Flag Pennant Park 8.8.20.112
+
+Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
+Baseline: 8.8.20.111. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
+Harbor Sluggers joins Fleet Arcade. The arcade, Lantern Run, Stormwake and Wonderwake receive play, drawing and navigation improvements. The Engine, Captain and owner workspaces receive focused navigation and data-entry repairs, with updates to customer form handling and selected shop tools.
+Preparation does not deploy frontend or backend changes. See PATCH_CONTRACT.json for separately managed backend prerequisites.
+<!-- BLACKFLAG_CURRENT_RELEASE_END -->
+
+## Wonderwake program notes
+
 # Wonderwake 15 · Lantern Harbor 0.11.0
 
 The Daniel School of Excellence is an original learning world for families. Choose or add an explorer, enter Lantern Harbor and pick a grade band or subject. Older learners work in the tide room. The lesson shelf, explorer picker and school shortcuts use original station illustrations. Each of six subjects has a different hands-on workbench and a three-challenge lesson in every band. Instructions and hints can be read aloud where the browser supports speech.

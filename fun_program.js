@@ -2,7 +2,7 @@
  * Only validated fictional game fields enter the dedicated device save.
  * The opaque player has no storage access. Authority and business stores are unchanged. */
 (()=>{'use strict';
-const Legacy=window.BlackFlagFUN,SW=window.BlackFlagStormwake,G=SW||Legacy,STORMWAKE_SHA='a7b35dec4de61eed5f9a90e3dbd817c0724ae85827b5fcf5cc125326cb81dc9c';let cachedStormwake='';const playerHtml=String(window.__funVerifiedPlayerHtml||'');delete window.__funVerifiedPlayerHtml;
+const Legacy=window.BlackFlagFUN,SW=window.BlackFlagStormwake,G=SW||Legacy,STORMWAKE_SHA='c2cce8ce01883c2a22106b360e3a320f23757cd02b66ba67b301393b4caea23c';let cachedStormwake='';const playerHtml=String(window.__funVerifiedPlayerHtml||'');delete window.__funVerifiedPlayerHtml;
 const $=id=>document.getElementById(id),memo=new Map(),fileCopies=new Map(),deviceCopies=new Map();
 const DEVICE_PREFIX='blackflag.stormwake.voyage.v1:';let voyageKey='',voyageScope=null;let dialog=null,frame=null,actor='',startedAt=0,channel='',epoch=0,pending=false,op=false,priorFocus=null,timer=0,observer=null,legacyMode=false,importPending=null;
 const text=(id,v)=>{if($(id))$(id).textContent=v;};
@@ -136,8 +136,8 @@ async function checkDeviceChange(reopening=false){
 }
 try{deviceNotice=new BroadcastChannel('blackflag-stormwake-save-events-v1');deviceNotice.onmessage=event=>{if(event.data?.type==='voyage-changed')checkDeviceChange();};}catch(_){}
 function attachPlayer(html,turn){
- frame?.remove();channel=crypto.randomUUID();frame=document.createElement('iframe');frame.id='funFrame';frame.title=legacyMode?'FUN original adventure':'Black Flag Stormwake — The Broken Passage';frame.setAttribute('sandbox','allow-scripts');frame.setAttribute('allow',"camera 'none'; microphone 'none'; geolocation 'none'; payment 'none'");frame.referrerPolicy='no-referrer';
- const thisFrame=frame;frame.addEventListener('load',()=>{if(turn!==epoch||frame!==thisFrame||!localValid())return;thisFrame.contentWindow.postMessage({channel,type:'start',state:legacyMode&&SW?G.validate(memo.get(voyageKey)).legacy:G.validate(memo.get(voyageKey))},'*');});frame.srcdoc=html;dialog.insertBefore(frame,$('funImport'));
+ frame?.remove();channel=crypto.randomUUID();frame=document.createElement('iframe');frame.id='funFrame';frame.title=legacyMode?'FUN original adventure':'Black Flag Stormwake — The Broken Passage';frame.setAttribute('sandbox','allow-scripts');frame.setAttribute('allow',(legacyMode?'':'gamepad *; ')+"camera 'none'; microphone 'none'; geolocation 'none'; payment 'none'");frame.referrerPolicy='no-referrer';
+ const thisFrame=frame;frame.addEventListener('load',()=>{if(turn!==epoch||frame!==thisFrame||!localValid())return;if(!legacyMode&&(document.activeElement===priorFocus||document.activeElement===$('funExit')||document.activeElement===document.body))thisFrame.focus({preventScroll:true});thisFrame.contentWindow.postMessage({channel,type:'start',state:legacyMode&&SW?G.validate(memo.get(voyageKey)).legacy:G.validate(memo.get(voyageKey))},'*');});frame.srcdoc=html;dialog.insertBefore(frame,$('funImport'));
 }
 async function applyVoyage(next){
  writeGeneration++;stopDeviceWork();const c=contextNow();importGuard=c;
@@ -166,7 +166,7 @@ function showSaveState(changed=false){
 }
 function mount(){if(dialog?.isConnected)return;dialog=null;dialog=document.createElement('section');dialog.id='funProgram';dialog.hidden=true;dialog.setAttribute('role','dialog');dialog.setAttribute('aria-modal','true');dialog.setAttribute('aria-label','Black Flag Stormwake — separate Admiral program');dialog.innerHTML='<header><div class="funHeading"><strong>BLACK FLAG · STORMWAKE</strong><span id="funSaveState" data-state="held">VERIFYING ACCESS</span></div><div><button type="button" id="funSaveFile" disabled>SAVE GAME FILE</button><button type="button" id="funLoadFile" disabled>LOAD GAME FILE</button><button type="button" id="funExit">← ADMIRAL PROGRAMS</button></div></header><p id="funProgramStatus" role="status" aria-live="polite"></p><div id="funProgramHold"><h2 id="funProgramHoldTitle">Preparing the voyage</h2><p id="funProgramHoldText"></p></div><input id="funImport" type="file" accept=".json,application/json" aria-label="Choose a FUN game-save file">';$('admiralDeck')?.appendChild(dialog);$('funExit').onclick=close;$('funSaveFile').onclick=exportFile;$('funLoadFile').onclick=()=>{if(!localValid()){lock('Admiral access needs rechecking. Sign back in with the same account to continue.');return;}$('funImport').click();};$('funImport').onchange=e=>importFile(e.target.files?.[0]);}
 function removeImport(){importPending=null;$('funImportConfirm')?.remove();}
-async function loadStormwake(turn){if(cachedStormwake)return cachedStormwake;const abort=new AbortController(),stop=setTimeout(()=>abort.abort(),45000);try{const response=await fetch('stormwake_player.html?harborhold=882049',{cache:'no-store',signal:abort.signal,credentials:'omit'});if(!response.ok)throw Error('Stormwake player is not deployed yet.');const bytes=await response.arrayBuffer();if(bytes.byteLength>8388608)throw Error('Unexpected game package size.');const digest=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),x=>x.toString(16).padStart(2,'0')).join('');if(turn!==epoch)throw Error('Game entry cancelled.');if(digest!==STORMWAKE_SHA)throw Error('Stormwake package does not match this release. Re-upload the complete update; do not clear business data.');cachedStormwake=new TextDecoder().decode(bytes);return cachedStormwake;}finally{clearTimeout(stop);}}
+async function loadStormwake(turn){if(cachedStormwake)return cachedStormwake;const abort=new AbortController(),stop=setTimeout(()=>abort.abort(),45000);try{const response=await fetch('stormwake_player.html?v='+STORMWAKE_SHA,{cache:'no-store',signal:abort.signal,credentials:'omit'});if(!response.ok)throw Error('Stormwake player is not deployed yet.');const bytes=await response.arrayBuffer();if(bytes.byteLength>8388608)throw Error('Unexpected game package size.');const digest=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),x=>x.toString(16).padStart(2,'0')).join('');if(turn!==epoch)throw Error('Game entry cancelled.');if(digest!==STORMWAKE_SHA)throw Error('Stormwake package does not match this release. Re-upload the complete update; do not clear business data.');cachedStormwake=new TextDecoder().decode(bytes);return cachedStormwake;}finally{clearTimeout(stop);}}
 function lock(reason){removeImport();epoch++;stopDeviceWork();pending=false;op=false;frame?.remove();frame=null;channel='';clearInterval(timer);timer=0;observer?.disconnect();observer=null;controls(false);if(dialog&&!dialog.hidden){$('funProgramHold').hidden=false;const copy=deviceCopies.get(voyageKey),saved=!!copy?.data&&!copy.blocked&&memo.has(voyageKey)&&copy.data===G.serialize(memo.get(voyageKey));text('funProgramHoldTitle',saved?'Your voyage is waiting':'The voyage is paused');text('funProgramHoldText',reason+(saved?' Your mission is saved on this device. Sign back in with the same account, then open Stormwake to resume at your safe dock.':' Your current run is held in this page. '+(memo.has(voyageKey)?recoveryText():'')));if($('funSaveState')){$('funSaveState').dataset.state='held';text('funSaveState',saved?'SAVED · SIGN IN TO RESUME':'ACCESS HELD');}text('funProgramStatus',saved?'Your voyage is saved. Return through Admiral access to continue.':'Re-enter through Admiral access to continue.');}}
 function close(){removeImport();epoch++;stopDeviceWork();pending=false;op=false;frame?.remove();frame=null;channel='';clearInterval(timer);timer=0;observer?.disconnect();observer=null,legacyMode=false,importPending=null;if(dialog)dialog.hidden=true;controls(false);try{priorFocus?.focus({preventScroll:true});}catch(_){}}
 async function verified(turn,visible=deckVisible){if(!visible()||!window.DarkSkyAdmiralSession?.status()?.reusable)throw Error('Enter the Admiral workspace with its existing PIN and account verification first. FUN does not grant access.');const c=client(),before=c.readSession();if(!before?.user?.id)throw Error('The Admiral account is not available.');const stamp=window.DarkSkyAdmiralSession.status().startedAt,context=scopeFor(before.user.id);const ok=await c.verifyAdmiralAuthority();const after=c.readSession();if(turn!==epoch)throw Error('Program entry cancelled.');if(!ok||!visible()||!window.DarkSkyAdmiralSession.status().reusable||after?.user?.id!==before.user.id||window.DarkSkyAdmiralSession.status().startedAt!==stamp||scopeFor(after?.user?.id).key!==context.key)throw Error('The Admiral account or authority could not be verified. No game was opened.');return {id:after.user.id,stamp,context};}
@@ -186,8 +186,8 @@ document.addEventListener('click',e=>{if(e.target instanceof Element&&e.target.c
 // Both arcade players use the verified Admiral entrance and isolated frames.
 const LANTERN_LEVEL_COUNT = 36;
 const arcadeEditions = {
-  lantern: {name:'Lantern Run', file:'lantern-run.ship.json', id:'lantern-run', edition:6, levels:LANTERN_LEVEL_COUNT, limit:250000, digest:'e6056fd9aeb2b6933de5052eadc0151f343b7e1c0441203d6f6931148d391322'},
-  collection: {name:'Fleet Arcade', file:'fleet-arcade.ship.json', id:'six-bells', edition:2, levels:18, limit:1800000, digest:'bdf859d42bba0f06ef7591064b61f89a9a0d2c2c083d327714f298069f1aed77'}
+  lantern: {name:'Lantern Run', file:'lantern-run.ship.json', id:'lantern-run', edition:7, levels:LANTERN_LEVEL_COUNT, limit:250000, digest:'4f8add355a2eee41badb12234ff3afa205934646e42f1fd02316f1d2b3cbe53a'},
+  collection: {name:'Fleet Arcade', file:'fleet-arcade.ship.json', id:'six-bells', edition:3, levels:21, limit:1800000, digest:'0804a58e3538b0e8fc5370cf3dbf732ae4f7bbad0514754a18084d80a348f729'}
 };
 const arcadeSources = new Map();
 async function arcadePlayerSource(edition,signal) {
@@ -204,7 +204,7 @@ async function arcadePlayerSource(edition,signal) {
   arcadeSources.set(edition.id,pack.player);
   return pack.player;
 }
-const arcadeGames = new Set(['riptail','skullwater','pipeworks','deepbell','chalkwing','dockmaster']);
+const arcadeGames = new Set(['sluggers','riptail','skullwater','pipeworks','deepbell','chalkwing','dockmaster']);
 function arcadeSaveKey(run,id,level){
   return 'blackflag.six-bells.v1:'+encodeURIComponent(JSON.stringify(run.who.context.scope))+':'+id+'.'+level;
 }
@@ -333,11 +333,12 @@ async function openLantern(button,kind=button.hasAttribute('data-fleet-collectio
     player.title = edition.name;
     player.setAttribute('sandbox','allow-scripts');
     const restrictions = "camera 'none'; microphone 'none'; geolocation 'none'; payment 'none'";
-    player.setAttribute('allow', kind === 'collection' ? 'fullscreen *; ' + restrictions : restrictions);
+    player.setAttribute('allow', (kind === 'collection' ? 'fullscreen *; ' : '') + 'gamepad *; ' + restrictions);
     if (kind === 'collection') player.setAttribute('allowfullscreen', '');
     player.referrerPolicy = 'no-referrer';
     player.onload = () => {
       if (!lanternAccess(run)) { leaveLantern(run); return; }
+      if(document.activeElement===panel.querySelector('button')||document.activeElement===document.body) player.focus({preventScroll:true});
       const start = kind==='collection' ? {records:arcadeRecords(run)} : {best:lanternBest(run),cleared:run.cleared};
       player.contentWindow.postMessage({type:'init',channel:run.channel,...start,canSave:run.canSave},'*');
     };

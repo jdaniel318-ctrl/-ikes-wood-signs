@@ -1,18 +1,21 @@
 {
   "schema": "blackflag-patch-contract-v1",
-  "target_build": "8.8.20.111",
-  "target_seal": "crestline-8820111",
+  "target_build": "8.8.20.112",
+  "target_seal": "pennant-park-8820112",
   "supported_bases": [
     {
-      "build": "8.8.20.110",
-      "source_sha256": "b37638d9f5372ff68398bf1b48eaa88aa4806aaf9a138f450b303627959028ca",
-      "file_count": 892
+      "build": "8.8.20.111",
+      "source_sha256": "118d1489cb034c110346fc12d3f60fa2dfb2f1fb4b5ac5c73ee3a1e18273bca4",
+      "file_count": 981,
+      "source_format": "git-tree-regular-v1",
+      "git_tree_sha1": "ded573e2186c8bfd6776a1ca88d48045faac65b0",
+      "git_commit": "224c3b097a04b6091a7be456595a10b522b35a73"
     }
   ],
   "requires_deletions": false,
   "max_upload_files": 85,
   "database_actions": "none",
-  "rule": "Upload every changed/new root file over complete 8.8.20.110. Keep everything else. This software archive executes no database commands.",
+  "rule": "Upload every changed/new root file over complete 8.8.20.111. Keep everything else. This software archive executes no database commands.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",

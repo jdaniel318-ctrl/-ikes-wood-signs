@@ -78,6 +78,43 @@
     doc.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.isComposing&&e.target?.form)cleanDirty(doc,e.target.form);},true);
     doc.addEventListener('submit',e=>cleanDirty(doc,e.target),true);
   }
+  const fieldErrors = new WeakMap();
+  function clearFieldErrors(scope) {
+    scope?.querySelectorAll('[data-bf-field-error]').forEach(field => fieldErrors.get(field)?.());
+  }
+  function showFieldError(field, message, alternative = null) {
+    if (!field) { if (typeof window !== 'undefined') window.alert(message); return; }
+    fieldErrors.get(field)?.();
+    const note = field.ownerDocument.createElement('span');
+    note.id = field.id + '-field-error';
+    note.className = 'bf-contact-field-error';
+    // Inside an implicit label, keep the message out of the field's name.
+    // The explicit description can reference this text even when aria-hidden.
+    if (field.closest('label')) note.setAttribute('aria-hidden','true');
+    note.textContent = message;
+    field.after(note);
+    const previousInvalid = field.getAttribute('aria-invalid');
+    const descriptions = (field.getAttribute('aria-describedby') || '').split(/\s+/).filter(Boolean);
+    field.setAttribute('aria-describedby', [...new Set([...descriptions,note.id])].join(' '));
+    field.setAttribute('aria-invalid','true');
+    field.dataset.bfFieldError = '';
+    function clear() {
+      const ids = (field.getAttribute('aria-describedby') || '').split(/\s+/).filter(id => id && id !== note.id);
+      if (ids.length) field.setAttribute('aria-describedby',ids.join(' '));
+      else field.removeAttribute('aria-describedby');
+      if (previousInvalid === null) field.removeAttribute('aria-invalid');
+      else field.setAttribute('aria-invalid',previousInvalid);
+      delete field.dataset.bfFieldError;
+      note.remove();
+      field.removeEventListener('input',clear);
+      alternative?.removeEventListener('input',clear);
+      fieldErrors.delete(field);
+    }
+    fieldErrors.set(field,clear);
+    field.addEventListener('input',clear);
+    alternative?.addEventListener('input',clear);
+    field.focus();
+  }
   function reportPayload(project,work,issues,summary) {
     const p={p_project_id:boundary(project),p_current_work:boundary(work),p_unresolved_issues:Number(issues),p_issue_summary:boundary(summary)};
     if(!p.p_project_id || !Number.isInteger(p.p_unresolved_issues)||p.p_unresolved_issues<0||p.p_unresolved_issues>100000 || length(p.p_current_work)<3||length(p.p_current_work)>160||length(p.p_issue_summary)>500)
@@ -93,5 +130,5 @@
       typeof row.report_id==='string' && row.report_id.length>0 && (!expectedId||row.report_id===expectedId) &&
       typeof row.reported_at==='string' && Number.isFinite(Date.parse(row.reported_at));
   }
-  return Object.freeze({build:'8.8.20.68',boundary,length,eligible,clean,read,install,reportPayload,reportMatches,isComposing:f=>composing.has(f)});
+  return Object.freeze({build:'8.8.20.68',boundary,length,eligible,clean,read,install,showFieldError,clearFieldErrors,reportPayload,reportMatches,isComposing:f=>composing.has(f)});
 });

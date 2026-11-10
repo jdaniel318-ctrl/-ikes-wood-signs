@@ -3184,6 +3184,92 @@ const admiralVesselLogos = new Map([
   function workDate(index,meta=project(activeId)){const date=anchor(meta),weeks=Math.floor(index/5),weekday=index%5;date.setDate(date.getDate()+weeks*7+weekday);return date;}
   function labelDate(index,weekday=false,meta=project(activeId)){return workDate(index,meta).toLocaleDateString(undefined,weekday?{weekday:'short',month:'short',day:'numeric'}:{month:'short',day:'numeric'});}
   function status(message){if(el('bootstrapScheduleStatus'))el('bootstrapScheduleStatus').textContent=message;}
+  function calendarText(value) {
+    return String(value).replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g,'')
+      .replace(/\\/g,'\\\\').replace(/\r\n|\r|\n/g,'\\n').replace(/;/g,'\\;').replace(/,/g,'\\,');
+  }
+  function foldCalendarLine(line,utf8=new TextEncoder()) {
+    if(utf8.encode(line).length<=75)return line;
+    let folded='',size=0;
+    for(const character of line){
+      const width=utf8.encode(character).length;
+      if(size+width>75){folded+='\r\n ';size=1;}
+      folded+=character;size+=width;
+    }
+    return folded;
+  }
+  async function makeLotCalendar(meta,record){
+    const definitions=seedTasks(),titles=new Set(definitions.map(t=>t.title)),trades=new Set(definitions.map(t=>t.trade));
+    const shifts=new Map((record.acceleratedDays||[]).map(shift=>[shift.id,shift]));
+    const stamp=new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d{3}Z$/,'Z');
+    const label='Lot '+meta.lot+(meta.unit?' · Unit '+meta.unit:'');
+    const revision=Number.isSafeInteger(record.revision)&&record.revision>=0?record.revision:0;
+    const header=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//ScheduleJoe//Lot calendar//EN','CALSCALE:GREGORIAN','X-WR-CALNAME:'+calendarText('ScheduleJoe · '+label)];
+    // Build every date and public-facing label from this snapshot before awaiting any digests.
+    const tasks=record.tasks.map((task,i)=>{
+      const start=Number(task.start),length=Number(task.duration??1);
+      if(!Number.isInteger(start)||!Number.isInteger(length)||start<0||length<1||start+length>MAX_WEEKS*5)
+        throw Error('A task has dates outside the schedule. Review its start and duration.');
+      // Free-form titles, notes and trades can contain a person's name, company or address.
+      const category=trades.has(task.trade)?task.trade:Object.hasOwn(kindNames,task.type)?kindNames[task.type]:'Work';
+      const title=titles.has(task.title)?task.title:category+' task '+(i+1);
+      const events=[];
+      function add(key,summary,first,last,commitment){
+        const end=new Date(last);end.setDate(end.getDate()+1);
+        const beginDate=isoDate(first),endDate=isoDate(end);
+        if(!/^\d{4}-\d{2}-\d{2}$/.test(beginDate)||!/^\d{4}-\d{2}-\d{2}$/.test(endDate))throw Error('Review the lot’s schedule start date.');
+        events.push({key,summary,start:beginDate.replace(/-/g,''),end:endDate.replace(/-/g,''),commitment});
+      }
+      for(let day=start,segment=0;day<start+length;segment++){
+        const next=Math.min(start+length,day+5-day%5);
+        add('w'+segment,title,workDate(day,meta),workDate(next-1,meta),'');
+        day=next;
+      }
+      for(const id of new Set(task.acceleratedAssignments||[])){
+        const shift=shifts.get(id);
+        if(!shift||!Number.isInteger(shift.week)||shift.week<0||shift.week>=MAX_WEEKS||!['sat','sun'].includes(shift.day))continue;
+        const date=workDate(shift.week*5,meta);
+        date.setDate(date.getDate()+(shift.day==='sun'?6:5));
+        const shiftLabel=shift.shift==='am'?'AM':shift.shift==='pm'?'PM':'Full day';
+        const confirmed=shift.commitment==='confirmed';
+        add('s'+shift.week+shift.day,title+' · '+shiftLabel+' · '+(confirmed?'Confirmed':'Proposed'),date,date,confirmed?'CONFIRMED':'TENTATIVE');
+      }
+      return {identity:JSON.stringify([meta.id,task.id??i]),events};
+    });
+    const encoded=new TextEncoder();
+    const sections=await Promise.all(tasks.map(async task=>{
+      const digest=await crypto.subtle.digest('SHA-256',encoded.encode(task.identity));
+      const uid=Array.from(new Uint8Array(digest).subarray(0,16),v=>v.toString(16).padStart(2,'0')).join('');
+      const lines=[];
+      for(const e of task.events){
+        lines.push('BEGIN:VEVENT','UID:'+uid+'-'+e.key+'@schedulejoe.invalid','DTSTAMP:'+stamp,'SEQUENCE:'+revision,
+          'DTSTART;VALUE=DATE:'+e.start,'DTEND;VALUE=DATE:'+e.end,'SUMMARY:'+calendarText(e.summary),'CLASS:PRIVATE','TRANSP:TRANSPARENT');
+        if(e.commitment)lines.push('STATUS:'+e.commitment);
+        lines.push('END:VEVENT');
+      }
+      return lines;
+    }));
+    return header.concat(...sections,'END:VCALENDAR').map(line=>foldCalendarLine(line,encoded)).join('\r\n')+'\r\n';
+  }
+  async function downloadLotCalendar(){
+    const entry=visit,id=activeId,record=state,meta=project(id),button=el('deskCalendarExport');
+    const inLot=()=>current(entry)&&id===activeId&&record===state&&id===meta.id&&record.projectId===id&&el('bootstrapSchedule').open;
+    if(!id||!record||!inLot()||button.disabled)return;
+    if(!record.tasks.length){status('There are no tasks in this lot to export.');return;}
+    if(!/^\d{4}$/.test(meta.lot)||!/^([A-Z0-9])?$/.test(meta.unit||'')){status('Review the lot and unit before exporting.');return;}
+    button.disabled=true;
+    try{
+      const content=await makeLotCalendar(meta,record);
+      if(!inLot())return;
+      const url=URL.createObjectURL(new Blob([content],{type:'text/calendar;charset=utf-8'}));
+      const link=document.createElement('a');
+      link.href=url;link.download='ScheduleJoe-Lot-'+meta.lot+(meta.unit?'-Unit-'+meta.unit:'')+'.ics';
+      document.body.appendChild(link);
+      try{link.click();status('Calendar prepared for this lot’s '+record.tasks.length+' scheduled task'+(record.tasks.length===1?'':'s')+'.');}
+      finally{link.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);}
+    }catch(error){if(inLot())status(error.message?.startsWith('A task has')||error.message?.startsWith('Review')?error.message:'The calendar could not be prepared. Reopen this schedule and try again.');}
+    finally{button.disabled=false;}
+  }
   function install(){el('bootstrapSchedule')?.remove();document.body.insertAdjacentHTML('beforeend',`<dialog id="bootstrapSchedule" class="bootstrap-schedule bootstrap-build-schedule hidden" role="dialog" aria-modal="true" aria-hidden="true" aria-label="ScheduleJoe construction schedules"><div class="bootstrap-schedule-shell"><header class="bootstrap-schedule-head"><img src="bootstrap_build_horizontal.png" alt="Bootstrap Build"><div><small>BOOTSTRAP BUILD · ADMIRAL PROGRAM</small><h2 id="bootstrapScheduleTitleHeading">ScheduleJoe</h2><p id="bootstrapScheduleSubtitle">Choose a lot and unit to open its independent schedule.</p></div><div class="bootstrap-schedule-head-actions"><button id="bootstrapProjectsHome" class="hidden" type="button">ALL PROJECTS</button><button id="scheduleJoeFleet" type="button">FLEET REGISTRY</button><button id="bootstrapScheduleClose" type="button">CLOSE</button></div></header><section id="bootstrapProjectLanding" class="bootstrap-project-landing">
   <div class="bootstrap-roster-summary"><strong id="rosterTotal">Projects on this device</strong>
     <div class="roster-views" role="group" aria-label="Project list view"><button type="button" id="fieldView" aria-pressed="true">Field view</button><button type="button" id="summaryView" aria-pressed="false">Summary view</button></div>
@@ -3273,6 +3359,7 @@ const admiralVesselLogos = new Map([
   <details id="deskSettings"><summary>Schedule options</summary>
     <div class="bootstrap-schedule-toolbar"><div><strong id="bootstrapScheduleRange"></strong></div><label>Filter by vendor<select id="bootstrapVendorView"></select></label>
       <div><button id="joeLook" type="button">Four-week lookahead</button><button id="joeExtend" type="button">Add 4 weeks</button><button id="bootstrapScheduleReset" type="button">Reset this project</button></div></div>
+    <div class="bootstrap-schedule-toolbar"><div><strong>Lot calendar</strong><p id="deskCalendarHelp">All workweeks and assigned weekend shifts, across vendors. Custom tasks use trade or task-type labels. Contacts, addresses and notes stay out of the file.</p></div><button type="button" id="deskCalendarExport" aria-describedby="deskCalendarHelp">Download lot calendar (.ics)</button></div>
   </details>
   <details id="deskHistory"><summary>Change history</summary><div id="bootstrapVendorActivityPanel" class="bootstrap-vendor-activity"><div id="bootstrapVendorActivity"></div></div></details>
 </section>
@@ -4146,6 +4233,7 @@ const admiralVesselLogos = new Map([
       return;
     }
     const rowButton=target.closest('[data-open-project]');if(rowButton){event.preventDefault();event.stopImmediatePropagation();await openProject(rowButton.dataset.openProject);return;}if(!state)return;
+    if(target.closest('#deskCalendarExport')){event.preventDefault();void downloadLotCalendar();return;}
     if(target.closest('#scheduleJoeRetry')){void persist('');return;}
     const step=target.closest('[data-week-step]');
     if(step){jumpWeek(Math.max(0,Math.min(weekCount()-1,selectedWeek+Number(step.dataset.weekStep))));return;}

@@ -134,3 +134,16 @@ body.ikes-project #cameraVideo, body.ikes-project #photoFrame img {
 body.ikes-project #cameraVideo { background:#17232d; }
 body.ikes-project #photoFrame.has-photo { padding:0; }
 @media(max-width:600px){body.ikes-project #cameraPanel,body.ikes-project #photoFrame {height:clamp(180px,38svh,300px)!important;} }
+
+.bf-contact-field-error{
+  display:block;
+  margin:.3rem 0 .55rem;
+  padding:.35rem .6rem;
+  border-inline-start:3px solid #923c27;
+  border-radius:.2rem;
+  background:#fff1e8;
+  color:#702d20;
+  font:600 .9rem/1.4 system-ui,sans-serif;
+  text-transform:none;
+  letter-spacing:normal;
+}

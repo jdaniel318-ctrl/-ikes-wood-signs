@@ -92,7 +92,48 @@ def verify_release(files:dict[str,bytes])->dict:
 def verify_target(contract:dict,state:dict)->None:
     if contract.get("target_build")!=state["build"] or contract.get("target_seal")!=state["seal"]:
         raise ValueError("Patch target identity mismatch")
+def verified_git_baseline(files, archive_sha, item):
+    """Accept an exact source-vendor archive whose older release inventory predates its Git commits."""
+    if item.get('source_sha256') != archive_sha or item.get('file_count') != len(files):
+        raise ValueError('Git baseline archive hash/count mismatch')
+    # This mode supports regular non-executable files. Other modes produce a different tree ID.
+    tree = {}
+    for name, body in files.items():
+        folders = tree
+        parts = clean_path(name).split('/')
+        for part in parts[:-1]:
+            folders = folders.setdefault(part, {})
+        folders[parts[-1]] = body
+    def oid(kind, body):
+        return hashlib.sha1(kind + b' ' + str(len(body)).encode() + b'\0' + body).digest()
+    def tree_id(directory):
+        items = []
+        for name, child in directory.items():
+            name = name.encode()
+            if isinstance(child, dict):
+                items.append((name + b'/', b'40000 ' + name + b'\0' + tree_id(child)))
+            else:
+                items.append((name, b'100644 ' + name + b'\0' + oid(b'blob', child)))
+        return oid(b'tree', b''.join(value for _, value in sorted(items)))
+    if tree_id(tree).hex() != item.get('git_tree_sha1'):
+        raise ValueError('Git baseline root tree mismatch')
+    m = data(files, 'DEPLOYMENT_MANIFEST.json')
+    if m.get('build') != item.get('build') or m.get('release_seal') != data(files,'RELEASE_SEAL.json').get('seal'):
+        raise ValueError('Git baseline build/seal mismatch')
+    for name, expected in m['runtime_integrity']['files'].items():
+        if name not in files or digest(files[name]) != expected:
+            raise ValueError('Git baseline runtime digest mismatch: '+name)
+    for name, rule in {**m['model_integrity']['files'], **m.get('lazy_program_assets',{})}.items():
+        if (name not in files or digest(files[name]) != rule['sha256']
+            or ('bytes' in rule and len(files[name]) != rule['bytes'])):
+            raise ValueError('Git baseline model or lazy asset mismatch: '+name)
+    return {'build':m['build'], 'seal':m['release_seal'], 'source_files':len(files),
+            'runtime_hashes':len(m['runtime_integrity']['files'])}
+
 def verify_baseline(files:dict[str,bytes],archive_sha:str,supported:list[dict])->dict:
+    for item in supported:
+        if item.get('source_format') == 'git-tree-regular-v1' and item.get('source_sha256') == archive_sha:
+            return verified_git_baseline(files, archive_sha, item)
     state=verify_release(files)
     for item in supported:
         if item.get("source_sha256")==archive_sha and item.get("build")==state["build"] and item.get("file_count")==len(files):
