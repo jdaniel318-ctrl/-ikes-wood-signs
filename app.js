@@ -442,6 +442,7 @@ const engineCodePads = (() => {
   }
   retainLocalProtectedFleetPicture88139('module-seed');
   let activeProjectId = null;
+  let engineReturnVisit = null;
   let engineActiveProjectId = null;
   let marketingActiveGraphicSlot = null;
   const PROJECT_ACTIVITY_KEY='blackFlagProjectActivityV1';
@@ -11501,6 +11502,8 @@ const engineCodePads = (() => {
     }catch(_){}
   }
   function prepareEngineBoundary(){
+    engineReturnVisit = null;
+    if ($('closeBlackFlagEntry')) $('closeBlackFlagEntry').hidden = true;
     invalidateEngineWorkspaceNavigation();
     normalizeEngineHistoryRoute();
     clearProjectPresentation();
@@ -11598,7 +11601,7 @@ const engineCodePads = (() => {
     document.title=name;    if($('flowersDoneBusinessName')) $('flowersDoneBusinessName').textContent=name;
   }
 
-  async function enterProject(id){
+  async function enterProject(id, {fromEntryGate = false} = {}){
     const p=projectById(id);if(!p)return;
     const resolvedShell=projectShellFor(p);
     if(resolvedShell==='generic'){
@@ -11615,7 +11618,13 @@ const engineCodePads = (() => {
     invalidateEngineWorkspaceNavigation();
     logActivity(projectId,'Project opened');engineSessionUnlocked=false;
     clearIntegrityDiagnostic();
-    document.body.classList.remove('boot-locked','engine-mode');$('enginePanel')?.classList.add('hidden');$('blackFlagEntryGate')?.classList.add('hidden');document.body.classList.add('project-mode');
+    if (!fromEntryGate) {
+      document.body.classList.remove('boot-locked');
+      $('blackFlagEntryGate')?.classList.add('hidden');
+    }
+    document.body.classList.remove('engine-mode');
+    $('enginePanel')?.classList.add('hidden');
+    document.body.classList.add('project-mode');
     showCustomerShellForProject(p);
     await applyProjectAssetSlots(p);
     if(resolvedShell==='ikes'){
@@ -11633,6 +11642,7 @@ const engineCodePads = (() => {
     renderCustomerSessionIndicator(p);
     resetCustomerEntryViewport();
     requestAnimationFrame(()=>verifyLayerIsolation('project',p.id));
+    return true;
   }
 
   function normalizeProjectArchitecture(p){
@@ -11748,33 +11758,50 @@ const engineCodePads = (() => {
   }
 
   function requestEngineFromProject(){
-    // 5.0 hard boundary: preserve only the immutable return Project ID, then remove
-    // every project UI/auth context BEFORE the Engine gate is displayed.
-    const returnProjectId=canonicalProjectId(String(activeProjectId||''));
+    const project = companies.find(item => item.id === activeProjectId);
+    const ctx = currentExperienceContext(project || null);
+    const visit = ctx && document.body.classList.contains('project-mode') &&
+      !ctx.clientPreview && ['live','preview','sea_trial'].includes(ctx.mode)
+      ? {projectId: project.id, mode: ctx.mode, deploymentId: ctx.deploymentId, source: ctx.sessionSource}
+      : null;
     lockEngineSession();
-    window.pendingEngineReturnProjectId=returnProjectId||null;
     restoreBlackFlagTheme();
     prepareEngineBoundary();
-
+    engineReturnVisit = visit;
+    if ($('closeBlackFlagEntry')) $('closeBlackFlagEntry').hidden = !visit;
     document.body.classList.remove('engine-mode');
     document.body.classList.add('boot-locked');
     $('enginePanel')?.classList.add('hidden');
-
     if(typeof window.requireEngineEntry==='function') window.requireEngineEntry();
     else $('blackFlagEntryGate')?.classList.remove('hidden');
   }
 
   async function cancelEngineEntryToProject(){
-    const id=canonicalProjectId(String(window.pendingEngineReturnProjectId||''));
-    window.pendingEngineReturnProjectId=null;
-    if(!id){
+    const visit = engineReturnVisit;
+    if (!visit) return false;
+    engineReturnVisit = null;
+    try {
+      const project = companies.find(item => item.id === visit.projectId);
+      if (!project || projectShellFor(project) === 'generic') throw new Error();
+      const deployment = visit.deploymentId
+        ? migrateLegacyDeployment(project).find(item => item.id === visit.deploymentId)
+        : null;
+      if (visit.deploymentId && (!deployment || deployment.state === 'retired')) throw new Error();
+      if (visit.mode === 'sea_trial' && deployment?.state !== 'sea_trial') throw new Error();
+      if (visit.mode === 'live' && (deployment ? deployment.state !== 'deployed' : project.publish?.status !== 'live')) throw new Error();
+
+      const ctx = setCustomerSessionContext(project, visit.mode, deployment, {source:visit.source});
+      if (ctx.deploymentId !== visit.deploymentId) throw new Error();
+      if (!await enterProject(project.id, {fromEntryGate:true})) throw new Error();
+      return true;
+    } catch {
       prepareEngineBoundary();
-      document.body.classList.remove('boot-locked');
-      return;
+      restoreBlackFlagTheme();
+      document.body.classList.add('boot-locked');
+      await window.requireEngineEntry();
+      $('blackFlagEntryError').textContent = 'This project could not be reopened. Enter the Engine to choose a vessel.';
+      return false;
     }
-    // Re-enter through the canonical project route instead of reconstructing a
-    // partial shell. This guarantees SIG returns to SIG, Ike returns to Ike, etc.
-    await enterProject(id);
   }
   window.cancelEngineEntryToProject=cancelEngineEntryToProject;
 
@@ -12207,7 +12234,7 @@ const engineCodePads = (() => {
     if(sub) sub.textContent=pirateModeEnabled
       ? 'Secure Engine access with the themed presentation.'
       : 'Secure project operations and platform control.';
-    if(enter) enter.textContent=isTestAccessActive()?'CONTINUE — TEST ACCESS →':(pirateModeEnabled?'BOARD ENGINE ROOM →':'ENTER ENGINE ROOM →');
+    if(enter) enter.textContent=isTestAccessActive()?'CONTINUE — TEST ACCESS →':(pirateModeEnabled?'Board →':'Enter →');
 
     const engineKicker=document.querySelector('#enginePanel .command-masthead .engine-kicker');
     const engineTitle=document.querySelector('#enginePanel .command-masthead h2');
@@ -12337,7 +12364,6 @@ const engineCodePads = (() => {
 
   async function openEnginePanel(){
     prepareEngineBoundary();
-    window.pendingEngineReturnProjectId=null;
     document.body.classList.remove('boot-locked','project-mode');
     document.body.classList.remove('engine-systems-expanded','engine-dock-open');
     document.body.classList.add('engine-mode');
@@ -18330,7 +18356,6 @@ document.addEventListener('click', (event) => {
     }
 
     if(window.BlackFlagAuth&&!testAccessActive) window.BlackFlagAuth.unlock();
-    window.pendingEngineReturnProjectId=null;
 
     // 5.7.3 atomic Engine crossing. Prepare and hide all project surfaces BEFORE
     // removing the PIN cover. A successful 5615 must result in either Engine Room
@@ -18449,19 +18474,24 @@ document.addEventListener('click', (event) => {
 
     if(unlock) unlock.addEventListener('click',unlockFromEntry);
     const closeEntry=byId('closeBlackFlagEntry');
-    if(closeEntry) closeEntry.addEventListener('click',async()=>{
-      leaveEntry();
-      if(typeof window.cancelEngineEntryToProject==='function'){
-        await window.cancelEngineEntryToProject();
-        return;
+    if(closeEntry) closeEntry.addEventListener('click', async () => {
+      if (closeEntry.hidden || closeEntry.disabled) return;
+      const gate = byId('blackFlagEntryGate');
+      closeEntry.disabled = true;
+      gate.inert = true;
+      engineCodePads.clear(pin);
+      try {
+        if (await window.cancelEngineEntryToProject?.()) {
+          leaveEntry();
+          document.body.classList.remove('boot-locked');
+          window.darkSkyResetCustomerEntryViewport?.();
+        }
+      } finally {
+        closeEntry.hidden = true;
+        closeEntry.disabled = false;
+        gate.inert = false;
+        if (!gate.classList.contains('hidden')) pin?.focus({preventScroll:true});
       }
-      // Fail closed if the canonical return route is unavailable. Never expose the
-      // legacy Ike customer shell as a generic fallback because that crosses fleet boundaries.
-      window.DarkSkyBoundaryBridge?.prepareEngine?.();
-      document.body.classList.remove('engine-mode','project-mode');
-      document.body.classList.add('boot-locked');
-      const engine=byId('enginePanel');if(engine)engine.classList.add('hidden');
-      requireEngineEntry();
     });
     engineCodePads.mount(pin, unlock);
     if(company) company.addEventListener('click',openCompanyApp);

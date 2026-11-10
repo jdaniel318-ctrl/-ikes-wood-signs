@@ -623,7 +623,11 @@ html:has(#lantern-harbor[open]) { overflow:hidden; }
 
   <div id="blackFlagEntryGate" class="black-flag-entry-gate">
     <div class="bf-entry-shell">
-      <header class="watchkey-head"><img src="black_flag_platform_icon.png" alt="Black Flag"><h1>Engine Room</h1></header>
+      <header class="watchkey-head">
+        <img class="hatch-art" src="engine-hatch.webp" alt="">
+        <div class="hatch-brand"><img src="black_flag_platform_icon.png" alt=""><span>Black Flag</span></div>
+        <h1>Engine Room</h1>
+      </header>
       <div class="bf-entry-panel">
         <fieldset id="blackFlagEntryPin" class="engine-code-pad" tabindex="-1">
           <legend>Enter your Engine PIN</legend>
@@ -646,7 +650,7 @@ html:has(#lantern-harbor[open]) { overflow:hidden; }
         </fieldset>
         <p id="blackFlagEntryError" class="bf-entry-error" aria-live="polite"></p><p id="blackFlagLockTimer" class="pin-lock-timer hidden"></p>
         <button type="button" id="blackFlagEntryUnlock" class="bf-entry-primary">Unlock Engine Room</button>
-<button type="button" id="closeBlackFlagEntry" class="bf-entry-secondary bf-close-entry">RETURN TO PROJECT</button>
+<button type="button" id="closeBlackFlagEntry" class="bf-entry-secondary bf-close-entry" hidden>← Back to project</button>
 <div class="engine-entry-mode" role="group" aria-label="Engine appearance">
   <span><strong>ENGINE APPEARANCE</strong><small>Choose how the Engine Room presents itself.</small></span>
   <div class="engine-mode-segment">
@@ -2517,6 +2521,11 @@ html:has(#lantern-harbor[open]) { overflow:hidden; }
         shield.innerHTML='';
       }
       try{document.querySelectorAll('[inert]').forEach(el=>el.removeAttribute('inert'));}catch(_){ }
+      const gate = document.getElementById('blackFlagEntryGate');
+      if (document.activeElement === document.body && document.body.classList.contains('bf-entry-open') &&
+          gate && !gate.classList.contains('hidden')) {
+        document.getElementById('blackFlagEntryPin')?.focus({preventScroll:true});
+      }
     }
     async function autoSafeRecovery(reason){
       renderAutoRecovery(reason);

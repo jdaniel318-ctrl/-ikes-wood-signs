@@ -67,7 +67,9 @@ const AdmiralAccountForm = (() => {
 
     function begin() {
       const saved = savedEmail();
-      if (saved && form.querySelector('#' + prefix + 'Choose')) confirmEmail(saved, true);
+      if (!form.querySelector('#' + prefix + 'Choose')) return;
+      if (saved) confirmEmail(saved, true);
+      else editEmail('');
     }
 
     function forgetEmail() {
@@ -119,7 +121,7 @@ const AdmiralAccountForm = (() => {
       if (remembered) button('Forget my email on this device', false, forgetEmail);
       else button('Edit my sign-in email', false, () => editEmail(address));
       status.textContent = '';
-      form.querySelector('[data-password-label]').focus();
+      form.querySelector('[type=password]').focus();
     }
 
     form.onsubmit = async event => {
@@ -1473,10 +1475,9 @@ const admiralVesselLogos = new Map([
     if(account){pin?.removeAttribute('aria-current');identity?.setAttribute('aria-current','step');}
     else{pin?.setAttribute('aria-current','step');identity?.removeAttribute('aria-current');}
     gate.scrollTop=0;
-    requestAnimationFrame(() => {
-      if (gate.classList.contains('hidden') || (account && byId('admiralSignInForm')?.contains(document.activeElement))) return;
-      byId('admiralGateTitle')?.focus({preventScroll:true});
-    });
+    if (!account && !gate.classList.contains('hidden') && !gate.contains(document.activeElement)) {
+      byId('admiralPinInput')?.focus({preventScroll:true});
+    }
   }
 
   function refreshAdmiralSessionStrip(){

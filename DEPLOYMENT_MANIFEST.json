@@ -549,15 +549,15 @@
     "algorithm": "SHA-256",
     "serialization": "UTF-8 response body, same text executed by atomic loader",
     "files": {
-      "styles.css": "2f101645b532db07a8c332a74176a6d700390b609791ccfb2664a51f11f3d25a",
+      "styles.css": "81a7a936a25b33c8d4faaba0b2b96cff5a7a57fb02b70e1029fa278d1ba9c0b1",
       "simple_books.css": "5939590021ef2d3738d5f5f7249d72f8da64cc274bf287ef8183958517b0ba46",
       "platform_core.js": "7fb1504a8b8de0fe319bfd29bed4d0875784565d45ede84a07a61c767491da68",
       "platform_v4.js": "f1596bec1fa4689f5edd75378241da7042ff04eb879401a83f3bd7a2d5cc4e9e",
       "platform_identity.js": "0beacfb452fb0e3e24aea71efd86140b1657560e98fa670a0f3bea428414232d",
       "fleet_supabase.js": "f4b93e3db718daca7403d8f12077a961f57456f9a3f2a961dd0fca01cabe6757",
       "ike_style_registry.js": "6b348ebceb47e172e6676f46252b19c1c6bb7532baf76febfa8dd81760a76ab7",
-      "app.js": "e0a51c48e223755fe7529e3d7835227244af9a69dbcea3998d2b622a8d0a6642",
-      "captain.js": "006357e46c2b07535071cfb8e6732029621c02c0bd850fcbebe815c5df24a836",
+      "app.js": "c03b2f7b39dc8df157cc732365e8e0b591c6acca0ec197be37b26cd0f397fa0e",
+      "captain.js": "77c012c978e6f2e4c3b9bf1a5cf80f19bf2b77e6ca088a0428137fc9ec84e7a9",
       "simple_books.js": "ddd76dcf5e6c579f16918a9d3e645b0fc65d8a5b4d7c66df8896d8314eea325d",
       "owner.html": "417c0fa6719c1054406e4bfecb4ad43019d47901c99f2cb20d15963f12383bd1",
       "manifest.webmanifest": "31aeb50acb63b54a7fa9d96aa3d6af0f4e94167d825f504cdf9588e81c0a3b6b",
@@ -641,8 +641,8 @@
       "fleet_boundary_repair.js": "a631fd0129c95d91b8cfb0a701acff8fc33991bd3dddf199909b1a4795aaef3e",
       "service_address.js": "ca2a1a60a7b29c53d3666461c2e8e9eece5120e5e945b01362b15f9644df2860",
       "service_address_fleet.js": "d31da02362f3bb60a61589f0a5bbb22ea976ffb853434d52db75eb5d4dd2b585",
-      "fleet_help.js": "c6d41d00d2ca358812d241c1c8b525ea07118cc7e783117ffeb815d500806923",
-      "fleet_help.css": "0adb7353483c94cd92bc19d4258a8243d2e3c1c2e17ef65e791c895ecea3cc05"
+      "fleet_help.js": "3b083e8230c10bb5fa52760c414fa3baf9e0a6c1a1b0b50921af05c75c8c8a2d",
+      "fleet_help.css": "c6fae5da4d413120a681aea48ebcb004e0a84dfcafa1c1438b778c8aa8247694"
     }
   },
   "watchbeacon_upgrade": {

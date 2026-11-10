@@ -106,7 +106,15 @@
     const current = () => active && container.isConnected && isCurrent();
     const panel = element('details', null, 'fleet-help');
     const heading = role === 'owner' ? 'Get fleet help' : 'Fleet help';
-    panel.append(element('summary', heading));
+    const summary = element('summary', heading);
+    if (role === 'admiral' || role === 'acting_captain') {
+      panel.classList.add('fh-on-deck');
+      const action = element('span', '', 'fh-summary-action');
+      action.setAttribute('aria-hidden','true');
+      action.append(element('span','View requests','fh-closed-label'), element('span','Close','fh-open-label'));
+      summary.append(action);
+    }
+    panel.append(summary);
     const body = element('div', null, 'fh-body');
     panel.append(body);
     const live = () => {
@@ -285,7 +293,9 @@
           throw new Error('Unexpected report list');
         received=response.records;
         records.replaceChildren(...received.map(renderRow));
-        listState.textContent = received.length ? '' : 'No fleet help reports yet.';
+        listState.textContent = received.length ? '' : role === 'admiral'
+          ? 'No help requests yet. Send one from Get fleet help in a vessel’s owner workspace.'
+          : 'No fleet help reports yet.';
         if (response.has_more) listState.textContent = 'Showing the most recent reports.';
       } catch (err) {
         if (!current() || version!==loadVersion) return;

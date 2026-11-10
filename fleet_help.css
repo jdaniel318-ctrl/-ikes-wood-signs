@@ -33,3 +33,30 @@
 .fleet-help .fh-badge {color: #334950; background: #e7edf0; border-radius: 1rem; padding: .15rem .65rem; font-size: .8rem; font-weight: 700;}
 .fleet-help .fh-in_progress {background: #f8eccb; color: #65501b;}
 .fleet-help .fh-verified {background: #daeee2; color: #225c41;}
+
+/* Fleet help shares the chart-room palette of My Fleet. */
+.fleet-help.fh-on-deck {
+  margin:1rem 0 0; color:#e8f2ee; background:#102c35; border:1px solid #47656b;
+  border-radius:11px;
+}
+.fh-on-deck > summary {
+  display:flex; align-items:center; justify-content:space-between; gap:.75rem;
+  min-height:54px; padding:.65rem 1rem; color:#f8edcf;
+  list-style:none; border-radius:inherit;
+}
+.fh-on-deck > summary::-webkit-details-marker {display:none;}
+.fh-on-deck > summary:hover {background:#193b43;}
+.fh-on-deck > summary:focus-visible {outline:2px solid #f1cf85; outline-offset:-3px;}
+.fh-on-deck .fh-summary-action {display:inline-flex; align-items:center; gap:.65rem; color:#c0d6d7; font-size:.86rem; font-weight:550;}
+.fh-on-deck .fh-summary-action::after {content:""; width:.47rem; height:.47rem; border:solid #ebc87f; border-width:0 2px 2px 0; transform:rotate(45deg); margin-top:-.25rem;}
+.fh-on-deck .fh-open-label, .fh-on-deck[open] .fh-closed-label {display:none;}
+.fh-on-deck[open] .fh-open-label {display:inline;}
+.fh-on-deck[open] .fh-summary-action::after {transform:rotate(225deg);margin-top:.2rem;}
+.fh-on-deck[open] > summary {border-bottom:1px solid #395a61;border-radius:10px 10px 0 0;}
+.fh-on-deck .fh-body {padding:1rem;}
+.fh-on-deck .fh-record {background:#0a232d;border-color:#365760;}
+.fh-on-deck .fh-record p, .fh-on-deck .fh-line strong, .fh-on-deck label {color:#eef3e9;}
+.fh-on-deck small, .fh-on-deck .fh-status {color:#bdd1d3;}
+.fh-on-deck .fh-button {color:#e5f2ef; background:#12333d; border-color:#5c777d;}
+.fh-on-deck .fh-primary {color:#192e32; background:#f0cf84; border-color:#f0cf84;}
+.fh-on-deck :focus-visible {outline-color:#f0cf84;}
