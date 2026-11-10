@@ -575,8 +575,8 @@
       "headway_contracts.js": "e79286db1785fa95038bbda65c83e0d36ada63b2d402dffad695e4866062c09c",
       "woodwright_fit.js": "a4efdadf635608419a2bd82f12a701fd2991ec5dc3d14d282fd846680d40606f",
       "fun_core.js": "b21a909fa3dccf44b2d02d4a8243a91fd260b70db2edfc35338f3fd330c810e4",
-      "fun_program.js": "9b8873e8f981bd45d99dfe9399d935f2b21a9a6e95e89b4b7fe0fe03bca14122",
-      "fun_program.css": "5e1ec030c54020ec4f4d18727ea39f7c549355b45db6d8a09f28b9e0920ceee5",
+      "fun_program.js": "c664b3b5347238618c66d7e7bd49b161e8dd0f1970955261858d12d9d355c285",
+      "fun_program.css": "5426df73fe625f936bcc5f114ea6706aa316641db30e012c9633121432288fd3",
       "fun_player.html": "fcfc2d06cdf204f4591a9717968a027facf170e6e0be32d9151ef847870a0fb7",
       "stormwake_core.js": "b0193108053c9ddd067dc100bb9d820292e970ad2c316512b8456e359820b405",
       "quartermaster_core.js": "9a5f85005f83b820c5bcbfc9afb29475bc65e62ba84e9e8ac2f59edc20a9bebb",
@@ -1280,9 +1280,9 @@
       "bytes": 5008483
     },
     "fleet-arcade.ship.json": {
-      "sha256": "f5279d5700d8021873132a4ca4775d59f9926cc39c94b054650e5a32b0407a7c",
+      "sha256": "bdf859d42bba0f06ef7591064b61f89a9a0d2c2c083d327714f298069f1aed77",
       "load": "after existing verified Admiral entry",
-      "bytes": 808817
+      "bytes": 812424
     }
   },
   "blacktide_upgrade": {

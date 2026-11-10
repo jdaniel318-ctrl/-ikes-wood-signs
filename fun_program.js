@@ -187,7 +187,7 @@ document.addEventListener('click',e=>{if(e.target instanceof Element&&e.target.c
 const LANTERN_LEVEL_COUNT = 36;
 const arcadeEditions = {
   lantern: {name:'Lantern Run', file:'lantern-run.ship.json', id:'lantern-run', edition:6, levels:LANTERN_LEVEL_COUNT, limit:250000, digest:'e6056fd9aeb2b6933de5052eadc0151f343b7e1c0441203d6f6931148d391322'},
-  collection: {name:'Fleet Arcade', file:'fleet-arcade.ship.json', id:'six-bells', edition:1, levels:18, limit:1800000, digest:'f5279d5700d8021873132a4ca4775d59f9926cc39c94b054650e5a32b0407a7c'}
+  collection: {name:'Fleet Arcade', file:'fleet-arcade.ship.json', id:'six-bells', edition:2, levels:18, limit:1800000, digest:'bdf859d42bba0f06ef7591064b61f89a9a0d2c2c083d327714f298069f1aed77'}
 };
 const arcadeSources = new Map();
 async function arcadePlayerSource(edition,signal) {
@@ -332,7 +332,9 @@ async function openLantern(button,kind=button.hasAttribute('data-fleet-collectio
     run.player = player;
     player.title = edition.name;
     player.setAttribute('sandbox','allow-scripts');
-    player.setAttribute('allow',"camera 'none'; microphone 'none'; geolocation 'none'; payment 'none'");
+    const restrictions = "camera 'none'; microphone 'none'; geolocation 'none'; payment 'none'";
+    player.setAttribute('allow', kind === 'collection' ? 'fullscreen *; ' + restrictions : restrictions);
+    if (kind === 'collection') player.setAttribute('allowfullscreen', '');
     player.referrerPolicy = 'no-referrer';
     player.onload = () => {
       if (!lanternAccess(run)) { leaveLantern(run); return; }
@@ -366,7 +368,9 @@ window.addEventListener('message', event => {
   if (event.data.type === 'activity' && !document.hidden && run.panel.open) {
     window.DarkSkyAdmiralSession.noteProgramActivity?.({userId:run.who.id, startedAt:run.who.stamp});
   } else if (run.kind==='collection'){
-    if (event.data.type==='arcade-lantern'){
+    if (event.data.type === 'arcade-playing' && typeof event.data.playing === 'boolean') {
+      run.panel.querySelector('header').hidden = event.data.playing;
+    }else if (event.data.type==='arcade-lantern'){
       const button=run.button;
       leaveLantern(run);
       openLantern(button,'lantern',true);

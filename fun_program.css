@@ -22,6 +22,7 @@
 #lanternRunCard button,#lanternArcade button{min-height:44px;padding:8px 15px;border:1px solid #e4c078;border-radius:8px;background:#efcc82;color:#142928;cursor:pointer;font-weight:700}
 #lanternArcade[open]{display:flex;flex-direction:column;position:fixed;inset:0;width:100%;height:100%;height:100dvh;max-width:none;max-height:none;margin:0;padding:0;border:0;background:#091a1d;color:#f3ebd2}
 #lanternArcade header{display:flex;align-items:center;justify-content:space-between;padding:5px max(16px,env(safe-area-inset-right)) 5px max(16px,env(safe-area-inset-left));gap:12px;background:#10272b;font:600 12px system-ui;letter-spacing:.08em}
+#lanternArcade header[hidden]{display:none}
 #lanternArcade header button{font:600 14px system-ui}#lanternArcade iframe{flex:1;width:100%;min-height:0;border:0}#lanternArcade p{padding:16px}#lanternArcade::backdrop{background:#071718}
 @media(max-width:600px){#lanternRunCard{align-items:stretch;flex-direction:column}}
 
