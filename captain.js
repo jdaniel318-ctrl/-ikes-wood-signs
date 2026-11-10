@@ -201,20 +201,22 @@ const AdmiralAccountForm = (() => {
   let view='attention';
   function install(){$('bootstrapFleet')?.remove();document.body.insertAdjacentHTML('beforeend',`<section id="bootstrapFleet" class="bootstrap-fleet fleet-watchtower hidden" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Black Flag Admiral security and Fleet Watchtower"><section id="watchSecurityLayer" class="admiral-security-layer" aria-labelledby="watchSecurityTitle"><div class="admiral-security-card"><header><img src="black_flag_primary_lockup.png" alt="Black Flag"><button id="watchGateClose" type="button">CLOSE</button></header><div class="admiral-security-heading"><small>${window.__darkSkyVerifiedRelease.build} · QUARTERMASTER</small><h2 id="watchSecurityTitle">Admiral Security Layer</h2><p>The passage PIN opened the Admiral doorway. A dedicated Supabase Admiral account must now be authenticated before fleet data can open.</p></div><ol class="admiral-security-steps" aria-label="Admiral authentication progress"><li class="is-complete"><span>01</span><div><small>PASSAGE PIN</small><b>VERIFIED</b></div></li><li class="is-current"><span>02</span><div><small>ADMIRAL ACCOUNT</small><b>REQUIRED</b></div></li><li><span>03</span><div><small>FLEET WORKSPACE</small><b>LOCKED</b></div></li></ol><form id="watchSecurityForm" class="admiral-security-form" autocomplete="off" novalidate>${AdmiralAccountForm.fields('watch')}</form><p id="watchGateStatus" class="admiral-security-status" role="status">Second security check required. The Fleet workspace remains locked.</p><aside><b>Two credentials. Two purposes.</b><span>The passage PIN opens the doorway. Supabase verifies identity and global Admiral read authority. An owner account cannot open this workspace.</span></aside></div></section><div id="watchWorkspace" class="bootstrap-fleet-shell hidden" aria-hidden="true" data-view="attention">
   <header class="bridge-head">
-    <img src="black_flag_platform_icon.png" alt="">
-    <div class="bridge-title"><small>BLACK FLAG · ADMIRAL</small><h2 id="watchFleetTitle">My Fleet</h2></div>
-    <div class="bridge-controls"><button type="button" id="watchRefresh">Refresh</button><button type="button" id="watchSignOut">Sign out</button><button type="button" id="watchClose">Back to Engine</button></div>
+    <div class="bridge-mast"><img src="black_flag_platform_icon.png" alt="">
+    <div class="bridge-title"><small>BLACK FLAG · ADMIRAL</small><h2 id="watchFleetTitle">My Fleet</h2></div></div>
     <button class="bridge-schedule" type="button" data-schedulejoe-open>Open ScheduleJoe →</button>
   </header>
+  <div class="bridge-bar">
   <nav class="bridge-nav" aria-label="My Fleet views">
     <button type="button" data-watch-view="attention" aria-pressed="true">Attention</button>
     <button type="button" data-watch-view="vessels" aria-pressed="false">Vessels</button>
     <button type="button" data-watch-view="programs" aria-pressed="false">Programs &amp; tools</button>
   </nav>
+    <div class="bridge-controls"><button type="button" id="watchRefresh">Refresh</button><button type="button" id="watchSignOut">Sign out</button><button type="button" id="watchClose">Back to Engine</button></div>
+  </div>
   <p id="watchStatus" class="bridge-status" role="status">Reading fleet reports…</p>
   <section id="watchKeel" aria-label="Fleet report counts" hidden></section>
   <section id="watchDirectory" aria-labelledby="watchVesselTitle">
-    <header class="bridge-section-head"><h3 id="watchVesselTitle" tabindex="-1">Needs attention</h3><span id="watchCount"></span></header>
+    <header class="bridge-section-head"><h3 id="watchVesselTitle" tabindex="-1">Fleet briefing</h3><span id="watchCount"></span></header>
     <div id="watchTools" hidden>
       <label>Find a vessel<input type="search" id="watchSearch" data-bf-trim="boundary" placeholder="Name, vessel ID or operating model"></label>
       <label>Show<select id="watchFilter">${Object.entries(filterLabels).map(([key,label])=>`<option value="${key}">${label}</option>`).join('')}</select></label>
@@ -224,10 +226,11 @@ const AdmiralAccountForm = (() => {
   </section>
   <section id="watchProgramPanel" aria-labelledby="watchProgramTitle" hidden>
     <header class="bridge-section-head"><h3 id="watchProgramTitle" tabindex="-1">Programs &amp; tools</h3></header>
+    <div class="bridge-gallery">
     <div id="watchPrograms" class="bootstrap-fleet-rows bridge-list"></div>
     <div id="watchLocalTools" class="bridge-list">
-      <article class="bridge-tool"><img src="lantern-harbor.webp" alt="" loading="lazy"><div><h4>Lantern Run</h4><p>Harbor arcade</p></div><button type="button" data-watch-arcade>Play Lantern Run</button></article>
-    </div>
+      <article class="bridge-tool arcade-tool"><div><h4>Lantern Run</h4><p>Harbor arcade · Steer through the mazes.</p></div><button type="button" data-watch-arcade>Play Lantern Run</button></article>
+    </div></div>
   </section>
   <div id="watchFleetHelp"></div>
 </div><section id="watchOverview" class="fleet-vessel-overview hidden" role="dialog" aria-modal="true" aria-hidden="true"><div class="fleet-vessel-overview-shell"><nav class="fleet-report-nav" aria-label="Report navigation">
@@ -275,15 +278,33 @@ const AdmiralAccountForm = (() => {
     else if(!tags.length)tags.push(['Current report','current']);
     return tags.map(([label,tone])=>`<span class="bridge-tag ${tone}">${safe(label)}</span>`).join('');
   }
-  function vesselRow(v){
+  function vesselRow(v, featured=false){
     const f=facts(v);
+    const work=featured && f.summary ? f.summary : v.current_work||'Work not reported';
     const stamp=f.reported?new Date(f.activity).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'}):'';
-    return `<article class="bridge-row">
+    return `<article class="bridge-row${featured?' bridge-lead':''}">
       <div class="bridge-identity">${mark(v)}<div><h4>${safe(v.display_name)}</h4><small>${safe(words(v.operating_model))} · ${safe(controlLabel(v).toLowerCase())}</small></div></div>
-      <div class="bridge-work"><b>${safe(v.current_work||'Work not reported')}</b>${stamp?'<small>Reported '+safe(stamp)+'</small>':''}</div>
+      <div class="bridge-work"><b>${safe(work)}</b>${stamp?'<small>Reported '+safe(stamp)+'</small>':''}</div>
       <div class="bridge-signals">${signals(f)}</div>
       <button type="button" data-watch-vessel="${safe(v.project_id)}" aria-label="Read report for ${safe(v.display_name)}">Read report →</button>
     </article>`;
+  }
+  function briefingMarkup(list){
+    const urgent=list.filter(v=>priority(v)<2);
+    const remaining=list.filter(v=>priority(v)>=2);
+    const sections=[];
+    if(urgent.length){
+      const onlyIssues=urgent.every(v=>!held(facts(v).life));
+      const reason=onlyIssues?'with open issues':'requiring review';
+      const title=urgent.length+' vessel'+(urgent.length===1?'':'s')+' '+reason;
+      sections.push(`<section class="bridge-priority" aria-labelledby="watchPriorityTitle"><h4 id="watchPriorityTitle">${title}</h4>
+        <div class="bridge-leads">${urgent.map(v=>vesselRow(v,true)).join('')}</div></section>`);
+    }
+    if(remaining.length){
+      sections.push(`<section class="bridge-follow" aria-labelledby="watchFollowTitle"><h4 id="watchFollowTitle">Reporting follow-up</h4>
+        <div class="bridge-follow-list">${remaining.map(v=>vesselRow(v)).join('')}</div></section>`);
+    }
+    return sections.join('');
   }
   function programRow(v){
     const schedule=v.project_id===PROGRAM.project_id;
@@ -291,8 +312,9 @@ const AdmiralAccountForm = (() => {
     const source=v.reference_only?'Local program':'Registered program';
     const description=schedule?'Bootstrap Build · Construction scheduling':
       v.current_work||(v.project_id==='wonderwake'?'Math, spelling and creative activities':'Awaiting first program report');
-    return `<article class="bridge-tool ${schedule?'schedule-tool':''}">
-      ${mark(schedule?{...PROGRAM,...v,logo_url:v.logo_url||PROGRAM.logo_url}:v)}
+    const art=schedule?'schedule-tool':v.project_id==='wonderwake'?'wonder-tool':'';
+    return `<article class="bridge-tool ${art}">
+      ${art?'':mark(v)}
       <div><h4>${safe(label)}</h4><p>${safe(description)}</p><small>${source}</small></div>
       <div class="bridge-program-actions">${schedule?'<button type="button" data-schedulejoe-open>Open schedules →</button>':''}
       <button type="button" data-watch-vessel="${safe(v.project_id)}" aria-label="Read report for ${safe(v.display_name)}">Program report</button></div>
@@ -334,7 +356,7 @@ const AdmiralAccountForm = (() => {
     }
     $('watchCount').textContent=list.length+' of '+records.length+' vessels';
     const empty=!records.length?'No vessels in the registry.':view==='attention'?'No vessels need attention.':'No vessels match this search and filter.';
-    $('watchRows').innerHTML=list.length?list.map(vesselRow).join(''):`<p class="bridge-empty">${empty}</p>`;
+    $('watchRows').innerHTML=list.length?(view==='attention'?briefingMarkup(list):list.map(v=>vesselRow(v)).join('')):`<p class="bridge-empty">${empty}</p>`;
   }
   function selectView(next){
     view=next;
@@ -347,7 +369,7 @@ const AdmiralAccountForm = (() => {
     $('watchRegistry').hidden=view!=='vessels'||!lastSync;
     $('watchKeel').hidden=view!=='attention'||!lastSync;
     $('watchFleetHelp').hidden=view!=='attention';
-    $('watchVesselTitle').textContent=view==='attention'?'Needs attention':'Vessel directory';
+    $('watchVesselTitle').textContent=view==='attention'?'Fleet briefing':'Vessel directory';
     paintDirectory();
   }
   let reportPlace = null;
@@ -370,7 +392,7 @@ const AdmiralAccountForm = (() => {
       return;
     }
     const fleet = $('bootstrapFleet');
-    const header = $('watchWorkspace').querySelector('.bridge-nav');
+    const header = $('watchWorkspace').querySelector('.bridge-bar');
     const top = getComputedStyle(header).position === 'sticky'
       ? Math.max(fleet.getBoundingClientRect().top, header.getBoundingClientRect().bottom)
       : fleet.getBoundingClientRect().top;

@@ -17233,18 +17233,23 @@ dialog#bootstrapSchedule::backdrop {background:#03151a}
 
 /* Admiral My Fleet */
 #watchWorkspace.bootstrap-fleet-shell {
-  width:min(1280px,100%); min-width:0; padding:clamp(12px,2vw,26px); color:#f3eee2;
-  background:linear-gradient(150deg,#10363e 0%,#08252d 38%,#061b23 100%)!important;
+  width:min(1280px,100%); min-width:0; padding:clamp(12px,2vw,24px); color:#f5f0e4;
+  background:linear-gradient(150deg,#123139,#0a242e 45%,#091d27)!important;
 }
 #watchWorkspace.bootstrap-fleet-shell>header.bridge-head {
-  display:grid!important; grid-template-columns:48px minmax(0,1fr) auto auto;
-  gap:12px; align-items:center; padding:5px 0 18px!important;
-  box-shadow:none; backdrop-filter:none; background:transparent; border:0; border-radius:0;
+  display:flex!important; flex-direction:column; flex-wrap:nowrap!important;align-items:flex-start;justify-content:center;
+  gap:11px; padding:22px clamp(18px,3vw,38px)!important; min-height:192px!important;box-sizing:border-box;
+  border:1px solid #667268;border-radius:12px;box-shadow:none;backdrop-filter:none;
+  background:#112e35 linear-gradient(90deg,rgba(3,20,27,.85),rgba(3,22,31,.40) 40%,transparent 70%) center/cover;
+  background-image:linear-gradient(90deg,rgba(3,20,27,.86),rgba(3,22,31,.35) 40%,transparent 70%),url("admiral-firstlight.webp");
+  background-position:center,center 42%;
 }
-#watchWorkspace.bootstrap-fleet-shell>header.bridge-head>img {width:46px!important;height:46px!important}
-#watchWorkspace .bridge-head small {color:#9dd1d0;font-size:.71rem;letter-spacing:.14em;font-weight:750}
-#watchWorkspace.bootstrap-fleet-shell>header.bridge-head h2 {font-size:clamp(27px,3vw,37px)!important;line-height:1.06}
-#watchWorkspace .bridge-head .bridge-controls {display:flex;gap:6px;flex-wrap:wrap}
+#watchWorkspace .bridge-mast {display:flex;align-items:center;gap:15px}
+#watchWorkspace .bridge-mast>img {width:55px;height:55px;object-fit:contain;border-radius:50%;box-shadow:0 0 0 1px #bbad80}
+#watchWorkspace .bridge-head small {color:#f5dca0;font-size:.68rem;letter-spacing:.18em;font-weight:750}
+#watchWorkspace.bootstrap-fleet-shell>header.bridge-head h2 {font:500 clamp(2.75rem,4.8vw,4.25rem)/.98 Georgia,"Times New Roman",serif!important;color:#fff2d3;letter-spacing:-.035em}
+#watchWorkspace .bridge-bar {display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:0;z-index:3;background:#0c2832;border-bottom:1px solid #526366;margin-top:8px}
+#watchWorkspace .bridge-controls {display:flex;gap:5px;align-items:center;flex-wrap:wrap}
 #watchWorkspace .bridge-controls button,
 #watchWorkspace :is(.bridge-row,.bridge-tool,.bridge-nav) button,
 #watchWorkspace .bridge-schedule {
@@ -17257,8 +17262,7 @@ dialog#bootstrapSchedule::backdrop {background:#03151a}
 }
 #watchWorkspace[data-view="programs"]>.bridge-head>.bridge-schedule {display:none}
 #watchWorkspace .bridge-nav {
-  display:flex;align-items:center;gap:5px;position:sticky;top:0;z-index:3;
-  border-block:1px solid #36545a; padding:7px 0;background:#0a252d;
+  display:flex;align-items:center;gap:5px;padding:6px 0;
 }
 #watchWorkspace .bridge-nav button {padding-inline:18px;border-color:transparent;background:transparent;color:#bbd2d2}
 #watchWorkspace .bridge-nav [aria-pressed="true"] {background:#1e4249;color:#ffe7a8;box-shadow:inset 0 -3px #dfbd6c}
@@ -17331,18 +17335,17 @@ dialog#bootstrapSchedule::backdrop {background:#03151a}
   #watchWorkspace .bridge-work {grid-column:2}
   #watchWorkspace .bridge-row>button {grid-column:3;grid-row:1/3}
   #watchWorkspace .bridge-row>.bridge-identity {grid-row:1/3}
-  #watchWorkspace.bootstrap-fleet-shell>header.bridge-head>.bridge-controls {grid-column:auto}
+
 }
 @media(max-width:700px){
-  #watchWorkspace.bootstrap-fleet-shell>header.bridge-head {grid-template-columns:38px minmax(0,1fr) auto;display:grid!important;gap:8px;padding-bottom:9px!important}
-  #watchWorkspace.bootstrap-fleet-shell>header.bridge-head>img {width:36px!important;height:36px!important;grid-row:1;grid-column:1}
-  #watchWorkspace .bridge-head>.bridge-title {grid-row:1;grid-column:2}
-  #watchWorkspace[data-view="programs"] .bridge-head>.bridge-title {grid-column:2/-1}
-  #watchWorkspace .bridge-head>.bridge-schedule {grid-row:1;grid-column:3}
-  #watchWorkspace .bridge-head .bridge-controls {grid-row:2;grid-column:1/-1!important}
-  #watchWorkspace .bridge-head .bridge-controls button {padding:6px 10px}
-  #watchWorkspace .bridge-schedule {padding:6px 9px;font-size:.82rem}
-  #watchWorkspace .bridge-nav button {flex:1;padding-inline:6px;font-size:.86rem}
+  #watchWorkspace.bootstrap-fleet-shell>header.bridge-head {min-height:145px!important;padding:16px!important;gap:7px;background-position:center,60% 43%}
+  #watchWorkspace .bridge-mast {gap:10px}
+  #watchWorkspace .bridge-mast img {width:40px;height:40px}
+  #watchWorkspace .bridge-schedule {padding:6px 10px;font-size:.86rem}
+  #watchWorkspace .bridge-bar {position:static;display:flex;flex-direction:column-reverse;align-items:stretch;gap:0}
+  #watchWorkspace .bridge-controls {justify-content:flex-end;border-bottom:1px solid #29464c}
+  #watchWorkspace .bridge-controls button {border-color:transparent;background:transparent;padding:5px 9px;font-size:.83rem}
+  #watchWorkspace .bridge-nav button {flex:1;padding-inline:6px;font-size:.9rem}
   #watchWorkspace #watchKeel:not([hidden]) {grid-template-columns:repeat(2,minmax(0,1fr));margin-bottom:12px}
   #watchWorkspace #watchKeel button {min-height:55px;padding:8px 10px;gap:8px}
   #watchWorkspace #watchKeel button b {font-size:1.45rem}
@@ -17358,4 +17361,56 @@ dialog#bootstrapSchedule::backdrop {background:#03151a}
   #watchWorkspace #carvewrightFleetService .bridge-service-mark,#watchWorkspace .bridge-tool>:is(img,.fleet-watch-code-mark) {width:44px;height:44px}
   #watchWorkspace .bridge-tool>button,#watchWorkspace .bridge-program-actions {grid-column:1/-1}
   #watchWorkspace .bridge-program-actions button {flex:1}
+}
+
+#watchWorkspace .bridge-controls button {background:transparent; font-size:.83rem; color:#c7dadb}
+#watchWorkspace .bridge-status {font-size:.81rem;color:#abc3c2}
+#watchWorkspace #watchKeel button {min-height:50px;border-width:0 0 1px;border-radius:0;background:#103039;gap:10px;padding:8px 13px}
+#watchWorkspace #watchKeel button b {font:500 1.7rem/1 Georgia,serif;color:#f3d998}
+#watchWorkspace #watchKeel button span {font-size:.84rem}
+#watchWorkspace .bridge-section-head h3 {font:500 clamp(1.65rem,3vw,2.25rem)/1.08 Georgia,serif;letter-spacing:-.025em}
+#watchWorkspace[data-view="attention"] #watchRows {border:0;overflow:visible;border-radius:0;background:transparent;gap:17px}
+#watchWorkspace :is(.bridge-priority,.bridge-follow)>h4 {margin:0 0 9px;font-size:.9rem;font-weight:650;color:#ccdbd8}
+#watchWorkspace .bridge-leads {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#watchWorkspace .bridge-row.bridge-lead {
+  display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto 1fr auto;
+  gap:10px 12px;align-items:start;padding:15px 17px;min-width:0;overflow-wrap:anywhere;
+  border:1px solid #78644a;border-left:3px solid #d5a568;border-radius:10px;
+  background:linear-gradient(110deg,#293837,#132f37 75%);
+}
+#watchWorkspace .bridge-lead>.bridge-identity {grid-column:1/-1;grid-row:1}
+#watchWorkspace .bridge-lead .bridge-work {grid-column:1/-1;grid-row:2}
+#watchWorkspace .bridge-lead .bridge-signals {grid-column:1;grid-row:3;align-self:center}
+#watchWorkspace .bridge-lead>button {grid-column:2;grid-row:3;align-self:end;white-space:nowrap}
+#watchWorkspace .bridge-follow-list {overflow:hidden;border-radius:10px;border:1px solid #3d5f68;background:#0a262e}
+#watchWorkspace .bridge-gallery {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+#watchWorkspace .bridge-gallery :is(#watchPrograms,#watchLocalTools) {display:contents}
+#watchWorkspace .bridge-gallery .bridge-tool,#watchWorkspace .bridge-gallery #carvewrightFleetService {
+  display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto 1fr auto;
+  align-items:start;gap:0;overflow:hidden;padding:0;margin:0;
+  background:#112f38;border:1px solid #45606a;border-radius:12px;box-shadow:none;
+}
+#watchWorkspace .bridge-gallery :is(.bridge-tool,#carvewrightFleetService)::before {
+  content:"";width:100%;height:clamp(85px,9vw,120px);border-bottom:1px solid #536268;
+  background:#18323c var(--gallery-art,linear-gradient(125deg,#244650,#173039)) center/cover no-repeat;
+}
+#watchWorkspace .bridge-gallery .schedule-tool {--gallery-art:url("admiral-schedules.webp")}
+#watchWorkspace .bridge-gallery .wonder-tool {--gallery-art:url("admiral-wonderwake.webp")}
+#watchWorkspace .bridge-gallery .arcade-tool {--gallery-art:url("admiral-lantern.webp")}
+#watchWorkspace .bridge-gallery #carvewrightFleetService {--gallery-art:url("admiral-carving.webp")}
+#watchWorkspace .bridge-gallery .bridge-tool {position:relative}
+#watchWorkspace .bridge-gallery .bridge-tool>:is(img,.fleet-watch-code-mark) {position:absolute;top:15px;left:16px}
+#watchWorkspace .bridge-gallery #carvewrightFleetService .bridge-service-mark {display:none}
+#watchWorkspace .bridge-gallery :is(.bridge-tool,#carvewrightFleetService)>div:not(.bridge-program-actions,.fleet-watch-code-mark) {padding:13px 16px 9px}
+#watchWorkspace .bridge-gallery :is(.bridge-tool,#carvewrightFleetService) h4 {font:500 1.5rem/1.08 Georgia,serif;letter-spacing:-.02em;color:#fff0cf}
+#watchWorkspace .bridge-gallery :is(.bridge-tool,#carvewrightFleetService) p {margin:6px 0 0;font-size:.89rem;color:#c8d9d8}
+#watchWorkspace .bridge-gallery .bridge-tool small {font-size:.75rem;color:#9bb9b8}
+#watchWorkspace .bridge-gallery .bridge-program-actions {grid-column:1;margin:0;padding:4px 16px 14px}
+#watchWorkspace .bridge-gallery :is(.bridge-tool,#carvewrightFleetService)>button {grid-column:1;justify-self:start;margin:4px 16px 14px}
+#watchWorkspace .bridge-gallery :is(.arcade-tool,#carvewrightFleetService)>button {background:#eacb87;color:#192e32;border:1px solid #edcf8c;border-radius:8px;font-family:inherit;font-weight:700;padding:8px 13px;font-size:.92rem}
+@media(max-width:700px){
+  #watchWorkspace .bridge-leads,#watchWorkspace .bridge-gallery {grid-template-columns:minmax(0,1fr)}
+  #watchWorkspace .bridge-leads {gap:9px}
+  #watchWorkspace .bridge-lead>button {padding-inline:9px}
+  #watchWorkspace .bridge-gallery .bridge-program-actions button {flex:0 1 auto}
 }
