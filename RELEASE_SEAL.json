@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.114",
-  "release": "Floodlight",
-  "seal": "floodlight-8820114",
+  "build": "8.8.20.116",
+  "release": "Battery",
+  "seal": "battery-8820116",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Floodlight",
-  "name": "Floodlight",
-  "releaseName": "Floodlight"
+  "release_name": "Battery",
+  "name": "Battery",
+  "releaseName": "Battery"
 }

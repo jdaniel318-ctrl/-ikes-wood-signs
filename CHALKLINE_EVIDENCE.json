@@ -1,0 +1,16 @@
+{
+  "build": "8.8.20.115",
+  "base_commit": "2a01ef7cbf862a9d50fd742ff2f5d34cac608782",
+  "base_tree": "f47d5bcf6cefdbb50ec51330d5ed10ee6985b5c7",
+  "arcade_sha256": "a52f1bcfc7a443611efe67837d3e02d42cd0115f6c250508056f7950b9bbeda2",
+  "fixtures": [
+    "2025-reference side-on ready, high rear grip and front-foot plant; 93 rendered stance samples against the ballpark chalk",
+    "Power timing, repeat input and all three six-pitch rounds",
+    "Inside and outside gap doubles, scoring runners, infield hit, groundout, third out and pulled foul",
+    "Scoring, runner choice, cartridge loading and save scope"
+  ],
+  "hardware_pending": [
+    "iPad stance and swing feel",
+    "iPhone physical fullscreen and controller"
+  ]
+}

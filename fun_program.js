@@ -187,7 +187,7 @@ document.addEventListener('click',e=>{if(e.target instanceof Element&&e.target.c
 const LANTERN_LEVEL_COUNT = 36;
 const arcadeEditions = {
   lantern: {name:'Lantern Run', file:'lantern-run.ship.json', id:'lantern-run', edition:7, levels:LANTERN_LEVEL_COUNT, limit:250000, digest:'4f8add355a2eee41badb12234ff3afa205934646e42f1fd02316f1d2b3cbe53a'},
-  collection: {name:'Fleet Arcade', file:'fleet-arcade.ship.json', id:'six-bells', edition:5, levels:22, limit:2400000, digest:'fa027fbc942c43294dacaa9476e3163b7d95ee2c096de864ef49add0a046f82c'}
+  collection: {name:'Fleet Arcade', file:'fleet-arcade.ship.json', id:'six-bells', edition:7, levels:23, limit:2300000, digest:'256ab580532d95ade91599958f360fd324e6361dc38206960278d7072d01779a'}
 };
 const arcadeSources = new Map();
 async function arcadePlayerSource(edition,signal) {
@@ -205,7 +205,7 @@ async function arcadePlayerSource(edition,signal) {
   return pack.player;
 }
 const arcadeGames = new Set(['sluggers','riptail','skullwater','pipeworks','deepbell','chalkwing','dockmaster']);
-function arcadeLevelCount(id){return id==='sluggers'?4:3;}
+function arcadeLevelCount(id){return id==='sluggers'?5:3;}
 function arcadeSaveKey(run,id,level){
   return 'blackflag.six-bells.v1:'+encodeURIComponent(JSON.stringify(run.who.context.scope))+':'+id+'.'+level;
 }

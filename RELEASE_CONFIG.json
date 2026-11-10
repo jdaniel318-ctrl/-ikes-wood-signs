@@ -1,15 +1,15 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.114",
-  "name": "Floodlight",
-  "seal": "floodlight-8820114",
-  "base": "8.8.20.113",
-  "base_sha256": "b8dcaf811d8533d626f66e4f533198624c52a0226ba1c86119c437f65c23fe44",
-  "base_files": 984,
-  "prepared_at": "2026-11-10T20:58:13Z",
+  "build": "8.8.20.116",
+  "name": "Battery",
+  "seal": "battery-8820116",
+  "base": "8.8.20.114",
+  "base_sha256": "dced4791f0e71862c1315222109c0c10c513b3e4f78e9cefedcf8f2579070be4",
+  "base_files": 986,
+  "prepared_at": "2026-11-10T21:56:33Z",
   "app_component_revision": "8.8.20.99",
   "owner_helper_revision": "8.8.20.68",
-  "feature_notes": "Floodlit cameras, an articulated 30-pose batter, a visible ball trail and swing feedback in Harbor Sluggers.",
+  "feature_notes": "Harbor Sluggers adds a two-way ninth inning with pitch selection, touch location, timed release, adaptive hitters and a batting comeback. Includes Chalkline batting and baserunning.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -38,7 +38,7 @@
     }
   },
   "install_step": "Confirm the Engine release label, open the affected vessel and run its acceptance steps.",
-  "evidence_file": "FLOODLIGHT_EVIDENCE.json",
-  "base_git_tree": "89b59b8feb706515c2f440224251a906a62a2b7a",
-  "base_git_commit": "e40fdcd1ea4155edba1d8bdc5be87a627e288de1"
+  "evidence_file": "BATTERY_EVIDENCE.json",
+  "base_git_tree": "f47d5bcf6cefdbb50ec51330d5ed10ee6985b5c7",
+  "base_git_commit": "2a01ef7cbf862a9d50fd742ff2f5d34cac608782"
 }

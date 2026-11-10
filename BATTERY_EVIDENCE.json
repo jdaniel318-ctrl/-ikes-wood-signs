@@ -1,0 +1,14 @@
+{
+  "build": "8.8.20.116",
+  "base_commit": "2a01ef7cbf862a9d50fd742ff2f5d34cac608782",
+  "base_tree": "f47d5bcf6cefdbb50ec51330d5ed10ee6985b5c7",
+  "arcade_sha256": "256ab580532d95ade91599958f360fd324e6361dc38206960278d7072d01779a",
+  "fixtures": [
+    "VERIFY_BATTERY.cjs checks pitch choice, location, timing, walks, strikeouts, saves, and score carryover",
+    "Chalkline batting regressions and signed Arcade loader score isolation"
+  ],
+  "hardware_pending": [
+    "iPad Safari release timing and fullscreen",
+    "physical Bluetooth pad response"
+  ]
+}

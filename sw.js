@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.20.114';
-const RELEASE_SEAL='floodlight-8820114';
+const RELEASE_BUILD='8.8.20.116';
+const RELEASE_SEAL='battery-8820116';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.
