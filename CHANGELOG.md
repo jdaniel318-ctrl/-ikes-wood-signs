@@ -1,10 +1,10 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Battery 8.8.20.116
+# Black Flag Glovework 8.8.20.117
 
 Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
-Baseline: 8.8.20.114. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Baseline: 8.8.20.116. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
 Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
-Harbor Sluggers adds a two-way ninth inning with pitch selection, touch location, timed release, adaptive hitters and a batting comeback. Includes Chalkline batting and baserunning.
+Harbor Sluggers adds grounded outfield catches in both ninth-inning modes, live catch holds, optional half-speed replays and player-paced batting.
 Preparation does not deploy frontend or backend changes. See PATCH_CONTRACT.json for separately managed backend prerequisites.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 

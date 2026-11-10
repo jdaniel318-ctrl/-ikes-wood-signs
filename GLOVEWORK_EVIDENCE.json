@@ -1,0 +1,14 @@
+{
+  "build": "8.8.20.117",
+  "base_commit": "dde6276218489e49a82717f0e398e61089fdb22c",
+  "base_tree": "fbd7e222bf2546c902726dca82b6136ef84f38f7",
+  "arcade_sha256": "b4428124d39d5780a6a0b6ec000cc6851586cd2d274b36ff2397081c2f6a197f",
+  "fixtures": [
+    "VERIFY_GLOVEWORK.cjs replays both sides, freezes game state and confirms original out and input readiness times",
+    "VERIFY_BATTERY.cjs, VERIFY_CHALKLINE.cjs, VERIFY_CHALKLINE_INNING.cjs and sealed host"
+  ],
+  "hardware_pending": [
+    "iPad catch legibility and pacing",
+    "physical Bluetooth response"
+  ]
+}
