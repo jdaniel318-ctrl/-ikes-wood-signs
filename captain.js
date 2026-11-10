@@ -280,13 +280,14 @@ const AdmiralAccountForm = (() => {
   }
   function vesselRow(v, featured=false){
     const f=facts(v);
+    const action=f.reported?'Read report':'View vessel';
     const work=featured && f.summary ? f.summary : v.current_work||'Work not reported';
     const stamp=f.reported?new Date(f.activity).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'}):'';
     return `<article class="bridge-row${featured?' bridge-lead':''}">
       <div class="bridge-identity">${mark(v)}<div><h4>${safe(v.display_name)}</h4><small>${safe(words(v.operating_model))} · ${safe(controlLabel(v).toLowerCase())}</small></div></div>
       <div class="bridge-work"><b>${safe(work)}</b>${stamp?'<small>Reported '+safe(stamp)+'</small>':''}</div>
       <div class="bridge-signals">${signals(f)}</div>
-      <button type="button" data-watch-vessel="${safe(v.project_id)}" aria-label="Read report for ${safe(v.display_name)}">Read report →</button>
+      <button type="button" data-watch-vessel="${safe(v.project_id)}" aria-label="${action}: ${safe(v.display_name)}">${action} →</button>
     </article>`;
   }
   function briefingMarkup(list){
