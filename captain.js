@@ -192,6 +192,7 @@ const admiralVesselLogos = new Map([
   ['grizzly-bear', 'fleet-grizzly.webp'],
   ['mugshot-after-dark', 'fleet-mugs.webp'],
   ['bf-p-42be92cbac12', 'fleet-voyagekeeper.webp'],
+  ['bf-p-fc2816b8254a4845', 'fleet-voyagekeeper.webp'],
   ['ikes-wood-signs', 'ike_character.png'],
   ['bor-north-richmond', 'signal_restoration_logo.png'],
   ['bf-p-f92f87e8ec44', 'https://legacyplumbingrva.com/wp-content/uploads/2026/04/LOGO.png'],
@@ -299,11 +300,11 @@ const admiralVesselLogos = new Map([
   function vesselRow(v, featured=false){
     const f=facts(v);
     const action=f.reported?'Read report':'View vessel';
-    const work=featured && f.summary ? f.summary : v.current_work||'Work not reported';
+    const work=featured && f.summary ? f.summary : v.current_work;
     const stamp=f.reported?new Date(f.activity).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'}):'';
     return `<article class="bridge-row${featured?' bridge-lead':''}">
       <div class="bridge-identity">${mark(v)}<div><h4>${safe(v.display_name)}</h4><small>${safe(words(v.operating_model))} · ${safe(controlLabel(v).toLowerCase())}</small></div></div>
-      <div class="bridge-work"><b>${safe(work)}</b>${stamp?'<small>Reported '+safe(stamp)+'</small>':''}</div>
+      <div class="bridge-work">${work?'<b>'+safe(work)+'</b>':''}${stamp?'<small>Reported '+safe(stamp)+'</small>':''}</div>
       <div class="bridge-signals">${signals(f)}</div>
       <button type="button" data-watch-vessel="${safe(v.project_id)}" aria-label="${action}: ${safe(v.display_name)}">${action} →</button>
     </article>`;
@@ -373,7 +374,7 @@ const admiralVesselLogos = new Map([
       const key=option.value;
       option.textContent=filterLabels[key]+' ('+records.filter(v=>inFilter(v,key)).length+')';
     }
-    $('watchCount').textContent=list.length+' of '+records.length+' vessels';
+    $('watchCount').textContent=list.length<records.length ? list.length+' of '+records.length+' vessels' : '';
     const empty=!records.length?'No vessels in the registry.':view==='attention'?'No vessels need attention.':'No vessels match this search and filter.';
     $('watchRows').innerHTML=list.length?(view==='attention'?briefingMarkup(list):list.map(v=>vesselRow(v)).join('')):`<p class="bridge-empty">${empty}</p>`;
   }

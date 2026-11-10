@@ -17355,6 +17355,8 @@ dialog#bootstrapSchedule::backdrop {background:#03151a}
   #watchWorkspace .bridge-work {grid-column:1;grid-row:2}
   #watchWorkspace .bridge-signals {grid-column:1;grid-row:3}
   #watchWorkspace .bridge-row>button {grid-column:2;grid-row:2/4;align-self:end;padding:6px 9px;font-size:.85rem}
+  #watchWorkspace .bridge-row:not(.bridge-lead)>.bridge-work:empty {display:none}
+  #watchWorkspace .bridge-row:not(.bridge-lead)>.bridge-work:empty~:is(.bridge-signals,button) {grid-row:2;align-self:center}
   #watchWorkspace #watchTools:not([hidden]) {grid-template-columns:minmax(0,1fr);gap:7px}
   #watchWorkspace .bridge-tool {grid-template-columns:44px minmax(0,1fr);gap:7px 12px;padding:12px}
   #watchWorkspace #carvewrightFleetService {grid-template-columns:44px minmax(0,1fr);gap:7px 12px;padding:12px}
