@@ -193,11 +193,44 @@ const AdmiralAccountForm = (() => {
   const words=v=>String(v||'not_reported').replaceAll('_',' '),BUNDLED_MARKS={'ikes-wood-signs':'ike_character.png','bor-north-richmond':'signal_restoration_logo.png','bf-p-f92f87e8ec44':'https://legacyplumbingrva.com/wp-content/uploads/2026/04/LOGO.png'};
   function mark(v){const src=v.logo_url&&!/black_flag_(primary_lockup|platform_icon)/.test(v.logo_url)?v.logo_url:BUNDLED_MARKS[v.project_id]||'',code=({'beccas-bloom-shop':'BBS','grizzly-bear':'GRZ','mugshot-after-dark':'MUG'}[v.project_id]||String(v.display_name||'V').split(/\s+/).map(x=>x[0]).join('').slice(0,3)).toUpperCase();return src?`<img src="${safe(src)}" alt="${safe(v.display_name)} canonical vessel mark">`:`<div class="fleet-watch-code-mark" aria-label="${safe(v.display_name)} project mark"><b>${safe(code)}</b><span>${safe(v.display_name)}</span></div>`;}
   function facts(v){const life=String(v.lifecycle_state||'unknown').toLowerCase(),activity=v.reported_at||'',age=activity?Date.now()-Date.parse(activity):Infinity,reported=!!activity&&Number.isFinite(age),stale=reported&&age>604800000,attention=!reported||stale||Number(v.unresolved_issues)>0||['hold','blocked','suspended'].includes(life),ready=!reported?'NEVER REPORTED':stale?'STALE REPORT':life==='active'||life==='live'?'ACTIVE · SERVER':life==='suspended'?'SUSPENDED · ATTENTION':life==='retired'?'RETIRED':life==='staging'?'STAGING · VERIFIED':life==='commissioning'?'COMMISSIONING · VERIFIED':'VERIFIED',hasIssues=v.unresolved_issues!==null&&v.unresolved_issues!==undefined&&Number.isFinite(Number(v.unresolved_issues));return {life,activity,reported,stale,attention,ready,work:v.current_work||'Not reported',issues:hasIssues?Number(v.unresolved_issues):null,summary:v.issue_summary||'',source:reported?(v.truth_source||'vessel_report'):'not_reported'};}
-  function install(){$('bootstrapFleet')?.remove();document.body.insertAdjacentHTML('beforeend',`<section id="bootstrapFleet" class="bootstrap-fleet fleet-watchtower hidden" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Black Flag Admiral security and Fleet Watchtower"><section id="watchSecurityLayer" class="admiral-security-layer" aria-labelledby="watchSecurityTitle"><div class="admiral-security-card"><header><img src="black_flag_primary_lockup.png" alt="Black Flag"><button id="watchGateClose" type="button">CLOSE</button></header><div class="admiral-security-heading"><small>${window.__darkSkyVerifiedRelease.build} · QUARTERMASTER</small><h2 id="watchSecurityTitle">Admiral Security Layer</h2><p>The passage PIN opened the Admiral doorway. A dedicated Supabase Admiral account must now be authenticated before fleet data can open.</p></div><ol class="admiral-security-steps" aria-label="Admiral authentication progress"><li class="is-complete"><span>01</span><div><small>PASSAGE PIN</small><b>VERIFIED</b></div></li><li class="is-current"><span>02</span><div><small>ADMIRAL ACCOUNT</small><b>REQUIRED</b></div></li><li><span>03</span><div><small>FLEET WORKSPACE</small><b>LOCKED</b></div></li></ol><form id="watchSecurityForm" class="admiral-security-form" autocomplete="off" novalidate>${AdmiralAccountForm.fields('watch')}</form><p id="watchGateStatus" class="admiral-security-status" role="status">Second security check required. The Fleet workspace remains locked.</p><aside><b>Two credentials. Two purposes.</b><span>The passage PIN opens the doorway. Supabase verifies identity and global Admiral read authority. An owner account cannot open this workspace.</span></aside></div></section><div id="watchWorkspace" class="bootstrap-fleet-shell hidden" aria-hidden="true"><header><img src="black_flag_primary_lockup.png" alt="Black Flag"><div><small>${window.__darkSkyVerifiedRelease.build} · QUARTERMASTER</small><h2 id="watchFleetTitle">My Fleet</h2><p>Authenticated, read-only operational truth across independent vessels.</p></div><div><button id="watchRefresh">REFRESH WATCH</button><button id="watchSignOut">SIGN OUT</button><button id="watchClose">CLOSE</button></div>
-<nav class="fleet-directory" aria-label="Fleet navigation">
-  <div><strong>Fleet directory</strong><button type="button" data-fleet-jump="watchVesselTitle">Vessel reports</button><button type="button" data-fleet-jump="watchProgramTitle">Admiral programs</button></div>
-  <div><strong>Workspaces</strong><button type="button" data-schedulejoe-open>Open ScheduleJoe</button><button type="button" data-watch-arcade>Play Lantern Run</button></div>
-</nav></header><p id="watchStatus" class="bootstrap-fleet-status" role="status" aria-live="polite">Reading Fleet Watch…</p><div id="watchFleetHelp"></div><section id="watchKeel" class="fleet-supabase-keel hidden" aria-label="Supabase fleet commissioning posture"></section><section id="watchTools" class="fleet-watch-tools hidden"><label>Find a vessel<input data-bf-trim="boundary" id="watchSearch" type="search" placeholder="Vessel name, key, or operating model"></label><div>${[['all','ALL'],['attention','ACTION QUEUE'],['stale','STALE'],['commissioning','COMMISSIONING'],['staging','STAGING'],['active','ACTIVE'],['owner','OWNER-OPERATED'],['fleet','FLEET-OPERATED']].map(([v,l],i)=>`<button data-watch-filter="${v}" data-watch-label="${l}" class="${i?'':'is-selected'}" aria-pressed="${i?'false':'true'}">${l}</button>`).join('')}</div></section><section class="fleet-watch-section"><header><div><small>FLEET CORE</small><h3 id="watchVesselTitle" tabindex="-1">Independent vessels</h3></div><span id="watchCount">0 VESSELS</span></header><div id="watchRows" class="bootstrap-fleet-rows"></div></section><section class="fleet-watch-section fleet-watch-programs"><header><div><small>ADMIRAL PROGRAMS</small><h3 id="watchProgramTitle" tabindex="-1">Programs outside Fleet Core</h3></div><button type="button" data-watch-arcade>Play Lantern Run</button></header><div class="fleet-schedule-entry"><img src="bootstrap_build_icon.png" alt=""><div><b>ScheduleJoe</b><span>Bootstrap Build · Construction schedules</span></div><button type="button" data-schedulejoe-open>Open schedules</button></div><div id="watchPrograms" class="bootstrap-fleet-rows"></div></section><aside class="bootstrap-fleet-passage"><b>Admiral Observability</b><span>Observation is read-only and never becomes ownership. Any modifying command remains exact-vessel, previewed, authenticated, reasoned, and audited.</span></aside><footer><b>Read-only Watchtower boundary</b><span>No control here can rename, commission, publish, entitle, schedule, or otherwise change a vessel.</span></footer></div><section id="watchOverview" class="fleet-vessel-overview hidden" role="dialog" aria-modal="true" aria-hidden="true"><div class="fleet-vessel-overview-shell"><nav class="fleet-report-nav" aria-label="Report navigation">
+  const filterLabels = {
+    all:'All vessels', attention:'Needs attention', issues:'With open issues', held:'Held or blocked',
+    stale:'Stale reports', unreported:'Never reported', commissioning:'Commissioning', staging:'Staging',
+    active:'Active', owner:'Owner-operated', fleet:'Fleet-operated'
+  };
+  let view='attention';
+  function install(){$('bootstrapFleet')?.remove();document.body.insertAdjacentHTML('beforeend',`<section id="bootstrapFleet" class="bootstrap-fleet fleet-watchtower hidden" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Black Flag Admiral security and Fleet Watchtower"><section id="watchSecurityLayer" class="admiral-security-layer" aria-labelledby="watchSecurityTitle"><div class="admiral-security-card"><header><img src="black_flag_primary_lockup.png" alt="Black Flag"><button id="watchGateClose" type="button">CLOSE</button></header><div class="admiral-security-heading"><small>${window.__darkSkyVerifiedRelease.build} · QUARTERMASTER</small><h2 id="watchSecurityTitle">Admiral Security Layer</h2><p>The passage PIN opened the Admiral doorway. A dedicated Supabase Admiral account must now be authenticated before fleet data can open.</p></div><ol class="admiral-security-steps" aria-label="Admiral authentication progress"><li class="is-complete"><span>01</span><div><small>PASSAGE PIN</small><b>VERIFIED</b></div></li><li class="is-current"><span>02</span><div><small>ADMIRAL ACCOUNT</small><b>REQUIRED</b></div></li><li><span>03</span><div><small>FLEET WORKSPACE</small><b>LOCKED</b></div></li></ol><form id="watchSecurityForm" class="admiral-security-form" autocomplete="off" novalidate>${AdmiralAccountForm.fields('watch')}</form><p id="watchGateStatus" class="admiral-security-status" role="status">Second security check required. The Fleet workspace remains locked.</p><aside><b>Two credentials. Two purposes.</b><span>The passage PIN opens the doorway. Supabase verifies identity and global Admiral read authority. An owner account cannot open this workspace.</span></aside></div></section><div id="watchWorkspace" class="bootstrap-fleet-shell hidden" aria-hidden="true" data-view="attention">
+  <header class="bridge-head">
+    <img src="black_flag_platform_icon.png" alt="">
+    <div class="bridge-title"><small>BLACK FLAG · ADMIRAL</small><h2 id="watchFleetTitle">My Fleet</h2></div>
+    <div class="bridge-controls"><button type="button" id="watchRefresh">Refresh</button><button type="button" id="watchSignOut">Sign out</button><button type="button" id="watchClose">Back to Engine</button></div>
+    <button class="bridge-schedule" type="button" data-schedulejoe-open>Open ScheduleJoe →</button>
+  </header>
+  <nav class="bridge-nav" aria-label="My Fleet views">
+    <button type="button" data-watch-view="attention" aria-pressed="true">Attention</button>
+    <button type="button" data-watch-view="vessels" aria-pressed="false">Vessels</button>
+    <button type="button" data-watch-view="programs" aria-pressed="false">Programs &amp; tools</button>
+  </nav>
+  <p id="watchStatus" class="bridge-status" role="status">Reading fleet reports…</p>
+  <section id="watchKeel" aria-label="Fleet report counts" hidden></section>
+  <section id="watchDirectory" aria-labelledby="watchVesselTitle">
+    <header class="bridge-section-head"><h3 id="watchVesselTitle" tabindex="-1">Needs attention</h3><span id="watchCount"></span></header>
+    <div id="watchTools" hidden>
+      <label>Find a vessel<input type="search" id="watchSearch" data-bf-trim="boundary" placeholder="Name, vessel ID or operating model"></label>
+      <label>Show<select id="watchFilter">${Object.entries(filterLabels).map(([key,label])=>`<option value="${key}">${label}</option>`).join('')}</select></label>
+    </div>
+    <div id="watchRows" class="bootstrap-fleet-rows bridge-list"></div>
+    <details id="watchRegistry" hidden><summary>Registry details</summary><dl></dl></details>
+  </section>
+  <section id="watchProgramPanel" aria-labelledby="watchProgramTitle" hidden>
+    <header class="bridge-section-head"><h3 id="watchProgramTitle" tabindex="-1">Programs &amp; tools</h3></header>
+    <div id="watchPrograms" class="bootstrap-fleet-rows bridge-list"></div>
+    <div id="watchLocalTools" class="bridge-list">
+      <article class="bridge-tool"><img src="lantern-harbor.webp" alt="" loading="lazy"><div><h4>Lantern Run</h4><p>Harbor arcade</p></div><button type="button" data-watch-arcade>Play Lantern Run</button></article>
+    </div>
+  </section>
+  <div id="watchFleetHelp"></div>
+</div><section id="watchOverview" class="fleet-vessel-overview hidden" role="dialog" aria-modal="true" aria-hidden="true"><div class="fleet-vessel-overview-shell"><nav class="fleet-report-nav" aria-label="Report navigation">
     <button type="button" id="watchOverviewClose">← Back to My Fleet</button>
     <div id="watchReportSteps" hidden>
       <button type="button" id="watchPrevReport" data-watch-step="-1">← Previous</button>
@@ -205,11 +238,118 @@ const AdmiralAccountForm = (() => {
     </div>
   </nav><div id="watchOverviewBody"></div></div></section></section>`);}
   function controlLabel(v){return ({owner_ready:'OWNER READY',owner_attention:'OWNER ATTENTION',fleet_seeded:'OWNER UNASSIGNED',registry_only:'REGISTRY ONLY'})[v.supabase_control_state]||'POSTURE UNKNOWN';}
-  function paintKeel(){const c=spine?.counts||{},host=$('watchKeel');if(!host)return;const fresh=records.filter(v=>facts(v).reported&&!facts(v).stale).length,action=records.filter(v=>facts(v).attention).length;host.classList.toggle('hidden',!records.length);host.innerHTML=`<header><div><small>ADMIRAL COMMISSION · SERVER POSTURE</small><b>${Number(c.vessels||records.length)} registered vessels</b><span>Registry, settings, identity, membership, and reporting posture are read from Supabase.</span></div><em>READ ONLY</em></header><div><span><b>${Number(c.supabase_settings_rows||0)}</b><small>SETTINGS READY</small></span><span><b>${Number(c.owner_ready_vessels||0)}</b><small>OWNER READY</small></span><span><b>${fresh}</b><small>FRESH REPORTS</small></span><span class="${action?'is-action':''}"><b>${action}</b><small>ACTION QUEUE</small></span></div><p>Action Queue includes never-reported, stale, unresolved, held, or blocked vessels. Owner-unassigned means a server record exists, but no owner identity has been invented.</p>`;}
-  function card(v,program=false){const f=facts(v),stamp=f.activity?new Date(f.activity).toLocaleString():'Not reported',state=program?(v.reference_only?'LOCAL PROGRAM REFERENCE':'SEPARATE PROGRAM'):f.ready;return `<article class="bootstrap-fleet-card fleet-watch-card ${program?'is-admiral-program':''}">${mark(v)}<div class="fleet-watch-card-main"><small>${safe(program?'ADMIRAL PROGRAM':words(v.mission_class).toUpperCase())}</small><b>${safe(v.display_name)}</b><span>${safe(v.project_id)}</span><span class="bootstrap-fleet-command">${safe(words(v.operating_model).toUpperCase())} · ${safe(words(v.ownership_model).toUpperCase())}</span></div><div class="fleet-watch-condition"><span><small>CURRENT WORK</small><b>${safe(f.work)}</b></span><span><small>ISSUES</small><b>${f.issues===null?'Not reported':f.issues}</b></span><span><small>OWNERSHIP STATUS</small><b>${safe(program?'SEPARATE PROGRAM':controlLabel(v))}</b></span></div><div class="fleet-watch-actions"><em class="${!program&&(!f.reported||f.stale)?'is-stale':''}">${safe(state)}</em><button data-watch-vessel="${safe(v.project_id)}">VIEW AS ADMIRAL</button></div></article>`;}
   const isActiveLife = life => life === 'active' || life === 'live';
-  function matches(v){const f=facts(v),hay=[v.display_name,v.project_id,v.operating_model,v.ownership_model,v.lifecycle_state].join(' ').toLowerCase();if(query&&!hay.includes(query.toLowerCase()))return false;if(filter==='all')return true;if(filter==='attention')return f.attention;if(filter==='stale')return f.stale;if(filter==='owner')return String(v.operating_model).includes('owner');if(filter==='fleet')return String(v.operating_model).includes('fleet');if(filter==='active')return isActiveLife(f.life);return f.life===filter;}
-  function paintFilterCounts(){const counts={all:records.length,attention:records.filter(v=>facts(v).attention).length,stale:records.filter(v=>facts(v).stale).length,commissioning:records.filter(v=>facts(v).life==='commissioning').length,staging:records.filter(v=>facts(v).life==='staging').length,active:records.filter(v=>isActiveLife(facts(v).life)).length,owner:records.filter(v=>String(v.operating_model).includes('owner')).length,fleet:records.filter(v=>String(v.operating_model).includes('fleet')).length};document.querySelectorAll('[data-watch-filter]').forEach(button=>{const label=button.dataset.watchLabel||button.textContent.replace(/\s+\d+$/,'');button.textContent=`${label} ${Number(counts[button.dataset.watchFilter]||0)}`;});}
+  const held = life => ['hold','blocked','suspended'].includes(life);
+  function inFilter(v,key) {
+    const f=facts(v);
+    switch(key){
+      case 'all': return true;
+      case 'attention': return f.attention;
+      case 'issues': return f.issues>0;
+      case 'held': return held(f.life);
+      case 'stale': return f.stale;
+      case 'unreported': return !f.reported;
+      case 'owner': return String(v.operating_model).includes('owner');
+      case 'fleet': return String(v.operating_model).includes('fleet');
+      case 'active': return isActiveLife(f.life);
+      default: return f.life===key;
+    }
+  }
+  function matches(v){
+    const fields=[v.display_name,v.project_id,words(v.operating_model),v.operating_model,v.ownership_model,v.lifecycle_state];
+    return inFilter(v,filter) && fields.join(' ').toLowerCase().includes(query.toLowerCase());
+  }
+  function priority(v){
+    const f=facts(v);
+    if(held(f.life))return 0;
+    if(f.issues>0)return 1;
+    if(!f.reported)return 2;
+    return 3;
+  }
+  function signals(f){
+    const tags=[];
+    if(held(f.life))tags.push([words(f.life),'urgent']);
+    if(f.issues>0)tags.push([f.issues+' open issue'+(f.issues===1?'':'s'),'urgent']);
+    if(!f.reported)tags.push(['Never reported','waiting']);
+    else if(f.stale)tags.push(['Stale report','waiting']);
+    else if(!tags.length)tags.push(['Current report','current']);
+    return tags.map(([label,tone])=>`<span class="bridge-tag ${tone}">${safe(label)}</span>`).join('');
+  }
+  function vesselRow(v){
+    const f=facts(v);
+    const stamp=f.reported?new Date(f.activity).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'}):'';
+    return `<article class="bridge-row">
+      <div class="bridge-identity">${mark(v)}<div><h4>${safe(v.display_name)}</h4><small>${safe(words(v.operating_model))} · ${safe(controlLabel(v).toLowerCase())}</small></div></div>
+      <div class="bridge-work"><b>${safe(v.current_work||'Work not reported')}</b>${stamp?'<small>Reported '+safe(stamp)+'</small>':''}</div>
+      <div class="bridge-signals">${signals(f)}</div>
+      <button type="button" data-watch-vessel="${safe(v.project_id)}" aria-label="Read report for ${safe(v.display_name)}">Read report →</button>
+    </article>`;
+  }
+  function programRow(v){
+    const schedule=v.project_id===PROGRAM.project_id;
+    const label=schedule?'ScheduleJoe':v.display_name;
+    const source=v.reference_only?'Local program':'Registered program';
+    const description=schedule?'Bootstrap Build · Construction scheduling':
+      v.current_work||(v.project_id==='wonderwake'?'Math, spelling and creative activities':'Awaiting first program report');
+    return `<article class="bridge-tool ${schedule?'schedule-tool':''}">
+      ${mark(schedule?{...PROGRAM,...v,logo_url:v.logo_url||PROGRAM.logo_url}:v)}
+      <div><h4>${safe(label)}</h4><p>${safe(description)}</p><small>${source}</small></div>
+      <div class="bridge-program-actions">${schedule?'<button type="button" data-schedulejoe-open>Open schedules →</button>':''}
+      <button type="button" data-watch-vessel="${safe(v.project_id)}" aria-label="Read report for ${safe(v.display_name)}">Program report</button></div>
+    </article>`;
+  }
+  function paintPrograms(){
+    const schedule=programs.find(v=>v.project_id===PROGRAM.project_id)||PROGRAM;
+    const host=$('watchPrograms');
+    const markup=[schedule,...programs.filter(v=>v!==schedule)].map(programRow).join('');
+    if(host.programMarkup!==markup){host.innerHTML=markup;host.programMarkup=markup;}
+  }
+  function paintRegistry(){
+    const counts=spine.counts||{};
+    const values=[
+      ['Registered vessels and programs',counts.vessels],
+      ['Settings ready',counts.supabase_settings_rows],
+      ['Owner ready',counts.owner_ready_vessels],
+      ['Vessels with fresh reports',records.filter(v=>{const f=facts(v);return f.reported&&!f.stale;}).length]
+    ];
+    $('watchRegistry').querySelector('dl').innerHTML=values.map(([label,value])=>
+      `<div><dt>${label}</dt><dd>${value!=null&&Number.isFinite(Number(value))?Number(value):'Not reported'}</dd></div>`
+    ).join('');
+  }
+  function paintKeel(){
+    const groups=[['issues','With open issues'],['held','Held or blocked'],['unreported','Never reported'],['stale','Stale reports']];
+    $('watchKeel').innerHTML=groups.map(([key,label])=>{
+      const count=records.filter(v=>inFilter(v,key)).length;
+      return `<button type="button" data-bridge-filter="${key}" aria-label="${label}: ${count} vessels"><b>${count}</b><span>${label}</span></button>`;
+    }).join('');
+  }
+  function paintDirectory(){
+    if(!lastSync)return;
+    const list=view==='attention'
+      ? records.filter(v=>facts(v).attention).sort((a,b)=>priority(a)-priority(b)||(facts(b).issues||0)-(facts(a).issues||0)||String(a.display_name).localeCompare(String(b.display_name)))
+      : records.filter(matches);
+    for(const option of $('watchFilter').options){
+      const key=option.value;
+      option.textContent=filterLabels[key]+' ('+records.filter(v=>inFilter(v,key)).length+')';
+    }
+    $('watchCount').textContent=list.length+' of '+records.length+' vessels';
+    const empty=!records.length?'No vessels in the registry.':view==='attention'?'No vessels need attention.':'No vessels match this search and filter.';
+    $('watchRows').innerHTML=list.length?list.map(vesselRow).join(''):`<p class="bridge-empty">${empty}</p>`;
+  }
+  function selectView(next){
+    view=next;
+    const workspace=$('watchWorkspace');
+    workspace.dataset.view=view;
+    for(const button of workspace.querySelectorAll('[data-watch-view]'))button.setAttribute('aria-pressed',String(button.dataset.watchView===view));
+    $('watchDirectory').hidden=view==='programs';
+    $('watchProgramPanel').hidden=view!=='programs';
+    $('watchTools').hidden=view!=='vessels';
+    $('watchRegistry').hidden=view!=='vessels'||!lastSync;
+    $('watchKeel').hidden=view!=='attention'||!lastSync;
+    $('watchFleetHelp').hidden=view!=='attention';
+    $('watchVesselTitle').textContent=view==='attention'?'Needs attention':'Vessel directory';
+    paintDirectory();
+  }
   let reportPlace = null;
 
   function findWatchRow(id) {
@@ -224,13 +364,13 @@ const AdmiralAccountForm = (() => {
   function focusWatchRow(place) {
     const row = findWatchRow(place.id);
     if (!row) {
-      const search = $('watchSearch');
+      const search = view==='vessels' ? $('watchSearch') : $(view==='attention'?'watchVesselTitle':'watchProgramTitle');
       search.scrollIntoView({block: 'center'});
       search.focus({preventScroll: true});
       return;
     }
     const fleet = $('bootstrapFleet');
-    const header = $('watchWorkspace').querySelector('header');
+    const header = $('watchWorkspace').querySelector('.bridge-nav');
     const top = getComputedStyle(header).position === 'sticky'
       ? Math.max(fleet.getBoundingClientRect().top, header.getBoundingClientRect().bottom)
       : fleet.getBoundingClientRect().top;
@@ -273,12 +413,28 @@ const AdmiralAccountForm = (() => {
   }
 
   function render(next=[...records,...programs]){
-    const activeRow = document.activeElement?.closest('[data-watch-vessel]');
-    const place = activeRow && $('watchWorkspace').contains(activeRow) ? placeOf(activeRow) : null;
-    programs=next.filter(v=>v.mission_class==='admiral_program');records=next.filter(v=>v.mission_class!=='admiral_program');const shown=records.filter(matches),fresh=records.filter(v=>facts(v).reported&&!facts(v).stale).length,action=records.filter(v=>facts(v).attention).length;$('watchRows').innerHTML=shown.length?shown.map(v=>card(v)).join(''):'<article class="bootstrap-fleet-empty"><div><b>No vessels match this watch</b><span>Clear the search or choose another filter. Fleet state was not changed.</span></div></article>';$('watchPrograms').innerHTML=(programs.some(v=>v.project_id===PROGRAM.project_id)?programs:[...programs,PROGRAM]).map(v=>card(v,true)).join('');$('watchCount').textContent=shown.length+' OF '+records.length+' VESSELS';$('watchStatus').textContent='SERVER-ATTESTED READ · '+records.length+' Fleet Core vessels · '+programs.length+' server program'+(programs.length===1?'':'s')+' · '+fresh+' fresh reports · '+action+' in Action Queue · synchronized '+(lastSync?new Date(lastSync).toLocaleString():'not yet')+'.';paintFilterCounts();paintKeel();
-    if (place) focusWatchRow(place);
+    const activeRow=document.activeElement?.closest('[data-watch-vessel]');
+    const place=activeRow && $('watchWorkspace').contains(activeRow)?placeOf(activeRow):null;
+    programs=next.filter(v=>v.mission_class==='admiral_program');
+    records=next.filter(v=>v.mission_class!=='admiral_program');
+    paintPrograms();paintKeel();paintRegistry();selectView(view);
+    const stamp=new Date(lastSync).toLocaleString(undefined,{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
+    $('watchStatus').textContent='Last fleet read '+stamp+' · '+records.length+' vessels · '+programs.length+' registered program'+(programs.length===1?'':'s');
+    if(place)focusWatchRow(place);
   }
-  function failWatch(message){records=[];programs=[];$('watchRows').innerHTML='<article class="bootstrap-fleet-empty"><div><b>Operational truth is unavailable</b><span>'+safe(message)+' No registry activity was substituted for vessel reporting.</span></div></article>';$('watchPrograms').innerHTML=card(PROGRAM,true);$('watchCount').textContent='0 VERIFIED VESSELS';}
+  function clearReports(){
+    records=[];programs=[];lastSync='';spine={counts:{},vessels:[]};
+    $('watchKeel').hidden=true;$('watchKeel').replaceChildren();
+    $('watchCount').textContent='';$('watchRows').replaceChildren();$('watchPrograms').replaceChildren();
+    $('watchPrograms').programMarkup=null;
+    $('watchRegistry').hidden=true;$('watchRegistry').open=false;$('watchRegistry').querySelector('dl').replaceChildren();
+    for(const option of $('watchFilter').options)option.textContent=filterLabels[option.value];
+  }
+  function failWatch(message){
+    clearReports();paintPrograms();
+    $('watchRows').innerHTML='<p class="bridge-empty">Fleet reports are unavailable. Use Refresh to try again.</p>';
+    $('watchStatus').textContent=message;
+  }
   // A verified workspace owns one read-only help mount. Leaving or refreshing it
   // invalidates even an already-dispatched read; outcomes are never stored here.
   let watchEpoch=0,watchRoute=null,helpMount=null,helpClient=null;
@@ -348,7 +504,7 @@ const AdmiralAccountForm = (() => {
   }
   function setSecurityLayer(verified,message=''){const gate=$('watchSecurityLayer'),workspace=$('watchWorkspace'),overview=$('watchOverview');const opening=verified&&workspace.classList.contains('hidden');gate.classList.toggle('hidden',!!verified);gate.setAttribute('aria-hidden',String(!!verified));workspace.classList.toggle('hidden',!verified);workspace.setAttribute('aria-hidden',String(!verified));
     if(opening)stopWatchLanding=window.BlackFlagViewport?.landAtHeader($('watchFleetTitle'),$('bootstrapFleet'));
-    if(!verified){clearHelp();reportPlace=null;workspace.inert=false;overview.classList.add('hidden');overview.setAttribute('aria-hidden','true');records=[];programs=[];spine={counts:{},vessels:[]};if(message)$('watchGateStatus').textContent=message;}}
+    if(!verified){clearHelp();reportPlace=null;workspace.inert=false;overview.classList.add('hidden');overview.setAttribute('aria-hidden','true');clearReports();if(message)$('watchGateStatus').textContent=message;}}
   function showWatchSignIn(message) {
     setSecurityLayer(false);
     $('watchSecurityForm').hidden = false;
@@ -356,13 +512,15 @@ const AdmiralAccountForm = (() => {
     $('watchGateStatus').textContent = message;
   }
   async function identityVerified(){try{return !!(await window.DarkSkyAdmiralIdentityStatus?.());}catch(_){return false;}}
-  async function load(){leaveWatch();const turn=watchEpoch,status=$('watchStatus');try{const verified=await identityVerified();if(!sameWatch(turn))return;if(!verified){showWatchSignIn('Second security check required. Sign in with your Admiral account.');return;}setSecurityLayer(true);mountHelp(turn);status.textContent='Admiral account verified. Reading server-attested Fleet Watch…';$('watchTools').classList.remove('hidden');await window.DarkSkySyncVesselBrandIdentity?.();if(!sameWatch(turn))return;if(typeof window.DarkSkyReadAdmiralWatch!=='function'||typeof window.DarkSkyReadFleetSpine!=='function')throw new Error('Supabase Fleet readers are unavailable in this release.');const [watch,keel]=await Promise.all([window.DarkSkyReadAdmiralWatch(),window.DarkSkyReadFleetSpine()]);if(!sameWatch(turn))return;const logos=new Map((window.DarkSkyReadAdmiralFleet?.()||[]).map(v=>[v.project_id,v.logo_url])),posture=new Map((keel?.vessels||[]).map(v=>[v.project_id,v]));spine=keel||{counts:{},vessels:[]};lastSync=watch?.read_at||keel?.read_at||new Date().toISOString();render((watch?.records||[]).map(v=>({...v,...(posture.get(v.project_id)||{}),logo_url:logos.get(v.project_id)||''})));}catch(error){const message=error?.message||'Fleet Watch could not be read.';if(!sameWatch(turn))return;const verified=await identityVerified();if(!sameWatch(turn))return;if(!verified){showWatchSignIn(message+' The Fleet workspace remains locked.');return;}failWatch(message);status.textContent=message+' No data changed.';}}
+  async function load(){leaveWatch();const turn=watchEpoch,status=$('watchStatus');try{const verified=await identityVerified();if(!sameWatch(turn))return;if(!verified){showWatchSignIn('Second security check required. Sign in with your Admiral account.');return;}setSecurityLayer(true);mountHelp(turn);status.textContent='Reading fleet reports…';await window.DarkSkySyncVesselBrandIdentity?.();if(!sameWatch(turn))return;if(typeof window.DarkSkyReadAdmiralWatch!=='function'||typeof window.DarkSkyReadFleetSpine!=='function')throw new Error('Supabase Fleet readers are unavailable in this release.');const [watch,keel]=await Promise.all([window.DarkSkyReadAdmiralWatch(),window.DarkSkyReadFleetSpine()]);if(!sameWatch(turn))return;if(!Array.isArray(watch?.records)||!Array.isArray(keel?.vessels))throw Error('Fleet reports could not be confirmed.');const logos=new Map((window.DarkSkyReadAdmiralFleet?.()||[]).map(v=>[v.project_id,v.logo_url])),posture=new Map((keel?.vessels||[]).map(v=>[v.project_id,v]));spine=keel||{counts:{},vessels:[]};lastSync=watch?.read_at||keel?.read_at||new Date().toISOString();render((watch?.records||[]).map(v=>({...v,...(posture.get(v.project_id)||{}),logo_url:logos.get(v.project_id)||''})));}catch(error){const message=error?.message||'Fleet Watch could not be read.';if(!sameWatch(turn))return;const verified=await identityVerified();if(!sameWatch(turn))return;if(!verified){showWatchSignIn(message+' The Fleet workspace remains locked.');return;}failWatch(message);}}
   function open(options={}){
     const returnToEngine=options.source==='admiral-gate';
     $('watchClose').textContent=returnToEngine?'Back to Engine':'Close';
     $('watchGateClose').textContent=returnToEngine?'Back to Engine':'Close';
     watchAccount.reset();$('watchSecurityForm').hidden=true;const fleet=$('bootstrapFleet');
-    fleet.dataset.returnToEngine=String(returnToEngine);watchRoute=routeGeneration();setSecurityLayer(false);fleet.classList.remove('hidden');fleet.setAttribute('aria-hidden','false');document.body.classList.add('bootstrap-fleet-open');fleet.scrollTop=0;$('watchGateStatus').textContent='Checking the dedicated Admiral account…';load();}
+    fleet.dataset.returnToEngine=String(returnToEngine);watchRoute=routeGeneration();setSecurityLayer(false);
+    filter='all';query='';$('watchSearch').value='';$('watchFilter').value='all';selectView('attention');
+    fleet.classList.remove('hidden');fleet.setAttribute('aria-hidden','false');document.body.classList.add('bootstrap-fleet-open');fleet.scrollTop=0;$('watchGateStatus').textContent='Checking the dedicated Admiral account…';load();}
   function close(){
     const pending = watchAccount.pending;
     watchAccount.reset();
@@ -416,19 +574,21 @@ const AdmiralAccountForm = (() => {
     }
     return;
   }if(t.closest?.('#watchRefresh'))return load();if(t.closest?.('#watchSignOut')){watchAccount.reset();leaveWatch();await window.DarkSkySignOutAdmiral?.();if(shown($('bootstrapFleet')))showWatchSignIn('Admiral account signed out. Sign in to reopen My Fleet.');return;}const vessel=t.closest?.('[data-watch-vessel]');if(vessel)return overview(vessel.dataset.watchVessel);if(t.closest?.('#watchOverviewClose'))return backToWatch();
-    const jump=t.closest?.('button[data-fleet-jump]');
-    if(jump && shown($('watchWorkspace'))){
-      const heading=$(jump.dataset.fleetJump),fleet=$('bootstrapFleet');
-      const header=$('watchWorkspace').querySelector('header');
-      const inset=getComputedStyle(header).position==='sticky' ? header.offsetHeight : 0;
-      fleet.scrollTop+=heading.getBoundingClientRect().top-fleet.getBoundingClientRect().top-inset-20;
-      heading.focus({preventScroll:true});
+    const nav=t.closest?.('[data-watch-view]'),metric=t.closest?.('[data-bridge-filter]');
+    if((nav||metric) && shown($('watchWorkspace'))){
+      if(metric){
+        filter=metric.dataset.bridgeFilter;query='';$('watchSearch').value='';$('watchFilter').value=filter;
+      }
+      selectView(metric?'vessels':nav.dataset.watchView);
+      $('bootstrapFleet').scrollTop=0;
+      if(metric)$('watchVesselTitle').focus({preventScroll:true});
       return;
     }
     const step=t.closest?.('button[data-watch-step]');
     if(step&&!step.disabled)return stepReport(Number(step.dataset.watchStep));
-    const chosen=t.closest?.('[data-watch-filter]');if(chosen){filter=chosen.dataset.watchFilter;document.querySelectorAll('[data-watch-filter]').forEach(b=>{const yes=b===chosen;b.classList.toggle('is-selected',yes);b.setAttribute('aria-pressed',String(yes));});render();}},true);
-  document.addEventListener('input',e=>{if(e.target.id==='watchSearch'){query=e.target.value.trim();render();}});
+  },true);
+  document.addEventListener('input',e=>{if(e.target.id==='watchSearch'){query=e.target.value.trim();paintDirectory();}});
+  $('watchFilter').addEventListener('change',e=>{filter=e.target.value;paintDirectory();});
 })();
 
 (() => {

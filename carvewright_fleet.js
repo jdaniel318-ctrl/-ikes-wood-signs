@@ -75,8 +75,21 @@
   if(nextGate!==gate){if(gate&&requested)requested=false;gateObserver?.disconnect();gate=nextGate;if(gate){gateObserver=new MutationObserver(requestedPassage);gateObserver.observe(gate,{attributes:true,attributeFilter:['class','hidden','aria-hidden']});}}
   const actions=deck?.querySelector('.admiral-deck-head-actions');
   if(actions&&!$('carvewrightAdmiralOpen')){const b=document.createElement('button');b.id='carvewrightAdmiralOpen';b.type='button';b.textContent='CARVEWRIGHT';b.addEventListener('click',()=>void open());actions.prepend(b);}
-  const fleet=$('watchWorkspace')||$('bootstrapFleet')?.querySelector('.bootstrap-fleet-shell');
-  if(fleet&&!$('carvewrightFleetService')){const card=document.createElement('section');card.id='carvewrightFleetService';card.className='carvewright-fleet-service';card.setAttribute('aria-label','Carvewright local design service');const title=document.createElement('h3');title.textContent='Carvewright';const copy=document.createElement('p');copy.textContent='Local design service · Registration pending. Saved vector layouts, SVG artwork, lettering pockets and CNC files.';const b=document.createElement('button');b.id='carvewrightFleetOpen';b.type='button';b.textContent='OPEN CARVEWRIGHT';b.addEventListener('click',requestOpen);card.append(title,copy,b);fleet.appendChild(card);}
+  const fleet=$('watchLocalTools')||$('watchWorkspace')||$('bootstrapFleet')?.querySelector('.bootstrap-fleet-shell');
+  if(fleet&&!$('carvewrightFleetService')){
+   const card=document.createElement('section');
+   card.id='carvewrightFleetService';
+   card.className='carvewright-fleet-service';
+   card.setAttribute('aria-label','Carvewright local design service');
+   const mark=document.createElement('span');
+   mark.className='bridge-service-mark';mark.setAttribute('aria-hidden','true');mark.textContent='CW';
+   const body=document.createElement('div'),title=document.createElement('h4'),copy=document.createElement('p');
+   title.textContent='Carvewright';copy.textContent='Sign design and CNC files · Local service, registration pending.';
+   const button=document.createElement('button');
+   button.id='carvewrightFleetOpen';button.type='button';button.textContent='Open Carvewright';
+   button.addEventListener('click',requestOpen);
+   body.append(title,copy);card.append(mark,body,button);fleet.appendChild(card);
+  }
   const engine=$('carvewrightEngineOpen');if(engine&&!engine.dataset.carvewrightBound){engine.dataset.carvewrightBound='1';engine.addEventListener('click',requestOpen);}
  }
  function activity(event){
