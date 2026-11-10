@@ -250,7 +250,7 @@ const admiralVesselLogos = new Map([
     <div class="bridge-gallery">
     <div id="watchPrograms" class="bootstrap-fleet-rows bridge-list"></div>
     <div id="watchLocalTools" class="bridge-list">
-      <article class="bridge-tool arcade-tool"><div><h4>Lantern Run</h4><p>Harbor arcade · Steer through the mazes.</p></div><button type="button" data-watch-arcade>Play Lantern Run</button></article>
+      <article class="bridge-tool arcade-tool" style="--gallery-art:url(fleet-arcade-cover.webp)"><div><h4>Fleet Arcade</h4><p>Six Bells · Six new games and Lantern Run.</p></div><button type="button" data-watch-arcade data-fleet-collection>Open Fleet Arcade →</button></article>
     </div></div>
   </section>
   <div id="watchFleetHelp"></div>

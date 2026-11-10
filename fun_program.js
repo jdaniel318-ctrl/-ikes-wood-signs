@@ -183,26 +183,76 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&dialog&&!dialog.hid
 window.BlackFlagFUNProgram=Object.freeze({open,openLegacy:()=>open(true),close,isOpen:()=>!!frame&&!!dialog&&!dialog.hidden,build:'8.8.20.68',mode:'admiral-solo-prototype'});
 document.addEventListener('click',e=>{if(e.target instanceof Element&&e.target.closest('#funProgramLaunch')){e.preventDefault();open();}});
 
-// Lantern Run uses the same Admiral entrance as Stormwake, and its own game data.
-const LANTERN_DIGEST = 'e6056fd9aeb2b6933de5052eadc0151f343b7e1c0441203d6f6931148d391322';
-let lanternSource = '';
-async function lanternPlayerSource(signal) {
-  if (lanternSource) return lanternSource;
-  const response = await fetch('lantern-run.ship.json?v=' + LANTERN_DIGEST, {
-    credentials:'omit', redirect:'error', signal
-  });
-  if (!response.ok) throw Error('Lantern Run could not load. Check that the game file was uploaded with the fleet package.');
-  const bytes = await response.arrayBuffer();
-  if (bytes.byteLength > 250000) throw Error('Lantern Run has an unexpected package size.');
-  const hash = await crypto.subtle.digest('SHA-256',bytes);
-  const actual = Array.from(new Uint8Array(hash), byte => byte.toString(16).padStart(2,'0')).join('');
-  if (actual !== LANTERN_DIGEST) throw Error('The game file and the Admiral launcher are different editions. Upload the matching package.');
-  const program = JSON.parse(new TextDecoder().decode(bytes));
-  if (program.format !== 'blackflag.arcade-player.v1' || program.id !== 'lantern-run' || program.edition !== 6 || program.levels !== LANTERN_LEVEL_COUNT || typeof program.player !== 'string') throw Error('The Lantern Run game package could not be read.');
-  lanternSource = program.player;
-  return lanternSource;
-}
+// Both arcade players use the verified Admiral entrance and isolated frames.
 const LANTERN_LEVEL_COUNT = 36;
+const arcadeEditions = {
+  lantern: {name:'Lantern Run', file:'lantern-run.ship.json', id:'lantern-run', edition:6, levels:LANTERN_LEVEL_COUNT, limit:250000, digest:'e6056fd9aeb2b6933de5052eadc0151f343b7e1c0441203d6f6931148d391322'},
+  collection: {name:'Fleet Arcade', file:'fleet-arcade.ship.json', id:'six-bells', edition:1, levels:18, limit:1800000, digest:'f5279d5700d8021873132a4ca4775d59f9926cc39c94b054650e5a32b0407a7c'}
+};
+const arcadeSources = new Map();
+async function arcadePlayerSource(edition,signal) {
+  if (arcadeSources.has(edition.id)) return arcadeSources.get(edition.id);
+  const response = await fetch(edition.file+'?v='+edition.digest,{credentials:'omit',redirect:'error',signal});
+  if (!response.ok) throw Error(edition.name+' could not load. Check that its game file was uploaded.');
+  const bytes = await response.arrayBuffer();
+  if (bytes.byteLength>edition.limit) throw Error(edition.name+' has an unexpected package size.');
+  const hash = await crypto.subtle.digest('SHA-256',bytes);
+  const actual = Array.from(new Uint8Array(hash),byte=>byte.toString(16).padStart(2,'0')).join('');
+  if (actual!==edition.digest) throw Error('The game file and launcher are different editions. Upload the matching update.');
+  const pack = JSON.parse(new TextDecoder().decode(bytes));
+  if (pack.format!=='blackflag.arcade-player.v1'||pack.id!==edition.id||pack.edition!==edition.edition||pack.levels!==edition.levels||typeof pack.player!=='string') throw Error('This arcade edition could not be read.');
+  arcadeSources.set(edition.id,pack.player);
+  return pack.player;
+}
+const arcadeGames = new Set(['riptail','skullwater','pipeworks','deepbell','chalkwing','dockmaster']);
+function arcadeSaveKey(run,id,level){
+  return 'blackflag.six-bells.v1:'+encodeURIComponent(JSON.stringify(run.who.context.scope))+':'+id+'.'+level;
+}
+function readArcadeRecord(run,id,level){
+  try{
+    const raw=localStorage.getItem(arcadeSaveKey(run,id,level));
+    if(!raw||raw.length>19000)return {};
+    const record=JSON.parse(raw);
+    return record&&typeof record==='object'&&!Array.isArray(record)?record:{};
+  }catch{run.canSave=false;return {};}
+}
+function arcadeRecords(run){
+  const records={};
+  for(const id of arcadeGames)for(let level=0;level<3;level++){
+    const record=readArcadeRecord(run,id,level);
+    if(Object.keys(record).length)records[id+'.'+level]=record;
+  }
+  return records;
+}
+function writeArcadeRecord(run,msg){
+  if(!lanternAccess(run))return;
+  const record=readArcadeRecord(run,msg.id,msg.level);
+  if(msg.type==='arcade-clear'){
+    if(!Number.isSafeInteger(msg.score)||msg.score<0||msg.score>1000000000)return;
+    record.best=Math.max(Number(record.best)||0,msg.score);record.clear=true;
+  }else{
+    // Ghost and other optional game data occupy their own game/level slot.
+    try{
+      const data=JSON.stringify(msg.data);
+      if(!data||data.length>16384)return;
+      const next=JSON.parse(data);
+      if(msg.id==='skullwater'&&next?.v===1&&record.data?.v===1&&
+        Number.isInteger(record.data.ms)&&record.data.ms>0&&record.data.ms<=next.ms)return;
+      record.data=next;
+    }catch{return;}
+  }
+  try{localStorage.setItem(arcadeSaveKey(run,msg.id,msg.level),JSON.stringify(record));}
+  catch{run.canSave=false;run.player.contentWindow.postMessage({type:'save-held',channel:run.channel},'*');}
+}
+
+function saveArcadeRecord(run,msg){
+  if(!arcadeGames.has(msg.id)||!Number.isInteger(msg.level)||msg.level<0||msg.level>2)return;
+  const locks=window.navigator?.locks;
+  if(!locks){writeArcadeRecord(run,msg);return;}
+  locks.request(arcadeSaveKey(run,msg.id,msg.level),()=>writeArcadeRecord(run,msg)).catch(()=>{
+    if(lanternAccess(run))run.player.contentWindow.postMessage({type:'save-held',channel:run.channel},'*');
+  });
+}
 function lanternCleared(run) {
   // A one-way flag for each cleared maze permits simultaneous runs without regressing progress.
   let cleared = 0;
@@ -238,46 +288,56 @@ function leaveLantern(run) {
 function lanternBest(run) {
   try { return Number(localStorage.getItem(run.key)) || 0; } catch { return 0; }
 }
-async function openLantern(button) {
+async function openLantern(button,kind=button.hasAttribute('data-fleet-collection')?'collection':'lantern',backToShelf=false) {
+  const edition=arcadeEditions[kind];
   const fromFleet=button.matches('[data-watch-arcade]') && $('watchWorkspace')?.contains(button);
   const visible=fromFleet?fleetArcadeVisible:deckVisible;
   if (lanternSession || !visible()) return;
   const panel = document.createElement('dialog');
   panel.id = 'lanternArcade';
-  panel.setAttribute('aria-label','Lantern Run');
+  panel.setAttribute('aria-label',edition.name);
   panel.innerHTML = '<header><strong>BLACK FLAG · ADMIRAL ARCADE</strong><button type="button">← Back to Admiral</button></header><p role="status">Checking Admiral access…</p>';
   if(fromFleet)panel.querySelector('button').textContent='← Back to My Fleet';
-  const run = {panel, button, visible, timer:0, loadTimer:0, player:null, controller:new AbortController()};
+  if(backToShelf)panel.querySelector('button').textContent='← Back to Fleet Arcade';
+  const run = {panel, button, visible, kind, timer:0, loadTimer:0, player:null, controller:new AbortController()};
   lanternSession = run;
   (fromFleet?$('watchWorkspace'):$('admiralDeck')).appendChild(panel);
-  panel.querySelector('button').onclick = () => leaveLantern(run);
-  panel.addEventListener('cancel', e => { e.preventDefault(); leaveLantern(run); });
+  const exitPlayer=()=>{
+    const reopen=backToShelf&&run.who&&lanternAccess(run);
+    leaveLantern(run);
+    if(reopen)openLantern(button,'collection');
+  };
+  panel.querySelector('button').onclick=exitPlayer;
+  panel.addEventListener('cancel',e=>{e.preventDefault();exitPlayer();});
   panel.showModal();
   const status = panel.querySelector('p');
   try {
     run.who = await verified(epoch,visible);
     if (lanternSession !== run) return;
-    if (!lanternAccess(run)) throw Error('Reopen Lantern Run from your signed-in Admiral Deck.');
-    status.textContent = 'Opening Lantern Run…';
+    if (!lanternAccess(run)) throw Error('Reopen the arcade from your signed-in Admiral workspace.');
+    status.textContent = 'Opening '+edition.name+'…';
     run.timer = setInterval(() => { if (!lanternAccess(run)) leaveLantern(run); }, 500);
     run.loadTimer = setTimeout(() => run.controller.abort(),15000);
-    const playerSource = await lanternPlayerSource(run.controller.signal);
+    const playerSource = await arcadePlayerSource(edition,run.controller.signal);
     clearTimeout(run.loadTimer);
     if (!lanternAccess(run)) { leaveLantern(run); return; }
     run.channel = crypto.randomUUID();
+    run.canSave = true;
+    if(kind==='lantern'){
     run.key = 'blackflag.lantern-run.best.v1:' + encodeURIComponent(JSON.stringify(run.who.context.scope));
     run.routeKey = 'blackflag.lantern-run.voyage.v1:' + encodeURIComponent(JSON.stringify(run.who.context.scope)) + ':';
-    run.canSave = true;
     run.cleared = lanternCleared(run);
+    }
     const player = document.createElement('iframe');
     run.player = player;
-    player.title = 'Lantern Run harbor chase';
+    player.title = edition.name;
     player.setAttribute('sandbox','allow-scripts');
     player.setAttribute('allow',"camera 'none'; microphone 'none'; geolocation 'none'; payment 'none'");
     player.referrerPolicy = 'no-referrer';
     player.onload = () => {
       if (!lanternAccess(run)) { leaveLantern(run); return; }
-      player.contentWindow.postMessage({type:'init',channel:run.channel,best:lanternBest(run),cleared:run.cleared,canSave:run.canSave},'*');
+      const start = kind==='collection' ? {records:arcadeRecords(run)} : {best:lanternBest(run),cleared:run.cleared};
+      player.contentWindow.postMessage({type:'init',channel:run.channel,...start,canSave:run.canSave},'*');
     };
     player.srcdoc = playerSource;
     status.replaceWith(player);
@@ -305,6 +365,14 @@ window.addEventListener('message', event => {
   if (!lanternAccess(run)) { leaveLantern(run); return; }
   if (event.data.type === 'activity' && !document.hidden && run.panel.open) {
     window.DarkSkyAdmiralSession.noteProgramActivity?.({userId:run.who.id, startedAt:run.who.stamp});
+  } else if (run.kind==='collection'){
+    if (event.data.type==='arcade-lantern'){
+      const button=run.button;
+      leaveLantern(run);
+      openLantern(button,'lantern',true);
+    }else if(event.data.type==='arcade-clear'||event.data.type==='arcade-data'){
+      saveArcadeRecord(run,event.data);
+    }
   } else if (event.data.type === 'maze-cleared') {
     const stage = event.data.level;
     if (!Number.isInteger(stage) || stage < 1 || stage > LANTERN_LEVEL_COUNT) return;
