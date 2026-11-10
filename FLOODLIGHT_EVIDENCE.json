@@ -1,0 +1,18 @@
+{
+  "build": "8.8.20.114",
+  "base_commit": "e40fdcd1ea4155edba1d8bdc5be87a627e288de1",
+  "base_tree": "89b59b8feb706515c2f440224251a906a62a2b7a",
+  "game_asset_sha256": "fa027fbc942c43294dacaa9476e3163b7d95ee2c096de864ef49add0a046f82c",
+  "visual_scope": "Two original stadium plates, 30 batter poses, fielders and runners, contrasting pitch trail, timing and pitch location, batted-ball tracking and home run replay",
+  "synthetic": [
+    "Early/late feedback through real game renderer",
+    "Eleven scoring and progression scenarios",
+    "Signed cartridge loader, score and scope checks",
+    "Browser fixture with simulated input and clock"
+  ],
+  "hardware_pending": [
+    "iPad pitch tracking in Floodlight",
+    "Actual touch latency and fullscreen transitions",
+    "Sound levels and physical controller feel"
+  ]
+}

@@ -187,7 +187,7 @@ document.addEventListener('click',e=>{if(e.target instanceof Element&&e.target.c
 const LANTERN_LEVEL_COUNT = 36;
 const arcadeEditions = {
   lantern: {name:'Lantern Run', file:'lantern-run.ship.json', id:'lantern-run', edition:7, levels:LANTERN_LEVEL_COUNT, limit:250000, digest:'4f8add355a2eee41badb12234ff3afa205934646e42f1fd02316f1d2b3cbe53a'},
-  collection: {name:'Fleet Arcade', file:'fleet-arcade.ship.json', id:'six-bells', edition:4, levels:22, limit:1800000, digest:'74110cdddfda673e0f86590aa7b933adf37e0fe1a4f56c67b7f7dc28e3f4dc88'}
+  collection: {name:'Fleet Arcade', file:'fleet-arcade.ship.json', id:'six-bells', edition:5, levels:22, limit:2400000, digest:'fa027fbc942c43294dacaa9476e3163b7d95ee2c096de864ef49add0a046f82c'}
 };
 const arcadeSources = new Map();
 async function arcadePlayerSource(edition,signal) {

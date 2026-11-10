@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.20.113';
-const RELEASE_SEAL='harbor-ninth-8820113';
+const RELEASE_BUILD='8.8.20.114';
+const RELEASE_SEAL='floodlight-8820114';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.

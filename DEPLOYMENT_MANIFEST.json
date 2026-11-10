@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.20.113",
-  "version": "8.8.20.113",
-  "release_name": "Harbor Ninth",
-  "releaseName": "Harbor Ninth",
-  "release_seal": "harbor-ninth-8820113",
+  "build": "8.8.20.114",
+  "version": "8.8.20.114",
+  "release_name": "Floodlight",
+  "releaseName": "Floodlight",
+  "release_seal": "floodlight-8820114",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -162,8 +162,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "Harbor Sluggers adds Bottom of the Ninth with a live count, Contact and Power swings, fielding, baserunning decisions and home run replay.",
-  "release_note": "Harbor Sluggers adds Bottom of the Ninth with a live count, Contact and Power swings, fielding, baserunning decisions and home run replay.",
+  "release_focus": "Floodlit cameras, an articulated 30-pose batter, a visible ball trail and swing feedback in Harbor Sluggers.",
+  "release_note": "Floodlit cameras, an articulated 30-pose batter, a visible ball trail and swing feedback in Harbor Sluggers.",
   "tax_ledger_upgrade": {
     "schema": "dark-sky-fleet-tax-ledger-v1",
     "model": "TAX_LEDGER_MODEL.json",
@@ -285,8 +285,8 @@
     "algorithm": "SHA-256",
     "files": {
       "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": {
-        "sha256": "8382758fd9582b32e30e0341e48712f3ee8404cb2f49544e61690a8dc3a942bb",
-        "build": "8.8.20.113",
+        "sha256": "a0a8bd2e11277d259079dc26e8ec868d56bd97e61fced52319931841a09664e1",
+        "build": "8.8.20.114",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -333,14 +333,14 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_COMMAND_MODEL.json": {
-        "sha256": "0b5a5d96fd19a6a4ec550810f224875b0dc64be0d3a3dc6af834ff5098144379",
-        "build": "8.8.20.113",
+        "sha256": "55db15c573ea12f81e45cb49d88e3c1a68b7b13a49dde8133609e7bdc8dfa472",
+        "build": "8.8.20.114",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
       "FLEET_DOCTRINE_REGISTRY.json": {
-        "sha256": "e6f89a772041abb0339ebd3e437ed6d440a2cecb88d5b4fbb547698a31776c14",
-        "build": "8.8.20.113",
+        "sha256": "577919c0395ac832e392bc4d10f5adf36c14708c0d156243bda8076caf67bee6",
+        "build": "8.8.20.114",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -399,8 +399,8 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "GOLDEN_VOYAGES.json": {
-        "sha256": "60f39b86648996b995fcd23e68a4ab30dbc96738b1cfdff71cd544d4f6453da8",
-        "build": "8.8.20.113",
+        "sha256": "1c4a3b044ec4acab5df0e3f4ec65c924e2482e99d9bbdc040963d950051952c9",
+        "build": "8.8.20.114",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -559,14 +559,14 @@
       "app.js": "c7948218726e4c5c30f320f2a1ae747ffe445b89c807f0f384a488273617900d",
       "captain.js": "7a6eb7f6c7791241a1af134e4f40db02cf78b41db07ea1b04d5c689ebffc9ec4",
       "simple_books.js": "ddd76dcf5e6c579f16918a9d3e645b0fc65d8a5b4d7c66df8896d8314eea325d",
-      "owner.html": "632afe6ddf735923a3f0d0955581350220a4666795a375405f620e5f12611797",
-      "manifest.webmanifest": "75ce9dcad7843a7cd58749a1853a6dae8a62b453c1434431f8cb439f2c54620d",
+      "owner.html": "cc70dc8b196dbab94e0d5598a717c6c6d077fc5bed19f2be286af29d419d7037",
+      "manifest.webmanifest": "32fa23ea28f1b470c7755d976fc7f4d989dc84cddbe3d9480404d8b93213b825",
       "IKE_STYLE_FOUNDRY.json": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
-      "sw.js": "4bc401844f6edb143164b9f75b79c37288d951b885ea5b353a382303ae44ba3c",
-      "FLEET_DOCTRINE_REGISTRY.json": "e6f89a772041abb0339ebd3e437ed6d440a2cecb88d5b4fbb547698a31776c14",
-      "GOLDEN_VOYAGES.json": "60f39b86648996b995fcd23e68a4ab30dbc96738b1cfdff71cd544d4f6453da8",
-      "FLEET_COMMAND_MODEL.json": "0b5a5d96fd19a6a4ec550810f224875b0dc64be0d3a3dc6af834ff5098144379",
-      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "8382758fd9582b32e30e0341e48712f3ee8404cb2f49544e61690a8dc3a942bb",
+      "sw.js": "e8a2b4df95809b7e6b69bd0c154ce2558c24aa0817cabd86901fb676593dae63",
+      "FLEET_DOCTRINE_REGISTRY.json": "577919c0395ac832e392bc4d10f5adf36c14708c0d156243bda8076caf67bee6",
+      "GOLDEN_VOYAGES.json": "1c4a3b044ec4acab5df0e3f4ec65c924e2482e99d9bbdc040963d950051952c9",
+      "FLEET_COMMAND_MODEL.json": "55db15c573ea12f81e45cb49d88e3c1a68b7b13a49dde8133609e7bdc8dfa472",
+      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "a0a8bd2e11277d259079dc26e8ec868d56bd97e61fced52319931841a09664e1",
       "input_hygiene.js": "e54a78fe75567db53c9682d4d039f53609fdcd0d43448f0534faec61def7edae",
       "business_deck.js": "63b1531524c46d73646a8265c7beabc1be430b9c613895a83c3e0f4bc696342f",
       "business_deck.css": "e28a49dcf16d35b3c7e0b4e69dd4892881cba564aeebc3e62e4b4eea90fca8d5",
@@ -575,7 +575,7 @@
       "headway_contracts.js": "e79286db1785fa95038bbda65c83e0d36ada63b2d402dffad695e4866062c09c",
       "woodwright_fit.js": "a4efdadf635608419a2bd82f12a701fd2991ec5dc3d14d282fd846680d40606f",
       "fun_core.js": "b21a909fa3dccf44b2d02d4a8243a91fd260b70db2edfc35338f3fd330c810e4",
-      "fun_program.js": "4869aeb610f2c4c461d517be770acc8fb0e1b8ea296eb7a099ee676372fe4192",
+      "fun_program.js": "d250e7942e2ac45e5274d0b3e745f80e0c292435fa9bbb3b90c9200ce292ea44",
       "fun_program.css": "5426df73fe625f936bcc5f114ea6706aa316641db30e012c9633121432288fd3",
       "fun_player.html": "fcfc2d06cdf204f4591a9717968a027facf170e6e0be32d9151ef847870a0fb7",
       "stormwake_core.js": "b0193108053c9ddd067dc100bb9d820292e970ad2c316512b8456e359820b405",
@@ -1077,7 +1077,7 @@
     "project_data_mutation": false,
     "field_failure_proof": "8.8.20.13 held on styles.css because packaged DEPLOYMENT_MANIFEST runtime hash did not match packaged styles.css bytes"
   },
-  "release": "Harbor Ninth",
+  "release": "Floodlight",
   "clearbearing_upgrade": {
     "build": "8.8.20.22",
     "baseline": "8.8.20.14 HashLock",
@@ -1280,9 +1280,9 @@
       "bytes": 5015096
     },
     "fleet-arcade.ship.json": {
-      "sha256": "74110cdddfda673e0f86590aa7b933adf37e0fe1a4f56c67b7f7dc28e3f4dc88",
+      "sha256": "fa027fbc942c43294dacaa9476e3163b7d95ee2c096de864ef49add0a046f82c",
       "load": "after existing verified Admiral entry",
-      "bytes": 1602727
+      "bytes": 2397085
     }
   },
   "blacktide_upgrade": {
