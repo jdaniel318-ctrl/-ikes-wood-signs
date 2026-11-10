@@ -575,7 +575,7 @@
       "headway_contracts.js": "e79286db1785fa95038bbda65c83e0d36ada63b2d402dffad695e4866062c09c",
       "woodwright_fit.js": "a4efdadf635608419a2bd82f12a701fd2991ec5dc3d14d282fd846680d40606f",
       "fun_core.js": "b21a909fa3dccf44b2d02d4a8243a91fd260b70db2edfc35338f3fd330c810e4",
-      "fun_program.js": "82ac29791625f0a718f4d0edcb31243297026b6b0c6be3570b5ce817da717c1a",
+      "fun_program.js": "b44e8424439b17d7ea5721521d3dd32eb27f4778564bd521a4c2788030b7976e",
       "fun_program.css": "5e1ec030c54020ec4f4d18727ea39f7c549355b45db6d8a09f28b9e0920ceee5",
       "fun_player.html": "fcfc2d06cdf204f4591a9717968a027facf170e6e0be32d9151ef847870a0fb7",
       "stormwake_core.js": "b0193108053c9ddd067dc100bb9d820292e970ad2c316512b8456e359820b405",
@@ -1270,9 +1270,9 @@
   },
   "lazy_program_assets": {
     "lantern-run.ship.json": {
-      "sha256": "8d02fb4a37cf0916bd1f41eed955294c35ff1620af4197c9b3caac7fdf8945e0",
+      "sha256": "e6056fd9aeb2b6933de5052eadc0151f343b7e1c0441203d6f6931148d391322",
       "load": "after existing verified Admiral entry",
-      "bytes": 54923
+      "bytes": 82762
     },
     "stormwake_player.html": {
       "sha256": "a7b35dec4de61eed5f9a90e3dbd817c0724ae85827b5fcf5cc125326cb81dc9c",

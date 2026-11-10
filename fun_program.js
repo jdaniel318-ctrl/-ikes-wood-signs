@@ -184,7 +184,7 @@ window.BlackFlagFUNProgram=Object.freeze({open,openLegacy:()=>open(true),close,i
 document.addEventListener('click',e=>{if(e.target instanceof Element&&e.target.closest('#funProgramLaunch')){e.preventDefault();open();}});
 
 // Lantern Run uses the same Admiral entrance as Stormwake, and its own game data.
-const LANTERN_DIGEST = '8d02fb4a37cf0916bd1f41eed955294c35ff1620af4197c9b3caac7fdf8945e0';
+const LANTERN_DIGEST = 'e6056fd9aeb2b6933de5052eadc0151f343b7e1c0441203d6f6931148d391322';
 let lanternSource = '';
 async function lanternPlayerSource(signal) {
   if (lanternSource) return lanternSource;
@@ -198,11 +198,11 @@ async function lanternPlayerSource(signal) {
   const actual = Array.from(new Uint8Array(hash), byte => byte.toString(16).padStart(2,'0')).join('');
   if (actual !== LANTERN_DIGEST) throw Error('The game file and the Admiral launcher are different editions. Upload the matching package.');
   const program = JSON.parse(new TextDecoder().decode(bytes));
-  if (program.format !== 'blackflag.arcade-player.v1' || program.id !== 'lantern-run' || program.edition !== 5 || program.levels !== 6 || typeof program.player !== 'string') throw Error('The Lantern Run game package could not be read.');
+  if (program.format !== 'blackflag.arcade-player.v1' || program.id !== 'lantern-run' || program.edition !== 6 || program.levels !== LANTERN_LEVEL_COUNT || typeof program.player !== 'string') throw Error('The Lantern Run game package could not be read.');
   lanternSource = program.player;
   return lanternSource;
 }
-const LANTERN_LEVEL_COUNT = 6;
+const LANTERN_LEVEL_COUNT = 36;
 function lanternCleared(run) {
   // A one-way flag for each cleared maze permits simultaneous runs without regressing progress.
   let cleared = 0;
