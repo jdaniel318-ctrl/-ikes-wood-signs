@@ -3887,7 +3887,7 @@ const AdmiralAccountForm = (() => {
   const expandedWeeks=new Set();
   function weekTop(node) {
     const board=el('bootstrapScheduleBoard');
-    return board.scrollTop+node.getBoundingClientRect().top-board.getBoundingClientRect().top;
+    return board.scrollTop+node.getBoundingClientRect().top-board.getBoundingClientRect().top-board.clientTop;
   }
   function weekPositionKey() {
     return 'scheduleJoeWeek.v1:'+JSON.stringify([visit.actor,activeId]);
@@ -3903,8 +3903,15 @@ const AdmiralAccountForm = (() => {
     const board=el('bootstrapScheduleBoard');
     if(!board.clientHeight)return;
     const nodes=board.querySelectorAll('.bootstrap-ground-week');
+    if(!nodes.length)return;
+    // Advance once less than a week heading's height of the prior week remains.
+    const headingHeight=nodes[0].querySelector('header').getBoundingClientRect().height;
+    const readingLine=board.getBoundingClientRect().top+board.clientTop+headingHeight;
     let week=0;
-    for(const node of nodes){if(weekTop(node)>board.scrollTop+3)break;week=Number(node.dataset.weekNumber);}
+    for(const node of nodes){
+      if(node.getBoundingClientRect().top>readingLine)break;
+      week=Number(node.dataset.weekNumber);
+    }
     if(visit && selectedWeek!==week){
       try { sessionStorage.setItem(weekPositionKey(),String(week)); } catch (_) {}
     }
