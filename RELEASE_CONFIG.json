@@ -1,15 +1,15 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.117",
-  "name": "Glovework",
-  "seal": "glovework-8820117",
-  "base": "8.8.20.116",
-  "base_sha256": "c97fc554f224b36349d981e9b734eb9f45ec8e34d3e993a4e29ad94f563100a5",
-  "base_files": 991,
-  "prepared_at": "2026-11-10T22:35:03Z",
+  "build": "8.8.20.118",
+  "name": "Bellwatch",
+  "seal": "bellwatch-8820118",
+  "base": "8.8.20.117",
+  "base_sha256": "14faa5c6e74fcf57b36639e074e8fbd95208e685d607a398e666b845dc081df7",
+  "base_files": 993,
+  "prepared_at": "2026-11-10T23:50:29Z",
   "app_component_revision": "8.8.20.99",
   "owner_helper_revision": "8.8.20.68",
-  "feature_notes": "Harbor Sluggers adds grounded outfield catches in both ninth-inning modes, live catch holds, optional half-speed replays and player-paced batting.",
+  "feature_notes": "My Fleet opens the existing Wonderwake classroom and returns to its program card. Legacy Pipeworks gains undo and leak locations, Dockmaster gains optional crossing replays, and six arcade games can show controls while paused.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -38,7 +38,7 @@
     }
   },
   "install_step": "Confirm the Engine release label, open the affected vessel and run its acceptance steps.",
-  "evidence_file": "GLOVEWORK_EVIDENCE.json",
-  "base_git_tree": "fbd7e222bf2546c902726dca82b6136ef84f38f7",
-  "base_git_commit": "dde6276218489e49a82717f0e398e61089fdb22c"
+  "evidence_file": "BELLWATCH_EVIDENCE.json",
+  "base_git_tree": "6bc6c866457fda3c29336a98ae07f1667d8dfc53",
+  "base_git_commit": "6271df7fd7377144c25ef49a5187ba09cfa82ad6"
 }

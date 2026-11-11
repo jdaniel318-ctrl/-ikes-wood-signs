@@ -16,7 +16,7 @@
   </style>
   <script id="darkSkyFirstLightBootstrap">
     // Dark Sky 8.6.23 MEMORY MUSTER — canonical release identity.
-    const DARK_SKY_RELEASE = Object.freeze({build:'8.8.20.117',seal:'glovework-8820117'});
+    const DARK_SKY_RELEASE = Object.freeze({build:'8.8.20.118',seal:'bellwatch-8820118'});
     const DARK_SKY_EXPECTED_BUILD = DARK_SKY_RELEASE.build;
     const DARK_SKY_RELEASE_SEAL = DARK_SKY_RELEASE.seal;
     // 8.6.23 Storage Safe Harbor — three independent channels, no silent storage failures.
@@ -1485,7 +1485,7 @@ html:has(#lantern-harbor[open]) { overflow:hidden; }
       </header>
 
       <section id="clearDeckLaunchpad" class="clear-deck-launchpad waypoint-home" aria-labelledby="engineNextMoveTitle">
-        <header class="clear-deck-brief"><small id="engineReleaseLabel">8.8.20.117 • GLOVEWORK</small><h3 id="engineNextMoveTitle">Fleet operations</h3></header>
+        <header class="clear-deck-brief"><small id="engineReleaseLabel">8.8.20.118 • BELLWATCH</small><h3 id="engineNextMoveTitle">Fleet operations</h3></header>
         <nav class="clear-deck-primary-actions pilotage-offices" aria-label="Fleet command offices">
           <button id="engineOperateVessels" type="button" class="clear-deck-action primary pilotage-vessels" data-clear-deck-command="projects" aria-controls="fleetCommissioningDock">
             <img src="./regatta-harbor.webp" alt="" decoding="async" class="pilotage-harbor">
@@ -2877,14 +2877,16 @@ html:has(#lantern-harbor[open]) { overflow:hidden; }
   const harbor = document.getElementById('lantern-harbor');
   const stage = document.getElementById('lantern-stage');
   const back = document.getElementById('lantern-return');
-  const entries = [...document.querySelectorAll('[data-open-lantern]')];
+  const fleetLauncherId = 'watchWonderwakeOpen';
   let sourceButton, frame, closing = false;
   const currentRoute = () => history.state?.blackFlagProgram === 'lantern-harbor';
   const isAvailable = button => button?.getClientRects().length && getComputedStyle(button).visibility === 'visible' && !button.closest('[inert]');
 
   function enter(button, addHistory) {
     if (harbor.open || !isAvailable(button)) return;
+    if (button.id === fleetLauncherId && (!button.closest('#watchPrograms') || button.closest('[aria-hidden="true"]'))) return;
     sourceButton = button;
+    back.textContent = button.id === fleetLauncherId ? '← Back to My Fleet' : '← Back to Black Flag';
     if (addHistory) history.pushState({...history.state, blackFlagProgram: 'lantern-harbor', blackFlagLauncher: button.id}, '');
     harbor.showModal();
     back.focus({preventScroll:true});
@@ -2911,14 +2913,18 @@ html:has(#lantern-harbor[open]) { overflow:hidden; }
       stage.replaceChildren();
       frame = null;
       harbor.close();
-      if (isAvailable(sourceButton)) sourceButton.focus({preventScroll:true});
+      const launcher = document.getElementById(sourceButton.id);
+      if (isAvailable(launcher)) launcher.focus({preventScroll:true});
       if (useHistory && currentRoute()) history.back();
     } finally {
       closing = false;
     }
   }
 
-  entries.forEach(button => button.addEventListener('click', () => enter(button, true)));
+  document.addEventListener('click', event => {
+    const button = event.target.closest?.('button[data-open-lantern]');
+    if (button) enter(button, true);
+  });
   back.addEventListener('click', () => leave(true));
   harbor.addEventListener('cancel', event => {event.preventDefault(); leave(true);});
   harbor.addEventListener('wonderwake-return', () => leave(true));

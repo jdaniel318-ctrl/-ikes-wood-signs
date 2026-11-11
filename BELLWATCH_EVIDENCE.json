@@ -1,0 +1,15 @@
+{
+  "build": "8.8.20.118",
+  "base_commit": "6271df7fd7377144c25ef49a5187ba09cfa82ad6",
+  "base_tree": "6bc6c866457fda3c29336a98ae07f1667d8dfc53",
+  "arcade_sha256": "37d3f356a038fbedd430079c4e73f2ba822edd1a58eff5e082c97eb772e834b8",
+  "fixtures": [
+    "VERIFY_BELLWATCH.cjs runs all three pipe boards and all three harbor shifts with synthetic controls and scores",
+    "VERIFY_FLEETBOUND_PROGRAMS.cjs and VERIFY_HOMEPORT_ENTRY.cjs cover registration, report and classroom boundaries"
+  ],
+  "hardware_pending": [
+    "iPad return focus from My Fleet",
+    "physical Bluetooth input",
+    "iPad replay pacing"
+  ]
+}

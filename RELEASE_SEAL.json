@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.117",
-  "release": "Glovework",
-  "seal": "glovework-8820117",
+  "build": "8.8.20.118",
+  "release": "Bellwatch",
+  "seal": "bellwatch-8820118",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Glovework",
-  "name": "Glovework",
-  "releaseName": "Glovework"
+  "release_name": "Bellwatch",
+  "name": "Bellwatch",
+  "releaseName": "Bellwatch"
 }

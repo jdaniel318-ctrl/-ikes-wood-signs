@@ -1,10 +1,10 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Glovework 8.8.20.117
+# Black Flag Bellwatch 8.8.20.118
 
 Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
-Baseline: 8.8.20.116. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Baseline: 8.8.20.117. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
 Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
-Harbor Sluggers adds grounded outfield catches in both ninth-inning modes, live catch holds, optional half-speed replays and player-paced batting.
+My Fleet opens the existing Wonderwake classroom and returns to its program card. Legacy Pipeworks gains undo and leak locations, Dockmaster gains optional crossing replays, and six arcade games can show controls while paused.
 Preparation does not deploy frontend or backend changes. See PATCH_CONTRACT.json for separately managed backend prerequisites.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 

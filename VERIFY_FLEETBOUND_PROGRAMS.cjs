@@ -27,6 +27,16 @@ vm.runInContext(source.slice(start,end)+'\nlastSync="2026-11-10T06:00:00Z";globa
 const data=[...Array.from({length:6},(_,i)=>({project_id:'core-'+i,display_name:'Core '+i,mission_class:'independent_business',lifecycle_state:'staging'})),{project_id:'wonderwake',display_name:'Wonderwake',mission_class:'admiral_program',lifecycle_state:'active',operating_model:'fleet_operated',ownership_model:'admiral_owned'}];
 let count=0;function check(name,fn){fn();console.log('PASS',name);count++;}
 check('server program remains separate from six core vessels',()=>{ctx.api.render(data);assert.equal(ctx.api.state().records.length,6);assert.equal(ctx.api.state().programs.length,1);assert.match(node('watchPrograms').innerHTML,/Wonderwake/);assert.doesNotMatch(node('watchRows').innerHTML,/Wonderwake/);});
+check('only a registered active Wonderwake receives the known local launcher',()=>{
+  const last=data[data.length-1];
+  for(const [patch,expected] of [[{},true],[{lifecycle_state:'suspended'},false],[{reference_only:true},false],[{project_id:'another-school'},false],[{mission_class:'independent_business'},false]]){
+    ctx.api.render([{...last,...patch}]);
+    assert.equal(node('watchPrograms').innerHTML.includes('id="watchWonderwakeOpen"'),expected);
+  }
+  ctx.api.render(data);
+  assert.match(node('watchPrograms').innerHTML,/data-open-lantern aria-controls="lantern-harbor"/);
+  assert.match(node('watchPrograms').innerHTML,/data-watch-vessel="wonderwake"/);
+});
 check('filter/search rerender retains server programs',()=>{ctx.api.render();ctx.api.render();assert.equal(ctx.api.state().programs.length,1);assert.match(node('watchPrograms').innerHTML,/Wonderwake/);});
 check('existing Bootstrap reference remains explicitly a reference',()=>{assert.match(node('watchPrograms').innerHTML,/Bootstrap Build/);assert.match(node('watchPrograms').innerHTML,/Local program/);assert.match(node('watchStatus').textContent,/1 registered program/);});
 check('program overview does not present business operating controls',()=>{ctx.api.overview('wonderwake');assert.match(node('watchOverviewBody').innerHTML,/Wonderwake/);assert.match(node('watchOverviewBody').innerHTML,/SEPARATE PROGRAM/);assert.doesNotMatch(node('watchOverviewBody').innerHTML,/OPERATE AS FLEET CAPTAIN/);});

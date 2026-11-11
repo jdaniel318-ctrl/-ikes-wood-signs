@@ -250,7 +250,7 @@ const admiralVesselLogos = new Map([
     <div class="bridge-gallery">
     <div id="watchPrograms" class="bootstrap-fleet-rows bridge-list"></div>
     <div id="watchLocalTools" class="bridge-list">
-      <article class="bridge-tool arcade-tool" style="--gallery-art:url(fleet-arcade-cover.webp)"><div><h4>Fleet Arcade</h4><p>Harbor Sluggers · Bottom of the Ninth and the fleet game collection.</p></div><button type="button" data-watch-arcade data-fleet-collection>Open Fleet Arcade →</button></article>
+      <article class="bridge-tool arcade-tool" style="--gallery-art:url(fleet-arcade-cover.webp)"><div><h4>Fleet Arcade</h4><p>Sports, racing, puzzles and creative games.</p></div><button type="button" data-watch-arcade data-fleet-collection>Open Fleet Arcade →</button></article>
     </div></div>
   </section>
   <div id="watchFleetHelp"></div>
@@ -330,6 +330,9 @@ const admiralVesselLogos = new Map([
   }
   function programRow(v){
     const schedule=v.project_id===PROGRAM.project_id;
+    const wonderwake=v.project_id==='wonderwake' && !v.reference_only &&
+      v.mission_class==='admiral_program' && ['active','live'].includes(v.lifecycle_state);
+    const launch=wonderwake?'<button type="button" id="watchWonderwakeOpen" data-open-lantern aria-controls="lantern-harbor" aria-haspopup="dialog">Open Wonderwake →</button>':'';
     const label=schedule?'ScheduleJoe':v.display_name;
     const source=v.reference_only?'Local program':'Registered program';
     const description=schedule?'Bootstrap Build · Construction scheduling':
@@ -338,7 +341,7 @@ const admiralVesselLogos = new Map([
     return `<article class="bridge-tool ${art}">
       ${art?'':mark(v)}
       <div><h4>${safe(label)}</h4><p>${safe(description)}</p><small>${source}</small></div>
-      <div class="bridge-program-actions">${schedule?'<button type="button" data-schedulejoe-open>Open schedules →</button>':''}
+      <div class="bridge-program-actions">${schedule?'<button type="button" data-schedulejoe-open>Open schedules →</button>':launch}
       <button type="button" data-watch-vessel="${safe(v.project_id)}" aria-label="Read report for ${safe(v.display_name)}">Program report</button></div>
     </article>`;
   }

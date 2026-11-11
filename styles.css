@@ -17258,7 +17258,7 @@ dialog#bootstrapSchedule::backdrop {background:#03151a}
   background:#102f38;color:#dce9e6; font-family:inherit;line-height:1.15;
   font-size:.92rem;font-weight:650;letter-spacing:normal;text-transform:none;cursor:pointer;box-shadow:none;
 }
-#watchWorkspace .bridge-schedule,#watchWorkspace .schedule-tool [data-schedulejoe-open] {
+#watchWorkspace .bridge-schedule,#watchWorkspace .schedule-tool [data-schedulejoe-open],#watchWorkspace #watchWonderwakeOpen {
   background:#f0d28c;color:#142829;border-color:#efd091;font-weight:780;
 }
 #watchWorkspace[data-view="programs"]>.bridge-head>.bridge-schedule {display:none}

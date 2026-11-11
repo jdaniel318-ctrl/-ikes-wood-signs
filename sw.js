@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.20.117';
-const RELEASE_SEAL='glovework-8820117';
+const RELEASE_BUILD='8.8.20.118';
+const RELEASE_SEAL='bellwatch-8820118';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.
