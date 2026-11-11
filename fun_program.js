@@ -187,8 +187,65 @@ document.addEventListener('click',e=>{if(e.target instanceof Element&&e.target.c
 const LANTERN_LEVEL_COUNT = 36;
 const arcadeEditions = {
   lantern: {name:'Lantern Run', file:'lantern-run.ship.json', id:'lantern-run', edition:7, levels:LANTERN_LEVEL_COUNT, limit:250000, digest:'4f8add355a2eee41badb12234ff3afa205934646e42f1fd02316f1d2b3cbe53a'},
-  collection: {name:'Fleet Arcade', file:'fleet-arcade.ship.json', id:'six-bells', edition:9, levels:23, limit:2500000, digest:'37d3f356a038fbedd430079c4e73f2ba822edd1a58eff5e082c97eb772e834b8'}
+  collection: {name:'Fleet Arcade', file:'fleet-arcade.ship.json', id:'six-bells', edition:10, levels:23, limit:2600000, digest:'212da491e4e424d508289df5fd3ccbac9891099b9e50bb0c564bcce3eb4fee3f'}
 };
+const arcadeArtFiles = {
+  "dockmaster": {
+    "file": "arcade-art-dockmaster.json",
+    "sha256": "dfe57c103c6b785ff1f1f5ae8a127bb849529341e47aa8d2967c0cecfd70e301",
+    "bytes": 907232
+  },
+  "riptail": {
+    "file": "arcade-art-riptail.json",
+    "sha256": "a424578440eac72c3deb8067e398858a0a166e34dfe386641a209c26c016fd4b",
+    "bytes": 86202
+  },
+  "skullwater": {
+    "file": "arcade-art-skullwater.json",
+    "sha256": "453c65d63e4c82738262a66bb3ded231be9693f2391627c037dae6536126f429",
+    "bytes": 731909
+  },
+  "deepbell": {
+    "file": "arcade-art-deepbell.json",
+    "sha256": "afc35e23ba2d3329f8382f7217936bd4bc80012b68373aae22c6a65d782ef65f",
+    "bytes": 103699
+  },
+  "pipeworks": {
+    "file": "arcade-art-pipeworks.json",
+    "sha256": "34e3625342779fc2cebdb22cf600478d658330b7fae003fc5072bcc8f24929fa",
+    "bytes": 167470
+  },
+  "chalkwing": {
+    "file": "arcade-art-chalkwing.json",
+    "sha256": "75ef751a1ac2464bbcd074dfb4344d26bdf3a478dbcfc9667e416e203a3d1ea1",
+    "bytes": 47191
+  }
+};
+// Only the fixed public art bundle for the selected game may be requested.
+async function sendArcadeArt(run, game) {
+  if (!Object.hasOwn(arcadeArtFiles, game)) return;
+  run.artRequests ??= new Map();
+  const spec = arcadeArtFiles[game];
+  if (run.artRequests.has(game)) return;
+  run.artRequests.set(game, true);
+  try {
+    const response = await fetch(spec.file+'?v='+spec.sha256, {
+      credentials:'omit', redirect:'error', signal:run.controller.signal
+    });
+    if (!response.ok) throw Error('Unavailable artwork');
+    const bytes = await response.arrayBuffer();
+    if (bytes.byteLength !== spec.bytes) throw Error('Incomplete artwork');
+    const hash = await crypto.subtle.digest('SHA-256', bytes);
+    const actual = Array.from(new Uint8Array(hash), value => value.toString(16).padStart(2,'0')).join('');
+    if (actual !== spec.sha256) throw Error('Different artwork edition');
+    if (lanternSession !== run || !lanternAccess(run)) return;
+    const assets = JSON.parse(new TextDecoder().decode(bytes));
+    run.player.contentWindow.postMessage({type:'arcade-art', channel:run.channel, game, assets}, '*');
+  } catch {
+    run.artRequests.delete(game);
+  }
+}
+
 const arcadeSources = new Map();
 async function arcadePlayerSource(edition,signal) {
   if (arcadeSources.has(edition.id)) return arcadeSources.get(edition.id);
@@ -372,6 +429,8 @@ window.addEventListener('message', event => {
   } else if (run.kind==='collection'){
     if (event.data.type === 'arcade-playing' && typeof event.data.playing === 'boolean') {
       run.panel.querySelector('header').hidden = event.data.playing;
+    }else if(event.data.type==='arcade-art-request'){
+      void sendArcadeArt(run,event.data.game);
     }else if (event.data.type==='arcade-lantern'){
       const button=run.button;
       leaveLantern(run);

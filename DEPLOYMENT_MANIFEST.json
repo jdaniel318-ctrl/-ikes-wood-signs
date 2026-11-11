@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.20.118",
-  "version": "8.8.20.118",
-  "release_name": "Bellwatch",
-  "releaseName": "Bellwatch",
-  "release_seal": "bellwatch-8820118",
+  "build": "8.8.20.119",
+  "version": "8.8.20.119",
+  "release_name": "Tidelight",
+  "releaseName": "Tidelight",
+  "release_seal": "tidelight-8820119",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -162,8 +162,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "My Fleet opens the existing Wonderwake classroom and returns to its program card. Legacy Pipeworks gains undo and leak locations, Dockmaster gains optional crossing replays, and six arcade games can show controls while paused.",
-  "release_note": "My Fleet opens the existing Wonderwake classroom and returns to its program card. Legacy Pipeworks gains undo and leak locations, Dockmaster gains optional crossing replays, and six arcade games can show controls while paused.",
+  "release_focus": "Six Fleet Arcade titles gain high-resolution in-play scenes. Dockmaster tracks cargo across a working drawbridge. Skullwater projects marsh water and shoreline along the course. New game art loads only when its title is selected.",
+  "release_note": "Six Fleet Arcade titles gain high-resolution in-play scenes. Dockmaster tracks cargo across a working drawbridge. Skullwater projects marsh water and shoreline along the course. New game art loads only when its title is selected.",
   "tax_ledger_upgrade": {
     "schema": "dark-sky-fleet-tax-ledger-v1",
     "model": "TAX_LEDGER_MODEL.json",
@@ -285,8 +285,8 @@
     "algorithm": "SHA-256",
     "files": {
       "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": {
-        "sha256": "05a1f0d93b8a7ee2185bfcb334e988edc50c4fa4698dba7d0c38086e5484a02e",
-        "build": "8.8.20.118",
+        "sha256": "000edadc7ec9a8ebc7c097c996422fe6212ac615cd42fd2edc1144eb711f7374",
+        "build": "8.8.20.119",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -333,14 +333,14 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_COMMAND_MODEL.json": {
-        "sha256": "012957ca77f3b8ce9dce099af744b3bed1e1fcee826f225833387e15a1b0ff05",
-        "build": "8.8.20.118",
+        "sha256": "9d3465c46ade72253b076a7eb16f2fa27f8eaa2cfaca41518d2d20f9ec4feba9",
+        "build": "8.8.20.119",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
       "FLEET_DOCTRINE_REGISTRY.json": {
-        "sha256": "578c67eab4ecb8920571470ba8bdff6cc6b71583d6cb91200138b6fb426db72c",
-        "build": "8.8.20.118",
+        "sha256": "97039e3c8a4e463d7a7e66739197f030a0db2ed9e511a2821244e83c6f515c23",
+        "build": "8.8.20.119",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -399,8 +399,8 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "GOLDEN_VOYAGES.json": {
-        "sha256": "bdb5ef365b5de7e7a7c6a68e2c76de51cf9b9ff9c7cc740aeaedc82910464b5f",
-        "build": "8.8.20.118",
+        "sha256": "324e851f2391bc5d36e97b000280c166ba4c2bf27560023ecdf354360234ea11",
+        "build": "8.8.20.119",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -559,14 +559,14 @@
       "app.js": "c7948218726e4c5c30f320f2a1ae747ffe445b89c807f0f384a488273617900d",
       "captain.js": "245d597c2d59b8afef5de20b17f4579a624c7bd009894e52c9d5dc1769b92877",
       "simple_books.js": "ddd76dcf5e6c579f16918a9d3e645b0fc65d8a5b4d7c66df8896d8314eea325d",
-      "owner.html": "63d3b423e5125983a53d5100535c1b8435543334883da54f81f0f523a3a73a61",
-      "manifest.webmanifest": "6cde6663a4febffe538fb8d74fe32fc0e84ce02dd3dfae188b16ddcb7b979560",
+      "owner.html": "528eb8bad40a09d799b32481f0bcfabcc08d418e3a77f99808d833861b2af0ab",
+      "manifest.webmanifest": "e497d190d59b6f706e46f1fe8ae5524ffce01373a8f4a57d0618fd3a70cdc094",
       "IKE_STYLE_FOUNDRY.json": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
-      "sw.js": "f3bdd9ebe8bd56528e15f5a11d6d0f22307c304e00d46e875a0503904592cf73",
-      "FLEET_DOCTRINE_REGISTRY.json": "578c67eab4ecb8920571470ba8bdff6cc6b71583d6cb91200138b6fb426db72c",
-      "GOLDEN_VOYAGES.json": "bdb5ef365b5de7e7a7c6a68e2c76de51cf9b9ff9c7cc740aeaedc82910464b5f",
-      "FLEET_COMMAND_MODEL.json": "012957ca77f3b8ce9dce099af744b3bed1e1fcee826f225833387e15a1b0ff05",
-      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "05a1f0d93b8a7ee2185bfcb334e988edc50c4fa4698dba7d0c38086e5484a02e",
+      "sw.js": "92799a37fb4595629df7e840d9a46fac97990179f45277511402a628dac9b8ed",
+      "FLEET_DOCTRINE_REGISTRY.json": "97039e3c8a4e463d7a7e66739197f030a0db2ed9e511a2821244e83c6f515c23",
+      "GOLDEN_VOYAGES.json": "324e851f2391bc5d36e97b000280c166ba4c2bf27560023ecdf354360234ea11",
+      "FLEET_COMMAND_MODEL.json": "9d3465c46ade72253b076a7eb16f2fa27f8eaa2cfaca41518d2d20f9ec4feba9",
+      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "000edadc7ec9a8ebc7c097c996422fe6212ac615cd42fd2edc1144eb711f7374",
       "input_hygiene.js": "e54a78fe75567db53c9682d4d039f53609fdcd0d43448f0534faec61def7edae",
       "business_deck.js": "63b1531524c46d73646a8265c7beabc1be430b9c613895a83c3e0f4bc696342f",
       "business_deck.css": "e28a49dcf16d35b3c7e0b4e69dd4892881cba564aeebc3e62e4b4eea90fca8d5",
@@ -575,7 +575,7 @@
       "headway_contracts.js": "e79286db1785fa95038bbda65c83e0d36ada63b2d402dffad695e4866062c09c",
       "woodwright_fit.js": "a4efdadf635608419a2bd82f12a701fd2991ec5dc3d14d282fd846680d40606f",
       "fun_core.js": "b21a909fa3dccf44b2d02d4a8243a91fd260b70db2edfc35338f3fd330c810e4",
-      "fun_program.js": "415ffa42e996aa92697f6244cbd866f049d91c5189096092a080a447423f124e",
+      "fun_program.js": "300088c4f3c34c0223558542e14ff2b362fbc55456e6a34cba1397b6850ba9ca",
       "fun_program.css": "5426df73fe625f936bcc5f114ea6706aa316641db30e012c9633121432288fd3",
       "fun_player.html": "fcfc2d06cdf204f4591a9717968a027facf170e6e0be32d9151ef847870a0fb7",
       "stormwake_core.js": "b0193108053c9ddd067dc100bb9d820292e970ad2c316512b8456e359820b405",
@@ -1077,7 +1077,7 @@
     "project_data_mutation": false,
     "field_failure_proof": "8.8.20.13 held on styles.css because packaged DEPLOYMENT_MANIFEST runtime hash did not match packaged styles.css bytes"
   },
-  "release": "Bellwatch",
+  "release": "Tidelight",
   "clearbearing_upgrade": {
     "build": "8.8.20.22",
     "baseline": "8.8.20.14 HashLock",
@@ -1280,9 +1280,39 @@
       "bytes": 5015096
     },
     "fleet-arcade.ship.json": {
-      "sha256": "37d3f356a038fbedd430079c4e73f2ba822edd1a58eff5e082c97eb772e834b8",
+      "sha256": "212da491e4e424d508289df5fd3ccbac9891099b9e50bb0c564bcce3eb4fee3f",
       "load": "after existing verified Admiral entry",
-      "bytes": 2493851
+      "bytes": 2503774
+    },
+    "arcade-art-dockmaster.json": {
+      "sha256": "dfe57c103c6b785ff1f1f5ae8a127bb849529341e47aa8d2967c0cecfd70e301",
+      "bytes": 907232,
+      "load": "on selection of its Arcade game"
+    },
+    "arcade-art-riptail.json": {
+      "sha256": "a424578440eac72c3deb8067e398858a0a166e34dfe386641a209c26c016fd4b",
+      "bytes": 86202,
+      "load": "on selection of its Arcade game"
+    },
+    "arcade-art-skullwater.json": {
+      "sha256": "453c65d63e4c82738262a66bb3ded231be9693f2391627c037dae6536126f429",
+      "bytes": 731909,
+      "load": "on selection of its Arcade game"
+    },
+    "arcade-art-deepbell.json": {
+      "sha256": "afc35e23ba2d3329f8382f7217936bd4bc80012b68373aae22c6a65d782ef65f",
+      "bytes": 103699,
+      "load": "on selection of its Arcade game"
+    },
+    "arcade-art-pipeworks.json": {
+      "sha256": "34e3625342779fc2cebdb22cf600478d658330b7fae003fc5072bcc8f24929fa",
+      "bytes": 167470,
+      "load": "on selection of its Arcade game"
+    },
+    "arcade-art-chalkwing.json": {
+      "sha256": "75ef751a1ac2464bbcd074dfb4344d26bdf3a478dbcfc9667e416e203a3d1ea1",
+      "bytes": 47191,
+      "load": "on selection of its Arcade game"
     }
   },
   "blacktide_upgrade": {

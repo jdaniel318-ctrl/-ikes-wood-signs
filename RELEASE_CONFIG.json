@@ -1,15 +1,15 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.118",
-  "name": "Bellwatch",
-  "seal": "bellwatch-8820118",
-  "base": "8.8.20.117",
-  "base_sha256": "14faa5c6e74fcf57b36639e074e8fbd95208e685d607a398e666b845dc081df7",
-  "base_files": 993,
-  "prepared_at": "2026-11-10T23:50:29Z",
+  "build": "8.8.20.119",
+  "name": "Tidelight",
+  "seal": "tidelight-8820119",
+  "base": "8.8.20.118",
+  "base_sha256": "644c5a4099a82eb7c128d1b2081ce35f3ac07af710f9b85eeb43a9c73dbda20f",
+  "base_files": 995,
+  "prepared_at": "2026-11-11T00:49:37Z",
   "app_component_revision": "8.8.20.99",
   "owner_helper_revision": "8.8.20.68",
-  "feature_notes": "My Fleet opens the existing Wonderwake classroom and returns to its program card. Legacy Pipeworks gains undo and leak locations, Dockmaster gains optional crossing replays, and six arcade games can show controls while paused.",
+  "feature_notes": "Six Fleet Arcade titles gain high-resolution in-play scenes. Dockmaster tracks cargo across a working drawbridge. Skullwater projects marsh water and shoreline along the course. New game art loads only when its title is selected.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -38,7 +38,7 @@
     }
   },
   "install_step": "Confirm the Engine release label, open the affected vessel and run its acceptance steps.",
-  "evidence_file": "BELLWATCH_EVIDENCE.json",
-  "base_git_tree": "6bc6c866457fda3c29336a98ae07f1667d8dfc53",
-  "base_git_commit": "6271df7fd7377144c25ef49a5187ba09cfa82ad6"
+  "evidence_file": "TIDELIGHT_EVIDENCE.json",
+  "base_git_tree": "4a7a905ccdada27da9e864302feb7dbfe96479ef",
+  "base_git_commit": "927d354df4a30fddeb41917b8eecc95d2ba96704"
 }

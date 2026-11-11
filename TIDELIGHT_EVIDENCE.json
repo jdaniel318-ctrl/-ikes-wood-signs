@@ -1,0 +1,47 @@
+{
+  "build": "8.8.20.119",
+  "base_commit": "927d354df4a30fddeb41917b8eecc95d2ba96704",
+  "base_tree": "4a7a905ccdada27da9e864302feb7dbfe96479ef",
+  "arcade_sha256": "212da491e4e424d508289df5fd3ccbac9891099b9e50bb0c564bcce3eb4fee3f",
+  "artwork": {
+    "dockmaster": {
+      "file": "arcade-art-dockmaster.json",
+      "sha256": "dfe57c103c6b785ff1f1f5ae8a127bb849529341e47aa8d2967c0cecfd70e301",
+      "bytes": 907232
+    },
+    "riptail": {
+      "file": "arcade-art-riptail.json",
+      "sha256": "a424578440eac72c3deb8067e398858a0a166e34dfe386641a209c26c016fd4b",
+      "bytes": 86202
+    },
+    "skullwater": {
+      "file": "arcade-art-skullwater.json",
+      "sha256": "453c65d63e4c82738262a66bb3ded231be9693f2391627c037dae6536126f429",
+      "bytes": 731909
+    },
+    "deepbell": {
+      "file": "arcade-art-deepbell.json",
+      "sha256": "afc35e23ba2d3329f8382f7217936bd4bc80012b68373aae22c6a65d782ef65f",
+      "bytes": 103699
+    },
+    "pipeworks": {
+      "file": "arcade-art-pipeworks.json",
+      "sha256": "34e3625342779fc2cebdb22cf600478d658330b7fae003fc5072bcc8f24929fa",
+      "bytes": 167470
+    },
+    "chalkwing": {
+      "file": "arcade-art-chalkwing.json",
+      "sha256": "75ef751a1ac2464bbcd074dfb4344d26bdf3a478dbcfc9667e416e203a3d1ea1",
+      "bytes": 47191
+    }
+  },
+  "fixtures": [
+    "VERIFY_TIDELIGHT.cjs checks package digests, WebP lengths, duplicate selects, failed and retried transfers, stale sessions and decoder fallback.",
+    "VERIFY_BELLWATCH.cjs verifies three Pipeworks boards and three Dockmaster shifts including replay state.",
+    "Chromium 1024x768 and 390x844: all 18 challenges render, help/resume, send first cart, replay return, Pipeworks undo, and Sluggers remains playable."
+  ],
+  "hardware_pending": [
+    "iPad Safari at full screen: steering feel, frame pacing and bright/dim target legibility",
+    "iPhone and physical gamepad/Pencil feel"
+  ]
+}
