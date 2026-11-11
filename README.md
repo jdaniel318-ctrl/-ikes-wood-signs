@@ -1,10 +1,10 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Tidelight 8.8.20.119
+# Black Flag Plumbline 8.8.20.120
 
 Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
-Baseline: 8.8.20.118. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Baseline: 8.8.20.119. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
 Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
-Six Fleet Arcade titles gain high-resolution in-play scenes. Dockmaster tracks cargo across a working drawbridge. Skullwater projects marsh water and shoreline along the course. New game art loads only when its title is selected.
+ScheduleJoe previews the crew, old and proposed workdays, and same-unit inspection dates when editing an existing task. A single-task calendar move onto or past an inspection opens the editor for review.
 Preparation does not deploy frontend or backend changes. See PATCH_CONTRACT.json for separately managed backend prerequisites.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 

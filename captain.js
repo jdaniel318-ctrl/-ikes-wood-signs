@@ -3339,6 +3339,7 @@ const admiralVesselLogos = new Map([
     <div class="desk-fields"><label>Start date<input id="bootstrapScheduleDay" type="date" required></label><label>Duration in workdays<input id="bootstrapScheduleDuration" type="number" min="1" max="260" step="1" required></label></div>
     <p id="deskFinish" role="status"></p>
     <label>Vendor or crew<input id="deskVendor" list="deskCrews" maxlength="100" placeholder="Choose or enter a crew" autocomplete="off"><datalist id="deskCrews"></datalist></label>
+    <section id="deskMoveImpact" aria-label="Schedule change" aria-live="polite" hidden></section>
     <div class="desk-fields"><label>Work area<select id="joeAreaNew">${areaOptions}</select></label><label>Task type<select id="bootstrapScheduleType">${Object.entries(kindNames).map(([key,label])=>`<option value="${key}">${label}</option>`).join('')}</select></label></div>
     <details><summary>Task details</summary><label>Trade<input id="bootstrapScheduleTrade" maxlength="60" placeholder="e.g. Concrete"></label><p id="deskBaseline"></p><button type="button" id="deskWeekend">Assign a weekend shift…</button></details>
     <footer><span id="deskTaskWarning"></span><button id="deskSave" class="desk-primary" type="submit">Save task</button></footer>
@@ -3386,7 +3387,7 @@ const admiralVesselLogos = new Map([
     const form=el('bootstrapScheduleForm');
     form.reset();form.querySelector('details').open=false;
     el('deskEditorTitle').textContent=task?'Edit task':'Add task';
-    el('deskLot').textContent=lotLabel();
+    el('deskLot').textContent=qualifiedLabel(project(activeId));
     el('deskWeekend').hidden=!task||task.locked===true||task.complete===true;
     el('bootstrapScheduleTaskTitle').value=task?.title||'';
     el('bootstrapScheduleTrade').value=task?.trade||'';
@@ -3395,7 +3396,7 @@ const admiralVesselLogos = new Map([
     el('bootstrapScheduleType').value=task?.type||'work';el('joeAreaNew').value=task?areaOf(task):'general';
     const input=el('bootstrapScheduleDay');
     input.min=isoDate(workDate(0));input.max=isoDate(workDate(MAX_WEEKS*5-1));
-    input.value=isoDate(workDate(task?.start??day));el('bootstrapScheduleDuration').value=task?.duration||1;
+    input.value=isoDate(workDate(day??task?.start??selectedWeek*5));el('bootstrapScheduleDuration').value=task?.duration||1;
     el('deskBaseline').textContent=task?'Original plan · '+(Number.isInteger(task.baselineStart)?fullDate(task.baselineStart):'Date unrecorded')+' · '+task.plannedDuration+' workday(s)':'';
     el('joeEditor').showModal();refreshEditor();
   }
@@ -3403,6 +3404,35 @@ const admiralVesselLogos = new Map([
     return {title:el('bootstrapScheduleTaskTitle').value.trim(),start:workIndex(el('bootstrapScheduleDay').value),
       duration:el('bootstrapScheduleDuration').valueAsNumber,vendor:el('deskVendor').value.trim()||'Unassigned',
       trade:el('bootstrapScheduleTrade').value.trim(),area:el('joeAreaNew').value,type:el('bootstrapScheduleType').value};
+  }
+  function inspectMove(task,proposed) {
+    const finish=proposed.start+proposed.duration;
+    const inspections=state.tasks.filter(t=>t.id!==task.id&&t.type==='inspection'&&t.complete!==true)
+      .sort((a,b)=>a.start-b.start||a.title.localeCompare(b.title));
+    const warnings=[];
+    for(const inspection of inspections){
+      const end=inspection.start+inspection.duration;
+      if(inspection.start<finish&&proposed.start<end){
+        warnings.push('Overlaps '+inspection.title+' · '+dateRange(inspection));
+      }else if(task.start<end&&end<=proposed.start){
+        warnings.push('Moves past '+inspection.title+' · '+dateRange(inspection));
+      }
+    }
+    return {warnings,next:inspections.find(inspection=>inspection.start>=finish)};
+  }
+  function previewMove(task,proposed) {
+    const panel=el('deskMoveImpact');
+    panel.hidden=!task||(task.start===proposed.start&&task.duration===proposed.duration);
+    if(panel.hidden){panel.replaceChildren();return;}
+    const {warnings,next}=inspectMove(task,proposed);
+    const heading=document.createElement('strong');
+    heading.textContent=el('joePrompt').checked?'If only this task moves':'Schedule change';
+    const lines=[proposed.vendor+' · '+dateRange(task)+' → '+dateRange(proposed),...warnings];
+    if(!warnings.length&&next)lines.push('Next inspection · '+next.title+' · '+dateRange(next));
+    panel.classList.toggle('has-inspection-warning',warnings.length>0);
+    panel.replaceChildren(heading,...lines.map(line=>{
+      const p=document.createElement('p');p.textContent=line;return p;
+    }));
   }
   function refreshEditor() {
     if(!draft)return;
@@ -3414,6 +3444,7 @@ const admiralVesselLogos = new Map([
     el('deskFinish').textContent=error||'Finishes '+fullDate(v.start+v.duration-1)+(v.start+v.duration>weekCount()*5?' · Extends the planning window':'');
     const overlap=v.vendor!=='Unassigned'&&state.tasks.find(t=>t!==draft.task&&t.vendor===v.vendor&&t.start<v.start+v.duration&&v.start<t.start+t.duration);
     el('deskTaskWarning').textContent=fixed?'This task is locked or complete.':!error&&overlap?'Crew also scheduled on '+overlap.title+'.':'';
+    previewMove(!error&&!fixed?draft.task:null,v);
     el('deskSave').disabled=!!error||fixed||!v.title;
     el('deskSave').textContent=draft.task?'Save changes':'Add task';
   }
@@ -4118,6 +4149,9 @@ const admiralVesselLogos = new Map([
     const next=Number(day);
     if(next===task.start)return;
     if(!Number.isInteger(next)||next<0||next+task.duration>MAX_WEEKS*5){status('Choose a workday inside the planning window.');return;}
+    if(inspectMove(task,{start:next,duration:task.duration}).warnings.length){
+      showOver(null);openEditor(task,next);return;
+    }
     const before={...task};task.start=next;
     state.planningWeeks=Math.max(weekCount(),Math.ceil((next+task.duration)/5));recordTaskChange(before,task);
     finishEdit(task);await persist(task.title+' moved to '+fullDate(next)+'.');

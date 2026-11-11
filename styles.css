@@ -17055,6 +17055,9 @@ dialog#bootstrapSchedule::backdrop {background:#03151a}
 #joeEditor details>*+* {margin-top:8px}
 #joeEditor #deskSave {flex:none}
 #deskTaskWarning {color:#eed18c;font-size:.85rem}
+#joeEditor #deskMoveImpact {display:grid;gap:5px;padding:10px 12px;border-inline-start:3px solid #78aba8;background:#14363c;border-radius:4px;overflow-wrap:anywhere}
+#joeEditor #deskMoveImpact.has-inspection-warning {border-color:#e8bc76}
+#joeEditor #deskMoveImpact strong {color:#f7e4bb}
 #deskPacket ol {padding:0;list-style:none;margin:.4rem 0}
 #deskPacket li {padding:8px 0;border-bottom:1px solid #35565d}
 #deskPacket li span {display:block;font-size:.9rem;color:#c8d9d5;margin-top:2px}

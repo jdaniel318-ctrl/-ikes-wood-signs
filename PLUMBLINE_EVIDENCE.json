@@ -1,0 +1,38 @@
+{
+  "build": "8.8.20.120",
+  "baseline": {
+    "commit": "0e4cdb0b3be6e52d7e457179cefd047213937a77",
+    "tree": "d55998ce86f524905edec94bb51dde896cf9100a",
+    "files": 1003,
+    "pages": [
+      "index.html",
+      "captain.js",
+      "DEPLOYMENT_MANIFEST.json"
+    ]
+  },
+  "feature": "ScheduleJoe single-task move preview",
+  "test": "VERIFY_PLUMBLINE_SCHEDULE.py",
+  "method": "Chromium with the shipping ScheduleJoe controller and stylesheet, a synthetic identity adapter, fictional records, localStorage and IndexedDB.",
+  "viewports": [
+    [
+      1024,
+      768
+    ],
+    [
+      390,
+      844
+    ]
+  ],
+  "scenarios": [
+    "Friday rough-in to Monday with weekend dates rejected",
+    "Other-crew inspection overlap and passed inspection; next inspection when clear",
+    "Crew overlap displayed separately; no pre-save write; cancel discards",
+    "Save persists on reload from IndexedDB; inspection retains date and sibling unit retains original record",
+    "Keyboard single-task move with inspection overlap opens review; clear keyboard move remains immediate",
+    "Existing bulk prompt cancel leaves the lot untouched"
+  ],
+  "limitations": [
+    "Physical iPad Safari, signed-in production workflow and device feel pending.",
+    "Inspection messages use calendar dates within one unit. No inferred dependency or vendor delivery."
+  ]
+}

@@ -1,15 +1,15 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.119",
-  "name": "Tidelight",
-  "seal": "tidelight-8820119",
-  "base": "8.8.20.118",
-  "base_sha256": "644c5a4099a82eb7c128d1b2081ce35f3ac07af710f9b85eeb43a9c73dbda20f",
-  "base_files": 995,
-  "prepared_at": "2026-11-11T00:49:37Z",
+  "build": "8.8.20.120",
+  "name": "Plumbline",
+  "seal": "plumbline-8820120",
+  "base": "8.8.20.119",
+  "base_sha256": "7921283ddddaaff3a589903bf92b14ba30fc098abdd106c5747830b942cc90cd",
+  "base_files": 1003,
+  "prepared_at": "2026-11-11T19:22:20Z",
   "app_component_revision": "8.8.20.99",
   "owner_helper_revision": "8.8.20.68",
-  "feature_notes": "Six Fleet Arcade titles gain high-resolution in-play scenes. Dockmaster tracks cargo across a working drawbridge. Skullwater projects marsh water and shoreline along the course. New game art loads only when its title is selected.",
+  "feature_notes": "ScheduleJoe previews the crew, old and proposed workdays, and same-unit inspection dates when editing an existing task. A single-task calendar move onto or past an inspection opens the editor for review.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -37,8 +37,8 @@
       "automatic_execution_by_upload": false
     }
   },
-  "install_step": "Confirm the Engine release label, open the affected vessel and run its acceptance steps.",
-  "evidence_file": "TIDELIGHT_EVIDENCE.json",
-  "base_git_tree": "4a7a905ccdada27da9e864302feb7dbfe96479ef",
-  "base_git_commit": "927d354df4a30fddeb41917b8eecc95d2ba96704"
+  "install_step": "Open My Fleet, then ScheduleJoe. In a sample lot, move a task onto an inspection and review the dates before saving.",
+  "evidence_file": "PLUMBLINE_EVIDENCE.json",
+  "base_git_tree": "d55998ce86f524905edec94bb51dde896cf9100a",
+  "base_git_commit": "0e4cdb0b3be6e52d7e457179cefd047213937a77"
 }
