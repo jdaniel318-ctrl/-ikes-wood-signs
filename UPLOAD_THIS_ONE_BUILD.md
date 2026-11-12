@@ -1,11 +1,11 @@
-# Upload Clearspan 8.8.20.121
+# Upload Fairmark 8.8.20.122
 
-Use `DarkSky8820121-Clearspan-Upload.zip`, not the full backup or rollback.
+Use `DarkSky8820122-Fairmark-Upload.zip`, not the full backup or rollback.
 1. Extract the ZIP. Open its single folder. Upload ALL files inside to the existing repository ROOT; replace matching files and KEEP all other files. Commit the upload.
-2. After deployment open the Engine and confirm `8.8.20.121 · CLEARSPAN`. Do not clear Safari data, reset records or change permissions.
-3. Open ScheduleJoe in a sample lot and check the rough inspection warning.
+2. After deployment open the Engine and confirm `8.8.20.122 · FAIRMARK`. Do not clear Safari data, reset records or change permissions.
+3. Open a sample lot in ScheduleJoe. On a rough inspection warning, choose Adjust schedule and review the proposed inspection date.
 
-ScheduleJoe targets the dropped workday and reviews rough inspection conflicts with scoped date previews.
+ScheduleJoe summarizes an area adjustment with the inspection outcome. Task changes still use the existing project history and vendor digest.
 The upload itself executes no database commands. Shared specialist components retain their own revision labels; this is intentional reuse, not a mixed upload. Exact SHA-256 checks still run before Engine scripts execute.
 
 Full backup: application source ONLY; not Supabase, customer media or device drafts.

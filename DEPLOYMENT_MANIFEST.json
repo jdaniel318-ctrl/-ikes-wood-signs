@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.20.121",
-  "version": "8.8.20.121",
-  "release_name": "Clearspan",
-  "releaseName": "Clearspan",
-  "release_seal": "clearspan-8820121",
+  "build": "8.8.20.122",
+  "version": "8.8.20.122",
+  "release_name": "Fairmark",
+  "releaseName": "Fairmark",
+  "release_seal": "fairmark-8820122",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -162,8 +162,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "ScheduleJoe targets the dropped workday and reviews rough inspection conflicts with scoped date previews.",
-  "release_note": "ScheduleJoe targets the dropped workday and reviews rough inspection conflicts with scoped date previews.",
+  "release_focus": "ScheduleJoe summarizes an area adjustment with the inspection outcome. Task changes still use the existing project history and vendor digest.",
+  "release_note": "ScheduleJoe summarizes an area adjustment with the inspection outcome. Task changes still use the existing project history and vendor digest.",
   "tax_ledger_upgrade": {
     "schema": "dark-sky-fleet-tax-ledger-v1",
     "model": "TAX_LEDGER_MODEL.json",
@@ -285,8 +285,8 @@
     "algorithm": "SHA-256",
     "files": {
       "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": {
-        "sha256": "6a701fd9d4ced5c71f435a1f39e17baf9173594784384747179791d79ecf76ed",
-        "build": "8.8.20.121",
+        "sha256": "e8ca41f4401212954c4c79fa3e486d9207bf627ac1389bfec053efcdb3d81a04",
+        "build": "8.8.20.122",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -333,14 +333,14 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_COMMAND_MODEL.json": {
-        "sha256": "f80d18b3956b859aaff32454a9f47d55ae8f87d0b2126c4efe498c671227bf33",
-        "build": "8.8.20.121",
+        "sha256": "7e8700a8ad1c151852d470a44e30997ddd978efce466c30da53f796a5be72b6d",
+        "build": "8.8.20.122",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
       "FLEET_DOCTRINE_REGISTRY.json": {
-        "sha256": "47f7467301a3709a7331b75b716d2f5d328ff05b86d811f1f1add92bb515b4c9",
-        "build": "8.8.20.121",
+        "sha256": "42e93e5a47f6c86b3a37e15a5c81e541c6d61a651620a62cdd2782d36b154dad",
+        "build": "8.8.20.122",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -399,8 +399,8 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "GOLDEN_VOYAGES.json": {
-        "sha256": "92328d890c8f1cdb0075819c249e63a8026858e3333878440d9faf41f08ca2c9",
-        "build": "8.8.20.121",
+        "sha256": "9704388a14f62d62a9b2f5ba2a197703342e6f538a6d10cec89f4b137f83ed02",
+        "build": "8.8.20.122",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -549,7 +549,7 @@
     "algorithm": "SHA-256",
     "serialization": "UTF-8 response body, same text executed by atomic loader",
     "files": {
-      "styles.css": "011954debf739fb0138b2f349fef393cefa8b4c43bd032d51c1bc9eeb5ebd056",
+      "styles.css": "f83af36987f309ef5921d955c22ba7be75073ac4e52dcc90e16e2aa2f02177d5",
       "simple_books.css": "5939590021ef2d3738d5f5f7249d72f8da64cc274bf287ef8183958517b0ba46",
       "platform_core.js": "7fb1504a8b8de0fe319bfd29bed4d0875784565d45ede84a07a61c767491da68",
       "platform_v4.js": "f1596bec1fa4689f5edd75378241da7042ff04eb879401a83f3bd7a2d5cc4e9e",
@@ -557,16 +557,16 @@
       "fleet_supabase.js": "f4b93e3db718daca7403d8f12077a961f57456f9a3f2a961dd0fca01cabe6757",
       "ike_style_registry.js": "6b348ebceb47e172e6676f46252b19c1c6bb7532baf76febfa8dd81760a76ab7",
       "app.js": "c7948218726e4c5c30f320f2a1ae747ffe445b89c807f0f384a488273617900d",
-      "captain.js": "4c81c27f55be58197352ef4f98c96e4a08b88683bdc221bc0681732dde330082",
+      "captain.js": "e5bdef14fec3ba6af091bfede6d8677cda343b9e0de0d39ab84b722c83f6bd85",
       "simple_books.js": "ddd76dcf5e6c579f16918a9d3e645b0fc65d8a5b4d7c66df8896d8314eea325d",
-      "owner.html": "2f96353c237c313aa8164c8988a4aafce7e1c03ae66237329f66e251751b1925",
-      "manifest.webmanifest": "c9a097e09ce238d5ddbb6d495dee48c09662e2931c338e0ade53758d14aeba68",
+      "owner.html": "2b21ea904f24a208b269d7358ea132a39d2f4c54c351934797ed55bde91b4e79",
+      "manifest.webmanifest": "5cd7176ec0c0e3de430f4d47bbf318b0c044fca92206ae259c8ed379d066980a",
       "IKE_STYLE_FOUNDRY.json": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
-      "sw.js": "f90cf18841554b34b5f8ffb86f551bad76896630a96d5c85e41f61da43fb698d",
-      "FLEET_DOCTRINE_REGISTRY.json": "47f7467301a3709a7331b75b716d2f5d328ff05b86d811f1f1add92bb515b4c9",
-      "GOLDEN_VOYAGES.json": "92328d890c8f1cdb0075819c249e63a8026858e3333878440d9faf41f08ca2c9",
-      "FLEET_COMMAND_MODEL.json": "f80d18b3956b859aaff32454a9f47d55ae8f87d0b2126c4efe498c671227bf33",
-      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "6a701fd9d4ced5c71f435a1f39e17baf9173594784384747179791d79ecf76ed",
+      "sw.js": "a1c3ba174dac226e54a89fb2e50b50157e39ba015459f89c52206ab2984cd54a",
+      "FLEET_DOCTRINE_REGISTRY.json": "42e93e5a47f6c86b3a37e15a5c81e541c6d61a651620a62cdd2782d36b154dad",
+      "GOLDEN_VOYAGES.json": "9704388a14f62d62a9b2f5ba2a197703342e6f538a6d10cec89f4b137f83ed02",
+      "FLEET_COMMAND_MODEL.json": "7e8700a8ad1c151852d470a44e30997ddd978efce466c30da53f796a5be72b6d",
+      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "e8ca41f4401212954c4c79fa3e486d9207bf627ac1389bfec053efcdb3d81a04",
       "input_hygiene.js": "e54a78fe75567db53c9682d4d039f53609fdcd0d43448f0534faec61def7edae",
       "business_deck.js": "63b1531524c46d73646a8265c7beabc1be430b9c613895a83c3e0f4bc696342f",
       "business_deck.css": "e28a49dcf16d35b3c7e0b4e69dd4892881cba564aeebc3e62e4b4eea90fca8d5",
@@ -1077,7 +1077,7 @@
     "project_data_mutation": false,
     "field_failure_proof": "8.8.20.13 held on styles.css because packaged DEPLOYMENT_MANIFEST runtime hash did not match packaged styles.css bytes"
   },
-  "release": "Clearspan",
+  "release": "Fairmark",
   "clearbearing_upgrade": {
     "build": "8.8.20.22",
     "baseline": "8.8.20.14 HashLock",

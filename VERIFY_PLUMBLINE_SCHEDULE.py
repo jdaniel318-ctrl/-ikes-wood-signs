@@ -25,7 +25,7 @@ def lot(unit):
                     task('check','Rough inspection '+unit,'Demo Inspector',5,'inspection'),
                     task('valves','Valve setting','Demo Pipe Crew',5,'work')])
 
-def scenario(browser, width, height):
+def scenario(browser, width, height, interior_plan=False):
     ctx = browser.new_context(viewport=dict(width=width,height=height), locale='en-US',
                               timezone_id='America/New_York',service_workers='block')
     def serve(route):
@@ -61,6 +61,41 @@ def scenario(browser, width, height):
     for unit in ('A','B'):
         p.evaluate('([k,v])=>localStorage.setItem(k,v)',[prefix+'1234-'+unit,json.dumps(lot(unit))])
     a,b=read('A'),read('B')
+    if interior_plan:
+        plan=lot('A')
+        plan['planStart']='2026-12-07'
+        pipe,check,later=plan['tasks']
+        pipe.update(duration=3,area='interior')
+        check.update(start=9,area='interior',duration=2,title='Rough trade inspections')
+        later.update(start=6,title='Electrical rough-in',duration=3,area='interior')
+        for i in range(11):
+            plan['tasks'].append(dict(later,id='inside-'+str(i),title='Interior finish '+str(i),start=11+i))
+        plan['tasks'].append(dict(later,id='outside',title='Driveway',area='exterior',start=18))
+        p.evaluate('([k,v])=>localStorage.setItem(k,v)',[prefix+'1234-A',json.dumps(plan)])
+        before=read('A')
+        launch();open_lot('A');edit('pipe')
+        p.locator('#bootstrapScheduleDay').fill('2026-12-18')
+        p.locator('#deskSave').click();p.locator('#joeAdjust').click()
+        summary=p.locator('#joeMoveSummary')
+        expect(summary).to_contain_text('Fri, Dec 25, 2026')
+        expect(summary).to_contain_text('conflict cleared')
+        expect(p.locator('#joeMove')).not_to_contain_text('Interior finish')
+        assert read('A')==before
+        p.locator('[data-move-scope=exterior]').click()
+        expect(summary).to_contain_text('still at risk');expect(summary).to_contain_text('Fri, Dec 18')
+        p.locator('[data-move-scope=interior]').click()
+        p.locator('#joeApply').click()
+        expect(p.locator('#bootstrapScheduleStatus')).to_contain_text('Saved on this device')
+        after=json.loads(read('A'))
+        wanted={t['id'] for t in plan['tasks'] if t['area']=='interior'}
+        assert len(wanted)==14 and len(after['activity'])==14
+        assert {n['taskId'] for n in after['vendorNotices']}==wanted
+        starts={t['id']:t['start'] for t in after['tasks']}
+        assert all(starts[t['id']]==t['start']+(5 if t['id'] in wanted else 0) for t in plan['tasks'])
+        assert read('B')==b
+        print(f'PASS {width}x{height}: 14 interior tasks adjusted, inspection date summarized, exterior and sibling lot preserved')
+        ctx.close()
+        return
     launch();open_lot('A');edit('pipe')
     day = p.locator('#bootstrapScheduleDay')
     expect(day).to_have_value('2026-11-06')
@@ -97,7 +132,17 @@ def scenario(browser, width, height):
     expect(p.locator('#joeMoveReason')).to_contain_text('Nov 9')
     p.locator('#joeAdjust').click()
     expect(p.locator('[data-move-scope=interior]')).to_have_attribute('aria-pressed','true')
-    expect(p.locator('#joeMoveSummary')).to_contain_text('clear')
+    summary=p.locator('#joeMoveSummary')
+    expect(summary).to_contain_text('clear')
+    expect(summary).to_contain_text('Tue, Nov 10')
+    expect(summary).not_to_contain_text('Valve setting')
+    expect(summary).not_to_contain_text('Plumbing rough-in')
+    expect(p.locator('#joeMoveReason')).to_be_hidden()
+    expect(p.locator('#joeMoveTitle')).to_have_text('Adjust schedule')
+    expect(p.locator('#joeApply')).to_have_text('Apply interior adjustment')
+    p.locator('[data-move-scope=all]').click()
+    expect(summary).not_to_contain_text('Valve setting')
+    assert summary.evaluate('(el)=>el.scrollHeight<=el.clientHeight+1')
     p.locator('[data-move-scope=exterior]').click()
     expect(p.locator('#joeMoveSummary')).to_contain_text('still at risk')
     assert read('A')==a
@@ -138,7 +183,11 @@ def scenario(browser, width, height):
     p.locator('[data-move-scope=all]').click()
     p.locator('#joeApply').click()
     expect(p.locator('#bootstrapScheduleStatus')).to_contain_text('Saved on this device')
-    assert [t['start'] for t in json.loads(read('B'))['tasks']]==[4,3,3]
+    saved_b=json.loads(read('B'))
+    assert [t['start'] for t in saved_b['tasks']]==[4,3,3]
+    assert {item['task'] for item in saved_b['activity'][:2]}=={'Rough inspection B','Valve setting'}
+    assert {item['taskId'] for item in saved_b['vendorNotices'][-2:]}=={'check','valves'}
+
     ctx.close()
     print(f'PASS {width}x{height}: weekday edit, crew and inspection preview, cancel, save, reload and sibling-unit isolation')
 
@@ -146,4 +195,5 @@ with sync_playwright() as pw:
     browser=pw.chromium.launch(executable_path=os.environ.get('CHROMIUM') or shutil.which('chromium'),args=['--no-sandbox'])
     for viewport in [(1024,768),(390,844)]:
         scenario(browser,*viewport)
+        scenario(browser,*viewport,interior_plan=True)
     browser.close()

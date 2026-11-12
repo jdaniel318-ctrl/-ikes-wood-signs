@@ -1,15 +1,15 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.121",
-  "name": "Clearspan",
-  "seal": "clearspan-8820121",
-  "base": "8.8.20.120",
-  "base_sha256": "b8d20ed0e2345e10a9aafaf02c10a44872fddb78df1df907fe51aff81eec166b",
-  "base_files": 1005,
-  "prepared_at": "2026-11-12T15:32:35.380065+00:00",
+  "build": "8.8.20.122",
+  "name": "Fairmark",
+  "seal": "fairmark-8820122",
+  "base": "8.8.20.121",
+  "base_sha256": "aa06e8fe03f339bf53580a46c870f7460863e866f3f9181a89ea20e0d12f4654",
+  "base_files": 1006,
+  "prepared_at": "2026-11-12T16:29:18.691791+00:00",
   "app_component_revision": "8.8.20.99",
   "owner_helper_revision": "8.8.20.68",
-  "feature_notes": "ScheduleJoe targets the dropped workday and reviews rough inspection conflicts with scoped date previews.",
+  "feature_notes": "ScheduleJoe summarizes an area adjustment with the inspection outcome. Task changes still use the existing project history and vendor digest.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -37,8 +37,8 @@
       "automatic_execution_by_upload": false
     }
   },
-  "install_step": "Open ScheduleJoe in a sample lot and check the rough inspection warning.",
-  "evidence_file": "CLEARSPAN_EVIDENCE.json",
-  "base_git_tree": "4d4ee9e0fa8d3bc28919a342f4aeb0d4c02a774a",
-  "base_git_commit": "3d067c06c3832238096a6ee187c04608dc33e95d"
+  "install_step": "Open a sample lot in ScheduleJoe. On a rough inspection warning, choose Adjust schedule and review the proposed inspection date.",
+  "evidence_file": "FAIRMARK_EVIDENCE.json",
+  "base_git_tree": "6113276f837f59209cdc1b390de55886f1c74d9e",
+  "base_git_commit": "789e0c5101d89cabb3a624afd87e4f8bc7452eca"
 }

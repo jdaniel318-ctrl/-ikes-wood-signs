@@ -1,0 +1,26 @@
+{
+  "build": "8.8.20.122",
+  "baseline": {
+    "commit": "789e0c5101d89cabb3a624afd87e4f8bc7452eca",
+    "tree": "6113276f837f59209cdc1b390de55886f1c74d9e",
+    "files": 1006,
+    "pages": [
+      "index.html",
+      "captain.js",
+      "DEPLOYMENT_MANIFEST.json"
+    ]
+  },
+  "fixture": "VERIFY_PLUMBLINE_SCHEDULE.py",
+  "viewports": [
+    [
+      1024,
+      768
+    ],
+    [
+      390,
+      844
+    ]
+  ],
+  "evidence": "Scoped preview with 14 interior tasks, scope switching, revision and notice checks, sibling-unit isolation. Synthetic browser identities and schedules.",
+  "physical": "Clearspan preview observed on iPad. Fairmark physical field check pending."
+}

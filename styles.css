@@ -17476,7 +17476,7 @@ body #blackFlagEntryGate .bf-entry-shell {
   body.boot-locked #blackFlagEntryGate .bf-entry-shell { width:min(100%,46rem)!important; }
 }
 
-#joeMoveSummary{white-space:pre-line;max-height:32vh;overflow:auto}
+#joeMoveSummary{white-space:pre-line}
 #joeScope button[aria-pressed=true]{outline:2px solid #e5bc70}
 #joeMove [hidden]{display:none!important}
 #bootstrapSchedule .bootstrap-drag-ghost{transition:none!important;animation:none!important}

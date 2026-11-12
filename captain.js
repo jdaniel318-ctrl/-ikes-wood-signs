@@ -2997,14 +2997,20 @@ const admiralVesselLogos = new Map([
         if(work.type==='inspection'||work.complete||(!ids.has(work.id)&&!ids.has(check.id)))continue;
         const kind=roughKind(work),required=roughKind(check);
         if(!kind||(required!=='combined'&&kind!=='combined'&&required!==kind))continue;
-        if(work.start+work.duration>check.start)pairs.push(work.title+' finishes '+fullDate(work.start+work.duration-1)+' · '+check.title+' starts '+fullDate(check.start));
+        if(work.start+work.duration>check.start)pairs.push({work,check});
       }
     }
     return pairs;
   }
-  function moveRisks(task,values){
+  function describeRisk({work,check}){
+    return work.title+' finishes '+fullDate(work.start+work.duration-1)+' · '+check.title+' starts '+fullDate(check.start);
+  }
+  function singleMoveConflicts(task,values){
     if(!roughKind({...task,...values}))return [];
     return roughConflicts(state.tasks.map(t=>t===task?{...t,...values}:t),new Set([task.id]));
+  }
+  function moveRisks(task,values){
+    return singleMoveConflicts(task,values).map(describeRisk);
   }
   function scopedTasks(anchor,scope){
     return state.tasks.filter(t=>t===anchor||(!t.locked&&!t.complete&&scope!=='one'&&
@@ -3012,11 +3018,12 @@ const admiralVesselLogos = new Map([
       (scope==='interior'&&roughKind(t)&&areaOf(t)==='general'))));
   }
   function openMove(task,day,values=null) {
-    const delta=day-task.start,issues=moveRisks(task,values||{start:day});
-    pendingMove={record:state,id:task.id,delta,values,scope:'interior'};
+    const delta=day-task.start,issues=singleMoveConflicts(task,values||{start:day});
+    pendingMove={record:state,id:task.id,delta,values,inspectionIds:new Set(issues.map(issue=>issue.check.id)),scope:'interior'};
     el('joeMoveLot').textContent=lotLabel()+' · '+task.title;
     el('joeMoveTitle').textContent=issues.length?'Rough inspection at risk':'Adjust schedule';
-    el('joeMoveReason').textContent=issues.join(' • ');
+    el('joeMoveReason').hidden=!issues.length;
+    el('joeMoveReason').textContent=issues.map(describeRisk).join(' • ');
     el('joeForwardText').textContent='Limit other tasks to '+labelDate(task.start,true)+' or later';
     el('joeForward').checked=true;
     el('joeChoices').hidden=!!issues.length;
@@ -3032,8 +3039,28 @@ const admiralVesselLogos = new Map([
     const tasks=scopedTasks(anchor,scope),ids=new Set(tasks.map(t=>t.id));
     const proposed=state.tasks.map(t=>ids.has(t.id)?{...t,start:t.start+delta,...(t===anchor?values:null)}:t);
     const risks=roughConflicts(proposed,ids);
-    el('joeMoveSummary').textContent=proposed.filter(t=>ids.has(t.id)).map(t=>t.title+' · '+dateRange(t)).join('\n')+'\n'+
-      (risks.length?'Inspection still at risk: '+risks.join(' • '):'Affected rough inspections clear.');
+    const lines=[];
+    if(risks.length){
+      lines.push('Inspection still at risk. '+describeRisk(risks[0]));
+    }else if(pendingMove.inspectionIds.size){
+      const checks=proposed.filter(t=>pendingMove.inspectionIds.has(t.id)).sort((a,b)=>a.start-b.start);
+      lines.push('Rough inspection conflict cleared.');
+      lines.push(checks[0].title+' · '+fullDate(checks[0].start));
+      if(checks.length>1)lines.push((checks.length-1)+' additional inspection'+(checks.length===2?'':'s')+' cleared.');
+    }else{
+      const adjusted=proposed.find(t=>t.id===anchor.id);
+      lines.push(adjusted.title+' · '+dateRange(adjusted));
+    }
+    el('joeMoveSummary').textContent=lines.join('\n');
+    const more=el('joeMoreRisks');
+    more.open=false;
+    more.hidden=risks.length<2;
+    more.querySelector('summary').textContent='Other inspection conflicts ('+Math.max(0,risks.length-1)+')';
+    more.querySelector('ul').replaceChildren(...risks.slice(1).map(risk=>{
+      const row=document.createElement('li');row.textContent=describeRisk(risk);return row;
+    }));
+    const labels={interior:'Apply interior adjustment',exterior:'Apply exterior adjustment',all:'Apply to all areas'};
+    el('joeApply').textContent=labels[scope];
     el('joeScope').querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.moveScope===scope)));
   }
   async function applyMove(scope) {
@@ -3046,7 +3073,7 @@ const admiralVesselLogos = new Map([
     let issue='';
     if(tasks.some(t=>t.start+delta<0))issue='This move would start before the first project workday.';
     else if(weeks>MAX_WEEKS)issue='This move would exceed the 52-week planning window.';
-    if(issue){el('joeMoveReason').textContent=issue;return;}
+    if(issue){el('joeMoveReason').hidden=false;el('joeMoveReason').textContent=issue;return;}
     closeMove();
     for(const t of tasks){
       const previous={...t};
@@ -3345,7 +3372,7 @@ const admiralVesselLogos = new Map([
     <button type="button" data-move-scope="interior">Interior</button>
     <button type="button" data-move-scope="exterior">Exterior</button>
     <button type="button" data-move-scope="all">All</button>
-  </div><p id="joeMoveSummary" role="status"></p><button id="joeApply" type="button">Apply previewed dates</button></section>
+  </div><p id="joeMoveSummary" role="status"></p><details id="joeMoreRisks" hidden><summary></summary><ul></ul></details><button id="joeApply" type="button">Apply previewed dates</button></section>
   <div class="joe-move-actions"><button id="joeCancel" autofocus type="button">Keep original dates</button><button id="joeSingle" type="button"></button></div>
 </dialog>
 <dialog id="newLotDialog" aria-labelledby="newLotTitle">
@@ -3748,7 +3775,12 @@ const admiralVesselLogos = new Map([
       if(choice)previewScope(choice.dataset.moveScope);
     });
     listen('joeForward','change',()=>previewScope(pendingMove.scope));
-    listen('joeAdjust','click',()=>{el('joeChoices').hidden=false;el('joeAdjust').hidden=true;});
+    listen('joeAdjust','click',()=>{
+      el('joeChoices').hidden=false;el('joeAdjust').hidden=true;
+      el('joeMoveReason').hidden=true;el('joeMoveTitle').textContent='Adjust schedule';
+      el('joeSingle').textContent='Move only this task';
+      el('joeScope').querySelector('[aria-pressed="true"]').focus();
+    });
     listen('joeApply','click',()=>applyMove(pendingMove.scope));
     listen('joeSingle','click',()=>applyMove('one'));
     listen('joeUndo','click',async()=>{

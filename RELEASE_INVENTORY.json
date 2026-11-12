@@ -1,9 +1,9 @@
 {
-  "release": "Clearspan",
-  "name": "Clearspan",
-  "build": "8.8.20.121",
-  "seal": "clearspan-8820121",
-  "file_count": 1006,
+  "release": "Fairmark",
+  "name": "Fairmark",
+  "build": "8.8.20.122",
+  "seal": "fairmark-8820122",
+  "file_count": 1007,
   "files": [
     ".github/workflows/drydock-batch1.yml",
     "01-Review.pdf",
@@ -123,6 +123,7 @@
     "EVIDENCE_RECONCILIATION_MODEL.json",
     "FAIRLEAD_EVIDENCE.json",
     "FAIRLEAD_GUIDE.md",
+    "FAIRMARK_EVIDENCE.json",
     "FAIRWATER_BUILD_NOTES.md",
     "FAIRWATER_EVIDENCE.json",
     "FAIRWIND_PRESERVATION.json",
