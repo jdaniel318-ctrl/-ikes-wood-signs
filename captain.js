@@ -2854,7 +2854,7 @@ const admiralVesselLogos = new Map([
   function gridRects(){return [...document.querySelectorAll('.bootstrap-ground-week-grid')].map(grid=>({week:Number(grid.dataset.week),rect:grid.getBoundingClientRect()}));}
   function dayAtPoint(x,y,rects=gridRects()){for(const item of rects){const r=item.rect;if(x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom){const col=Math.max(0,Math.min(4,Math.floor((x-r.left)/(r.width/5))));return item.week*5+col;}}return null;}
   function showOver(day){if(day===overDay)return;const prior=overDay;overDay=day;if(prior!==null)document.querySelectorAll('[data-schedule-day="'+prior+'"],[data-schedule-move="'+prior+'"]').forEach(node=>node.classList.remove('is-over'));if(day!==null)document.querySelectorAll('[data-schedule-day="'+day+'"],[data-schedule-move="'+day+'"]').forEach(node=>node.classList.add('is-over'));}
-  function makeDragGhost(card,event){const rect=card.getBoundingClientRect(),ghost=card.cloneNode(true);ghost.removeAttribute('draggable');ghost.removeAttribute('tabindex');ghost.classList.remove('is-selected');ghost.classList.add('bootstrap-drag-ghost');ghost.style.width=rect.width+'px';ghost.style.left=rect.left+'px';ghost.style.top=rect.top+'px';document.body.appendChild(ghost);return {node:ghost,offsetX:event.clientX-rect.left,offsetY:event.clientY-rect.top};}
+  function makeDragGhost(card,event){const rect=card.getBoundingClientRect(),ghost=card.cloneNode(true);ghost.removeAttribute('draggable');ghost.removeAttribute('tabindex');ghost.classList.remove('is-selected');ghost.classList.remove('is-dragging');ghost.classList.add('bootstrap-drag-ghost');ghost.style.width=rect.width+'px';ghost.style.left=rect.left+'px';ghost.style.top=rect.top+'px';document.body.appendChild(ghost);return {node:ghost,offsetX:event.clientX-rect.left,offsetY:event.clientY-rect.top};}
   function moveDragGhost(drag,event){if(!drag?.ghost)return;drag.ghost.node.style.transform='translate3d('+(event.clientX-drag.ghost.offsetX-parseFloat(drag.ghost.node.style.left))+'px,'+(event.clientY-drag.ghost.offsetY-parseFloat(drag.ghost.node.style.top))+'px,0)';}
   function clearTouchDrag(){touchDrag?.ghost?.node?.remove();touchDrag=null;}
   function open(){const panel=el('bootstrapSchedule');if(!panel)return;panel.classList.remove('hidden');panel.setAttribute('aria-hidden','false');panel.scrollTop=0;render();requestAnimationFrame(()=>el('bootstrapScheduleClose')?.focus({preventScroll:true}));}
@@ -2976,37 +2976,77 @@ const admiralVesselLogos = new Map([
     return Number.isInteger(weeks)&&weeks>=12&&weeks<=MAX_WEEKS?weeks:12;
   }
   const areaOptions=Object.entries(areaNames).map(([key,name])=>`<option value="${key}">${name}</option>`).join('');
-  let pendingMove=null;
+  let pendingMove=null,lastQuickMove=null;
   function closeMove() {
     pendingMove=null;
     if(el('joeMove')?.open)el('joeMove').close();
   }
+  function roughKind(t) {
+    const name=t.title.toLowerCase();
+    if(!/^rough-(hvac|plumb|electric|inspections)$/.test(t.id)&&!(/\brough\b/.test(name)&&(/inspect|rough[ -]?in|rough trade/.test(name))))return '';
+    const trade=(t.id+' '+name+' '+(t.trade||'')).toLowerCase();
+    if(/plumb/.test(trade))return 'plumbing';
+    if(/electric/.test(trade))return 'electrical';
+    if(/hvac|mechanical/.test(trade))return 'mechanical';
+    return 'combined';
+  }
+  function roughConflicts(tasks,ids) {
+    const pairs=[];
+    for(const check of tasks.filter(t=>t.type==='inspection'&&!t.complete&&roughKind(t))){
+      for(const work of tasks){
+        if(work.type==='inspection'||work.complete||(!ids.has(work.id)&&!ids.has(check.id)))continue;
+        const kind=roughKind(work),required=roughKind(check);
+        if(!kind||(required!=='combined'&&kind!=='combined'&&required!==kind))continue;
+        if(work.start+work.duration>check.start)pairs.push(work.title+' finishes '+fullDate(work.start+work.duration-1)+' · '+check.title+' starts '+fullDate(check.start));
+      }
+    }
+    return pairs;
+  }
+  function moveRisks(task,values){
+    if(!roughKind({...task,...values}))return [];
+    return roughConflicts(state.tasks.map(t=>t===task?{...t,...values}:t),new Set([task.id]));
+  }
+  function scopedTasks(anchor,scope){
+    return state.tasks.filter(t=>t===anchor||(!t.locked&&!t.complete&&scope!=='one'&&
+      (!el('joeForward').checked||t.start>=anchor.start)&&(scope==='all'||areaOf(t)===scope||
+      (scope==='interior'&&roughKind(t)&&areaOf(t)==='general'))));
+  }
   function openMove(task,day,values=null) {
-    const delta=day-task.start;
-    if(!delta)return;
-    pendingMove={record:state,id:task.id,delta,values};
+    const delta=day-task.start,issues=moveRisks(task,values||{start:day});
+    pendingMove={record:state,id:task.id,delta,values,scope:'interior'};
     el('joeMoveLot').textContent=lotLabel()+' · '+task.title;
+    el('joeMoveTitle').textContent=issues.length?'Rough inspection at risk':'Adjust schedule';
+    el('joeMoveReason').textContent=issues.join(' • ');
     el('joeForwardText').textContent='Limit other tasks to '+labelDate(task.start,true)+' or later';
     el('joeForward').checked=true;
-    el('joeMoveSummary').textContent='';
-    el('joeMove').showModal();
+    el('joeChoices').hidden=!!issues.length;
+    el('joeAdjust').hidden=!issues.length;
+    el('joeSingle').textContent=issues.length?'Move this task anyway':'Move this task only';
+    previewScope('interior');
+    el('joeMove').showModal();el('joeCancel').focus();
+  }
+  function previewScope(scope){
+    if(!pendingMove)return;
+    pendingMove.scope=scope;
+    const {id,delta,values}=pendingMove,anchor=state.tasks.find(t=>t.id===id);
+    const tasks=scopedTasks(anchor,scope),ids=new Set(tasks.map(t=>t.id));
+    const proposed=state.tasks.map(t=>ids.has(t.id)?{...t,start:t.start+delta,...(t===anchor?values:null)}:t);
+    const risks=roughConflicts(proposed,ids);
+    el('joeMoveSummary').textContent=proposed.filter(t=>ids.has(t.id)).map(t=>t.title+' · '+dateRange(t)).join('\n')+'\n'+
+      (risks.length?'Inspection still at risk: '+risks.join(' • '):'Affected rough inspections clear.');
+    el('joeScope').querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.moveScope===scope)));
   }
   async function applyMove(scope) {
     if(!current(visit)||!pendingMove||pendingMove.record!==state){closeMove();return;}
     const {id,delta,values}=pendingMove;
     const anchor=state.tasks.find(t=>t.id===id);
     if(!anchor||anchor.locked===true||anchor.complete===true){closeMove();return;}
-    const fromAnchor=el('joeForward').checked;
-    const tasks=state.tasks.filter(t=>{
-      if(t===anchor)return true;
-      if(t.locked===true||t.complete===true||scope==='one')return false;
-      return (!fromAnchor||t.start>=anchor.start)&&(scope==='all'||areaOf(t)===scope);
-    });
+    const tasks=scopedTasks(anchor,scope);
     const weeks=tasks.reduce((n,t)=>Math.max(n,Math.ceil((t.start+delta+(t===anchor&&values?values.duration:t.duration))/5)),weekCount());
     let issue='';
     if(tasks.some(t=>t.start+delta<0))issue='This move would start before the first project workday.';
     else if(weeks>MAX_WEEKS)issue='This move would exceed the 52-week planning window.';
-    if(issue){el('joeMoveSummary').textContent=issue;return;}
+    if(issue){el('joeMoveReason').textContent=issue;return;}
     closeMove();
     for(const t of tasks){
       const previous={...t};
@@ -3136,6 +3176,7 @@ const admiralVesselLogos = new Map([
     const meta=project(edited.projectId);
     const copy=JSON.parse(JSON.stringify(edited));
     delete copy._source;
+    lastQuickMove=null;el('joeUndo').hidden=true;
     lastSave.set(edited,copy);
     const save=async()=>{
       if(cache.get(meta.id)!==edited) return false;
@@ -3297,16 +3338,15 @@ const admiralVesselLogos = new Map([
   <div id="joeWeeks"></div>
 </section>
 <dialog id="joeMove" aria-labelledby="joeMoveTitle">
-  <small id="joeMoveLot"></small><h2 id="joeMoveTitle" tabindex="-1" autofocus>Move other tasks too?</h2>
-  <label id="joeForwardLabel"><input type="checkbox" id="joeForward"><span id="joeForwardText"></span></label>
-  <div id="joeScope" role="group" aria-labelledby="joeMoveTitle">
-    <button type="button" data-move-scope="one">This task only</button>
+  <small id="joeMoveLot"></small><h2 id="joeMoveTitle"></h2><p id="joeMoveReason"></p>
+  <button id="joeAdjust" type="button">Adjust schedule…</button>
+  <section id="joeChoices"><label id="joeForwardLabel"><input type="checkbox" id="joeForward"><span id="joeForwardText"></span></label>
+  <div id="joeScope" role="group" aria-label="Tasks to adjust">
     <button type="button" data-move-scope="interior">Interior</button>
     <button type="button" data-move-scope="exterior">Exterior</button>
     <button type="button" data-move-scope="all">All</button>
-  </div>
-  <p id="joeMoveSummary" role="status"></p>
-  <div class="joe-move-actions"><button id="joeCancel" type="button">Cancel</button></div>
+  </div><p id="joeMoveSummary" role="status"></p><button id="joeApply" type="button">Apply previewed dates</button></section>
+  <div class="joe-move-actions"><button id="joeCancel" autofocus type="button">Keep original dates</button><button id="joeSingle" type="button"></button></div>
 </dialog>
 <dialog id="newLotDialog" aria-labelledby="newLotTitle">
   <form id="newLotForm">
@@ -3334,7 +3374,7 @@ const admiralVesselLogos = new Map([
 </dialog>
 <dialog id="joeEditor" aria-labelledby="deskEditorTitle">
   <form id="bootstrapScheduleForm">
-    <header><div><small id="deskLot"></small><h2 id="deskEditorTitle" tabindex="-1" autofocus></h2></div><button type="button" id="bootstrapScheduleCancel" aria-label="Close task editor">Close</button></header>
+    <header><div><small id="deskLot"></small><h2 id="deskEditorTitle"></h2></div><button type="button" id="bootstrapScheduleCancel" autofocus aria-label="Close task editor">Close</button></header>
     <label>Task name<input id="bootstrapScheduleTaskTitle" maxlength="100" required autocomplete="off" placeholder="e.g. Footing inspection"></label>
     <div class="desk-fields"><label>Start date<input id="bootstrapScheduleDay" type="date" required></label><label>Duration in workdays<input id="bootstrapScheduleDuration" type="number" min="1" max="260" step="1" required></label></div>
     <p id="deskFinish" role="status"></p>
@@ -3359,7 +3399,7 @@ const admiralVesselLogos = new Map([
     <div><label class="desk-prompt"><input id="joePrompt" type="checkbox" role="switch">Prompt on move</label><button id="deskUpdatesOpen" type="button">Vendor updates</button><button id="bootstrapScheduleAdd" class="desk-primary" type="button">+ Add task</button></div>
   </nav>
   <div id="bootstrapScheduleBoard" class="bootstrap-ground-board" role="region" aria-label="Scrollable workweeks" tabindex="0"></div>
-  <div class="desk-feedback"><p id="bootstrapScheduleStatus" role="status"></p><button id="scheduleJoeRetry" type="button" hidden>Retry save</button></div>
+  <div class="desk-feedback"><p id="bootstrapScheduleStatus" role="status"></p><button id="joeUndo" type="button" hidden>Undo move</button><button id="scheduleJoeRetry" type="button" hidden>Retry save</button></div>
   <details id="deskSettings"><summary>Schedule options</summary>
     <div class="bootstrap-schedule-toolbar"><div><strong id="bootstrapScheduleRange"></strong></div><label>Filter by vendor<select id="bootstrapVendorView"></select></label>
       <div><button id="joeLook" type="button">Four-week lookahead</button><button id="joeExtend" type="button">Add 4 weeks</button><button id="bootstrapScheduleReset" type="button">Reset this project</button></div></div>
@@ -3453,7 +3493,7 @@ const admiralVesselLogos = new Map([
     if(!draft||draft.record!==state||!current(visit))return;
     refreshEditor();if(el('deskSave').disabled)return;
     const values=editorValues(),old=draft.task;
-    if(old&&values.start!==old.start&&el('joePrompt').checked){openMove(old,values.start,values);return;}
+    if(old&&(values.start!==old.start||values.duration!==old.duration)&&(el('joePrompt').checked||moveRisks(old,values).length)){openMove(old,values.start,values);return;}
     if(old&&Object.keys(values).every(key=>values[key]===(key==='area'?areaOf(old):old[key]))){dismissEditor();return;}
     const task=old||{id:'task-'+crypto.randomUUID(),baselineStart:values.start,plannedDuration:values.duration,acceleratedAssignments:[]};
     const before=old?{...old}:null;
@@ -3705,9 +3745,17 @@ const admiralVesselLogos = new Map([
     bindUpdates();
     listen('joeScope','click',event=>{
       const choice=event.target.closest('[data-move-scope]');
-      if(choice)void applyMove(choice.dataset.moveScope);
+      if(choice)previewScope(choice.dataset.moveScope);
     });
-    listen('joeForward','change',()=>{el('joeMoveSummary').textContent='';});
+    listen('joeForward','change',()=>previewScope(pendingMove.scope));
+    listen('joeAdjust','click',()=>{el('joeChoices').hidden=false;el('joeAdjust').hidden=true;});
+    listen('joeApply','click',()=>applyMove(pendingMove.scope));
+    listen('joeSingle','click',()=>applyMove('one'));
+    listen('joeUndo','click',async()=>{
+      const u=lastQuickMove;if(!u||u.record!==state||u.revision!==state.revision)return;
+      const task=state.tasks.find(t=>t.id===u.id);if(!task||task.locked||task.complete)return;
+      const previous={...task};task.start=u.start;recordTaskChange(previous,task);finishEdit(task);await persist('Move undone.');
+    });
     listen('joeCancel','click',closeMove);listen('joeMove','cancel',e=>{e.preventDefault();closeMove();});
   }
   function installQuickPassageControls(){
@@ -4038,8 +4086,8 @@ const admiralVesselLogos = new Map([
     return warnings;
   }
   function taskMarkup(task,start,end,lane,first){
-    const begins=start===task.start,finishes=end===task.start+task.duration,warnings=Array.isArray(task.riskWarnings)?task.riskWarnings:[],weekendCount=task.acceleratedAssignments?.length||0;
-    return '<article class="bootstrap-ground-task kind-'+esc(task.type||'work')+(selectedId===task.id?' is-selected':'')+(warnings.length?' has-risk':'')+'" draggable="true" tabindex="0" data-task-id="'+esc(task.id)+'" style="grid-column:'+(start-first+1)+' / span '+(end-start)+';grid-row:'+(lane+2)+'">'+(begins?'<button class="bootstrap-task-resize is-start" type="button" draggable="false" data-resize-edge="start" aria-label="Change start and duration of '+esc(task.title)+'">‹</button>':'')+'<small>'+esc(task.trade)+'</small><b>'+(begins?'':'← ')+esc(task.title)+(finishes?'':' →')+'</b><span>'+esc(task.duration)+' workday'+(task.duration===1?'':'s')+(weekendCount?' · '+weekendCount+' accelerated':'')+'</span><em class="bootstrap-task-vendor">'+esc(task.vendor)+'</em>'+(warnings.length?'<i class="bootstrap-task-risk" title="'+esc(warnings.join('. '))+'">!</i>':'')+(finishes?'<button class="bootstrap-task-resize is-end" type="button" draggable="false" data-resize-edge="end" aria-label="Change duration of '+esc(task.title)+'">›</button>':'')+'</article>';
+    const begins=start===task.start,finishes=end===task.start+task.duration,warnings=[...(task.riskWarnings||[]),...moveRisks(task,task)],weekendCount=task.acceleratedAssignments?.length||0;
+    return '<article class="bootstrap-ground-task kind-'+esc(task.type||'work')+(selectedId===task.id?' is-selected':'')+(warnings.length?' has-risk':'')+'" draggable="true" tabindex="0" data-task-id="'+esc(task.id)+'" style="grid-column:'+(start-first+1)+' / span '+(end-start)+';grid-row:'+(lane+2)+'">'+(begins?'<button class="bootstrap-task-resize is-start" type="button" draggable="false" data-resize-edge="start" aria-label="Change start and duration of '+esc(task.title)+'">‹</button>':'')+'<small>'+esc(task.trade)+'</small><b>'+(begins?'':'← ')+esc(task.title)+(finishes?'':' →')+'</b><span>'+esc(task.duration)+' workday'+(task.duration===1?'':'s')+(weekendCount?' · '+weekendCount+' accelerated':'')+'</span><em class="bootstrap-task-vendor">'+esc(task.vendor)+'</em>'+(warnings.length?'<i class="bootstrap-task-risk" aria-label="Schedule risk" title="'+esc(warnings.join('. '))+'">!</i>':'')+(finishes?'<button class="bootstrap-task-resize is-end" type="button" draggable="false" data-resize-edge="end" aria-label="Change duration of '+esc(task.title)+'">›</button>':'')+'</article>';
   }
   function fitCalendar() {
     const board=el('bootstrapScheduleBoard'),panel=el('bootstrapSchedule');
@@ -4100,7 +4148,7 @@ const admiralVesselLogos = new Map([
       cells.push(`<div class="bootstrap-ground-day-cell" data-schedule-day="${day}" style="grid-column:${col+1};grid-row:2 / span ${expanded?lanes:2}"></div>`);
       const items=segments.filter(s=>s.start<=day&&s.end>day);
       agenda.push(`<section><button class="desk-date" type="button" data-desk-day="${day}" aria-label="${esc(label)}">${weekday} · ${esc(date)} ＋</button><div>${items.map(({task})=>
-        `<button type="button" class="desk-agenda-task" data-edit-task="${esc(task.id)}"><b>${esc(task.title)}</b><span>${esc(task.vendor)}</span></button>`).join('')}</div></section>`);
+        `<button type="button" class="desk-agenda-task" data-edit-task="${esc(task.id)}"><b>${esc(task.title)}</b><span>${esc(task.vendor)}${moveRisks(task,task).length?' · Inspection at risk':''}</span></button>`).join('')}</div></section>`);
     }
     const bars=segments.filter(s=>expanded||s.lane<2).map(s=>taskMarkup(s.task,s.start,s.end,s.lane,first)).join('');
     const shifts=state.acceleratedDays.filter(s=>s.week===week).map(s=>`<button type="button" data-open-accelerated="1">${esc(weekendLabel(s))} · ${esc(s.shift.toUpperCase())}</button>`).join('');
@@ -4138,7 +4186,7 @@ const admiralVesselLogos = new Map([
     el('joeLongview').hidden=true;lookRecord=null;
     el('joePrompt').checked=false;
     el('scheduleJoeRetry').hidden=true;
-    activeId=id;state=cache.get(id);const firstWeek=rememberedWeek();selectedWeek=0;selectedId='';vendorView='';
+    lastQuickMove=null;el('joeUndo').hidden=true;activeId=id;state=cache.get(id);const firstWeek=rememberedWeek();selectedWeek=0;selectedId='';vendorView='';
     el('bootstrapSchedule').classList.add('desk-open');expandedWeeks.clear();el('deskSettings').open=false;el('deskHistory').open=false;
     el('bootstrapAcceleratedPanel').classList.add('hidden');
     el('bootstrapAcceleratedToggle').setAttribute('aria-expanded','false');el('bootstrapProjectLanding')?.classList.add('hidden');el('bootstrapProjectWorkspace')?.classList.remove('hidden');el('bootstrapProjectsHome')?.classList.remove('hidden');const meta=project(id);el('bootstrapScheduleTitleHeading').textContent=projectLabel(meta);el('bootstrapScheduleSubtitle').textContent='Tap a task to select it. Drag to move it, or pull an edge to change its duration.';renderSchedule();jumpWeek(firstWeek);status(state._source==='recovered prior schedule'?'Prior Lot 1234 · Unit A schedule recovered. Changes now save in its independent record.':state.updatedAt?'Loaded saved revision '+state.revision+' from '+new Date(state.updatedAt).toLocaleString()+'.':'Tap a date to add work or a task to edit it.');el('bootstrapSchedule').scrollTop=0;}
@@ -4149,17 +4197,23 @@ const admiralVesselLogos = new Map([
     const next=Number(day);
     if(next===task.start)return;
     if(!Number.isInteger(next)||next<0||next+task.duration>MAX_WEEKS*5){status('Choose a workday inside the planning window.');return;}
-    if(inspectMove(task,{start:next,duration:task.duration}).warnings.length){
-      showOver(null);openEditor(task,next);return;
+    if(moveRisks(task,{start:next}).length){
+      showOver(null);openMove(task,next);return;
     }
     const before={...task};task.start=next;
     state.planningWeeks=Math.max(weekCount(),Math.ceil((next+task.duration)/5));recordTaskChange(before,task);
-    finishEdit(task);await persist(task.title+' moved to '+fullDate(next)+'.');
+    finishEdit(task);const record=state,saving=persist(task.title+' moved to '+fullDate(next)+'.'), snapshot=lastSave.get(record);
+    if(await saving && state===record && lastSave.get(record)===snapshot){
+      lastQuickMove={record,revision:record.revision,id,start:before.start};el('joeUndo').hidden=false;
+    }
   }
   async function resizeTask(id,edge,day){
     const task=state?.tasks.find(item=>item.id===id);if(!task||task.locked===true||task.complete===true)return;const before={...task},oldStart=task.start,oldDuration=Math.max(1,task.duration||1),oldEnd=oldStart+oldDuration;
     if(edge==='start'){const nextStart=Math.max(0,Math.min(oldEnd-1,Number(day)));task.start=nextStart;task.duration=oldEnd-nextStart;}else{const nextEnd=Math.max(task.start+1,Math.min(weekCount()*5,Number(day)+1));task.duration=nextEnd-task.start;}
     if(task.start===oldStart&&task.duration===oldDuration){showOver(null);renderSchedule();status('Duration unchanged. Drag the edge into another workday.');return;}
+    if(moveRisks(task,task).length){
+      const proposed={...task};Object.assign(task,before);showOver(null);openMove(task,proposed.start,proposed);return;
+    }
     recordTaskChange(before,task);for(const t of state.tasks)t.riskWarnings=riskWarnings(t);
     selectedId=task.id;showOver(null);renderSchedule();
     const warning=task.riskWarnings.length?' Calculated-risk warning: '+task.riskWarnings.join('; ')+'. The manager may proceed.':'';status(task.title+' now runs '+task.duration+' workday'+(task.duration===1?'':'s')+'.'+warning);await persist('Duration saved.'+warning);
@@ -4167,7 +4221,7 @@ const admiralVesselLogos = new Map([
   function gridRects(){return [...document.querySelectorAll('.bootstrap-ground-week-grid')].map(grid=>({week:Number(grid.dataset.week),rect:grid.getBoundingClientRect()}));}
   function dayAtPoint(x,y,rects=gridRects()){for(const item of rects){const r=item.rect;if(x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom)return item.week*5+Math.max(0,Math.min(4,Math.floor((x-r.left)/(r.width/5))));}return null;}
   function showOver(day){if(day===overDay)return;const prior=overDay;overDay=day;if(prior!==null)document.querySelectorAll('[data-schedule-day="'+prior+'"],[data-schedule-move="'+prior+'"]').forEach(node=>node.classList.remove('is-over'));if(day!==null)document.querySelectorAll('[data-schedule-day="'+day+'"],[data-schedule-move="'+day+'"]').forEach(node=>node.classList.add('is-over'));}
-  function makeDragGhost(card,event){const rect=card.getBoundingClientRect(),ghost=card.cloneNode(true);ghost.removeAttribute('draggable');ghost.removeAttribute('tabindex');ghost.classList.remove('is-selected');ghost.classList.add('bootstrap-drag-ghost');ghost.style.width=rect.width+'px';ghost.style.left=rect.left+'px';ghost.style.top=rect.top+'px';el('bootstrapSchedule').appendChild(ghost);return {node:ghost,offsetX:event.clientX-rect.left,offsetY:event.clientY-rect.top};}
+  function makeDragGhost(card,event){const rect=card.getBoundingClientRect(),ghost=card.cloneNode(true);ghost.removeAttribute('draggable');ghost.removeAttribute('tabindex');ghost.classList.remove('is-selected');ghost.classList.remove('is-dragging');ghost.classList.add('bootstrap-drag-ghost');ghost.style.width=rect.width+'px';ghost.style.left=rect.left+'px';ghost.style.top=rect.top+'px';el('bootstrapSchedule').appendChild(ghost);return {node:ghost,offsetX:event.clientX-rect.left,offsetY:event.clientY-rect.top};}
   function moveDragGhost(drag,event){if(!drag?.ghost)return;drag.ghost.node.style.transform='translate3d('+(event.clientX-drag.ghost.offsetX-parseFloat(drag.ghost.node.style.left))+'px,'+(event.clientY-drag.ghost.offsetY-parseFloat(drag.ghost.node.style.top))+'px,0)';}
   function clearTouchDrag(){
     touchDrag?.ghost?.node?.remove();
@@ -4313,16 +4367,14 @@ const admiralVesselLogos = new Map([
     const remove=target.closest('[data-weekend-remove]');if(remove){event.preventDefault();const entry=state.acceleratedDays.find(item=>item.id===remove.dataset.weekendRemove);if(entry)state.tasks.filter(t=>t.acceleratedAssignments?.includes(entry.id)).forEach(t=>queueVendorNotice(t,'Weekend shift removed · '+weekendLabel(entry)+' · '+entry.shift.toUpperCase(),entry.id));state.acceleratedDays=state.acceleratedDays.filter(item=>item.id!==remove.dataset.weekendRemove);state.tasks.forEach(task=>task.acceleratedAssignments=(task.acceleratedAssignments||[]).filter(id=>id!==remove.dataset.weekendRemove));renderSchedule();await persist((entry?weekendLabel(entry):'Weekend shift')+' removed; Saturday and Sunday return to off.');}
   },{capture:true});
   document.addEventListener('dragstart',event=>{if(event.target.closest?.('[data-resize-edge]')){event.preventDefault();return;}const card=event.target.closest?.('#bootstrapSchedule [data-task-id]');if(!card||!state||touchDrag){if(touchDrag)event.preventDefault();return;}event.stopImmediatePropagation();selectedId=card.dataset.taskId;
-    const task=state.tasks.find(t=>t.id===selectedId);
-    const grab=dayAtPoint(event.clientX,event.clientY);
-    desktopGrab={id:selectedId,offset:grab===null?0:Math.max(0,Math.min(task.duration-1,grab-task.start))};
+    desktopGrab={id:selectedId};
     event.dataTransfer.effectAllowed='move';event.dataTransfer.setData('text/plain',selectedId);card.classList.add('is-dragging');},{capture:true});
-  document.addEventListener('dragover',event=>{if(!event.target.closest?.('#bootstrapSchedule')||!state)return;const day=dayAtPoint(event.clientX,event.clientY);if(day===null)return;event.preventDefault();event.stopImmediatePropagation();const task=desktopGrab&&state.tasks.find(t=>t.id===desktopGrab.id);showOver(task?Math.max(0,Math.min(weekCount()*5-task.duration,day-desktopGrab.offset)):day);},{capture:true});
-  document.addEventListener('drop',event=>{if(!event.target.closest?.('#bootstrapSchedule')||!state)return;const day=dayAtPoint(event.clientX,event.clientY);if(day===null)return;event.preventDefault();event.stopImmediatePropagation();if(desktopGrab&&desktopGrab.id===event.dataTransfer.getData('text/plain'))move(desktopGrab.id,day-desktopGrab.offset);desktopGrab=null;},{capture:true});
+  document.addEventListener('dragover',event=>{if(!event.target.closest?.('#bootstrapSchedule')||!state)return;const day=dayAtPoint(event.clientX,event.clientY);if(day===null)return;event.preventDefault();event.stopImmediatePropagation();showOver(day);},{capture:true});
+  document.addEventListener('drop',event=>{if(!event.target.closest?.('#bootstrapSchedule')||!state)return;const day=dayAtPoint(event.clientX,event.clientY);if(day===null)return;event.preventDefault();event.stopImmediatePropagation();if(desktopGrab&&desktopGrab.id===event.dataTransfer.getData('text/plain'))move(desktopGrab.id,day);desktopGrab=null;},{capture:true});
   document.addEventListener('dragend',event=>{if(!event.target.closest?.('#bootstrapSchedule'))return;event.stopImmediatePropagation();desktopGrab=null;showOver(null);document.querySelectorAll('.bootstrap-ground-task').forEach(node=>node.classList.remove('is-dragging'));},{capture:true});
   function dragDay(drag,event) {
     const day=dayAtPoint(event.clientX,event.clientY);
-    return day===null?null:Math.max(0,Math.min(weekCount()*5-(el('joePrompt').checked?1:drag.duration),day-drag.offset));
+    return day;
   }
   document.addEventListener('pointerdown',event=>{
     const card=event.target.closest?.('#bootstrapSchedule [data-task-id]');
@@ -4334,7 +4386,7 @@ const admiralVesselLogos = new Map([
     if(!task||day===null)return;
     event.preventDefault();event.stopImmediatePropagation();
     touchDrag={card,id:task.id,pointerId:event.pointerId,edge:handle?.dataset.resizeEdge,
-      x:event.clientX,y:event.clientY,offset:Math.max(0,Math.min(task.duration-1,day-task.start)),
+      x:event.clientX,y:event.clientY,
       duration:task.duration,moved:false,ghost:null,started:event.timeStamp,scrolling:false,
       scrollTop:el('bootstrapScheduleBoard').scrollTop};
     if(event.isTrusted)card.setPointerCapture(event.pointerId);
@@ -4350,7 +4402,9 @@ const admiralVesselLogos = new Map([
     }
     if(!drag.moved)return;
     moveDragGhost(drag,event);
-    showOver(drag.edge?dayAtPoint(event.clientX,event.clientY):dragDay(drag,event));
+    const target=dayAtPoint(event.clientX,event.clientY);
+    showOver(target);
+    if(drag.ghost)drag.ghost.node.dataset.dropLabel=target===null?'Outside schedule':'Start '+fullDate(target);
   }
   document.addEventListener('pointermove',event=>{
     if(touchDrag?.pointerId!==event.pointerId)return;

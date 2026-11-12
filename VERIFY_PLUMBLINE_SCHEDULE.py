@@ -90,12 +90,18 @@ def scenario(browser, width, height):
     if width>720:
         card=p.locator('[data-task-id="pipe"]:visible').first
         card.press('ArrowRight')
-        expect(editor).to_be_visible()
-        expect(day).to_have_value('2026-11-09')
-        expect(impact).to_contain_text('Rough inspection A')
+        expect(p.locator('#joeMoveReason')).to_contain_text('Rough inspection A')
     else:
         edit('pipe');day.fill('2026-11-09')
-    p.locator('#deskSave').click()
+        p.locator('#deskSave').click()
+    expect(p.locator('#joeMoveReason')).to_contain_text('Nov 9')
+    p.locator('#joeAdjust').click()
+    expect(p.locator('[data-move-scope=interior]')).to_have_attribute('aria-pressed','true')
+    expect(p.locator('#joeMoveSummary')).to_contain_text('clear')
+    p.locator('[data-move-scope=exterior]').click()
+    expect(p.locator('#joeMoveSummary')).to_contain_text('still at risk')
+    assert read('A')==a
+    p.locator('#joeSingle').click()
     expect(p.locator('#bootstrapScheduleStatus')).to_contain_text('Saved on this device')
     saved=json.loads(read('A'));assert saved['revision']==2
     assert [t['start'] for t in saved['tasks']]==[5,5,5] and saved['acceleratedDays']==[]
@@ -122,6 +128,17 @@ def scenario(browser, width, height):
         expect(p.locator('#bootstrapScheduleStatus')).to_contain_text('Saved on this device')
         assert json.loads(read('B'))['tasks'][0]['start']==3
         expect(editor).not_to_be_visible()
+        p.locator('#joeUndo').click()
+        expect(p.locator('#bootstrapScheduleStatus')).to_contain_text('Move undone.')
+        assert json.loads(read('B'))['tasks'][0]['start']==4
+    p.locator('#joePrompt').uncheck()
+    edit('check');day.fill('2026-11-05');p.locator('#deskSave').click()
+    expect(p.locator('#joeMoveReason')).to_contain_text('Plumbing rough-in')
+    p.locator('#joeAdjust').click()
+    p.locator('[data-move-scope=all]').click()
+    p.locator('#joeApply').click()
+    expect(p.locator('#bootstrapScheduleStatus')).to_contain_text('Saved on this device')
+    assert [t['start'] for t in json.loads(read('B'))['tasks']]==[4,3,3]
     ctx.close()
     print(f'PASS {width}x{height}: weekday edit, crew and inspection preview, cancel, save, reload and sibling-unit isolation')
 

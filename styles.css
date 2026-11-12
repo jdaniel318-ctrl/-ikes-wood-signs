@@ -17475,3 +17475,9 @@ body #blackFlagEntryGate .bf-entry-shell {
 @media (min-width:651px) and (max-width:760px) {
   body.boot-locked #blackFlagEntryGate .bf-entry-shell { width:min(100%,46rem)!important; }
 }
+
+#joeMoveSummary{white-space:pre-line;max-height:32vh;overflow:auto}
+#joeScope button[aria-pressed=true]{outline:2px solid #e5bc70}
+#joeMove [hidden]{display:none!important}
+#bootstrapSchedule .bootstrap-drag-ghost{transition:none!important;animation:none!important}
+#bootstrapSchedule .bootstrap-drag-ghost[data-drop-label]::after{content:attr(data-drop-label);position:absolute;bottom:100%;left:0;background:#0c2830;color:#fff;padding:.25em .5em;white-space:nowrap;border-radius:4px}
