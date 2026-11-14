@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-fleet-learning-registry-v1",
-  "build": "8.8.20.73",
+  "build": "8.8.20.123",
   "name": "Fleetbound",
   "classes": {
     "doctrine": "Fleet-wide rule inherited by every vessel unless explicitly superseded by Admiral governance.",
@@ -184,6 +184,66 @@
       "automatic_promotion": false,
       "applies": [],
       "evidence_source": "Wonderwake14-Skybloom/FLEET_LESSONS.md"
+    },
+    {
+      "id": "travel-party-identity",
+      "class": "capability",
+      "origin": "Valley Notes",
+      "title": "One account can serve several people",
+      "lesson": "Keep account access, traveler identity and trip participation distinct.",
+      "missionAdapter": "Adapt to learner profiles or purchaser/recipient relationships; do not transfer private travel preferences.",
+      "status": "candidate",
+      "automatic_promotion": false,
+      "applies": [],
+      "evidence_source": "VALLEY_NOTES_PROGRAM.md"
+    },
+    {
+      "id": "travel-attributed-preferences",
+      "class": "capability",
+      "origin": "Valley Notes",
+      "title": "Know whose preference it is",
+      "lesson": "Retain the subject, reporter, source, scope and confirmation for preferences.",
+      "missionAdapter": "Review account/person permissions and correction workflows for each vessel.",
+      "status": "candidate",
+      "automatic_promotion": false,
+      "applies": [],
+      "evidence_source": "VALLEY_NOTES_PROGRAM.md"
+    },
+    {
+      "id": "travel-weather-context",
+      "class": "capability",
+      "origin": "Valley Notes",
+      "title": "Weather needs place, time and freshness",
+      "lesson": "Retain forecast source, update time, location and alternatives. Label stale or unavailable data.",
+      "missionAdapter": "Consider weather-sensitive scheduling only after local requirements and forecast limits are tested.",
+      "status": "candidate",
+      "automatic_promotion": false,
+      "applies": [],
+      "evidence_source": "VALLEY_NOTES_PROGRAM.md"
+    },
+    {
+      "id": "travel-history-pivots",
+      "class": "capability",
+      "origin": "Valley Notes",
+      "title": "Change the remaining day, retain its history",
+      "lesson": "Keep completed, skipped and unavailable events separate from suggestions, with undo.",
+      "missionAdapter": "Adapt to mission-specific event history without rewriting prior evidence.",
+      "status": "candidate",
+      "automatic_promotion": false,
+      "applies": [],
+      "evidence_source": "VALLEY_NOTES_PROGRAM.md"
+    },
+    {
+      "id": "travel-location-independence",
+      "class": "capability",
+      "origin": "Valley Notes",
+      "title": "Keep the engine separate from the destination",
+      "lesson": "Support arbitrary locations, custom ideas, multiple stays and local timezones; research packs are optional.",
+      "missionAdapter": "Reuse the separation of operating logic and location data after mission review.",
+      "status": "candidate",
+      "automatic_promotion": false,
+      "applies": [],
+      "evidence_source": "VALLEY_NOTES_PROGRAM.md"
     }
   ],
   "governance": {

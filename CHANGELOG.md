@@ -1,10 +1,10 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Fairmark 8.8.20.122
+# Black Flag Wayfarer 8.8.20.123
 
 Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
-Baseline: 8.8.20.121. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Baseline: 8.8.20.122. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
 Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
-ScheduleJoe summarizes an area adjustment with the inspection outcome. Task changes still use the existing project history and vendor digest.
+Valley Notes enters Admiral as a local travel pilot. Retains weather and flexible trip history, defines separate traveler profiles under one account, and records expansion across US destinations. Shared profiles, conversational help and server commissioning are planned, not activated.
 Preparation does not deploy frontend or backend changes. See PATCH_CONTRACT.json for separately managed backend prerequisites.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 

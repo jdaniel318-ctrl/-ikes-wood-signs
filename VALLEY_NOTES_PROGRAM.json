@@ -1,0 +1,78 @@
+{
+  "schema": "blackflag-travel-program-v1",
+  "program_key": "valley-notes",
+  "display_name": "Valley Notes",
+  "status": "local_pilot",
+  "server_commissioned": false,
+  "pilot_url": "https://valley-notes-shenandoah-nov26.tv6m8ysvwt.chatgpt.site",
+  "pilot_site_version": 22,
+  "coverage": {
+    "target": "United States",
+    "validated_pilot": "Shenandoah weekend",
+    "nationwide_verified_coverage": false,
+    "arbitrary_destinations": true,
+    "custom_trip_ideas": true,
+    "multiple_stays_and_legs": true,
+    "destination_packs_required": false,
+    "timezone_per_location": true
+  },
+  "traveler_model": {
+    "account_to_travelers": "one_to_many",
+    "companion_login_required": false,
+    "name_match_grants_access": false,
+    "shared_profiles_implemented": false,
+    "trip_selects_participants": true,
+    "outing_participants_may_differ": true,
+    "cross_account_membership": "explicit_trip_scoped_invitation",
+    "preference_fields": [
+      "traveler_id",
+      "reported_by",
+      "source",
+      "scope",
+      "confirmation",
+      "updated_at"
+    ],
+    "group_resolution": "Apply each participating traveler\u2019s hard constraints; rank shared interests; explain tradeoffs."
+  },
+  "preserve": [
+    "weather_with_freshness",
+    "weather_alternatives",
+    "current_day_and_previous_history",
+    "relaxed_pacing",
+    "activity_comparison",
+    "food_for_each_traveler",
+    "source_and_confirmation_notes",
+    "navigation_and_call_links",
+    "existing_pdf_fallback"
+  ],
+  "next": [
+    "scoped_shared_storage",
+    "traveler_profiles_and_groups",
+    "arbitrary_US_destinations_and_legs",
+    "party_aware_suggestions",
+    "feedback_history_and_undo",
+    "per_destination_weather_refresh",
+    "offline_plan",
+    "optional_conversational_assistance"
+  ],
+  "weather_contract": {
+    "per_location_and_date": true,
+    "separate_forecast_from_observation": true,
+    "source_and_updated_at_required": true,
+    "outside_forecast_horizon": "Show unavailable; label any seasonal context separately.",
+    "stale_behavior": "Retain and label cached information; offer manual choices.",
+    "automatic_plan_rewrite": false
+  },
+  "privacy": {
+    "personal_data_in_public_source": false,
+    "automatic_cross_vessel_profile_transfer": false,
+    "trip_membership_grants_fleet_authority": false
+  },
+  "commercial": {
+    "billing_enabled": false,
+    "buyer_model": "not_selected",
+    "test_prices_are_commitments": false
+  },
+  "brief": "VALLEY_NOTES_PROGRAM.md",
+  "build": "8.8.20.123"
+}

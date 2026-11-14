@@ -189,6 +189,27 @@ const AdmiralAccountForm = (() => {
 })();
 /* End Admiral account form */
 
+/* Valley Notes: catalog reference only; private trip data stays on its Site. */
+function blackFlagTravelProgramCard(context='watch'){
+  const suffix=context==='admiral'?'admiral':'watch';
+  return `<article class="valley-notes-program" aria-labelledby="valley-notes-${suffix}">
+    <div class="valley-notes-heading"><span aria-hidden="true">↗</span><div><small>TRAVEL COMPANION · LOCAL PILOT</small><h3 id="valley-notes-${suffix}">Valley Notes</h3></div></div>
+    <p>Trips across the US, planned around the people going. Shenandoah is our first working example.</p>
+    <div class="valley-notes-state">Local pilot · Shared traveler profiles are planned</div>
+    <a class="valley-notes-open" href="https://valley-notes-shenandoah-nov26.tv6m8ysvwt.chatgpt.site" target="_blank" rel="noopener noreferrer">Open private trip guide <span aria-hidden="true">↗</span></a>
+    <details><summary>Product brief &amp; what we keep</summary><div class="valley-notes-brief">
+      <h4>One account, several travelers</h4><p>An owner can plan for companions without separate logins. Each person keeps their own food preferences, interests and walking comfort. The trip chooses who is joining; recommendations account for everyone participating.</p>
+      <h4>Any US trip idea</h4><p>City breaks, beaches, parks, road trips, family visits, events and your own ideas. Support one base or several destinations and overnight stays. Destination research stays separate from the reusable planner.</p>
+      <h4>Weather stays central</h4><p>Keep the daily forecast, wind, source and update time, plus indoor alternatives. Future weather refresh follows each destination and local date. Never label an old forecast as live or seasonal guidance as a forecast.</p>
+      <h4>Prior days and decisions</h4><p>Keep completed visits, skipped ideas, edits and uncertainty. Show the current day first, with a relaxed main plan, a few alternatives, menu choices and useful comparisons. Retain the PDF fallback.</p>
+      <h4>Understand the people</h4><p>Record whose preference it is, who supplied it and whether it applies to this trip or future trips. A companion’s food restriction does not become everyone’s preference. Separate a stated restriction from an unconfirmed assumption.</p>
+      <h4>What comes next</h4><p>Shared traveler profiles, group feedback, destination-aware weather refresh and offline plans. Conversational help and nationwide verified coverage still need development and testing. Billing is not enabled.</p>
+      <p class="valley-notes-boundary">This entry retains the product direction and opens the existing private Site. Server commissioning has not been performed. The Site keeps its own access controls; this shortcut grants no access.</p>
+    </div></details>
+  </article>`;
+}
+/* End Valley Notes program */
+
 const admiralVesselLogos = new Map([
   ['beccas-bloom-shop', 'fleet-becca.webp'],
   ['grizzly-bear', 'fleet-grizzly.webp'],
@@ -250,6 +271,7 @@ const admiralVesselLogos = new Map([
     <div class="bridge-gallery">
     <div id="watchPrograms" class="bootstrap-fleet-rows bridge-list"></div>
     <div id="watchLocalTools" class="bridge-list">
+      ${blackFlagTravelProgramCard('watch')}
       <article class="bridge-tool arcade-tool" style="--gallery-art:url(fleet-arcade-cover.webp)"><div><h4>Fleet Arcade</h4><p>Sports, racing, puzzles and creative games.</p></div><button type="button" data-watch-arcade data-fleet-collection>Open Fleet Arcade →</button></article>
     </div></div>
   </section>
@@ -1830,6 +1852,7 @@ const admiralVesselLogos = new Map([
                 <button type="button" id="regattaHarborLink" disabled>Enter Sunset Harbor <span aria-hidden="true">→</span></button><p id="regattaStatus" role="status"></p>
               </div>
             </section>`);
+    deck.querySelector('.admiral-session-strip')?.insertAdjacentHTML('afterend',blackFlagTravelProgramCard('admiral'));
     const regattaLink = byId('regattaHarborLink');
     mountRegatta(deck, regattaLink);
     loadUpperCommandVisual('admiral');

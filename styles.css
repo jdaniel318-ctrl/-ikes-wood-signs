@@ -17481,3 +17481,12 @@ body #blackFlagEntryGate .bf-entry-shell {
 #joeMove [hidden]{display:none!important}
 #bootstrapSchedule .bootstrap-drag-ghost{transition:none!important;animation:none!important}
 #bootstrapSchedule .bootstrap-drag-ghost[data-drop-label]::after{content:attr(data-drop-label);position:absolute;bottom:100%;left:0;background:#0c2830;color:#fff;padding:.25em .5em;white-space:nowrap;border-radius:4px}
+
+/* Valley Notes: scoped Admiral program entry. */
+.valley-notes-program{margin:14px 0;padding:22px;border:1px solid #607a76;border-radius:14px;background:linear-gradient(135deg,#1e4145,#102a32);color:#eff4e9;min-width:0}
+.valley-notes-heading{display:flex;align-items:center;gap:12px}.valley-notes-heading>span{display:grid;place-items:center;width:46px;height:46px;flex-shrink:0;border:1px solid #bca572;border-radius:50%;font-size:1.6rem;color:#ead59e}
+.valley-notes-program .valley-notes-heading h3{margin:3px 0;font-size:1.5rem;color:#fff4db}.valley-notes-program small{font-size:.72rem;letter-spacing:.08em;color:#cbded2}.valley-notes-program p{max-width:78ch;font-size:1rem;line-height:1.55;color:#dce8e1}
+.valley-notes-state{font-size:.85rem;color:#e9d29d;margin:12px 0}.valley-notes-open{display:inline-flex;align-items:center;gap:18px;min-height:46px;padding:10px 16px;border-radius:8px;background:#e4ce98;color:#102e34!important;font-weight:700;text-decoration:none;border:1px solid #f0dfb6}
+.valley-notes-program details{margin-top:14px;border-top:1px solid #59726f}.valley-notes-program summary{cursor:pointer;padding:15px 0;min-height:44px;color:#fff1ce;font-weight:650}.valley-notes-program h4{margin:18px 0 5px;font-size:1rem;color:#f3dca5}.valley-notes-program .valley-notes-boundary{font-size:.86rem;color:#bdcfca;border-top:1px solid #59726f;padding-top:14px}
+.valley-notes-program :is(a,summary):focus-visible{outline:3px solid #f3db94;outline-offset:4px}
+@media(max-width:600px){.valley-notes-program{padding:17px}.valley-notes-open{display:flex;justify-content:space-between}.valley-notes-program .valley-notes-heading h3{font-size:1.3rem}}

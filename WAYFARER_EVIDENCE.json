@@ -1,0 +1,35 @@
+{
+  "build": "8.8.20.123",
+  "baseline": {
+    "commit": "211b2e44d58632d363ef07d71564a19ce1777af0",
+    "tree": "2d7e05a874b8afefd5f000f0f3a824cc663a7523",
+    "files": 1007
+  },
+  "scope": "Admiral program entries and retained travel requirements only",
+  "baseline_offline_suites": 49,
+  "new_check": "VERIFY_VALLEY_NOTES.cjs",
+  "candidate_verification": {
+    "offline_suites": 50,
+    "passed": 50,
+    "failed": 0,
+    "scope": "offline verification only; no live Auth, email or physical device certification"
+  },
+  "live_deployment": false,
+  "server_commissioning": false,
+  "physical_ipad_acceptance": "pending",
+  "browser_review": {
+    "environment": "local isolated card fixture in Chromium",
+    "widths_px": [
+      390,
+      780
+    ],
+    "disclosure_click": "passed",
+    "disclosure_keyboard_enter": "passed",
+    "full_authenticated_admiral_flow": "not tested"
+  },
+  "independent_review": {
+    "result": "no actionable findings",
+    "scope": "implementation diff, permissions, privacy, claims and release integration"
+  },
+  "checked_at": "2026-11-14T17:51:45.803881+00:00"
+}
