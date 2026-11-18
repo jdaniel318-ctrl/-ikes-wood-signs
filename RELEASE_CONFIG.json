@@ -1,15 +1,15 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.125",
-  "name": "Firstlight Bay",
-  "seal": "firstlight-bay-8820125",
-  "base": "8.8.20.124",
-  "base_sha256": "e0395774eedee7935e38e074330b644d197a557ffbef8b3944bd59c8536db930",
-  "base_files": 1015,
-  "prepared_at": "2026-11-18T05:21:10.435327+00:00",
+  "build": "8.8.20.126",
+  "name": "Chartroom",
+  "seal": "chartroom-8820126",
+  "base": "8.8.20.125",
+  "base_sha256": "9f16c6c9446ddb9e9e52cf8591fff139bd5f995e488c594cfb4d4c782d60e503",
+  "base_files": 1017,
+  "prepared_at": "2026-11-18T06:09:35.431551+00:00",
   "app_component_revision": "8.8.20.99",
   "owner_helper_revision": "8.8.20.68",
-  "feature_notes": "Eight illustrated arcade entries. Lantern Run gains original submarine art. Seven challenge games have skippable illustrated starts before play begins. Skullwater improves race scenery and gate guidance. Other games gain visual cues within play.",
+  "feature_notes": "My Fleet groups programs by use. Delegate opens a feature review for the selected ship. A preview binds to one target. Owner Fleet Services distinguishes unavailable features from eligible upgrade offers. See CHARTROOM_FLEET_REGISTER.md for the handoff guide.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -37,8 +37,8 @@
       "automatic_execution_by_upload": false
     }
   },
-  "install_step": "Open Fleet Arcade, check the eight cards and saved results, then launch a game.",
-  "evidence_file": "FIRSTLIGHT_BAY_EVIDENCE.json",
-  "base_git_tree": "e0104b8ffda17d479385430685e5a1f7d371082e",
-  "base_git_commit": "176bb43e654bc7d9e5c1f277a236190f751f434b"
+  "install_step": "Open My Fleet \u2192 Programs & tools. In Build & Govern \u2192 Delegate select a test vessel and open Review this ship\u2019s features. Opening the review issues no orders.",
+  "evidence_file": "CHARTROOM_EVIDENCE.json",
+  "base_git_tree": "994e4e6b9305fe83b2c62969432ffb0006162d2c",
+  "base_git_commit": "a92fbfd6ba08832da7a43455abb752fb82bebb07"
 }

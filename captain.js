@@ -268,12 +268,21 @@ const admiralVesselLogos = new Map([
   </section>
   <section id="watchProgramPanel" aria-labelledby="watchProgramTitle" hidden>
     <header class="bridge-section-head"><h3 id="watchProgramTitle" tabindex="-1">Programs &amp; tools</h3></header>
-    <div class="bridge-gallery">
-    <div id="watchPrograms" class="bootstrap-fleet-rows bridge-list"></div>
-    <div id="watchLocalTools" class="bridge-list">
-      ${blackFlagTravelProgramCard('watch')}
-      <article class="bridge-tool arcade-tool" style="--gallery-art:url(fleet-arcade-cover.webp)"><div><h4>Fleet Arcade</h4><p>Sports, racing, puzzles and creative games.</p></div><button type="button" data-watch-arcade data-fleet-collection>Open Fleet Arcade →</button></article>
-    </div></div>
+    <section class="watch-program-group" aria-labelledby="watchBusinessTitle">
+      <h4 id="watchBusinessTitle">Business tools</h4>
+      <div class="bridge-gallery"><div id="watchPrograms" class="bridge-list"></div><div id="watchLocalTools" class="bridge-list"></div></div>
+    </section>
+    <section class="watch-program-group" aria-labelledby="watchLearningTitle">
+      <h4 id="watchLearningTitle">Learning &amp; games</h4>
+      <div class="bridge-gallery"><div id="watchLearningPrograms"></div><article class="bridge-tool arcade-tool" style="--gallery-art:url(fleet-arcade-cover.webp)"><div><h4>Fleet Arcade</h4><p>Sports, racing, puzzles and creative games.</p></div><button type="button" data-watch-arcade data-fleet-collection>Open Fleet Arcade →</button></article></div>
+    </section>
+    <section class="watch-program-group" aria-labelledby="watchTravelTitle">
+      <h4 id="watchTravelTitle">Travel</h4>
+      <div class="bridge-gallery">${blackFlagTravelProgramCard('watch')}</div>
+    </section>
+    <section id="watchOtherGroup" class="watch-program-group" aria-labelledby="watchOtherTitle" hidden>
+      <h4 id="watchOtherTitle">Other registered programs</h4><div id="watchOtherPrograms" class="bridge-gallery"></div>
+    </section>
   </section>
   <div id="watchFleetHelp"></div>
 </div><section id="watchOverview" class="fleet-vessel-overview hidden" role="dialog" aria-modal="true" aria-hidden="true"><div class="fleet-vessel-overview-shell"><nav class="fleet-report-nav" aria-label="Report navigation">
@@ -369,9 +378,17 @@ const admiralVesselLogos = new Map([
   }
   function paintPrograms(){
     const schedule=programs.find(v=>v.project_id===PROGRAM.project_id)||PROGRAM;
-    const host=$('watchPrograms');
-    const markup=[schedule,...programs.filter(v=>v!==schedule)].map(programRow).join('');
-    if(host.programMarkup!==markup){host.innerHTML=markup;host.programMarkup=markup;}
+    const other=programs.filter(v=>v.project_id!==schedule.project_id&&v.project_id!=='wonderwake');
+    const groups=[
+      ['watchPrograms',[schedule]],
+      ['watchLearningPrograms',programs.filter(v=>v.project_id==='wonderwake')],
+      ['watchOtherPrograms',other]
+    ];
+    for(const [id,rows] of groups){
+      const host=$(id),markup=rows.map(programRow).join('');
+      if(host.programMarkup!==markup){host.innerHTML=markup;host.programMarkup=markup;}
+    }
+    $('watchOtherGroup').hidden=other.length===0;
   }
   function paintRegistry(){
     const counts=spine.counts||{};
@@ -494,8 +511,9 @@ const admiralVesselLogos = new Map([
   function clearReports(){
     records=[];programs=[];lastSync='';spine={counts:{},vessels:[]};
     $('watchKeel').hidden=true;$('watchKeel').replaceChildren();
-    $('watchCount').textContent='';$('watchRows').replaceChildren();$('watchPrograms').replaceChildren();
-    $('watchPrograms').programMarkup=null;
+    $('watchCount').textContent='';$('watchRows').replaceChildren();
+    for(const id of ['watchPrograms','watchLearningPrograms','watchOtherPrograms']){const host=$(id);host.replaceChildren();host.programMarkup=null;}
+    $('watchOtherGroup').hidden=true;
     $('watchRegistry').hidden=true;$('watchRegistry').open=false;$('watchRegistry').querySelector('dl').replaceChildren();
     for(const option of $('watchFilter').options)option.textContent=filterLabels[option.value];
   }
@@ -1830,7 +1848,7 @@ const admiralVesselLogos = new Map([
   </div>
   <div id="admiralDoctrinePrinciples" class="admiral-doctrine-principles"></div>
   <p class="admiral-doctrine-note">This is the current governed course, not a transient readiness notice. Readiness verifies this registry against the running build.</p>
-</section><div class="admiral-lane-summary admiral-service-governance"><b>Admiral Course Orders</b><span>Set one feature, a service group, or an entire vessel to Off, Free, or Paid. Every change requires an explicit Admiral preview and order.</span></div><button id="admiralServiceEntitlements" class="admiral-pro-button" type="button">OPEN COURSE ORDERS</button><section id="admiralEntitlementStation" class="admiral-entitlement-station admiral-course-station hidden" aria-label="Admiral Course Orders"><header><div><small>SERVER-GOVERNED ADMIRAL CONTROL</small><h5>Course Orders</h5><p>Choose the scope, preview the impact, then issue one deliberate and reversible command.</p></div><div class="admiral-entitlement-head-actions"><strong id="admiralIdentityState">ADMIRAL IDENTITY REQUIRED</strong><button id="admiralEntitlementClose" class="admiral-pro-button" type="button">CLOSE</button></div></header><p class="admiral-identity-explainer">The Admiral Gate opens this deck. Account sign-in separately authorizes server-governed changes. Readiness, testing, refresh and launch never choose Off, Free or Paid.</p><div class="admiral-identity-row"><label>Admiral email<input data-bf-trim="boundary" id="admiralIdentityEmail" name="username" type="email" inputmode="email" autocapitalize="none" spellcheck="false" autocomplete="username" placeholder="Admiral email"></label><label>Password<input data-bf-trim="preserve" id="admiralIdentityPassword" name="password" type="password" autocomplete="current-password" placeholder="Password"></label><button id="admiralIdentitySignIn" class="admiral-pro-button is-primary" type="button">AUTHENTICATE ADMIRAL</button><button id="admiralIdentityRecover" class="admiral-pro-button" type="button">RECOVER PASSWORD</button><button id="admiralIdentitySignOut" class="admiral-pro-button hidden" type="button">SIGN OUT IDENTITY</button></div><div class="admiral-course-grid"><section class="admiral-course-brief"><small>FLEET BRIEF</small><strong id="admiralCourseBrief">Sign in to inspect the selected vessel.</strong><span>Reading fleet state does not change it.</span></section><section class="admiral-course-compose"><div class="admiral-course-step"><small>1 · VESSEL</small><label>Command destination<select id="admiralEntitlementVessel"><option value="ikes-wood-signs">Ike's Wood Signs</option><option value="beccas-bloom-shop">Becca's Bloom Shop</option><option value="bf-p-f92f87e8ec44">Legacy Plumbing</option><option value="bor-north-richmond">Signal Restoration</option><option value="grizzly-bear">Grizzly Bear</option><option value="mugshot-after-dark">Mugs After Dark</option></select></label></div><div class="admiral-course-step"><small>2 · SCOPE</small><div class="admiral-scope-actions" role="group" aria-label="Course order scope"><button class="admiral-pro-button is-selected" type="button" data-course-scope="vessel" aria-pressed="true">ENTIRE VESSEL</button><button class="admiral-pro-button" type="button" data-course-scope="group" aria-pressed="false">SERVICE GROUP</button><button class="admiral-pro-button" type="button" data-course-scope="feature" aria-pressed="false">ONE FEATURE</button></div><label id="admiralCourseGroupLabel" class="hidden">Service group<select id="admiralCourseGroup"><option value="operations">Operations & Commerce</option><option value="production">Production & Capacity</option><option value="intelligence">Intelligence</option></select></label><label id="admiralCourseFeatureLabel" class="hidden">Feature<select id="admiralEntitlementCapability"><option value="fleet.customer-payments">Customer Payments</option><option value="fleet.artwork-inlays">Artwork & Inlay Production</option><option value="fleet.customer-insight">Customer & Order Insight</option><option value="fleet.enhanced-ledger">Enhanced Business Ledger</option><option value="fleet.ai-recommendations">Fleet AI Recommendations</option><option value="fleet.vendor-routing">Vendor & Capacity Routing</option></select></label></div><div class="admiral-course-step"><small>3 · COMMAND</small><div class="admiral-entitlement-actions" role="group" aria-label="Commercial state"><button id="admiralTurnOff" class="admiral-pro-button" type="button" disabled>OFF<span>Unavailable</span></button><button id="admiralMakeFree" class="admiral-pro-button is-selected" type="button" disabled>FREE<span>Active at $0</span></button><button id="admiralGrantPaid" class="admiral-pro-button" type="button" disabled>PAID<span>Paid terms</span></button></div><label>Command intent<input data-bf-trim="boundary" id="admiralCourseIntent" type="text" maxlength="500" placeholder="Optional reason for the record"></label><button id="admiralPreviewCourse" class="admiral-pro-button" type="button" disabled>PREVIEW ORDER</button></div></section><section id="admiralCoursePreview" class="admiral-course-preview" aria-live="polite"><header><div><small>IMPACT PREVIEW</small><strong id="admiralEntitlementCurrent">AWAITING PREVIEW</strong><span id="admiralEntitlementCurrentDetail">No fleet state will change until the order is issued.</span></div></header><div class="admiral-impact-counts"><span><b id="admiralCourseTargetCount">0</b><small>TARGETS</small></span><span><b id="admiralCourseChangeCount">0</b><small>CHANGES</small></span><span><b id="admiralCourseUnchangedCount">0</b><small>UNCHANGED</small></span></div><div id="admiralCoursePreviewItems" class="admiral-course-preview-items"><p>Authenticate the Admiral identity, then preview an order.</p></div><button id="admiralIssueCourse" class="admiral-pro-button is-primary" type="button" disabled>ISSUE ADMIRAL ORDER</button></section></div><div id="admiralEntitlementResult" class="admiral-entitlement-result" role="status" aria-live="polite">Authenticate the Admiral identity to inspect and command entitlements.</div><section class="admiral-course-log"><header><div><small>DURABLE COMMAND RECORD</small><strong>Recent Admiral orders</strong></div><button id="admiralOpenFullLog" class="admiral-pro-button" type="button" disabled>OPEN FULL LOG</button></header><div id="admiralCourseLogRows" class="admiral-course-log-rows"><p>Authenticate to read the command record.</p></div></section><div class="admiral-package-note"><b>Authority boundary</b><span>Each order is scoped to one vessel. Preview fingerprints prevent stale changes; rollback refuses to overwrite a newer command.</span></div></section></article>
+</section><div class="admiral-lane-summary admiral-service-governance"><b>Admiral Course Orders</b><span>Set one feature, a service group, or an entire vessel to Off, Free, or Paid. Every change requires an explicit Admiral preview and order.</span></div><button id="admiralServiceEntitlements" class="admiral-pro-button" type="button">OPEN COURSE ORDERS</button><section id="admiralEntitlementStation" class="admiral-entitlement-station admiral-course-station hidden" aria-label="Admiral Course Orders"><header><div><small>SERVER-GOVERNED ADMIRAL CONTROL</small><h5>Course Orders</h5><p>Choose what this ship can use. For a trial, review each included feature. Paid terms can be approved later. Billing is separate.</p></div><div class="admiral-entitlement-head-actions"><strong id="admiralIdentityState">ADMIRAL IDENTITY REQUIRED</strong><button id="admiralEntitlementClose" class="admiral-pro-button" type="button">CLOSE</button></div></header><p class="admiral-identity-explainer">The Admiral Gate opens this deck. Account sign-in separately authorizes server-governed changes. Readiness, testing, refresh and launch never choose Off, Free or Paid.</p><div class="admiral-identity-row"><label>Admiral email<input data-bf-trim="boundary" id="admiralIdentityEmail" name="username" type="email" inputmode="email" autocapitalize="none" spellcheck="false" autocomplete="username" placeholder="Admiral email"></label><label>Password<input data-bf-trim="preserve" id="admiralIdentityPassword" name="password" type="password" autocomplete="current-password" placeholder="Password"></label><button id="admiralIdentitySignIn" class="admiral-pro-button is-primary" type="button">AUTHENTICATE ADMIRAL</button><button id="admiralIdentityRecover" class="admiral-pro-button" type="button">RECOVER PASSWORD</button><button id="admiralIdentitySignOut" class="admiral-pro-button hidden" type="button">SIGN OUT IDENTITY</button></div><div class="admiral-course-grid"><section class="admiral-course-brief"><small>FLEET BRIEF</small><strong id="admiralCourseBrief">Sign in to inspect the selected vessel.</strong><span>Reading fleet state does not change it.</span></section><section class="admiral-course-compose"><div class="admiral-course-step"><small>1 · VESSEL</small><label>Command destination<select id="admiralEntitlementVessel"><option value="ikes-wood-signs">Ike's Wood Signs</option><option value="beccas-bloom-shop">Becca's Bloom Shop</option><option value="bf-p-f92f87e8ec44">Legacy Plumbing</option><option value="bor-north-richmond">Signal Restoration</option><option value="grizzly-bear">Grizzly Bear</option><option value="mugshot-after-dark">Mugs After Dark</option></select></label></div><div class="admiral-course-step"><small>2 · SCOPE</small><div class="admiral-scope-actions" role="group" aria-label="Course order scope"><button class="admiral-pro-button" type="button" data-course-scope="vessel" aria-pressed="false">ENTIRE VESSEL</button><button class="admiral-pro-button" type="button" data-course-scope="group" aria-pressed="false">SERVICE GROUP</button><button class="admiral-pro-button is-selected" type="button" data-course-scope="feature" aria-pressed="true">ONE FEATURE</button></div><label id="admiralCourseGroupLabel" class="hidden">Service group<select id="admiralCourseGroup"><option value="operations">Operations & Commerce</option><option value="production">Production & Capacity</option><option value="intelligence">Intelligence</option></select></label><label id="admiralCourseFeatureLabel">Feature<select id="admiralEntitlementCapability"><option value="">Choose a feature</option><option value="fleet.customer-payments">Customer Payments</option><option value="fleet.artwork-inlays">Artwork & Inlay Production</option><option value="fleet.customer-insight">Customer & Order Insight</option><option value="fleet.enhanced-ledger">Enhanced Business Ledger</option><option value="fleet.ai-recommendations">Fleet AI Recommendations</option><option value="fleet.vendor-routing">Vendor & Capacity Routing</option></select></label></div><div class="admiral-course-step"><small>3 · COMMAND</small><div class="admiral-entitlement-actions" role="group" aria-label="Commercial state"><button id="admiralTurnOff" class="admiral-pro-button" type="button" disabled>OFF<span>Unavailable</span></button><button id="admiralMakeFree" class="admiral-pro-button is-selected" type="button" disabled>FREE<span>Active at $0</span></button><button id="admiralGrantPaid" class="admiral-pro-button" type="button" disabled>PAID<span>Paid terms</span></button></div><label>Command intent<input data-bf-trim="boundary" id="admiralCourseIntent" type="text" maxlength="500" placeholder="Optional reason for the record"></label><button id="admiralPreviewCourse" class="admiral-pro-button" type="button" disabled>PREVIEW ORDER</button></div></section><section id="admiralCoursePreview" class="admiral-course-preview" aria-live="polite"><header><div><small>IMPACT PREVIEW</small><strong id="admiralEntitlementCurrent">AWAITING PREVIEW</strong><span id="admiralEntitlementCurrentDetail">No fleet state will change until the order is issued.</span></div></header><div class="admiral-impact-counts"><span><b id="admiralCourseTargetCount">0</b><small>TARGETS</small></span><span><b id="admiralCourseChangeCount">0</b><small>CHANGES</small></span><span><b id="admiralCourseUnchangedCount">0</b><small>UNCHANGED</small></span></div><div id="admiralCoursePreviewItems" class="admiral-course-preview-items"><p>Authenticate the Admiral identity, then preview an order.</p></div><button id="admiralIssueCourse" class="admiral-pro-button is-primary" type="button" disabled>ISSUE ADMIRAL ORDER</button></section></div><div id="admiralEntitlementResult" class="admiral-entitlement-result" role="status" aria-live="polite">Authenticate the Admiral identity to inspect and command entitlements.</div><section class="admiral-course-log"><header><div><small>DURABLE COMMAND RECORD</small><strong>Recent Admiral orders</strong></div><button id="admiralOpenFullLog" class="admiral-pro-button" type="button" disabled>OPEN FULL LOG</button></header><div id="admiralCourseLogRows" class="admiral-course-log-rows"><p>Authenticate to read the command record.</p></div></section><div class="admiral-package-note"><b>Authority boundary</b><span>Each order is scoped to one vessel. Preview fingerprints prevent stale changes; rollback refuses to overwrite a newer command.</span></div></section></article>
             <article data-admiral-panel="delegate" hidden><small>03 · DELEGATE</small><h4>Captain appointments</h4><p role="status">Delegation controls are initializing. No command has been issued.</p><button id="quarterdeckMountRetry" type="button">RETRY DELEGATION DISPLAY</button></article>
             <article data-admiral-panel="promote" hidden><small>04 · PROMOTE</small><h4>Promote fleet learning</h4><p>Foundry candidates, proven capability, shared service or new vessel.</p><div class="admiral-lane-summary"><b>Intelligence Dock + one learning pipeline</b><span>Cross-vessel patterns surface here before Observation → Lesson → Candidate → Foundry → Sea Trial → Proven.</span></div><button id="admiralDeckFoundry" type="button">OPEN THE FOUNDRY <em>FOUNDATION</em></button><div class="admiral-lane-summary admiral-service-governance"><b>Admiral Commissioning Orders</b><span>Create one durable Fleet Core vessel identity. The working name stays editable; the vessel ID, project key, and namespace do not.</span></div><button id="admiralCommissioningOpen" class="admiral-pro-button" type="button">OPEN COMMISSIONING ORDERS</button><section id="admiralCommissioningStation" class="admiral-entitlement-station admiral-course-station admiral-commissioning-station hidden" aria-label="Admiral Commissioning Orders"><header><div><small>SERVER-GOVERNED ADMIRAL SHIPYARD</small><h5>Commissioning Orders</h5><p>Name the working vessel, define its permanent keel, preview the boundary, then issue one deliberate order.</p></div><div class="admiral-entitlement-head-actions"><strong id="admiralCommissioningIdentityState">ADMIRAL IDENTITY REQUIRED</strong><button id="admiralCommissioningClose" class="admiral-pro-button" type="button">CLOSE</button></div></header><p class="admiral-identity-explainer"><b>Bootstrap Build is a working name.</b> It can be renamed later without changing the vessel UUID, project key, namespace, records, or lineage.</p><div id="admiralCommissioningAuth" class="admiral-identity-row"><label>Admiral email<input data-bf-trim="boundary" id="admiralCommissioningEmail" name="username" type="email" inputmode="email" autocapitalize="none" spellcheck="false" autocomplete="username" placeholder="Admiral email"></label><label>Password<input data-bf-trim="preserve" id="admiralCommissioningPassword" name="password" type="password" autocomplete="current-password" placeholder="Password"></label><button id="admiralCommissioningSignIn" class="admiral-pro-button is-primary" type="button">AUTHENTICATE ADMIRAL</button><button id="admiralCommissioningRecover" class="admiral-pro-button" type="button">RECOVER PASSWORD</button><button id="admiralCommissioningSignOut" class="admiral-pro-button hidden" type="button">SIGN OUT IDENTITY</button></div><div class="admiral-course-grid admiral-commissioning-grid"><section class="admiral-course-brief"><small>COMMISSIONING BRIEF</small><strong id="admiralCommissioningBrief">Authenticate to preview a new vessel.</strong><span>No vessel exists until the order is issued.</span></section><section class="admiral-course-compose"><div class="admiral-course-step"><small>1 · WORKING IDENTITY</small><label>Working name <span class="field-rule">EDITABLE AFTER COMMISSION</span><input data-bf-trim="boundary" id="admiralCommissioningName" type="text" maxlength="80" value="Bootstrap Build" placeholder="Working vessel name"></label><label>Mission summary<input data-bf-trim="boundary" id="admiralCommissioningSummary" type="text" maxlength="500" value="Construction scheduling and field coordination" placeholder="What this vessel is being built to do"></label></div><div class="admiral-course-step"><small>2 · PERMANENT KEEL</small><label>Project key <span class="field-rule">PERMANENT</span><input data-bf-trim="boundary" id="admiralCommissioningProject" type="text" maxlength="63" value="construction-scheduling-01" autocapitalize="none" spellcheck="false"></label><label>Namespace <span class="field-rule">PERMANENT</span><input data-bf-trim="boundary" id="admiralCommissioningNamespace" type="text" maxlength="63" value="construction-scheduling-01" autocapitalize="none" spellcheck="false"></label><label>Mission class<select id="admiralCommissioningClass"><option value="admiral_program">Admiral-level program</option><option value="fleet_service">Shared fleet service</option><option value="independent_business">Independent business</option></select></label></div><div class="admiral-course-step"><small>3 · BOUNDARY</small><div class="admiral-commissioning-boundary"><span><b>COMMISSIONING</b><small>NOT LIVE</small></span><span><b>UNASSIGNED</b><small>NO OWNER CREATED</small></span><span><b>NO FEATURES</b><small>COURSE ORDER LATER</small></span></div><label>Order intent<input data-bf-trim="boundary" id="admiralCommissioningIntent" type="text" maxlength="500" placeholder="Optional reason for the record"></label><button id="admiralCommissioningPreview" class="admiral-pro-button" type="button" disabled>PREVIEW COMMISSIONING ORDER</button></div></section><section class="admiral-course-preview" aria-live="polite"><header><div><small>IMPACT PREVIEW</small><strong id="admiralCommissioningPreviewState">AWAITING PREVIEW</strong><span id="admiralCommissioningPreviewDetail">No Fleet Core row will be written until the order is issued.</span></div></header><div id="admiralCommissioningPreviewItems" class="admiral-course-preview-items"><p>Authenticate the Admiral identity, then preview the permanent and editable fields.</p></div><button id="admiralCommissioningIssue" class="admiral-pro-button is-primary" type="button" disabled>ISSUE COMMISSIONING ORDER</button></section></div><div id="admiralCommissioningResult" class="admiral-entitlement-result" role="status" aria-live="polite">Authenticate the Admiral identity to begin.</div><section class="admiral-course-log"><header><div><small>DURABLE COMMISSIONING RECORD</small><strong>Recent vessel orders</strong></div><button id="admiralCommissioningLog" class="admiral-pro-button" type="button" disabled>OPEN FULL LOG</button></header><div id="admiralCommissioningLogRows" class="admiral-course-log-rows"><p>Authenticate to read the commissioning record.</p></div></section><div class="admiral-package-note"><b>Authority boundary</b><span>The commissioner does not become the owner. Commissioning creates no membership, no entitlement, and no live publication.</span></div></section></article>
           </section>
@@ -1840,7 +1858,7 @@ const admiralVesselLogos = new Map([
       </div>`;
     document.body.appendChild(deck);
     // FUN is a separate Admiral program, never a Fleet Core vessel or game authority grant.
-    deck.querySelector('.admiral-session-strip')?.insertAdjacentHTML('afterend',`<section class="fleet-schedule-entry"><img src="bootstrap_build_icon.png" alt=""><div><b>ScheduleJoe</b><span>Bootstrap Build · Construction schedules</span></div><button type="button" data-schedulejoe-open>Open ScheduleJoe</button></section><section id="funProgramLaunchCard" aria-label="Admiral Programs"><div><small>ADMIRAL PROGRAMS · FUN · OUTSIDE FLEET CORE</small><b>Black Flag: Stormwake</b><p>Explore a 3D harbor, raise the bridge, and bring the chartmaker home. First Light and its lessons stay in the journal.</p></div><button id="funProgramLaunch" type="button">OPEN STORMWAKE →</button></section><section id="lanternRunCard" aria-label="Lantern Run arcade"><div><h3>Lantern Run</h3><p>Sail six mazes with Riptail, from Moonbeam Bay to the Homeward Light.</p></div><button id="lanternRunLaunch" type="button">PLAY LANTERN RUN →</button></section>`);
+    deck.querySelector('.admiral-session-strip')?.insertAdjacentHTML('afterend',`<section class="fleet-schedule-entry"><img src="bootstrap_build_icon.png" alt=""><div><b>ScheduleJoe</b><span>Bootstrap Build · Construction schedules</span></div><button type="button" data-schedulejoe-open>Open ScheduleJoe</button></section><section id="funProgramLaunchCard" aria-label="Admiral Programs"><div><small>ADMIRAL PROGRAMS · FUN · OUTSIDE FLEET CORE</small><b>Black Flag: Stormwake</b><p>Explore a 3D harbor, raise the bridge, and bring the chartmaker home. First Light and its lessons stay in the journal.</p></div><button id="funProgramLaunch" type="button">OPEN STORMWAKE →</button></section><section id="lanternRunCard" aria-label="Lantern Run arcade"><div><h3>Lantern Run</h3><p>Sail 36 mazes with Riptail, from Moonbeam Bay to the Homeward Light.</p></div><button id="lanternRunLaunch" type="button">PLAY LANTERN RUN →</button></section>`);
     const promoteLane=deck.querySelector('[data-admiral-panel="promote"]');
     promoteLane?.insertAdjacentHTML('afterbegin',`<section class="admiral-passage-card" aria-label="Commissioned Admiral Office"><small>ADMIRAL KEEL</small><h5>Commissioned rank. Separate secure sessions.</h5><ol><li><b>1</b><span>The Admiral office is now an accepted Fleet role, distinct from Captain.</span></li><li><b>2</b><span>Session timeout, logout, or readiness WATCH never demotes the rank.</span></li><li><b>3</b><span>Every entry still requires passage PIN plus server-verified Admiral identity.</span></li><li><b>4</b><span>Only an explicit server authority revocation can remove the commissioned role.</span></li></ol><p>Readiness warnings remain obligations to harden the fleet. They do not turn the Admiral back into a Captain.</p></section>`);
     promoteLane?.insertAdjacentHTML('afterbegin', `
@@ -5255,7 +5273,14 @@ if(document.readyState==='loading'){
     production:['fleet.artwork-inlays','fleet.vendor-routing'],
     intelligence:['fleet.ai-recommendations']
   };
-  let scope='vessel',command='free',preview=null,previewConfirmed=false,fullLog=false,busy=false;
+  let scope='feature',command='free',preview=null,previewConfirmed=false,fullLog=false,busy=false;
+  let sessionEpoch=0,identityRead=0,previewRead=0,logRead=0,confirmedTarget='',issuing=false;
+  function courseTarget(){
+    return {p_project_id:selected('admiralEntitlementVessel').value,p_scope:scope,p_capability_keys:capabilityKeys(),p_commercial_mode:command};
+  }
+  function hasTarget(target){
+    return !!target.p_project_id&&(target.p_scope==='vessel'||target.p_capability_keys.length>0);
+  }
   const el=id=>document.getElementById(id);
   const station=()=>el('admiralEntitlementStation');
   const result=()=>el('admiralEntitlementResult');
@@ -5279,14 +5304,17 @@ if(document.readyState==='loading'){
     return [selected('admiralEntitlementCapability').value].filter(Boolean);
   }
   function setBusy(next){
-    busy=next;
+    busy=next||issuing;
+    next=busy;
     const verified=station()?.classList.contains('identity-verified');
     ['admiralTurnOff','admiralMakeFree','admiralGrantPaid','admiralPreviewCourse'].forEach(id=>{if(el(id))el(id).disabled=next||!verified;});
+    for(const control of document.querySelectorAll('[data-course-scope],#admiralEntitlementVessel,#admiralCourseGroup,#admiralEntitlementCapability,#admiralCourseIntent'))control.disabled=issuing;
+    if(el('admiralPreviewCourse'))el('admiralPreviewCourse').disabled=next||!verified||!hasTarget(courseTarget());
     if(el('admiralIssueCourse'))el('admiralIssueCourse').disabled=next||!verified||!preview||!previewConfirmed||preview.changes_count<1;
     if(el('admiralOpenFullLog'))el('admiralOpenFullLog').disabled=next||!verified;
   }
   function invalidatePreview(message='Preview the order to see its exact impact.'){
-    preview=null;previewConfirmed=false;
+    previewRead++;confirmedTarget='';preview=null;previewConfirmed=false;setBusy(false);
     result()?.classList.remove('is-verified');
     if(el('admiralEntitlementCurrent'))el('admiralEntitlementCurrent').textContent='AWAITING PREVIEW';
     if(el('admiralEntitlementCurrentDetail'))el('admiralEntitlementCurrentDetail').textContent=message;
@@ -5310,8 +5338,42 @@ if(document.readyState==='loading'){
     if(!(await verifyAdmiral())){clearSession();throw new Error('This account does not hold active Admiral authority.');}
     if(el('admiralIdentityPassword'))el('admiralIdentityPassword').value='';
   }
+  function clearFeatureReview(){
+    sessionEpoch++;identityRead++;logRead++;issuing=false;
+    const select=el('admiralEntitlementVessel');
+    select?.querySelectorAll('[data-handoff-vessel]').forEach(option=>option.remove());
+    if(select)select.selectedIndex=-1;
+    if(el('admiralCourseIntent'))el('admiralCourseIntent').value='';
+    if(el('admiralEntitlementCapability'))el('admiralEntitlementCapability').value='';
+    scope='feature';command='free';fullLog=false;paintScope();paintCommand();
+    station()?.classList.remove('identity-verified');
+    invalidatePreview('Authenticate to inspect current settings.');
+    setResult('Sign in to review features.');
+    if(el('admiralCourseBrief'))el('admiralCourseBrief').textContent='Sign in to inspect the selected vessel.';
+    if(el('admiralCourseLogRows'))el('admiralCourseLogRows').replaceChildren();
+  }
+  for(const name of ['darksky:admiral-session-ended','darksky:admiral-session-unavailable','pagehide'])window.addEventListener(name,clearFeatureReview);
+  window.DarkSkyPrepareFeatureReview=vessel=>{
+    const select=el('admiralEntitlementVessel');
+    if(!select||issuing||!vessel?.project_id||!vessel.display_name)return false;
+    // Navigation only. All grants still require the authenticated server order.
+    let option=Array.from(select.options).find(item=>item.value===vessel.project_id);
+    if(!option){
+      option=document.createElement('option');option.value=vessel.project_id;
+      option.textContent=vessel.display_name;option.dataset.handoffVessel='true';select.add(option);
+    }
+    select.value=option.value;el('admiralEntitlementCapability').value='';
+    el('admiralCourseIntent').value='';scope='feature';command='off';fullLog=false;
+    paintScope();paintCommand();logRead++;
+    el('admiralCourseLogRows')?.replaceChildren();
+    invalidatePreview('Choose one feature for this ship.');
+    setResult('Review feature access for '+vessel.display_name+'.');
+    return select.value===vessel.project_id;
+  };
   async function syncIdentity(){
+    const read=++identityRead;
     const verified=await verifyAdmiral();
+    if(read!==identityRead)return false;
     const deck=el('admiralDeck');
     deck?.classList.toggle('admiral-authority-verified',verified);
     if(deck)deck.dataset.admiralAuthority=verified?'verified':'provisional';
@@ -5336,7 +5398,7 @@ if(document.readyState==='loading'){
       if(el('admiralCourseBrief'))el('admiralCourseBrief').textContent=selected('admiralEntitlementVessel').label+' is ready for a read-only preview.';
       setBusy(false);await Promise.all([previewCourse(),loadLog()]);
     }else{
-      invalidatePreview('Authenticate to inspect current settings.');
+      clearFeatureReview();
       if(el('admiralCourseBrief'))el('admiralCourseBrief').textContent='Sign in to inspect the selected vessel.';
       if(el('admiralCourseLogRows'))el('admiralCourseLogRows').innerHTML='<p>Authenticate to read the command record.</p>';
       setBusy(false);
@@ -5348,11 +5410,16 @@ if(document.readyState==='loading'){
   window.DarkSkyAuthenticateAdmiral=async(email,password)=>{await signIn(email,password);return syncIdentity();};
   window.DarkSkySignOutAdmiral=async()=>{const result=await client().signOut();await syncIdentity();return result;};
   async function previewCourse(confirmIssue=false,{announce=true}={}){
+    const target=courseTarget();
+    if(!hasTarget(target)){invalidatePreview('Choose a ship and a feature or group.');return;}
+    const read=++previewRead,key=JSON.stringify(target);
+    preview=null;previewConfirmed=false;confirmedTarget='';
     setBusy(true);if(announce)setResult('Reading current fleet state. No change is being made…');
     try{
-      const vessel=selected('admiralEntitlementVessel');
-      const data=await rpc('admiral_preview_service_course',{p_project_id:vessel.value,p_scope:scope,p_capability_keys:capabilityKeys(),p_commercial_mode:command});
-      preview=data;previewConfirmed=confirmIssue;
+      const data=await rpc('admiral_preview_service_course',target);
+      if(read!==previewRead||key!==JSON.stringify(courseTarget()))return;
+      if(!data||typeof data.fingerprint!=='string'||!data.fingerprint||!Number.isInteger(data.changes_count)||data.changes_count<0)throw new Error('A verified feature preview is unavailable.');
+      preview=data;previewConfirmed=confirmIssue;confirmedTarget=key;
       if(el('admiralEntitlementCurrent'))el('admiralEntitlementCurrent').textContent=command.toUpperCase()+' COURSE';
       if(el('admiralEntitlementCurrentDetail'))el('admiralEntitlementCurrentDetail').textContent=data.changes_count?data.changes_count+' of '+data.feature_count+' selected features will change.':'All selected features already match this course.';
       if(el('admiralCourseTargetCount'))el('admiralCourseTargetCount').textContent=String(data.feature_count);
@@ -5361,23 +5428,36 @@ if(document.readyState==='loading'){
       if(el('admiralCoursePreviewItems'))el('admiralCoursePreviewItems').innerHTML=(data.items||[]).map(item=>'<article class="'+(item.changes?'will-change':'unchanged')+'"><b>'+escapeHtml(item.feature_name)+'</b><span>'+escapeHtml(String(item.before_state).toUpperCase())+' → '+escapeHtml(String(item.after_state).toUpperCase())+'</span></article>').join('');
       if(announce)setResult(data.changes_count?(confirmIssue?'Preview confirmed. Review every target, then issue the order.':'Current impact shown. Tap Preview Order to authorize the issue step.'):'Preview complete. No order is needed because the selected state already matches.');
       return data;
-    }finally{setBusy(false);}
+    }catch(error){if(read===previewRead)throw error;}
+    finally{if(read===previewRead)setBusy(false);}
   }
   async function issueCourse(){
-    if(!preview||!previewConfirmed)throw new Error('Tap Preview Order and review the impact before issuing it.');
+    const target=courseTarget(),epoch=sessionEpoch;
+    if(busy||!station()?.classList.contains('identity-verified')||!hasTarget(target)||confirmedTarget!==JSON.stringify(target)||!preview||!previewConfirmed||preview.changes_count<1)throw new Error('Tap Preview Order and review the impact before issuing it.');
     const vessel=selected('admiralEntitlementVessel'),intent=el('admiralCourseIntent')?.value?.trim()||'';
+    const fingerprint=preview.fingerprint;
+    issuing=true;previewConfirmed=false;confirmedTarget='';
     setBusy(true);setResult('Issuing one atomic Admiral order…');
     try{
-      const data=await rpc('admiral_issue_service_course',{p_project_id:vessel.value,p_scope:scope,p_capability_keys:capabilityKeys(),p_commercial_mode:command,p_expected_fingerprint:preview.fingerprint,p_intent:intent});
-      const acknowledgment='ORDER #'+data.command_id+' VERIFIED · '+data.changes_count+' feature'+(data.changes_count===1?'':'s')+' now '+command.toUpperCase()+' for '+vessel.label+'.';
-      const notice=el('admiralDeckNotice');if(notice)notice.textContent='Admiral order #'+data.command_id+' was written, read back and verified.';
+      const data=await rpc('admiral_issue_service_course',{...target,p_expected_fingerprint:fingerprint,p_intent:intent});
+      if(epoch!==sessionEpoch)return;
+      if(!data?.command_id||!Number.isInteger(data.changes_count))throw new Error('Order receipt unavailable. Review this ship’s order log before issuing another order.');
       if(el('admiralCourseIntent'))el('admiralCourseIntent').value='';
-      preview=null;previewConfirmed=false;await Promise.all([previewCourse(false,{announce:false}),loadLog()]);
+      preview=null;previewConfirmed=false;
+      const [readback,records]=await Promise.all([previewCourse(false,{announce:false}),loadLog()]);
+      if(epoch!==sessionEpoch)return;
+      const logged=records.some(record=>String(record.id)===String(data.command_id));
+      if(!logged||readback?.changes_count!==0){
+        setResult('Order #'+data.command_id+' returned. Review the current settings and order log before taking another action.');
+        return data;
+      }
+      const notice=el('admiralDeckNotice');if(notice)notice.textContent='Admiral order #'+data.command_id+' verified.';
       if(el('admiralEntitlementCurrent'))el('admiralEntitlementCurrent').textContent=command.toUpperCase()+' COURSE · APPLIED';
-      if(el('admiralEntitlementCurrentDetail'))el('admiralEntitlementCurrentDetail').textContent='Verified readback: every selected feature now matches this course.';
-      setResult(acknowledgment,'verified');
+      if(el('admiralEntitlementCurrentDetail'))el('admiralEntitlementCurrentDetail').textContent='The selected ship’s settings match the order.';
+      setResult('ORDER #'+data.command_id+' VERIFIED · '+data.changes_count+' feature'+(data.changes_count===1?'':'s')+' now '+command.toUpperCase()+' for '+vessel.label+'.','verified');
       return data;
-    }finally{setBusy(false);}
+    }catch(error){if(epoch===sessionEpoch)throw error;}
+    finally{if(epoch===sessionEpoch){issuing=false;setBusy(false);}}
   }
   function describeRecord(record){
     const detail=record.detail||{};
@@ -5386,28 +5466,36 @@ if(document.readyState==='loading'){
     return String(detail.capability_key||'Single feature order')+' · '+String(detail.commercial_mode||detail.current_state||'changed').toUpperCase();
   }
   async function loadLog(){
-    const vessel=selected('admiralEntitlementVessel');
+    const vessel=selected('admiralEntitlementVessel'),read=++logRead;
+    const container=el('admiralCourseLogRows');
+    container?.replaceChildren();
+    if(!vessel.value)return [];
     const data=await rpc('admiral_list_service_course_log',{p_project_id:vessel.value,p_limit:fullLog?100:5});
-    const records=data.records||[],container=el('admiralCourseLogRows');if(!container)return records;
+    if(read!==logRead||vessel.value!==selected('admiralEntitlementVessel').value)return [];
+    const records=data.records||[];if(!container)return records;
     container.innerHTML=records.length?records.map(record=>'<article class="admiral-course-log-row"><div><small>ORDER #'+escapeHtml(record.id)+' · '+escapeHtml(formatTime(record.created_at))+'</small><b>'+escapeHtml(record.vessel_name||vessel.label)+'</b><span>'+escapeHtml(describeRecord(record))+'</span><em>By '+escapeHtml(record.actor||'Admiral')+'</em></div>'+(record.rollback_available?'<button class="admiral-pro-button" type="button" data-course-rollback="'+escapeHtml(record.id)+'" data-course-description="'+escapeHtml(describeRecord(record))+'">ROLL BACK</button>':'')+'</article>').join(''):'<p>No entitlement commands are recorded for this vessel.</p>';
     if(el('admiralOpenFullLog'))el('admiralOpenFullLog').textContent=fullLog?'SHOW RECENT':'OPEN FULL LOG';
     return records;
   }
   async function rollbackCourse(button){
     const id=Number(button.dataset.courseRollback),description=button.dataset.courseDescription||'this order';
-    if(!Number.isFinite(id))return;
+    if(busy||!station()?.classList.contains('identity-verified')||!Number.isFinite(id))return;
+    const epoch=sessionEpoch;
     if(!window.confirm('Roll back Admiral order #'+id+'?\n\n'+description+'\n\nRollback will stop if any newer command conflicts.'))return;
-    setBusy(true);setResult('Checking for newer commands before rollback…');
+    issuing=true;setBusy(true);setResult('Checking for newer commands before rollback…');
     try{
       const data=await rpc('admiral_rollback_service_course',{p_command_id:id});
+      if(epoch!==sessionEpoch)return;
       const acknowledgment='ROLLBACK #'+data.rollback_id+' VERIFIED · order #'+id+' restored '+data.restored_count+' feature'+(data.restored_count===1?'':'s')+'. The course shown above is now a new proposal only.';
       if(el('admiralCourseIntent'))el('admiralCourseIntent').value='';
       preview=null;previewConfirmed=false;await Promise.all([previewCourse(false,{announce:false}),loadLog()]);
+      if(epoch!==sessionEpoch)return;
       if(el('admiralEntitlementCurrent'))el('admiralEntitlementCurrent').textContent='NEW '+command.toUpperCase()+' PROPOSAL';
       if(el('admiralEntitlementCurrentDetail'))el('admiralEntitlementCurrentDetail').textContent='Rollback restored the prior settings. This preview is a new proposal and has not been issued.';
       const notice=el('admiralDeckNotice');if(notice)notice.textContent='Rollback #'+data.rollback_id+' restored Admiral order #'+id+' and was verified.';
       setResult(acknowledgment,'verified');
-    }finally{setBusy(false);}
+    }catch(error){if(epoch===sessionEpoch)throw error;}
+    finally{if(epoch===sessionEpoch){issuing=false;setBusy(false);}}
   }
   function preserveScroll(){
     const deck=el('admiralDeck');if(!deck||deck.dataset.mode!=='professional'||deck.classList.contains('hidden'))return;
@@ -5609,7 +5697,7 @@ if(window.DarkSkyOpenFleetWatchtower)window.DarkSkyOpenAdmiralFleet=window.DarkS
   function state(){
     const enabled=checked();
     for(const id of controls){const n=$(id);if(n)n.disabled=busy||!ready||!active();}
-    for(const id of ['harborPreviewCaptain','harborPreviewActivation','harborCopyRoute'])if($(id))$(id).disabled=!enabled||!selected();
+    for(const id of ['harborPreviewCaptain','harborPreviewActivation','harborCopyRoute','harborFeatureAccess'])if($(id))$(id).disabled=!enabled||!selected();
     if($('harborIssueCaptain'))$('harborIssueCaptain').disabled=!enabled||currentTab!=='appoint'||!appointmentMatches();
     if($('harborActivateVessel'))$('harborActivateVessel').disabled=true; // CharterGuard: no verified signed-agreement service is installed.
     if($('harborRefresh'))$('harborRefresh').disabled=busy||!active();
@@ -5815,7 +5903,7 @@ if(window.DarkSkyOpenFleetWatchtower)window.DarkSkyOpenAdmiralFleet=window.DarkS
         </nav>
         <div class="qd-vessel"><label for="harborVessel">Vessel <span>Exact scope for this task</span></label><select id="harborVessel" required disabled><option value="">Choose a vessel</option></select><button type="button" id="harborRefresh">REFRESH RECORDS</button></div>
         <section id="qdPanel-appoint" role="tabpanel" data-qd-panel="appoint" aria-labelledby="qdTab-appoint" class="qd-content">
-          <div class="qd-form"><label for="harborCaptainEmail">Captain account email</label><input data-bf-trim="boundary" id="harborCaptainEmail" type="email" required maxlength="254" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Account you control for this test"><label for="harborCaptainIntent">Appointment intent <span>(optional)</span></label><textarea data-bf-trim="boundary" id="harborCaptainIntent" rows="1" maxlength="500" placeholder="Reason for this exact-vessel appointment"></textarea><button type="button" id="harborPreviewCaptain" class="qd-primary">PREVIEW APPOINTMENT</button></div>
+          <div class="qd-form"><label for="harborCaptainEmail">Captain account email</label><input data-bf-trim="boundary" id="harborCaptainEmail" type="email" required maxlength="254" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Account you control for this test"><label for="harborCaptainIntent">Appointment intent <span>(optional)</span></label><textarea data-bf-trim="boundary" id="harborCaptainIntent" rows="1" maxlength="500" placeholder="Reason for this exact-vessel appointment"></textarea><button type="button" id="harborPreviewCaptain" class="qd-primary">PREVIEW APPOINTMENT</button><button type="button" id="harborFeatureAccess" disabled>Review this ship’s features</button><small>Choose what to include in the trial. An appointment gives one account an operating role on this ship. You keep ownership.</small></div>
           <div class="qd-review"><div id="harborCaptainPreview" class="qd-preview"></div><button id="harborIssueCaptain" type="button" disabled>ISSUE APPOINTMENT</button></div>
         </section>
         <section id="qdPanel-history" role="tabpanel" data-qd-panel="history" aria-labelledby="qdTab-history" hidden>
@@ -5836,6 +5924,16 @@ if(window.DarkSkyOpenFleetWatchtower)window.DarkSkyOpenAdmiralFleet=window.DarkS
       </section>`;
       const required=['harborMasterStation','harborVessel','harborCaptainEmail','harborCaptainIntent','harborCaptainPreview','harborPreviewCaptain','harborIssueCaptain','harborAppointmentRows','harborActivationPreview','harborEvidenceReport','harborMasterResult'];
       if(required.some(id=>!$(id)))throw new Error('Required delegation controls missing.');
+      $('harborFeatureAccess').onclick=()=>{
+        if(!checked()||loadedSession!==sessionMark())return;
+        const vessel=vessels.find(row=>row.project_id===selected());
+        const lane=deck.querySelector('[data-admiral-lane="standardize"]');
+        const open=$('admiralServiceEntitlements');
+        if(!vessel||!lane||!open||!window.DarkSkyPrepareFeatureReview?.(vessel))return;
+        lane.click();
+        open.click();
+        $('admiralEntitlementCapability')?.focus();
+      };
       $('harborVessel').onchange=()=>{invalidate();paintRoute();paintHistory();paintEvidence();message('Scope changed. Request a new preview for this vessel.');};
       for(const id of ['harborCaptainEmail','harborCaptainIntent'])$(id).oninput=()=>{appointmentPreview=null;paintAppointment();};
       $('harborEvidenceRef').oninput=()=>{departurePreview=null;$('harborDepartureAcknowledgment').checked=false;paintDeparture();};

@@ -17490,3 +17490,8 @@ body #blackFlagEntryGate .bf-entry-shell {
 .valley-notes-program details{margin-top:14px;border-top:1px solid #59726f}.valley-notes-program summary{cursor:pointer;padding:15px 0;min-height:44px;color:#fff1ce;font-weight:650}.valley-notes-program h4{margin:18px 0 5px;font-size:1rem;color:#f3dca5}.valley-notes-program .valley-notes-boundary{font-size:.86rem;color:#bdcfca;border-top:1px solid #59726f;padding-top:14px}
 .valley-notes-program :is(a,summary):focus-visible{outline:3px solid #f3db94;outline-offset:4px}
 @media(max-width:600px){.valley-notes-program{padding:17px}.valley-notes-open{display:flex;justify-content:space-between}.valley-notes-program .valley-notes-heading h3{font-size:1.3rem}}
+
+#watchWorkspace .watch-program-group {margin:1.3rem 0}
+#watchWorkspace .watch-program-group>h4 {margin:0 0 .55rem;font-size:1.05rem;color:#f4e5bf}
+#watchWorkspace .bridge-gallery #watchLearningPrograms {display:contents}
+#watchWorkspace #watchOtherGroup[hidden] {display:none}

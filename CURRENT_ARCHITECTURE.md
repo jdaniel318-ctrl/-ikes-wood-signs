@@ -1,11 +1,11 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Current architecture — Firstlight Bay 8.8.20.125
+# Current architecture — Chartroom 8.8.20.126
 
 Source of release identity: RELEASE_CONFIG.json. Installed page/manifest/seal/worker identity is generated together. APP_COMPONENT_REVISION is 8.8.20.99; owner helper revision is 8.8.20.68. Unchanged component bodies remain byte-identical across release-only changes.
 
 The Engine still verifies every required body, current governance models, app component contract and worker identity before executing the same script sequence. App and Captain bind audit/display freshness to the verified installed release. This context never grants permissions. The owner page keeps explicit helper compatibility checks.
 
-Eight illustrated arcade entries. Lantern Run gains original submarine art. Seven challenge games have skippable illustrated starts before play begins. Skullwater improves race scenery and gate guidance. Other games gain visual cues within play.
+My Fleet groups programs by use. Delegate opens a feature review for the selected ship. A preview binds to one target. Owner Fleet Services distinguishes unavailable features from eligible upgrade offers. See CHARTROOM_FLEET_REGISTER.md for the handoff guide.
 Backend prerequisites are recorded separately in PATCH_CONTRACT.json. Release preparation executes no database commands. Fleet core and Admiral programs remain distinct.
 
 ## Release commands

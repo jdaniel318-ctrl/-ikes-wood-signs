@@ -142,7 +142,7 @@ async function viewFixture(){
  ownerExpiryTimer:0,setTimeout:(cb,ms)=>{const id=timers.size+1;timers.set(id,{cb,ms});return id;},clearTimeout:id=>timers.delete(id),
  alert:message=>{throw Error('Unexpected stale alert: '+message);}});
  for(const name of ['ownerViewGuard','armOwnerExpiry','checkDisplayedOwner','signOutOwner'])if(owner.includes('function '+name+'('))vm.runInContext(ownerFn(name),c);
- for(const name of ['canReadOwnerDeck','ownerWatchRpc','requestFleetService'])vm.runInContext(ownerFn(name),c);
+ for(const name of ['canReadOwnerDeck','ownerWatchRpc','ownerServiceOffer','requestFleetService'])vm.runInContext(ownerFn(name),c);
  const from=owner.indexOf('async function renderWorkspace(k)'),to=owner.indexOf('\nasync function boot()',from);
  vm.runInContext(owner.slice(from,to),c);
  const sign=owner.indexOf("$('signOut').onclick="),retry=owner.indexOf(";$('retry').onclick=",sign);vm.runInContext(owner.slice(sign,retry),c);
@@ -165,7 +165,7 @@ test('sign-out removes authority and private view synchronously even with stalle
 for(const op of ['watch','service'])test('delayed proof cannot start a '+op+' mutation after navigation',async()=>{
  const f=await viewFixture(),{c}=f,proof=deferred(),started=deferred(),writes=[];
  c.verifySupabaseMembership=()=>{started.resolve();return proof.promise;};c.fetch=async(url)=>{writes.push(url);return {ok:true,json:async()=>({})};};
- const work=op==='watch'?c.ownerWatchRpc('vessel_publish_watch_report',{}):c.requestFleetService({capability_id:'cap-fixture'});
+ const work=op==='watch'?c.ownerWatchRpc('vessel_publish_watch_report',{}):c.requestFleetService({capability_id:'cap-fixture',vessel_id:f.vessel.id,commercial_mode:'paid',status:'available'});
  await started.promise;c.ownerViewEpoch++;proof.resolve({ok:true,session:f.auth,user:f.auth.user,vessel:f.vessel});
  await work.catch(()=>{});assert.deepEqual(writes,[]);
 });
@@ -199,7 +199,7 @@ test('active owner can publish a report, verify readback and request an offered 
  c.fetch=async(url,init)=>{headers.push(init.headers.Authorization);return {ok:true,json:async()=>url.includes('publish_watch_report')?{report_id:'fixture-report'}:{record:report}};};
  for(const name of ['readOwnWatchReport','publishOwnWatchReport'])vm.runInContext(ownerFn(name),c);
  await c.renderWorkspace('watch');f.el('watchCurrentWork').value=work;await f.el('publishWatchReport').onclick();assert.match(f.el('watchReportState').textContent,/VERIFIED REPORT SAVED AND READ BACK/);
- await c.requestFleetService({capability_id:'fixture-service'});assert.equal(headers.length,4);assert.ok(headers.every(h=>h==='Bearer synthetic-token'));
+ await c.requestFleetService({capability_id:'fixture-service',vessel_id:f.vessel.id,commercial_mode:'paid',status:'available'});assert.equal(headers.length,4);assert.ok(headers.every(h=>h==='Bearer synthetic-token'));
 });
 test('production owner auth client cannot restore a signed-out identity when a late user response arrives',async()=>{
  const setup=owner.match(/^const ownerSupabase=[^\n]+/m)?.[0];assert.ok(setup);

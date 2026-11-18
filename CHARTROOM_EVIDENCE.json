@@ -1,0 +1,25 @@
+{
+  "build": "8.8.20.126",
+  "baseline": "8.8.20.125",
+  "git_commit": "a92fbfd6ba08832da7a43455abb752fb82bebb07",
+  "source_files_at_baseline": 1017,
+  "matched_signed_out_assets": [
+    "index.html",
+    "captain.js",
+    "styles.css",
+    "DEPLOYMENT_MANIFEST.json",
+    "owner.html",
+    "fleet-arcade.ship.json",
+    "lantern-run.ship.json"
+  ],
+  "offline_checks": [
+    "VERIFY_CHARTROOM.cjs",
+    "VERIFY_FLEETBOUND_PROGRAMS.cjs"
+  ],
+  "pending": [
+    "Live two-account isolation and operational denial for each proposed customer feature",
+    "Physical iPad handoff workflow"
+  ],
+  "customer_records_used": false,
+  "server_changes": false
+}

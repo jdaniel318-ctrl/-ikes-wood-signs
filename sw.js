@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.20.125';
-const RELEASE_SEAL='firstlight-bay-8820125';
+const RELEASE_BUILD='8.8.20.126';
+const RELEASE_SEAL='chartroom-8820126';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.
