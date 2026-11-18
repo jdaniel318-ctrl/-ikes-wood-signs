@@ -1,0 +1,100 @@
+{
+  "build": "8.8.20.124",
+  "release": "Marquee",
+  "baseline": {
+    "commit": "a4f107df3b7a33851e499d6a43246de6a95901cc",
+    "tree": "04c4a44fa2f3f74c4dd94bdd0d4119b2c67aeb28",
+    "git_files": 1012,
+    "candidate_files": 1012,
+    "different_local": [],
+    "extra_git": [],
+    "pages": {
+      "index.html": {
+        "bytes": 1685643,
+        "sha256": "555f20dbf2a89e5e7959f328218b57254f8fb0f54272fa5e76a6ff9c4523d8c1",
+        "matches_candidate": true
+      },
+      "captain.js": {
+        "bytes": 638983,
+        "sha256": "f8e8e860bf3d59ef58bad4ca955c88dbbdc257d9c5570f8a15b57e9112b40cce",
+        "matches_candidate": true
+      },
+      "fun_program.js": {
+        "bytes": 41208,
+        "sha256": "300088c4f3c34c0223558542e14ff2b362fbc55456e6a34cba1397b6850ba9ca",
+        "matches_candidate": true
+      },
+      "DEPLOYMENT_MANIFEST.json": {
+        "bytes": 89872,
+        "sha256": "75d200d64c09899b9f2ba17a2da7dc8347e8dd73a9e8437aa4672efb619e64e7",
+        "matches_candidate": true
+      },
+      "fleet-arcade.ship.json": {
+        "bytes": 2503774,
+        "sha256": "212da491e4e424d508289df5fd3ccbac9891099b9e50bb0c564bcce3eb4fee3f",
+        "matches_candidate": true
+      }
+    }
+  },
+  "verification_scope": "Offline source fixtures and local Chromium UI; no physical controller or iPad Safari certification",
+  "browser_checks": {
+    "sizes": [
+      [
+        390,
+        844
+      ],
+      [
+        1024,
+        768
+      ]
+    ],
+    "synthetic_records_only": true,
+    "progress_states": [
+      "all-clear Sluggers",
+      "partly-clear Skullwater",
+      "uncleared games"
+    ],
+    "launch_pause_return": [
+      "skullwater",
+      "dockmaster",
+      "riptail",
+      "pipeworks",
+      "deepbell",
+      "sluggers"
+    ],
+    "launch_return": [
+      "chalkwing"
+    ],
+    "keyboard_menu": [
+      "visible-row Down",
+      "challenge Right",
+      "Enter launch",
+      "Escape returns focus to chosen game"
+    ],
+    "lantern_handoff": "observed",
+    "tablet_all_seven_cards_visible": true
+  },
+  "physical_pending": [
+    "iPad Safari taps and scrolling",
+    "paired standard controller navigation and gameplay",
+    "actual steering and pace"
+  ],
+  "source_review": {
+    "new_upstream_code": false,
+    "new_dependencies": false,
+    "game_rule_code": "unchanged",
+    "private_records": "not accessed"
+  },
+  "published": false,
+  "offline_gate": {
+    "passed": 51,
+    "failed": 0,
+    "runner": "VERIFY_RELEASE_ALL.cjs"
+  },
+  "additional_passing_suites": [
+    "VERIFY_TIDELIGHT.cjs",
+    "VERIFY_BELLWATCH.cjs",
+    "VERIFY_CHALKLINE_INNING.cjs"
+  ],
+  "preservation": "The first player script, containing all seven game implementations and embedded artwork, is byte-identical to Wayfarer."
+}

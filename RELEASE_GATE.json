@@ -1,11 +1,11 @@
 {
   "schema": "blackflag-release-gate-v1",
-  "build": "8.8.20.123",
-  "release": "Wayfarer",
-  "pass": false,
+  "build": "8.8.20.124",
+  "release": "Marquee",
+  "pass": true,
   "pass_scope": "49 maintained fleet suites and the Plumbline ScheduleJoe Chromium fixture",
-  "verification_status": "PREPARED_NOT_TESTED",
-  "evidence_file": "WAYFARER_EVIDENCE.json",
+  "verification_status": "OFFLINE_SUITES_PASS",
+  "evidence_file": "MARQUEE_EVIDENCE.json",
   "native_safari_acceptance": "PENDING",
   "database_actions": "None.",
   "backend_prerequisite": "Existing owner account and vessel scope checks.",
@@ -15,5 +15,6 @@
   "backup_restore": "Software rollback to 0e4cdb0b3be6e52d7e457179cefd047213937a77",
   "performance_improvement_claim": false,
   "offline_suite_count": 49,
-  "native_compilation": "NOT_APPLICABLE_STATIC_WEB_APP"
+  "native_compilation": "NOT_APPLICABLE_STATIC_WEB_APP",
+  "offline_suites_passed": 51
 }

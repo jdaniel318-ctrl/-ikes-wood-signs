@@ -1,15 +1,15 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.123",
-  "name": "Wayfarer",
-  "seal": "wayfarer-8820123",
-  "base": "8.8.20.122",
-  "base_sha256": "65b4d1fd390611e53e18eb0af05665ef7b63f9c2cb398086bb8e887286d4ac1e",
-  "base_files": 1007,
-  "prepared_at": "2026-11-14T17:46:37.461705+00:00",
+  "build": "8.8.20.124",
+  "name": "Marquee",
+  "seal": "marquee-8820124",
+  "base": "8.8.20.123",
+  "base_sha256": "15204866366b00fec9bfa42cc774855d83184fe74c08800ca338782bfd361cdc",
+  "base_files": 1012,
+  "prepared_at": "2026-11-15T23:27:17.600002+00:00",
   "app_component_revision": "8.8.20.99",
   "owner_helper_revision": "8.8.20.68",
-  "feature_notes": "Valley Notes enters Admiral as a local travel pilot. Retains weather and flexible trip history, defines separate traveler profiles under one account, and records expansion across US destinations. Shared profiles, conversational help and server commissioning are planned, not activated.",
+  "feature_notes": "Fleet Arcade gets equal game cards with per-game progress and next challenge, touch and keyboard control guides, keyboard menu navigation and a reachable Play button on narrow screens. Existing gameplay, saved scores, Admiral access, ScheduleJoe and Valley Notes are preserved.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -37,8 +37,8 @@
       "automatic_execution_by_upload": false
     }
   },
-  "install_step": "In Admiral My Fleet, choose Programs & tools and open Valley Notes. Expand its product brief; Build & Govern has the same entry. Existing private Site sign-in still applies.",
-  "evidence_file": "WAYFARER_EVIDENCE.json",
-  "base_git_tree": "2d7e05a874b8afefd5f000f0f3a824cc663a7523",
-  "base_git_commit": "211b2e44d58632d363ef07d71564a19ce1777af0"
+  "install_step": "Open My Fleet \u2192 Programs & tools \u2192 Fleet Arcade. Choose a game, check its controls and play. Saved progress should still be present.",
+  "evidence_file": "MARQUEE_EVIDENCE.json",
+  "base_git_tree": "04c4a44fa2f3f74c4dd94bdd0d4119b2c67aeb28",
+  "base_git_commit": "a4f107df3b7a33851e499d6a43246de6a95901cc"
 }

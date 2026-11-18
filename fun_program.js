@@ -187,7 +187,7 @@ document.addEventListener('click',e=>{if(e.target instanceof Element&&e.target.c
 const LANTERN_LEVEL_COUNT = 36;
 const arcadeEditions = {
   lantern: {name:'Lantern Run', file:'lantern-run.ship.json', id:'lantern-run', edition:7, levels:LANTERN_LEVEL_COUNT, limit:250000, digest:'4f8add355a2eee41badb12234ff3afa205934646e42f1fd02316f1d2b3cbe53a'},
-  collection: {name:'Fleet Arcade', file:'fleet-arcade.ship.json', id:'six-bells', edition:10, levels:23, limit:2600000, digest:'212da491e4e424d508289df5fd3ccbac9891099b9e50bb0c564bcce3eb4fee3f'}
+  collection: {name:'Fleet Arcade', file:'fleet-arcade.ship.json', id:'six-bells', edition:11, levels:23, limit:2600000, digest:'9ecec00aa0444eaa774e5ebefdc2e4adf5592b7a4493a62805b65bc7639d2fd0'}
 };
 const arcadeArtFiles = {
   "dockmaster": {

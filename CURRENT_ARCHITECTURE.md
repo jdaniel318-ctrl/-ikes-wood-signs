@@ -1,11 +1,11 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Current architecture — Wayfarer 8.8.20.123
+# Current architecture — Marquee 8.8.20.124
 
 Source of release identity: RELEASE_CONFIG.json. Installed page/manifest/seal/worker identity is generated together. APP_COMPONENT_REVISION is 8.8.20.99; owner helper revision is 8.8.20.68. Unchanged component bodies remain byte-identical across release-only changes.
 
 The Engine still verifies every required body, current governance models, app component contract and worker identity before executing the same script sequence. App and Captain bind audit/display freshness to the verified installed release. This context never grants permissions. The owner page keeps explicit helper compatibility checks.
 
-Valley Notes enters Admiral as a local travel pilot. Retains weather and flexible trip history, defines separate traveler profiles under one account, and records expansion across US destinations. Shared profiles, conversational help and server commissioning are planned, not activated.
+Fleet Arcade gets equal game cards with per-game progress and next challenge, touch and keyboard control guides, keyboard menu navigation and a reachable Play button on narrow screens. Existing gameplay, saved scores, Admiral access, ScheduleJoe and Valley Notes are preserved.
 Backend prerequisites are recorded separately in PATCH_CONTRACT.json. Release preparation executes no database commands. Fleet core and Admiral programs remain distinct.
 
 ## Release commands

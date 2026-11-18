@@ -1,10 +1,10 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Wayfarer 8.8.20.123
+# Black Flag Marquee 8.8.20.124
 
 Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
-Baseline: 8.8.20.122. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Baseline: 8.8.20.123. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
 Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
-Valley Notes enters Admiral as a local travel pilot. Retains weather and flexible trip history, defines separate traveler profiles under one account, and records expansion across US destinations. Shared profiles, conversational help and server commissioning are planned, not activated.
+Fleet Arcade gets equal game cards with per-game progress and next challenge, touch and keyboard control guides, keyboard menu navigation and a reachable Play button on narrow screens. Existing gameplay, saved scores, Admiral access, ScheduleJoe and Valley Notes are preserved.
 Preparation does not deploy frontend or backend changes. See PATCH_CONTRACT.json for separately managed backend prerequisites.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 

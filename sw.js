@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.20.123';
-const RELEASE_SEAL='wayfarer-8820123';
+const RELEASE_BUILD='8.8.20.124';
+const RELEASE_SEAL='marquee-8820124';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.
