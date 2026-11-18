@@ -1,15 +1,15 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.124",
-  "name": "Marquee",
-  "seal": "marquee-8820124",
-  "base": "8.8.20.123",
-  "base_sha256": "15204866366b00fec9bfa42cc774855d83184fe74c08800ca338782bfd361cdc",
-  "base_files": 1012,
-  "prepared_at": "2026-11-15T23:27:17.600002+00:00",
+  "build": "8.8.20.125",
+  "name": "Firstlight Bay",
+  "seal": "firstlight-bay-8820125",
+  "base": "8.8.20.124",
+  "base_sha256": "e0395774eedee7935e38e074330b644d197a557ffbef8b3944bd59c8536db930",
+  "base_files": 1015,
+  "prepared_at": "2026-11-18T05:21:10.435327+00:00",
   "app_component_revision": "8.8.20.99",
   "owner_helper_revision": "8.8.20.68",
-  "feature_notes": "Fleet Arcade gets equal game cards with per-game progress and next challenge, touch and keyboard control guides, keyboard menu navigation and a reachable Play button on narrow screens. Existing gameplay, saved scores, Admiral access, ScheduleJoe and Valley Notes are preserved.",
+  "feature_notes": "Eight illustrated arcade entries. Lantern Run gains original submarine art. Seven challenge games have skippable illustrated starts before play begins. Skullwater improves race scenery and gate guidance. Other games gain visual cues within play.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -37,8 +37,8 @@
       "automatic_execution_by_upload": false
     }
   },
-  "install_step": "Open My Fleet \u2192 Programs & tools \u2192 Fleet Arcade. Choose a game, check its controls and play. Saved progress should still be present.",
-  "evidence_file": "MARQUEE_EVIDENCE.json",
-  "base_git_tree": "04c4a44fa2f3f74c4dd94bdd0d4119b2c67aeb28",
-  "base_git_commit": "a4f107df3b7a33851e499d6a43246de6a95901cc"
+  "install_step": "Open Fleet Arcade, check the eight cards and saved results, then launch a game.",
+  "evidence_file": "FIRSTLIGHT_BAY_EVIDENCE.json",
+  "base_git_tree": "e0104b8ffda17d479385430685e5a1f7d371082e",
+  "base_git_commit": "176bb43e654bc7d9e5c1f277a236190f751f434b"
 }

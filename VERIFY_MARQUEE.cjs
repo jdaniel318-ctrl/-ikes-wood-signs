@@ -20,7 +20,8 @@ assert.equal(rows.row(nodes,1,1),4);assert.equal(rows.row(nodes,4,-1),1);assert.
 let focus=null,marked=0,back=0,started=0;
 const levels=Array.from({length:3},(_,i)=>({focus(){focus=i},scrollIntoView(){}}));
 for(const [i,n] of nodes.entries()){n.focus=()=>focus=i;n.scrollIntoView=()=>{};}
-const elements={gallery:{children:nodes},lantern:{...nodes[6],focus(){focus='lantern'}},levels:{children:levels},'play':{click(){started++}},'game-name':{},'back-shelf':{click(){back++}}};
+const lantern={...nodes[6],dataset:{game:'lantern'},focus(){focus='lantern'}};
+const elements={gallery:{children:[...nodes,lantern]},lantern,levels:{children:levels},'play':{click(){started++}},'game-name':{},'back-shelf':{click(){back++}}};
 const nav={state:'shelf',selected:'0',level:0,document:{activeElement:nodes[0]},byId:id=>elements[id],shelfRow:rows.row,markLevel(){marked++}};
 vm.runInNewContext(section('  function menuKey(', '  function padMenu(')+';this.key=menuKey',nav);
 let prevented=0;

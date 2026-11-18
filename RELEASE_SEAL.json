@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.124",
-  "release": "Marquee",
-  "seal": "marquee-8820124",
+  "build": "8.8.20.125",
+  "release": "Firstlight Bay",
+  "seal": "firstlight-bay-8820125",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Marquee",
-  "name": "Marquee",
-  "releaseName": "Marquee"
+  "release_name": "Firstlight Bay",
+  "name": "Firstlight Bay",
+  "releaseName": "Firstlight Bay"
 }

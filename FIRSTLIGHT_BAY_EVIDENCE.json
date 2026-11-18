@@ -1,0 +1,11 @@
+{
+  "build": "8.8.20.125",
+  "baseline_commit": "176bb43e654bc7d9e5c1f277a236190f751f434b",
+  "baseline_tree": "e0104b8ffda17d479385430685e5a1f7d371082e",
+  "field_evidence_previous_release": "Captain iPad: 2/3 Skullwater clears, 3,300 Copperhead, 3,730 Heron.",
+  "pending": [
+    "Physical iPad Safari launch transition",
+    "steering and pace",
+    "paired-controller input"
+  ]
+}

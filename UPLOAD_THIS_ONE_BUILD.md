@@ -1,11 +1,11 @@
-# Upload Marquee 8.8.20.124
+# Upload Firstlight Bay 8.8.20.125
 
-Use `DarkSky8820124-Marquee-Upload.zip`, not the full backup or rollback.
+Use `DarkSky8820125-FirstlightBay-Upload.zip`, not the full backup or rollback.
 1. Extract the ZIP. Open its single folder. Upload ALL files inside to the existing repository ROOT; replace matching files and KEEP all other files. Commit the upload.
-2. After deployment open the Engine and confirm `8.8.20.124 · MARQUEE`. Do not clear Safari data, reset records or change permissions.
-3. Open My Fleet → Programs & tools → Fleet Arcade. Choose a game, check its controls and play. Saved progress should still be present.
+2. After deployment open the Engine and confirm `8.8.20.125 · FIRSTLIGHT BAY`. Do not clear Safari data, reset records or change permissions.
+3. Open Fleet Arcade, check the eight cards and saved results, then launch a game.
 
-Fleet Arcade gets equal game cards with per-game progress and next challenge, touch and keyboard control guides, keyboard menu navigation and a reachable Play button on narrow screens. Existing gameplay, saved scores, Admiral access, ScheduleJoe and Valley Notes are preserved.
+Eight illustrated arcade entries. Lantern Run gains original submarine art. Seven challenge games have skippable illustrated starts before play begins. Skullwater improves race scenery and gate guidance. Other games gain visual cues within play.
 The upload itself executes no database commands. Shared specialist components retain their own revision labels; this is intentional reuse, not a mixed upload. Exact SHA-256 checks still run before Engine scripts execute.
 
 Full backup: application source ONLY; not Supabase, customer media or device drafts.
