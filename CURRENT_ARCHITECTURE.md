@@ -1,11 +1,11 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Current architecture — Letterpress 8.8.20.127
+# Current architecture — Broadside 8.8.20.128
 
 Source of release identity: RELEASE_CONFIG.json. Installed page/manifest/seal/worker identity is generated together. APP_COMPONENT_REVISION is 8.8.20.99; owner helper revision is 8.8.20.68. Unchanged component bodies remain byte-identical across release-only changes.
 
 The Engine still verifies every required body, current governance models, app component contract and worker identity before executing the same script sequence. App and Captain bind audit/display freshness to the verified installed release. This context never grants permissions. The owner page keeps explicit helper compatibility checks.
 
-In Ike’s sign designer, tap the plank to position lettering or choose Add artwork to open the gallery. Board measurements are optional. Approved shop revisions export with the original acceptance receipt.
+Ike’s customer preview uses more of the visible plank face for lettering. Fit to plank centers and sizes the words. Added artwork starts in open space when available. Ike reviews physical stock and placement before cutting.
 Backend prerequisites are recorded separately in PATCH_CONTRACT.json. Release preparation executes no database commands. Fleet core and Admiral programs remain distinct.
 
 ## Release commands

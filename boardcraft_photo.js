@@ -44,7 +44,7 @@
   function candidateFrame(design,photo,quarterTurns,area){
     // Evidence describes pixels in the ORIGINAL photograph. It is a disposable
     // visual suggestion, never a measured stock boundary or placement approval.
-    if(!plain(area)||area.photoId!==photo.id||area.source!=='woodwright-inset-candidate'||area.requiresVisualReview!==true||area.productionCertified!==false||!plain(area.region))return null;
+    if(!plain(area)||area.photoId!==photo.id||!['woodwright-inset-candidate','woodwright-face-candidate'].includes(area.source)||area.requiresVisualReview!==true||area.productionCertified!==false||!plain(area.region))return null;
     const r=area.region;
     if(!finite(r.x,0,1)||!finite(r.y,0,1)||!finite(r.w,.000001,1)||!finite(r.h,.000001,1)||r.x+r.w>1||r.y+r.h>1)return null;
     const region=[r,{x:1-r.y-r.h,y:r.x,w:r.h,h:r.w},{x:1-r.x-r.w,y:1-r.y-r.h,w:r.w,h:r.h},{x:r.y,y:1-r.x-r.w,w:r.h,h:r.w}][quarterTurns];
@@ -52,7 +52,7 @@
     const f=frameInRegion(design,photo,quarterTurns,region);
     // Woodwright already inset this rectangle from the live edges. Map the
     // usable design area into it once. The outside frame still fits the photo.
-    if(area.fit==='stock-interior'){
+    if(area.source==='woodwright-inset-candidate'&&area.fit==='stock-interior'){
       const {widthMm,heightMm,marginMm}=design.stock;
       if(finite(marginMm,0,Math.min(widthMm,heightMm)/2)&&2*marginMm<Math.min(widthMm,heightMm)){
         const cx=region.x+region.w/2,cy=region.y+region.h/2;

@@ -116,11 +116,38 @@ return Object.freeze({createDraft:createDraft,validate:validate,layout:layout,re
     const n=ensureLayers(d);room(n);
     n.layers.push({id:newId(),type:'text',name:'Text '+(n.layers.filter(a=>a.type==='text').length+2),text:Object.assign({},n.text,{value,sizePercent:25,trackingEm:0,align:'center',offsetXmm:0,offsetYmm:0}),rotationDeg:0});n.review=null;return n;
   }
-  function addGraphicLayer(d,assetId) {
+  // Candidate centers touch a margin or sit just outside an existing object's
+  // bounds. Testing their intersections covers gaps between multiple objects.
+  function placeGraphic(stock,graphic,occupied) {
+    if(!occupied.length)return;
+    const gap=Math.max(1,Math.min(stock.widthMm,stock.heightMm)*.015);
+    const {widthMm,heightMm,marginMm}=stock,midX=widthMm/2,midY=heightMm/2;
+    const target=occupied[0],targetX=(target.xMin+target.xMax)/2,targetY=(target.yMin+target.yMax)/2;
+    for(const scale of [1,.8,.6,.5]){
+      const hw=graphic.widthMm*scale/2,hh=graphic.heightMm*scale/2;
+      if(hw<.5||hh<.5)break;
+      const left=marginMm+hw,right=widthMm-marginMm-hw,top=marginMm+hh,bottom=heightMm-marginMm-hh;
+      const xs=[midX,left,right,targetX],ys=[midY,top,bottom,targetY];
+      for(const b of occupied){xs.push(b.xMin-gap-hw,b.xMax+gap+hw);ys.push(b.yMin-gap-hh,b.yMax+gap+hh);}
+      let best=null;
+      for(const x of new Set(xs))for(const y of new Set(ys)){
+        if(x<left||x>right||y<top||y>bottom)continue;
+        const overlaps=occupied.some(b=>x+hw+gap>b.xMin+1e-7&&x-hw-gap<b.xMax-1e-7&&y+hh+gap>b.yMin+1e-7&&y-hh-gap<b.yMax-1e-7);
+        if(overlaps)continue;
+        const beside=(x+hw<=target.xMin||x-hw>=target.xMax)&&y>=target.yMin&&y<=target.yMax;
+        const rank=Math.hypot(x-targetX,y-targetY)+(beside?0:widthMm+heightMm);
+        if(!best||rank<best.rank)best={x,y,rank};
+      }
+      if(best){Object.assign(graphic,{centerXmm:best.x,centerYmm:best.y,widthMm:hw*2,heightMm:hh*2});return;}
+    }
+  }
+  function addGraphicLayer(d,assetId,fonts) {
     if(!catalog?.graphics||!own(catalog.graphics,assetId))throw Error('Choose a bundled graphic.');
     const n=ensureLayers(d);room(n);const a=catalog.graphics[assetId],size=Math.min(n.stock.widthMm-2*n.stock.marginMm,n.stock.heightMm-2*n.stock.marginMm)*.32;
     const w=a.bounds[2]-a.bounds[0],h=a.bounds[3]-a.bounds[1],scale=size/Math.max(w,h);
-    n.layers.push({id:newId(),type:'graphic',name:a.name,assetId,centerXmm:n.stock.widthMm/2,centerYmm:n.stock.heightMm/2,widthMm:w*scale,heightMm:h*scale,rotationDeg:0});n.review=null;return n;
+    const graphic={id:newId(),type:'graphic',name:a.name,assetId,centerXmm:n.stock.widthMm/2,centerYmm:n.stock.heightMm/2,widthMm:w*scale,heightMm:h*scale,rotationDeg:0};
+    if(fonts)placeGraphic(n.stock,graphic,layout(n,fonts).layers.map(layer=>layer.bounds).filter(Boolean));
+    n.layers.push(graphic);n.review=null;return n;
   }
   function duplicateLayer(d,id) {
     const n=ensureLayers(d);room(n);const a=layerList(n).find(x=>x.id===id);if(!a)throw Error('Select an object to duplicate.');

@@ -1,10 +1,10 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Letterpress 8.8.20.127
+# Black Flag Broadside 8.8.20.128
 
 Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
-Baseline: 8.8.20.126. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Baseline: 8.8.20.127. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
 Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
-In Ike’s sign designer, tap the plank to position lettering or choose Add artwork to open the gallery. Board measurements are optional. Approved shop revisions export with the original acceptance receipt.
+Ike’s customer preview uses more of the visible plank face for lettering. Fit to plank centers and sizes the words. Added artwork starts in open space when available. Ike reviews physical stock and placement before cutting.
 Preparation does not deploy frontend or backend changes. See PATCH_CONTRACT.json for separately managed backend prerequisites.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 

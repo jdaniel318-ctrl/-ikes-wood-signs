@@ -187,6 +187,35 @@
     points.sort((a,b)=>distance(...a)-distance(...b));
     return points[2];
   }
+  // Sample the outer silhouette through the middle of the face. Interior grain,
+  // lettering and dark knots do not consume writing space. Isolated protrusions
+  // cannot set the span. Recessed or oblique faces keep the existing inset.
+  function letteringFace(scene,box) {
+    if(!alignedFace(scene))return null;
+    function span(horizontal) {
+      const start=horizontal?box.left:box.top,end=horizontal?box.right:box.bottom;
+      const near=horizontal?box.top:box.left,far=horizontal?box.bottom:box.right;
+      const starts=[],ends=[];
+      for(let i=0;i<11;i++){
+        const cross=Math.round(near+(far-near)*(.20+i*.06));
+        let first=-1,last=-1;
+        for(let pos=start;pos<=end;pos++){
+          const index=horizontal?cross*scene.width+pos:pos*scene.width+cross;
+          if(scene.mask[index]){if(first===-1)first=pos;last=pos;}
+        }
+        if(first===-1||last-first<(end-start)*.65)return null;
+        starts.push(first);ends.push(last+1);
+      }
+      starts.sort((a,b)=>a-b);ends.sort((a,b)=>a-b);
+      return [starts[2],ends[8]];
+    }
+    const x=span(true),y=span(false);
+    if(!x||!y)return null;
+    return {x:x[0]/scene.width,y:y[0]/scene.height,w:(x[1]-x[0])/scene.width,h:(y[1]-y[0])/scene.height};
+  }
+  function faceArea(photo,scan) {
+    return scan?.faceRegion?{photoId:photo.id,region:scan.faceRegion,source:'woodwright-face-candidate',requiresVisualReview:true,productionCertified:false}:null;
+  }
   function inspect(data,w,h,wood) {
     const empty={reference:null,card:null};
     // Remove warm countertop pixels before asking the fleet boundary detector for a face.
@@ -205,7 +234,7 @@
     const ref=rectangleCard(data,scene,box);
     const across=midline(scene,box,true),down=midline(scene,box,false);
     const card=ref&&across&&down&&alignedFace(scene)?{reference:ref,across,down,w,h}:null;
-    return {reference:matched?referenceId:null,card,region:scene.region};
+    return {reference:matched?referenceId:null,card,region:scene.region,faceRegion:letteringFace(scene,box)};
   }
   function measure(candidate,type,C) {
     if(!candidate||!['index-3x5','index-4x6'].includes(type))throw Error('Select the size printed on the index card package.');
@@ -258,5 +287,5 @@
     if(refined)result.card.reference=refined.map(([x,y])=>[(x+left+.5)/xs-.5,(y+top+.5)/ys-.5]);
     return result;
   }
-  return Object.freeze({referenceId,referenceMm,analyze,inspect,measure});
+  return Object.freeze({referenceId,referenceMm,analyze,inspect,measure,faceArea});
 });

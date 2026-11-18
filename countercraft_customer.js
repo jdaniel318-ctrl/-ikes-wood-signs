@@ -287,6 +287,11 @@ function bind(){const boundEpoch=sessionEpoch,sessionCurrent=()=>boundEpoch===se
      g.CarvewrightStudio.openEmbedded({
        customerFacing:true,customerTool:tool,draft:S.clone(st.request.design),measuredStock:st.boardSpec,
        boardPhoto:{photo:S.clone(photo),board:S.clone(st.request.board),boardArea:S.clone(st.plankEvidence[0]?.boardArea||null)},
+       resolvePlankFace:async()=>{
+         const current=st.plankEvidence[0]?.boardArea;
+         if(current?.source==='woodwright-face-candidate'&&current.photoId===photo.id)return current;
+         return g.IkePhotoSize.faceArea(photo,await g.IkePhotoSize.analyze(photo,g.BlackFlagWoodwright));
+       },
        parent:$('ccApp'),guard:()=>sessionCurrent()&&epoch===sessionEpoch&&!receipt,
        onUse:(design,board)=>{if(!sessionCurrent())return;flow.useDesign(design,board);changed();},
        onClose:()=>{if(epoch!==sessionEpoch)return;editing=false;render();$(trigger)?.focus({preventScroll:true});}
@@ -314,7 +319,9 @@ async function addPhoto(file,extra=false,sample=false,nativeScan=null){
    try{
      const scan=await active(g.IkePhotoSize.analyze(p,g.BlackFlagWoodwright));
      info.sizeScan={reference:scan.reference,card:scan.card};
-     if(scan.region)info.boardArea={photoId:p.id,region:{x:scan.region.x,y:scan.region.y,w:scan.region.w,h:scan.region.h},source:'woodwright-inset-candidate',requiresVisualReview:true,productionCertified:false};
+     const face=g.IkePhotoSize.faceArea(p,scan);
+     if(face)info.boardArea=face;
+     else if(scan.region)info.boardArea={photoId:p.id,region:{x:scan.region.x,y:scan.region.y,w:scan.region.w,h:scan.region.h},source:'woodwright-inset-candidate',requiresVisualReview:true,productionCertified:false};
    }catch(e){if(e.code==='STALE_CUSTOMER')throw e;}
  }
  info.photoId=p.id;
@@ -339,7 +346,7 @@ async function addPhoto(file,extra=false,sample=false,nativeScan=null){
    r.photos=[p];st.plankEvidence=[info];
    if(preview)pub=sample?{...emptyPublication,stocks:[sampleStock],rates:[{species:'Cedar',centsPerFoot:1500}]}:emptyPublication;
    flow.selectStock(pub,sample?sampleStock.id:'');
-   if(info.boardArea)info.boardArea.fit='stock-interior';
+   if(info.boardArea?.source==='woodwright-inset-candidate')info.boardArea.fit='stock-interior';
    r.board=B.createBoard(r.design,p,0,info.boardArea);
    if(nativeScan)flow.applyPhotoSize({source:'native-sweep',...nativeScan});
    if(st.step===0)flow.next();

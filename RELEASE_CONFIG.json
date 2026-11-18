@@ -1,15 +1,15 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.127",
-  "name": "Letterpress",
-  "seal": "letterpress-8820127",
-  "base": "8.8.20.126",
-  "base_sha256": "a8c3af570f053baa33c18b0380a005e018be8c1973f80a3a706bddce9248ef43",
-  "base_files": 1020,
-  "prepared_at": "2026-11-18T06:58:02.973369+00:00",
+  "build": "8.8.20.128",
+  "name": "Broadside",
+  "seal": "broadside-8820128",
+  "base": "8.8.20.127",
+  "base_sha256": "905370621f9b8f59598299413e66f71c47bf7a9ba92582e11820e50d0087167f",
+  "base_files": 1022,
+  "prepared_at": "2026-11-18T19:24:22.475255+00:00",
   "app_component_revision": "8.8.20.99",
   "owner_helper_revision": "8.8.20.68",
-  "feature_notes": "In Ike\u2019s sign designer, tap the plank to position lettering or choose Add artwork to open the gallery. Board measurements are optional. Approved shop revisions export with the original acceptance receipt.",
+  "feature_notes": "Ike\u2019s customer preview uses more of the visible plank face for lettering. Fit to plank centers and sizes the words. Added artwork starts in open space when available. Ike reviews physical stock and placement before cutting.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -37,8 +37,8 @@
       "automatic_execution_by_upload": false
     }
   },
-  "install_step": "Open Ike\u2019s sign preview. On Your design, try Position lettering and Add artwork on the same plank.",
-  "evidence_file": "LETTERPRESS_EVIDENCE.json",
-  "base_git_tree": "e2cb5cb753a71202cd8adb181b25d63087b68027",
-  "base_git_commit": "f1177ffd59c6496ab0ae35e6c932ed156d50590e"
+  "install_step": "Open Ike\u2019s sign preview, try Fit to plank and Undo, then add an oak leaf and check the proof.",
+  "evidence_file": "BROADSIDE_EVIDENCE.json",
+  "base_git_tree": "9066e96d4492b951b23dbeb747049663f2b4b7d5",
+  "base_git_commit": "bdb7156d5cd8f3d42d9548a9e15b6756e2346205"
 }

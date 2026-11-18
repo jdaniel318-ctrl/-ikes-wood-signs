@@ -1,0 +1,32 @@
+{
+  "build": "8.8.20.128",
+  "base": "8.8.20.127",
+  "public_source_files_matched": 1022,
+  "verified_base_commit": "bdb7156d5cd8f3d42d9548a9e15b6756e2346205",
+  "field_observation": "On the supplied recording the customer adjusted Andie Rose to 100 percent. The oak leaf initially overlapped the words.",
+  "local_recording_frame_comparison": {
+    "fixture": "Extracted photo region from the supplied recording. No customer photograph included in this release.",
+    "crop_pixels": [
+      242,
+      182
+    ],
+    "lettering": "Andie Rose, Orchard Swash, 100 percent",
+    "prior_projected_ink_width_px": 162.84,
+    "new_projected_ink_width_px": 195.31,
+    "covered_dark_mark_same_result": true,
+    "resampled_640px_wide": {
+      "previous_ink_px": 430.58,
+      "current_ink_px": 516.04
+    }
+  },
+  "local_checks": [
+    "Existing narrow frame stays in place on open. Fit, Undo and Redo update both lettering and frame.",
+    "Adding an oak leaf to full-width words selected open space without moving the words.",
+    "Fitting a text layer on a composed sign preserved the artwork and its photo frame.",
+    "A missing face candidate uses the current outline. A closed customer session cancels a pending fit.",
+    "Synthetic shop review rendered ink in both the lettering and artwork bounds; the exported PNG matched its frozen proof checksum. SVG paths and DXF matched the saved design. An edited frame invalidated approval."
+  ],
+  "new_customer_ui_on_device": "pending",
+  "shop_cut": "not_performed",
+  "published": false
+}

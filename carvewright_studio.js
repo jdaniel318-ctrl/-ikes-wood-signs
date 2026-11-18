@@ -40,6 +40,8 @@
     node(s,'cweUndo').disabled=disabled||!s.undo.length;node(s,'cweRedo').disabled=disabled||!s.redo.length;
     for(const id of ['cweAddText','cweAddGraphic','cweDuplicate'])node(s,id).disabled=disabled||count>=12;
     s.root.querySelectorAll('[data-graphic]').forEach(n=>{n.disabled=disabled||count>=12;});
+    const fit=node(s,'cweFitPlank');
+    if(fit)fit.disabled=disabled||a.type!=='text'||!a.text.value.trim();
     node(s,'cweDelete').disabled=disabled||(a.id==='primary'&&!a.text.value);
     if(s.boardPhoto){
       const check=photoCore().validate(s.draft,s.boardPhoto.photo,s.boardPhoto.board,fonts());
@@ -211,9 +213,35 @@
     box.append(p,a);box.hidden=false;box.scrollIntoView({block:'nearest',behavior:'smooth'});
   }
   function filename(s,extension){return (s.draft.title.replace(/[^a-z0-9 _-]/gi,'').trim().replace(/\s+/g,'-').slice(0,70)||'Carvewright-design')+'.'+extension;}
+  async function fitPlank(s){
+    if(!s.options.customerFacing||!s.boardPhoto||selected(s).type!=='text')return;
+    const draft=clone(s.draft),layer=writable(draft,s.selectedId),before=s.boardPhoto.board;
+    let board=clone(before),face=null;
+    // On a composed sign, the current frame anchors every other object.
+    // Fitting one text layer must leave their photo positions alone.
+    const hasOtherInk=objects(s).some(a=>a.id!==s.selectedId&&(a.type==='graphic'||a.text.value.trim()));
+    if(!hasOtherInk&&s.options.resolvePlankFace){
+      let ready=false;
+      await run(s,async valid=>{
+        try{face=await s.options.resolvePlankFace();}catch{face=null;}
+        valid();ready=true;
+      });
+      if(!ready||!alive(s))return;
+      if(face)board=photoCore().createBoard(draft,s.boardPhoto.photo,before.quarterTurns,face);
+    }
+    Object.assign(layer.text,{align:'center',offsetXmm:0,offsetYmm:0,sizePercent:100});
+    if(s.selectedId==='primary'&&draft.primaryTransform)draft.primaryTransform.rotationDeg=0;
+    else if(s.selectedId!=='primary')layer.rotationDeg=0;
+    const check=core().layout(draft,fonts());
+    if(!check.ok){status(s,check.errors.join(' '),'error');return;}
+    remember(s);s.draft=draft;s.boardPhoto.board=board;changed(s);
+    syncForm(s,true);
+    status(s,face?'Lettering fitted to the plank. Undo restores your placement.':'Lettering fitted inside your current board outline.');
+  }
   async function click(s,e){
     const b=e.target.closest('button');if(!b||!s.root.contains(b))return;
     if(b.id==='cweClose'){close();return;}if(s.busy||s.drag)return;if(!alive(s)){close(true);return;}
+    if(b.id==='cweFitPlank'){await fitPlank(s);return;}
     if(s.embedded&&['cweReview','cweMachining','cweExportSvg','cweDownloadJob'].includes(b.id))return;
     if(s.boardPhoto&&['cwePhotoRotateLeft','cwePhotoRotateRight','cweFrameReset','cweFrameApply'].includes(b.id)){
       try{
@@ -230,7 +258,16 @@
     if(b.id==='cweFontPicker'||b.id==='cweCloseFonts'){const open=b.id==='cweFontPicker'&&node(s,'cweFontChoices').hidden;setPicker(s,'font',open);if(!open)node(s,'cweFontPicker').focus({preventScroll:true});return;}
     if(b.id==='cweAddGraphic'||b.id==='cweCloseGraphics'){const open=b.id==='cweAddGraphic'&&node(s,'cweGraphicChoices').hidden;setPicker(s,'graphic',open);if(!open)node(s,'cweAddGraphic').focus({preventScroll:true});return;}
     if(b.id==='cweAddText'||b.dataset.graphic||b.id==='cweDuplicate'){
-      try{const next=b.id==='cweAddText'?core().addTextLayer(s.draft):b.dataset.graphic?core().addGraphicLayer(s.draft,b.dataset.graphic):core().duplicateLayer(s.draft,s.selectedId);const id=next.layers[next.layers.length-1].id;applyDraft(s,next,{selection:id});selectLayer(s,id);node(s,'cweGraphicChoices').hidden=true;node(s,'cweAddGraphic').setAttribute('aria-expanded','false');setPanel(s,'lettering');}catch(error){status(s,error.message,'error');}return;
+      try{
+        const next=b.id==='cweAddText'?core().addTextLayer(s.draft):b.dataset.graphic?core().addGraphicLayer(s.draft,b.dataset.graphic,s.options.customerFacing?fonts():undefined):core().duplicateLayer(s.draft,s.selectedId);
+        const id=next.layers.at(-1).id;
+        applyDraft(s,next,{selection:id});selectLayer(s,id);setPanel(s,'lettering');
+        if(s.options.customerFacing&&b.dataset.graphic){
+          const layers=layoutLayers(s),added=layers.find(layer=>layer.id===id)?.bounds;
+          const overlaps=added&&layers.some(({id:other,bounds:r})=>other!==id&&r&&r.xMin<added.xMax&&r.xMax>added.xMin&&r.yMin<added.yMax&&r.yMax>added.yMin);
+          status(s,overlaps?'This artwork overlaps another part of your sign. Drag or resize it to choose its spot.':'Artwork added. Drag it to choose its spot.');
+        }
+      }catch(error){status(s,error.message,'error');}return;
     }
     if(b.id==='cweDelete'){try{const before=objects(s),index=before.findIndex(a=>a.id===s.selectedId),selection=s.selectedId==='primary'?'primary':before[Math.max(0,index-1)].id;applyDraft(s,core().removeLayer(s.draft,s.selectedId),{selection});selectLayer(s,selection);}catch(error){status(s,error.message,'error');}return;}
     if(b.dataset.font){mutate(s,d=>{const a=writable(d,s.selectedId);if(a.type==='text')a.text.fontId=b.dataset.font;});setPicker(s,'font',false);node(s,'cweFontPicker').focus({preventScroll:true});return;}
@@ -328,6 +365,10 @@
     if(embedded&&options.measuredStock)node(s,'cweStockPanel').querySelector('.cwe-field-note').textContent='Ike’s measured shop board: '+options.measuredStock.species+'. These dimensions stay with your design. Adjust the edge margin and position the layout on usable wood.';
     if(boardPhoto){root.classList.add('cwe-with-board-photo');node(s,'cweStockTab').textContent='Board';node(s,'cweStockPanel').insertAdjacentHTML('afterbegin',boardControls());root.querySelector('[data-view="material"]').textContent='Your photo';node(s,'cweStockPanel').querySelector('label[for="cweStockId"]').textContent='Board reference';}
     if(embedded&&boardPhoto&&options.customerFacing&&!options.measuredStock){root.classList.add('cwe-customer-photo-layout');node(s,'cweStockPanel').querySelector('.cwe-board-reference').textContent='Ike confirms the actual board measurements before production.';}
+    if(embedded&&boardPhoto&&options.customerFacing){
+      root.querySelector('.cwe-size-buttons').insertAdjacentHTML('beforeend','<button id="cweFitPlank" type="button">Fit to plank</button>');
+      root.querySelector('label[for="cweSizeNumber"] span').textContent='You can place lettering across natural marks in the wood.';
+    }
     current=s;root.showModal();if(!embedded)try{s.store=g.CarvewrightStore.create({scope:clone(options.scope),guard:()=>{assertLive(s);return true;}});}catch(e){close(true);throw e;}
     root.addEventListener('click',e=>{e.stopPropagation();click(s,e);});root.addEventListener('input',e=>{e.stopPropagation();input(s,e);});root.addEventListener('change',e=>{e.stopPropagation();s.editGroup='';});root.addEventListener('focusout',()=>{s.editGroup='';});
     const viewport=node(s,'cweViewport');viewport.addEventListener('pointerdown',e=>pointerDown(s,e));viewport.addEventListener('pointermove',e=>pointerMove(s,e));viewport.addEventListener('pointerup',e=>pointerUp(s,e));viewport.addEventListener('pointercancel',()=>cancelDrag(s));viewport.addEventListener('lostpointercapture',()=>{if(s.drag)cancelDrag(s);});

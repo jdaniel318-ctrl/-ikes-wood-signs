@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.127",
-  "release": "Letterpress",
-  "seal": "letterpress-8820127",
+  "build": "8.8.20.128",
+  "release": "Broadside",
+  "seal": "broadside-8820128",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Letterpress",
-  "name": "Letterpress",
-  "releaseName": "Letterpress"
+  "release_name": "Broadside",
+  "name": "Broadside",
+  "releaseName": "Broadside"
 }
