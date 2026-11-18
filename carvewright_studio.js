@@ -338,7 +338,19 @@
       if((e.metaKey||e.ctrlKey)&&['z','y'].includes(e.key.toLowerCase())){e.preventDefault();history(s,e.key.toLowerCase()==='y'||e.shiftKey?'redo':'undo');}
       else if(e.target.closest('[data-layer-select]')&&['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)){e.preventDefault();nudge(s,e.key.slice(5).toLowerCase());}
     });
-    root.addEventListener('close',()=>{if(current===s)close(true);});refresh(s);if(boardPhoto&&!boardPhoto.board.frameConfirmed)setPanel(s,'stock');node(s,'cweTitle').focus({preventScroll:true});
+    root.addEventListener('close',()=>{if(current===s)close(true);});refresh(s);
+    const customerTool=embedded&&options.customerFacing?options.customerTool:null;
+    if(customerTool==='artwork'){
+      node(s,'cweTitle').textContent='Add artwork';
+      node(s,'cweGraphicChoices').querySelector('.cwe-picker-heading strong').textContent='Choose artwork';
+      setPanel(s,'objects');
+      setPicker(s,'graphic',true);
+    }else if(customerTool==='lettering'){
+      node(s,'cweTitle').textContent='Position lettering';
+      setPanel(s,'lettering');
+      node(s,'cweTransform').open=true;
+    }else if(boardPhoto&&!boardPhoto.board.frameConfirmed)setPanel(s,'stock');
+    node(s,'cweTitle').focus({preventScroll:true});
     s.timer=setInterval(()=>{if(!alive(s))close(true);},500);
     run(s,async valid=>{if(s.draft.review&&!await core().reviewMatches(s.draft,fonts())){valid();s.draft.review=null;refresh(s);}valid();status(s,s.embedded?'Tap artwork to select it. Choose Use this design when you are ready.':'Tap artwork to select it. Design changes stay local until you save.');});return true;
   }

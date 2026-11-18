@@ -1,0 +1,58 @@
+{
+  "build": "8.8.20.127",
+  "base": "8.8.20.126",
+  "git": "f1177ffd59c6496ab0ae35e6c932ed156d50590e",
+  "matched_public_files": 1020,
+  "signed_out_assets": [
+    "index.html",
+    "countercraft.html",
+    "countercraft_customer.js",
+    "carvewright_studio.js",
+    "countercraft_exports.js"
+  ],
+  "local_control_test": [
+    "Text-only sign continued to customer details",
+    "Plank and Position lettering both opened lettering positioning",
+    "Add artwork opened the graphic gallery directly",
+    "Adding and moving an anchor preserved words and position",
+    "Cancel discarded a second graphic",
+    "Customer approval still required for amended exports"
+  ],
+  "fictional_shop_and_studio": {
+    "build": "8.8.20.127",
+    "order": "Andie Rose",
+    "originalRevision": 1,
+    "updatedRevision": 2,
+    "accepted": 2,
+    "originalUnchanged": true,
+    "boardInches": [
+      23.5625,
+      9.25,
+      1.375
+    ],
+    "shiftInches": -1.5,
+    "startOverlap": 316,
+    "endOverlap": 0,
+    "knot": {
+      "x": 393,
+      "y": 210
+    },
+    "standalone": {
+      "title": "Tide Mill",
+      "savedRevision": 1,
+      "startOverlap": 347,
+      "finalOverlap": 0,
+      "shopOrderUnchanged": true
+    },
+    "standalonePacketIncludesBoardPhoto": false,
+    "currentExport": "approved SVG and DXF exported",
+    "originalReceiptPreserved": true
+  },
+  "customer_records_used": false,
+  "deployed": false,
+  "pending": [
+    "Physical iPad Safari layout and touch gestures",
+    "Live shop orders",
+    "Machine cut"
+  ]
+}

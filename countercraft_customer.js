@@ -178,19 +178,20 @@ function openEdgePicker(photo,info,stillCurrent) {
 }
 function photoTools(st){
  const stock=pub.stocks.filter(x=>x.available);
- return '<details class="cc-photo-tools"><summary>Edit photo or board details</summary><div class="cc-buttons"><button id="ccTake" class="cc-secondary">Retake photo</button><button id="ccChoose" class="cc-secondary">Replace photo</button><button id="ccRotate" class="cc-secondary">Rotate board ↻</button></div>'+
+ return '<details id="ccBoardOptions" class="cc-photo-tools"><summary>Board photo &amp; measurements</summary>'+scaleMarkup(st)+'<div class="cc-buttons"><button id="ccTake" class="cc-secondary">Retake photo</button><button id="ccChoose" class="cc-secondary">Replace photo</button><button id="ccRotate" class="cc-secondary">Rotate board ↻</button></div>'+
  (stock.length?'<label>Shop inventory (optional)<select id="ccStock"><option value="">Use photographed board</option>'+stock.map(s=>'<option value="'+esc(s.id)+'" '+(s.id===st.stockId?'selected':'')+'>'+esc(s.id+' · '+s.species+' · '+s.nominalInches+' in')+'</option>').join('')+'</select></label>':'')+
  (st.request.photos.length<3?'<button id="ccAddReference" class="cc-secondary">Add a reference photo</button>':'')+'</details>'+photoInputs();
 }
 function designStep(st) {
  const r=st.request,price=currentPrice(),sample=preview&&st.stockId===sampleStock.id;
  return '<h1>Design your sign</h1><div class="cc-grid cc-design-grid"><section class="cc-card cc-board-work">'+
-  '<h2>Your plank</h2><div id="ccProof" class="cc-preview">'+proofMarkup()+'</div>'+
-  '<label class="cc-words">Words on your sign<textarea id="ccWording" data-preserve-edge-space spellcheck="false" rows="1" placeholder="Type your wording">'+esc(r.design.text.value)+'</textarea></label>'+
-  letteringChoices(r.design.text.fontId)+'</section><section class="cc-card cc-board-settings">'+
-  scaleMarkup(st)+'<p class="cc-note">'+(sample?'Example price · ':'')+'<strong id="ccPrice">'+esc(money(price))+'</strong></p>'+
-  '<label class="cc-check"><input id="ccPlacement" type="checkbox" '+(r.board?.frameConfirmed?'checked':'')+'>The lettering sits where I want it.</label>'+fieldError+
-  '<button id="ccLayout" class="cc-secondary">Position lettering &amp; add artwork</button>'+
+  '<h2>Your plank</h2><button type="button" id="ccProof" class="cc-preview cc-edit-preview" aria-label="Position lettering on your plank">'+proofMarkup()+'</button>'+
+  '<div class="cc-design-actions"><button type="button" id="ccLayout">Position lettering</button>'+
+  '<button type="button" id="ccAddArtwork" class="cc-secondary">Add artwork</button></div></section>'+
+  '<section class="cc-card cc-board-settings"><label class="cc-words">Words on your sign<textarea id="ccWording" data-preserve-edge-space spellcheck="false" rows="1" placeholder="Type your wording">'+esc(r.design.text.value)+'</textarea></label>'+
+  letteringChoices(r.design.text.fontId)+
+  '<label class="cc-check"><input id="ccPlacement" type="checkbox" '+(r.board?.frameConfirmed?'checked':'')+'>My design is where I want it.</label>'+fieldError+
+  '<p class="cc-note">'+(sample?'Example price · ':'')+'<strong id="ccPrice">'+esc(money(price))+'</strong></p>'+
   '<details><summary>Lettering and finish</summary><label>Lettering<select id="ccFont">'+Object.entries(F.fonts).map(([id,font])=>'<option value="'+esc(id)+'" '+(id===r.design.text.fontId?'selected':'')+'>'+esc(font.name)+'</option>').join('')+'</select></label>'+
   letteringMarkup()+'<label>Finish<input id="ccFinish" value="'+esc(r.details.finish)+'" maxlength="120"></label></details>'+
   photoTools(st)+'</section></div>';
@@ -201,7 +202,8 @@ function render(){if(expired||ending)return;$('ccExit').hidden=!started;if(!star
  if(st.step===1){html+=designStep(st);buttons('Add contact info →');}
  if(st.step===2){html+='<div class="cc-eyebrow">So Ike can review your sign request and get back to you</div><h1>A few details.</h1><p class="cc-lead">'+(preview?'Use made-up contact details for this preview.':'Ike will use your chosen contact method to follow up about this sign.')+'</p>'+(preview?'<button type="button" id="ccSampleContact" class="cc-secondary">Use sample contact details</button>':'')+'<div class="cc-grid"><section class="cc-card"><label>Your name<input id="ccName" autocomplete="off" maxlength="160" value="'+esc(r.customer.name)+'"></label><div class="cc-row"><label>Email<input id="ccEmail" type="email" autocomplete="off" maxlength="254" value="'+esc(r.customer.email)+'"></label><label>Phone<input id="ccPhone" type="tel" autocomplete="off" maxlength="80" value="'+esc(r.customer.phone)+'"></label></div><label>Best way to reach you<select id="ccContact"><option value="email" '+(st.contactPreference==='email'?'selected':'')+'>Email</option><option value="phone" '+(st.contactPreference==='phone'?'selected':'')+'>Phone</option></select></label>'+fieldError+'</section><section class="cc-card"><label>Anything Ike should know?<textarea id="ccNotes" maxlength="5000">'+esc(r.details.notes)+'</textarea></label><label>Requested pickup timing (optional)<input id="ccPickup" maxlength="120" value="'+esc(st.requestedPickup)+'" placeholder="For example, before next weekend"></label><p class="cc-note">This is your request. Ike confirms when the sign can be ready.</p></section></div>';buttons('Review my sign →');}
  if(st.step===3){html+='<div class="cc-eyebrow">One last look</div><h1>Is this your sign?</h1><p class="cc-lead">Check the wording, layout and details below. This exact proof goes to Ike.</p><div class="cc-grid"><section class="cc-card"><div class="cc-preview">'+proofMarkup()+'</div><dl class="cc-summary"><dt>Wording</dt><dd>'+esc(words(r.design)||'Artwork design')+'</dd>'+savedSpecs(snapshot())+'<dt>Finish</dt><dd>'+esc(r.details.finish)+'</dd><dt>Requested pickup</dt><dd>'+esc(st.requestedPickup||'No preference')+'</dd></dl></section><section class="cc-card"><h2>Ready for Ike’s review</h2><p class="cc-price">'+esc(money(currentPrice()))+'</p><p class="cc-note">'+(currentPrice().totalCents===null?'Your design request can be sent now. Ike will confirm the material and price with you.':preview?'Example price for this preview board.':'Published price for this selection. Ike still reviews the board and accepts the job.')+'</p><dl class="cc-summary"><dt>Name</dt><dd>'+esc(r.customer.name)+'</dd><dt>Contact</dt><dd>'+esc(r.customer[st.contactPreference])+'</dd><dt>Notes</dt><dd>'+esc(r.details.notes||'None')+'</dd></dl><label class="cc-check"><input id="ccApproval" type="checkbox">I approve this design and these request details for Ike to review.</label>'+fieldError+'<p class="cc-note">Ike may accept or decline your request. Sending it does not take payment or promise a pickup date.</p></section></div>';buttons(preview?'Finish preview':'Send this design to Ike');}
- $('ccApp').innerHTML=html;bind();$('ccApp').focus({preventScroll:true});window.scrollTo({top:0,behavior:'instant'});readyControls();}
+ const keepBoardOptions=st.step===1&&$('ccBoardOptions')?.open;
+ $('ccApp').innerHTML=html;if(keepBoardOptions&&$('ccBoardOptions'))$('ccBoardOptions').open=true;bind();$('ccApp').focus({preventScroll:true});window.scrollTo({top:0,behavior:'instant'});readyControls();}
 function bind(){const boundEpoch=sessionEpoch,sessionCurrent=()=>boundEpoch===sessionEpoch&&started&&!ending&&!expired&&!flow.state().frozen;document.querySelectorAll('[data-shop-style]').forEach(n=>n.onclick=()=>run(async()=>{flow.set('lettering',n.dataset.shopStyle?{style:n.dataset.shopStyle,resolved:false}:null);changed();render();}));const map={ccWording:'wording',ccFont:'font',ccFinish:'finish',ccName:'name',ccEmail:'email',ccPhone:'phone',ccContact:'contactPreference',ccNotes:'notes',ccPickup:'requestedPickup'};for(const [id,field]of Object.entries(map)){
  const n=$(id);if(!n)continue;const contact=['name','email','phone'].includes(field);
  const update=(finish=false)=>{if(boundEpoch!==sessionEpoch||!started||ending||expired)return;try{
@@ -277,7 +279,23 @@ function bind(){const boundEpoch=sessionEpoch,sessionCurrent=()=>boundEpoch===se
  if($('ccStock'))$('ccStock').onchange=()=>run(async()=>{flow.selectStock(pub,$('ccStock').value);changed();await checkpoint();render();status(flow.state().boardSpec?'Your shop board’s measurements are ready. Position your design on the photo.':'Board selected. Continue your design; measurements remain to be confirmed.');});
  if($('ccPlacement'))$('ccPlacement').onchange=()=>{if(boundEpoch!==sessionEpoch||!started||ending||expired)return;flow.state().request.board.frameConfirmed=$('ccPlacement').checked;changed();status('');};
  if($('ccApproval'))$('ccApproval').onchange=()=>{if(sessionCurrent())status('');};
- if($('ccLayout'))$('ccLayout').onclick=()=>{if(!sessionCurrent()||busy||editing)return;const epoch=sessionEpoch,st=flow.state(),photo=st.request.photos[0];editing=true;readyControls();try{g.CarvewrightStudio.openEmbedded({customerFacing:true,draft:S.clone(st.request.design),measuredStock:st.boardSpec,boardPhoto:{photo:S.clone(photo),board:S.clone(st.request.board),boardArea:S.clone(st.plankEvidence[0]?.boardArea||null)},parent:$('ccApp'),guard:()=>epoch===sessionEpoch&&started&&!receipt&&!flow.state().frozen,onUse:(design,board)=>{if(epoch!==sessionEpoch)return;flow.useDesign(design,board);changed();},onClose:()=>{if(epoch!==sessionEpoch)return;editing=false;render();}});}catch(e){editing=false;status(e.message,true);readyControls();}};
+ function openDesignTool(tool, trigger){
+   if(!sessionCurrent()||busy||editing)return;
+   const epoch=sessionEpoch,st=flow.state(),photo=st.request.photos[0];
+   editing=true;readyControls();
+   try{
+     g.CarvewrightStudio.openEmbedded({
+       customerFacing:true,customerTool:tool,draft:S.clone(st.request.design),measuredStock:st.boardSpec,
+       boardPhoto:{photo:S.clone(photo),board:S.clone(st.request.board),boardArea:S.clone(st.plankEvidence[0]?.boardArea||null)},
+       parent:$('ccApp'),guard:()=>sessionCurrent()&&epoch===sessionEpoch&&!receipt,
+       onUse:(design,board)=>{if(!sessionCurrent())return;flow.useDesign(design,board);changed();},
+       onClose:()=>{if(epoch!==sessionEpoch)return;editing=false;render();$(trigger)?.focus({preventScroll:true});}
+     });
+   }catch(e){editing=false;status(e.message,true);readyControls();}
+ }
+ for(const [id,tool] of [['ccProof','lettering'],['ccLayout','lettering'],['ccAddArtwork','artwork']]){
+   const button=$(id);if(button)button.onclick=()=>openDesignTool(tool,id);
+ }
  if($('ccTake'))$('ccTake').onclick=()=>sessionCurrent()&&run(openCamera);if($('ccChoose'))$('ccChoose').onclick=()=>{$('ccFile').dataset.extra='';$('ccFile').click();};if($('ccAddReference'))$('ccAddReference').onclick=()=>{$('ccFile').dataset.extra='1';$('ccFile').click();};for(const id of ['ccFile','ccCameraFile'])if($(id))$(id).onchange=e=>{if(!sessionCurrent())return;const f=e.target.files?.[0],extra=e.target.dataset.extra||false;if(f)run(()=>addPhoto(f,extra));};if($('ccRotate'))$('ccRotate').onclick=()=>run(async()=>{const r=flow.state().request;r.board=B.createBoard(r.design,r.photos[0],((r.board?.quarterTurns||0)+1)%4,flow.state().plankEvidence[0]?.boardArea);changed();render();status('Board orientation updated. Check the lettering on your board.');});}
 async function importSweep(file){
  if(file.size>9*1024*1024)throw Error('Choose a Sightline scan smaller than 9 MB.');

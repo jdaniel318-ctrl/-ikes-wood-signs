@@ -1,10 +1,10 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Chartroom 8.8.20.126
+# Black Flag Letterpress 8.8.20.127
 
 Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
-Baseline: 8.8.20.125. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Baseline: 8.8.20.126. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
 Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
-My Fleet groups programs by use. Delegate opens a feature review for the selected ship. A preview binds to one target. Owner Fleet Services distinguishes unavailable features from eligible upgrade offers. See CHARTROOM_FLEET_REGISTER.md for the handoff guide.
+In Ike’s sign designer, tap the plank to position lettering or choose Add artwork to open the gallery. Board measurements are optional. Approved shop revisions export with the original acceptance receipt.
 Preparation does not deploy frontend or backend changes. See PATCH_CONTRACT.json for separately managed backend prerequisites.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 

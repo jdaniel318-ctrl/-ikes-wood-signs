@@ -463,12 +463,31 @@ body.cc-customer{display:flex;flex-direction:column;min-height:100vh;min-height:
   .cc-photo-invite .cc-buttons button { min-width: 0; padding-inline: 6px; }
 }
 
-.cc-board-work .cc-font-choices {
+.cc-design-grid .cc-font-choices {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 6px;
   margin: 0 0 10px;
 }
 @media (max-width: 410px) {
-  .cc-board-work .cc-font-choices { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cc-design-grid .cc-font-choices { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+
+.cc-customer button.cc-edit-preview {
+  display: flex;
+  width: 100%;
+  color: var(--cc-ink);
+  background: #f4efe5;
+  border: 1px solid var(--cc-line);
+  box-shadow: none;
+}
+.cc-edit-preview:focus-visible { outline: 3px solid var(--cc-blue); outline-offset: 3px; }
+.cc-design-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+.cc-design-actions button { padding-inline: 8px; }
+.cc-board-settings .cc-words { margin-top: 0; font-size: 1.1rem; }
+.cc-board-settings .cc-font-choices { margin-top: 12px; }
