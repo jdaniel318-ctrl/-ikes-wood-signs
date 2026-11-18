@@ -1,0 +1,12 @@
+{
+  "build": "8.8.20.129",
+  "base": "8.8.20.128",
+  "base_git_commit": "ed2b0046a955c119722247f2fde9ad48b97e4e7b",
+  "baseline_files_matched": 1024,
+  "local_verification": [
+    "The rendered fleet button failed the launch regression on Broadside and passed with the corrected section. The hidden card stayed inactive and a repeated click kept a single frame.",
+    "An offline DOM check loaded the embedded lesson document and verified all 20 referenced script and stylesheet digests.",
+    "A simulated pending lesson save kept the dialog open when leaving was declined. After the save was allowed, Back to My Fleet closed the dialog, restored focus and allowed reopening."
+  ],
+  "native_ipad": "Pending"
+}

@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.20.128';
-const RELEASE_SEAL='broadside-8820128';
+const RELEASE_BUILD='8.8.20.129';
+const RELEASE_SEAL='lamplight-8820129';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.

@@ -1,9 +1,9 @@
 {
-  "release": "Broadside",
-  "name": "Broadside",
-  "build": "8.8.20.128",
-  "seal": "broadside-8820128",
-  "file_count": 1024,
+  "release": "Lamplight",
+  "name": "Lamplight",
+  "build": "8.8.20.129",
+  "seal": "lamplight-8820129",
+  "file_count": 1025,
   "files": [
     ".github/workflows/drydock-batch1.yml",
     "01-Review.pdf",
@@ -272,6 +272,7 @@
     "KEYDECK_GUIDE.md",
     "KEYLINE_EVIDENCE.json",
     "KEYLINE_GUIDE.md",
+    "LAMPLIGHT_EVIDENCE.json",
     "LANTERNWAKE_TEST_REPORT.md",
     "LANTERNWAKE_TEST_RESULTS.json",
     "LEAN_BUILD_MANIFEST.md",
