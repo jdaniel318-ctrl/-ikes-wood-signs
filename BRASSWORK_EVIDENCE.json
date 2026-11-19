@@ -1,0 +1,14 @@
+{
+  "build": "8.8.20.132",
+  "base": "8.8.20.131",
+  "base_git_commit": "38d60b4867f24cb820da7e3678da8429985af29b",
+  "public_pages_base": "Stillwater",
+  "baseline_files_matched": 1028,
+  "scope": "Engine Room PIN entrance",
+  "field_observed": "Captain supplied the previous Engine Room entrance screenshot and requested easy keyboard and touch entry.",
+  "local_tests": [
+    "Production entry handlers exercised with a synthetic verifier and DOM events for keyboard, button taps, mixed entry, correction, empty submission and in-flight double submission.",
+    "Pending, incorrect, locked and accepted results, hidden entrances, covered entrances and page exit exercised with isolated fixtures."
+  ],
+  "native_ipad": "Pending physical acceptance."
+}

@@ -15,7 +15,7 @@ test('local PIN gates carry no browser password field semantics and stay visuall
  assert.match(app,/<input[^>]*id="ownerLoginPassword"[^>]*type="password"[^>]*autocomplete="current-password"/);
  assert.match(html,/<input[^>]*id="darkSkyAdmiralRecoveryPassword"[^>]*type="password"/);
 });
-function padFixture(){
+function padFixture(primary=false){
  const events=[], listeners={}, leaves={}, mask={}, status={};
  const pad={
    focus(){events.push('focus');}, closest(){return this.hidden ? {} : null;},
@@ -23,13 +23,24 @@ function padFixture(){
    addEventListener(type,callback){listeners[type]=callback;}
  };
  const submit={click(){events.push('submit');}};
- const c={window:{addEventListener(type,callback){leaves[type]=callback;}}};
+ const gateListeners={},documentListeners={},attributes=new Map(),error={textContent:''};
+ const gate={
+   addEventListener(type,callback){gateListeners[type]=callback;},
+   getClientRects(){return [1];},closest(){return this.hidden;},contains(target){return target===pad;}
+ };
+ const document={body:{},documentElement:{},addEventListener(type,callback){documentListeners[type]=callback;},
+   elementFromPoint:()=>pad,querySelector:()=>null};
+ Object.assign(pad,{getAttribute:key=>attributes.get(key),setAttribute:(key,value)=>attributes.set(key,value),
+   removeAttribute:key=>attributes.delete(key)});
+ const c={document,window:{addEventListener(type,callback){leaves[type]=callback;}}};
  vm.createContext(c);
  const pads=vm.runInContext(app.slice(0, app.indexOf('\n(() => {'))+'\nengineCodePads',c);
- pads.mount(pad,submit);
- const tap=key=>listeners.click({target:{closest:()=>({dataset:{codeKey:key}})}});
- const type=(key,extra={})=>listeners.keydown({key,target:pad,preventDefault(){},...extra});
- return {pad,pads,submit,tap,type,mask,status,events,leaves,c};
+ pads.mount(pad,submit,primary?{gate,error}:undefined);
+ const tap=key=>listeners.click({detail:1,target:{closest:()=>({dataset:{codeKey:key}})}});
+ const keyEvent=(key,extra)=>({key,target:pad,preventDefault(){this.defaultPrevented=true;},...extra});
+ const type=(key,extra={})=>(primary?gateListeners:listeners).keydown(keyEvent(key,extra));
+ const backgroundKey=key=>documentListeners.keydown(keyEvent(key,{target:document.body}));
+ return {pad,pads,submit,tap,type,mask,status,events,leaves,c,gate,error,document,backgroundKey};
 }
 test('both Engine entrances have labelled button keypads and no editable credential field',()=>{
  for(const id of ['blackFlagEntryPin','enginePinInput']){
@@ -49,6 +60,30 @@ test('button and keyboard entry preserve leading zeroes, edit correctly and expo
  await f.pads.verify(f.pad,code=>{assert.equal(code,'02');assert.equal(f.mask.textContent,'');return {ok:true};});
  for(const digit of '1234567890')f.tap(digit);
  await f.pads.verify(f.pad,code=>assert.equal(code,'12345678'));
+});
+test('primary gate accepts mixed input and an empty submission never reaches verification',async()=>{
+ const f=padFixture(true);
+ assert.equal(f.status.textContent,'Ready for PIN');
+ assert.equal(await f.pads.verify(f.pad,()=>assert.fail(),{allowEmpty:false}),null);
+ assert.equal(f.error.textContent,'Enter your PIN first.');
+ f.backgroundKey('0');f.tap('5');assert.equal(f.events.at(-1),'focus');f.type('Backspace');f.type('3');
+ assert.equal(f.error.textContent,'');assert.equal(f.status.textContent,'2 digits entered');
+ f.type('Enter');assert.equal(f.events.at(-1),'submit');
+ await f.pads.verify(f.pad,code=>{
+   assert.equal(code,'03');assert.equal(f.status.textContent,'Checking PIN…');assert.equal(f.mask.textContent,'');
+   return {ok:true};
+ });
+ f.tap('5');f.type('Escape');assert.equal(f.status.textContent,'Ready for PIN');
+});
+test('background key entry stops when the gate is hidden, covered or underneath a dialog',()=>{
+ const f=padFixture(true);
+ f.gate.hidden=true;f.backgroundKey('7');f.gate.hidden=false;
+ f.document.elementFromPoint=()=>f.document.body;f.backgroundKey('7');
+ f.document.elementFromPoint=()=>f.pad;f.document.querySelector=()=>({});f.backgroundKey('7');
+ assert.equal(f.mask.textContent,'');
+ f.document.querySelector=()=>null;f.backgroundKey('2');assert.equal(f.mask.textContent,'●');
+ const focusedButton={closest:selector=>selector==='button'?{}:null};
+ f.type('Enter',{target:focusedButton});assert.ok(!f.events.includes('submit'));
 });
 test('lockout blocks input and submission; pending checks are single-use and page exit invalidates their result',async()=>{
  const f=padFixture(); f.pad.disabled=true; f.tap('1'); f.type('2');

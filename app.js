@@ -5,7 +5,9 @@ const engineCodePads = (() => {
   function render(state) {
     const length = state.digits.length;
     state.mask.textContent = '●'.repeat(length);
-    state.status.textContent = length === 1 ? '1 digit entered' : length + ' digits entered';
+    const count = length === 1 ? '1 digit entered' : length + ' digits entered';
+    state.status.textContent = state.gate && state.pending ? 'Checking PIN…' :
+      state.gate && !length ? 'Ready for PIN' : count;
   }
 
   function clear(element) {
@@ -16,10 +18,10 @@ const engineCodePads = (() => {
     render(state);
   }
 
-  function mount(element, submit) {
+  function mount(element, submit, {gate, error} = {}) {
     if (!element || !submit || pads.has(element)) return;
     const state = {
-      digits: '', pending: null,
+      digits: '', pending: null, gate, error,
       mask: element.querySelector('[data-code-mask]'),
       status: element.querySelector('[data-code-status]')
     };
@@ -28,6 +30,10 @@ const engineCodePads = (() => {
 
     function edit(key) {
       if (element.disabled || state.pending) return;
+      if (state.error && element.getAttribute('aria-invalid') === 'true') {
+        state.error.textContent = '';
+        element.removeAttribute('aria-invalid');
+      }
       if (key === 'delete') state.digits = state.digits.slice(0, -1);
       else if (key === 'clear') state.digits = '';
       else if (/^[0-9]$/.test(key) && state.digits.length < 8) state.digits += key;
@@ -35,25 +41,58 @@ const engineCodePads = (() => {
     }
     element.addEventListener('click', event => {
       const button = event.target.closest('button[data-code-key]');
-      if (button) edit(button.dataset.codeKey);
+      if (button) {
+        edit(button.dataset.codeKey);
+        // A pointer tap can leave focus on the last number. Direct subsequent typing to the PIN.
+        if (gate && event.detail > 0) element.focus({preventScroll: true});
+      } else if (gate && event.target.closest('.engine-pin-readout')) {
+        element.focus({preventScroll: true});
+      }
     });
-    element.addEventListener('keydown', event => {
+    function handleKey(event) {
       if (event.ctrlKey || event.metaKey || event.altKey || event.isComposing || element.disabled) return;
       if (/^[0-9]$/.test(event.key) || event.key === 'Backspace' || event.key === 'Delete') {
         event.preventDefault();
         if (!event.repeat) edit(event.key.length === 1 ? event.key : 'delete');
         element.focus({preventScroll: true});
-      } else if (event.key === 'Enter' && event.target === element) {
+      } else if (gate && event.key === 'Escape' && state.digits.length) {
+        event.preventDefault();
+        edit('clear');
+        element.focus({preventScroll: true});
+      } else if (event.key === 'Enter' && (event.target === element ||
+                 (gate && !event.target.closest?.('button')))) {
         event.preventDefault();
         if (!event.repeat) submit.click();
       }
-    });
+    }
+    if (gate) {
+      gate.addEventListener('keydown', handleKey);
+      // Safari may return focus to the page background after a tap. Only this visible
+      // entry screen accepts those keys, while other dialogs retain their own keyboard.
+      document.addEventListener('keydown', event => {
+        if (event.defaultPrevented || (event.target !== document.body && event.target !== document.documentElement)) return;
+        if (!gate.getClientRects().length || gate.closest('.hidden,[hidden],[inert],[aria-hidden="true"]') ||
+            document.querySelector('dialog[open]')) return;
+        const surface = document.elementFromPoint(window.innerWidth / 2, window.innerHeight / 2);
+        if (surface && gate.contains(surface)) handleKey(event);
+      });
+    } else {
+      element.addEventListener('keydown', handleKey);
+    }
     window.addEventListener('pagehide', () => clear(element));
   }
 
-  async function verify(element, check) {
+  async function verify(element, check, {allowEmpty = true} = {}) {
     const state = pads.get(element);
     if (!state || element.disabled || state.pending) return null;
+    if (!allowEmpty && !state.digits.length) {
+      if (state.error) {
+        state.error.textContent = 'Enter your PIN first.';
+        element.setAttribute('aria-invalid', 'true');
+      }
+      element.focus({preventScroll: true});
+      return null;
+    }
     const attempt = {};
     state.pending = attempt;
     const code = state.digits;
@@ -67,6 +106,7 @@ const engineCodePads = (() => {
     }
     if (state.pending !== attempt) return null;
     state.pending = null;
+    render(state);
     return element.closest('.hidden') ? null : result;
   }
 
@@ -91,7 +131,7 @@ const engineCodePads = (() => {
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
   // Component revision changes only when this module changes; installed release is loader-attested.
-  const APP_COMPONENT_REVISION='8.8.20.99';
+  const APP_COMPONENT_REVISION='8.8.20.132';
   const BUILD_VERSION=window.__darkSkyVerifiedRelease?.build;
   if(!BUILD_VERSION || BUILD_VERSION!==window.__darkSkyExpectedRelease?.build || window.__darkSkyVerifiedRelease?.seal!==window.__darkSkyExpectedRelease?.seal)throw new Error('Verified release context required before app execution.');
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
@@ -12237,7 +12277,7 @@ const engineCodePads = (() => {
     if(sub) sub.textContent=pirateModeEnabled
       ? 'Secure Engine access with the themed presentation.'
       : 'Secure project operations and platform control.';
-    if(enter) enter.textContent=isTestAccessActive()?'CONTINUE — TEST ACCESS →':(pirateModeEnabled?'Board →':'Enter →');
+    if(enter) enter.textContent=isTestAccessActive()?'CONTINUE — TEST ACCESS →':'Unlock Engine Room';
 
     const engineKicker=document.querySelector('#enginePanel .command-masthead .engine-kicker');
     const engineTitle=document.querySelector('#enginePanel .command-masthead h2');
@@ -18314,7 +18354,7 @@ document.addEventListener('click', (event) => {
       gate.classList.remove('hidden');
       document.body.classList.add('bf-entry-open');
       const input=byId('blackFlagEntryPin');
-      if(input){ engineCodePads.clear(input); input.focus({preventScroll:true}); }
+      if(input){ engineCodePads.clear(input); input.removeAttribute('aria-invalid'); input.focus({preventScroll:true}); }
       const err=byId('blackFlagEntryError'); if(err) err.textContent='';
       window.releaseDarkSkyFirstPaint?.('engine-entry-ready');
     }
@@ -18351,7 +18391,7 @@ document.addEventListener('click', (event) => {
       }else{
         return {ok:false,code:'startup'};
       }
-    });
+    }, {allowEmpty:testAccessActive});
     if (!result) return;
     if(!result.ok){
       const err=byId('blackFlagEntryError');
@@ -18362,6 +18402,7 @@ document.addEventListener('click', (event) => {
         window.showPinLock('engine','blackFlagLockTimer','blackFlagEntryPin','blackFlagEntryUnlock');
       }else{
         if(err) err.textContent=window.BlackFlagAuth.message(result);
+        input?.setAttribute?.('aria-invalid','true');
         input?.focus();
       }
       return;
@@ -18505,7 +18546,7 @@ document.addEventListener('click', (event) => {
         if (!gate.classList.contains('hidden')) pin?.focus({preventScroll:true});
       }
     });
-    engineCodePads.mount(pin, unlock);
+    engineCodePads.mount(pin, unlock, {gate:byId('blackFlagEntryGate'), error:byId('blackFlagEntryError')});
     if(company) company.addEventListener('click',openCompanyApp);
     if(admin) admin.addEventListener('click',openCompanyAdminGate);
     if(engineCompany) engineCompany.addEventListener('click',openCompanyApp);

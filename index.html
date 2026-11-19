@@ -16,7 +16,7 @@
   </style>
   <script id="darkSkyFirstLightBootstrap">
     // Dark Sky 8.6.23 MEMORY MUSTER — canonical release identity.
-    const DARK_SKY_RELEASE = Object.freeze({build:'8.8.20.131',seal:'stillwater-8820131'});
+    const DARK_SKY_RELEASE = Object.freeze({build:'8.8.20.132',seal:'brasswork-8820132'});
     const DARK_SKY_EXPECTED_BUILD = DARK_SKY_RELEASE.build;
     const DARK_SKY_RELEASE_SEAL = DARK_SKY_RELEASE.seal;
     // 8.6.23 Storage Safe Harbor — three independent channels, no silent storage failures.
@@ -625,15 +625,18 @@ html:has(#lantern-harbor[open]) { overflow:hidden; }
   <div id="blackFlagEntryGate" class="black-flag-entry-gate">
     <div class="bf-entry-shell">
       <header class="watchkey-head">
-        <img class="hatch-art" src="engine-hatch.webp" alt="">
+        <img class="hatch-art" src="engine-brasswork.webp" alt="" fetchpriority="high">
         <div class="hatch-brand"><img src="black_flag_platform_icon.png" alt=""><span>Black Flag</span></div>
         <h1>Engine Room</h1>
       </header>
       <div class="bf-entry-panel">
-        <fieldset id="blackFlagEntryPin" class="engine-code-pad" tabindex="-1">
-          <legend>Enter your Engine PIN</legend>
-          <span data-code-mask aria-hidden="true"></span>
-          <span data-code-status class="code-sr-only" role="status" aria-live="polite" aria-atomic="true"></span>
+        <fieldset id="blackFlagEntryPin" class="engine-code-pad" tabindex="-1" aria-describedby="engineEntryHint">
+          <legend>Enter your PIN</legend>
+          <p class="engine-entry-hint" id="engineEntryHint">Tap the keypad, or type your PIN and press Enter.</p>
+          <div class="engine-pin-readout">
+            <span data-code-mask aria-hidden="true"></span>
+            <span data-code-status role="status" aria-live="polite" aria-atomic="true">Ready for PIN</span>
+          </div>
           <div class="engine-code-keys">
             <button type="button" data-code-key="1">1</button>
             <button type="button" data-code-key="2">2</button>
@@ -1486,7 +1489,7 @@ html:has(#lantern-harbor[open]) { overflow:hidden; }
       </header>
 
       <section id="clearDeckLaunchpad" class="clear-deck-launchpad waypoint-home" aria-labelledby="engineNextMoveTitle">
-        <header class="clear-deck-brief"><small id="engineReleaseLabel">8.8.20.131 • STILLWATER</small><h3 id="engineNextMoveTitle">Fleet operations</h3></header>
+        <header class="clear-deck-brief"><small id="engineReleaseLabel">8.8.20.132 • BRASSWORK</small><h3 id="engineNextMoveTitle">Fleet operations</h3></header>
         <nav class="clear-deck-primary-actions pilotage-offices" aria-label="Fleet command offices">
           <button id="engineOperateVessels" type="button" class="clear-deck-action primary pilotage-vessels" data-clear-deck-command="projects" aria-controls="fleetCommissioningDock">
             <img src="./regatta-harbor.webp" alt="" decoding="async" class="pilotage-harbor">
