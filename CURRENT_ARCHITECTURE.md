@@ -1,11 +1,11 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Current architecture — Chimewake 8.8.20.133
+# Current architecture — Harborveil 8.8.20.134
 
 Source of release identity: RELEASE_CONFIG.json. Installed page/manifest/seal/worker identity is generated together. APP_COMPONENT_REVISION is 8.8.20.132; owner helper revision is 8.8.20.68. Unchanged component bodies remain byte-identical across release-only changes.
 
 The Engine still verifies every required body, current governance models, app component contract and worker identity before executing the same script sequence. App and Captain bind audit/display freshness to the verified installed release. This context never grants permissions. The owner page keeps explicit helper compatibility checks.
 
-Riptail shows when to release Jump and press it again on a bell. At the closed gate, follow the marker back to an unrung bell. Three bells light the finish pennants. Each Fleet Arcade title gives feedback at its own decision point. Sunset Harbor Regatta points to the approaching current.
+My Fleet shows an opening message while it checks your account. Once verified, the Engine entrance opens Attention and the Carvewright return opens Programs & tools. You can leave while verification is pending.
 Backend prerequisites are recorded separately in PATCH_CONTRACT.json. Release preparation executes no database commands. Fleet core and Admiral programs remain distinct.
 
 ## Release commands

@@ -1,11 +1,11 @@
-# Upload Chimewake 8.8.20.133
+# Upload Harborveil 8.8.20.134
 
-Open `Chimewake.zip` in Files. The extracted folder is named `Chimewake`.
+Open `Harborveil.zip` in Files. The extracted folder is named `Harborveil`.
 1. Extract the ZIP. Open its single folder. Upload ALL files inside to the existing repository ROOT; replace matching files and KEEP all other files. Commit the upload.
-2. After deployment open the Engine and confirm `8.8.20.133 · CHIMEWAKE`. Do not clear Safari data, reset records or change permissions.
-3. Open Fleet Arcade → Riptail & the Bell Tower → Fells Point Wharf. Hold Jump to catch a bell, release it, then press Jump to leap.
+2. After deployment open the Engine and confirm `8.8.20.134 · HARBORVEIL`. Do not clear Safari data, reset records or change permissions.
+3. Tap Admiral My Fleet from Engine Room. Once account verification completes, Attention opens. Select Programs & tools to continue to Fleet Arcade.
 
-Riptail shows when to release Jump and press it again on a bell. At the closed gate, follow the marker back to an unrung bell. Three bells light the finish pennants. Each Fleet Arcade title gives feedback at its own decision point. Sunset Harbor Regatta points to the approaching current.
+My Fleet shows an opening message while it checks your account. Once verified, the Engine entrance opens Attention and the Carvewright return opens Programs & tools. You can leave while verification is pending.
 The upload itself executes no database commands. Shared specialist components retain their own revision labels; this is intentional reuse, not a mixed upload. Exact SHA-256 checks still run before Engine scripts execute.
 
 Full backup: application source ONLY; not Supabase, customer media or device drafts.

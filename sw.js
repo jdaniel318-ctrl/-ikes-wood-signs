@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.20.133';
-const RELEASE_SEAL='chimewake-8820133';
+const RELEASE_BUILD='8.8.20.134';
+const RELEASE_SEAL='harborveil-8820134';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.

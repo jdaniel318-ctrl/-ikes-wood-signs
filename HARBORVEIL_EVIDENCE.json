@@ -1,0 +1,9 @@
+{
+  "build": "8.8.20.134",
+  "base": "8.8.20.133",
+  "base_git_commit": "1e9b755711d4055a1e327cd89cbca1bd7d04cf1b",
+  "field_observed": "Captain reported a brief flash. The supplied iPad screenshot showed Attention selected with Reading fleet reports\u2026 after the transition. The intervening frame was not captured.",
+  "reproduced": "In an isolated DOM running the Chimewake My Fleet code, a held identity check exposed the account-required panel on ordinary entry. The Carvewright return already had a neutral waiting state.",
+  "verification": "Checked normal entry, report-loading and tab changes, denied access, cancellation with a late response, and the existing Carvewright return with empty local fixtures.",
+  "physical_ipad": "Pending for Harborveil."
+}

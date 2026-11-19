@@ -1,15 +1,15 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.133",
-  "name": "Chimewake",
-  "seal": "chimewake-8820133",
-  "base": "8.8.20.132",
-  "base_sha256": "84712838c319999b6ce80b9078ba8e55508d783a59e135b3c2cbfde671239afb",
-  "base_files": 1030,
-  "prepared_at": "2026-11-19T01:54:15.379499+00:00",
+  "build": "8.8.20.134",
+  "name": "Harborveil",
+  "seal": "harborveil-8820134",
+  "base": "8.8.20.133",
+  "base_sha256": "dea9768a01458a3066d24b80e9dead6c8c37cf61c506cd37ddfa47fa24973991",
+  "base_files": 1032,
+  "prepared_at": "2026-11-19T02:24:38.058472+00:00",
   "app_component_revision": "8.8.20.132",
   "owner_helper_revision": "8.8.20.68",
-  "feature_notes": "Riptail shows when to release Jump and press it again on a bell. At the closed gate, follow the marker back to an unrung bell. Three bells light the finish pennants. Each Fleet Arcade title gives feedback at its own decision point. Sunset Harbor Regatta points to the approaching current.",
+  "feature_notes": "My Fleet shows an opening message while it checks your account. Once verified, the Engine entrance opens Attention and the Carvewright return opens Programs & tools. You can leave while verification is pending.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -37,8 +37,8 @@
       "automatic_execution_by_upload": false
     }
   },
-  "install_step": "Open Fleet Arcade \u2192 Riptail & the Bell Tower \u2192 Fells Point Wharf. Hold Jump to catch a bell, release it, then press Jump to leap.",
-  "evidence_file": "CHIMEWAKE_EVIDENCE.json",
-  "base_git_tree": "bcaf23028a7b4fea90d8114ef2bbdd3b1c57587c",
-  "base_git_commit": "37e6b2e523c2fa5f30a4a9b71595fc9b9f2766cc"
+  "install_step": "Tap Admiral My Fleet from Engine Room. Once account verification completes, Attention opens. Select Programs & tools to continue to Fleet Arcade.",
+  "evidence_file": "HARBORVEIL_EVIDENCE.json",
+  "base_git_tree": "4caffb5facca15383aab2682835e91f3efdbaa4a",
+  "base_git_commit": "1e9b755711d4055a1e327cd89cbca1bd7d04cf1b"
 }
