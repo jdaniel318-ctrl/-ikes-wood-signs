@@ -1,11 +1,11 @@
-# Upload Harborveil 8.8.20.134
+# Upload Night Signal 8.8.20.135
 
-Open `Harborveil.zip` in Files. The extracted folder is named `Harborveil`.
+Extract `NightSignal.zip` in Files and open the NightSignal folder.
 1. Extract the ZIP. Open its single folder. Upload ALL files inside to the existing repository ROOT; replace matching files and KEEP all other files. Commit the upload.
-2. After deployment open the Engine and confirm `8.8.20.134 · HARBORVEIL`. Do not clear Safari data, reset records or change permissions.
-3. Tap Admiral My Fleet from Engine Room. Once account verification completes, Attention opens. Select Programs & tools to continue to Fleet Arcade.
+2. After deployment open the Engine and confirm `8.8.20.135 · NIGHT SIGNAL`. Do not clear Safari data, reset records or change permissions.
+3. Open Admiral My Fleet, Programs & tools, Fleet Arcade, then Operation Night Signal and Play Cobra Relay Station.
 
-My Fleet shows an opening message while it checks your account. Once verified, the Engine entrance opens Attention and the Carvewright return opens Programs & tools. You can leave while verification is pending.
+Operation Night Signal joins Fleet Arcade. Lead Scarlett through the Cobra relay station, divert the scout with a radio decoy, rescue Duke and escort him back through a new shortcut. The mission adds one challenge to the collection.
 The upload itself executes no database commands. Shared specialist components retain their own revision labels; this is intentional reuse, not a mixed upload. Exact SHA-256 checks still run before Engine scripts execute.
 
 Full backup: application source ONLY; not Supabase, customer media or device drafts.

@@ -1,11 +1,11 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Current architecture — Harborveil 8.8.20.134
+# Current architecture — Night Signal 8.8.20.135
 
 Source of release identity: RELEASE_CONFIG.json. Installed page/manifest/seal/worker identity is generated together. APP_COMPONENT_REVISION is 8.8.20.132; owner helper revision is 8.8.20.68. Unchanged component bodies remain byte-identical across release-only changes.
 
 The Engine still verifies every required body, current governance models, app component contract and worker identity before executing the same script sequence. App and Captain bind audit/display freshness to the verified installed release. This context never grants permissions. The owner page keeps explicit helper compatibility checks.
 
-My Fleet shows an opening message while it checks your account. Once verified, the Engine entrance opens Attention and the Carvewright return opens Programs & tools. You can leave while verification is pending.
+Operation Night Signal joins Fleet Arcade. Lead Scarlett through the Cobra relay station, divert the scout with a radio decoy, rescue Duke and escort him back through a new shortcut. The mission adds one challenge to the collection.
 Backend prerequisites are recorded separately in PATCH_CONTRACT.json. Release preparation executes no database commands. Fleet core and Admiral programs remain distinct.
 
 ## Release commands

@@ -1,20 +1,20 @@
 {
   "schema": "blackflag-release-gate-v1",
-  "build": "8.8.20.134",
-  "release": "Harborveil",
+  "build": "8.8.20.135",
+  "release": "Night Signal",
   "pass": true,
-  "pass_scope": "58 offline suites plus a DOM reproduction on Chimewake and a replay on Harborveil with synthetic accounts and report responses.",
+  "pass_scope": "59 offline release suites, including the Night Signal mission and save checks using test records.",
   "verification_status": "OFFLINE_VERIFIED",
-  "evidence_file": "HARBORVEIL_EVIDENCE.json",
+  "evidence_file": "NIGHT_SIGNAL_EVIDENCE.json",
   "native_safari_acceptance": "PENDING",
   "database_actions": "None.",
   "backend_prerequisite": "Existing owner account and vessel scope checks.",
   "customer_data_changes": false,
   "production_certification": false,
   "frontend_deployed": false,
-  "backup_restore": "Software rollback to Chimewake 8.8.20.133.",
+  "backup_restore": "Software rollback to Harborveil 8.8.20.134.",
   "performance_improvement_claim": false,
-  "offline_suite_count": 58,
+  "offline_suite_count": 59,
   "native_compilation": "NOT_APPLICABLE_STATIC_WEB_APP",
-  "offline_suites_passed": 58
+  "offline_suites_passed": 59
 }

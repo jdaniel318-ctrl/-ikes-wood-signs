@@ -1,15 +1,15 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.134",
-  "name": "Harborveil",
-  "seal": "harborveil-8820134",
-  "base": "8.8.20.133",
-  "base_sha256": "dea9768a01458a3066d24b80e9dead6c8c37cf61c506cd37ddfa47fa24973991",
-  "base_files": 1032,
-  "prepared_at": "2026-11-19T02:24:38.058472+00:00",
+  "build": "8.8.20.135",
+  "name": "Night Signal",
+  "seal": "night-signal-8820135",
+  "base": "8.8.20.134",
+  "base_sha256": "b3f745aa3c9dbce4ddd06a1f543fcd5cf6b255d194588431b5edef12a6598ffd",
+  "base_files": 1034,
+  "prepared_at": "2026-11-19T03:18:39.892666+00:00",
   "app_component_revision": "8.8.20.132",
   "owner_helper_revision": "8.8.20.68",
-  "feature_notes": "My Fleet shows an opening message while it checks your account. Once verified, the Engine entrance opens Attention and the Carvewright return opens Programs & tools. You can leave while verification is pending.",
+  "feature_notes": "Operation Night Signal joins Fleet Arcade. Lead Scarlett through the Cobra relay station, divert the scout with a radio decoy, rescue Duke and escort him back through a new shortcut. The mission adds one challenge to the collection.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -37,8 +37,8 @@
       "automatic_execution_by_upload": false
     }
   },
-  "install_step": "Tap Admiral My Fleet from Engine Room. Once account verification completes, Attention opens. Select Programs & tools to continue to Fleet Arcade.",
-  "evidence_file": "HARBORVEIL_EVIDENCE.json",
-  "base_git_tree": "4caffb5facca15383aab2682835e91f3efdbaa4a",
-  "base_git_commit": "1e9b755711d4055a1e327cd89cbca1bd7d04cf1b"
+  "install_step": "Open Admiral My Fleet, Programs & tools, Fleet Arcade, then Operation Night Signal and Play Cobra Relay Station.",
+  "evidence_file": "NIGHT_SIGNAL_EVIDENCE.json",
+  "base_git_tree": "c9fed4df517d89faf3b8abc75de499983a244629",
+  "base_git_commit": "ef5b8f986b9683abd7013993f33598e22a341a68"
 }

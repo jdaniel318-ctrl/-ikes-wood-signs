@@ -1,0 +1,7 @@
+{
+  "build": "8.8.20.135",
+  "base": "8.8.20.134",
+  "base_git_commit": "ef5b8f986b9683abd7013993f33598e22a341a68",
+  "verification": "VERIFY_NIGHT_SIGNAL.cjs plays the packaged mission from lift to cell to extraction. It checks controls, scout and decoy, captures on either leg, rescued teammate boarding, scoped saves and prior challenge records.",
+  "physical_ipad": "Pending for Night Signal."
+}

@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.134",
-  "release": "Harborveil",
-  "seal": "harborveil-8820134",
+  "build": "8.8.20.135",
+  "release": "Night Signal",
+  "seal": "night-signal-8820135",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Harborveil",
-  "name": "Harborveil",
-  "releaseName": "Harborveil"
+  "release_name": "Night Signal",
+  "name": "Night Signal",
+  "releaseName": "Night Signal"
 }
