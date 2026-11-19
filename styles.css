@@ -15474,6 +15474,10 @@ body[data-command-surface="admiral"] #enginePanel{display:none!important;pointer
 
 /* 8.8.15.9 Report Proof — the Supabase identity check is a separate layer,
    not a form embedded in an already-open fleet workspace. */
+#watchReturning:not([hidden]){min-height:calc(100dvh - 40px);display:grid;place-items:center;text-align:center}
+#watchReturning[hidden]{display:none}
+#watchReturning:focus{outline:none}
+#watchReturning h2{margin:0 0 1rem;font-size:clamp(1.4rem,3vw,2rem);color:#f5e8bf}
 .admiral-security-layer{position:relative;display:grid;min-height:100dvh;width:100%;place-items:center;padding:clamp(18px,4vw,54px);background:radial-gradient(circle at 50% 8%,rgba(35,153,184,.22),transparent 38%),linear-gradient(155deg,#031a21,#020f14 72%);color:#eef3ef}
 .admiral-security-card{width:min(920px,100%);padding:clamp(22px,4vw,42px);border:1px solid #b99d4e;border-radius:22px;background:linear-gradient(145deg,rgba(8,50,59,.98),rgba(3,25,32,.99));box-shadow:0 28px 80px rgba(0,0,0,.48),inset 0 1px rgba(255,255,255,.04)}
 .admiral-security-card>header{display:flex;align-items:center;justify-content:space-between;gap:24px;padding-bottom:22px;border-bottom:1px solid rgba(102,151,159,.38)}

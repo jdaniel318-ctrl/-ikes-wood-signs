@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.130",
-  "release": "Gangway",
-  "seal": "gangway-8820130",
+  "build": "8.8.20.131",
+  "release": "Stillwater",
+  "seal": "stillwater-8820131",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Gangway",
-  "name": "Gangway",
-  "releaseName": "Gangway"
+  "release_name": "Stillwater",
+  "name": "Stillwater",
+  "releaseName": "Stillwater"
 }

@@ -1,11 +1,11 @@
-# Upload Gangway 8.8.20.130
+# Upload Stillwater 8.8.20.131
 
-Use `DarkSky8820130-Gangway-Upload.zip`, not the full backup or rollback.
+Use `DarkSky8820131-Stillwater-Upload.zip`, not the full backup or rollback.
 1. Extract the ZIP. Open its single folder. Upload ALL files inside to the existing repository ROOT; replace matching files and KEEP all other files. Commit the upload.
-2. After deployment open the Engine and confirm `8.8.20.130 · GANGWAY`. Do not clear Safari data, reset records or change permissions.
-3. In My Fleet, open Programs & tools and choose Carvewright. Verify your access and choose New design. Use Back to My Fleet to return to the same card.
+2. After deployment open the Engine and confirm `8.8.20.131 · STILLWATER`. Do not clear Safari data, reset records or change permissions.
+3. In My Fleet, select Programs & tools, then Open Carvewright. Leave the PIN field empty and tap Back to My Fleet. Check that the Carvewright card returns without a sign-in screen flashing.
 
-The Carvewright gate names the design workspace. A verified launch opens Carvewright directly. Leaving or canceling from My Fleet returns to its Carvewright card. Engine Room launches return to Engine Room.
+Returning from Carvewright now shows a neutral My Fleet status while the existing account check runs. Once verified, Programs & tools opens at the Carvewright card. If fresh sign-in is needed, My Fleet shows the account form.
 The upload itself executes no database commands. Shared specialist components retain their own revision labels; this is intentional reuse, not a mixed upload. Exact SHA-256 checks still run before Engine scripts execute.
 
 Full backup: application source ONLY; not Supabase, customer media or device drafts.

@@ -1,15 +1,15 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.130",
-  "name": "Gangway",
-  "seal": "gangway-8820130",
-  "base": "8.8.20.129",
-  "base_sha256": "b28168a7f37d877c673641e169629365993cfc94cd8913612c872a6351de53af",
-  "base_files": 1025,
-  "prepared_at": "2026-11-19T00:07:31.037452+00:00",
+  "build": "8.8.20.131",
+  "name": "Stillwater",
+  "seal": "stillwater-8820131",
+  "base": "8.8.20.130",
+  "base_sha256": "72b32e4306976ed444f2a7efd4687bd4af70533d4a3402db3eefa8ac2c812332",
+  "base_files": 1027,
+  "prepared_at": "2026-11-19T00:41:59.361808+00:00",
   "app_component_revision": "8.8.20.99",
   "owner_helper_revision": "8.8.20.68",
-  "feature_notes": "The Carvewright gate names the design workspace. A verified launch opens Carvewright directly. Leaving or canceling from My Fleet returns to its Carvewright card. Engine Room launches return to Engine Room.",
+  "feature_notes": "Returning from Carvewright now shows a neutral My Fleet status while the existing account check runs. Once verified, Programs & tools opens at the Carvewright card. If fresh sign-in is needed, My Fleet shows the account form.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -37,8 +37,8 @@
       "automatic_execution_by_upload": false
     }
   },
-  "install_step": "In My Fleet, open Programs & tools and choose Carvewright. Verify your access and choose New design. Use Back to My Fleet to return to the same card.",
-  "evidence_file": "GANGWAY_EVIDENCE.json",
-  "base_git_tree": "84f6aafa3aeaa80f5bd8bcf326db72b3efe0bc4d",
-  "base_git_commit": "c0279cd664a0bde0bdbdef27909a4834741c22bd"
+  "install_step": "In My Fleet, select Programs & tools, then Open Carvewright. Leave the PIN field empty and tap Back to My Fleet. Check that the Carvewright card returns without a sign-in screen flashing.",
+  "evidence_file": "STILLWATER_EVIDENCE.json",
+  "base_git_tree": "97c236ee0f7079a22017513bbfcb658f5a3de152",
+  "base_git_commit": "d36aed55543ef2179915a5ae2306a29985f250d5"
 }

@@ -1,0 +1,12 @@
+{
+  "build": "8.8.20.131",
+  "base": "8.8.20.130",
+  "base_git_commit": "d36aed55543ef2179915a5ae2306a29985f250d5",
+  "baseline_files_matched": 1027,
+  "field_observed": "Gangway on the Captain\u2019s iPad returned to Programs & tools with Open Carvewright in view. The Captain saw a brief unexpected screen. The screenshot shows the destination only.",
+  "offline_observed": [
+    "With the identity result held pending, Gangway exposed the My Fleet sign-in layer during the return.",
+    "The same local DOM exercise on Stillwater kept sign-in and the fleet workspace hidden until the check resolved. It covered a verified return, a denied recheck, leaving while the check was pending, and returning from an open workspace."
+  ],
+  "native_ipad": "Stillwater pending"
+}

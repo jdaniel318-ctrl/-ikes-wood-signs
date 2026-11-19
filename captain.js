@@ -241,7 +241,10 @@ const admiralVesselLogos = new Map([
     active:'Active', owner:'Owner-operated', fleet:'Fleet-operated'
   };
   let view='attention';
-  function install(){$('bootstrapFleet')?.remove();document.body.insertAdjacentHTML('beforeend',`<section id="bootstrapFleet" class="bootstrap-fleet fleet-watchtower hidden" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Black Flag Admiral security and Fleet Watchtower"><section id="watchSecurityLayer" class="admiral-security-layer" aria-labelledby="watchSecurityTitle"><div class="admiral-security-card"><header><img src="black_flag_primary_lockup.png" alt="Black Flag"><button id="watchGateClose" type="button">CLOSE</button></header><div class="admiral-security-heading"><small>${window.__darkSkyVerifiedRelease.build} · QUARTERMASTER</small><h2 id="watchSecurityTitle">Admiral Security Layer</h2><p>The passage PIN opened the Admiral doorway. A dedicated Supabase Admiral account must now be authenticated before fleet data can open.</p></div><ol class="admiral-security-steps" aria-label="Admiral authentication progress"><li class="is-complete"><span>01</span><div><small>PASSAGE PIN</small><b>VERIFIED</b></div></li><li class="is-current"><span>02</span><div><small>ADMIRAL ACCOUNT</small><b>REQUIRED</b></div></li><li><span>03</span><div><small>FLEET WORKSPACE</small><b>LOCKED</b></div></li></ol><form id="watchSecurityForm" class="admiral-security-form" autocomplete="off" novalidate>${AdmiralAccountForm.fields('watch')}</form><p id="watchGateStatus" class="admiral-security-status" role="status">Second security check required. The Fleet workspace remains locked.</p><aside><b>Two credentials. Two purposes.</b><span>The passage PIN opens the doorway. Supabase verifies identity and global Admiral read authority. An owner account cannot open this workspace.</span></aside></div></section><div id="watchWorkspace" class="bootstrap-fleet-shell hidden" aria-hidden="true" data-view="attention">
+  function install(){$('bootstrapFleet')?.remove();document.body.insertAdjacentHTML('beforeend',`<section id="bootstrapFleet" class="bootstrap-fleet fleet-watchtower hidden" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Black Flag Admiral security and Fleet Watchtower"><section id="watchReturning" tabindex="-1" aria-labelledby="watchReturningTitle" hidden>
+    <div><h2 id="watchReturningTitle">Returning to My Fleet…</h2>
+    <button id="watchReturnExit" type="button">Back to Engine</button></div>
+  </section><section id="watchSecurityLayer" class="admiral-security-layer" aria-labelledby="watchSecurityTitle"><div class="admiral-security-card"><header><img src="black_flag_primary_lockup.png" alt="Black Flag"><button id="watchGateClose" type="button">CLOSE</button></header><div class="admiral-security-heading"><small>${window.__darkSkyVerifiedRelease.build} · QUARTERMASTER</small><h2 id="watchSecurityTitle">Admiral Security Layer</h2><p>The passage PIN opened the Admiral doorway. A dedicated Supabase Admiral account must now be authenticated before fleet data can open.</p></div><ol class="admiral-security-steps" aria-label="Admiral authentication progress"><li class="is-complete"><span>01</span><div><small>PASSAGE PIN</small><b>VERIFIED</b></div></li><li class="is-current"><span>02</span><div><small>ADMIRAL ACCOUNT</small><b>REQUIRED</b></div></li><li><span>03</span><div><small>FLEET WORKSPACE</small><b>LOCKED</b></div></li></ol><form id="watchSecurityForm" class="admiral-security-form" autocomplete="off" novalidate>${AdmiralAccountForm.fields('watch')}</form><p id="watchGateStatus" class="admiral-security-status" role="status">Second security check required. The Fleet workspace remains locked.</p><aside><b>Two credentials. Two purposes.</b><span>The passage PIN opens the doorway. Supabase verifies identity and global Admiral read authority. An owner account cannot open this workspace.</span></aside></div></section><div id="watchWorkspace" class="bootstrap-fleet-shell hidden" aria-hidden="true" data-view="attention">
   <header class="bridge-head">
     <div class="bridge-mast"><img src="black_flag_platform_icon.png" alt="">
     <div class="bridge-title"><small>BLACK FLAG · ADMIRAL</small><h2 id="watchFleetTitle">My Fleet</h2></div></div>
@@ -589,16 +592,21 @@ const admiralVesselLogos = new Map([
       });
     }catch(_){clearHelp();if(sameWatch(turn))host.textContent='Fleet help is unavailable. Refresh Watch to try again.';}
   }
-  function setSecurityLayer(verified,message=''){const gate=$('watchSecurityLayer'),workspace=$('watchWorkspace'),overview=$('watchOverview');const opening=verified&&workspace.classList.contains('hidden');gate.classList.toggle('hidden',!!verified);gate.setAttribute('aria-hidden',String(!!verified));workspace.classList.toggle('hidden',!verified);workspace.setAttribute('aria-hidden',String(!verified));
+  function setSecurityLayer(verified,message='',returning=false){
+    const gate=$('watchSecurityLayer'),workspace=$('watchWorkspace'),overview=$('watchOverview');
+    const opening=verified&&workspace.classList.contains('hidden');
+    $('watchReturning').hidden=!returning;
+    gate.classList.toggle('hidden',verified||returning);
+    gate.setAttribute('aria-hidden',String(verified||returning));
+    workspace.classList.toggle('hidden',!verified);
+    workspace.setAttribute('aria-hidden',String(!verified));
     if(opening && focusCarvewrightOnReturn){
       focusCarvewrightOnReturn=false;
-      const frame=requestAnimationFrame(()=>{
-        if(view!=='programs'||!shown($('bootstrapFleet'))||!shown(workspace))return;
-        const card=$('carvewrightFleetOpen');
-        card?.scrollIntoView({block:'center',behavior:'instant'});
-        card?.focus({preventScroll:true});
-      });
-      stopWatchLanding=()=>cancelAnimationFrame(frame);
+      // Lay out the local cards and restore the launch button before the first visible frame.
+      paintPrograms();
+      const card=$('carvewrightFleetOpen');
+      card?.scrollIntoView({block:'center',behavior:'instant'});
+      card?.focus({preventScroll:true});
     }else if(opening)stopWatchLanding=window.BlackFlagViewport?.landAtHeader($('watchFleetTitle'),$('bootstrapFleet'));
     if(!verified){clearHelp();reportPlace=null;workspace.inert=false;overview.classList.add('hidden');overview.setAttribute('aria-hidden','true');clearReports();if(message)$('watchGateStatus').textContent=message;}}
   function showWatchSignIn(message) {
@@ -614,11 +622,15 @@ const admiralVesselLogos = new Map([
     $('watchClose').textContent=returnToEngine?'Back to Engine':'Close';
     $('watchGateClose').textContent=returnToEngine?'Back to Engine':'Close';
     watchAccount.reset();$('watchSecurityForm').hidden=true;const fleet=$('bootstrapFleet');
-    fleet.dataset.returnToEngine=String(returnToEngine);watchRoute=routeGeneration();setSecurityLayer(false);
+    fleet.dataset.returnToEngine=String(returnToEngine);watchRoute=routeGeneration();
     focusCarvewrightOnReturn=options.focusProgram==='carvewright';
+    setSecurityLayer(false,'',focusCarvewrightOnReturn);
+    $('watchReturnExit').textContent=$('watchClose').textContent;
     filter='all';query='';$('watchSearch').value='';$('watchFilter').value='all';
     selectView(focusCarvewrightOnReturn?'programs':'attention');
-    fleet.classList.remove('hidden');fleet.setAttribute('aria-hidden','false');document.body.classList.add('bootstrap-fleet-open');fleet.scrollTop=0;$('watchGateStatus').textContent='Checking the dedicated Admiral account…';load();}
+    fleet.classList.remove('hidden');fleet.setAttribute('aria-hidden','false');document.body.classList.add('bootstrap-fleet-open');fleet.scrollTop=0;
+    if(focusCarvewrightOnReturn)$('watchReturning').focus({preventScroll:true});
+    $('watchGateStatus').textContent='Checking the dedicated Admiral account…';load();}
   function close(){
     const pending = watchAccount.pending;
     watchAccount.reset();
@@ -668,7 +680,7 @@ const admiralVesselLogos = new Map([
   window.addEventListener('darksky:admiral-session-changed',()=>{if(helpMount&&!helpMount.current())leaveWatch();});
   window.addEventListener('darksky:command-route',()=>{if(shown($('bootstrapFleet'))&&watchRoute!==routeGeneration())close();});
   window.addEventListener('darksky:admiral-fleet-updated',e=>{if($('bootstrapFleet').classList.contains('hidden')||(!records.length&&!programs.length))return;const logos=new Map((e.detail?.records||[]).map(v=>[v.project_id,v.logo_url]));render([...records,...programs].map(v=>({...v,logo_url:logos.get(v.project_id)||v.logo_url||''})));});
-  document.addEventListener('click',async e=>{const t=e.target;if(t.closest?.('#watchClose,#watchGateClose')){
+  document.addEventListener('click',async e=>{const t=e.target;if(t.closest?.('#watchClose,#watchGateClose,#watchReturnExit')){
     const returnToEngine=$('bootstrapFleet').dataset.returnToEngine==='true';
     close();
     if(returnToEngine){

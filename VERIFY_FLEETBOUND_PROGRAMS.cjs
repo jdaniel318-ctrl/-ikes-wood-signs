@@ -22,8 +22,8 @@ function node(id) {
   nodes.set(id,element);
   return element;
 }
-const ctx={admiralVesselLogos:new Map(),document:{getElementById:node,querySelectorAll:()=>[],body:node('body')},window:{},requestAnimationFrame:f=>f(),console};vm.createContext(ctx);
-vm.runInContext(source.slice(start,end)+'\nlastSync="2026-11-10T06:00:00Z";globalThis.api={render,overview,failWatch,setSecurityLayer,state:()=>({records,programs})};',ctx);
+const ctx={watchAccount:{reset(){}},admiralVesselLogos:new Map(),document:{getElementById:node,querySelectorAll:()=>[],body:node('body')},window:{},requestAnimationFrame:f=>f(),console};vm.createContext(ctx);
+vm.runInContext(source.slice(start,end)+'\nlastSync="2026-11-10T06:00:00Z";globalThis.api={render,overview,failWatch,setSecurityLayer,open,close,state:()=>({records,programs})};',ctx);
 const data=[...Array.from({length:6},(_,i)=>({project_id:'core-'+i,display_name:'Core '+i,mission_class:'independent_business',lifecycle_state:'staging'})),{project_id:'wonderwake',display_name:'Wonderwake',mission_class:'admiral_program',lifecycle_state:'active',operating_model:'fleet_operated',ownership_model:'admiral_owned'}];
 let count=0;function check(name,fn){fn();console.log('PASS',name);count++;}
 check('server program remains separate from six core vessels',()=>{ctx.api.render(data);assert.equal(ctx.api.state().records.length,6);assert.equal(ctx.api.state().programs.length,1);assert.match(node('watchLearningPrograms').innerHTML,/Wonderwake/);assert.doesNotMatch(node('watchRows').innerHTML,/Wonderwake/);});
@@ -92,5 +92,24 @@ check('new program has its own group and is cleared on lock',()=>{
   assert.equal(node('watchOtherGroup').hidden,true);
   assert.equal(node('watchLearningPrograms').innerHTML,'');
   assert.equal(node('watchOtherPrograms').innerHTML,'');
+});
+check('a Carvewright return conceals sign-in and reports until verification completes',()=>{
+  ctx.window.DarkSkyAdmiralIdentityStatus=()=>new Promise(()=>{});
+  ctx.api.render(data);
+  ctx.api.open({source:'admiral-gate',focusProgram:'carvewright'});
+  assert.equal(node('watchReturning').hidden,false);
+  assert.equal(node('watchSecurityLayer').classList.contains('hidden'),true);
+  assert.equal(node('watchWorkspace').classList.contains('hidden'),true);
+  assert.equal(ctx.api.state().records.length,0);
+  assert.equal(ctx.api.state().programs.length,0);
+  node('carvewrightFleetOpen').scrollIntoView=()=>{};
+  ctx.api.setSecurityLayer(true);
+  assert.equal(node('watchReturning').hidden,true);
+  assert.equal(node('watchWorkspace').classList.contains('hidden'),false);
+  ctx.api.setSecurityLayer(false);
+  assert.equal(node('watchReturning').hidden,true);
+  assert.equal(node('watchSecurityLayer').classList.contains('hidden'),false);
+  assert.equal(node('watchWorkspace').classList.contains('hidden'),true);
+  ctx.api.close();
 });
 console.log(count+' Fleetbound program checks passed');

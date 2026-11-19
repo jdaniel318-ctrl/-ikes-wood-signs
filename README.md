@@ -1,10 +1,10 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Gangway 8.8.20.130
+# Black Flag Stillwater 8.8.20.131
 
 Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
-Baseline: 8.8.20.129. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Baseline: 8.8.20.130. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
 Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
-The Carvewright gate names the design workspace. A verified launch opens Carvewright directly. Leaving or canceling from My Fleet returns to its Carvewright card. Engine Room launches return to Engine Room.
+Returning from Carvewright now shows a neutral My Fleet status while the existing account check runs. Once verified, Programs & tools opens at the Carvewright card. If fresh sign-in is needed, My Fleet shows the account form.
 Preparation does not deploy frontend or backend changes. See PATCH_CONTRACT.json for separately managed backend prerequisites.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 
