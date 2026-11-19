@@ -4,7 +4,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('nod
 const path=require('node:path'),crypto=require('node:crypto');
 const load=n=>fs.readFileSync(path.join(__dirname,n),'utf8');
 const bytes=load('fleet-arcade.ship.json'),pack=JSON.parse(bytes),host=load('fun_program.js');
-assert.equal(pack.levels,24);
+assert.equal(pack.levels,25);
 assert.ok(host.includes(crypto.createHash('sha256').update(bytes).digest('hex')));
 const stage=pack.player.match(/<script>([\s\S]*?)<\/script>/)[1];
 const marker='    status();\n    return {input,pointer,update,draw};';
@@ -15,7 +15,7 @@ const expose=`api.probe={read:()=>({hero:{...hero},bat:{...bat},scout:{...scout}
 `;
 const env={window:{},Image:class{},Path2D:class{},structuredClone};
 vm.runInNewContext(stage.replace(marker,expose+marker),env);
-assert.equal(Object.values(env.window.games).reduce((n,g)=>n+g.levels.length,0),24);
+assert.equal(Object.values(env.window.games).reduce((n,g)=>n+g.levels.length,0),25);
 function start(){
  const endings=[],api={hud(){},tone(){},end(...v){endings.push(v)}};
  const g=env.window.games.nightsignal.create(api,0),p=api.probe;
@@ -67,7 +67,7 @@ const run=scope=>({allowed:true,who:{context:{scope}},canSave:true});
 const r=run('training-A'),other=run('training-B');
 const save=(r,id,level,score)=>harness.saveArcadeRecord(r,{type:'arcade-clear',id,level,score});
 save(r,'riptail',0,3080);save(r,'nightsignal',0,5150);save(r,'nightsignal',0,400);
-save(r,'nightsignal',1,9999);save({...other,allowed:false},'nightsignal',0,1550);
+save(r,'nightsignal',2,9999);save({...other,allowed:false},'nightsignal',0,1550);
 assert.equal(harness.arcadeRecords(r)['nightsignal.0'].best,5150);assert.equal(harness.arcadeRecords(r)['riptail.0'].best,3080);
-assert.equal(Object.keys(harness.arcadeRecords(other)).length,0);assert.equal(map.size,2);
+assert.equal(Object.keys(harness.arcadeRecords(other)).length,0);assert.equal(map.size,2);assert.equal(harness.arcadeRecords(r)['nightsignal.2'],undefined);
 console.log('PASS Night Signal cartridge, buffered and swipe input, enemy sight and decoy, cooldown, checkpoint reset, end-to-end extraction, return shortcut, replay score and existing save isolation.');

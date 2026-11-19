@@ -1,11 +1,11 @@
-# Upload Night Signal 8.8.20.135
+# Upload Floodlight 8.8.20.136
 
-Extract `NightSignal.zip` in Files and open the NightSignal folder.
+Use `DarkSky8820136-Floodlight-Upload.zip`, not the full backup or rollback.
 1. Extract the ZIP. Open its single folder. Upload ALL files inside to the existing repository ROOT; replace matching files and KEEP all other files. Commit the upload.
-2. After deployment open the Engine and confirm `8.8.20.135 · NIGHT SIGNAL`. Do not clear Safari data, reset records or change permissions.
-3. Open Admiral My Fleet, Programs & tools, Fleet Arcade, then Operation Night Signal and Play Cobra Relay Station.
+2. After deployment open the Engine and confirm `8.8.20.136 · FLOODLIGHT`. Do not clear Safari data, reset records or change permissions.
+3. Open Fleet Arcade, select Operation Night Signal, then Play Floodlight Quay.
 
-Operation Night Signal joins Fleet Arcade. Lead Scarlett through the Cobra relay station, divert the scout with a radio decoy, rescue Duke and escort him back through a new shortcut. The mission adds one challenge to the collection.
+Operation Night Signal gains a following perspective camera and Floodlight Quay, a free-movement harbor rescue. Both missions include an overhead map and directional decoy feedback.
 The upload itself executes no database commands. Shared specialist components retain their own revision labels; this is intentional reuse, not a mixed upload. Exact SHA-256 checks still run before Engine scripts execute.
 
 Full backup: application source ONLY; not Supabase, customer media or device drafts.

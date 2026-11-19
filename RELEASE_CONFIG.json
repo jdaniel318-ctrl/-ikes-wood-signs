@@ -1,15 +1,15 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.135",
-  "name": "Night Signal",
-  "seal": "night-signal-8820135",
-  "base": "8.8.20.134",
-  "base_sha256": "b3f745aa3c9dbce4ddd06a1f543fcd5cf6b255d194588431b5edef12a6598ffd",
-  "base_files": 1034,
-  "prepared_at": "2026-11-19T03:18:39.892666+00:00",
+  "build": "8.8.20.136",
+  "name": "Floodlight",
+  "seal": "floodlight-8820136",
+  "base": "8.8.20.135",
+  "base_sha256": "a4c8912de972d70ea1bd31d105f92d5546cea3d48635b7eeba947754488fb7ef",
+  "base_files": 1036,
+  "prepared_at": "2026-11-19T22:10:32.191849+00:00",
   "app_component_revision": "8.8.20.132",
   "owner_helper_revision": "8.8.20.68",
-  "feature_notes": "Operation Night Signal joins Fleet Arcade. Lead Scarlett through the Cobra relay station, divert the scout with a radio decoy, rescue Duke and escort him back through a new shortcut. The mission adds one challenge to the collection.",
+  "feature_notes": "Operation Night Signal gains a following perspective camera and Floodlight Quay, a free-movement harbor rescue. Both missions include an overhead map and directional decoy feedback.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -37,8 +37,8 @@
       "automatic_execution_by_upload": false
     }
   },
-  "install_step": "Open Admiral My Fleet, Programs & tools, Fleet Arcade, then Operation Night Signal and Play Cobra Relay Station.",
-  "evidence_file": "NIGHT_SIGNAL_EVIDENCE.json",
-  "base_git_tree": "c9fed4df517d89faf3b8abc75de499983a244629",
-  "base_git_commit": "ef5b8f986b9683abd7013993f33598e22a341a68"
+  "install_step": "Open Fleet Arcade, select Operation Night Signal, then Play Floodlight Quay.",
+  "evidence_file": "FLOODLIGHT_EVIDENCE.json",
+  "base_git_tree": "7d84a02453c8be45ef6b0aca6f5e044bc1d69dc0",
+  "base_git_commit": "07013a704fc35b2effcab775ae59688148ce8e2f"
 }

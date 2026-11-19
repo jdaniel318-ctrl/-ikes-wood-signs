@@ -1,9 +1,9 @@
 {
-  "release": "Night Signal",
-  "name": "Night Signal",
-  "build": "8.8.20.135",
-  "seal": "night-signal-8820135",
-  "file_count": 1036,
+  "release": "Floodlight",
+  "name": "Floodlight",
+  "build": "8.8.20.136",
+  "seal": "floodlight-8820136",
+  "file_count": 1037,
   "files": [
     ".github/workflows/drydock-batch1.yml",
     "01-Review.pdf",
@@ -602,6 +602,7 @@
     "VERIFY_FLEETCRAFT_MACHINING.cjs",
     "VERIFY_FLEETCRAFT_UI.cjs",
     "VERIFY_FLEETGUARD.cjs",
+    "VERIFY_FLOODLIGHT.cjs",
     "VERIFY_FLOODLIGHT_TIMING.cjs",
     "VERIFY_FREEBOARD_BOARD.cjs",
     "VERIFY_FREEBOARD_CUSTOMER.cjs",
