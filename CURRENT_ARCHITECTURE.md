@@ -1,11 +1,11 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Current architecture — Brasswork 8.8.20.132
+# Current architecture — Chimewake 8.8.20.133
 
 Source of release identity: RELEASE_CONFIG.json. Installed page/manifest/seal/worker identity is generated together. APP_COMPONENT_REVISION is 8.8.20.132; owner helper revision is 8.8.20.68. Unchanged component bodies remain byte-identical across release-only changes.
 
 The Engine still verifies every required body, current governance models, app component contract and worker identity before executing the same script sequence. App and Captain bind audit/display freshness to the verified installed release. This context never grants permissions. The owner page keeps explicit helper compatibility checks.
 
-The Engine Room opens with an illustrated machinery panel and large number keys. Type your PIN and press Enter, tap the keys and Unlock Engine Room, or switch between the two. Backspace or Delete removes the last digit. Clear or Escape starts over.
+Riptail shows when to release Jump and press it again on a bell. At the closed gate, follow the marker back to an unrung bell. Three bells light the finish pennants. Each Fleet Arcade title gives feedback at its own decision point. Sunset Harbor Regatta points to the approaching current.
 Backend prerequisites are recorded separately in PATCH_CONTRACT.json. Release preparation executes no database commands. Fleet core and Admiral programs remain distinct.
 
 ## Release commands

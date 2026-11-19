@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.132",
-  "release": "Brasswork",
-  "seal": "brasswork-8820132",
+  "build": "8.8.20.133",
+  "release": "Chimewake",
+  "seal": "chimewake-8820133",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Brasswork",
-  "name": "Brasswork",
-  "releaseName": "Brasswork"
+  "release_name": "Chimewake",
+  "name": "Chimewake",
+  "releaseName": "Chimewake"
 }

@@ -186,8 +186,8 @@ document.addEventListener('click',e=>{if(e.target instanceof Element&&e.target.c
 // Both arcade players use the verified Admiral entrance and isolated frames.
 const LANTERN_LEVEL_COUNT = 36;
 const arcadeEditions = {
-  lantern: {name:'Lantern Run', file:'lantern-run.ship.json', id:'lantern-run', edition:8, levels:LANTERN_LEVEL_COUNT, limit:250000, digest:'5458f3adfacc5a485e733bfc436a2798a308202947d1a28051bce64fc665cb20'},
-  collection: {name:'Fleet Arcade', file:'fleet-arcade.ship.json', id:'six-bells', edition:12, levels:23, limit:2600000, digest:'19a14335cd51cf5f0ddc18c12499474004f5418c4d023f055cb01aa82f4eed0f'}
+  lantern: {name:'Lantern Run', file:'lantern-run.ship.json', id:'lantern-run', edition:9, levels:LANTERN_LEVEL_COUNT, limit:250000, digest:'7c81e62bdea891478f90319a275038ef897eba5c149969c2f8df25c7782e0a17'},
+  collection: {name:'Fleet Arcade', file:'fleet-arcade.ship.json', id:'six-bells', edition:13, levels:23, limit:2600000, digest:'a53ebe2fbdf820581566063c08b6a4e0d06bcaee843b22a1275476ac8803deb3'}
 };
 const arcadeArtFiles = {
   "dockmaster": {

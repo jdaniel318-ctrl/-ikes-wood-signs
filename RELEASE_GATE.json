@@ -1,20 +1,20 @@
 {
   "schema": "blackflag-release-gate-v1",
-  "build": "8.8.20.132",
-  "release": "Brasswork",
+  "build": "8.8.20.133",
+  "release": "Chimewake",
   "pass": true,
-  "pass_scope": "56 offline suites and an isolated DOM interaction test covering keyboard, touch, mixed PIN entry, focus, correction and pending verification.",
+  "pass_scope": "57 offline suites. New arcade scenarios include catch and launch from the first roof, the locked gate at two bells, all three courses finishing after the third bell, and the other games\u2019 contextual feedback. A separate Canvas render checked 23 challenge entrances and four wharf decision points with the bundled artwork.",
   "verification_status": "OFFLINE_VERIFIED",
-  "evidence_file": "BRASSWORK_EVIDENCE.json",
+  "evidence_file": "CHIMEWAKE_EVIDENCE.json",
   "native_safari_acceptance": "PENDING",
   "database_actions": "None.",
   "backend_prerequisite": "Existing owner account and vessel scope checks.",
   "customer_data_changes": false,
   "production_certification": false,
   "frontend_deployed": false,
-  "backup_restore": "Software rollback to Stillwater 8.8.20.131.",
+  "backup_restore": "Software rollback to Brasswork 8.8.20.132.",
   "performance_improvement_claim": false,
-  "offline_suite_count": 56,
+  "offline_suite_count": 57,
   "native_compilation": "NOT_APPLICABLE_STATIC_WEB_APP",
-  "offline_suites_passed": 56
+  "offline_suites_passed": 57
 }

@@ -1736,7 +1736,7 @@ const admiralVesselLogos = new Map([
         } finally { clearTimeout(timer); }
         const digest = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', bytes)),
           byte => byte.toString(16).padStart(2,'0')).join('');
-        if (digest !== '6df6b5b1694d4aa9a0eaecf0b778f0de942e178ca8b2db648e5a9fcf6c71bc05') throw Error();
+        if (digest !== 'a12573a5ace4b858907cac29dbeb1bc63c15e0a68196fb824e069f7b5bec1d40') throw Error();
         const player = JSON.parse(new TextDecoder().decode(bytes));
         if (!current(entry) || !launch.getClientRects().length) throw Error();
         frame = document.createElement('iframe');

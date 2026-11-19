@@ -1,11 +1,11 @@
-# Upload Brasswork 8.8.20.132
+# Upload Chimewake 8.8.20.133
 
-Use `DarkSky8820132-Brasswork-Upload.zip`, not the full backup or rollback.
+Open `Chimewake.zip` in Files. The extracted folder is named `Chimewake`.
 1. Extract the ZIP. Open its single folder. Upload ALL files inside to the existing repository ROOT; replace matching files and KEEP all other files. Commit the upload.
-2. After deployment open the Engine and confirm `8.8.20.132 · BRASSWORK`. Do not clear Safari data, reset records or change permissions.
-3. At the Engine Room entrance, try entering some digits by touch and some with your keyboard. Use Backspace to correct a digit and press Enter to verify. Confirm the installed build after entry.
+2. After deployment open the Engine and confirm `8.8.20.133 · CHIMEWAKE`. Do not clear Safari data, reset records or change permissions.
+3. Open Fleet Arcade → Riptail & the Bell Tower → Fells Point Wharf. Hold Jump to catch a bell, release it, then press Jump to leap.
 
-The Engine Room opens with an illustrated machinery panel and large number keys. Type your PIN and press Enter, tap the keys and Unlock Engine Room, or switch between the two. Backspace or Delete removes the last digit. Clear or Escape starts over.
+Riptail shows when to release Jump and press it again on a bell. At the closed gate, follow the marker back to an unrung bell. Three bells light the finish pennants. Each Fleet Arcade title gives feedback at its own decision point. Sunset Harbor Regatta points to the approaching current.
 The upload itself executes no database commands. Shared specialist components retain their own revision labels; this is intentional reuse, not a mixed upload. Exact SHA-256 checks still run before Engine scripts execute.
 
 Full backup: application source ONLY; not Supabase, customer media or device drafts.

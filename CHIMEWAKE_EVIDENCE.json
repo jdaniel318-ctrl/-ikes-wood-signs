@@ -1,0 +1,21 @@
+{
+  "build": "8.8.20.133",
+  "base": "8.8.20.132",
+  "base_git_commit": "37e6b2e523c2fa5f30a4a9b71595fc9b9f2766cc",
+  "base_files": 1030,
+  "field_evidence": "On the prior build the Captain reached the Fells Point Wharf gate with two bells, returned for the third, and lost the last glider before reaching the gate again.",
+  "scope": [
+    "Riptail & the Bell Tower",
+    "Harbor Sluggers",
+    "Skullwater Sprint",
+    "Legacy Pipeworks",
+    "Deep Bell Salvage",
+    "Chalkwing",
+    "Dockmaster at Dusk",
+    "Lantern Run",
+    "Sunset Harbor Regatta"
+  ],
+  "verification": "VERIFY_CHIMEWAKE.cjs exercises the new cues and the catch-to-launch sequence using isolated game instances. VERIFY_SPINNAKER_REGATTA.cjs exercises all three boats to the finish. The release gate records the offline suite totals.",
+  "physical_ipad": "Pending for this build.",
+  "render_check": "The production Canvas renderer drew all 23 collection challenges with the bundled art. Four Riptail frames were inspected together: release Jump, press Jump, the return direction for bell two, and the lit finish gate."
+}

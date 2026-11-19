@@ -1,15 +1,15 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.132",
-  "name": "Brasswork",
-  "seal": "brasswork-8820132",
-  "base": "8.8.20.131",
-  "base_sha256": "b623a4f1a2d0fb303531b61e8021c42ffcc3f480ca0be9f4253a745ac5dff6f7",
-  "base_files": 1028,
-  "prepared_at": "2026-11-19T01:02:14.025054+00:00",
+  "build": "8.8.20.133",
+  "name": "Chimewake",
+  "seal": "chimewake-8820133",
+  "base": "8.8.20.132",
+  "base_sha256": "84712838c319999b6ce80b9078ba8e55508d783a59e135b3c2cbfde671239afb",
+  "base_files": 1030,
+  "prepared_at": "2026-11-19T01:54:15.379499+00:00",
   "app_component_revision": "8.8.20.132",
   "owner_helper_revision": "8.8.20.68",
-  "feature_notes": "The Engine Room opens with an illustrated machinery panel and large number keys. Type your PIN and press Enter, tap the keys and Unlock Engine Room, or switch between the two. Backspace or Delete removes the last digit. Clear or Escape starts over.",
+  "feature_notes": "Riptail shows when to release Jump and press it again on a bell. At the closed gate, follow the marker back to an unrung bell. Three bells light the finish pennants. Each Fleet Arcade title gives feedback at its own decision point. Sunset Harbor Regatta points to the approaching current.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -37,8 +37,8 @@
       "automatic_execution_by_upload": false
     }
   },
-  "install_step": "At the Engine Room entrance, try entering some digits by touch and some with your keyboard. Use Backspace to correct a digit and press Enter to verify. Confirm the installed build after entry.",
-  "evidence_file": "BRASSWORK_EVIDENCE.json",
-  "base_git_tree": "e166dc413dffce163f64bc85ef609bdf10b2f005",
-  "base_git_commit": "38d60b4867f24cb820da7e3678da8429985af29b"
+  "install_step": "Open Fleet Arcade \u2192 Riptail & the Bell Tower \u2192 Fells Point Wharf. Hold Jump to catch a bell, release it, then press Jump to leap.",
+  "evidence_file": "CHIMEWAKE_EVIDENCE.json",
+  "base_git_tree": "bcaf23028a7b4fea90d8114ef2bbdd3b1c57587c",
+  "base_git_commit": "37e6b2e523c2fa5f30a4a9b71595fc9b9f2766cc"
 }

@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.20.132';
-const RELEASE_SEAL='brasswork-8820132';
+const RELEASE_BUILD='8.8.20.133';
+const RELEASE_SEAL='chimewake-8820133';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.
