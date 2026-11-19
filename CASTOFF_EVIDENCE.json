@@ -1,0 +1,10 @@
+{
+  "build": "8.8.20.137",
+  "base": "8.8.20.136",
+  "source_commit": "dec5ddc4c1ae13dc12ba332ef14e8f62aed5e2d0",
+  "offline_checks": [
+    "VERIFY_FLOODLIGHT.cjs",
+    "VERIFY_NIGHT_SIGNAL.cjs"
+  ],
+  "device_test": "Pending"
+}

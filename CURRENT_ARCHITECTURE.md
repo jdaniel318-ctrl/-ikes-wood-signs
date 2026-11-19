@@ -1,11 +1,11 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Current architecture — Floodlight 8.8.20.136
+# Current architecture — Castoff 8.8.20.137
 
 Source of release identity: RELEASE_CONFIG.json. Installed page/manifest/seal/worker identity is generated together. APP_COMPONENT_REVISION is 8.8.20.132; owner helper revision is 8.8.20.68. Unchanged component bodies remain byte-identical across release-only changes.
 
 The Engine still verifies every required body, current governance models, app component contract and worker identity before executing the same script sequence. App and Captain bind audit/display freshness to the verified installed release. This context never grants permissions. The owner page keeps explicit helper compatibility checks.
 
-Operation Night Signal gains a following perspective camera and Floodlight Quay, a free-movement harbor rescue. Both missions include an overhead map and directional decoy feedback.
+Operation Night Signal ties character footsteps to distance traveled. Duke boards a departing launch at Pier 4. The arcade distinguishes the current run from the saved best.
 Backend prerequisites are recorded separately in PATCH_CONTRACT.json. Release preparation executes no database commands. Fleet core and Admiral programs remain distinct.
 
 ## Release commands

@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.20.136",
-  "version": "8.8.20.136",
-  "release_name": "Floodlight",
-  "releaseName": "Floodlight",
-  "release_seal": "floodlight-8820136",
+  "build": "8.8.20.137",
+  "version": "8.8.20.137",
+  "release_name": "Castoff",
+  "releaseName": "Castoff",
+  "release_seal": "castoff-8820137",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -163,8 +163,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "Operation Night Signal gains a following perspective camera and Floodlight Quay, a free-movement harbor rescue. Both missions include an overhead map and directional decoy feedback.",
-  "release_note": "Operation Night Signal gains a following perspective camera and Floodlight Quay, a free-movement harbor rescue. Both missions include an overhead map and directional decoy feedback.",
+  "release_focus": "Operation Night Signal ties character footsteps to distance traveled. Duke boards a departing launch at Pier 4. The arcade distinguishes the current run from the saved best.",
+  "release_note": "Operation Night Signal ties character footsteps to distance traveled. Duke boards a departing launch at Pier 4. The arcade distinguishes the current run from the saved best.",
   "tax_ledger_upgrade": {
     "schema": "dark-sky-fleet-tax-ledger-v1",
     "model": "TAX_LEDGER_MODEL.json",
@@ -286,8 +286,8 @@
     "algorithm": "SHA-256",
     "files": {
       "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": {
-        "sha256": "5433369f8dd4687ca2df8bc6a4a226826c93c6107f34b056e07f680e8ddd5b12",
-        "build": "8.8.20.136",
+        "sha256": "431f4c818379c7ac8ba02b88d2ac179919bbe57431c16d2ec896900fa85769fd",
+        "build": "8.8.20.137",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -334,14 +334,14 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_COMMAND_MODEL.json": {
-        "sha256": "9c3061890dabc227b495b161969794150de3a0e0958a757b7fb7a733cd356139",
-        "build": "8.8.20.136",
+        "sha256": "a53e52c494f947ff95d9bd96910fd7aa672e39788d31281a5611fe1c6898df4c",
+        "build": "8.8.20.137",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
       "FLEET_DOCTRINE_REGISTRY.json": {
-        "sha256": "3f48bd8f6b5586308403b6d38f42bbd9079743a521b336b1ba6b5a9c86d4b1f1",
-        "build": "8.8.20.136",
+        "sha256": "98d918786d2c9f7b052ce91cd0f36ad3cf51e1a65c560461b359271dc991c31e",
+        "build": "8.8.20.137",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -400,8 +400,8 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "GOLDEN_VOYAGES.json": {
-        "sha256": "bc755f95687b2fe53cc48148aebb08e4933ee9ba81c73373093bbd5827dda2ea",
-        "build": "8.8.20.136",
+        "sha256": "fea27db0008834c7d88ca0b824373c786d2f79fee7ccb1cf8aebd452e38c9c8a",
+        "build": "8.8.20.137",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -566,14 +566,14 @@
       "app.js": "696a903ed8652988a41e0ed0f816be89495e599c9d2892abf189c41c468d50a1",
       "captain.js": "75b89b0c68eba73b9a5e47ddfb1ab88329941da702db3a5e5ec6041295e91812",
       "simple_books.js": "ddd76dcf5e6c579f16918a9d3e645b0fc65d8a5b4d7c66df8896d8314eea325d",
-      "owner.html": "755858cacd4d64f451ba78efd04c6bf3a76e629b2618dc52370e22f0ce3ba0b0",
-      "manifest.webmanifest": "20944457643629e2bb2348eac42e44ccf37af5966d71a92d0f858a7066a132c1",
+      "owner.html": "fef96155f0a66022777d1f448efa35b5bb9e2090415da9ef3b8ae9af3683cc99",
+      "manifest.webmanifest": "109284d9a316932619c312b35738379f95d2ccbb491e1209e877e11fb4f61616",
       "IKE_STYLE_FOUNDRY.json": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
-      "sw.js": "fcc8da0b69d450bfb3affda13ffcc398ebe3493054d49ba844f064be38bf3d7d",
-      "FLEET_DOCTRINE_REGISTRY.json": "3f48bd8f6b5586308403b6d38f42bbd9079743a521b336b1ba6b5a9c86d4b1f1",
-      "GOLDEN_VOYAGES.json": "bc755f95687b2fe53cc48148aebb08e4933ee9ba81c73373093bbd5827dda2ea",
-      "FLEET_COMMAND_MODEL.json": "9c3061890dabc227b495b161969794150de3a0e0958a757b7fb7a733cd356139",
-      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "5433369f8dd4687ca2df8bc6a4a226826c93c6107f34b056e07f680e8ddd5b12",
+      "sw.js": "87e518ea6211d4d8fd352f0a722e8cdcddddf3c87cc3aaac9c210409a711cff3",
+      "FLEET_DOCTRINE_REGISTRY.json": "98d918786d2c9f7b052ce91cd0f36ad3cf51e1a65c560461b359271dc991c31e",
+      "GOLDEN_VOYAGES.json": "fea27db0008834c7d88ca0b824373c786d2f79fee7ccb1cf8aebd452e38c9c8a",
+      "FLEET_COMMAND_MODEL.json": "a53e52c494f947ff95d9bd96910fd7aa672e39788d31281a5611fe1c6898df4c",
+      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "431f4c818379c7ac8ba02b88d2ac179919bbe57431c16d2ec896900fa85769fd",
       "input_hygiene.js": "e54a78fe75567db53c9682d4d039f53609fdcd0d43448f0534faec61def7edae",
       "business_deck.js": "63b1531524c46d73646a8265c7beabc1be430b9c613895a83c3e0f4bc696342f",
       "business_deck.css": "e28a49dcf16d35b3c7e0b4e69dd4892881cba564aeebc3e62e4b4eea90fca8d5",
@@ -582,7 +582,7 @@
       "headway_contracts.js": "e79286db1785fa95038bbda65c83e0d36ada63b2d402dffad695e4866062c09c",
       "woodwright_fit.js": "a4efdadf635608419a2bd82f12a701fd2991ec5dc3d14d282fd846680d40606f",
       "fun_core.js": "b21a909fa3dccf44b2d02d4a8243a91fd260b70db2edfc35338f3fd330c810e4",
-      "fun_program.js": "37cd3abd85e0e4cfa4b7073bf5eb894d3c62354f3ed62a734e5c77505b3d5244",
+      "fun_program.js": "5b40114b489e749bc42fcfa477ef97a65596b66acb28206303198e91bbdb1e5e",
       "fun_program.css": "5426df73fe625f936bcc5f114ea6706aa316641db30e012c9633121432288fd3",
       "fun_player.html": "fcfc2d06cdf204f4591a9717968a027facf170e6e0be32d9151ef847870a0fb7",
       "stormwake_core.js": "b0193108053c9ddd067dc100bb9d820292e970ad2c316512b8456e359820b405",
@@ -1084,7 +1084,7 @@
     "project_data_mutation": false,
     "field_failure_proof": "8.8.20.13 held on styles.css because packaged DEPLOYMENT_MANIFEST runtime hash did not match packaged styles.css bytes"
   },
-  "release": "Floodlight",
+  "release": "Castoff",
   "clearbearing_upgrade": {
     "build": "8.8.20.22",
     "baseline": "8.8.20.14 HashLock",
@@ -1287,9 +1287,9 @@
       "bytes": 5015096
     },
     "fleet-arcade.ship.json": {
-      "sha256": "cf25b9b2da1e498f2650eabd3b3e1df1b2ae4ece2a703aa5c5d8e03f365eccaf",
+      "sha256": "9ef7ad6429a9a96f882fd77a8a9e79526c9168cb8b69d8c0b365061c7b140b00",
       "load": "after existing verified Admiral entry",
-      "bytes": 3182116
+      "bytes": 3248282
     },
     "arcade-art-dockmaster.json": {
       "sha256": "dfe57c103c6b785ff1f1f5ae8a127bb849529341e47aa8d2967c0cecfd70e301",

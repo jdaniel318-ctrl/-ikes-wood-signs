@@ -1,10 +1,10 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Floodlight 8.8.20.136
+# Black Flag Castoff 8.8.20.137
 
 Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
-Baseline: 8.8.20.135. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Baseline: 8.8.20.136. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
 Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
-Operation Night Signal gains a following perspective camera and Floodlight Quay, a free-movement harbor rescue. Both missions include an overhead map and directional decoy feedback.
+Operation Night Signal ties character footsteps to distance traveled. Duke boards a departing launch at Pier 4. The arcade distinguishes the current run from the saved best.
 Preparation does not deploy frontend or backend changes. See PATCH_CONTRACT.json for separately managed backend prerequisites.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 
