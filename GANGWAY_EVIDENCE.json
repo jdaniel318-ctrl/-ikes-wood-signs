@@ -1,0 +1,18 @@
+{
+  "build": "8.8.20.130",
+  "baseline": {
+    "source_sha256": "b28168a7f37d877c673641e169629365993cfc94cd8913612c872a6351de53af",
+    "file_count": 1025,
+    "git_tree_sha1": "84f6aafa3aeaa80f5bd8bcf326db72b3efe0bc4d",
+    "git_commit": "c0279cd664a0bde0bdbdef27909a4834741c22bd",
+    "build": "8.8.20.129"
+  },
+  "verified_offline": [
+    "56 offline release suites passed, including the Carvewright route lifecycle regression.",
+    "A local DOM run used the packaged Fleet card, sign-in form, gate controls, independent workspace and studio. Synthetic credentials and an empty local test store were used.",
+    "Both an existing verified account and a fresh test sign-in reached Carvewright. An incorrect PIN and a denied workspace authority check kept it closed.",
+    "Cancel and normal exit restored Programs & tools and focused the Carvewright card. A changed session required verification before returning. The Engine Room entry retained its own return control.",
+    "New design opened the layout editor. Declining to discard changes kept the typed sample job title in place. No customer job was submitted."
+  ],
+  "native_iPad": "Pending"
+}

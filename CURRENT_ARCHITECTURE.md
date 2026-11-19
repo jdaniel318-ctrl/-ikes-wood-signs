@@ -1,11 +1,11 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Current architecture — Lamplight 8.8.20.129
+# Current architecture — Gangway 8.8.20.130
 
 Source of release identity: RELEASE_CONFIG.json. Installed page/manifest/seal/worker identity is generated together. APP_COMPONENT_REVISION is 8.8.20.99; owner helper revision is 8.8.20.68. Unchanged component bodies remain byte-identical across release-only changes.
 
 The Engine still verifies every required body, current governance models, app component contract and worker identity before executing the same script sequence. App and Captain bind audit/display freshness to the verified installed release. This context never grants permissions. The owner page keeps explicit helper compatibility checks.
 
-The Wonderwake card under Learning & games now opens Lantern Harbor from My Fleet. Back to My Fleet returns to the launch button.
+The Carvewright gate names the design workspace. A verified launch opens Carvewright directly. Leaving or canceling from My Fleet returns to its Carvewright card. Engine Room launches return to Engine Room.
 Backend prerequisites are recorded separately in PATCH_CONTRACT.json. Release preparation executes no database commands. Fleet core and Admiral programs remain distinct.
 
 ## Release commands

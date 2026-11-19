@@ -1,15 +1,15 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.129",
-  "name": "Lamplight",
-  "seal": "lamplight-8820129",
-  "base": "8.8.20.128",
-  "base_sha256": "9c6770d3d3cc76bffa06a171885321103abc917cadb8b6cac17954d3f6d2abfd",
-  "base_files": 1024,
-  "prepared_at": "2026-11-18T19:49:00.735049+00:00",
+  "build": "8.8.20.130",
+  "name": "Gangway",
+  "seal": "gangway-8820130",
+  "base": "8.8.20.129",
+  "base_sha256": "b28168a7f37d877c673641e169629365993cfc94cd8913612c872a6351de53af",
+  "base_files": 1025,
+  "prepared_at": "2026-11-19T00:07:31.037452+00:00",
   "app_component_revision": "8.8.20.99",
   "owner_helper_revision": "8.8.20.68",
-  "feature_notes": "The Wonderwake card under Learning & games now opens Lantern Harbor from My Fleet. Back to My Fleet returns to the launch button.",
+  "feature_notes": "The Carvewright gate names the design workspace. A verified launch opens Carvewright directly. Leaving or canceling from My Fleet returns to its Carvewright card. Engine Room launches return to Engine Room.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -37,8 +37,8 @@
       "automatic_execution_by_upload": false
     }
   },
-  "install_step": "In My Fleet, select Programs & tools and tap Open Wonderwake under Learning & games. In Lantern Harbor, tap Back to My Fleet.",
-  "evidence_file": "LAMPLIGHT_EVIDENCE.json",
-  "base_git_tree": "a4d1d7c4a2052fe466d5cc00f41cd02c93955519",
-  "base_git_commit": "ed2b0046a955c119722247f2fde9ad48b97e4e7b"
+  "install_step": "In My Fleet, open Programs & tools and choose Carvewright. Verify your access and choose New design. Use Back to My Fleet to return to the same card.",
+  "evidence_file": "GANGWAY_EVIDENCE.json",
+  "base_git_tree": "84f6aafa3aeaa80f5bd8bcf326db72b3efe0bc4d",
+  "base_git_commit": "c0279cd664a0bde0bdbdef27909a4834741c22bd"
 }

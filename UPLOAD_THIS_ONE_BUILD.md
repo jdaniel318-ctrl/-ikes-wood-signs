@@ -1,11 +1,11 @@
-# Upload Lamplight 8.8.20.129
+# Upload Gangway 8.8.20.130
 
-Use `DarkSky8820129-Lamplight-Upload.zip`, not the full backup or rollback.
+Use `DarkSky8820130-Gangway-Upload.zip`, not the full backup or rollback.
 1. Extract the ZIP. Open its single folder. Upload ALL files inside to the existing repository ROOT; replace matching files and KEEP all other files. Commit the upload.
-2. After deployment open the Engine and confirm `8.8.20.129 · LAMPLIGHT`. Do not clear Safari data, reset records or change permissions.
-3. In My Fleet, select Programs & tools and tap Open Wonderwake under Learning & games. In Lantern Harbor, tap Back to My Fleet.
+2. After deployment open the Engine and confirm `8.8.20.130 · GANGWAY`. Do not clear Safari data, reset records or change permissions.
+3. In My Fleet, open Programs & tools and choose Carvewright. Verify your access and choose New design. Use Back to My Fleet to return to the same card.
 
-The Wonderwake card under Learning & games now opens Lantern Harbor from My Fleet. Back to My Fleet returns to the launch button.
+The Carvewright gate names the design workspace. A verified launch opens Carvewright directly. Leaving or canceling from My Fleet returns to its Carvewright card. Engine Room launches return to Engine Room.
 The upload itself executes no database commands. Shared specialist components retain their own revision labels; this is intentional reuse, not a mixed upload. Exact SHA-256 checks still run before Engine scripts execute.
 
 Full backup: application source ONLY; not Supabase, customer media or device drafts.

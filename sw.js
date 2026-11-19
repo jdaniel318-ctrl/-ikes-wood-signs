@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.20.129';
-const RELEASE_SEAL='lamplight-8820129';
+const RELEASE_BUILD='8.8.20.130';
+const RELEASE_SEAL='gangway-8820130';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.

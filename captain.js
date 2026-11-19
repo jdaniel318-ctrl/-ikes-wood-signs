@@ -539,7 +539,7 @@ const admiralVesselLogos = new Map([
       $('watchWorkspace').inert=false;
     }
   }
-  let stopWatchLanding = null;
+  let stopWatchLanding = null, focusCarvewrightOnReturn = false;
   function leaveWatch(){stopWatchLanding?.();stopWatchLanding=null;++watchEpoch;clearHelp();}
   function mountHelp(turn,vessel=null){
     const hostId=vessel?'watchActingHelp':'watchFleetHelp';
@@ -590,7 +590,16 @@ const admiralVesselLogos = new Map([
     }catch(_){clearHelp();if(sameWatch(turn))host.textContent='Fleet help is unavailable. Refresh Watch to try again.';}
   }
   function setSecurityLayer(verified,message=''){const gate=$('watchSecurityLayer'),workspace=$('watchWorkspace'),overview=$('watchOverview');const opening=verified&&workspace.classList.contains('hidden');gate.classList.toggle('hidden',!!verified);gate.setAttribute('aria-hidden',String(!!verified));workspace.classList.toggle('hidden',!verified);workspace.setAttribute('aria-hidden',String(!verified));
-    if(opening)stopWatchLanding=window.BlackFlagViewport?.landAtHeader($('watchFleetTitle'),$('bootstrapFleet'));
+    if(opening && focusCarvewrightOnReturn){
+      focusCarvewrightOnReturn=false;
+      const frame=requestAnimationFrame(()=>{
+        if(view!=='programs'||!shown($('bootstrapFleet'))||!shown(workspace))return;
+        const card=$('carvewrightFleetOpen');
+        card?.scrollIntoView({block:'center',behavior:'instant'});
+        card?.focus({preventScroll:true});
+      });
+      stopWatchLanding=()=>cancelAnimationFrame(frame);
+    }else if(opening)stopWatchLanding=window.BlackFlagViewport?.landAtHeader($('watchFleetTitle'),$('bootstrapFleet'));
     if(!verified){clearHelp();reportPlace=null;workspace.inert=false;overview.classList.add('hidden');overview.setAttribute('aria-hidden','true');clearReports();if(message)$('watchGateStatus').textContent=message;}}
   function showWatchSignIn(message) {
     setSecurityLayer(false);
@@ -606,7 +615,9 @@ const admiralVesselLogos = new Map([
     $('watchGateClose').textContent=returnToEngine?'Back to Engine':'Close';
     watchAccount.reset();$('watchSecurityForm').hidden=true;const fleet=$('bootstrapFleet');
     fleet.dataset.returnToEngine=String(returnToEngine);watchRoute=routeGeneration();setSecurityLayer(false);
-    filter='all';query='';$('watchSearch').value='';$('watchFilter').value='all';selectView('attention');
+    focusCarvewrightOnReturn=options.focusProgram==='carvewright';
+    filter='all';query='';$('watchSearch').value='';$('watchFilter').value='all';
+    selectView(focusCarvewrightOnReturn?'programs':'attention');
     fleet.classList.remove('hidden');fleet.setAttribute('aria-hidden','false');document.body.classList.add('bootstrap-fleet-open');fleet.scrollTop=0;$('watchGateStatus').textContent='Checking the dedicated Admiral account…';load();}
   function close(){
     const pending = watchAccount.pending;
@@ -645,6 +656,11 @@ const admiralVesselLogos = new Map([
     verified();
     await load();
   });
+  window.DarkSkyLeaveFleetForCarvewright=()=>{
+    if(view!=='programs'||!shown($('bootstrapFleet'))||!shown($('watchWorkspace')))return false;
+    close();
+    return true;
+  };
   window.DarkSkyOpenFleetWatchtower=open;window.DarkSkyOpenAdmiralFleet=open;
   window.addEventListener('pagehide', () => watchAccount.reset());
   for(const event of ['darksky:admiral-session-ended','darksky:admiral-session-unavailable','pagehide'])
@@ -1511,6 +1527,13 @@ const admiralVesselLogos = new Map([
     text('admiralEntrancePinState',account?'Verified':'Required');
     text('admiralEntranceAccountState',account?'Required':resume?'Recheck pending':'Next');
     text('admiralUnlockBtn',resume?'Verify PIN & return →':'Continue with PIN →');
+    if(gate.dataset.directTarget==='carvewright'||gate.dataset.directTarget==='carvewright-fleet'){
+      text('admiralGateTitle','Unlock Carvewright');
+      text('admiralGateDescription',account?'Sign in with your Admiral account to open the design workspace.':'Verify your access to open the Carvewright design workspace.');
+      text('admiralEntranceFormTitle',account?'Sign in to open Carvewright':'Enter your passage PIN');
+      text('admiralEntranceFormHint',account?'Carvewright opens after your account is verified.':resume?'We’ll recheck your Admiral account after your PIN.':'Next, sign in with your Admiral account.');
+      text('admiralUnlockBtn','Verify PIN & continue →');
+    }
     text('admiralSessionReuseNote',(reasons[s?.reason]?reasons[s.reason]+' ':'')+'ScheduleJoe locks after 30 minutes without activity. Other Admiral workspaces lock after 15 minutes. Sign in again after one hour.');
     text('admiralVisualStatus',resume?'Account verification required to resume.':'Your fleet stays private until access is verified.');
     const pin=byId('admiralEntrancePinStep'),identity=byId('admiralEntranceAccountStep');
@@ -1907,7 +1930,12 @@ const admiralVesselLogos = new Map([
       }
       if(!committed)window.location.assign(fallbackHref);
     };
-    const closeGate=()=>{admiralGateAttempt++;admiralPassageVerified=false;window.DarkSkyAdmiralSession?.cancelSignIn();const direct=byId('admiralGateOverlay')?.dataset.entrySource==='engine';hide('admiralGateOverlay'); byId('admiralPinInput').value=''; airlockAccount.reset(); byId('admiralPinError').textContent='';if(direct){returnToEngine();return;}if(window.DarkSkyFleetNavigator?.navigate){window.DarkSkyFleetNavigator.navigate('captain',{source:'admiral-gate'});return;}show('captainQuarters');show('captainGlobalExit');};
+    const closeGate=()=>{
+      const target=gate.dataset.directTarget;
+      gate.dataset.directTarget='';
+      admiralGateAttempt++;admiralPassageVerified=false;window.DarkSkyAdmiralSession?.cancelSignIn();const direct=byId('admiralGateOverlay')?.dataset.entrySource==='engine';hide('admiralGateOverlay'); byId('admiralPinInput').value=''; airlockAccount.reset(); byId('admiralPinError').textContent='';
+      if((target==='carvewright-fleet'||target==='carvewright') && window.CarvewrightFleet?.cancelPassage())return;
+      if(direct){returnToEngine();return;}if(window.DarkSkyFleetNavigator?.navigate){window.DarkSkyFleetNavigator.navigate('captain',{source:'admiral-gate'});return;}show('captainQuarters');show('captainGlobalExit');};
     const returnToCaptain=()=>{if(deck.dataset.entrySource==='engine'){returnToEngine();return;}hide('admiralDeck');if(window.DarkSkyFleetNavigator?.navigate){window.DarkSkyFleetNavigator.navigate('captain',{source:'admiral'});return;}show('captainQuarters');show('captainGlobalExit');document.body.classList.add('captain-modal-open','captain-authorized');};
     byId('admiralGateReturnBtn').onclick=closeGate;
     byId('admiralSessionLock').onclick=()=>lockAdmiralWorkspace('locked');
@@ -1951,6 +1979,9 @@ const admiralVesselLogos = new Map([
       primeAdmiralFirstPaint8658();
       regattaLink.disabled = false;
       byId('regattaStatus').textContent = '';
+      if(directTarget==='carvewright'||directTarget==='carvewright-fleet'){
+        void window.CarvewrightFleet?.finishPassage(directTarget);
+      }
       if (directTarget === 'schedulejoe') {
         const opener = deck.querySelector('[data-schedulejoe-open]');
         if (opener) window.DarkSkyOpenBootstrapSchedule?.(opener);
@@ -1978,6 +2009,10 @@ const admiralVesselLogos = new Map([
       }
       try{sessionStorage.setItem('darkSkyAdmiralTrialSeen','1');}catch(_){ }
     };
+    const enterFleet=target=>{
+      hide('admiralGateOverlay');hide('captainQuarters');hide('captainGlobalExit');hide('admiralDeck');
+      window.DarkSkyOpenAdmiralFleet?.({source:'admiral-gate',focusProgram:target==='fleet-programs'?'carvewright':null});
+    };
     const showAccountAirlock=()=>{
       const input=byId('admiralPinInput'),unlock=byId('admiralUnlockBtn'),error=byId('admiralPinError'),layer=byId('admiralAccountAirlock');
       input?.classList.add('hidden');input?.previousElementSibling?.classList.add('hidden');unlock?.classList.add('hidden');error?.classList.add('hidden');layer?.classList.remove('hidden');
@@ -1998,7 +2033,7 @@ const admiralVesselLogos = new Map([
           if(attempt!==admiralGateAttempt||gate.classList.contains('hidden'))return;
           if(!window.DarkSkyAdmiralSession?.noteResumed())throw new Error('The workspace session expired during verification.');
           gate.dataset.directTarget='';
-          if(directTarget==='fleet'){hide('admiralGateOverlay');hide('captainQuarters');hide('captainGlobalExit');hide('admiralDeck');window.DarkSkyOpenAdmiralFleet?.({source:'admiral-gate'});}
+          if(directTarget==='fleet'||directTarget==='fleet-programs')enterFleet(directTarget);
           else if(directTarget==='commissioning-voyage')finishCommissionVoyageGate(gate);
           else openVerifiedAdmiralDeck(directTarget);
           refreshAdmiralSessionStrip();return;
@@ -2022,9 +2057,8 @@ const admiralVesselLogos = new Map([
       if (!active()) return;
       verified();
       gate.dataset.directTarget = '';
-      if (directTarget === 'fleet') {
-        hide('admiralGateOverlay');hide('captainQuarters');hide('captainGlobalExit');hide('admiralDeck');
-        window.DarkSkyOpenAdmiralFleet?.({source:'admiral-gate'});
+      if (directTarget === 'fleet'||directTarget === 'fleet-programs') {
+        enterFleet(directTarget);
       } else if (directTarget === 'commissioning-voyage') {
         finishCommissionVoyageGate(gate);
       } else {
@@ -2191,6 +2225,7 @@ const admiralVesselLogos = new Map([
     byId('admiralAccountAirlock')?.classList.add('hidden');
     if(byId('admiralAirlockStatus'))byId('admiralAirlockStatus').textContent='Fleet and governance controls remain locked.';
     if(gateReturn)gateReturn.textContent=fromEngine?'← RETURN TO ENGINE':'← RETURN TO CAPTAIN\'S QUARTERS';
+    if(gateReturn && directTarget==='carvewright-fleet')gateReturn.textContent='← Back to My Fleet';
     const title=byId('admiralGateTitle');
     const voyagePass=directTarget==='commissioning-voyage';
     if(voyagePass){
