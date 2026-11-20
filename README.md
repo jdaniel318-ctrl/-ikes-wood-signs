@@ -1,16 +1,36 @@
-# Rally Kit
+<!-- BLACKFLAG_CURRENT_RELEASE_START -->
+# Black Flag Castoff 8.8.20.137
 
-These modules can be imported into a vessel independently. Run `node --test fleet.test.mjs` in this directory. The examples contain synthetic data.
+Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
+Baseline: 8.8.20.136. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
+Operation Night Signal ties character footsteps to distance traveled. Duke boards a departing launch at Pier 4. The arcade distinguishes the current run from the saved best.
+Preparation does not deploy frontend or backend changes. See PATCH_CONTRACT.json for separately managed backend prerequisites.
+<!-- BLACKFLAG_CURRENT_RELEASE_END -->
 
-## Use in a vessel
+## Wonderwake program notes
 
-- Travel and ScheduleJoe can call `dayToOpen` with the destination or job-site time zone. `reflow` returns proposed changes to flexible appointments and preserves fixed or completed stops. An unplaceable stop returns a null time. Ask the operator to resolve it before committing.
-- Legacy Plumbing can pass the confirmed service address to `routeLinks`. The chosen map application supplies the starting point.
-- A lodging or activities partner can call `previewOffer` using its own capacity and price floor. Only a reviewed offer and its public terms belong in a customer-facing calendar.
-- `makeRoom`, `apply`, and `project` in room-model.mjs implement two independent confirmations for a Weegee challenge. Another vessel can reuse the pattern with new, vessel-scoped participants.
+# Wonderwake 15 · Lantern Harbor 0.11.0
 
-## Authority and rollback
+The Daniel School of Excellence is an original learning world for families. Choose or add an explorer, enter Lantern Harbor and pick a grade band or subject. Older learners work in the tide room. The lesson shelf, explorer picker and school shortcuts use original station illustrations. Each of six subjects has a different hands-on workbench and a three-challenge lesson in every band. Instructions and hints can be read aloud where the browser supports speech.
 
-Resolve the actor from the receiving application's authenticated server session and verified assignments. Call trialChange on the server. A First Mate can prepare a proposal for an assigned vessel. A Captain can activate a dated trial or disable it for that vessel. An authorized Admiral can release the template for consideration elsewhere. Each receiving vessel accepts its own trial. Promotion returns only a tool name and availability. It conveys no traveler, customer, journal, photo or account access.
+The K–12 map holds one suggested goal per grade and subject. The 24 lessons are a first collection for supplemental practice. Learners can revisit them, practice at different levels across subjects, and resume their own work. Up to 24 explorers can share a browser through local profiles. Use LEARNERS.md for switching and progress copies, and START_HERE.txt for uploading.
 
-The host application must store trial revisions atomically and audit actor, vessel, operation, time and previous revision. Check trialEnabled at the protected operation using a trusted current date. The example keeps state in memory and makes no changes to Black Flag. Run `node preview-registry.mjs /path/to/FLEET_LEARNING_REGISTRY.json` for a read-only preview against the real registry. The registry additions are candidates to merge individually after review.
+## Previous edition (included activities)
+
+# Wonderwake14 — Skybloom 0.10.0
+
+Star Glider now has a complete flight of its own: varied number rounds, visible balloon feedback, a star trail, a floating landing island, and staggered fireworks.
+
+- Steering retains its tested response. Five distinct target numbers are selected from 1–12; each round has four unique choices and varied positions. Replaying changes the first target and sequence.
+- A wrong balloon gets an amber ring and retry symbol, gently wobbles when motion is enabled, and names both the hit number and the current target in the scene. It returns to a clear spot. No points or lives are taken away.
+- A correct find gets a short confirmation before the next target. Flight completion uses its own landing scene, the five collected number stars, the selected explorer and a roughly four-second celebration. Fly again, Paint your flight and Back to islands are available immediately. Paint your flight opens the existing free painting studio; it does not insert a screenshot into the painting.
+- Pause and background tabs freeze gameplay time. Motion off and operating-system reduced motion use a static celebration. Finger, Pencil, mouse and arrow steering remain available. Sound on reads outcome messages through the existing optional narration.
+- The target, scene, feedback and next actions fit six tested viewport sizes, including short landscape and portrait. Numerals remain round and readable instead of stretching with the scene.
+- Flight completion is counted once for the active learner and displays saved only after the existing local save/readback completes. Failed saves say so. No new learner fields, math mastery or spark rewards are introduced.
+
+Clearpath's changes remain: true Maker ink with separate Shapes/Draw tools; one-page Skybridge questions; Tap dots and Write number with child confirmation; separate Lantern Hollow target/answer boxes; zero sparks means zero bar fill; grayscale, layers and explicit painting save states.
+
+Use START_HERE.txt for upload instructions and three device tests. FLEET_HANDOFF.md distinguishes the launch link from server commissioning. FLEET_LESSONS.md maps reusable practices to implementations and tests. verification/ retains historical records by release and includes current Skybloom evidence. recovery/ contains the complete previous Clearpath application package.
+
+This ZIP is a prepared release, not a deployment. Physical Safari/Pencil acceptance and live fleet commissioning remain separate checks.
