@@ -1,10 +1,10 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Doubletake 8.8.20.138
+# Black Flag Reelshift 8.8.20.139
 
 Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
-Baseline: 8.8.20.137. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Baseline: 8.8.20.138. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
 Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
-Piggy Vault joins the Fleet Arcade as a solo practice cabinet with five themes, a scored nudge drill, missed-board replays and a Cash Grab chip exercise.
+Both hand buttons now start and stop continuously spinning reels. A landed line pays immediately. Eligible reels offer one optional raise or lower. Piggy opens on a two-kings practice stop.
 Preparation does not deploy frontend or backend changes. See PATCH_CONTRACT.json for separately managed backend prerequisites.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 

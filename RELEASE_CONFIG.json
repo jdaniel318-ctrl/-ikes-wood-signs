@@ -1,15 +1,15 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.138",
-  "name": "Doubletake",
-  "seal": "doubletake-8820138",
-  "base": "8.8.20.137",
-  "base_sha256": "0ede6d09d5157bd86a27cd6541552b0a872bd615fe317318d275789979ca0a43",
-  "base_files": 1046,
-  "prepared_at": "2026-11-20T14:41:34.739344+00:00",
+  "build": "8.8.20.139",
+  "name": "Reelshift",
+  "seal": "reelshift-8820139",
+  "base": "8.8.20.138",
+  "base_sha256": "4d63b5c3ef0c5b8f77da9070fa3720969ca3637793941a66a5e1c0139e2c45b7",
+  "base_files": 1049,
+  "prepared_at": "2026-11-20T15:24:40.354832+00:00",
   "app_component_revision": "8.8.20.132",
   "owner_helper_revision": "8.8.20.68",
-  "feature_notes": "Piggy Vault joins the Fleet Arcade as a solo practice cabinet with five themes, a scored nudge drill, missed-board replays and a Cash Grab chip exercise.",
+  "feature_notes": "Both hand buttons now start and stop continuously spinning reels. A landed line pays immediately. Eligible reels offer one optional raise or lower. Piggy opens on a two-kings practice stop.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -37,9 +37,9 @@
       "automatic_execution_by_upload": false
     }
   },
-  "install_step": "Open Admiral My Fleet \u2192 Programs & tools \u2192 Fleet Arcade \u2192 Piggy Vault. Tap Solo drill.",
-  "evidence_file": "DOUBLETAKE_EVIDENCE.json",
-  "base_git_tree": "955b3b467bd4e2f52c413bc0a33170f77bf907e9",
-  "base_git_commit": "2cc0430776c7d2742586682479575c67aba15027",
+  "install_step": "Open Fleet Arcade \u2192 Piggy Vault. Press Play, press Stop, then lower the right reel to complete the opening line of kings.",
+  "evidence_file": "REELSHIFT_EVIDENCE.json",
+  "base_git_tree": "ba8d3fb3bbda061cdd49d195fab88353205435e7",
+  "base_git_commit": "8c1a1575a46a9b9871d7a48d0ed3de8387570523",
   "preserve_project_readme": true
 }

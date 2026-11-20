@@ -1,0 +1,11 @@
+{
+  "build": "8.8.20.139",
+  "base": "8.8.20.138",
+  "source_commit": "8c1a1575a46a9b9871d7a48d0ed3de8387570523",
+  "offline_checks": [
+    "VERIFY_REELSHIFT.cjs",
+    "VERIFY_DOUBLETAKE.cjs",
+    "VERIFY_RELEASE_ALL.cjs"
+  ],
+  "native_ipad": "Pending"
+}
