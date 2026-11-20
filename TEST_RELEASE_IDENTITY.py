@@ -36,13 +36,17 @@ class IdentityPreparationTests(unittest.TestCase):
   self.assertEqual(i['name'],self.config['name']);self.assertEqual(i['release'],self.config['name'])
  def test_feature_release_retains_backend_prerequisite_and_honest_notes(self):
   prerequisite={'migration':'SYNTHETIC.sql','status':'separately-applied'}
-  c={**self.config,'feature_notes':'Synthetic cloud feature with separate backend prerequisite.','backend_prerequisite':prerequisite}
+  c={**self.config,'preserve_project_readme':False,'feature_notes':'Synthetic cloud feature with separate backend prerequisite.','backend_prerequisite':prerequisite}
   f=module.prepare(self.files,c)
   self.assertEqual(json.loads(f['PATCH_CONTRACT.json'])['backend_prerequisite'],prerequisite)
   for name in ['UPLOAD_THIS_ONE_BUILD.md','README.md','CURRENT_ARCHITECTURE.md']:
    current=f[name].decode().split('<!-- BLACKFLAG_CURRENT_RELEASE_END -->')[0]
    self.assertIn(c['feature_notes'],current)
    self.assertNotIn('No database, permission, stored-record',current)
+ def test_preserve_project_readme(self):
+  out=module.prepare(self.files,{**self.config,'preserve_project_readme':True,'feature_notes':'Solo practice drawer.'})
+  self.assertEqual(out['README.md'],self.files['README.md'])
+  self.assertIn(b'Solo practice drawer.',out['BUILD_NOTES.txt'])
  def test_preparation_does_not_certify_success(self):
   f=module.prepare(self.files,self.config);g=json.loads(f['RELEASE_GATE.json'])
   self.assertFalse(g['pass']);self.assertEqual(g['verification_status'],'PREPARED_NOT_TESTED')

@@ -187,7 +187,8 @@ document.addEventListener('click',e=>{if(e.target instanceof Element&&e.target.c
 const LANTERN_LEVEL_COUNT = 36;
 const arcadeEditions = {
   lantern: {name:'Lantern Run', file:'lantern-run.ship.json', id:'lantern-run', edition:9, levels:LANTERN_LEVEL_COUNT, limit:250000, digest:'7c81e62bdea891478f90319a275038ef897eba5c149969c2f8df25c7782e0a17'},
-  collection: {name:'Fleet Arcade', file:'fleet-arcade.ship.json', id:'six-bells', edition:16, levels:25, limit:3600000, digest:'9ef7ad6429a9a96f882fd77a8a9e79526c9168cb8b69d8c0b365061c7b140b00'}
+  brassline: {name:'Piggy Vault', file:'brassline.ship.json', id:'brassline', edition:3, levels:5, limit:1200000, digest:'85a2571629094c3c49ed8017e1a7d96c6a863e53b49de38c7def4d5979b9da6e'},
+  collection: {name:'Fleet Arcade', file:'fleet-arcade.ship.json', id:'six-bells', edition:17, levels:25, limit:3600000, digest:'47fd8b331f450ee92549d198bfe55f2c35bd6ac461bd6b4e88e245718b596872'}
 };
 const arcadeArtFiles = {
   "dockmaster": {
@@ -397,7 +398,7 @@ async function openLantern(button,kind=button.hasAttribute('data-fleet-collectio
     player.onload = () => {
       if (!lanternAccess(run)) { leaveLantern(run); return; }
       if(document.activeElement===panel.querySelector('button')||document.activeElement===document.body) player.focus({preventScroll:true});
-      const start = kind==='collection' ? {records:arcadeRecords(run)} : {best:lanternBest(run),cleared:run.cleared};
+      const start = kind==='collection' ? {records:arcadeRecords(run)} : kind==='lantern' ? {best:lanternBest(run),cleared:run.cleared} : {};
       player.contentWindow.postMessage({type:'init',channel:run.channel,...start,canSave:run.canSave},'*');
     };
     player.srcdoc = playerSource;
@@ -431,14 +432,14 @@ window.addEventListener('message', event => {
       run.panel.querySelector('header').hidden = event.data.playing;
     }else if(event.data.type==='arcade-art-request'){
       void sendArcadeArt(run,event.data.game);
-    }else if (event.data.type==='arcade-lantern'){
+    }else if (event.data.type==='arcade-lantern'||event.data.type==='arcade-brassline'){
       const button=run.button;
       leaveLantern(run);
-      openLantern(button,'lantern',true);
+      openLantern(button,event.data.type==='arcade-brassline'?'brassline':'lantern',true);
     }else if(event.data.type==='arcade-clear'||event.data.type==='arcade-data'){
       saveArcadeRecord(run,event.data);
     }
-  } else if (event.data.type === 'maze-cleared') {
+  } else if (run.kind === 'lantern' && event.data.type === 'maze-cleared') {
     const stage = event.data.level;
     if (!Number.isInteger(stage) || stage < 1 || stage > LANTERN_LEVEL_COUNT) return;
     const previous = lanternCleared(run);
@@ -446,7 +447,7 @@ window.addEventListener('message', event => {
     run.cleared = Math.max(previous,stage);
     try { localStorage.setItem(run.routeKey+stage,'1'); } catch { run.canSave=false; }
     run.player.contentWindow.postMessage({type:'route-saved',channel:run.channel,cleared:run.cleared,canSave:run.canSave},'*');
-  } else if (event.data.type === 'best') {
+  } else if (run.kind === 'lantern' && event.data.type === 'best') {
     const score = event.data.score;
     if (Number.isSafeInteger(score) && score > 0 && score <= 1000000 && score > lanternBest(run)) {
       try { localStorage.setItem(run.key,String(score)); } catch { /* The run still plays without durable storage. */ }

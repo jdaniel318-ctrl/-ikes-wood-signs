@@ -1,0 +1,10 @@
+{
+  "build": "8.8.20.138",
+  "base": "8.8.20.137",
+  "source_commit": "2cc0430776c7d2742586682479575c67aba15027",
+  "offline_checks": [
+    "VERIFY_DOUBLETAKE.cjs",
+    "VERIFY_RELEASE_ALL.cjs"
+  ],
+  "native_ipad": "Pending"
+}

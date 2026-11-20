@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.20.137",
-  "version": "8.8.20.137",
-  "release_name": "Castoff",
-  "releaseName": "Castoff",
-  "release_seal": "castoff-8820137",
+  "build": "8.8.20.138",
+  "version": "8.8.20.138",
+  "release_name": "Doubletake",
+  "releaseName": "Doubletake",
+  "release_seal": "doubletake-8820138",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -163,8 +163,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "Operation Night Signal ties character footsteps to distance traveled. Duke boards a departing launch at Pier 4. The arcade distinguishes the current run from the saved best.",
-  "release_note": "Operation Night Signal ties character footsteps to distance traveled. Duke boards a departing launch at Pier 4. The arcade distinguishes the current run from the saved best.",
+  "release_focus": "Piggy Vault joins the Fleet Arcade as a solo practice cabinet with five themes, a scored nudge drill, missed-board replays and a Cash Grab chip exercise.",
+  "release_note": "Piggy Vault joins the Fleet Arcade as a solo practice cabinet with five themes, a scored nudge drill, missed-board replays and a Cash Grab chip exercise.",
   "tax_ledger_upgrade": {
     "schema": "dark-sky-fleet-tax-ledger-v1",
     "model": "TAX_LEDGER_MODEL.json",
@@ -286,8 +286,8 @@
     "algorithm": "SHA-256",
     "files": {
       "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": {
-        "sha256": "431f4c818379c7ac8ba02b88d2ac179919bbe57431c16d2ec896900fa85769fd",
-        "build": "8.8.20.137",
+        "sha256": "2d9ad3e5156f5aafdb0fe5e86ff45a173f529e45c32df5341b0cb4e97ed0d3d2",
+        "build": "8.8.20.138",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -334,14 +334,14 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_COMMAND_MODEL.json": {
-        "sha256": "a53e52c494f947ff95d9bd96910fd7aa672e39788d31281a5611fe1c6898df4c",
-        "build": "8.8.20.137",
+        "sha256": "f0154abda3a5e6cf49767a241eb5f824b3772e844c8be2011385d38b41512973",
+        "build": "8.8.20.138",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
       "FLEET_DOCTRINE_REGISTRY.json": {
-        "sha256": "98d918786d2c9f7b052ce91cd0f36ad3cf51e1a65c560461b359271dc991c31e",
-        "build": "8.8.20.137",
+        "sha256": "46418ae7573df0952155ce24612a1a0c96e52f992ae7fdeea572102aafb77cb5",
+        "build": "8.8.20.138",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -400,8 +400,8 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "GOLDEN_VOYAGES.json": {
-        "sha256": "fea27db0008834c7d88ca0b824373c786d2f79fee7ccb1cf8aebd452e38c9c8a",
-        "build": "8.8.20.137",
+        "sha256": "e3429d5f8912fb54b0d1c2d82a156a49d2da7e21be9060da30f7f50cde94aed8",
+        "build": "8.8.20.138",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -566,14 +566,14 @@
       "app.js": "696a903ed8652988a41e0ed0f816be89495e599c9d2892abf189c41c468d50a1",
       "captain.js": "75b89b0c68eba73b9a5e47ddfb1ab88329941da702db3a5e5ec6041295e91812",
       "simple_books.js": "ddd76dcf5e6c579f16918a9d3e645b0fc65d8a5b4d7c66df8896d8314eea325d",
-      "owner.html": "fef96155f0a66022777d1f448efa35b5bb9e2090415da9ef3b8ae9af3683cc99",
-      "manifest.webmanifest": "109284d9a316932619c312b35738379f95d2ccbb491e1209e877e11fb4f61616",
+      "owner.html": "f0d13e64c9f68d0bd60ca6cf2a4d10037905bc6f403a576bfdd06d4a2a724afc",
+      "manifest.webmanifest": "2cad0f24299726cc83254916db4a29ecbc2d1a025d19b11e635a1fc73a9857da",
       "IKE_STYLE_FOUNDRY.json": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
-      "sw.js": "87e518ea6211d4d8fd352f0a722e8cdcddddf3c87cc3aaac9c210409a711cff3",
-      "FLEET_DOCTRINE_REGISTRY.json": "98d918786d2c9f7b052ce91cd0f36ad3cf51e1a65c560461b359271dc991c31e",
-      "GOLDEN_VOYAGES.json": "fea27db0008834c7d88ca0b824373c786d2f79fee7ccb1cf8aebd452e38c9c8a",
-      "FLEET_COMMAND_MODEL.json": "a53e52c494f947ff95d9bd96910fd7aa672e39788d31281a5611fe1c6898df4c",
-      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "431f4c818379c7ac8ba02b88d2ac179919bbe57431c16d2ec896900fa85769fd",
+      "sw.js": "c3478780c28e82f56b4185424255b72b2888962db1ebf8519e33fef67e3658b1",
+      "FLEET_DOCTRINE_REGISTRY.json": "46418ae7573df0952155ce24612a1a0c96e52f992ae7fdeea572102aafb77cb5",
+      "GOLDEN_VOYAGES.json": "e3429d5f8912fb54b0d1c2d82a156a49d2da7e21be9060da30f7f50cde94aed8",
+      "FLEET_COMMAND_MODEL.json": "f0154abda3a5e6cf49767a241eb5f824b3772e844c8be2011385d38b41512973",
+      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "2d9ad3e5156f5aafdb0fe5e86ff45a173f529e45c32df5341b0cb4e97ed0d3d2",
       "input_hygiene.js": "e54a78fe75567db53c9682d4d039f53609fdcd0d43448f0534faec61def7edae",
       "business_deck.js": "63b1531524c46d73646a8265c7beabc1be430b9c613895a83c3e0f4bc696342f",
       "business_deck.css": "e28a49dcf16d35b3c7e0b4e69dd4892881cba564aeebc3e62e4b4eea90fca8d5",
@@ -582,7 +582,7 @@
       "headway_contracts.js": "e79286db1785fa95038bbda65c83e0d36ada63b2d402dffad695e4866062c09c",
       "woodwright_fit.js": "a4efdadf635608419a2bd82f12a701fd2991ec5dc3d14d282fd846680d40606f",
       "fun_core.js": "b21a909fa3dccf44b2d02d4a8243a91fd260b70db2edfc35338f3fd330c810e4",
-      "fun_program.js": "5b40114b489e749bc42fcfa477ef97a65596b66acb28206303198e91bbdb1e5e",
+      "fun_program.js": "5ce08acf7032b81ef25ddc947b4a9a97dbeae43336417b5e0a00e229bac43800",
       "fun_program.css": "5426df73fe625f936bcc5f114ea6706aa316641db30e012c9633121432288fd3",
       "fun_player.html": "fcfc2d06cdf204f4591a9717968a027facf170e6e0be32d9151ef847870a0fb7",
       "stormwake_core.js": "b0193108053c9ddd067dc100bb9d820292e970ad2c316512b8456e359820b405",
@@ -1084,7 +1084,7 @@
     "project_data_mutation": false,
     "field_failure_proof": "8.8.20.13 held on styles.css because packaged DEPLOYMENT_MANIFEST runtime hash did not match packaged styles.css bytes"
   },
-  "release": "Castoff",
+  "release": "Doubletake",
   "clearbearing_upgrade": {
     "build": "8.8.20.22",
     "baseline": "8.8.20.14 HashLock",
@@ -1287,9 +1287,9 @@
       "bytes": 5015096
     },
     "fleet-arcade.ship.json": {
-      "sha256": "9ef7ad6429a9a96f882fd77a8a9e79526c9168cb8b69d8c0b365061c7b140b00",
+      "sha256": "47fd8b331f450ee92549d198bfe55f2c35bd6ac461bd6b4e88e245718b596872",
       "load": "after existing verified Admiral entry",
-      "bytes": 3248282
+      "bytes": 3262633
     },
     "arcade-art-dockmaster.json": {
       "sha256": "dfe57c103c6b785ff1f1f5ae8a127bb849529341e47aa8d2967c0cecfd70e301",
@@ -1320,6 +1320,11 @@
       "sha256": "75ef751a1ac2464bbcd074dfb4344d26bdf3a478dbcfc9667e416e203a3d1ea1",
       "bytes": 47191,
       "load": "on selection of its Arcade game"
+    },
+    "brassline.ship.json": {
+      "sha256": "85a2571629094c3c49ed8017e1a7d96c6a863e53b49de38c7def4d5979b9da6e",
+      "load": "after existing verified Admiral entry",
+      "bytes": 885096
     }
   },
   "blacktide_upgrade": {

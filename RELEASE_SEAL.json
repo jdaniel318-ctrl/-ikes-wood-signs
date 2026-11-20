@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.137",
-  "release": "Castoff",
-  "seal": "castoff-8820137",
+  "build": "8.8.20.138",
+  "release": "Doubletake",
+  "seal": "doubletake-8820138",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Castoff",
-  "name": "Castoff",
-  "releaseName": "Castoff"
+  "release_name": "Doubletake",
+  "name": "Doubletake",
+  "releaseName": "Doubletake"
 }

@@ -1,21 +1,21 @@
 {
   "schema": "blackflag-patch-contract-v1",
-  "target_build": "8.8.20.137",
-  "target_seal": "castoff-8820137",
+  "target_build": "8.8.20.138",
+  "target_seal": "doubletake-8820138",
   "supported_bases": [
     {
-      "build": "8.8.20.136",
-      "source_sha256": "cb234bc6afc610d92faa0353a8a8754bf37a6688c3d143c03d6b2970085a1208",
-      "file_count": 1037,
+      "build": "8.8.20.137",
+      "source_sha256": "0ede6d09d5157bd86a27cd6541552b0a872bd615fe317318d275789979ca0a43",
+      "file_count": 1046,
       "source_format": "git-tree-regular-v1",
-      "git_tree_sha1": "9907adb43660d7cf3b728508c23e4227b5ea28e7",
-      "git_commit": "dec5ddc4c1ae13dc12ba332ef14e8f62aed5e2d0"
+      "git_tree_sha1": "955b3b467bd4e2f52c413bc0a33170f77bf907e9",
+      "git_commit": "2cc0430776c7d2742586682479575c67aba15027"
     }
   ],
   "requires_deletions": false,
   "max_upload_files": 85,
   "database_actions": "none",
-  "rule": "Upload every changed/new root file over complete 8.8.20.136. Keep everything else. This software archive executes no database commands.",
+  "rule": "Upload every changed/new root file over complete 8.8.20.137. Keep everything else. This software archive executes no database commands.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
