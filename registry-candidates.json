@@ -1,0 +1,78 @@
+[
+  {
+    "id": "rally-local-day",
+    "class": "capability",
+    "origin": "Valley Notes",
+    "title": "Open on the local day",
+    "lesson": "Use the destination or job-site time zone and keep every date selectable.",
+    "status": "candidate",
+    "automatic_promotion": false,
+    "applies": [
+      "Valley Notes",
+      "ScheduleJoe"
+    ],
+    "missionAdapter": "Use the destination or job-site time zone and keep every date selectable.",
+    "evidence_source": "fleet.test.mjs and room-model.mjs"
+  },
+  {
+    "id": "rally-schedule-shift",
+    "class": "capability",
+    "origin": "Valley Notes",
+    "title": "Move flexible work around fixed appointments",
+    "lesson": "Preview time shifts and keep protected time and completed work in place.",
+    "status": "candidate",
+    "automatic_promotion": false,
+    "applies": [
+      "Valley Notes",
+      "ScheduleJoe",
+      "Legacy Plumbing"
+    ],
+    "missionAdapter": "Preview time shifts and keep protected time and completed work in place.",
+    "evidence_source": "fleet.test.mjs and room-model.mjs"
+  },
+  {
+    "id": "rally-map-handoff",
+    "class": "capability",
+    "origin": "Valley Notes",
+    "title": "Hand off a destination",
+    "lesson": "Pass a confirmed destination to the traveler\u2019s chosen navigation app.",
+    "status": "candidate",
+    "automatic_promotion": false,
+    "applies": [
+      "Valley Notes",
+      "Legacy Plumbing"
+    ],
+    "missionAdapter": "Pass a confirmed destination to the traveler\u2019s chosen navigation app.",
+    "evidence_source": "fleet.test.mjs and room-model.mjs"
+  },
+  {
+    "id": "rally-partner-offer",
+    "class": "capability",
+    "origin": "Valley Notes",
+    "title": "Review a capacity offer",
+    "lesson": "Use partner-supplied limits, a price floor and source terms before proposing a dated offer.",
+    "status": "candidate",
+    "automatic_promotion": false,
+    "applies": [
+      "Valley Notes",
+      "Owner programs"
+    ],
+    "missionAdapter": "Use partner-supplied limits, a price floor and source terms before proposing a dated offer.",
+    "evidence_source": "fleet.test.mjs and room-model.mjs"
+  },
+  {
+    "id": "rally-two-person-confirmation",
+    "class": "capability",
+    "origin": "Weegee",
+    "title": "Two people confirm independently",
+    "lesson": "Lock private picks at reveal and require both participants to confirm the outcome.",
+    "status": "candidate",
+    "automatic_promotion": false,
+    "applies": [
+      "Weegee",
+      "Fleet Arcade"
+    ],
+    "missionAdapter": "Lock private picks at reveal and require both participants to confirm the outcome.",
+    "evidence_source": "fleet.test.mjs and room-model.mjs"
+  }
+]
