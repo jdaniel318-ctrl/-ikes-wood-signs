@@ -1,21 +1,18 @@
 {
   "schema": "blackflag-patch-contract-v1",
-  "target_build": "8.8.20.145",
-  "target_seal": "flywheel-8820145",
+  "target_build": "8.8.20.146",
+  "target_seal": "paymaster-8820146",
   "supported_bases": [
     {
-      "build": "8.8.20.144",
-      "source_sha256": "cd4f5f2b8181c9484f6c3a2a682bdd39c102fbdfcdd4d6616121a825d7de4ee0",
-      "file_count": 1062,
-      "source_format": "git-tree-regular-v1",
-      "git_tree_sha1": "84e57e74b94b38f922d71695f02351ea5ed177a8",
-      "git_commit": "00e96ba35f60fe0cce71166d4d1f58fbfa1a4f95"
+      "build": "8.8.20.145",
+      "source_sha256": "10a945076c67941a802c27151061d0fbfb3ba8594ac3bab9cc88dcf1c5527edd",
+      "file_count": 1064
     }
   ],
   "requires_deletions": false,
   "max_upload_files": 85,
   "database_actions": "none",
-  "rule": "Upload every changed/new root file over complete 8.8.20.144. Keep everything else. This software archive executes no database commands.",
+  "rule": "Upload every changed/new root file over complete 8.8.20.145. Keep everything else. This software archive executes no database commands.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",

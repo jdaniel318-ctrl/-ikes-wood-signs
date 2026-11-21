@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.20.145';
-const RELEASE_SEAL='flywheel-8820145';
+const RELEASE_BUILD='8.8.20.146';
+const RELEASE_SEAL='paymaster-8820146';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.

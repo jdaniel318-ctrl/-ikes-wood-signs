@@ -1,10 +1,10 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Flywheel 8.8.20.145
+# Black Flag Paymaster 8.8.20.146
 
 Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
-Baseline: 8.8.20.144. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Baseline: 8.8.20.145. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
 Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
-Ordinary Brassline reels reuse four visible symbol cells per reel, from spin through braking. The same cells carry the stop into place on the iPad.
+Brassline auto-stops after one Play. Test credits track the cost and award of each bet. Piggy Vault adds Vault Dial to its five-line bonus and optional guidance for nudges.
 Preparation does not deploy frontend or backend changes. See PATCH_CONTRACT.json for separately managed backend prerequisites.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 

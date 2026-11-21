@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.145",
-  "release": "Flywheel",
-  "seal": "flywheel-8820145",
+  "build": "8.8.20.146",
+  "release": "Paymaster",
+  "seal": "paymaster-8820146",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Flywheel",
-  "name": "Flywheel",
-  "releaseName": "Flywheel"
+  "release_name": "Paymaster",
+  "name": "Paymaster",
+  "releaseName": "Paymaster"
 }

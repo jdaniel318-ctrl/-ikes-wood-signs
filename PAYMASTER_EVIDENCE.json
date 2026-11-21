@@ -1,0 +1,9 @@
+{
+  "build": "8.8.20.146",
+  "baseline": "Local Flywheel full backup",
+  "checks": [
+    "VERIFY_PAYMASTER.cjs",
+    "VERIFY_RELEASE_ALL.cjs"
+  ],
+  "native_ipad": "Pending"
+}
