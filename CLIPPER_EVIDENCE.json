@@ -1,0 +1,54 @@
+{
+  "build": "8.8.20.151",
+  "base": "8.8.20.150",
+  "base_source_sha256": "149c119203d934c04ff1ba1c52a01bb57c377705a98479203570efe85d264df5",
+  "frontend_deployed": false,
+  "offline_suites": {
+    "passed": 76,
+    "runner": "VERIFY_RELEASE_ALL.cjs",
+    "failures": 0
+  },
+  "native_iPad_Safari": "pending",
+  "live_Stripe_settlement": "pending",
+  "chromium_harness": {
+    "status": "pending",
+    "reason": "Chromium could not start its local process socket in the build environment. Run VERIFY_ENTRY_BROWSER.py on a browser-capable machine."
+  },
+  "entry_budget": {
+    "comparison": "against Prism 8.8.20.150, including the payment entry links",
+    "unit": "file bytes; gzip-9 is simulated compression, not a network timing",
+    "raw_bytes": 257230,
+    "gzip9_bytes": 63060,
+    "entry_bytes_by_program": {
+      "Engine": 241873,
+      "Wonderwake": 15357
+    },
+    "limits": {
+      "raw_bytes": 286720,
+      "gzip9_bytes": 73728,
+      "per_program_bytes": 24576,
+      "single_inline_block_bytes": 49152
+    },
+    "growth": {
+      "raw_bytes": -1428817,
+      "gzip9_bytes": -1012871,
+      "entry_bytes_by_program": {
+        "Engine": 352,
+        "Wonderwake": -1429169
+      }
+    },
+    "violations": []
+  },
+  "cartridge": {
+    "sha256": "fe8c1d311b82a3a8404a6b94cc5731d66ead1791055fb571cf55719b9e3605a1",
+    "bytes": 1433400,
+    "load": "on existing visible Wonderwake launch or browser Forward"
+  },
+  "launcher_checks": {
+    "offline_lifecycle_suites": 5,
+    "inherited_program_and_entry_cases": 23,
+    "preserved_child_dependency_hashes": 20,
+    "preserved_inline_policy_hashes": 4
+  },
+  "payment_service": "Clipper-Payments.zip is a separate Node 24 service. The Pages upload contains the public gateway and in-app links."
+}

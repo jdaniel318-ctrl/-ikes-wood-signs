@@ -1,18 +1,18 @@
 {
   "schema": "blackflag-patch-contract-v1",
-  "target_build": "8.8.20.150",
-  "target_seal": "prism-8820150",
+  "target_build": "8.8.20.151",
+  "target_seal": "clipper-8820151",
   "supported_bases": [
     {
-      "build": "8.8.20.149",
-      "source_sha256": "919a8f63849d3cd30fcae5de4e3383bf05b06ad4e2b676396bfa04f579653a2d",
-      "file_count": 1072
+      "build": "8.8.20.150",
+      "source_sha256": "149c119203d934c04ff1ba1c52a01bb57c377705a98479203570efe85d264df5",
+      "file_count": 1074
     }
   ],
   "requires_deletions": false,
   "max_upload_files": 85,
   "database_actions": "none",
-  "rule": "Upload every changed/new root file over complete 8.8.20.149. Keep everything else. This software archive executes no database commands.",
+  "rule": "Upload every changed/new root file over complete 8.8.20.150. Keep everything else. This software archive executes no database commands.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",

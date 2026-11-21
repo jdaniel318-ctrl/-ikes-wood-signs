@@ -1,20 +1,20 @@
 {
   "schema": "blackflag-release-gate-v1",
-  "build": "8.8.20.150",
-  "release": "Prism",
+  "build": "8.8.20.151",
+  "release": "Clipper",
   "pass": false,
-  "pass_scope": "All listed offline suites, all 18 bonus entry paths in a DOM harness, and a comparison of 120,000 paid spins against Backbeat.",
+  "pass_scope": "Offline release suites, the Wonderwake launcher, entry budgets and Pages payment handoff.",
   "verification_status": "OFFLINE_VERIFIED_NATIVE_PENDING",
-  "evidence_file": "PRISM_EVIDENCE.json",
+  "evidence_file": "CLIPPER_EVIDENCE.json",
   "native_safari_acceptance": "PENDING",
   "database_actions": "None.",
-  "backend_prerequisite": "Existing owner account and vessel scope checks.",
+  "backend_prerequisite": "Clipper-Payments.zip requires a private HTTPS service and separate Stripe Connect setup before accepting payments.",
   "customer_data_changes": false,
   "production_certification": false,
   "frontend_deployed": false,
-  "backup_restore": "Software rollback to Backbeat 8.8.20.149.",
+  "backup_restore": "Restore prior Prism 8.8.20.150 software and retire the Clipper public gateway separately.",
   "performance_improvement_claim": false,
-  "offline_suite_count": 73,
+  "offline_suite_count": 76,
   "native_compilation": "NOT_APPLICABLE_STATIC_WEB_APP",
-  "offline_suites_passed": 73
+  "offline_suites_passed": 76
 }

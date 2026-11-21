@@ -38,28 +38,41 @@ check('only a registered active Wonderwake receives the known local launcher',()
   assert.match(node('watchLearningPrograms').innerHTML,/data-watch-vessel="wonderwake"/);
 });
 check('filter/search rerender retains server programs',()=>{ctx.api.render();ctx.api.render();assert.equal(ctx.api.state().programs.length,1);assert.match(node('watchLearningPrograms').innerHTML,/Wonderwake/);});
-check('the registered fleet card opens Lantern Harbor from its rendered group',()=>{
+async function checkRegisteredRoute(){
   ctx.api.render(data);
   const group=[...nodes].find(([,host])=>host.innerHTML?.includes('id="watchWonderwakeOpen"'))?.[0];
   assert.ok(group,'the active program must have a launch button');
   const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
-  const scripts=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)];
-  const source=scripts.find(([,body])=>body.includes("const fleetLauncherId = 'watchWonderwakeOpen'"))?.[1];
-  assert.ok(source,'Lantern Harbor launch handler must be present');
-
+  const source=html.match(/<script id="lantern-launcher"[^>]*>([\s\S]*?)<\/script>/)[1];
+  const name=html.match(/data-cartridge="([^"]+)"/)[1], digest=html.match(/data-sha256="([a-f0-9]{64})"/)[1];
+  const bytes=fs.readFileSync(path.join(root,name));
+  let requests=0;
   const listeners={}, back={addEventListener(){},focus(){}}, frames=[];
-  const harbor={open:false,addEventListener(){},showModal(){this.open=true;}};
+  const harbor={open:false,dataset:{cartridge:name,sha256:digest},addEventListener(){},showModal(){this.open=true;}};
+  let mounted;
+  const didMount=new Promise(resolve=>{mounted=resolve;});
   const elements={
-    'lantern-harbor':harbor,'lantern-return':back,
-    'lantern-stage':{replaceChildren(frame){frames.push(frame);}},
-    'lantern-document':{textContent:JSON.stringify('<title>Local lesson fixture</title>')}
+    'lantern-harbor':harbor,'lantern-return':back,'lantern-notice':{},'lantern-message':{},
+    'lantern-retry':{addEventListener(){}},
+    'lantern-stage':{replaceChildren(frame){if(frame){frames.push(frame);mounted();}}}
   };
   const history={state:{},pushState(state){this.state=state;}};
   const document={
-    getElementById:id=>elements[id], createElement:()=>({}),
+    baseURI:'https://fleet.invalid/',getElementById:id=>elements[id],
+    createElement:()=>({addEventListener(){}}),
     addEventListener(type,fn){listeners[type]=fn;}
   };
-  vm.runInNewContext(source,{document,history,window:{addEventListener(){}},getComputedStyle:()=>({visibility:'visible'})});
+  const fetch=async(url,options)=>{
+    requests++;
+    assert.equal(url.pathname,'/'+name);
+    assert.equal(url.searchParams.get('sha256'),digest);
+    assert.equal(options.mode,'same-origin');
+    return new Response(bytes);
+  };
+  vm.runInNewContext(source,{document,history,window:{addEventListener(){}},getComputedStyle:()=>({visibility:'visible'}),
+    URL,AbortController,TextDecoder,crypto:require('node:crypto').webcrypto,fetch,
+    setTimeout:fn=>setTimeout(fn,2000).unref(),clearTimeout});
+  assert.equal(requests,0,'waiting at the fleet card must not download the lesson');
   let hidden=true;
   const button={id:'watchWonderwakeOpen',getClientRects:()=>[{}],closest(selector){
     if(selector==='button[data-open-lantern]')return this;
@@ -72,11 +85,16 @@ check('the registered fleet card opens Lantern Harbor from its rendered group',(
   listeners.click({target:button});
   listeners.click({target:button});
   assert.equal(harbor.open,true,'visible card must open Lantern Harbor');
+  assert.equal(requests,1,'a repeated tap must reuse the download');
+  let watchdog;
+  try {
+    await Promise.race([didMount, new Promise((_,reject)=>{watchdog=setTimeout(()=>reject(Error('lesson did not mount')),2000);})]);
+  } finally { clearTimeout(watchdog); }
   assert.equal(frames.length,1,'a repeated tap must reuse the open dialog');
-  assert.equal(frames[0].srcdoc,'<title>Local lesson fixture</title>');
+  assert.equal(frames[0].srcdoc,JSON.parse(bytes.toString('utf8')));
   assert.equal(history.state.blackFlagLauncher,button.id);
   assert.match(back.textContent,/Back to My Fleet/);
-});
+}
 check('existing Bootstrap reference remains explicitly a reference',()=>{assert.match(node('watchPrograms').innerHTML,/Bootstrap Build/);assert.match(node('watchPrograms').innerHTML,/Local program/);assert.match(node('watchStatus').textContent,/1 registered program/);});
 check('program overview does not present business operating controls',()=>{ctx.api.overview('wonderwake');assert.match(node('watchOverviewBody').innerHTML,/Wonderwake/);assert.match(node('watchOverviewBody').innerHTML,/SEPARATE PROGRAM/);assert.doesNotMatch(node('watchOverviewBody').innerHTML,/OPERATE AS FLEET CAPTAIN/);});
 check('business overview retains existing boundary',()=>{ctx.api.overview('core-0');assert.match(node('watchOverviewBody').innerHTML,/OPERATE AS FLEET CAPTAIN — NOT ENABLED/);});
@@ -112,4 +130,7 @@ check('a Carvewright return conceals sign-in and reports until verification comp
   assert.equal(node('watchWorkspace').classList.contains('hidden'),true);
   ctx.api.close();
 });
-console.log(count+' Fleetbound program checks passed');
+checkRegisteredRoute().then(()=>{
+  console.log('PASS the registered fleet card opens Lantern Harbor from its rendered group');
+  console.log((count+1)+' Fleetbound program checks passed');
+}).catch(error=>{console.error(error);process.exitCode=1;});

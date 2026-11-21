@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.150",
-  "release": "Prism",
-  "seal": "prism-8820150",
+  "build": "8.8.20.151",
+  "release": "Clipper",
+  "seal": "clipper-8820151",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Prism",
-  "name": "Prism",
-  "releaseName": "Prism"
+  "release_name": "Clipper",
+  "name": "Clipper",
+  "releaseName": "Clipper"
 }

@@ -1,10 +1,10 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Prism 8.8.20.150
+# Black Flag Clipper 8.8.20.151
 
 Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
-Baseline: 8.8.20.149. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Baseline: 8.8.20.150. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
 Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
-Brassline adds nine themed reel symbols across Jungle Crown, Ruby Corsair and Midnight Express. All six catch bonuses open directly to the first wave and wait for the first catch. The cabinet explains an ordinary miss when three identical symbols land above or below the active line.
+Lantern Harbor loads its 1,433,400-byte lesson cartridge when a visitor opens Wonderwake. The launcher verifies the cartridge SHA-256 before displaying the lesson. Fleet payments opens from the Engine, Owner portal and finalized Quartermaster invoices. Its separate payment service handles Stripe Connect checkout, the agreed Admiral share on the pretax USD sale, and the ship and Admiral books.
 Preparation does not deploy frontend or backend changes. See PATCH_CONTRACT.json for separately managed backend prerequisites.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 

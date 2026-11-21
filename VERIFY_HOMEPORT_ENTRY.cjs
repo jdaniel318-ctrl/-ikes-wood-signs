@@ -17,7 +17,13 @@ function localLaunch(block,id) {
 check('exact local ship destination with no identity query or fragment',()=>{
   localLaunch(b,'openWonderwakeShip');
   assert.match(s,/<dialog id="lantern-harbor"/);
-  assert.match(s,/frame\.srcdoc\s*=\s*JSON\.parse\(document\.getElementById\('lantern-document'\)\.textContent\)/);
+  const cartridge = s.match(/<dialog id="lantern-harbor"[^>]*data-cartridge="([^"]+)" data-sha256="([a-f0-9]{64})"/);
+  assert.ok(cartridge);
+  assert.equal(cartridge[1],'wonderwake.ship.json');
+  const bytes = fs.readFileSync(path.join(root,cartridge[1]));
+  assert.equal(require('node:crypto').createHash('sha256').update(bytes).digest('hex'),cartridge[2]);
+  assert.match(JSON.parse(bytes.toString('utf8')),/^<!doctype html>/);
+  assert.match(s,/frame\.srcdoc = lesson/);
 });
 check('local child document has a no-referrer policy and no separate opener',()=>{
   const script=s.match(/<script[^>]*>([^<]*?const harbor = document\.getElementById\('lantern-harbor'\)[\s\S]*?)<\/script>/);

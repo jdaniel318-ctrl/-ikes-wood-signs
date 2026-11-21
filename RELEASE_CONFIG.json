@@ -1,15 +1,15 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.150",
-  "name": "Prism",
-  "seal": "prism-8820150",
-  "base": "8.8.20.149",
-  "base_sha256": "919a8f63849d3cd30fcae5de4e3383bf05b06ad4e2b676396bfa04f579653a2d",
-  "base_files": 1072,
-  "prepared_at": "2026-11-21T16:24:48.417993+00:00",
+  "build": "8.8.20.151",
+  "name": "Clipper",
+  "seal": "clipper-8820151",
+  "base": "8.8.20.150",
+  "base_sha256": "149c119203d934c04ff1ba1c52a01bb57c377705a98479203570efe85d264df5",
+  "base_files": 1074,
+  "prepared_at": "2026-11-21T21:52:44.409835+00:00",
   "app_component_revision": "8.8.20.132",
   "owner_helper_revision": "8.8.20.68",
-  "feature_notes": "Brassline adds nine themed reel symbols across Jungle Crown, Ruby Corsair and Midnight Express. All six catch bonuses open directly to the first wave and wait for the first catch. The cabinet explains an ordinary miss when three identical symbols land above or below the active line.",
+  "feature_notes": "Lantern Harbor loads its 1,433,400-byte lesson cartridge when a visitor opens Wonderwake. The launcher verifies the cartridge SHA-256 before displaying the lesson. Fleet payments opens from the Engine, Owner portal and finalized Quartermaster invoices. Its separate payment service handles Stripe Connect checkout, the agreed Admiral share on the pretax USD sale, and the ship and Admiral books.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -37,7 +37,7 @@
       "automatic_execution_by_upload": false
     }
   },
-  "install_step": "Open Brassline in Fleet Arcade. Pick Jungle Crown, Ruby Corsair or Midnight Express to see its new symbols. When a catch bonus opens, tap one of the moving prizes.",
-  "evidence_file": "PRISM_EVIDENCE.json",
+  "install_step": "Open Wonderwake, return to My Fleet, then open Fleet payments from the Engine.",
+  "evidence_file": "CLIPPER_EVIDENCE.json",
   "preserve_project_readme": true
 }
