@@ -33,8 +33,11 @@ assert.ok(!C.paidSpin(poor));assert.equal(poor.phase,'nudge');assert.equal(poor.
 poor.topUps+=500;assert.equal(C.balance(poor),500);assert.ok(C.paidSpin(poor));assert.equal(C.balance(poor),490);
 const vault=C.create('vault');vault.keys=3;vault.wagered=500;vault.vaultLevel=2;vault.nextLevel=3;
 assert.equal(C.nextCost(vault),0);assert.ok(C.paidSpin(vault,()=>0));assert.equal(vault.level,2);assert.equal(C.balance(vault),0);
-C.stop(vault);C.land(vault);assert.equal(C.balance(vault),vault.feature.total);assert.ok(B.earn(vault,()=>.99));assert.ok(!B.earn(vault));
-assert.ok(B.ready(vault,'dial'));assert.ok(!B.ready(vault,'mint'));
+C.stop(vault);C.land(vault);assert.equal(C.balance(vault),vault.feature.total);assert.ok(!B.earn(vault,()=>0));assert.equal(B.begin(vault),null);
+function dialWin(level){
+ const s=recorded(level);C.nudge(s,{reel:2,dir:'up'});const draws=[0,.99];
+ assert.ok(B.earn(s,()=>draws.shift()));assert.ok(B.ready(s,'dial'));assert.ok(!B.ready(s,'mint'));return s;
+}
 function runDial(s,offset){
  const b=B.begin(s);
  for(let i=0;i<3;i++){
@@ -43,11 +46,10 @@ function runDial(s,offset){
  }
  assert.ok(B.finish(b));return b;
 }
-const extra=runDial(vault,0);assert.equal(extra.points,150);assert.equal(vault.lastBonusWin,150);
-const saved=C.balance(vault);assert.equal(B.begin(vault),null);assert.equal(C.balance(vault),saved);
+const dial=dialWin(2);const extra=runDial(dial,0);assert.equal(extra.points,150);assert.equal(dial.lastBonusWin,150);
+const saved=C.balance(dial);assert.equal(B.begin(dial),null);assert.equal(C.balance(dial),saved);
 for(const [offset,points] of [[7,30],[30,0]]){
- const fresh=C.create('vault');Object.assign(fresh,{phase:'settled',outcome:'vault',win:5,spins:1});
- assert.ok(B.earn(fresh,()=>.99));assert.equal(runDial(fresh,offset).points,points);
+ assert.equal(runDial(dialWin(1),offset).points,points);
 }
 const field=C.create('vault',0);C.paidSpin(field);assert.equal(field.wagered,0);
 console.log('PASS recorded right-reel nudge at all three bets, skip, insufficient funds, refill, exact-once charges, free vault, locked bonus rates and dial awards.');

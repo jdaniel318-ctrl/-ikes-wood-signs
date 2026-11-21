@@ -1,10 +1,10 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Encore 8.8.20.148
+# Black Flag Backbeat 8.8.20.149
 
 Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
-Baseline: 8.8.20.147. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Baseline: 8.8.20.148. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
 Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
-Brassline opens on six cabinet choices. Every cabinet can draw one of three themed bonuses, with its own stage, one-time award and spin receipt.
+Brassline spaces out its animated mini-games across six cabinets. A winning nudge pays the line award immediately. The next four paid spins after a mini-game stay on the reels across cabinet changes. Piggy’s three keys still unlock a free five-line spin.
 Preparation does not deploy frontend or backend changes. See PATCH_CONTRACT.json for separately managed backend prerequisites.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 

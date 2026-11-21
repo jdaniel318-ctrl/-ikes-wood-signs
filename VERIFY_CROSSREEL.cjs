@@ -2,7 +2,7 @@
 const assert=require("node:assert/strict"),fs=require("node:fs"),vm=require("node:vm");
 const root=__dirname,cart=JSON.parse(fs.readFileSync(root+"/brassline.ship.json")),html=cart.player;
 const source=id=>html.split('<script id="'+id+'">')[1].split("</script>")[0];
-assert.equal(cart.levels,6);assert.equal(cart.edition,13);
+assert.equal(cart.levels,6);assert.equal(cart.edition,14);
 assert.equal(source("practice-circuit"),fs.readFileSync(root+"/fleet_practice_circuit.js","utf8"));
 const ctx=vm.createContext({});
 for(const id of ["rules","practice-circuit","circuit-model"])vm.runInContext(source(id),ctx);

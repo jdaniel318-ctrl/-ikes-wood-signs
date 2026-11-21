@@ -1,20 +1,20 @@
 {
   "schema": "blackflag-release-gate-v1",
-  "build": "8.8.20.148",
-  "release": "Encore",
+  "build": "8.8.20.149",
+  "release": "Backbeat",
   "pass": false,
-  "pass_scope": "Offline release suites including 18 cabinet-owned draws, six themes, three wager levels, and exact-once banked awards.",
+  "pass_scope": "All listed offline release checks plus matched-spin comparison and cabinet control path checks.",
   "verification_status": "OFFLINE_VERIFIED_NATIVE_PENDING",
-  "evidence_file": "ENCORE_EVIDENCE.json",
+  "evidence_file": "BACKBEAT_EVIDENCE.json",
   "native_safari_acceptance": "PENDING",
   "database_actions": "None.",
   "backend_prerequisite": "Existing owner account and vessel scope checks.",
   "customer_data_changes": false,
   "production_certification": false,
   "frontend_deployed": false,
-  "backup_restore": "Software rollback to Full House 8.8.20.147.",
+  "backup_restore": "Software rollback to Encore 8.8.20.148.",
   "performance_improvement_claim": false,
-  "offline_suite_count": 71,
+  "offline_suite_count": 72,
   "native_compilation": "NOT_APPLICABLE_STATIC_WEB_APP",
-  "offline_suites_passed": 71
+  "offline_suites_passed": 72
 }

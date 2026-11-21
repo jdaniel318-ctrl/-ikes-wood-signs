@@ -1,0 +1,79 @@
+{
+  "build": "8.8.20.149",
+  "base": "8.8.20.148",
+  "checks": [
+    "VERIFY_BACKBEAT.cjs",
+    "VERIFY_ENCORE.cjs",
+    "VERIFY_PAYMASTER.cjs",
+    "VERIFY_RELEASE_ALL.cjs"
+  ],
+  "native_ipad": "Pending",
+  "field_review": {
+    "duration_seconds": 414.53,
+    "bonus_visits": 8,
+    "approximate_seconds_in_bonus_screens": 159,
+    "sample_seconds": 1
+  },
+  "theme_count": 6,
+  "mini_games": 18,
+  "offline_suites_passed": 72,
+  "rng_simulation": {
+    "method": "Uniform seeded reel stops, optimal legal nudges at the base wager, 20,000 paid spins in each cabinet, matched deals between builds; Piggy free five-line spins included in play and excluded from the paid-spin denominator.",
+    "per_cabinet": [
+      {
+        "id": "vault",
+        "paid": 20000,
+        "encore": 8530,
+        "backbeat": 945,
+        "freeSpins": 2366,
+        "minimumInterveningPaidSpins": 4
+      },
+      {
+        "id": "jungle",
+        "paid": 20000,
+        "encore": 6494,
+        "backbeat": 955,
+        "freeSpins": 0,
+        "minimumInterveningPaidSpins": 4
+      },
+      {
+        "id": "pirate",
+        "paid": 20000,
+        "encore": 6446,
+        "backbeat": 967,
+        "freeSpins": 0,
+        "minimumInterveningPaidSpins": 4
+      },
+      {
+        "id": "buffalo",
+        "paid": 20000,
+        "encore": 8728,
+        "backbeat": 1239,
+        "freeSpins": 0,
+        "minimumInterveningPaidSpins": 4
+      },
+      {
+        "id": "harbor",
+        "paid": 20000,
+        "encore": 6024,
+        "backbeat": 869,
+        "freeSpins": 0,
+        "minimumInterveningPaidSpins": 4
+      },
+      {
+        "id": "train",
+        "paid": 20000,
+        "encore": 6389,
+        "backbeat": 961,
+        "freeSpins": 0,
+        "minimumInterveningPaidSpins": 4
+      }
+    ]
+  },
+  "ui_check": {
+    "surface": "DOM interaction harness at tablet size, reduced motion, deterministic reel and feature RNG inputs",
+    "result": "PASS six choices, both Play controls and autostop, two winning nudges with different bonus outcomes, four paid line wins on four other cabinets, two full three-wave bonuses with awards and return to reels.",
+    "native_safari": "Pending"
+  },
+  "asset_check": "Stage and reel animation, feature games, CSS, art and sound compared byte-for-byte with Encore."
+}

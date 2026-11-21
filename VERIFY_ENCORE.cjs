@@ -24,7 +24,7 @@ for(const id of ids){
    C.stop(s);C.land(s);assert.equal(s.phase,'nudge');
    C.nudge(s,R.moves(id,s.board,level).find(m=>m.value));assert.ok(s.win>0);
    const before=C.balance(s);
-   assert.ok(B.earn(s,()=>(index+.5)/3));assert.ok(!B.earn(s));s.nextLevel=4-level;
+   const draws=[0,(index+.5)/3];assert.ok(B.earn(s,()=>draws.shift()));assert.ok(!B.earn(s));s.nextLevel=4-level;
    const feature=B.begin(s);assert.equal(feature.title,B.themes[id].titles[index]);assert.equal(feature.kind,kind);assert.equal(feature.level,level);
    assert.equal(B.begin(s),null);assert.ok(!B.finish(feature));
    for(let r=0;r<3;r++){
@@ -38,8 +38,10 @@ for(const id of ids){
    assert.equal(C.balance(s),before+expected);assert.equal(s.lastBonusWin,expected);assert.ok(!B.finish(feature,true));assert.equal(B.begin(s),null);assert.ok(!B.earn(s));completed++;
   }
  }
- const line=C.create(id);Object.assign(line,{phase:'settled',spins:1,win:25,outcome:'landed'});
- assert.ok(!B.earn(line,()=>.8));assert.ok(!B.earn(line,()=>0));line.spins++;assert.ok(B.earn(line,()=>0));
+ const line=C.create(id);
+ function lineWin(){assert.ok(C.paidSpin(line));Object.assign(line,{phase:'settled',win:25,outcome:'landed'});}
+ lineWin();
+ assert.ok(!B.earn(line,()=>.8));assert.ok(!B.earn(line,()=>0));lineWin();assert.ok(B.earn(line,()=>0));
  const other=C.create(id);assert.equal(B.begin(other),null);
  const partial=B.begin(line);B.wave(partial);B.take(partial,0);assert.ok(B.finish(partial,true));assert.equal(line.lastBonusWin,partial.points);assert.ok(!B.finish(partial,true));assert.equal(B.begin(line),null);
  for(const reason of ['empty','passed','nudged']){
