@@ -1,0 +1,19 @@
+{
+  "build": "8.8.20.148",
+  "base": "8.8.20.147",
+  "checks": [
+    "VERIFY_ENCORE.cjs",
+    "VERIFY_PAYMASTER.cjs",
+    "VERIFY_FULL_HOUSE.cjs",
+    "VERIFY_RELEASE_ALL.cjs"
+  ],
+  "native_ipad": "Pending",
+  "offline_suites_passed": 71,
+  "themed_features": 18,
+  "bet_levels_tested": [
+    10,
+    20,
+    30
+  ],
+  "browser_check": "Fresh launch showed six cabinets. Bison Blaze started at 500 credits. A 10-credit spin and winning right-reel nudge paid 12, drew Thunder Trail, and a three-round 90-credit feature brought the balance to 592. Return to reels showed a 102-credit spin receipt. Games reopened the six-cabinet picker."
+}

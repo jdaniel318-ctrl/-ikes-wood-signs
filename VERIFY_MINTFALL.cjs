@@ -22,13 +22,14 @@ for(const id of Object.keys(R.games)){
 }
 function win(s,spin=1){Object.assign(s,{phase:'settled',outcome:'nudged',win:25,spins:spin});}
 const pig=C.create('vault'),pirate=C.create('pirate');win(pig);
-assert.ok(B.earn(pig));assert.ok(!B.earn(pig));assert.ok(!B.ready(pirate));
-const b=B.begin('mint',pig);
+assert.ok(B.earn(pig,()=>0));assert.ok(!B.earn(pig));assert.ok(!B.ready(pirate));
+const b=B.begin(pig);
 for(let n=0;n<3;n++){assert.ok(B.wave(b));assert.ok(B.take(b,b.sequence.indexOf(25)));assert.ok(!B.take(b,2));}
 assert.ok(B.finish(b));assert.equal(pig.score,75);assert.ok(!B.finish(b));assert.equal(pig.keys,0);assert.ok(!B.ready(pig));assert.ok(!B.earn(pig));
-const test=B.begin('signal',pirate);
+assert.equal(B.begin(pirate),null);
+win(pirate);assert.ok(B.earn(pirate,()=>.5));const test=B.begin(pirate);
 for(let n=0;n<3;n++){B.wave(test,()=>0);test.phase='choose';if(n===0)B.take(test,2);else for(const i of test.sequence)B.take(test,i);}
-assert.ok(B.finish(test));assert.equal(test.points,75);assert.equal(pirate.score,0);
-win(pirate);assert.ok(B.earn(pirate));const p=B.begin('signal',pirate);B.wave(p);assert.ok(B.ready(pirate));assert.ok(!B.finish(p));
-assert.ok(!B.earn(C.create('harbor')));console.log('Mintfall awards, exhibition isolation, abandoned rounds, exhaustion and independent reel stops passed.');
-
+assert.ok(B.finish(test));assert.equal(test.points,75);assert.equal(pirate.score,75);assert.equal(B.begin(pirate),null);
+win(pirate,2);assert.ok(B.earn(pirate));const next=B.begin(pirate);B.wave(next);
+assert.ok(B.ready(pirate));assert.ok(!B.finish(next));assert.ok(B.finish(next,true));assert.equal(B.begin(pirate),null);
+assert.ok(!B.earn(C.create('harbor')));console.log('All reel stops plus earned awards, independent cabinet accounts and single-use features passed.');

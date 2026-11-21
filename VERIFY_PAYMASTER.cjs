@@ -19,9 +19,9 @@ function recorded(level){
 }
 for(const level of [1,2,3]){
  const s=recorded(level);C.nudge(s,{reel:2,dir:'up'});C.nudge(s,{reel:2,dir:'up'});
- assert.equal(C.balance(s),500+20*level);assert.equal(s.win,30*level);assert.ok(B.earn(s));
+ assert.equal(C.balance(s),500+20*level);assert.equal(s.win,30*level);assert.ok(B.earn(s,()=>0));
  s.nextLevel=level===3?1:3;s.level=s.nextLevel;
- const b=B.begin('mint',s);assert.equal(b.level,level);
+ const b=B.begin(s);assert.equal(b.level,level);
  for(let i=0;i<3;i++){B.wave(b,()=>0);B.take(b,b.sequence.indexOf(25*level));}
  assert.ok(B.finish(b));assert.ok(!B.finish(b));assert.equal(s.lastBonusWin,75*level);
  assert.equal(C.balance(s),500+95*level);
@@ -33,10 +33,10 @@ assert.ok(!C.paidSpin(poor));assert.equal(poor.phase,'nudge');assert.equal(poor.
 poor.topUps+=500;assert.equal(C.balance(poor),500);assert.ok(C.paidSpin(poor));assert.equal(C.balance(poor),490);
 const vault=C.create('vault');vault.keys=3;vault.wagered=500;vault.vaultLevel=2;vault.nextLevel=3;
 assert.equal(C.nextCost(vault),0);assert.ok(C.paidSpin(vault,()=>0));assert.equal(vault.level,2);assert.equal(C.balance(vault),0);
-C.stop(vault);C.land(vault);assert.equal(C.balance(vault),vault.feature.total);assert.ok(B.earn(vault));assert.ok(!B.earn(vault));
+C.stop(vault);C.land(vault);assert.equal(C.balance(vault),vault.feature.total);assert.ok(B.earn(vault,()=>.99));assert.ok(!B.earn(vault));
 assert.ok(B.ready(vault,'dial'));assert.ok(!B.ready(vault,'mint'));
 function runDial(s,offset){
- const b=B.begin('dial',s);
+ const b=B.begin(s);
  for(let i=0;i<3;i++){
    assert.ok(B.wave(b,()=>.5));assert.ok(!B.take(b,-1));
    assert.ok(B.take(b,b.target+offset));assert.ok(!B.take(b,b.target));
@@ -44,7 +44,10 @@ function runDial(s,offset){
  assert.ok(B.finish(b));return b;
 }
 const extra=runDial(vault,0);assert.equal(extra.points,150);assert.equal(vault.lastBonusWin,150);
-const saved=C.balance(vault),ex=runDial(vault,7);assert.equal(ex.points,30);assert.equal(ex.ranked,false);assert.equal(C.balance(vault),saved);
-assert.equal(runDial(vault,30).points,0);
+const saved=C.balance(vault);assert.equal(B.begin(vault),null);assert.equal(C.balance(vault),saved);
+for(const [offset,points] of [[7,30],[30,0]]){
+ const fresh=C.create('vault');Object.assign(fresh,{phase:'settled',outcome:'vault',win:5,spins:1});
+ assert.ok(B.earn(fresh,()=>.99));assert.equal(runDial(fresh,offset).points,points);
+}
 const field=C.create('vault',0);C.paidSpin(field);assert.equal(field.wagered,0);
 console.log('PASS recorded right-reel nudge at all three bets, skip, insufficient funds, refill, exact-once charges, free vault, locked bonus rates and dial awards.');

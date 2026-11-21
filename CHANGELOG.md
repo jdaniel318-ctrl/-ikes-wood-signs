@@ -1,10 +1,10 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Full House 8.8.20.147
+# Black Flag Encore 8.8.20.148
 
 Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
-Baseline: 8.8.20.146. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Baseline: 8.8.20.147. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
 Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
-Every Brassline reel stop now carries a symbol. Five cabinets add Kings and Jacks in former gap positions. Matching Kings pay 10 and matching Jacks pay 5 at Bet 10 in these cabinets. Piggy Vault retains its own paytable.
+Brassline opens on six cabinet choices. Every cabinet can draw one of three themed bonuses, with its own stage, one-time award and spin receipt.
 Preparation does not deploy frontend or backend changes. See PATCH_CONTRACT.json for separately managed backend prerequisites.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 

@@ -1,11 +1,11 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Current architecture — Full House 8.8.20.147
+# Current architecture — Encore 8.8.20.148
 
 Source of release identity: RELEASE_CONFIG.json. Installed page/manifest/seal/worker identity is generated together. APP_COMPONENT_REVISION is 8.8.20.132; owner helper revision is 8.8.20.68. Unchanged component bodies remain byte-identical across release-only changes.
 
 The Engine still verifies every required body, current governance models, app component contract and worker identity before executing the same script sequence. App and Captain bind audit/display freshness to the verified installed release. This context never grants permissions. The owner page keeps explicit helper compatibility checks.
 
-Every Brassline reel stop now carries a symbol. Five cabinets add Kings and Jacks in former gap positions. Matching Kings pay 10 and matching Jacks pay 5 at Bet 10 in these cabinets. Piggy Vault retains its own paytable.
+Brassline opens on six cabinet choices. Every cabinet can draw one of three themed bonuses, with its own stage, one-time award and spin receipt.
 Backend prerequisites are recorded separately in PATCH_CONTRACT.json. Release preparation executes no database commands. Fleet core and Admiral programs remain distinct.
 
 ## Release commands

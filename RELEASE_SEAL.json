@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.147",
-  "release": "Full House",
-  "seal": "fullhouse-8820147",
+  "build": "8.8.20.148",
+  "release": "Encore",
+  "seal": "encore-8820148",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Full House",
-  "name": "Full House",
-  "releaseName": "Full House"
+  "release_name": "Encore",
+  "name": "Encore",
+  "releaseName": "Encore"
 }
