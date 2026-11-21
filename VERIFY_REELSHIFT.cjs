@@ -14,7 +14,7 @@ assert.equal(vault.phase,'ready');C.land(vault);C.nudge(vault,{reel:0,dir:'up'})
 C.spin(vault,random);assert.equal(vault.phase,'spinning');C.land(vault);assert.equal(vault.phase,'spinning');
 C.stop(vault);C.stop(vault);assert.equal(vault.phase,'braking');C.land(vault);
 assert.deepEqual(Array.from(R.line(vault.board)),['K','K','J']);
-assert.equal(vault.phase,'nudge');C.nudge(vault,{reel:0,dir:'down'});assert.equal(vault.phase,'nudge');
+assert.equal(vault.phase,'nudge');C.nudge(vault,{reel:3,dir:'down'});assert.equal(vault.phase,'nudge');
 C.nudge(vault,{reel:2,dir:'down'});assert.equal(vault.win,25);
 assert.equal(vault.score,25);C.land(vault);C.nudge(vault,{reel:2,dir:'down'});assert.equal(vault.score,25);
 for(const id of Object.keys(R.games))for(const level of [1,2,3]){

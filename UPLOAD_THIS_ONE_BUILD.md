@@ -1,11 +1,11 @@
-# Upload Reelshift 8.8.20.139
+# Upload Linewatch 8.8.20.140
 
-Use `DarkSky8820139-Reelshift-Upload.zip`, not the full backup or rollback.
+Use `DarkSky8820140-Linewatch-Upload.zip`, not the full backup or rollback.
 1. Extract the ZIP. Open its single folder. Upload ALL files inside to the existing repository ROOT; replace matching files and KEEP all other files. Commit the upload.
-2. After deployment open the Engine and confirm `8.8.20.139 · REELSHIFT`. Do not clear Safari data, reset records or change permissions.
-3. Open Fleet Arcade → Piggy Vault. Press Play, press Stop, then lower the right reel to complete the opening line of kings.
+2. After deployment open the Engine and confirm `8.8.20.140 · LINEWATCH`. Do not clear Safari data, reset records or change permissions.
+3. Open Fleet Arcade → Piggy Vault → Field practice → The BAR gap. Press Play and Stop, then raise the middle reel.
 
-Both hand buttons now start and stop continuously spinning reels. A landed line pays immediately. Eligible reels offer one optional raise or lower. Piggy opens on a two-kings practice stop.
+Piggy Vault offers one raise or lower across all three reels when a nudge is available. Three field-practice boards teach center-line reads and an original five-line wild bonus.
 The upload itself executes no database commands. Shared specialist components retain their own revision labels; this is intentional reuse, not a mixed upload. Exact SHA-256 checks still run before Engine scripts execute.
 
 Full backup: application source ONLY; not Supabase, customer media or device drafts.

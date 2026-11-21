@@ -1,15 +1,15 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.139",
-  "name": "Reelshift",
-  "seal": "reelshift-8820139",
-  "base": "8.8.20.138",
-  "base_sha256": "4d63b5c3ef0c5b8f77da9070fa3720969ca3637793941a66a5e1c0139e2c45b7",
-  "base_files": 1049,
-  "prepared_at": "2026-11-20T15:24:40.354832+00:00",
+  "build": "8.8.20.140",
+  "name": "Linewatch",
+  "seal": "linewatch-8820140",
+  "base": "8.8.20.139",
+  "base_sha256": "b85bd349bb6918b61c2b7d66f3da23f045f9ec8a7adb01166c83bf97d6702294",
+  "base_files": 1051,
+  "prepared_at": "2026-11-21T00:02:48.324625+00:00",
   "app_component_revision": "8.8.20.132",
   "owner_helper_revision": "8.8.20.68",
-  "feature_notes": "Both hand buttons now start and stop continuously spinning reels. A landed line pays immediately. Eligible reels offer one optional raise or lower. Piggy opens on a two-kings practice stop.",
+  "feature_notes": "Piggy Vault offers one raise or lower across all three reels when a nudge is available. Three field-practice boards teach center-line reads and an original five-line wild bonus.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -37,9 +37,9 @@
       "automatic_execution_by_upload": false
     }
   },
-  "install_step": "Open Fleet Arcade \u2192 Piggy Vault. Press Play, press Stop, then lower the right reel to complete the opening line of kings.",
-  "evidence_file": "REELSHIFT_EVIDENCE.json",
-  "base_git_tree": "ba8d3fb3bbda061cdd49d195fab88353205435e7",
-  "base_git_commit": "8c1a1575a46a9b9871d7a48d0ed3de8387570523",
+  "install_step": "Open Fleet Arcade \u2192 Piggy Vault \u2192 Field practice \u2192 The BAR gap. Press Play and Stop, then raise the middle reel.",
+  "evidence_file": "LINEWATCH_EVIDENCE.json",
+  "base_git_tree": "74d83279bc4b29da57890720ed549deb76dbf13e",
+  "base_git_commit": "ac70c61fa59fe9e5fa46d900a96470dfb879002b",
   "preserve_project_readme": true
 }
