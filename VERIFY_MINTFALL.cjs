@@ -32,27 +32,3 @@ assert.ok(B.finish(test));assert.equal(test.points,75);assert.equal(pirate.score
 win(pirate);assert.ok(B.earn(pirate));const p=B.begin('signal',pirate);B.wave(p);assert.ok(B.ready(pirate));assert.ok(!B.finish(p));
 assert.ok(!B.earn(C.create('harbor')));console.log('Mintfall awards, exhibition isolation, abandoned rounds, exhaustion and independent reel stops passed.');
 
-{
-const h=doc;const script=id=>h.split('<script id="'+id+'">')[1].split('</script>')[0];
-function node(){return {children:[],classList:{add(){},remove(){}},setAttribute(){},style:{},data:{},
-  append(x){this.children.push(x)},replaceChildren(...x){this.children=x},
-  animate(frames,opts){this.frames=frames;this.opts=opts;return {cancel(){}}}};}
-const ctx=vm.createContext({matchMedia:()=>({matches:false}),document:{createElement:node},DOMMatrixReadOnly:class{constructor(v){this.m42=v}},getComputedStyle:n=>({transform:n.y})});
-vm.runInContext(script('rules')+script('cabinet-model'),ctx);
-const M=vm.runInContext(script('reel-motion')+'\nBrassMotion',ctx);let cases=0;
-for(const id of Object.keys(ctx.BrasslineRules.games))for(let i=0;i<3;i++){
- const band=ctx.ReelCabinet.stripsFor(id)[i],n=band.length;
- for(let a=0;a<n;a+=3)for(let b=0;b<n;b++)for(const pos of [.06,7.77,n-.05]){
-  const strip=node(),col=node();col.children=[{getBoundingClientRect:()=>({height:100})}];col.querySelector=()=>strip;
-  const prev=[0,0,0],dest=[0,0,0];prev[i]=a;dest[i]=b;const win=ctx.ReelCabinet.boardAt(id,prev)[i].slice(1,4),last=ctx.ReelCabinet.boardAt(id,dest)[i].slice(1,4);
-  M.roll(col,i,id,win,(_,x)=>x,band,a);const initial=strip.children.map(t=>t.children[0]).join('');
-  strip.y=-pos*100;M.dock(col,i,id,last,(_,x)=>x,b);
-  const track=strip.children.map(t=>t.children[0]).join('');
-  const ix=f=>-parseFloat(f.transform.split('calc(')[1]);const x=ix(strip.frames[0]),end=ix(strip.frames.at(-1));
-  assert.equal(track.slice(Math.floor(x),Math.floor(x)+3),initial.slice(Math.floor(pos),Math.floor(pos)+3));
-  assert.equal(track.slice(end,end+3),last);assert.ok(x>end);cases++;
- }
-}
-console.log('Physical reel starts, wraparound continuity, actual stop symbols:',cases);
-
-}

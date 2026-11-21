@@ -1,15 +1,15 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.144",
-  "name": "Mintfall",
-  "seal": "mintfall-8820144",
-  "base": "8.8.20.143",
-  "base_sha256": "2a67afdf4a25ccc0a40ce81286b09692a3bf125d49169a1dabee891a539c4809",
-  "base_files": 1060,
-  "prepared_at": "2026-11-21T03:14:46.954628+00:00",
+  "build": "8.8.20.145",
+  "name": "Flywheel",
+  "seal": "flywheel-8820145",
+  "base": "8.8.20.144",
+  "base_sha256": "cd4f5f2b8181c9484f6c3a2a682bdd39c102fbdfcdd4d6616121a825d7de4ee0",
+  "base_files": 1062,
+  "prepared_at": "2026-11-21T03:37:27.979241+00:00",
   "app_component_revision": "8.8.20.132",
   "owner_helper_revision": "8.8.20.68",
-  "feature_notes": "Independent circular reel stops replace the guided free-play opener. A winning nudge in Piggy Vault or Ruby Corsair opens an original three-round touch bonus. Both bonus rooms also offer exhibitions.",
+  "feature_notes": "Ordinary Brassline reels reuse four visible symbol cells per reel, from spin through braking. The same cells carry the stop into place on the iPad.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -37,9 +37,9 @@
       "automatic_execution_by_upload": false
     }
   },
-  "install_step": "Open Fleet Arcade \u2192 Piggy Vault \u2192 Bonuses. Try Mintfall or Smuggler\u2019s Signal. Return to the reels for ordinary spins and earned bonus tickets.",
-  "evidence_file": "MINTFALL_EVIDENCE.json",
-  "base_git_tree": "4ffca09b7e4dbf67b5e6b9361483560aee1944ed",
-  "base_git_commit": "38779ddfd9434996642d582083edce074d7c69b5",
+  "install_step": "Open Fleet Arcade \u2192 Piggy Vault. Press Play and Stop on several spins and watch the left and center columns during braking.",
+  "evidence_file": "FLYWHEEL_EVIDENCE.json",
+  "base_git_tree": "84e57e74b94b38f922d71695f02351ea5ed177a8",
+  "base_git_commit": "00e96ba35f60fe0cce71166d4d1f58fbfa1a4f95",
   "preserve_project_readme": true
 }

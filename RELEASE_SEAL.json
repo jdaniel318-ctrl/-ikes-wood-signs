@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.144",
-  "release": "Mintfall",
-  "seal": "mintfall-8820144",
+  "build": "8.8.20.145",
+  "release": "Flywheel",
+  "seal": "flywheel-8820145",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Mintfall",
-  "name": "Mintfall",
-  "releaseName": "Mintfall"
+  "release_name": "Flywheel",
+  "name": "Flywheel",
+  "releaseName": "Flywheel"
 }
