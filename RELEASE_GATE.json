@@ -1,20 +1,20 @@
 {
   "schema": "blackflag-release-gate-v1",
-  "build": "8.8.20.146",
-  "release": "Paymaster",
+  "build": "8.8.20.147",
+  "release": "Full House",
   "pass": false,
-  "pass_scope": "60 offline release suites including two Freeport routes, both escort checkpoints, older course scores and new mission saves.",
-  "verification_status": "PREPARED_NOT_TESTED",
-  "evidence_file": "PAYMASTER_EVIDENCE.json",
+  "pass_scope": "Offline release suites, including full reel strips and ranked symbols in six Brassline cabinets.",
+  "verification_status": "OFFLINE_VERIFIED_NATIVE_PENDING",
+  "evidence_file": "FULL_HOUSE_EVIDENCE.json",
   "native_safari_acceptance": "PENDING",
   "database_actions": "None.",
   "backend_prerequisite": "Existing owner account and vessel scope checks.",
   "customer_data_changes": false,
   "production_certification": false,
   "frontend_deployed": false,
-  "backup_restore": "Software rollback to Night Signal 8.8.20.135.",
+  "backup_restore": "Software rollback to Paymaster 8.8.20.146.",
   "performance_improvement_claim": false,
-  "offline_suite_count": 60,
+  "offline_suite_count": 70,
   "native_compilation": "NOT_APPLICABLE_STATIC_WEB_APP",
-  "offline_suites_passed": 60
+  "offline_suites_passed": 70
 }

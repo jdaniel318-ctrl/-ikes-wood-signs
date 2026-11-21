@@ -1,0 +1,14 @@
+{
+  "build": "8.8.20.147",
+  "base": "8.8.20.146",
+  "checks": [
+    "VERIFY_FULL_HOUSE.cjs",
+    "VERIFY_MINTFALL.cjs",
+    "VERIFY_FLYWHEEL.cjs",
+    "VERIFY_RELEASE_ALL.cjs"
+  ],
+  "native_ipad": "Pending",
+  "offline_suites_passed": 70,
+  "stop_combinations": 63888,
+  "browser_check": "Bison Blaze, right-hand Play, automatic stop and nine accessible reel symbols. Red bison / Jack / Red bison paid zero, balance 490 after one 10-credit spin."
+}

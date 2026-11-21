@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.20.146",
-  "version": "8.8.20.146",
-  "release_name": "Paymaster",
-  "releaseName": "Paymaster",
-  "release_seal": "paymaster-8820146",
+  "build": "8.8.20.147",
+  "version": "8.8.20.147",
+  "release_name": "Full House",
+  "releaseName": "Full House",
+  "release_seal": "fullhouse-8820147",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -163,8 +163,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "Brassline auto-stops after one Play. Test credits track the cost and award of each bet. Piggy Vault adds Vault Dial to its five-line bonus and optional guidance for nudges.",
-  "release_note": "Brassline auto-stops after one Play. Test credits track the cost and award of each bet. Piggy Vault adds Vault Dial to its five-line bonus and optional guidance for nudges.",
+  "release_focus": "Every Brassline reel stop now carries a symbol. Five cabinets add Kings and Jacks in former gap positions. Matching Kings pay 10 and matching Jacks pay 5 at Bet 10 in these cabinets. Piggy Vault retains its own paytable.",
+  "release_note": "Every Brassline reel stop now carries a symbol. Five cabinets add Kings and Jacks in former gap positions. Matching Kings pay 10 and matching Jacks pay 5 at Bet 10 in these cabinets. Piggy Vault retains its own paytable.",
   "tax_ledger_upgrade": {
     "schema": "dark-sky-fleet-tax-ledger-v1",
     "model": "TAX_LEDGER_MODEL.json",
@@ -286,8 +286,8 @@
     "algorithm": "SHA-256",
     "files": {
       "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": {
-        "sha256": "e8e3d93d5c76c91185e4ba15e10b508f2ca85eabb5eb1f98066ed0dfdcdbdbf1",
-        "build": "8.8.20.146",
+        "sha256": "5461bd84d2a2bb94c33d978874b27b91c4e106604b37fbe363db6f7f114c2cd9",
+        "build": "8.8.20.147",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -334,14 +334,14 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_COMMAND_MODEL.json": {
-        "sha256": "c51dc87f530ecb50213cecb8ca88727e1ac1d623fed9361757257791bfdc7796",
-        "build": "8.8.20.146",
+        "sha256": "08a8d0a2bb264b7567daa7ac8cb83a2bd88a08cca524b6abf19443ac3a1bdc0a",
+        "build": "8.8.20.147",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
       "FLEET_DOCTRINE_REGISTRY.json": {
-        "sha256": "a3b8d53edeedd19b3a831e89d602fe91419feacf2e8fed51fbf53ce1d9b5df34",
-        "build": "8.8.20.146",
+        "sha256": "91fcfffe45d16c618fda2e8112462cd197fa84269b9b1d3e745e18f768aaf225",
+        "build": "8.8.20.147",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -400,8 +400,8 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "GOLDEN_VOYAGES.json": {
-        "sha256": "77df187b1b4b81d0058e5ed3334e0d94478f94b539cdecc5fac05a35a2edbe4c",
-        "build": "8.8.20.146",
+        "sha256": "d1d02d47160cf9c4821daaa90da29e7b42e3daf36eea22e0a37f76b2e762ffb4",
+        "build": "8.8.20.147",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -566,14 +566,14 @@
       "app.js": "696a903ed8652988a41e0ed0f816be89495e599c9d2892abf189c41c468d50a1",
       "captain.js": "75b89b0c68eba73b9a5e47ddfb1ab88329941da702db3a5e5ec6041295e91812",
       "simple_books.js": "ddd76dcf5e6c579f16918a9d3e645b0fc65d8a5b4d7c66df8896d8314eea325d",
-      "owner.html": "aefaedfac049655684895b9038700cc31e6d690cc2757077a1edafdee8151ecf",
-      "manifest.webmanifest": "d910ac1609bfcb27701261ed686c690b4d48e7082d1864269a9fa280418ab92d",
+      "owner.html": "2dbeb3f4cf226622060ee0f454041cd530c53fb1c2f093d032288cec2757c8d1",
+      "manifest.webmanifest": "a9ef9c5317f9e41cafcc940bf9d50c587ae363524e25739f7fdd7e71e478b606",
       "IKE_STYLE_FOUNDRY.json": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
-      "sw.js": "2778a64093064465f7764fe7d94c193611922e5c181e384afe71b6295fc5db1a",
-      "FLEET_DOCTRINE_REGISTRY.json": "a3b8d53edeedd19b3a831e89d602fe91419feacf2e8fed51fbf53ce1d9b5df34",
-      "GOLDEN_VOYAGES.json": "77df187b1b4b81d0058e5ed3334e0d94478f94b539cdecc5fac05a35a2edbe4c",
-      "FLEET_COMMAND_MODEL.json": "c51dc87f530ecb50213cecb8ca88727e1ac1d623fed9361757257791bfdc7796",
-      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "e8e3d93d5c76c91185e4ba15e10b508f2ca85eabb5eb1f98066ed0dfdcdbdbf1",
+      "sw.js": "52a2ea8ab5efc039bf5fb4e8809a6170fa53ab9e842bc33cec9c9e616f78f000",
+      "FLEET_DOCTRINE_REGISTRY.json": "91fcfffe45d16c618fda2e8112462cd197fa84269b9b1d3e745e18f768aaf225",
+      "GOLDEN_VOYAGES.json": "d1d02d47160cf9c4821daaa90da29e7b42e3daf36eea22e0a37f76b2e762ffb4",
+      "FLEET_COMMAND_MODEL.json": "08a8d0a2bb264b7567daa7ac8cb83a2bd88a08cca524b6abf19443ac3a1bdc0a",
+      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "5461bd84d2a2bb94c33d978874b27b91c4e106604b37fbe363db6f7f114c2cd9",
       "input_hygiene.js": "e54a78fe75567db53c9682d4d039f53609fdcd0d43448f0534faec61def7edae",
       "business_deck.js": "63b1531524c46d73646a8265c7beabc1be430b9c613895a83c3e0f4bc696342f",
       "business_deck.css": "e28a49dcf16d35b3c7e0b4e69dd4892881cba564aeebc3e62e4b4eea90fca8d5",
@@ -582,7 +582,7 @@
       "headway_contracts.js": "e79286db1785fa95038bbda65c83e0d36ada63b2d402dffad695e4866062c09c",
       "woodwright_fit.js": "a4efdadf635608419a2bd82f12a701fd2991ec5dc3d14d282fd846680d40606f",
       "fun_core.js": "b21a909fa3dccf44b2d02d4a8243a91fd260b70db2edfc35338f3fd330c810e4",
-      "fun_program.js": "5f964a0139f2389334065f6e465fb0d63b05afd032f72ef442f555d42052541c",
+      "fun_program.js": "6684d9b7528330d8133a20703f2ceff95f05d235c8d4389c766345601ae8d4a4",
       "fun_program.css": "5426df73fe625f936bcc5f114ea6706aa316641db30e012c9633121432288fd3",
       "fun_player.html": "fcfc2d06cdf204f4591a9717968a027facf170e6e0be32d9151ef847870a0fb7",
       "stormwake_core.js": "b0193108053c9ddd067dc100bb9d820292e970ad2c316512b8456e359820b405",
@@ -1084,7 +1084,7 @@
     "project_data_mutation": false,
     "field_failure_proof": "8.8.20.13 held on styles.css because packaged DEPLOYMENT_MANIFEST runtime hash did not match packaged styles.css bytes"
   },
-  "release": "Paymaster",
+  "release": "Full House",
   "clearbearing_upgrade": {
     "build": "8.8.20.22",
     "baseline": "8.8.20.14 HashLock",
@@ -1322,9 +1322,9 @@
       "load": "on selection of its Arcade game"
     },
     "brassline.ship.json": {
-      "sha256": "8bfe9f79814c0fa1aa9a70738835c3e65912d37a38a6dfe7cc46a065b4211b5a",
+      "sha256": "9d2c4dbd141ffdce4fadd0120fea972e244e3b130c41d9d4187831c340052775",
       "load": "after existing verified Admiral entry",
-      "bytes": 1763779
+      "bytes": 1763520
     }
   },
   "blacktide_upgrade": {
