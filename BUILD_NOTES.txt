@@ -1,10 +1,10 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Goldglass 8.8.20.142
+# Black Flag Highroller 8.8.20.143
 
 Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
-Baseline: 8.8.20.141. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Baseline: 8.8.20.142. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
 Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
-Piggy Vault opens directly onto a touch cabinet. Winning center lines light three keys for a five-line vault spin. Six cabinets share the large reel window, mirrored buttons and optional sound. Practice is available under Menu.
+Reels coast to their actual stops. Drag one reel directly, ease it back, or release to nudge. Last nudge offers a slow visual replay. Piggy Vault gains illustrated vault states, beveled reel symbols, a coin spill and animated winning lines.
 Preparation does not deploy frontend or backend changes. See PATCH_CONTRACT.json for separately managed backend prerequisites.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 

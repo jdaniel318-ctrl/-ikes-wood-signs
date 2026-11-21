@@ -5,7 +5,7 @@ const host=read('fun_program.js').toString();
 for(const name of ['brassline.ship.json','fleet-arcade.ship.json']){
  const bytes=read(name);
  assert.ok(host.includes(crypto.createHash('sha256').update(bytes).digest('hex')),name);
- assert.ok(bytes.length <= (name==='brassline.ship.json'?1200000:3600000));
+ assert.ok(bytes.length <= (name==='brassline.ship.json'?1500000:3600000));
 }
 const html=JSON.parse(read('brassline.ship.json')).player;
 const source=id=>html.split('<script id="'+id+'">')[1].split('</script>')[0];

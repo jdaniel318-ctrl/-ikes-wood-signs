@@ -187,7 +187,7 @@ document.addEventListener('click',e=>{if(e.target instanceof Element&&e.target.c
 const LANTERN_LEVEL_COUNT = 36;
 const arcadeEditions = {
   lantern: {name:'Lantern Run', file:'lantern-run.ship.json', id:'lantern-run', edition:9, levels:LANTERN_LEVEL_COUNT, limit:250000, digest:'7c81e62bdea891478f90319a275038ef897eba5c149969c2f8df25c7782e0a17'},
-  brassline: {name:'Piggy Vault', file:'brassline.ship.json', id:'brassline', edition:7, levels:6, limit:1200000, digest:'260d9621da5734c1af87c505616656cf79888b266139ae2a7a2041d3ae4b7fd8'},
+  brassline: {name:'Piggy Vault', file:'brassline.ship.json', id:'brassline', edition:8, levels:6, limit:1500000, digest:'9e15bc74975bda3ca197311a205b7ad90b935e5231fbc37ea207071741c2269e'},
   collection: {name:'Fleet Arcade', file:'fleet-arcade.ship.json', id:'six-bells', edition:18, levels:25, limit:3600000, digest:'d818f01abb1d53a3c32098ebf07ee256477f913cafdb5741ddb25244d054767e'}
 };
 const arcadeArtFiles = {

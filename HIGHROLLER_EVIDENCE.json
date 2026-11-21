@@ -1,0 +1,12 @@
+{
+  "build": "8.8.20.143",
+  "base": "8.8.20.142",
+  "source_commit": "680c2b9779c21a63661cf48566c5c73da8e11a47",
+  "checks": [
+    "VERIFY_HIGHROLLER.cjs",
+    "VERIFY_GOLDGLASS.cjs",
+    "VERIFY_REELSHIFT.cjs",
+    "VERIFY_RELEASE_ALL.cjs"
+  ],
+  "native_ipad": "Pending"
+}

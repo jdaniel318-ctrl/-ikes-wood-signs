@@ -1,15 +1,15 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.142",
-  "name": "Goldglass",
-  "seal": "goldglass-8820142",
-  "base": "8.8.20.141",
-  "base_sha256": "eb1313e115c15b433408eb516dfaa92e72825082d395f6a4ca0178cdd0156d78",
-  "base_files": 1056,
-  "prepared_at": "2026-11-21T01:35:30.582649+00:00",
+  "build": "8.8.20.143",
+  "name": "Highroller",
+  "seal": "highroller-8820143",
+  "base": "8.8.20.142",
+  "base_sha256": "4b4c6d87da92b47e83cafe07aa9c0c5c7ebacf8abe82aa8203a935272e49cb3e",
+  "base_files": 1058,
+  "prepared_at": "2026-11-21T02:22:15.098507+00:00",
   "app_component_revision": "8.8.20.132",
   "owner_helper_revision": "8.8.20.68",
-  "feature_notes": "Piggy Vault opens directly onto a touch cabinet. Winning center lines light three keys for a five-line vault spin. Six cabinets share the large reel window, mirrored buttons and optional sound. Practice is available under Menu.",
+  "feature_notes": "Reels coast to their actual stops. Drag one reel directly, ease it back, or release to nudge. Last nudge offers a slow visual replay. Piggy Vault gains illustrated vault states, beveled reel symbols, a coin spill and animated winning lines.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -37,9 +37,9 @@
       "automatic_execution_by_upload": false
     }
   },
-  "install_step": "Open Fleet Arcade \u2192 Piggy Vault. Press either Play button to spin, press again to stop, then tap an arrow or swipe a reel when a nudge lights up.",
-  "evidence_file": "GOLDGLASS_EVIDENCE.json",
-  "base_git_tree": "0b0d4af39c5828a4f8740b4a17771b38e0a17116",
-  "base_git_commit": "4fb28e64edc222221f20ab2d7331399bce04200b",
+  "install_step": "Open Fleet Arcade \u2192 Piggy Vault. Spin and stop, then drag or tap for a nudge. Open Menu \u2192 Last nudge to replay that move.",
+  "evidence_file": "HIGHROLLER_EVIDENCE.json",
+  "base_git_tree": "b885c2ed049c2cfad1b9be28d8e7d935b37ef588",
+  "base_git_commit": "680c2b9779c21a63661cf48566c5c73da8e11a47",
   "preserve_project_readme": true
 }

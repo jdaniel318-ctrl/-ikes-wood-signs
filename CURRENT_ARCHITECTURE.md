@@ -1,11 +1,11 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Current architecture — Goldglass 8.8.20.142
+# Current architecture — Highroller 8.8.20.143
 
 Source of release identity: RELEASE_CONFIG.json. Installed page/manifest/seal/worker identity is generated together. APP_COMPONENT_REVISION is 8.8.20.132; owner helper revision is 8.8.20.68. Unchanged component bodies remain byte-identical across release-only changes.
 
 The Engine still verifies every required body, current governance models, app component contract and worker identity before executing the same script sequence. App and Captain bind audit/display freshness to the verified installed release. This context never grants permissions. The owner page keeps explicit helper compatibility checks.
 
-Piggy Vault opens directly onto a touch cabinet. Winning center lines light three keys for a five-line vault spin. Six cabinets share the large reel window, mirrored buttons and optional sound. Practice is available under Menu.
+Reels coast to their actual stops. Drag one reel directly, ease it back, or release to nudge. Last nudge offers a slow visual replay. Piggy Vault gains illustrated vault states, beveled reel symbols, a coin spill and animated winning lines.
 Backend prerequisites are recorded separately in PATCH_CONTRACT.json. Release preparation executes no database commands. Fleet core and Admiral programs remain distinct.
 
 ## Release commands
