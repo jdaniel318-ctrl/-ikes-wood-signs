@@ -1,0 +1,9 @@
+{
+  "build": "8.8.20.144",
+  "source_commit": "38779ddfd9434996642d582083edce074d7c69b5",
+  "checks": [
+    "VERIFY_MINTFALL.cjs",
+    "VERIFY_RELEASE_ALL.cjs"
+  ],
+  "native_ipad": "Pending"
+}

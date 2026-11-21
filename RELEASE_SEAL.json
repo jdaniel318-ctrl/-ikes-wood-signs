@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.143",
-  "release": "Highroller",
-  "seal": "highroller-8820143",
+  "build": "8.8.20.144",
+  "release": "Mintfall",
+  "seal": "mintfall-8820144",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Highroller",
-  "name": "Highroller",
-  "releaseName": "Highroller"
+  "release_name": "Mintfall",
+  "name": "Mintfall",
+  "releaseName": "Mintfall"
 }

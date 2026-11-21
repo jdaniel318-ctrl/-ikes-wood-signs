@@ -26,7 +26,7 @@ for(let i=0;i<120;i++){
 }
 assert.ok(unique.size>100);
 for(const game of Object.keys(R.games).filter(id=>id!=='vault')){const s=C.create(game);for(let k=0;k<4;k++)awardKey(s,false);assert.equal(s.keys,0);}
-for(const pick of [null,{reel:0,dir:'up'}]){const s=C.create('vault');C.spin(s);C.stop(s);C.land(s);C.nudge(s,pick);assert.equal(s.keys,0);}
+for(const pick of [null,{reel:0,dir:'up'}]){const s=C.create('vault');C.spin(s);s.board=['AHKAH','AWKHL','AKJLA'];C.stop(s);C.land(s);C.nudge(s,pick);assert.equal(s.keys,0);}
 const f=C.create('vault',0);C.spin(f);C.stop(f);C.land(f);C.nudge(f,{reel:1,dir:'up'});assert.equal(f.keys,0);
 const visible=html.split('<body>')[1].split('</main>')[0];assert.ok(!visible.includes('Training circuit'));assert.ok(visible.includes('id="rightPlay"'));
 console.log('120 earned vault spins, locked level, independent five-line totals, exact-once awards, other cabinets and field isolation verified.');

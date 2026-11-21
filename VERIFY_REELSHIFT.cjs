@@ -12,7 +12,7 @@ const random=()=>((seed=(Math.imul(seed,1664525)+1013904223)>>>0)/4294967296);
 const vault=C.create('vault');
 assert.equal(vault.phase,'ready');C.land(vault);C.nudge(vault,{reel:0,dir:'up'});assert.equal(vault.score,0);
 C.spin(vault,random);assert.equal(vault.phase,'spinning');C.land(vault);assert.equal(vault.phase,'spinning');
-C.stop(vault);C.stop(vault);assert.equal(vault.phase,'braking');C.land(vault);
+vault.board=['AHKAH','AWKHL','AKJLA'];C.stop(vault);C.stop(vault);assert.equal(vault.phase,'braking');C.land(vault);
 assert.deepEqual(Array.from(R.line(vault.board)),['K','K','J']);
 assert.equal(vault.phase,'nudge');C.nudge(vault,{reel:3,dir:'down'});assert.equal(vault.phase,'nudge');
 C.nudge(vault,{reel:2,dir:'down'});assert.equal(vault.win,25);
@@ -39,4 +39,4 @@ for(const id of Object.keys(R.games))for(const level of [1,2,3]){
  }
  assert.ok(landed&&empty&&nudges,id);
 }
-console.log('1,458 cabinet spins checked across all six games and three levels, plus the opening kings, optional moves, stop guards and exact-once scoring.');
+console.log('1,458 cabinet spins checked across all six games and three levels, plus the explicit kings fixture, optional moves, stop guards and exact-once scoring.');

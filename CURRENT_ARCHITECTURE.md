@@ -1,11 +1,11 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Current architecture — Highroller 8.8.20.143
+# Current architecture — Mintfall 8.8.20.144
 
 Source of release identity: RELEASE_CONFIG.json. Installed page/manifest/seal/worker identity is generated together. APP_COMPONENT_REVISION is 8.8.20.132; owner helper revision is 8.8.20.68. Unchanged component bodies remain byte-identical across release-only changes.
 
 The Engine still verifies every required body, current governance models, app component contract and worker identity before executing the same script sequence. App and Captain bind audit/display freshness to the verified installed release. This context never grants permissions. The owner page keeps explicit helper compatibility checks.
 
-Reels coast to their actual stops. Drag one reel directly, ease it back, or release to nudge. Last nudge offers a slow visual replay. Piggy Vault gains illustrated vault states, beveled reel symbols, a coin spill and animated winning lines.
+Independent circular reel stops replace the guided free-play opener. A winning nudge in Piggy Vault or Ruby Corsair opens an original three-round touch bonus. Both bonus rooms also offer exhibitions.
 Backend prerequisites are recorded separately in PATCH_CONTRACT.json. Release preparation executes no database commands. Fleet core and Admiral programs remain distinct.
 
 ## Release commands
