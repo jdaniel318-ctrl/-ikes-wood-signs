@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.20.151';
-const RELEASE_SEAL='clipper-8820151';
+const RELEASE_BUILD='8.8.20.152';
+const RELEASE_SEAL='tally-8820152';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.

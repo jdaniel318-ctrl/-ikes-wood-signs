@@ -1,0 +1,18 @@
+{
+  "build": "8.8.20.152",
+  "base": "8.8.20.151",
+  "database_test": "PostgreSQL 17 with session-local tables, a synthetic scope guard, synthetic invoices and rollback",
+  "database_cases": [
+    "code registration and ownership",
+    "idempotent retry",
+    "consecutive serial",
+    "independent ship counters",
+    "mixed historical and compact invoice restore",
+    "cross-ship number rejected",
+    "99999 expands to 100000"
+  ],
+  "pdf_test": "Rendered and extracted 007-00001 from the customer PDF with $106.00 total",
+  "offline_test": "VERIFY_TALLY_INVOICES.cjs",
+  "production_deployment": false,
+  "native_iPad": "pending"
+}

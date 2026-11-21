@@ -1,18 +1,18 @@
 {
   "schema": "blackflag-patch-contract-v1",
-  "target_build": "8.8.20.151",
-  "target_seal": "clipper-8820151",
+  "target_build": "8.8.20.152",
+  "target_seal": "tally-8820152",
   "supported_bases": [
     {
-      "build": "8.8.20.150",
-      "source_sha256": "149c119203d934c04ff1ba1c52a01bb57c377705a98479203570efe85d264df5",
-      "file_count": 1074
+      "build": "8.8.20.151",
+      "source_sha256": "2803e09f90710a8089f8fd6bdc3c5699e3998bf9e456384c2a24f1a18cd758f3",
+      "file_count": 1081
     }
   ],
   "requires_deletions": false,
   "max_upload_files": 85,
   "database_actions": "none",
-  "rule": "Upload every changed/new root file over complete 8.8.20.150. Keep everything else. This software archive executes no database commands.",
+  "rule": "Upload every changed/new root file over complete 8.8.20.151. Keep everything else. This software archive executes no database commands.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -37,6 +37,13 @@
       "migration": "RELIEFWATCH_FLEET_HELP.sql",
       "sql_sha256": "ccb5b38f342da5f86bf06828f3588e942f93f86a4a983f8ae0b0978d666cde7c",
       "status": "installed_on_connected_fleet_core",
+      "automatic_execution_by_upload": false
+    },
+    "invoice_numbering": {
+      "project": "sjgqqtnuttnkwsoebbqf",
+      "migration": "TALLY_INVOICE_NUMBERS.sql",
+      "sql_sha256": "7f97a6ac91982c6449a2e0d2f34a9927856c780f26525923a55d54aeba7e20d9",
+      "status": "packaged_for_activation",
       "automatic_execution_by_upload": false
     }
   }

@@ -1,15 +1,15 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.151",
-  "name": "Clipper",
-  "seal": "clipper-8820151",
-  "base": "8.8.20.150",
-  "base_sha256": "149c119203d934c04ff1ba1c52a01bb57c377705a98479203570efe85d264df5",
-  "base_files": 1074,
-  "prepared_at": "2026-11-21T21:52:44.409835+00:00",
+  "build": "8.8.20.152",
+  "name": "Tally",
+  "seal": "tally-8820152",
+  "base": "8.8.20.151",
+  "base_sha256": "2803e09f90710a8089f8fd6bdc3c5699e3998bf9e456384c2a24f1a18cd758f3",
+  "base_files": 1081,
+  "prepared_at": "2026-11-21T23:30:06.758619+00:00",
   "app_component_revision": "8.8.20.132",
   "owner_helper_revision": "8.8.20.68",
-  "feature_notes": "Lantern Harbor loads its 1,433,400-byte lesson cartridge when a visitor opens Wonderwake. The launcher verifies the cartridge SHA-256 before displaying the lesson. Fleet payments opens from the Engine, Owner portal and finalized Quartermaster invoices. Its separate payment service handles Stripe Connect checkout, the agreed Admiral share on the pretax USD sale, and the ship and Admiral books.",
+  "feature_notes": "New invoices can use a registered three-character fleet code and a running serial. The first five digits expand as needed. Quote conversion, PDF, backup and the Fleet payments handoff use the saved invoice reference.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -35,9 +35,16 @@
       "sql_sha256": "ccb5b38f342da5f86bf06828f3588e942f93f86a4a983f8ae0b0978d666cde7c",
       "status": "installed_on_connected_fleet_core",
       "automatic_execution_by_upload": false
+    },
+    "invoice_numbering": {
+      "project": "sjgqqtnuttnkwsoebbqf",
+      "migration": "TALLY_INVOICE_NUMBERS.sql",
+      "sql_sha256": "7f97a6ac91982c6449a2e0d2f34a9927856c780f26525923a55d54aeba7e20d9",
+      "status": "packaged_for_activation",
+      "automatic_execution_by_upload": false
     }
   },
-  "install_step": "Open Wonderwake, return to My Fleet, then open Fleet payments from the Engine.",
-  "evidence_file": "CLIPPER_EVIDENCE.json",
+  "install_step": "After enabling fleet numbering, open Quotes & invoices, select a test ship, and tap New invoice. Confirm the fleet code on first use.",
+  "evidence_file": "TALLY_EVIDENCE.json",
   "preserve_project_readme": true
 }

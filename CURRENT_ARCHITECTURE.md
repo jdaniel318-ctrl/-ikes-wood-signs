@@ -1,11 +1,11 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Current architecture — Clipper 8.8.20.151
+# Current architecture — Tally 8.8.20.152
 
 Source of release identity: RELEASE_CONFIG.json. Installed page/manifest/seal/worker identity is generated together. APP_COMPONENT_REVISION is 8.8.20.132; owner helper revision is 8.8.20.68. Unchanged component bodies remain byte-identical across release-only changes.
 
 The Engine still verifies every required body, current governance models, app component contract and worker identity before executing the same script sequence. App and Captain bind audit/display freshness to the verified installed release. This context never grants permissions. The owner page keeps explicit helper compatibility checks.
 
-Lantern Harbor loads its 1,433,400-byte lesson cartridge when a visitor opens Wonderwake. The launcher verifies the cartridge SHA-256 before displaying the lesson. Fleet payments opens from the Engine, Owner portal and finalized Quartermaster invoices. Its separate payment service handles Stripe Connect checkout, the agreed Admiral share on the pretax USD sale, and the ship and Admiral books.
+New invoices can use a registered three-character fleet code and a running serial. The first five digits expand as needed. Quote conversion, PDF, backup and the Fleet payments handoff use the saved invoice reference.
 Backend prerequisites are recorded separately in PATCH_CONTRACT.json. Release preparation executes no database commands. Fleet core and Admiral programs remain distinct.
 
 ## Release commands

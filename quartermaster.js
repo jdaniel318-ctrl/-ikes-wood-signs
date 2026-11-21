@@ -255,7 +255,55 @@
   }
   renderAll();status(storageMode==='cloud'?'Cloud business workspace opened. Saved revisions are available on your other devices.':'Business workspace opened. Records remain separate from every other business.','success');
  }
- async function createDocument(type,valid){if(!ready()){tab='settings';showTab();status('Save the business name and document prefix first.');return;}doc=await store.createDocument({type,operationId:uuid()});valid();state=await store.load();valid();doc=clone(doc);doc.issueDate=date();dirty=true;step='details';tab='editor';renderAll();$('qmContent').scrollTop=0;status('New numbered draft created. Enter the customer and job, then add catalog items.');}
+ // A tab keeps its reservation key through an interrupted save. Each creation action,
+ // including converting a quote, uses the same key for the server and the local store.
+ async function numberedDraft(type,valid,sourceQuoteId=null){
+  if(type!=='invoice')return store.createDocument({type,operationId:uuid()});
+  const scope=state.scope;
+  const key='qm.invoice.pending.'+JSON.stringify([scope,sourceQuoteId,storageMode]);
+  let operationId=g.sessionStorage.getItem(key);
+  if(g.navigator?.onLine===false){
+   if(operationId)throw Error('Reconnect to check the pending invoice number, then tap New invoice again.');
+   if(!g.confirm('This device is offline. Create an invoice with the original long device number? Choose Cancel to wait for a short fleet number.'))return null;
+   valid();return store.createDocument({type,operationId:uuid(),sourceQuoteId});
+  }
+  if(!operationId){operationId=uuid();g.sessionStorage.setItem(key,operationId);}
+  const create=async number=>{
+   valid();
+   const result=await store.createDocument({type,operationId,sourceQuoteId,...(number?{reservedNumber:number}:{})});
+   valid();g.sessionStorage.removeItem(key);return result;
+  };
+  const prior=state.operations.find(o=>o.kind==='createDocument'&&o.id===operationId);
+  if(prior)return create();
+  const reserve=code=>client().rpc('quartermaster_reserve_invoice_number',{
+   p_scope:scope,p_document:operationId,p_code:code
+  },'Fleet invoice numbering is unavailable.');
+  let receipt;
+  try{
+   valid();receipt=await reserve(null);valid();
+   if(receipt?.needsCode===true){
+    const prefix=state.business.prefix.toUpperCase();
+    const choice=g.prompt('Enter the three-character fleet code for '+state.business.name+'. This sets its invoice series. Leading zeros are kept.',/^[A-Z0-9]{3}$/.test(prefix)?prefix:'');
+    if(choice===null)return null;
+    const code=choice.trim().toUpperCase();
+    if(!/^[A-Z0-9]{3}$/.test(code))throw Error('Enter exactly three letters or digits for the invoice fleet code.');
+    receipt=await reserve(code);valid();
+   }
+  }catch(error){
+   valid();
+   if(error.code==='PGRST202'){
+    if(g.confirm('Fleet numbering has not been installed. Create this invoice using the original long device number? Choose Cancel to wait for short numbers.'))return create();
+    return null;
+   }
+   if(/invoice[ _]code[ _]taken/.test(error.message||''))throw Error('Another ship already uses that invoice code. Verify this ship’s code, then try again.');
+   if(/invoice[ _]series[ _]already[ _]registered/.test(error.message||''))throw Error('Another device registered the ship’s code. Try again to use that series.');
+   if(error instanceof TypeError||error.name==='AbortError')throw Error('The fleet could not confirm the number. Reconnect and repeat this action to retrieve the reservation.');
+   throw error;
+  }
+  if(receipt?.documentId!==operationId||receipt?.businessId!==scope.businessId||typeof receipt.number!=='string')throw Error('Fleet numbering returned an incomplete receipt. Retry to retrieve the same reservation.');
+  return create(receipt.number);
+ }
+ async function createDocument(type,valid){if(!ready()){tab='settings';showTab();status('Save the business name and document prefix first.');return;}const created=await numberedDraft(type,valid);valid();if(!created)return;doc=created;state=await store.load();valid();doc=clone(doc);doc.issueDate=date();dirty=true;step='details';tab='editor';renderAll();$('qmContent').scrollTop=0;status('New numbered draft created. Enter the customer and job, then add catalog items.');}
  async function loadExamples(valid){if(!isHouseHull())throw Error('The exterior example belongs in the HouseHull workspace.');if(!ready()){state=await store.saveBusiness({id:selected,name:state.business.name||'HouseHull',prefix:state.business.prefix||'HH',address:state.business.address||'',email:state.business.email||'',phone:state.business.phone||''},state.revision);valid();}for(const s of samples){if(state.catalog.some(x=>x.code===s[0]))continue;state=await store.saveItem({kind:s[0].startsWith('DEMO-LAB')||s[0].startsWith('DEMO-SVC')?'service':'material',code:s[0],description:s[1],specification:s[2],packageDescription:s[2],unit:s[3],unitPrice:s[4],cost:'',manufacturerPart:'',supplier:'',supplierSku:''},state.revision);valid();}renderAll();status('Example catalog saved. DEMO codes and rates are illustrative, not verified supplier data.','success');}
  async function exampleQuote(valid){await loadExamples(valid);doc=await store.createDocument({type:'quote',operationId:uuid()});valid();state=await store.load();valid();doc=clone(doc);doc.issueDate=date();doc.customer={name:'Sample Customer',address:'123 Example Lane, Sampletown, ST 00000',email:'',phone:''};doc.job={name:'Example exterior siding package',address:'123 Example Lane'};doc.lines=samples.map(s=>lineOf(state.catalog.find(x=>x.code===s[0]),s[5]));doc.taxRate='0';doc.taxConfirmed=true;doc.isSample=true;doc.notes='SAMPLE FOR REVIEW. Quantities, prices, coverage and product references are illustrative. Verify measurements and actual supplier products before quoting work.';doc.terms='Illustrative document only; not an order or payment request.';state=await store.saveDocument(doc,state.revision);valid();doc=clone(state.documents.find(x=>x.id===doc.id));dirty=false;saveError=null;step='review';tab='editor';renderAll();$('qmContent').scrollTop=0;status('Example quote saved: $6,271.00 before any actual tax configuration.','success');}
  async function saveDocument(valid){doc.isSample=!!doc.isSample||doc.lines.some(l=>l.code.startsWith('DEMO-'));if(doc.status==='draft')doc.business=clone(state.business);state=await store.saveDocument(doc,state.revision);valid();doc=clone(state.documents.find(x=>x.id===doc.id));dirty=false;saveError=null;await clearRecovery();valid();renderAll();status(storageMode==='cloud'?'Draft saved across devices.':'Draft saved on this device.','success');}
@@ -284,7 +332,7 @@
  else if(b.id==='qmNewQuote'||b.id==='qmNewInvoice'||b.dataset.qmNew){if(!discard())return;dirty=false;saveError=null;await createDocument(b.dataset.qmNew||(b.id==='qmNewQuote'?'quote':'invoice'),valid);}
  else if(b.id==='qmSaveDocument')await saveDocument(valid);
  else if(b.id==='qmFinalize'){if(dirty)throw Error('Save this draft before finalizing.');if(!g.confirm('Finalize this copy? Its details will become read-only. Nothing is sent or ordered.'))return;const prepared=await store.prepareFinalization(doc.id,state.revision);valid();await g.BlackFlagQuartermasterPDF.render(clone(prepared));valid();state=await store.finalizeDocument(doc.id,uuid(),state.revision,prepared);valid();doc=clone(state.documents.find(x=>x.id===doc.id));dirty=false;saveError=null;step='review';renderAll();status(storageMode==='cloud'?'Document finalized across devices. Its number and details are preserved.':'Document finalized locally. Its number and item details are preserved.','success');}
- else if(b.id==='qmConvertInvoice'){if(doc.type!=='quote'||doc.status!=='finalized')throw Error('Finalize the quote before creating its invoice.');doc=await store.createDocument({type:'invoice',sourceQuoteId:doc.id,operationId:uuid()});valid();state=await store.load();valid();doc=clone(doc);doc.issueDate=date();dirty=true;step='details';tab='editor';renderAll();$('qmContent').scrollTop=0;status('Separately numbered invoice draft created, linked to the exact finalized quote. Review and save it.');}
+ else if(b.id==='qmConvertInvoice'){if(doc.type!=='quote'||doc.status!=='finalized')throw Error('Finalize the quote before creating its invoice.');const created=await numberedDraft('invoice',valid,doc.id);valid();if(!created)return;doc=created;state=await store.load();valid();doc=clone(doc);doc.issueDate=date();dirty=true;step='details';tab='editor';renderAll();$('qmContent').scrollTop=0;status('Separately numbered invoice draft created, linked to the exact finalized quote. Review and save it.');}
  else if(b.id==='qmPdf'||b.id==='qmNextStep'){if(dirty)throw Error('Save the draft before preparing its PDF.');const source=state.documents.find(x=>x.id===doc.id);if(!source)throw Error('Saved document not found.');const bytes=await g.BlackFlagQuartermasterPDF.render(clone(source));valid();preparedDownload(bytes,'application/pdf',g.BlackFlagQuartermasterPDF.filename(source),'PDF is ready. Open it in a new tab or download a copy. Your workspace stays open.');status('PDF prepared from the saved document snapshot.','success');}
  else if(b.id==='qmBackup'){const backup=await store.exportBackup();valid();preparedDownload(JSON.stringify(backup),'application/json',`Quartermaster-${(state.business.prefix||'business').replace(/[^a-z0-9-]/ig,'')}-${date()}.json`,'Private business backup is ready.');status('Backup prepared. Keep the downloaded file private.','success');}
  },{saving:['qmSaveDocument','qmSaveBusiness','qmSavePart'].includes(b.id)});}

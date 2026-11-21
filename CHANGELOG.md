@@ -1,10 +1,10 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Clipper 8.8.20.151
+# Black Flag Tally 8.8.20.152
 
 Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
-Baseline: 8.8.20.150. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Baseline: 8.8.20.151. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
 Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
-Lantern Harbor loads its 1,433,400-byte lesson cartridge when a visitor opens Wonderwake. The launcher verifies the cartridge SHA-256 before displaying the lesson. Fleet payments opens from the Engine, Owner portal and finalized Quartermaster invoices. Its separate payment service handles Stripe Connect checkout, the agreed Admiral share on the pretax USD sale, and the ship and Admiral books.
+New invoices can use a registered three-character fleet code and a running serial. The first five digits expand as needed. Quote conversion, PDF, backup and the Fleet payments handoff use the saved invoice reference.
 Preparation does not deploy frontend or backend changes. See PATCH_CONTRACT.json for separately managed backend prerequisites.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 
