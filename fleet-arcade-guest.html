@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#10242c">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'self'; frame-src 'self' about:; base-uri 'none'; form-action 'none'">
+<title>Fleet Arcade · Guest playtest</title>
+<style>
+*{box-sizing:border-box} [hidden]{display:none!important}
+:root{color-scheme:dark;font:16px system-ui,-apple-system,sans-serif;background:#101c28;color:#f6f0df}
+body{margin:0;height:100vh;height:100dvh;display:flex;flex-direction:column}
+header{display:flex;gap:.6rem;align-items:center;padding:calc(.4rem + env(safe-area-inset-top)) max(.8rem,env(safe-area-inset-right)) .4rem max(.8rem,env(safe-area-inset-left));background:#122930;border-bottom:1px solid #426064}
+.brand{flex:1;min-width:0}strong{display:block;font:700 1.15rem Georgia,serif;color:#ffe8ad}.edition{font-size:.74rem;color:#bfd5d1}
+button,input{font:inherit}button{min-height:44px;padding:.45rem .8rem;border-radius:8px;background:#1e3940;color:#e9f1ea;border:1px solid #557078;cursor:pointer;font-weight:650}button:focus-visible,input:focus-visible{outline:3px solid #f1c678}
+#share{background:#efce85;color:#192729;border-color:#efce85}
+main{position:relative;flex:1;min-height:0}iframe{display:block;width:100%;height:100%;border:0}
+#status{height:100%;margin:0;display:grid;place-content:center;justify-items:center;gap:.8rem;padding:1rem;text-align:center}#status p{margin:.2rem}
+#copybox,#notice{padding:.6rem .85rem;background:#1e3940}#copybox input{width:min(100%,48rem);padding:.4rem}#notice{margin:0}
+</style>
+</head>
+<body>
+<header id="bar">
+<div class="brand"><strong>Fleet Arcade</strong><span class="edition" id="edition">Guest playtest</span></div>
+<button id="home" type="button" hidden>All games</button><button id="share" type="button">Share arcade</button>
+</header>
+<div id="copybox" hidden><label>Copy this arcade link <input type="url" id="shareurl" readonly></label></div>
+<p id="notice" role="status" hidden></p>
+<main id="stage">
+<div id="status" role="status"><p id="message">Opening the arcade…</p><button id="retry" type="button" hidden>Try again</button></div>
+</main>
+<script id="guest-host">
+(() => {
+'use strict';
+const el = id => document.getElementById(id);
+const games = {
+  collection: {file:'fleet-arcade.ship.json', id:'six-bells', title:'Fleet Arcade'},
+  brassline: {file:'brassline.ship.json', id:'brassline', title:'Brassline'},
+  lantern: {file:'lantern-run.ship.json', id:'lantern-run', title:'Lantern Run'}
+};
+const limits = {nightsignal:2, sluggers:5, riptail:3, skullwater:3, pipeworks:3, deepbell:3, chalkwing:3, dockmaster:3};
+const art = new Set(['riptail','skullwater','pipeworks','deepbell','chalkwing','dockmaster']);
+const slot = 'arcade.playtest.v1:';
+const memory = new Map();
+let canSave = true;
+let active, release;
+let noticeTimer;
+const options = {credentials:'omit',redirect:'error',referrerPolicy:'no-referrer'};
+const integer = (value,min,max) => Number.isSafeInteger(value) && value>=min && value<=max;
+
+function read(key) {
+  try {
+    if (canSave) {
+      const raw = localStorage.getItem(slot+key);
+      if (raw && raw.length <= 19000) return JSON.parse(raw);
+    }
+  } catch { canSave=false; }
+  return memory.get(key);
+}
+function write(key,value) {
+  memory.set(key,value);
+  try { if (canSave) localStorage.setItem(slot+key,JSON.stringify(value)); }
+  catch { canSave=false; tell(active,{type:'save-held'}); }
+}
+try {
+  localStorage.setItem(slot+'probe','1');
+  localStorage.removeItem(slot+'probe');
+} catch { canSave=false; }
+
+function records() {
+  const saved={};
+  for (const [id,count] of Object.entries(limits)) for(let level=0; level<count; level++) {
+    const key=id+'.'+level, record=read(key);
+    if (record && typeof record==='object') saved[key]=record;
+  }
+  return saved;
+}
+function cleared(total) {
+  let level=0;
+  while(level<total && read('maze.'+(level+1))===1) level++;
+  return level;
+}
+function saveRound(run,msg) {
+  if(!Object.hasOwn(limits,msg.id) || !integer(msg.level,0,limits[msg.id]-1)) return;
+  const key=msg.id+'.'+msg.level;
+  const save=()=>{
+    if (active!==run) return;
+    const record=read(key)||{};
+    if(msg.type==='arcade-clear') {
+      if(!integer(msg.score,0,1e9)) return;
+      record.best=Math.max(record.best||0,msg.score); record.clear=true;
+    } else {
+      try {
+        const json=JSON.stringify(msg.data);
+        if(!json || json.length>16384) return;
+        if(msg.id==='skullwater' && msg.data?.v===1 && record.data?.v===1 &&
+          integer(record.data.ms,1,1e9) && record.data.ms<=msg.data.ms) return;
+        record.data=JSON.parse(json);
+      } catch { return; }
+    }
+    write(key,record);
+  };
+  if(navigator.locks) navigator.locks.request(slot+key,save).catch(()=>tell(run,{type:'save-held'}));
+  else save();
+}
+function tell(run,msg) {
+  if(active===run && run?.frame?.contentWindow) run.frame.contentWindow.postMessage({...msg,channel:run.channel},'*');
+}
+function announce(text) {
+  clearTimeout(noticeTimer);
+  el('notice').textContent=text; el('notice').hidden=!text;
+  if(text) noticeTimer=setTimeout(()=>{el('notice').hidden=true;},4500);
+}
+async function getRelease(signal) {
+  const response=await fetch('./DEPLOYMENT_MANIFEST.json',{...options,signal,cache:'no-store'});
+  if(!response.ok) throw Error('release');
+  const document=await response.json();
+  if(!document?.lazy_program_assets || typeof document.build!=='string') throw Error('release');
+  return document;
+}
+async function loadAsset(file,run) {
+  const spec=release.lazy_program_assets[file];
+  if(!spec || !integer(spec.bytes,1,16*1024*1024) || !/^[a-f0-9]{64}$/.test(spec.sha256)) throw Error('edition');
+  const response=await fetch('./'+file+'?v='+spec.sha256,{...options,signal:run.controller.signal});
+  if(!response.ok) throw Error('asset');
+  const bytes=await response.arrayBuffer();
+  if(bytes.byteLength!==spec.bytes) throw Error('size');
+  const hash=await crypto.subtle.digest('SHA-256',bytes);
+  if(Array.from(new Uint8Array(hash),b=>b.toString(16).padStart(2,'0')).join('')!==spec.sha256) throw Error('integrity');
+  return JSON.parse(new TextDecoder().decode(bytes));
+}
+async function artwork(run,game) {
+  if(!art.has(game) || run.art.has(game)) return;
+  run.art.add(game);
+  try { tell(run,{type:'arcade-art',game,assets:await loadAsset('arcade-art-'+game+'.json',run)}); }
+  catch { run.art.delete(game); if(active===run) announce('Some artwork could not load. Reopen this game to try again.'); }
+}
+async function launch(kind) {
+  const game=games[kind];
+  if(active) { active.controller.abort(); active.frame?.remove(); }
+  const run={kind,controller:new AbortController(),art:new Set()};
+  active=run;
+  el('bar').hidden=false; el('home').hidden=kind==='collection'; el('copybox').hidden=true; announce('');
+  el('status').hidden=false; el('retry').hidden=true; el('message').textContent='Opening '+game.title+'…';
+  const deadline=setTimeout(()=>run.controller.abort(),30000);
+  try {
+    if(!release) {
+      const candidate=await getRelease(run.controller.signal);
+      if(active!==run) return;
+      release=candidate;
+    }
+    const pack=await loadAsset(game.file,run);
+    if(active!==run) return;
+    if(pack.id!==game.id || pack.format!=='blackflag.arcade-player.v1' || typeof pack.player!=='string' ||
+       !integer(pack.levels,1,1000) || !integer(pack.edition,1,1e6)) throw Error('player');
+    run.levels=pack.levels; run.channel=crypto.randomUUID();
+    el('edition').textContent='Guest playtest · '+release.build;
+    const frame=document.createElement('iframe');
+    run.frame=frame; frame.title=game.title; frame.referrerPolicy='no-referrer';
+    frame.setAttribute('sandbox','allow-scripts');
+    frame.setAttribute('allow',"fullscreen *; gamepad *; camera 'none'; microphone 'none'; geolocation 'none'; payment 'none'");
+    frame.setAttribute('allowfullscreen','');
+    frame.onload=()=>{
+      if(active!==run) return;
+      const start=kind==='collection' ? {records:records()} : kind==='lantern' ? {best:read('maze.best')||0,cleared:cleared(run.levels)} : {};
+      tell(run,{type:'init',...start,canSave});
+      el('status').hidden=true; frame.focus({preventScroll:true});
+    };
+    frame.srcdoc=pack.player;
+    el('stage').append(frame);
+  } catch {
+    if(active!==run) return;
+    el('message').textContent=location.protocol==='file:' ? 'Open this arcade from its published web address.' : 'The arcade could not load this edition. Check your connection and try again.';
+    el('retry').hidden=false;
+  } finally { clearTimeout(deadline); }
+}
+window.addEventListener('message',event=>{
+  const run=active, msg=event.data;
+  if(!run?.frame || event.source!==run.frame.contentWindow || event.origin!=='null' || !msg || msg.channel!==run.channel) return;
+  if(run.kind==='collection') {
+    switch(msg.type) {
+      case 'arcade-brassline': void launch('brassline'); break;
+      case 'arcade-lantern': void launch('lantern'); break;
+      case 'arcade-playing': if(typeof msg.playing==='boolean') el('bar').hidden=msg.playing; break;
+      case 'arcade-art-request': void artwork(run,msg.game); break;
+      case 'arcade-clear': case 'arcade-data': saveRound(run,msg); break;
+    }
+  } else if(run.kind==='lantern') {
+    if(msg.type==='maze-cleared' && integer(msg.level,1,run.levels) && msg.level<=cleared(run.levels)+1) {
+      write('maze.'+msg.level,1);
+      tell(run,{type:'route-saved',cleared:cleared(run.levels),canSave});
+    }
+    if(msg.type==='best' && integer(msg.score,1,1e6) && msg.score>(read('maze.best')||0)) write('maze.best',msg.score);
+  }
+});
+document.addEventListener('visibilitychange',()=>{ if(document.hidden) tell(active,{type:'pause'}); });
+el('home').onclick=()=>launch('collection');
+el('retry').onclick=()=>{release=null;void launch(active.kind);};
+el('share').onclick=async()=>{
+  const url=new URL(location.pathname,location.origin).href;
+  if(navigator.share) {
+    try { await navigator.share({title:'Fleet Arcade',url}); return; }
+    catch(error) { if(error.name==='AbortError') return; }
+  }
+  try { await navigator.clipboard.writeText(url); announce('Arcade link copied.'); }
+  catch { el('copybox').hidden=false; el('shareurl').value=url; el('shareurl').focus(); el('shareurl').select(); }
+};
+void launch('collection');
+})();
+</script>
+</body>
+</html>
