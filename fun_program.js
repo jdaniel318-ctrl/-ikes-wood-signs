@@ -187,8 +187,8 @@ document.addEventListener('click',e=>{if(e.target instanceof Element&&e.target.c
 const LANTERN_LEVEL_COUNT = 36;
 const arcadeEditions = {
   lantern: {name:'Lantern Run', file:'lantern-run.ship.json', id:'lantern-run', edition:9, levels:LANTERN_LEVEL_COUNT, limit:250000, digest:'7c81e62bdea891478f90319a275038ef897eba5c149969c2f8df25c7782e0a17'},
-  brassline: {name:'Piggy Vault', file:'brassline.ship.json', id:'brassline', edition:6, levels:6, limit:1200000, digest:'e94f8f9332b4cc3b93ad90176f688b71b49720f0deed3cd83b9a3d26c7e0865a'},
-  collection: {name:'Fleet Arcade', file:'fleet-arcade.ship.json', id:'six-bells', edition:17, levels:25, limit:3600000, digest:'47fd8b331f450ee92549d198bfe55f2c35bd6ac461bd6b4e88e245718b596872'}
+  brassline: {name:'Piggy Vault', file:'brassline.ship.json', id:'brassline', edition:7, levels:6, limit:1200000, digest:'260d9621da5734c1af87c505616656cf79888b266139ae2a7a2041d3ae4b7fd8'},
+  collection: {name:'Fleet Arcade', file:'fleet-arcade.ship.json', id:'six-bells', edition:18, levels:25, limit:3600000, digest:'d818f01abb1d53a3c32098ebf07ee256477f913cafdb5741ddb25244d054767e'}
 };
 const arcadeArtFiles = {
   "dockmaster": {
@@ -391,9 +391,10 @@ async function openLantern(button,kind=button.hasAttribute('data-fleet-collectio
     run.player = player;
     player.title = edition.name;
     player.setAttribute('sandbox','allow-scripts');
+    const supportsFullscreen = kind==='collection' || kind==='brassline';
     const restrictions = "camera 'none'; microphone 'none'; geolocation 'none'; payment 'none'";
-    player.setAttribute('allow', (kind === 'collection' ? 'fullscreen *; ' : '') + 'gamepad *; ' + restrictions);
-    if (kind === 'collection') player.setAttribute('allowfullscreen', '');
+    player.setAttribute('allow', (supportsFullscreen ? 'fullscreen *; ' : '') + 'gamepad *; ' + restrictions);
+    if (supportsFullscreen) player.setAttribute('allowfullscreen', '');
     player.referrerPolicy = 'no-referrer';
     player.onload = () => {
       if (!lanternAccess(run)) { leaveLantern(run); return; }

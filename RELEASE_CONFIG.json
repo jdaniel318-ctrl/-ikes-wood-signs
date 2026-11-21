@@ -1,15 +1,15 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.141",
-  "name": "Crossreel",
-  "seal": "crossreel-8820141",
-  "base": "8.8.20.140",
-  "base_sha256": "e10d6be3b504c6a48e88f8f263b806c79891ca5b7619b7ee0759fd8a65f881c5",
-  "base_files": 1053,
-  "prepared_at": "2026-11-21T00:16:14.591364+00:00",
+  "build": "8.8.20.142",
+  "name": "Goldglass",
+  "seal": "goldglass-8820142",
+  "base": "8.8.20.141",
+  "base_sha256": "eb1313e115c15b433408eb516dfaa92e72825082d395f6a4ca0178cdd0156d78",
+  "base_files": 1056,
+  "prepared_at": "2026-11-21T01:35:30.582649+00:00",
   "app_component_revision": "8.8.20.132",
   "owner_helper_revision": "8.8.20.68",
-  "feature_notes": "Piggy Vault and five companion cabinets share a seven-station practice circuit. Harbor Lights adds signal flags and beacon wilds. Missed reads transfer to another cabinet. Five-line results show each path and each award.",
+  "feature_notes": "Piggy Vault opens directly onto a touch cabinet. Winning center lines light three keys for a five-line vault spin. Six cabinets share the large reel window, mirrored buttons and optional sound. Practice is available under Menu.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -37,9 +37,9 @@
       "automatic_execution_by_upload": false
     }
   },
-  "install_step": "Open Fleet Arcade \u2192 Piggy Vault \u2192 Training circuit \u2192 Start circuit. Press either Play button and press either button again to stop.",
-  "evidence_file": "CROSSREEL_EVIDENCE.json",
-  "base_git_tree": "83fea9aa580d1cb6219d258936c121a30f110777",
-  "base_git_commit": "8c9ef3d5a7d50c7ad4277a2040970e3930780d38",
+  "install_step": "Open Fleet Arcade \u2192 Piggy Vault. Press either Play button to spin, press again to stop, then tap an arrow or swipe a reel when a nudge lights up.",
+  "evidence_file": "GOLDGLASS_EVIDENCE.json",
+  "base_git_tree": "0b0d4af39c5828a4f8740b4a17771b38e0a17116",
+  "base_git_commit": "4fb28e64edc222221f20ab2d7331399bce04200b",
   "preserve_project_readme": true
 }

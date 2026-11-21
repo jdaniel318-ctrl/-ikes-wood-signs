@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.141",
-  "release": "Crossreel",
-  "seal": "crossreel-8820141",
+  "build": "8.8.20.142",
+  "release": "Goldglass",
+  "seal": "goldglass-8820142",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Crossreel",
-  "name": "Crossreel",
-  "releaseName": "Crossreel"
+  "release_name": "Goldglass",
+  "name": "Goldglass",
+  "releaseName": "Goldglass"
 }

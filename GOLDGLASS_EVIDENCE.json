@@ -1,0 +1,12 @@
+{
+  "build": "8.8.20.142",
+  "base": "8.8.20.141",
+  "source_commit": "4fb28e64edc222221f20ab2d7331399bce04200b",
+  "offline_checks": [
+    "VERIFY_GOLDGLASS.cjs",
+    "VERIFY_CROSSREEL.cjs",
+    "VERIFY_REELSHIFT.cjs",
+    "VERIFY_RELEASE_ALL.cjs"
+  ],
+  "native_ipad": "Pending"
+}

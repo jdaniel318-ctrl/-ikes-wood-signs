@@ -23,7 +23,8 @@ for(const id of Object.keys(R.games))for(const level of [1,2,3]){
   C.spin(s,random);assert.equal(s.phase,'spinning');assert.equal(s.spins,i+1);const board=s.board;
   C.spin(s,random);assert.equal(s.board,board);C.stop(s);assert.equal(s.phase,'braking');C.land(s);
   const direct=R.award(id,R.line(board))*level,opts=R.moves(id,board,level),top=Math.max(...opts.map(m=>m.value));
-  if(direct){landed++;total+=direct;assert.equal(s.outcome,'landed');}
+  if(s.vaultSpin){assert.equal(s.outcome,'vault');assert.equal(s.feature.lines.length,5);total+=s.feature.lines.reduce((n,line)=>n+line.value,0);}
+  else if(direct){landed++;total+=direct;assert.equal(s.outcome,'landed');}
   else if(!top){empty++;assert.equal(s.outcome,'empty');}
   else{
    nudges++;assert.equal(s.phase,'nudge');
