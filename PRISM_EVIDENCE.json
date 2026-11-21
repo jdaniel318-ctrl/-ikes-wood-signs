@@ -1,0 +1,73 @@
+{
+  "build": "8.8.20.150",
+  "base": "8.8.20.149",
+  "checks": [
+    "VERIFY_PRISM.cjs",
+    "VERIFY_BACKBEAT.cjs",
+    "VERIFY_FULL_HOUSE.cjs",
+    "VERIFY_RELEASE_ALL.cjs"
+  ],
+  "native_ipad": "Pending",
+  "field_review": {
+    "recording_duration_seconds": 435.82,
+    "first_match": "Piggy shows three kings across the top around 0:18, with two diamonds and gold bars on the active center line.",
+    "mintfall_intro_seconds_approx": 54
+  },
+  "offline_suites_passed": 73,
+  "cabinet_ui": "Offline DOM interaction harness. PASS chooser, autostop, manual stop, two full catch bonuses, Backbeat spacing, recorded top-row miss, reset on next deal, 6 untimed opening catches, 12 signal/dial intros, timed second wave.",
+  "matched_simulation": {
+    "baseline": "Backbeat 8.8.20.149",
+    "paid_spins": 120000,
+    "strategy": "Seeded reel stops and feature draws, taking the highest-paying legal nudge, base wager. Equal counts and totals for all six cabinets.",
+    "per_cabinet": [
+      {
+        "id": "vault",
+        "paid": 20000,
+        "features": 945,
+        "reelAwards": 233690,
+        "freeSpins": 2366,
+        "minimumInterveningPaidSpins": 4
+      },
+      {
+        "id": "jungle",
+        "paid": 20000,
+        "features": 955,
+        "reelAwards": 109815,
+        "freeSpins": 0,
+        "minimumInterveningPaidSpins": 4
+      },
+      {
+        "id": "pirate",
+        "paid": 20000,
+        "features": 967,
+        "reelAwards": 168860,
+        "freeSpins": 0,
+        "minimumInterveningPaidSpins": 4
+      },
+      {
+        "id": "buffalo",
+        "paid": 20000,
+        "features": 1239,
+        "reelAwards": 218233,
+        "freeSpins": 0,
+        "minimumInterveningPaidSpins": 4
+      },
+      {
+        "id": "harbor",
+        "paid": 20000,
+        "features": 869,
+        "reelAwards": 210130,
+        "freeSpins": 0,
+        "minimumInterveningPaidSpins": 4
+      },
+      {
+        "id": "train",
+        "paid": 20000,
+        "features": 961,
+        "reelAwards": 122060,
+        "freeSpins": 0,
+        "minimumInterveningPaidSpins": 4
+      }
+    ]
+  }
+}

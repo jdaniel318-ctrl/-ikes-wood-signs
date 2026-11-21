@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.149",
-  "release": "Backbeat",
-  "seal": "backbeat-8820149",
+  "build": "8.8.20.150",
+  "release": "Prism",
+  "seal": "prism-8820150",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Backbeat",
-  "name": "Backbeat",
-  "releaseName": "Backbeat"
+  "release_name": "Prism",
+  "name": "Prism",
+  "releaseName": "Prism"
 }

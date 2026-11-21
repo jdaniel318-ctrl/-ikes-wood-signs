@@ -1,10 +1,10 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Backbeat 8.8.20.149
+# Black Flag Prism 8.8.20.150
 
 Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
-Baseline: 8.8.20.148. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Baseline: 8.8.20.149. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
 Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
-Brassline spaces out its animated mini-games across six cabinets. A winning nudge pays the line award immediately. The next four paid spins after a mini-game stay on the reels across cabinet changes. Piggy’s three keys still unlock a free five-line spin.
+Brassline adds nine themed reel symbols across Jungle Crown, Ruby Corsair and Midnight Express. All six catch bonuses open directly to the first wave and wait for the first catch. The cabinet explains an ordinary miss when three identical symbols land above or below the active line.
 Preparation does not deploy frontend or backend changes. See PATCH_CONTRACT.json for separately managed backend prerequisites.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 

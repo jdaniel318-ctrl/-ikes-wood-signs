@@ -1,15 +1,15 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.149",
-  "name": "Backbeat",
-  "seal": "backbeat-8820149",
-  "base": "8.8.20.148",
-  "base_sha256": "56b02ec62172dc815c3660da89a0973a078ea7613b3fc472a6ffa656916a70cb",
-  "base_files": 1070,
-  "prepared_at": "2026-11-21T15:53:46.592316+00:00",
+  "build": "8.8.20.150",
+  "name": "Prism",
+  "seal": "prism-8820150",
+  "base": "8.8.20.149",
+  "base_sha256": "919a8f63849d3cd30fcae5de4e3383bf05b06ad4e2b676396bfa04f579653a2d",
+  "base_files": 1072,
+  "prepared_at": "2026-11-21T16:24:48.417993+00:00",
   "app_component_revision": "8.8.20.132",
   "owner_helper_revision": "8.8.20.68",
-  "feature_notes": "Brassline spaces out its animated mini-games across six cabinets. A winning nudge pays the line award immediately. The next four paid spins after a mini-game stay on the reels across cabinet changes. Piggy\u2019s three keys still unlock a free five-line spin.",
+  "feature_notes": "Brassline adds nine themed reel symbols across Jungle Crown, Ruby Corsair and Midnight Express. All six catch bonuses open directly to the first wave and wait for the first catch. The cabinet explains an ordinary miss when three identical symbols land above or below the active line.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -37,7 +37,7 @@
       "automatic_execution_by_upload": false
     }
   },
-  "install_step": "In Fleet Arcade, open Brassline and choose any cabinet. After an animated mini-game, play four paid spins across any combination of cabinets. All four should remain on the reels.",
-  "evidence_file": "BACKBEAT_EVIDENCE.json",
+  "install_step": "Open Brassline in Fleet Arcade. Pick Jungle Crown, Ruby Corsair or Midnight Express to see its new symbols. When a catch bonus opens, tap one of the moving prizes.",
+  "evidence_file": "PRISM_EVIDENCE.json",
   "preserve_project_readme": true
 }

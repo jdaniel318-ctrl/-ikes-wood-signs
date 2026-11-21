@@ -1,11 +1,11 @@
-# Upload Backbeat 8.8.20.149
+# Upload Prism 8.8.20.150
 
-Use `DarkSky8820149-Backbeat-Upload.zip`, not the full backup or rollback.
+Use `DarkSky8820150-Prism-Upload.zip`, not the full backup or rollback.
 1. Extract the ZIP. Open its single folder. Upload ALL files inside to the existing repository ROOT; replace matching files and KEEP all other files. Commit the upload.
-2. After deployment open the Engine and confirm `8.8.20.149 · BACKBEAT`. Do not clear Safari data, reset records or change permissions.
-3. In Fleet Arcade, open Brassline and choose any cabinet. After an animated mini-game, play four paid spins across any combination of cabinets. All four should remain on the reels.
+2. After deployment open the Engine and confirm `8.8.20.150 · PRISM`. Do not clear Safari data, reset records or change permissions.
+3. Open Brassline in Fleet Arcade. Pick Jungle Crown, Ruby Corsair or Midnight Express to see its new symbols. When a catch bonus opens, tap one of the moving prizes.
 
-Brassline spaces out its animated mini-games across six cabinets. A winning nudge pays the line award immediately. The next four paid spins after a mini-game stay on the reels across cabinet changes. Piggy’s three keys still unlock a free five-line spin.
+Brassline adds nine themed reel symbols across Jungle Crown, Ruby Corsair and Midnight Express. All six catch bonuses open directly to the first wave and wait for the first catch. The cabinet explains an ordinary miss when three identical symbols land above or below the active line.
 The upload itself executes no database commands. Shared specialist components retain their own revision labels; this is intentional reuse, not a mixed upload. Exact SHA-256 checks still run before Engine scripts execute.
 
 Full backup: application source ONLY; not Supabase, customer media or device drafts.
