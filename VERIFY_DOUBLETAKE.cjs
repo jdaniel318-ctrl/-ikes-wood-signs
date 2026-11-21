@@ -32,4 +32,4 @@ for(const game of Object.keys(R.games))for(const mult of [1,2,3])for(let i=0;i<3
 const values=D.bonusValues(random);assert.equal(new Set(values).size,4);assert.ok(values.every(n=>[5,10,15,20,25,30].includes(n)));
 const arcade=JSON.parse(read('fleet-arcade.ship.json'));assert.equal(arcade.edition,17);assert.ok(arcade.player.includes("send('arcade-brassline')"));
 assert.ok(html.includes('playButtons.forEach(key=>key.onclick=advance)'));assert.ok(html.includes('default-src \'none\''));
-console.log(sets+' solo sets across five themes and three multipliers. Both archive digests verified.');
+console.log(sets+' solo sets across six themes and three multipliers. Both archive digests verified.');

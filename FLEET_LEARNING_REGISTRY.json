@@ -244,6 +244,14 @@
       "automatic_promotion": false,
       "applies": [],
       "evidence_source": "VALLEY_NOTES_PROGRAM.md"
+    },
+    {
+      "id": "cross-context-practice",
+      "origin": "brassline",
+      "title": "Practice a missed skill in a different setting",
+      "class": "capability",
+      "lesson": "Reuse the local course and scorecard in fleet_practice_circuit.js. The host supplies its own station content, rules and alternate setting. First reads and transfer attempts are counted separately.",
+      "missionAdapter": "Captain reviews the lesson before adoption. Each program keeps its own session and results."
     }
   ],
   "governance": {

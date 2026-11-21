@@ -1,15 +1,15 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.140",
-  "name": "Linewatch",
-  "seal": "linewatch-8820140",
-  "base": "8.8.20.139",
-  "base_sha256": "b85bd349bb6918b61c2b7d66f3da23f045f9ec8a7adb01166c83bf97d6702294",
-  "base_files": 1051,
-  "prepared_at": "2026-11-21T00:02:48.324625+00:00",
+  "build": "8.8.20.141",
+  "name": "Crossreel",
+  "seal": "crossreel-8820141",
+  "base": "8.8.20.140",
+  "base_sha256": "e10d6be3b504c6a48e88f8f263b806c79891ca5b7619b7ee0759fd8a65f881c5",
+  "base_files": 1053,
+  "prepared_at": "2026-11-21T00:16:14.591364+00:00",
   "app_component_revision": "8.8.20.132",
   "owner_helper_revision": "8.8.20.68",
-  "feature_notes": "Piggy Vault offers one raise or lower across all three reels when a nudge is available. Three field-practice boards teach center-line reads and an original five-line wild bonus.",
+  "feature_notes": "Piggy Vault and five companion cabinets share a seven-station practice circuit. Harbor Lights adds signal flags and beacon wilds. Missed reads transfer to another cabinet. Five-line results show each path and each award.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -37,9 +37,9 @@
       "automatic_execution_by_upload": false
     }
   },
-  "install_step": "Open Fleet Arcade \u2192 Piggy Vault \u2192 Field practice \u2192 The BAR gap. Press Play and Stop, then raise the middle reel.",
-  "evidence_file": "LINEWATCH_EVIDENCE.json",
-  "base_git_tree": "74d83279bc4b29da57890720ed549deb76dbf13e",
-  "base_git_commit": "ac70c61fa59fe9e5fa46d900a96470dfb879002b",
+  "install_step": "Open Fleet Arcade \u2192 Piggy Vault \u2192 Training circuit \u2192 Start circuit. Press either Play button and press either button again to stop.",
+  "evidence_file": "CROSSREEL_EVIDENCE.json",
+  "base_git_tree": "83fea9aa580d1cb6219d258936c121a30f110777",
+  "base_git_commit": "8c9ef3d5a7d50c7ad4277a2040970e3930780d38",
   "preserve_project_readme": true
 }

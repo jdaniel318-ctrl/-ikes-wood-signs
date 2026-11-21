@@ -1,0 +1,29 @@
+{
+  "build": "8.8.20.141",
+  "base": "8.8.20.140",
+  "source_commit": "8c9ef3d5a7d50c7ad4277a2040970e3930780d38",
+  "offline_checks": [
+    "VERIFY_CROSSREEL.cjs",
+    "VERIFY_LINEWATCH.cjs",
+    "VERIFY_REELSHIFT.cjs",
+    "VERIFY_RELEASE_ALL.cjs"
+  ],
+  "observations": [
+    {
+      "clip": "IMG_0961",
+      "seconds": "11\u201315",
+      "shown": "Raise and Lower prompts, center BAR alignment and win."
+    },
+    {
+      "clip": "IMG_0962",
+      "seconds": "9\u201310, 40\u201344",
+      "shown": "Rules list substitutions and exceptions. One nudge completes the bucket line."
+    },
+    {
+      "clip": "IMG_0963",
+      "seconds": "12\u201315, 21\u201335",
+      "shown": "Center wild win, then five active lines and a separate award."
+    }
+  ],
+  "native_ipad": "Pending"
+}

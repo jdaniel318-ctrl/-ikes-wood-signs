@@ -38,4 +38,4 @@ for(const id of Object.keys(R.games))for(const level of [1,2,3]){
  }
  assert.ok(landed&&empty&&nudges,id);
 }
-console.log('1,215 cabinet spins checked across all five games and three levels, plus the opening kings, optional moves, stop guards and exact-once scoring.');
+console.log('1,458 cabinet spins checked across all six games and three levels, plus the opening kings, optional moves, stop guards and exact-once scoring.');
