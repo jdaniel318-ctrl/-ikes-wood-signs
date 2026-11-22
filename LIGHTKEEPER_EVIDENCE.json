@@ -1,0 +1,8 @@
+{
+  "build": "8.8.20.156",
+  "baseline": "8.8.20.155",
+  "scope": "Ship identity, cloud details, quote references and PDF stationery",
+  "pdf_fixture": "VKT-00003 revision 4, USD 106.00, reproduced from supplied screenshots. Its output bytes match Pilothouse for identical document input.",
+  "live_device_acceptance": "pending",
+  "production_changes": false
+}

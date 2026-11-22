@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.155",
-  "release": "Pilothouse",
-  "seal": "pilothouse-8820155",
+  "build": "8.8.20.156",
+  "release": "Lightkeeper",
+  "seal": "lightkeeper-8820156",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Pilothouse",
-  "name": "Pilothouse",
-  "releaseName": "Pilothouse"
+  "release_name": "Lightkeeper",
+  "name": "Lightkeeper",
+  "releaseName": "Lightkeeper"
 }

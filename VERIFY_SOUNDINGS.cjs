@@ -42,11 +42,15 @@ async function check(){
  fields.qmDocumentStatus.value='all';fields.qmDocumentSearch.value='';
  const docs=Array.from({length:1000},(_,i)=>({id:String(i+1),number:'007-'+String(i+1).padStart(5,'0'),type:'invoice',customer:{name:'Customer '+(i+1)},job:{name:i===0?'Café repair':'General'},status:i%2?'finalized':'draft'}));
  const src=ui.slice(ui.indexOf(' let documentPage='),ui.indexOf(' function renderDocuments'));
- const pager=Function('$','state','documentRow',src+';return {filterDocuments,next(){documentPage++;filterDocuments(false)}}')(id=>fields[id],{documents:docs},d=>'['+d.number+']');
+ const pager=Function('$','state','documentRow','captain',src+';return {filterDocuments,next(){documentPage++;filterDocuments(false)}}')(id=>fields[id],{documents:docs},d=>'['+d.number+']',true);
  pager.filterDocuments();assert.equal(fields.qmDocumentRows.innerHTML.match(/\[/g).length,50);assert.ok(fields.qmDocumentRows.innerHTML.startsWith('[007-01000]'));
  for(let i=0;i<19;i++)pager.next();assert.ok(fields.qmDocumentRows.innerHTML.endsWith('[007-00001]'));assert.equal(fields.qmNextDocuments.hidden,true);
  fields.qmDocumentSearch.value='cafe 00001';pager.filterDocuments();assert.equal(fields.qmDocumentRows.innerHTML,'[007-00001]');
  fields.qmDocumentStatus.value='finalized';pager.filterDocuments();assert.equal(fields.qmDocumentNoMatch.hidden,false);
+ const longRef='VKT-QTE-2026-L'+'A'.repeat(32)+'-000001';
+ docs.push({number:longRef,type:'quote',status:'draft'});
+ fields.qmDocumentStatus.value='all';
+ for(const search of ['VKT-Q000001',longRef]){fields.qmDocumentSearch.value=search;pager.filterDocuments();assert.equal(fields.qmDocumentRows.innerHTML,'['+longRef+']');}
  const sql=fs.readFileSync(__dirname+'/SOUNDINGS_CAPTAIN_DOCUMENTS.sql','utf8');
  for(const marker of ["fh_vessel(project,'captain',true)",'auth.sessions','qm_ship_tools where vessel_id=vessel and enabled for share','qm_require_admiral_scope(s)','from public,anon,authenticated,service_role','p_expected_version is distinct from current_version'])assert.ok(sql.includes(marker),marker);
  const owner=fs.readFileSync(__dirname+'/owner.html','utf8');

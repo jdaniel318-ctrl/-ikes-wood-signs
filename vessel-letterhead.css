@@ -1,0 +1,76 @@
+/* Commissioned-vessel identity. The station assigns the livery after resolving the ship. */
+.captain-station-head[data-station-livery="voyagekeeper"],
+#quartermasterWorkspace[data-qm-livery="voyagekeeper"] .qm-head {
+  background-color:#0d2638;
+  background-image:linear-gradient(90deg,#0d2638 5%,rgba(13,38,56,.97) 24%,rgba(13,38,56,.58) 48%,rgba(13,38,56,.06) 75%),url("./voyagekeeper-headland.webp");
+  background-position:center,right center;
+  background-repeat:no-repeat;
+  background-size:cover,auto 100%;
+  border-color:#ba914e;
+}
+.captain-station-head[data-station-livery="voyagekeeper"] {
+  display:grid; align-content:center; align-items:center; justify-content:stretch;
+  gap:16px; min-height:178px; padding:22px clamp(18px,3vw,42px); border-top-width:2px;
+}
+.captain-station-head[data-station-livery="voyagekeeper"] .station-identity {gap:16px;max-width:70%}
+.captain-station-head[data-station-livery="voyagekeeper"] .station-identity h1,
+#quartermasterWorkspace[data-qm-livery="voyagekeeper"] .qm-head h1 {
+  color:#fff3d7;font-family:Georgia,"Times New Roman",serif;font-weight:600;
+  letter-spacing:-.035em;line-height:1.06;text-wrap:balance;
+}
+.captain-station-head[data-station-livery="voyagekeeper"] .station-identity h1 {font-size:clamp(26px,3.4vw,48px);margin:0 0 7px;}
+.captain-station-head[data-station-livery="voyagekeeper"] .station-ship-mark {
+  width:66px;height:66px;border-radius:50%;border:2px solid #cba262;background:#10283a;color:#ead29b;
+}
+.captain-station-head[data-station-livery="voyagekeeper"] .station-platform {color:#ccd4d2;}
+.captain-station-head[data-station-livery="voyagekeeper"] .captain-handoff-actions {justify-content:flex-start;gap:8px;}
+.captain-station-head[data-station-livery="voyagekeeper"] .captain-handoff-actions .btn {
+  flex:none;background:#10283a;color:#f6f1e4;border:1px solid #718990;min-height:42px;
+}
+.captain-station-head[data-station-livery="voyagekeeper"] ~ .captain-station-columns [data-intent="quote"] {
+  background:#f0cb84;color:#162b34;border-color:#e8bd70;
+}
+#quartermasterWorkspace[data-qm-livery] .qm-head-title>div:last-child {min-width:0;}
+#quartermasterWorkspace[data-qm-livery] .qm-release,
+#quartermasterWorkspace[data-qm-livery] .qm-scope>strong {display:none}
+#quartermasterWorkspace[data-qm-livery] .qm-ship-purpose {display:block;font-size:14px;font-weight:650;margin-top:4px;color:#f4f5ef;}
+#quartermasterWorkspace[data-qm-livery="voyagekeeper"] .qm-head {
+  min-height:102px;padding:14px clamp(14px,2.5vw,28px);border-top:2px solid #c7a66c!important;
+}
+#quartermasterWorkspace[data-qm-livery="voyagekeeper"] .qm-head-title {max-width:67%;gap:13px;}
+#quartermasterWorkspace[data-qm-livery="voyagekeeper"] .qm-head h1 {font-size:clamp(23px,3vw,39px);margin:1px 0 0;overflow-wrap:anywhere;}
+#quartermasterWorkspace[data-qm-livery="voyagekeeper"] .qm-head small {color:#e6c789;letter-spacing:.16em;text-transform:uppercase;}
+#quartermasterWorkspace[data-qm-livery="voyagekeeper"] .qm-brand-mark {
+  display:grid;padding:0;border:1px solid #d5ad68;background:#10283a;border-radius:50%;width:58px;height:58px;overflow:hidden;
+}
+#quartermasterWorkspace[data-qm-livery="voyagekeeper"] .qm-brand-mark img {width:100%;height:100%;object-fit:contain;}
+#quartermasterWorkspace[data-qm-livery="voyagekeeper"] #qmClose {color:#fff8e6;background:#113044;border:1px solid #a0b7b7;}
+#quartermasterWorkspace[data-qm-livery="voyagekeeper"] .qm-business-hero {background:#f3f1e8;border-left:4px solid #ba914e}
+#quartermasterWorkspace[data-qm-livery="voyagekeeper"] .qm-business-hero h2 {font-family:Georgia,serif;color:#183747;}
+#quartermasterWorkspace[data-qm-livery="voyagekeeper"] button.qm-primary:not(:disabled) {background:#f0cb84;color:#172e3a;border-color:#ac813f;}
+#quartermasterWorkspace[data-qm-livery="voyagekeeper"] .qm-tabs button[aria-selected="true"] {color:#173c51;border-bottom-color:#ba914e;background:#edf2f1;}
+#quartermasterWorkspace .qm-reference {display:inline-block;max-width:100%;font:inherit;margin:4px 0;color:#304955}
+#quartermasterWorkspace .qm-reference summary {font:600 13px/1.5 ui-monospace,monospace;cursor:pointer;padding:5px 0;}
+#quartermasterWorkspace .qm-reference code {display:block;max-width:100%;overflow-wrap:anywhere;font-size:12px;}
+#quartermasterWorkspace .qm-reference>span {font-size:12px;display:block;}
+#quartermasterWorkspace .qm-sync-details {margin:0 0 10px;border-bottom:1px solid #d9e1dd;}
+#quartermasterWorkspace .qm-sync-details summary {width:fit-content;cursor:pointer;padding:9px 2px;color:#3d595e;font-size:13px;font-weight:650;}
+#quartermasterWorkspace :is(.qm-reference,.qm-sync-details)>summary:focus-visible {outline:2px solid #14667d;outline-offset:2px;}
+@media(max-width:660px){
+  .captain-station-head[data-station-livery="voyagekeeper"] {gap:11px;min-height:148px;padding:14px 12px;background-size:cover,auto 100%;background-position:center,68% center;}
+  .captain-station-head[data-station-livery="voyagekeeper"] .station-identity {gap:8px;max-width:86%;}
+  .captain-station-head[data-station-livery="voyagekeeper"] .station-identity h1 {font-size:26px;}
+  .captain-station-head[data-station-livery="voyagekeeper"] .station-ship-mark {width:42px;height:42px;}
+  .captain-station-head[data-station-livery="voyagekeeper"] .captain-handoff-actions {display:flex;flex-wrap:wrap;}
+  .captain-station-head[data-station-livery="voyagekeeper"] .captain-handoff-actions .btn {width:auto;padding:6px 10px;font-size:11px;}
+  #quartermasterWorkspace[data-qm-livery="voyagekeeper"] .qm-head {min-height:76px;gap:6px;padding:8px 10px;background-position:center,70% center;}
+  #quartermasterWorkspace[data-qm-livery="voyagekeeper"] .qm-head-title {gap:6px;max-width:71%;}
+  #quartermasterWorkspace[data-qm-livery="voyagekeeper"] .qm-head-title small {display:none;}
+  #quartermasterWorkspace[data-qm-livery="voyagekeeper"] .qm-brand-mark {width:34px;height:34px;}
+  #quartermasterWorkspace[data-qm-livery="voyagekeeper"] .qm-head h1 {font-size:clamp(18px,5.2vw,25px);}
+  #quartermasterWorkspace[data-qm-livery] .qm-ship-purpose {font-size:12px;margin-top:2px;}
+  #quartermasterWorkspace[data-qm-livery="voyagekeeper"] #qmClose {min-width:64px;max-width:91px;font-size:11px;}
+}
+#quartermasterWorkspace[data-qm-editing][data-qm-livery="voyagekeeper"] .qm-head {min-height:44px;padding-block:4px;}
+#quartermasterWorkspace[data-qm-editing][data-qm-livery] .qm-ship-purpose,
+#quartermasterWorkspace[data-qm-editing][data-qm-livery] .qm-brand-mark {display:none;}

@@ -164,7 +164,7 @@
 .station-completed{margin-top:10px}.station-completed summary{cursor:pointer}.station-completed[open] summary{margin-bottom:8px}
 </style>
 <link rel="stylesheet" href="business_deck.css?v=livery-8820109" onerror="window.__workhorseDeckStylesFailed=true">
-<script id="blackFlagPageRelease">window.__blackFlagPageRelease=Object.freeze({build:'8.8.20.155',seal:'pilothouse-8820155',name:'Pilothouse'});</script>
+<script id="blackFlagPageRelease">window.__blackFlagPageRelease=Object.freeze({build:'8.8.20.156',seal:'lightkeeper-8820156',name:'Lightkeeper'});</script>
 <script src="input_hygiene.js?v=fairlead-882068"></script>
 <script src="service_address_fleet.js?v=streetwise-882096"></script>
 <script src="service_address.js?v=portolan-882098"></script>
@@ -180,7 +180,8 @@
 #captainDocumentTools[hidden],#captainDocumentTools [hidden]{display:none!important}
 #captainDocumentTools>details>summary{cursor:pointer;padding:12px 0;font-weight:700}
 #captainDocumentTools>details>p{line-height:1.5}
-</style></head>
+</style><link rel="stylesheet" href="vessel-letterhead.css">
+</head>
 <body>
 <div id="app" class="shell">
   <section id="safeShell" class="route-safe">
@@ -247,7 +248,7 @@
   <section id="portal" class="portal hidden">
     <div class="portal-wrap">
       <header class="portal-head">
-        <div class="bd-brand-heading"><div id="businessHeaderLogo" aria-hidden="true"></div><div><div class="eyebrow" id="ownerInstalledRelease">8.8.20.155 · QUARTERMASTER</div><h1 id="portalName" tabindex="-1">Business</h1><span class="owner-badge">● SECURE OWNER SESSION</span><div id="ownerScopeNote" class="owner-scope-note">Verified for this business only</div></div></div>
+        <div class="bd-brand-heading"><div id="businessHeaderLogo" aria-hidden="true"></div><div><div class="eyebrow" id="ownerInstalledRelease">8.8.20.156 · QUARTERMASTER</div><h1 id="portalName" tabindex="-1">Business</h1><span class="owner-badge">● SECURE OWNER SESSION</span><div id="ownerScopeNote" class="owner-scope-note">Verified for this business only</div></div></div>
         <div class="head-actions"><button id="returnEngine" class="btn ghost hidden">RETURN TO BLACK FLAG</button><a id="shipPayments" class="btn ghost" href="./fleet-payments.html" target="_blank" rel="noopener noreferrer">PAYMENTS ↗</a><button id="signOut" class="btn secondary">SIGN OUT</button></div>
       </header>
       <nav id="businessDeckNav" class="bd-owner-nav" aria-label="Business workspace"></nav>
@@ -643,8 +644,8 @@ window.DarkSkyVesselHelpHost=Object.freeze({
     ['beccas-bloom-shop',['fleet-becca.webp','#d998b3']],
     ['grizzly-bear',['fleet-grizzly.webp','#d4ae79']],
     ['mugshot-after-dark',['fleet-mugs.webp','#d99977']],
-    ['bf-p-42be92cbac12',['fleet-voyagekeeper.webp','#6cb9db']],
-    ['bf-p-fc2816b8254a4845',['fleet-voyagekeeper.webp','#6cb9db']],
+    ['bf-p-42be92cbac12',['fleet-voyagekeeper.webp','#6cb9db','voyagekeeper']],
+    ['bf-p-fc2816b8254a4845',['fleet-voyagekeeper.webp','#6cb9db','voyagekeeper']],
     ['ikes-wood-signs',['ike_character.png','#d7ac77']],
     ['bor-north-richmond',['signal_restoration_logo.png','#e99d72']],
     ['bf-p-f92f87e8ec44',['assets/legacy_plumbing_canonical_logo.jpeg','#82abe2']],
@@ -656,8 +657,8 @@ window.DarkSkyVesselHelpHost=Object.freeze({
     const name=String(access.display_name||'Vessel');
     const palette=['#7ac5bf','#d6ac79','#a8b6e1','#b2cb92'];
     const hash=Array.from(projectId).reduce((n,char)=>(31*n+char.codePointAt(0))>>>0,0);
-    const [localMark,accent]=stationLiveries.get(projectId)||['',palette[hash%palette.length]];
-    const brand={name,logoUrl:localMark,accent};
+    const [localMark,accent,livery="ship"]=stationLiveries.get(projectId)||['',palette[hash%palette.length]];
+    const brand={name,logoUrl:localMark,localMark,accent,livery};
     const initials=name.trim().split(/\s+/u).slice(0,2).map(word=>Array.from(word)[0]).join('').toUpperCase();
     const pending=orders.filter(row=>String(row.status||'New').toLowerCase()!=='completed');
     const completed=orders.filter(row=>String(row.status||'New').toLowerCase()==='completed');
@@ -670,7 +671,7 @@ window.DarkSkyVesselHelpHost=Object.freeze({
         </section>`;
     document.title=String(access.display_name||'Vessel')+' · Captain Station';
     shell(`
-      <header class="captain-handoff-head captain-station-head" style="--ship-accent:${accent}">
+      <header class="captain-handoff-head captain-station-head" data-station-livery="${livery}" style="--ship-accent:${accent}">
         <div class="station-identity"><div class="station-ship-mark" aria-hidden="true"><span>${esc(initials)}</span><img id="stationShipMark" alt="" hidden></div><div>
           <h1>${esc(name)}</h1>
           <p class="captain-station-sub"><span>Vessel Captain Station</span><span class="captain-stage-tag">${esc(lifecycle.toUpperCase())}</span><span>${esc(operating)}</span></p><small class="station-platform">Black Flag · Quartermaster</small></div>

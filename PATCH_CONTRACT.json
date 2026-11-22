@@ -1,18 +1,18 @@
 {
   "schema": "blackflag-patch-contract-v1",
-  "target_build": "8.8.20.155",
-  "target_seal": "pilothouse-8820155",
+  "target_build": "8.8.20.156",
+  "target_seal": "lightkeeper-8820156",
   "supported_bases": [
     {
-      "build": "8.8.20.154",
-      "source_sha256": "7c4b323adce84653ac758771fca10591dda92b0e4f558e0542d7adcedb601c60",
-      "file_count": 1090
+      "build": "8.8.20.155",
+      "source_sha256": "b5eda5e247c0bb1f1308fc0f7e2a406959012e43f08b10d723be46e2d1eede23",
+      "file_count": 1095
     }
   ],
   "requires_deletions": false,
   "max_upload_files": 85,
   "database_actions": "none",
-  "rule": "Upload every changed/new root file over complete 8.8.20.154. Keep everything else. This software archive executes no database commands.",
+  "rule": "Upload every changed/new root file over complete 8.8.20.155. Keep everything else. This software archive executes no database commands.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -65,7 +65,7 @@
       "requires": [
         "SOUNDINGS_CAPTAIN_DOCUMENTS.sql"
       ],
-      "status": "packaged_for_activation",
+      "status": "retained_pilothouse_prerequisite",
       "automatic_execution_by_upload": false
     }
   }

@@ -96,6 +96,17 @@ def prepare(files,config):
 
 `{name}-Source.zip` is a full application source backup. To restore the previous software, upload the contents of `{name}-Rollback.zip` to the same root. Keep the Admiral-only database setup in place. Never restore old permissions or business data. Business records and customer media are stored separately.
 '''.encode()
+ if config.get('presentation_only'):
+  out['UPLOAD_THIS_ONE_BUILD.md']=f'''# {name} {build}
+
+1. Unzip {name}.zip in Files and open the folder inside.
+2. Upload its contents together to the existing repository root over {base}. Replace matching files and keep the rest.
+3. Commit the upload. The Engine will display {build} · {name.upper()} after deployment.
+
+{config.get("feature_notes", "")}
+
+This update uses the existing Pilothouse database setup. Never restore old permissions or business data during software rollback. {name}-Source.zip contains the complete application source. {name}-Rollback.zip restores the preceding software version.
+'''.encode()
  architecture=f'''# Current architecture — {name} {build}\n\nSource of release identity: RELEASE_CONFIG.json. Installed page/manifest/seal/worker identity is generated together. APP_COMPONENT_REVISION is {config['app_component_revision']}; owner helper revision is {config['owner_helper_revision']}. Unchanged component bodies remain byte-identical across release-only changes.\n\nThe Engine still verifies every required body, current governance models, app component contract and worker identity before executing the same script sequence. App and Captain bind audit/display freshness to the verified installed release. This context never grants permissions. The owner page keeps explicit helper compatibility checks.\n\n{feature_notes}\nBackend prerequisites are recorded separately in PATCH_CONTRACT.json. Release preparation executes no database commands. Fleet core and Admiral programs remain distinct.\n\n## Release commands\nPrepare known identity fields: `python3 -B PREPARE_RELEASE.py .` (resets test status to untested; never deploys).\nSeal reviewed bytes only: `python3 -B PREPARE_RELEASE.py . --seal-only`.\nVerify: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`.\nPackage: `python3 -B BUILD_RELEASE.py . --baseline <exact prior full-source ZIP> --out <new external directory>`.\n\nPrevious release guides/scripts are retained historical material; do not run their release-pinned sealers on this release.\nNative Safari/hosted integration is separate from offline checks. Source backup is not business-data restore.\n'''
  current_block(out,'CURRENT_ARCHITECTURE.md',architecture)
  return seal(out)

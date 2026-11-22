@@ -1,10 +1,10 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Pilothouse 8.8.20.155
+# Black Flag Lightkeeper 8.8.20.156
 
 Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
-Baseline: 8.8.20.154. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Baseline: 8.8.20.155. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
 Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
-Admirals assign Quotes & invoices by ship. Captains enter their branded station, start quotes and invoices directly, save and review flat jobs in one step, and prepare the finalized PDF.
+VoyageKeeper’s engraved coastline and ship crest lead the Captain Station and quote workspace. New customer PDFs use its letterhead. Saved historical documents retain their original rendering.
 Preparation does not deploy frontend or backend changes. See PATCH_CONTRACT.json for separately managed backend prerequisites.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 
