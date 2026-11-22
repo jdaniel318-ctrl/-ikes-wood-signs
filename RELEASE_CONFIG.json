@@ -1,15 +1,15 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.153",
-  "name": "Waybill",
-  "seal": "waybill-8820153",
-  "base": "8.8.20.152",
-  "base_sha256": "120f2ee02f47733b25ee33267781ffc084850d4e730a4a526be7b498fbe2ed37",
-  "base_files": 1084,
-  "prepared_at": "2026-11-22T00:03:47.255055+00:00",
+  "build": "8.8.20.154",
+  "name": "Soundings",
+  "seal": "soundings-8820154",
+  "base": "8.8.20.153",
+  "base_sha256": "bf723ffb21be6d8e5cff6712c14c4fb9407c7db97e9fa924b4a411f2c56bbb0d",
+  "base_files": 1085,
+  "prepared_at": "2026-11-22T00:48:11.472714+00:00",
   "app_component_revision": "8.8.20.132",
   "owner_helper_revision": "8.8.20.68",
-  "feature_notes": "The payment desk shows the invoice number, subtotal, sales tax and total supplied by Quotes & invoices. Its split preview uses the invoice amounts and two adjustable example fees.",
+  "feature_notes": "An appointed Captain can opt into private, ship-owned quote and invoice books in the Captain Station. Enter a flat job amount on the first screen, use the ship catalog for itemized work, and search or page through saved documents.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -42,9 +42,21 @@
       "sql_sha256": "7f97a6ac91982c6449a2e0d2f34a9927856c780f26525923a55d54aeba7e20d9",
       "status": "packaged_for_activation",
       "automatic_execution_by_upload": false
+    },
+    "captain_documents": {
+      "migration": "SOUNDINGS_CAPTAIN_DOCUMENTS.sql",
+      "sql_sha256": "1e4bc2926c1a4976209d11b65cdaff06f0b1d94ae3c75beeae452f17ee25bf83",
+      "automatic_execution_by_upload": false,
+      "status": "manual_install_required",
+      "requires": [
+        "Trade Winds",
+        "Tally",
+        "Signalman",
+        "active Captain appointment"
+      ]
     }
   },
-  "install_step": "Open a finalized invoice in Quotes & invoices and select Review in payment desk. Compare its number and total with the invoice preview.",
-  "evidence_file": "WAYBILL_EVIDENCE.json",
+  "install_step": "To make the optional Captain tool available, install SOUNDINGS_CAPTAIN_DOCUMENTS.sql once in the fleet database. Each ship starts with the tool off. In Captain Station, open Ship tools, then Quotes & invoices.",
+  "evidence_file": "SOUNDINGS_EVIDENCE.json",
   "preserve_project_readme": true
 }

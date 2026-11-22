@@ -1,0 +1,27 @@
+{
+  "build": "8.8.20.154",
+  "base": "8.8.20.153",
+  "verification": "VERIFY_SOUNDINGS.cjs",
+  "cases": [
+    "Flat-price documents and immutable conversion",
+    "Private ship entrance and manual opt-in",
+    "Search and paging through 1,000 synthetic documents"
+  ],
+  "native_iPad": "pending",
+  "production_database": "not contacted",
+  "software_rollback": "Waybill",
+  "optional_database_rollback": "SOUNDINGS_DISABLE_CAPTAIN_DOCUMENTS.sql",
+  "browser_check": {
+    "environment": "Chromium, in-memory service, IndexedDB, two fictional ships and separate simulated Captains",
+    "checks": [
+      "default off",
+      "opt in from Captain Station",
+      "flat-price invoice 007-00001, $100 plus $6 tax",
+      "finalized PDF 007-00001.pdf",
+      "separate second ship",
+      "retained invoice after turning off, turning on and changing Captain",
+      "workspace closed on appointment revocation"
+    ]
+  },
+  "database_engine_test": "Server migration has not been run against a PostgreSQL instance in this release check."
+}

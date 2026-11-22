@@ -1,20 +1,20 @@
 {
   "schema": "blackflag-release-gate-v1",
-  "build": "8.8.20.153",
-  "release": "Waybill",
+  "build": "8.8.20.154",
+  "release": "Soundings",
   "pass": false,
-  "pass_scope": "Offline release suites and a browser check of an invoice split with the payment service unavailable.",
+  "pass_scope": "Offline release regression suites and a browser workflow with fictional ships and a simulated service.",
   "verification_status": "OFFLINE_VERIFIED_NATIVE_PENDING",
-  "evidence_file": "WAYBILL_EVIDENCE.json",
+  "evidence_file": "SOUNDINGS_EVIDENCE.json",
   "native_safari_acceptance": "PENDING",
   "database_actions": "None",
-  "backend_prerequisite": "Invoice preview requires the existing finalized invoice handoff. A customer payment link requires a configured payment service and ship verification.",
+  "backend_prerequisite": "Captain access requires the manual Soundings setup in a fleet database with commissioning, Signalman, Trade Winds and Tally. Production database and physical iPad checks are pending.",
   "customer_data_changes": false,
   "production_certification": false,
   "frontend_deployed": false,
-  "backup_restore": "Restore the included software rollback to return to Tally.",
+  "backup_restore": "Software rollback returns to Waybill. SOUNDINGS_DISABLE_CAPTAIN_DOCUMENTS.sql restores the installed Admiral workspace guard and retains ship records.",
   "performance_improvement_claim": false,
-  "offline_suite_count": 77,
+  "offline_suite_count": 78,
   "native_compilation": "NOT_APPLICABLE_STATIC_WEB_APP",
-  "offline_suites_passed": 77
+  "offline_suites_passed": 78
 }

@@ -1,11 +1,11 @@
 {
   "schema": "blackflag.business-support-capability.v1",
-  "build": "8.8.20.50",
-  "release": "Quartermaster",
+  "build": "8.8.20.154",
+  "release": "Soundings",
   "capability_id": "business.quotes-invoices",
   "administrative_home": "Admiral Business Support",
-  "implemented_scope": "authenticated local device workspace; no remote business writes",
-  "storage": "IndexedDB blackflag-quartermaster-v1 / workspaces",
+  "implemented_scope": "Private Admiral business workspaces and optional ship-owned books in the appointed Captain Station.",
+  "storage": "Device or Trade Winds for the Admiral. Server-backed ship scope for the Captain, with separate per-user draft recovery.",
   "scope_dimensions": [
     "verified account",
     "identity backend",
@@ -27,11 +27,14 @@
     "finalized immutable copies",
     "quote-linked invoice",
     "offline customer PDF",
-    "private backup and matching empty-workspace restore"
+    "private backup and matching empty-workspace restore",
+    "flat job charge on quotes and invoices",
+    "search and paging for the full document list",
+    "per-ship choice with retained records"
   ],
-  "numbering": "Atomic local series includes installation identifier; not reserved in a shared production registry.",
-  "authority": "Existing strict Admiral PIN/account/server authority gate; local side effects require current verified scope. No new Captain or owner permissions are granted.",
-  "customer_experience": "Existing customer journeys retain their branding and behavior. Internal costs and support controls do not enter customer PDFs.",
+  "numbering": "Shared fleet invoice series where Tally is available. Ship Captain invoices require a fleet reservation.",
+  "authority": "The Captain needs an active session, an accepted appointment and active membership for the exact ship, an eligible tool and a saved ship opt-in.",
+  "customer_experience": "The Captain Station holds the editor. A Captain can deliberately share a document PDF.",
   "househull": "Estimator-operated. Planned HouseHull workspace is explicitly local and does not commission a vessel. Product conversion and measurement rules require future verified implementation.",
   "automatic_actions": {
     "send": false,
@@ -43,12 +46,9 @@
     "permission_grant": false
   },
   "not_implemented": [
-    "cloud invoice registry",
-    "multi-device synchronization",
-    "shared staff writes",
     "automatic supplier purchase orders",
     "automatic takeoff from photos",
-    "production role or entitlement activation"
+    "automatic payment or ledger posting"
   ],
   "backup_capacity_bytes": 26214400,
   "finalization": "Exact customer PDF is prepared before the guarded immutable snapshot is committed."

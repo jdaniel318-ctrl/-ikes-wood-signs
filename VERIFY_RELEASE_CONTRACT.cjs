@@ -13,7 +13,12 @@ check('current model build declarations agree',()=>{for(const [f,v]of Object.ent
 check('all model hashes',()=>{for(const [f,v]of Object.entries(manifest.model_integrity.files))assert.equal(sha(f),v.sha256,f);});
 check('every required dependency exists',()=>{for(const f of manifest.required_runtime_files)assert(fs.existsSync(path.join(root,f)),f);});
 check('complete source inventory',()=>{function walk(dir){return fs.readdirSync(dir,{withFileTypes:true}).filter(e=>!(dir===root&&['.git','.openai','__pycache__'].includes(e.name))).flatMap(e=>e.isDirectory()?walk(path.join(dir,e.name)):[path.relative(root,path.join(dir,e.name)).replaceAll(path.sep,'/')]);}const actual=walk(root).sort();assert.equal(actual.length,inventory.file_count);assert.deepEqual(actual,inventory.files);});
-check('all root JavaScript parses',()=>{for(const f of fs.readdirSync(root).filter(f=>f.endsWith('.js')))new vm.Script(text(f),{filename:f});});
+check('all root JavaScript parses',()=>{for(const f of fs.readdirSync(root).filter(f=>f.endsWith('.js'))){
+ if(f==='captain_documents.js'){
+  const result=require('node:child_process').spawnSync(process.execPath,['--input-type=module','--check'],{input:text(f),encoding:'utf8'});
+  assert.equal(result.status,0,result.stderr);
+ }else new vm.Script(text(f),{filename:f});
+}});
 check('inline HTML scripts parse',()=>{for(const file of ['owner.html','index.html'])for(const m of text(file).matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi))if(!/\bsrc=|type=["']application\/json/.test(m[1]))new vm.Script(m[2],{filename:file});});
 check('new current documents agree',()=>{for(const f of ['CURRENT_ARCHITECTURE.md','UPLOAD_THIS_ONE_BUILD.md','CURRENT_BASELINE.json'])assert(text(f).includes(manifest.build),f);});
 check('software archive executes no database actions and retained ClearDeck authority contract is unchanged',()=>{assert.equal(json('PATCH_CONTRACT.json').database_actions,'none');assert.equal(manifest.cleardeck_upgrade.authority_changes,false);assert.equal(manifest.cleardeck_upgrade.storage_changes,false);});

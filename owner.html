@@ -150,7 +150,7 @@
 @media(max-width:700px){.tb-security-form,.tb-recovery-grid{grid-template-columns:1fr}.tb-security-form>.captain-handoff-actions{grid-column:auto}}
 </style>
 <link rel="stylesheet" href="business_deck.css?v=livery-8820109" onerror="window.__workhorseDeckStylesFailed=true">
-<script id="blackFlagPageRelease">window.__blackFlagPageRelease=Object.freeze({build:'8.8.20.153',seal:'waybill-8820153',name:'Waybill'});</script>
+<script id="blackFlagPageRelease">window.__blackFlagPageRelease=Object.freeze({build:'8.8.20.154',seal:'soundings-8820154',name:'Soundings'});</script>
 <script src="input_hygiene.js?v=fairlead-882068"></script>
 <script src="service_address_fleet.js?v=streetwise-882096"></script>
 <script src="service_address.js?v=portolan-882098"></script>
@@ -162,7 +162,11 @@
 <link rel="stylesheet" href="fleet_viewport.css?crestline=8820111"><script src="fleet_viewport.js?crestline=8820111"></script><script src="headway_contracts.js?harborhold=882049"></script>
 <link rel="stylesheet" href="countercraft.css"><link rel="stylesheet" href="carvewright.css"><link rel="stylesheet" href="carvewright_machining.css">
 <script src="countercraft_config.js"></script><script src="countercraft_privacy.js"></script><script src="carve_fonts.js"></script><script src="carve_core.js"></script><script src="fleet_design_assets.js"></script><script src="carvewright_core.js"></script><script src="boardcraft_photo.js"></script><script src="carvewright_clipper.js"></script><script src="carvewright_cam.js"></script><script src="carvewright_portable.js"></script><script src="carvewright_posts.js"></script><script src="carvewright_machining.js"></script><script src="carvewright_studio.js"></script><script src="ike_shop_core.js"></script><script src="countercraft_core.js"></script><script src="countercraft_store.js"></script><script src="countercraft_client.js"></script><script src="countercraft_flow.js"></script><script src="countercraft_owner_core.js"></script><script src="countercraft_backup.js"></script><script src="countercraft_exports.js"></script><script src="countercraft_owner.js"></script>
-</head>
+<style>
+#captainDocumentTools[hidden],#captainDocumentTools [hidden]{display:none!important}
+#captainDocumentTools>details>summary{cursor:pointer;padding:12px 0;font-weight:700}
+#captainDocumentTools>details>p{line-height:1.5}
+</style></head>
 <body>
 <div id="app" class="shell">
   <section id="safeShell" class="route-safe">
@@ -229,7 +233,7 @@
   <section id="portal" class="portal hidden">
     <div class="portal-wrap">
       <header class="portal-head">
-        <div class="bd-brand-heading"><div id="businessHeaderLogo" aria-hidden="true"></div><div><div class="eyebrow" id="ownerInstalledRelease">8.8.20.153 · QUARTERMASTER</div><h1 id="portalName" tabindex="-1">Business</h1><span class="owner-badge">● SECURE OWNER SESSION</span><div id="ownerScopeNote" class="owner-scope-note">Verified for this business only</div></div></div>
+        <div class="bd-brand-heading"><div id="businessHeaderLogo" aria-hidden="true"></div><div><div class="eyebrow" id="ownerInstalledRelease">8.8.20.154 · QUARTERMASTER</div><h1 id="portalName" tabindex="-1">Business</h1><span class="owner-badge">● SECURE OWNER SESSION</span><div id="ownerScopeNote" class="owner-scope-note">Verified for this business only</div></div></div>
         <div class="head-actions"><button id="returnEngine" class="btn ghost hidden">RETURN TO BLACK FLAG</button><a id="shipPayments" class="btn ghost" href="./fleet-payments.html" target="_blank" rel="noopener noreferrer">PAYMENTS ↗</a><button id="signOut" class="btn secondary">SIGN OUT</button></div>
       </header>
       <nav id="businessDeckNav" class="bd-owner-nav" aria-label="Business workspace"></nav>
@@ -307,7 +311,7 @@ window.DarkSkyVesselHelpHost=Object.freeze({
   const root=document.getElementById('app'),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   if(!input || input.build!==HELPER_COMPONENT_BUILD){root.innerHTML='<section class="route-safe"><div class="card"><h1>Test build files do not match</h1><p>Upload the complete Quartermaster folder contents, then reopen this page. No sign-in or vessel command was sent.</p></div></section>';return;}
   const client=window.DarkSkySupabase.create({url:SUPABASE_URL,publishableKey:SUPABASE_KEY,sessionKey:SESSION_KEY,build:BUILD,guardSession:true});
-  let appointment=null,access=null,orders=[],watch=null,busy=false,stationEpoch=0,person=null,myAppointments=[],securityController=null,closeCaptainHelp=null;
+  let appointment=null,access=null,orders=[],watch=null,busy=false,stationEpoch=0,person=null,myAppointments=[],securityController=null,closeCaptainHelp=null,closeCaptainDocuments=null;
 
   // Names below come from the unchanged release muster. No server roster or
   // business data is read before authentication. Names are not permissions.
@@ -510,7 +514,7 @@ window.DarkSkyVesselHelpHost=Object.freeze({
     lastCaptainLanding = key;
     stopCaptainLanding = window.BlackFlagViewport.landAtHeader(root.querySelector('h1'));
   }
-  function shell(content,view='handoff'){stopCaptainLanding?.();stopCaptainLanding=null;closeCaptainHelp?.();closeCaptainHelp=null;root.innerHTML=`<main class="captain-handoff" data-view="${esc(view)}"><div class="captain-handoff-shell">${content}</div></main>`;}
+  function shell(content,view='handoff'){closeCaptainDocuments?.();closeCaptainDocuments=null;stopCaptainLanding?.();stopCaptainLanding=null;closeCaptainHelp?.();closeCaptainHelp=null;root.innerHTML=`<main class="captain-handoff" data-view="${esc(view)}"><div class="captain-handoff-shell">${content}</div></main>`;}
   function header(title=destination(),sub='Vessel Captain sign-in'){
     const verified=!!(access?.project_id===projectId||appointment?.project_id===projectId);
     const note=projectId?(verified?'Vessel identity from your authenticated response.':DIRECTORY[projectId]?'Destination from the release directory. Account authority is checked after sign-in.':'Requested project: '+projectId+'. Identity must be resolved after sign-in.'):(person?'Only assignments returned for your signed-in account are shown.':'Sign in to list only your assigned vessels.');
@@ -659,11 +663,19 @@ window.DarkSkyVesselHelpHost=Object.freeze({
           <div class="captain-handoff-actions"><button id="captainPublishWatch" class="btn primary">PUBLISH WATCH UPDATE</button></div>
           <p class="captain-station-last-report">${watch?.has_report?'Last report: '+new Date(watch.reported_at).toLocaleString()+' · '+esc(watch.source_label||'VESSEL CAPTAIN'):'No prior Captain watch report.'}</p>
         </section>
-      </div><div id="captainFleetHelp"></div>${recoveryMarkup()}${accountSecurityMarkup()}`, 'station');
+      </div><section id="captainDocumentTools" class="captain-handoff-panel" hidden></section><div id="captainFleetHelp"></div>${recoveryMarkup()}${accountSecurityMarkup()}`, 'station');
     enterCaptainWorkspace('station:'+projectId);
     const authority=access,assignment=appointment,epoch=stationEpoch,scope=projectId,userId=person?.id;
     if(authority.ok===true&&authority.project_id===scope&&authority.vessel_id&&authority.appointment_id
       &&assignment?.appointment_id===authority.appointment_id&&assignment.status==='accepted'&&!assignment.revoked_at){
+      const documentTools=document.getElementById('captainDocumentTools');
+      const stillAppointed=()=>stationEpoch===epoch&&projectId===scope&&access===authority&&appointment===assignment&&person?.id===userId&&documentTools.isConnected;
+      import('./captain_documents.js?v='+encodeURIComponent(BUILD)).then(({mountCaptainDocuments})=>{
+        if(!stillAppointed())return;
+        closeCaptainDocuments=mountCaptainDocuments(documentTools,{build:BUILD,projectId:scope,vesselId:authority.vessel_id,
+          name:authority.display_name,userId,backend:SUPABASE_URL,environment:'staging',client,active:stillAppointed});
+        documentTools.hidden=false;
+      }).catch(()=>{if(stillAppointed()){documentTools.hidden=false;documentTools.textContent='Ship tools could not load. Refresh the station to try again.';}});
       closeCaptainHelp=window.DarkSkyVesselHelpHost?.mount(document.getElementById('captainFleetHelp'),{
         role:'captain',projectId:scope,projectName:authority.display_name,screen:'Vessel Captain Station',client,userId,
         active:()=>stationEpoch===epoch&&projectId===scope&&access===authority&&appointment===assignment&&person?.id===userId

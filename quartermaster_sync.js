@@ -5,8 +5,8 @@
  const clone=x=>JSON.parse(JSON.stringify(x));
  const stable=x=>Array.isArray(x)?'['+x.map(stable).join(',')+']':x&&typeof x==='object'?'{'+Object.keys(x).sort().map(k=>JSON.stringify(k)+':'+stable(x[k])).join(',')+'}':JSON.stringify(x);
  const fail=(message,code)=>{throw Object.assign(Error(message),{code});};
- function create({scope,client,guard,indexedDB,core}){
-  scope=clone(scope);core.blankWorkspace(scope);const key=stable(scope),originId=g.crypto.randomUUID();let closed=false,connection=null,opening=null,cache=null,revision=0,savedAt=null,pending=false,serial=Promise.resolve();
+ function create({scope,client,guard,indexedDB,core,journalOwner,initialWorkspace}){
+  scope=clone(scope);core.blankWorkspace(scope);const key=journalOwner?stable([scope,journalOwner]):stable(scope),originId=g.crypto.randomUUID();let closed=false,connection=null,opening=null,cache=null,revision=0,savedAt=null,pending=false,serial=Promise.resolve();
   function check(){if(closed)fail('Workspace transport is closed.','CLOSED');if(guard()===false)fail('The account or workspace changed.','AUTH');}
   function validate(w){return core.validateBackup({schema:'blackflag.quartermaster.backup.v1',workspace:clone(w)},scope);}
   function capacity(w){if(new TextEncoder().encode(JSON.stringify(w)).length>CLOUD_MAX_BYTES)fail('This business exceeds the 5 MiB across-devices pilot capacity. Device records remain intact.','CAPACITY');}
@@ -29,7 +29,7 @@
   }
   async function preference(mode){if(mode!==undefined){if(!['local','cloud'].includes(mode))fail('Unknown storage mode.','VALIDATION');await record('mode',()=>mode);}return await record('mode')||'local';}
   async function inspect(){pending=!!await record('pending');return read();}
-  async function open(){const r=await inspect();if(!r.workspace)fail('No cloud workspace exists for this business. Preview device records before enabling across devices.','MISSING');return clone(r.workspace);}
+  async function open(){const r=await inspect();if(!r.workspace&&initialWorkspace){cache=clone(initialWorkspace);return clone(cache);}if(!r.workspace)fail('No cloud workspace exists for this business. Preview device records before enabling across devices.','MISSING');return clone(r.workspace);}
   async function clearPending(id){await record('pending',r=>r?.operationId===id?undefined:r);pending=!!await record('pending');}
   async function send(command){
    check();let r;
@@ -67,7 +67,7 @@
    });serial=work.catch(()=>{});return work;},close(){closed=true;}
   };
   async function putRecovery(id,value){check();if(typeof id!=='string'||id.length>160||!id)fail('Recovery identity is invalid.','VALIDATION');const v=clone(value);if(!v.document||v.document.business?.id!==scope.businessId||!Number.isSafeInteger(v.baseRevision)||!['cloud','local'].includes(v.mode))fail('Recovery belongs to a different business.','SCOPE');if(new TextEncoder().encode(JSON.stringify(v)).length>core.BACKUP_MAX_BYTES)fail('Recovery is too large for this device.','CAPACITY');await record('recovery:'+id,()=>({id,scope:clone(scope),value:v,updatedAt:new Date().toISOString()}));}
-  async function getRecovery(){const database=await db();check();const all=await new Promise((resolve,reject)=>{const tx=database.transaction('records'),os=tx.objectStore('records'),r=os.getAll(IDBKeyRange.bound([key,'recovery:'],[key,'recovery:\uffff']));r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});check();return all.filter(r=>stable(r.scope)===key).map(clone);}
+  async function getRecovery(){const database=await db();check();const all=await new Promise((resolve,reject)=>{const tx=database.transaction('records'),os=tx.objectStore('records'),r=os.getAll(IDBKeyRange.bound([key,'recovery:'],[key,'recovery:\uffff']));r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});check();return all.filter(r=>stable(r.scope)===stable(scope)).map(clone);}
   async function removeRecovery(id){await record('recovery:'+id,()=>undefined);}
   return Object.freeze({scope:clone(scope),inspect,enable,open,persistence,preference,checkPending,retryPending,discardPending,getPending:async()=>{const r=await record('pending');pending=!!r;return r;},getRecovery,putRecovery,removeRecovery,
    status:()=>({cloudRevision:revision,savedAt,pending}),close(){closed=true;if(connection)connection.close();connection=null;cache=null;}});

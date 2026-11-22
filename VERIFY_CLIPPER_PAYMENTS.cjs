@@ -63,18 +63,19 @@ async function main() {
   const start = ui.indexOf("if(b.id==='qmPaymentDesk'){");
   const end = ui.indexOf('if(!allowed()||busy)return;', start);
   assert.ok(start >= 0 && end > start);
-  const openPayment = new Function('b','allowed','busy','dirty','saveError','state','doc','selected','g','actor','location', ui.slice(start, end));
+  const openPayment = new Function('b','allowed','busy','dirty','saveError','state','doc','selected','g','actor','location','captain', ui.slice(start, end));
   const saved = {id:'test-doc', status:'finalized', type:'invoice', number:'VKT-00001',
     isSample:false, taxConfirmed:true, business:{name:'VoyageKeeper Recovery Test'},
     lines:[{quantity:'1',unitPrice:'85.25'}], taxRate:'6'};
   let url;
   const globals = {BlackFlagQuartermaster:require('./quartermaster_core.js'), open:href => {url = new URL(href);}};
-  const open = () => openPayment({id:'qmPaymentDesk'}, () => true, false, false, false,
-    {documents:[saved]}, saved, 'ship-vkt', globals, {environment:'staging'}, {href:'https://fleet.example.org/index.html'});
+  const open = (captain=null) => openPayment({id:'qmPaymentDesk'}, () => true, false, false, false,
+    {documents:[saved]}, saved, 'ship-vkt', globals, {environment:'staging'}, {href:'https://fleet.example.org/index.html'},captain);
   saved.status = 'draft';
   open();
   assert.equal(url, undefined);
   saved.status = 'finalized';
+  open({projectId:'ship-vkt'});assert.equal(url,undefined);
   open();
   assert.equal(url.pathname, '/fleet-payments.html');
   const screen = await gateway(null, url.hash);

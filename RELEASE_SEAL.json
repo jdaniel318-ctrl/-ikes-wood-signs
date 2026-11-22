@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.153",
-  "release": "Waybill",
-  "seal": "waybill-8820153",
+  "build": "8.8.20.154",
+  "release": "Soundings",
+  "seal": "soundings-8820154",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Waybill",
-  "name": "Waybill",
-  "releaseName": "Waybill"
+  "release_name": "Soundings",
+  "name": "Soundings",
+  "releaseName": "Soundings"
 }

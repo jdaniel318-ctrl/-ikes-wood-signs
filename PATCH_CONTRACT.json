@@ -1,18 +1,18 @@
 {
   "schema": "blackflag-patch-contract-v1",
-  "target_build": "8.8.20.153",
-  "target_seal": "waybill-8820153",
+  "target_build": "8.8.20.154",
+  "target_seal": "soundings-8820154",
   "supported_bases": [
     {
-      "build": "8.8.20.152",
-      "source_sha256": "120f2ee02f47733b25ee33267781ffc084850d4e730a4a526be7b498fbe2ed37",
-      "file_count": 1084
+      "build": "8.8.20.153",
+      "source_sha256": "bf723ffb21be6d8e5cff6712c14c4fb9407c7db97e9fa924b4a411f2c56bbb0d",
+      "file_count": 1085
     }
   ],
   "requires_deletions": false,
   "max_upload_files": 85,
   "database_actions": "none",
-  "rule": "Upload every changed/new root file over complete 8.8.20.152. Keep everything else. This software archive executes no database commands.",
+  "rule": "Upload every changed/new root file over complete 8.8.20.153. Keep everything else. This software archive executes no database commands.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -45,6 +45,18 @@
       "sql_sha256": "7f97a6ac91982c6449a2e0d2f34a9927856c780f26525923a55d54aeba7e20d9",
       "status": "packaged_for_activation",
       "automatic_execution_by_upload": false
+    },
+    "captain_documents": {
+      "migration": "SOUNDINGS_CAPTAIN_DOCUMENTS.sql",
+      "sql_sha256": "1e4bc2926c1a4976209d11b65cdaff06f0b1d94ae3c75beeae452f17ee25bf83",
+      "automatic_execution_by_upload": false,
+      "status": "manual_install_required",
+      "requires": [
+        "Trade Winds",
+        "Tally",
+        "Signalman",
+        "active Captain appointment"
+      ]
     }
   }
 }

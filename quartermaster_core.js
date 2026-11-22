@@ -32,6 +32,43 @@ function blankWorkspace(scope){var t=now();return {schema:1,scope:clone(scope),r
 function expected(w,r){int(r,'expected workspace revision');if(w.revision!==r)fail('Workspace changed. Reload before saving.','CONFLICT');}
 function bump(w){w.revision=int(w.revision+1,'workspace revision');w.updatedAt=now();}
 function itemValue(i,old,w,restoring){object(i,'Catalog item');var r={id:old?old.id:str(i.id,'item id',128,false),revision:old?old.revision+1:int(i.revision,'item revision',1)};if(i.kind!=='material'&&i.kind!=='service')fail('Item kind must be material or service');r.kind=i.kind;ITEM_TEXT.forEach(function(k){r[k]=text(i[k],'item '+k,k==='specification'||k==='description'||k==='packageDescription'?4000:256);});str(r.code,'business part/service code',128,false);str(r.description,'description',4000,false);str(r.unit,'unit',128,false);if(old&&r.code!==old.code)fail('Business codes are stable; retire an item and create a new one');if(w.catalog.some(function(x){return x.id!==r.id&&x.code.toUpperCase()===r.code.toUpperCase();}))fail('Business code already used, including retired items');r.unitPrice=money(text(i.unitPrice,'unit price',40),'unit price',true);r.cost=money(text(i.cost,'cost',40),'cost',true);r.active=restoring?i.active:true;if(typeof r.active!=='boolean')fail('Invalid item active flag');r.createdAt=old?old.createdAt:timestamp(i.createdAt);r.updatedAt=timestamp(i.updatedAt);return r;}
+function saveCatalogItem(w,input,old){
+ var t=now();
+ if(!old){input.id=uuid();input.revision=1;input.createdAt=t;}
+ if(!input.code){
+  var kind=input.kind;
+  if(!['material','service'].includes(kind))fail('Invalid item kind');
+  do{
+   w.counters[kind]=int(w.counters[kind]+1,'catalog sequence');
+   input.code=(w.business.prefix||'LOCAL').toUpperCase()+'-'+(kind==='material'?'MAT':'SVC')+'-'+String(w.counters[kind]).padStart(6,'0');
+  }while(w.catalog.some(function(x){return x.code.toUpperCase()===input.code.toUpperCase();}));
+ }
+ input.updatedAt=t;
+ var saved=itemValue(input,old,w,false);
+ if(old)w.catalog[w.catalog.indexOf(old)]=saved;else w.catalog.push(saved);
+ return saved;
+}
+// Draft-only marker. Saving replaces it with a normal catalog snapshot in the same transaction.
+var pendingJobService='pending-flat-job-service';
+function jobCharge(d){return d.lines.find(l=>l.id==='job-charge:'+d.id);}
+function setJobAmount(d,value){
+ if(d.status!=='draft')fail('Only a draft accepts a job charge');
+ var line=jobCharge(d);
+ if(value===''){if(line)d.lines.splice(d.lines.indexOf(line),1);return;}
+ if(!line){
+  line={id:'job-charge:'+d.id,itemId:pendingJobService,itemRevision:1,code:'',kind:'service',description:'Job charge',specification:'',manufacturerPart:'',supplierSku:'',packageDescription:'',unit:'Job',quantity:'1',unitPrice:''};
+  d.lines.push(line);
+ }
+ line.unitPrice=value;
+}
+function resolveJobCharge(d,w){
+ var line=jobCharge(d);
+ if(!line||line.itemId!==pendingJobService)return;
+ var sameService=i=>i.active&&i.kind==='service'&&i.description==='Job charge'&&i.unit==='Job'&&!i.code.startsWith('DEMO-')
+    &&!i.specification&&!i.packageDescription&&!i.manufacturerPart&&!i.supplierSku;
+ var item=w.catalog.find(sameService)||saveCatalogItem(w,{kind:'service',description:'Job charge',unit:'Job',unitPrice:''},null);
+ line.itemId=item.id;line.itemRevision=item.revision;line.code=item.code;
+}
 function referenceValue(q){if(q===null||q===undefined)return null;object(q,'Quote reference');return {id:str(q.id,'quote id',128,false),number:str(q.number,'quote number',160,false),revision:int(q.revision,'quote revision',1)};}
 function lineValue(l,w,oldDoc,restoring){object(l,'Line');var r={id:str(l.id,'line id',128,false),itemId:str(l.itemId,'item id',128,false),itemRevision:int(l.itemRevision,'selected item revision',1)};var item=w.catalog.find(function(i){return i.id===r.itemId;});if(!item)fail('Line item belongs to another workspace or is missing');LINE_DEF.forEach(function(k){r[k]=str(l[k],'line '+k,k==='description'||k==='specification'||k==='packageDescription'?4000:256,true);});if(!r.description.trim()||!r.unit.trim()||!r.code.trim()||!['material','service'].includes(r.kind))fail('Incomplete line definition');r.quantity=str(l.quantity,'quantity',40,false);r.unitPrice=str(l.unitPrice,'unit price',40,false);decimal(r.quantity,4,'quantity',true);decimal(r.unitPrice,2,'unit price',false);
  var source=null;
@@ -67,15 +104,15 @@ function createStore(options){object(options,'Store options');var scope=scopeVal
  return {
  load:function(){return transact(function(w){return {write:!options.persistence,value:w};});},
  saveBusiness:function(b,r){var input=clone(b);return transact(function(w){expected(w,r);w.business=businessValue(input,scope.businessId);bump(w);});},
- saveItem:function(i,r){var input=clone(i);return transact(function(w){expected(w,r);var old=input.id?w.catalog.find(function(x){return x.id===input.id;}):null;if(input.id&&(!old||!old.active))fail('Item is missing, retired or belongs to another business');var t=now();if(!old){input.id=uuid();input.revision=1;input.createdAt=t;}if(!input.code){var kind=input.kind;if(!['material','service'].includes(kind))fail('Invalid item kind');do{w.counters[kind]=int(w.counters[kind]+1,'catalog sequence');input.code=(w.business.prefix||'LOCAL').toUpperCase()+'-'+(kind==='material'?'MAT':'SVC')+'-'+String(w.counters[kind]).padStart(6,'0');}while(w.catalog.some(function(x){return x.code.toUpperCase()===input.code.toUpperCase();}));}input.updatedAt=t;var saved=itemValue(input,old,w,false);if(old)w.catalog[w.catalog.indexOf(old)]=saved;else w.catalog.push(saved);bump(w);});},
+ saveItem:function(i,r){var input=clone(i);return transact(function(w){expected(w,r);var old=input.id?w.catalog.find(function(x){return x.id===input.id;}):null;if(input.id&&(!old||!old.active))fail('Item is missing, retired or belongs to another business');saveCatalogItem(w,input,old);bump(w);});},
  retireItem:function(id,r){return transact(function(w){expected(w,r);var i=w.catalog.find(function(x){return x.id===id;});if(!i||!i.active)fail('Active catalog item not found');i.active=false;i.revision++;i.updatedAt=now();bump(w);});},
  createDocument:function(input){var p=clone(object(input,'Create document request')), request={type:p.type,sourceQuoteId:p.sourceQuoteId||null};if(!['quote','invoice'].includes(p.type))fail('Invalid document type');if(request.sourceQuoteId&&p.type!=='invoice')fail('Only invoice can be linked to quote');return transact(function(w){var prior=operation(w,p.operationId,'createDocument',request);if(prior)return {write:false,value:w.documents.find(function(d){return d.id===prior.documentId;})};var q=null;if(request.sourceQuoteId){q=w.documents.find(function(d){return d.id===request.sourceQuoteId;});if(!q||q.type!=='quote'||q.status!=='finalized')fail('A finalized quote in this business is required');}var t=now();w.counters[p.type]=int(w.counters[p.type]+1,'document sequence');var number=p.reservedNumber;
  if(number!==undefined){
   if(p.type!=='invoice'||!compactInvoiceNumber(number)||!(/^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i).test(p.operationId))fail('Invalid fleet invoice reservation');
   if(w.documents.some(function(item){return item.number===number||item.id===p.operationId;}))fail('Fleet invoice reservation conflicts with a saved document','CONFLICT');
  }
- var d={id:number?p.operationId:uuid(),type:p.type,number:number||(w.business.prefix||'LOCAL').toUpperCase()+'-'+(p.type==='quote'?'QTE':'INV')+'-'+new Date().getFullYear()+'-L'+w.installationId.replace(/-/g,'').toUpperCase()+'-'+String(w.counters[p.type]).padStart(6,'0'),revision:1,status:'draft',business:clone(w.business),customer:q?clone(q.customer):contacts({},false),job:q?clone(q.job):contacts({},true),issueDate:'',dueDate:'',validUntil:'',terms:'',notes:'',taxRate:'',taxConfirmed:false,lines:q?clone(q.lines).map(function(l){l.id=uuid();return l;}):[],totals:{subtotalCents:q?q.totals.subtotalCents:0,taxCents:0,totalCents:q?q.totals.subtotalCents:0},quoteReference:q?{id:q.id,number:q.number,revision:q.revision}:null,isSample:false,createdAt:t,updatedAt:t,finalizedAt:null};w.documents.push(d);w.operations.push({id:p.operationId,kind:'createDocument',request:request,documentId:d.id});bump(w);return {value:d};});},
- saveDocument:function(d,r){var input=clone(d);return transact(function(w){expected(w,r);var old=w.documents.find(function(x){return x.id===input.id;});if(!old||old.status!=='draft')fail('Only an existing draft can be edited');if(input.status!=='draft'||input.finalizedAt!==null)fail('Use explicit finalization');if(input.revision!==old.revision)fail('Draft revision changed','CONFLICT');var saved=documentValue(input,old,w,false);sourceCheck(w,saved);w.documents[w.documents.indexOf(old)]=saved;bump(w);});},
+ var d={id:number?p.operationId:uuid(),type:p.type,number:number||(w.business.prefix||'LOCAL').toUpperCase()+'-'+(p.type==='quote'?'QTE':'INV')+'-'+new Date().getFullYear()+'-L'+w.installationId.replace(/-/g,'').toUpperCase()+'-'+String(w.counters[p.type]).padStart(6,'0'),revision:1,status:'draft',business:clone(w.business),customer:q?clone(q.customer):contacts({},false),job:q?clone(q.job):contacts({},true),issueDate:'',dueDate:'',validUntil:'',terms:'',notes:'',taxRate:'',taxConfirmed:false,lines:q?clone(q.lines).map(function(l){l.id=uuid();return l;}):[],totals:{subtotalCents:q?q.totals.subtotalCents:0,taxCents:0,totalCents:q?q.totals.subtotalCents:0},quoteReference:q?{id:q.id,number:q.number,revision:q.revision}:null,isSample:false,createdAt:t,updatedAt:t,finalizedAt:null};if(q){var flatIndex=q.lines.findIndex(l=>l.id==='job-charge:'+q.id&&l.quantity==='1');if(flatIndex>=0)d.lines[flatIndex].id='job-charge:'+d.id;}w.documents.push(d);w.operations.push({id:p.operationId,kind:'createDocument',request:request,documentId:d.id});bump(w);return {value:d};});},
+ saveDocument:function(d,r){var input=clone(d);return transact(function(w){expected(w,r);var old=w.documents.find(function(x){return x.id===input.id;});if(!old||old.status!=='draft')fail('Only an existing draft can be edited');if(input.status!=='draft'||input.finalizedAt!==null)fail('Use explicit finalization');if(input.revision!==old.revision)fail('Draft revision changed','CONFLICT');resolveJobCharge(input,w);var saved=documentValue(input,old,w,false);sourceCheck(w,saved);w.documents[w.documents.indexOf(old)]=saved;bump(w);});},
  prepareFinalization:function(id,r){return transact(function(w){expected(w,r);var d=w.documents.find(function(x){return x.id===id;});if(!d||d.status!=='draft')fail('Only a draft can be finalized');return {write:false,value:finalizedValue(d,w,now())};});},
  finalizeDocument:function(id,op,r,prepared){var candidate=prepared===undefined?null:clone(prepared);return transact(function(w){var prior=operation(w,op,'finalizeDocument',{documentId:id});if(prior)return {write:false,value:w};expected(w,r);var d=w.documents.find(function(x){return x.id===id;});if(!d||d.status!=='draft')fail('Only a draft can be finalized');var finalized=finalizedValue(d,w,candidate?candidate.finalizedAt:now());if(candidate&&!eq(candidate,finalized))fail('Prepared document differs from the current saved draft. Reload before finalizing.','CONFLICT');w.documents[w.documents.indexOf(d)]=finalized;w.operations.push({id:op,kind:'finalizeDocument',request:{documentId:id},documentId:id});bump(w);});},
  exportBackup:function(){return transact(function(w){var envelope=backupEnvelope(w);backupCapacity(envelope);return {write:false,value:envelope};});},
@@ -83,5 +120,5 @@ function createStore(options){object(options,'Store options');var scope=scopeVal
  close:function(){closed=true;if(connection)connection.close();connection=null;}
  };
 }
-return {createStore:createStore,calculateTotals:calculateTotals,BACKUP_MAX_BYTES:BACKUP_MAX_BYTES,validateBackup:validateBackup,blankWorkspace:blankWorkspace};
+return {createStore:createStore,jobCharge:jobCharge,setJobAmount:setJobAmount,calculateTotals:calculateTotals,BACKUP_MAX_BYTES:BACKUP_MAX_BYTES,validateBackup:validateBackup,blankWorkspace:blankWorkspace};
 });
