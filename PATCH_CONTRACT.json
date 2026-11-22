@@ -1,18 +1,18 @@
 {
   "schema": "blackflag-patch-contract-v1",
-  "target_build": "8.8.20.156",
-  "target_seal": "lightkeeper-8820156",
+  "target_build": "8.8.20.157",
+  "target_seal": "watchdesk-8820157",
   "supported_bases": [
     {
-      "build": "8.8.20.155",
-      "source_sha256": "b5eda5e247c0bb1f1308fc0f7e2a406959012e43f08b10d723be46e2d1eede23",
-      "file_count": 1095
+      "build": "8.8.20.156",
+      "source_sha256": "0db2a5ea67c524e70e4da0098645a26fe852334b10919af413a87cfe657447ed",
+      "file_count": 1098
     }
   ],
   "requires_deletions": false,
   "max_upload_files": 85,
   "database_actions": "none",
-  "rule": "Upload every changed/new root file over complete 8.8.20.155. Keep everything else. This software archive executes no database commands.",
+  "rule": "Upload every changed/new root file over complete 8.8.20.156. Keep everything else. This software archive executes no database commands.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",

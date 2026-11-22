@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.20.156",
-  "version": "8.8.20.156",
-  "release_name": "Lightkeeper",
-  "releaseName": "Lightkeeper",
-  "release_seal": "lightkeeper-8820156",
+  "build": "8.8.20.157",
+  "version": "8.8.20.157",
+  "release_name": "Watchdesk",
+  "releaseName": "Watchdesk",
+  "release_seal": "watchdesk-8820157",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -163,8 +163,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "VoyageKeeper\u2019s engraved coastline and ship crest lead the Captain Station and quote workspace. New customer PDFs use its letterhead. Saved historical documents retain their original rendering.",
-  "release_note": "VoyageKeeper\u2019s engraved coastline and ship crest lead the Captain Station and quote workspace. New customer PDFs use its letterhead. Saved historical documents retain their original rendering.",
+  "release_focus": "The shared Captain Station shows the last Admiral Watch report and open issues at a glance. Fleet help, vessel access, encrypted recovery and account security open from compact controls.",
+  "release_note": "The shared Captain Station shows the last Admiral Watch report and open issues at a glance. Fleet help, vessel access, encrypted recovery and account security open from compact controls.",
   "tax_ledger_upgrade": {
     "schema": "dark-sky-fleet-tax-ledger-v1",
     "model": "TAX_LEDGER_MODEL.json",
@@ -286,8 +286,8 @@
     "algorithm": "SHA-256",
     "files": {
       "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": {
-        "sha256": "74a9adef5e481b78b03e12cea8cc799b4a0d2b496734ef092c0ea330c3704f74",
-        "build": "8.8.20.156",
+        "sha256": "06737817207cfcce5b3d41cc90625969a22ebe64538ac7707c42372625d2fd91",
+        "build": "8.8.20.157",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -334,14 +334,14 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_COMMAND_MODEL.json": {
-        "sha256": "994892e1e2d44acecc54765f7571485e5c33d79a8169433da4e3eda6e418e16a",
-        "build": "8.8.20.156",
+        "sha256": "f388c7988412c716f20eaad8640c3de8fcf0423299c95ac7604a4e2f4a31d563",
+        "build": "8.8.20.157",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
       "FLEET_DOCTRINE_REGISTRY.json": {
-        "sha256": "9ef3a32e4a1d03f0201465693f539f554e8ca8e038029208b985bfaad25e9773",
-        "build": "8.8.20.156",
+        "sha256": "da4a005f529a30d9d3909c2352c6019a47d6d255de4724e3627986453cd2a491",
+        "build": "8.8.20.157",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -400,8 +400,8 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "GOLDEN_VOYAGES.json": {
-        "sha256": "5bae8bfa67c02058a09fdb67b8480a1370bf0b07a39effad1ede93fd318eb289",
-        "build": "8.8.20.156",
+        "sha256": "2582f52e19f111f5804beed569f4711020a94f90dc7d4719a50730acc33e00da",
+        "build": "8.8.20.157",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -566,14 +566,14 @@
       "app.js": "696a903ed8652988a41e0ed0f816be89495e599c9d2892abf189c41c468d50a1",
       "captain.js": "477c3b83a9570db9d1cf681f2cbec45d1069059e4a1a44d1605132de95cf3ccd",
       "simple_books.js": "ddd76dcf5e6c579f16918a9d3e645b0fc65d8a5b4d7c66df8896d8314eea325d",
-      "owner.html": "1dddc2e8c840f0e27bd6e0bdd2deb7f3ba6f0f277ef1487df5c8973f97817b6d",
-      "manifest.webmanifest": "d7e420f7a00c03e824f6ef03fadcbeea726294a2910ac50dec3b49b2aff8f83f",
+      "owner.html": "3f03f496d6c19fa43bcbf0be884bd2a3b671ce1153ba3912350797925bfc18ea",
+      "manifest.webmanifest": "3911b8a8c5205d88238b4b85e280a9044a871ed951e34e4feb546358f083a98c",
       "IKE_STYLE_FOUNDRY.json": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
-      "sw.js": "82810ddb788c34012fafe36d40e6949f58190367cb0f21cac6e0cb32955880c4",
-      "FLEET_DOCTRINE_REGISTRY.json": "9ef3a32e4a1d03f0201465693f539f554e8ca8e038029208b985bfaad25e9773",
-      "GOLDEN_VOYAGES.json": "5bae8bfa67c02058a09fdb67b8480a1370bf0b07a39effad1ede93fd318eb289",
-      "FLEET_COMMAND_MODEL.json": "994892e1e2d44acecc54765f7571485e5c33d79a8169433da4e3eda6e418e16a",
-      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "74a9adef5e481b78b03e12cea8cc799b4a0d2b496734ef092c0ea330c3704f74",
+      "sw.js": "8e08dbc019270d0f37ab4e05f1114908bed3ee3ccb7fabbc2c0e9cffbefb2f47",
+      "FLEET_DOCTRINE_REGISTRY.json": "da4a005f529a30d9d3909c2352c6019a47d6d255de4724e3627986453cd2a491",
+      "GOLDEN_VOYAGES.json": "2582f52e19f111f5804beed569f4711020a94f90dc7d4719a50730acc33e00da",
+      "FLEET_COMMAND_MODEL.json": "f388c7988412c716f20eaad8640c3de8fcf0423299c95ac7604a4e2f4a31d563",
+      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "06737817207cfcce5b3d41cc90625969a22ebe64538ac7707c42372625d2fd91",
       "input_hygiene.js": "e54a78fe75567db53c9682d4d039f53609fdcd0d43448f0534faec61def7edae",
       "business_deck.js": "63b1531524c46d73646a8265c7beabc1be430b9c613895a83c3e0f4bc696342f",
       "business_deck.css": "e28a49dcf16d35b3c7e0b4e69dd4892881cba564aeebc3e62e4b4eea90fca8d5",
@@ -1084,7 +1084,7 @@
     "project_data_mutation": false,
     "field_failure_proof": "8.8.20.13 held on styles.css because packaged DEPLOYMENT_MANIFEST runtime hash did not match packaged styles.css bytes"
   },
-  "release": "Lightkeeper",
+  "release": "Watchdesk",
   "clearbearing_upgrade": {
     "build": "8.8.20.22",
     "baseline": "8.8.20.14 HashLock",

@@ -164,7 +164,7 @@
 .station-completed{margin-top:10px}.station-completed summary{cursor:pointer}.station-completed[open] summary{margin-bottom:8px}
 </style>
 <link rel="stylesheet" href="business_deck.css?v=livery-8820109" onerror="window.__workhorseDeckStylesFailed=true">
-<script id="blackFlagPageRelease">window.__blackFlagPageRelease=Object.freeze({build:'8.8.20.156',seal:'lightkeeper-8820156',name:'Lightkeeper'});</script>
+<script id="blackFlagPageRelease">window.__blackFlagPageRelease=Object.freeze({build:'8.8.20.157',seal:'watchdesk-8820157',name:'Watchdesk'});</script>
 <script src="input_hygiene.js?v=fairlead-882068"></script>
 <script src="service_address_fleet.js?v=streetwise-882096"></script>
 <script src="service_address.js?v=portolan-882098"></script>
@@ -180,7 +180,7 @@
 #captainDocumentTools[hidden],#captainDocumentTools [hidden]{display:none!important}
 #captainDocumentTools>details>summary{cursor:pointer;padding:12px 0;font-weight:700}
 #captainDocumentTools>details>p{line-height:1.5}
-</style><link rel="stylesheet" href="vessel-letterhead.css">
+</style><link rel="stylesheet" href="vessel-letterhead.css?v=watchdesk-8820157">
 </head>
 <body>
 <div id="app" class="shell">
@@ -248,7 +248,7 @@
   <section id="portal" class="portal hidden">
     <div class="portal-wrap">
       <header class="portal-head">
-        <div class="bd-brand-heading"><div id="businessHeaderLogo" aria-hidden="true"></div><div><div class="eyebrow" id="ownerInstalledRelease">8.8.20.156 · QUARTERMASTER</div><h1 id="portalName" tabindex="-1">Business</h1><span class="owner-badge">● SECURE OWNER SESSION</span><div id="ownerScopeNote" class="owner-scope-note">Verified for this business only</div></div></div>
+        <div class="bd-brand-heading"><div id="businessHeaderLogo" aria-hidden="true"></div><div><div class="eyebrow" id="ownerInstalledRelease">8.8.20.157 · QUARTERMASTER</div><h1 id="portalName" tabindex="-1">Business</h1><span class="owner-badge">● SECURE OWNER SESSION</span><div id="ownerScopeNote" class="owner-scope-note">Verified for this business only</div></div></div>
         <div class="head-actions"><button id="returnEngine" class="btn ghost hidden">RETURN TO BLACK FLAG</button><a id="shipPayments" class="btn ghost" href="./fleet-payments.html" target="_blank" rel="noopener noreferrer">PAYMENTS ↗</a><button id="signOut" class="btn secondary">SIGN OUT</button></div>
       </header>
       <nav id="businessDeckNav" class="bd-owner-nav" aria-label="Business workspace"></nav>
@@ -367,8 +367,8 @@ window.DarkSkyVesselHelpHost=Object.freeze({
     return 'Password update not confirmed. No success was recorded. Keep this page open and report this message without sharing passwords or security codes.'+reference;
   }
   // Cleardeck account messages end
-  function accountSecurityMarkup(){
-    return `<details class="tb-security"><summary>ACCOUNT SECURITY · SET OR CHANGE PASSWORD</summary>
+  function accountSecurityMarkup(compact=false){
+    return `<details class="tb-security"><summary>${compact?'Account security':'ACCOUNT SECURITY · SET OR CHANGE PASSWORD'}</summary>
       <p class="muted">Only your signed-in account can change its password. This does not appoint a Captain or restore a revoked vessel.</p>
       <form id="captainPasswordForm" class="tb-security-form" autocomplete="on">
         <label style="grid-column:1/-1">Account email<input id="captainSecurityEmail" type="email" name="username" autocomplete="username" readonly value="${esc(person?.email||'')}" aria-label="Password change account email"></label>
@@ -428,7 +428,7 @@ window.DarkSkyVesselHelpHost=Object.freeze({
     };
   }
   function recoveryMarkup(){
-    return `<details class="tb-security tb-recovery"><summary>ENCRYPTED RECOVERY DRILL · EXACT VESSEL</summary>
+    return `<details class="tb-security tb-recovery"><summary>Recovery drill</summary>
       <p class="muted">Download an encrypted copy of this vessel's currently available server orders and latest Watch report. This is NOT a full vessel backup, cloud replication, or a server restore. No record will be modified.</p>
       <div class="tb-recovery-grid">
         <div><label>Separate recovery passphrase<input id="captainVaultNewPass" type="password" autocomplete="new-password" data-bf-trim="preserve"></label>
@@ -662,6 +662,15 @@ window.DarkSkyVesselHelpHost=Object.freeze({
     const initials=name.trim().split(/\s+/u).slice(0,2).map(word=>Array.from(word)[0]).join('').toUpperCase();
     const pending=orders.filter(row=>String(row.status||'New').toLowerCase()!=='completed');
     const completed=orders.filter(row=>String(row.status||'New').toLowerCase()==='completed');
+    const reportedAt=watch?.has_report && watch.reported_at ? new Date(watch.reported_at) : null;
+    const reportDate=reportedAt && Number.isFinite(reportedAt.getTime())
+      ? reportedAt.toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'}) : '';
+    const issueCount=watch?.unresolved_issues;
+    const issueSummary=Number.isInteger(issueCount) && issueCount>=0
+      ? issueCount+' open '+(issueCount===1?'issue':'issues') : '';
+    const watchSummary=watch?.has_report
+      ? [reportDate?'Last report '+reportDate:'Report on file',issueSummary].filter(Boolean).join(' · ')
+      : 'No report yet';
     const orderRows=rows=>rows.map(row=>`<article class="captain-order"><div><small>${esc(row.id)} · ${row.updated_at?new Date(row.updated_at).toLocaleString():'—'}</small><b>${esc(orderSummary(row))}</b><span>${esc(row.status||'New')}</span></div><select aria-label="Order status for ${esc(row.id)}" data-captain-order-status="${esc(row.id)}"><option>${esc(row.status||'New')}</option><option>New</option><option>In Progress</option><option>Ready</option><option>Completed</option><option>On Hold</option></select><button class="btn ghost" data-captain-save-order="${esc(row.id)}">SAVE STATUS</button></article>`).join('');
     const toolsPanel='<section id="captainDocumentTools" class="captain-handoff-panel" hidden></section>';
     const orderPanel=`<section class="captain-handoff-panel" aria-labelledby="captainOrdersTitle">
@@ -671,7 +680,7 @@ window.DarkSkyVesselHelpHost=Object.freeze({
         </section>`;
     document.title=String(access.display_name||'Vessel')+' · Captain Station';
     shell(`
-      <header class="captain-handoff-head captain-station-head" data-station-livery="${livery}" style="--ship-accent:${accent}">
+      <header class="captain-handoff-head captain-station-head" data-station-livery="${livery}" data-station-project="${esc(projectId)}" style="--ship-accent:${accent}">
         <div class="station-identity"><div class="station-ship-mark" aria-hidden="true"><span>${esc(initials)}</span><img id="stationShipMark" alt="" hidden></div><div>
           <h1>${esc(name)}</h1>
           <p class="captain-station-sub"><span>Vessel Captain Station</span><span class="captain-stage-tag">${esc(lifecycle.toUpperCase())}</span><span>${esc(operating)}</span></p><small class="station-platform">Black Flag · Quartermaster</small></div>
@@ -679,8 +688,12 @@ window.DarkSkyVesselHelpHost=Object.freeze({
         <div class="captain-handoff-actions"><button id="captainMyVessels" class="btn ghost">MY VESSELS</button><button id="captainRefresh" class="btn ghost">REFRESH</button><button id="captainStationSignOut" class="btn secondary">SIGN OUT</button></div>
       </header>
       <div class="captain-station-columns">${pending.length?orderPanel+toolsPanel:toolsPanel+orderPanel}</div>
-      <details class="captain-handoff-panel station-watch">
-          <summary id="captainWatchTitle">Report to Admiral Watch</summary>
+      <div class="station-watchdesk" style="--ship-accent:${accent}">
+        <section class="desk-card desk-watch" aria-labelledby="deskWatchHeading">
+          <h2 id="deskWatchHeading">Admiral Watch</h2>
+          <p class="desk-watch-facts">${esc(watchSummary)}</p>
+          <details class="captain-handoff-panel station-watch">
+          <summary id="captainWatchTitle">${watch?.has_report?'Update report':'Write first report'}</summary>
           <p class="captain-station-help">Current work and issues for read-only Admiral oversight.</p>
           <div class="captain-watch-grid">
             <label>Current work<textarea data-bf-trim="boundary" id="captainWatchWork" maxlength="160" rows="2">${esc(watch?.current_work||'')}</textarea><small id="captainWorkCount" class="tb-field-count"></small></label>
@@ -689,17 +702,24 @@ window.DarkSkyVesselHelpHost=Object.freeze({
           </div>
           <div class="captain-handoff-actions"><button id="captainPublishWatch" class="btn primary">PUBLISH WATCH UPDATE</button></div>
           <p class="captain-station-last-report">${watch?.has_report?'Last report: '+new Date(watch.reported_at).toLocaleString()+' · '+esc(watch.source_label||'VESSEL CAPTAIN'):'No prior Captain watch report.'}</p>
-      </details>
-      <section class="captain-station-context" aria-label="Vessel access and status">
-        <div>${identityStrip('Vessel Captain — this vessel only')}<p id="captainStationStatus" class="tb-station-receipt" role="status" aria-live="polite">${esc(receipt||'Exact-vessel Captain authority verified.')}</p></div>
-        <details class="captain-scope"><summary>Access &amp; scope</summary><div class="captain-scope-grid">
+          </details>
+        </section>
+        <section class="desk-card desk-support" aria-labelledby="deskSupportHeading">
+          <h2 id="deskSupportHeading">Ship &amp; account</h2>
+          <div class="station-support-tools">
+            <div id="captainFleetHelp"></div>
+            <details class="captain-scope"><summary>Access &amp; scope</summary>
+              ${identityStrip('Vessel Captain — this vessel only')}<div class="captain-scope-grid">
           <div><b>Vessel:</b> ${esc(access.display_name)}<br><b>Project:</b> ${esc(access.project_id)}</div>
           <div><b>Membership role:</b> operator<br><b>Appointment role:</b> vessel_captain</div>
           <div><b>Lifecycle:</b> ${esc(lifecycle)}<br><b>Operating model:</b> ${esc(access.operating_model)}</div>
           <div>Ownership remains separate. This station does not grant owner controls, another vessel, or Fleet-wide Captain authority.</div>
-        </div></details>
-      </section>
-      <div id="captainFleetHelp"></div>${recoveryMarkup()}${accountSecurityMarkup()}`, 'station');
+              </div></details>
+            ${recoveryMarkup()}${accountSecurityMarkup(true)}
+          </div>
+          <p id="captainStationStatus" class="tb-station-receipt" role="status" aria-live="polite">${esc(receipt||'Exact-vessel Captain authority verified.')}</p>
+        </section>
+      </div>`, 'station');
     const mark=document.getElementById('stationShipMark');
     function showMark(url){
       brand.logoUrl=url;

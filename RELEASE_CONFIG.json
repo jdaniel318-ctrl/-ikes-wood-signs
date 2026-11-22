@@ -1,15 +1,15 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.156",
-  "name": "Lightkeeper",
-  "seal": "lightkeeper-8820156",
-  "base": "8.8.20.155",
-  "base_sha256": "b5eda5e247c0bb1f1308fc0f7e2a406959012e43f08b10d723be46e2d1eede23",
-  "base_files": 1095,
-  "prepared_at": "2026-11-22T21:02:16.478129+00:00",
+  "build": "8.8.20.157",
+  "name": "Watchdesk",
+  "seal": "watchdesk-8820157",
+  "base": "8.8.20.156",
+  "base_sha256": "0db2a5ea67c524e70e4da0098645a26fe852334b10919af413a87cfe657447ed",
+  "base_files": 1098,
+  "prepared_at": "2026-11-22T21:33:23.416282+00:00",
   "app_component_revision": "8.8.20.132",
   "owner_helper_revision": "8.8.20.68",
-  "feature_notes": "VoyageKeeper\u2019s engraved coastline and ship crest lead the Captain Station and quote workspace. New customer PDFs use its letterhead. Saved historical documents retain their original rendering.",
+  "feature_notes": "The shared Captain Station shows the last Admiral Watch report and open issues at a glance. Fleet help, vessel access, encrypted recovery and account security open from compact controls.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -66,8 +66,8 @@
       "automatic_execution_by_upload": false
     }
   },
-  "install_step": "Upload the extracted files over Pilothouse. This release requires no new SQL.",
-  "evidence_file": "LIGHTKEEPER_EVIDENCE.json",
+  "install_step": "Upload the extracted files over Lightkeeper 8.8.20.156. This update requires no new SQL.",
+  "evidence_file": "WATCHDESK_EVIDENCE.json",
   "preserve_project_readme": true,
   "install_backend_first": false,
   "presentation_only": true

@@ -1,9 +1,9 @@
 {
-  "release": "Lightkeeper",
-  "name": "Lightkeeper",
-  "build": "8.8.20.156",
-  "seal": "lightkeeper-8820156",
-  "file_count": 1098,
+  "release": "Watchdesk",
+  "name": "Watchdesk",
+  "build": "8.8.20.157",
+  "seal": "watchdesk-8820157",
+  "file_count": 1099,
   "files": [
     ".github/workflows/drydock-batch1.yml",
     "01-Review.pdf",
@@ -815,6 +815,7 @@
     "VISUAL_FORGE_CONTRACT.md",
     "VISUAL_HELM_CONTRACT.md",
     "Verification.txt",
+    "WATCHDESK_EVIDENCE.json",
     "WATERTIGHT_AUTHORITY_CONTRACT.md",
     "WAYBILL_EVIDENCE.json",
     "WAYFARER_EVIDENCE.json",

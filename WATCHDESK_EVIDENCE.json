@@ -1,0 +1,8 @@
+{
+  "build": "8.8.20.157",
+  "base": "8.8.20.156",
+  "scope": "Shared Captain Station",
+  "verification_runner": "VERIFY_PILOTHOUSE_STATION.cjs",
+  "device_field_check": "pending",
+  "production_write": false
+}

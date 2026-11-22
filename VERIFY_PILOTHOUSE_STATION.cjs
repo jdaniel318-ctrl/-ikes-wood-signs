@@ -12,7 +12,7 @@ const pause = () => new Promise(resolve => setImmediate(resolve));
 function element(){
   return {isConnected:true,hidden:false,dataset:{},removeAttribute(name){delete this[name];}};
 }
-function fixture(project,records){
+function fixture(project,records,watch=null){
   const elements = new Map();
   const get = id => {
     if(!elements.has(id))elements.set(id,element());
@@ -34,7 +34,7 @@ function fixture(project,records){
       openForCaptain:async host=>{opens.push(host);launches.push(host.intent);return true;},
       closeCaptain:()=>{}
     }},
-    projectId:project,orders:records,watch:null,access:{ok:true,project_id:project,display_name:'Harbor Shop',vessel_id:'test-vessel',appointment_id:'a'},
+    projectId:project,orders:records,watch,access:{ok:true,project_id:project,display_name:'Harbor Shop',vessel_id:'test-vessel',appointment_id:'a'},
     appointment:{appointment_id:'a',status:'accepted'},person:user,stationEpoch:1,BUILD:'synthetic',SUPABASE_URL:'https://fixture.invalid',
     client:{readSession:()=>({user}),rpc:(name,body)=>{requests.push({name,body});return read();}},
     shell:html=>{markup=html;},esc:String,orderSummary:r=>r.id,
@@ -45,13 +45,21 @@ function fixture(project,records){
   const handlers=documents.slice(documents.indexOf('export function mountCaptainDocuments')).replace(/^export /,'');
   const renderer=owner.slice(owner.indexOf('  const stationLiveries'),owner.indexOf('  function disableActions()'))
     .replace("import('./captain_documents.js?v='+encodeURIComponent(BUILD))","Promise.resolve({mountCaptainDocuments})");
-  vm.runInContext(handlers+'\n'+renderer+'\nrenderStation();',ctx);
+  const recovery=owner.slice(owner.indexOf('  function recoveryMarkup('),owner.indexOf('  function bindRecovery('));
+  const security=owner.slice(owner.indexOf('  function accountSecurityMarkup('),owner.indexOf('  async function securityRequest('));
+  vm.runInContext(recovery+security+handlers+'\n'+renderer+'\nrenderStation();',ctx);
   return {get,box,buttons,requests,launches,opens,receipt,ctx,markup,readWith:fn=>{read=fn;}};
 }
 async function run(){
   const project='bf-p-fc2816b8254a4845';
-  const f=fixture(project,[{id:'done',status:'Completed'},{id:'pending',status:'New'}]);
+  const f=fixture(project,[{id:'done',status:'Completed'},{id:'pending',status:'New'}],{has_report:true,reported_at:'2026-10-14T12:00:00Z',unresolved_issues:1});
   await pause();
+  assert.match(f.markup,/1 open issue</);
+  assert.match(f.markup,/>Update report</);
+  assert.match(f.markup,/aria-labelledby="deskSupportHeading"/);
+  for (const id of ['captainPasswordForm','captainVaultExport','captainFleetHelp','captainPublishWatch']) {
+    assert.ok(f.markup.includes('id="'+id+'"'),id);
+  }
   assert.match(f.markup,/<h1>Harbor Shop<\/h1>/);
   assert.match(f.markup,/<details class="captain-handoff-panel station-watch">/);
   assert.ok(f.markup.indexOf('data-captain-save-order="pending"')<f.markup.indexOf('Completed orders (1)'));
@@ -79,6 +87,8 @@ async function run(){
   await f.get('[data-check]').onclick();
   assert.match(f.get('[role=status]').textContent,/assigned to this ship/);
   const detached=fixture('newly-commissioned',[]);
+  assert.match(detached.markup,/>No report yet</);
+  assert.match(detached.markup,/>Write first report</);
   let done;
   detached.readWith(()=>new Promise(resolve=>{done=resolve;}));
   await pause();
