@@ -1,10 +1,10 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Tally 8.8.20.152
+# Black Flag Waybill 8.8.20.153
 
 Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
-Baseline: 8.8.20.151. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Baseline: 8.8.20.152. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
 Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
-New invoices can use a registered three-character fleet code and a running serial. The first five digits expand as needed. Quote conversion, PDF, backup and the Fleet payments handoff use the saved invoice reference.
+The payment desk shows the invoice number, subtotal, sales tax and total supplied by Quotes & invoices. Its split preview uses the invoice amounts and two adjustable example fees.
 Preparation does not deploy frontend or backend changes. See PATCH_CONTRACT.json for separately managed backend prerequisites.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 

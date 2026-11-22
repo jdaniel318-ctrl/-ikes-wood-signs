@@ -1,15 +1,15 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.152",
-  "name": "Tally",
-  "seal": "tally-8820152",
-  "base": "8.8.20.151",
-  "base_sha256": "2803e09f90710a8089f8fd6bdc3c5699e3998bf9e456384c2a24f1a18cd758f3",
-  "base_files": 1081,
-  "prepared_at": "2026-11-21T23:30:06.758619+00:00",
+  "build": "8.8.20.153",
+  "name": "Waybill",
+  "seal": "waybill-8820153",
+  "base": "8.8.20.152",
+  "base_sha256": "120f2ee02f47733b25ee33267781ffc084850d4e730a4a526be7b498fbe2ed37",
+  "base_files": 1084,
+  "prepared_at": "2026-11-22T00:03:47.255055+00:00",
   "app_component_revision": "8.8.20.132",
   "owner_helper_revision": "8.8.20.68",
-  "feature_notes": "New invoices can use a registered three-character fleet code and a running serial. The first five digits expand as needed. Quote conversion, PDF, backup and the Fleet payments handoff use the saved invoice reference.",
+  "feature_notes": "The payment desk shows the invoice number, subtotal, sales tax and total supplied by Quotes & invoices. Its split preview uses the invoice amounts and two adjustable example fees.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -44,7 +44,7 @@
       "automatic_execution_by_upload": false
     }
   },
-  "install_step": "After enabling fleet numbering, open Quotes & invoices, select a test ship, and tap New invoice. Confirm the fleet code on first use.",
-  "evidence_file": "TALLY_EVIDENCE.json",
+  "install_step": "Open a finalized invoice in Quotes & invoices and select Review in payment desk. Compare its number and total with the invoice preview.",
+  "evidence_file": "WAYBILL_EVIDENCE.json",
   "preserve_project_readme": true
 }

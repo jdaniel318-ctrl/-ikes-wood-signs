@@ -1,9 +1,9 @@
 {
-  "release": "Tally",
-  "name": "Tally",
-  "build": "8.8.20.152",
-  "seal": "tally-8820152",
-  "file_count": 1084,
+  "release": "Waybill",
+  "name": "Waybill",
+  "build": "8.8.20.153",
+  "seal": "waybill-8820153",
+  "file_count": 1085,
   "files": [
     ".github/workflows/drydock-batch1.yml",
     "01-Review.pdf",
@@ -806,6 +806,7 @@
     "VISUAL_HELM_CONTRACT.md",
     "Verification.txt",
     "WATERTIGHT_AUTHORITY_CONTRACT.md",
+    "WAYBILL_EVIDENCE.json",
     "WAYFARER_EVIDENCE.json",
     "WAYFARER_PLAN.md",
     "WAYFINDER_PRESERVATION.json",

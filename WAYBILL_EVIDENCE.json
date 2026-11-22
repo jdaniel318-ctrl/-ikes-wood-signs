@@ -1,0 +1,23 @@
+{
+  "build": "8.8.20.153",
+  "base": "8.8.20.152",
+  "verification": "VERIFY_CLIPPER_PAYMENTS.cjs",
+  "cases": [
+    "Saved invoice button with different amounts from the calculator defaults",
+    "Direct entry, configured and unconfigured service",
+    "Changes to example fees preserve invoice totals",
+    "Historical references, missing labels, zero tax and malformed data"
+  ],
+  "native_iPad": "pending",
+  "browser_check": {
+    "invoice": "007-00042",
+    "subtotal": "85.25",
+    "tax": "5.12",
+    "total": "90.37",
+    "example_rate_percent": "5",
+    "example_processor_fee": "3.00",
+    "ship_proceeds_including_tax": "83.11",
+    "admiral_share": "4.26",
+    "service_settings_available": false
+  }
+}

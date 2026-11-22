@@ -1,27 +1,113 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><title>Fleet payments · Black Flag</title><style>*{box-sizing:border-box}html{color-scheme:light}body{margin:0;background:#f6f4ee;color:#172e32;font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}h1,h2,h3,p{margin:0}h1,h2{font-family:Georgia,serif;letter-spacing:-.025em;line-height:1.12}h1{font-size:clamp(2.25rem,6vw,3.8rem);margin:.3rem 0 1rem}h2{font-size:1.6rem}h3{font-size:1.02rem}main,.bar-inner{width:min(100% - 2rem,64rem);margin:auto}main{padding:clamp(1.4rem,5vw,3.5rem) 0 4rem}.bar{background:#102f34;color:#fcf6e5}.bar-inner{min-height:58px;display:flex;align-items:center;justify-content:space-between;gap:1rem}.brand{font-weight:800;letter-spacing:.09em;font-size:.83rem}.bar a{color:#ffe1a1}.topline{display:flex;align-items:center;justify-content:space-between;gap:.65rem;flex-wrap:wrap}.muted,small{color:#4f666a}.intro{max-width:46rem;margin-bottom:1rem}.panel{background:#fffdf8;border:1px solid #c6d2ca;padding:clamp(.95rem,3vw,1.65rem);border-radius:14px;margin:1rem 0}.panel h2,.panel h3{margin-bottom:.65rem}.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,18rem),1fr));gap:1.25rem}.pair{display:flex;justify-content:space-between;align-items:baseline;gap:.6rem;padding:.5rem 0;border-bottom:1px solid #dce3dc}.pair strong{font-variant-numeric:tabular-nums;text-align:right}.total{font-weight:750;background:#edf2e9}.controls{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;margin:.8rem 0}.row{display:flex;gap:.8rem;align-items:flex-end;flex-wrap:wrap}.row>label{flex:1 1 9rem}label{display:block;margin:.6rem 0;font-weight:650;font-size:.92rem}input,select,textarea{display:block;width:100%;margin:.23rem 0 0;padding:.65rem .75rem;min-height:44px;border-radius:7px;border:1px solid #8c9e98;background:white;color:#172e32;font:inherit;font-size:1rem}button,.button{box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;min-height:44px;max-width:100%;padding:.55rem 1rem;background:#174d50;color:white;border:1px solid #174d50;border-radius:8px;cursor:pointer;font:inherit;font-weight:700;text-decoration:none;touch-action:manipulation}button:disabled{opacity:.52;cursor:default}.secondary{background:#fffdf8;color:#194549;border-color:#819998}button:hover:enabled,.button:hover{filter:brightness(.92)}a{color:#16565a}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #b16d16;outline-offset:2px}.note{padding:.7rem 1rem;border-left:3px solid #b58134;background:#f7ecd0;margin:.7rem 0}.error{color:#842917}.fine{font-size:.88rem}.nowrap{white-space:nowrap}.scroll{overflow:auto}table{width:100%;border-collapse:collapse;font-size:.9rem;text-align:left}td,th{padding:.65rem .45rem;border-bottom:1px solid #d7dfd8;vertical-align:top}th{color:#496267}td.money{text-align:right;font-variant-numeric:tabular-nums}.pills{display:flex;gap:.4rem;flex-wrap:wrap;margin:.9rem 0}.pills [aria-pressed=true]{color:#fff;background:#174d50}.pill{font-size:.86rem;font-weight:700;color:#254c40;background:#e4efe2;padding:.28rem .6rem;border-radius:6px}.item{padding:.9rem 0;border-bottom:1px solid #d8ded6}.wrap{overflow-wrap:anywhere}.money{font-variant-numeric:tabular-nums}.gap{margin-top:.8rem}[hidden]{display:none!important}#notice:empty{display:none}#notice{margin:.8rem 0}
+#invoicePreview{border-top:1px solid #dce3dc;padding-top:1rem;margin:.85rem 0 1rem}#invoicePreview h3{font:700 clamp(1.25rem,3vw,1.7rem)/1.25 Georgia,serif}#invoicePreview .total{padding:.65rem}
 </style></head>
 <body><div class="bar"><div class="bar-inner"><span class="brand">BLACK FLAG</span><a href="./index.html">Engine Room</a></div></div><main><h1>Fleet payments</h1><p class="intro">Send an invoice link, agree on the Admiral’s share, and reconcile each payment in the ship and Admiral books.</p>
-<section class="panel"><h2>Payment desk</h2><p id="configStatus" role="status">Checking the payment service…</p><p id="draft" class="note" hidden></p><div class="controls"><a id="desk" class="button" hidden>Open payment desk →</a></div></section>
-<section class="panel" aria-labelledby="exampleTitle"><h2 id="exampleTitle">Try a payment split</h2><p class="muted">Example in USD. Each ship agrees its own rate with the Admiral. Changing these figures only changes this example.</p>
-<form id="example"><div class="two"><div>
+<section class="panel" aria-labelledby="deskTitle">
+<h2 id="deskTitle">Payment desk</h2>
+<div id="invoicePreview" hidden>
+  <h3 class="wrap">Invoice <span id="invoiceNumber"></span></h3>
+  <p class="muted wrap" id="businessName" hidden></p>
+  <div class="pair"><span>Subtotal</span><strong id="invoiceSubtotal"></strong></div>
+  <div class="pair"><span>Sales tax</span><strong id="invoiceTax"></strong></div>
+  <div class="pair total"><span>Invoice total</span><strong id="invoiceTotal"></strong></div>
+</div>
+<p id="draft" class="note" hidden></p>
+<p id="configStatus" role="status">Checking the payment service…</p>
+<div class="controls"><a id="desk" class="button" hidden>Open payment desk</a></div>
+</section>
+<section class="panel" id="splitPanel" aria-labelledby="exampleTitle"><h2 id="exampleTitle">Try a payment split</h2><p class="muted" id="exampleHelp">Example in USD. Each ship agrees its own rate with the Admiral. Changing these figures only changes this example.</p>
+<form id="example"><div class="two"><div id="exampleAmounts">
 <label>Sale before tax ($)<input id="sale" inputmode="decimal" value="100.00"></label><label>Sales tax ($)<input id="tax" inputmode="decimal" value="6.00"></label></div><div><label>Example Admiral rate (%)<input id="rate" inputmode="decimal" value="5.00"></label><label>Example processor fee ($)<input id="processor" inputmode="decimal" value="3.00"></label></div></div></form>
-<div id="exampleStatus" role="status"></div><div class="two gap" id="figures"><div><h3>Ship book</h3><div class="pair"><span>Customer payment</span><strong id="gross"></strong></div><div class="pair"><span>Sales tax collected</span><strong id="taxDue"></strong></div><div class="pair"><span>Admiral share</span><strong id="share"></strong></div><div class="pair"><span>Processor fee</span><strong id="cost"></strong></div><div class="pair total"><span>Ship proceeds, including tax</span><strong id="net"></strong></div></div><div><h3>Admiral book</h3><div class="pair"><span>Agreed fee on the sale</span><strong id="income"></strong></div><p class="muted gap">The rate applies to the pretax sale. Each invoice keeps the agreement version and rate used when it was issued.</p></div></div>
+<div id="exampleStatus" role="status"></div><div class="two gap" id="figures"><div><h3 id="shipBookTitle">Ship book</h3><div class="pair"><span id="grossLabel">Customer payment</span><strong id="gross"></strong></div><div class="pair"><span id="taxLabel">Sales tax collected</span><strong id="taxDue"></strong></div><div class="pair"><span>Admiral share</span><strong id="share"></strong></div><div class="pair"><span>Processor fee</span><strong id="cost"></strong></div><div class="pair total"><span>Ship proceeds, including tax</span><strong id="net"></strong></div></div><div><h3 id="admiralBookTitle">Admiral book</h3><div class="pair"><span id="incomeLabel">Agreed fee on the sale</span><strong id="income"></strong></div><p class="muted gap" id="agreementNote">The rate applies to the pretax sale. Each invoice keeps the agreement version and rate used when it was issued.</p></div></div>
 </section></main><script>
 'use strict';
 const $=id=>document.getElementById(id), usd=n=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(n/100);
 function hundredths(s){if(!/^\d{1,8}(?:\.\d{1,2})?$/.test(s.trim()))return null;const [a,b='']=s.trim().split('.');return Number(a)*100+Number(b.padEnd(2,'0'));}
-function render(){const [sale,tax,bps,processor]=['sale','tax','rate','processor'].map(k=>hundredths($(k).value));
- const valid=[sale,tax,bps,processor].every(x=>x!==null)&&bps<=10000;
- $('figures').hidden=!valid;$('exampleStatus').textContent=valid?'':'Enter nonnegative amounts and a rate from 0 to 100%, using up to two decimal places.';if(!valid)return;
- const fee=Math.floor((sale*bps+5000)/10000);
- for(const [k,v] of Object.entries({gross:sale+tax,taxDue:tax,share:-fee,cost:-processor,net:sale+tax-fee-processor,income:fee}))$(k).textContent=usd(v||0);}
-$('example').oninput=render;$('example').onsubmit=e=>e.preventDefault();render();
-const hash=new URLSearchParams(location.hash.slice(1));const ship=hash.get('ship')||'';const handoff=hash.has('invoice')&&hash.get('invoice').length<2400?hash.get('invoice'):null;
-history.replaceState(null,'',location.pathname);
-if(handoff){$('draft').hidden=false;$('draft').textContent='A finalized invoice is ready to review. The payment desk will verify your ship before you can issue a customer link.';}
-(async()=>{try{const r=await fetch('./fleet-payments-service.json',{cache:'no-store',credentials:'omit',redirect:'error'});if(!r.ok)throw Error();
- const config=await r.json();const url=new URL(config.serviceOrigin);if(url.protocol!=='https:'||url.username||url.password||url.search||url.hash||url.pathname!=='/')throw Error();
- const desk=new URL('/manage',url.origin);if(handoff)desk.hash=new URLSearchParams({invoice:handoff});else if(ship && ship.length<=160)desk.hash=new URLSearchParams({ship});
- $('desk').href=desk.href;$('desk').hidden=false;$('configStatus').textContent='Sign in to your payment service at '+url.host+'.';
-}catch{$('configStatus').textContent='The payment service has not been connected on this site, or its settings could not be loaded. You can try the split below.';}})();
+
+function readInvoice(raw) {
+  if (!raw || raw.length >= 2400) return null;
+  const cleanText = (s, max) => typeof s === 'string' && s.length <= max && s.trim() && !/[\u0000-\u001f\u007f]/.test(s);
+  const isCents = n => Number.isSafeInteger(n) && n >= 0 && n <= 999999999;
+  try {
+    const x = JSON.parse(raw);
+    if (!x || !cleanText(x.shipId, 256) || !cleanText(x.reference, 80) ||
+        !isCents(x.subtotalCents) || !isCents(x.taxCents) ||
+        !['production', 'staging'].includes(x.sourceEnvironment)) return null;
+    const {shipId, reference, subtotalCents, taxCents, sourceEnvironment} = x;
+    return {shipId, reference, subtotalCents, taxCents, sourceEnvironment};
+  } catch { return null; }
+}
+
+const hash = new URLSearchParams(location.hash.slice(1));
+const ship = hash.get('ship') || '';
+const hasInvoice = hash.has('invoice');
+const invoice = readInvoice(hash.get('invoice'));
+const businessName = hash.get('businessName');
+history.replaceState(null, '', location.pathname);
+
+if (invoice) {
+  $('invoicePreview').hidden = false;
+  $('invoiceNumber').textContent = invoice.reference;
+  if (businessName && businessName.length <= 256) {
+    $('businessName').textContent = businessName;
+    $('businessName').hidden = false;
+  }
+  $('invoiceSubtotal').textContent = usd(invoice.subtotalCents);
+  $('invoiceTax').textContent = usd(invoice.taxCents);
+  $('invoiceTotal').textContent = usd(invoice.subtotalCents + invoice.taxCents);
+  $('draft').hidden = false;
+  $('draft').textContent = 'Invoice details from Quotes & invoices. The payment service verifies the ship before issuing a customer link.';
+  $('exampleTitle').textContent = 'Preview the invoice split';
+  $('exampleHelp').textContent = 'Try a rate and processing fee for this invoice. Both books below show a preview only.';
+  $('exampleAmounts').hidden = true;
+  $('shipBookTitle').textContent = 'Ship book preview';
+  $('admiralBookTitle').textContent = 'Admiral book preview';
+  $('grossLabel').textContent = 'Invoice total';
+  $('taxLabel').textContent = 'Sales tax on invoice';
+  $('incomeLabel').textContent = 'Estimated Admiral share';
+  $('agreementNote').textContent = 'The example rate applies to the subtotal before sales tax.';
+} else if (hasInvoice) {
+  $('draft').hidden = false;
+  $('draft').textContent = 'These invoice details could not be read. Reopen the saved invoice in Quotes & invoices and choose Review in payment desk.';
+  $('splitPanel').hidden = true;
+}
+
+function render() {
+  const sale = invoice ? invoice.subtotalCents : hundredths($('sale').value);
+  const tax = invoice ? invoice.taxCents : hundredths($('tax').value);
+  const bps = hundredths($('rate').value);
+  const processor = hundredths($('processor').value);
+  const valid = [sale,tax,bps,processor].every(x => x !== null) && bps <= 10000;
+  $('figures').hidden = !valid;
+  $('exampleStatus').textContent = valid ? '' : 'Enter nonnegative amounts and a rate from 0 to 100%, using up to two decimal places.';
+  if (!valid) return;
+  const fee = Math.floor((sale * bps + 5000) / 10000);
+  const values = {gross:sale + tax, taxDue:tax, share:-fee, cost:-processor, net:sale + tax - fee - processor, income:fee};
+  for (const [k,v] of Object.entries(values)) $(k).textContent = usd(v || 0);
+}
+$('example').oninput = render;
+$('example').onsubmit = e => e.preventDefault();
+render();
+
+(async () => {
+  try {
+    const r = await fetch('./fleet-payments-service.json', {cache:'no-store', credentials:'omit', redirect:'error'});
+    if (!r.ok) throw Error();
+    const config = await r.json();
+    const url = new URL(config.serviceOrigin);
+    if (url.protocol !== 'https:' || url.username || url.password || url.search || url.hash || url.pathname !== '/') throw Error();
+    if (hasInvoice && !invoice) {
+      $('configStatus').textContent = '';
+      return;
+    }
+    const desk = new URL('/manage', url.origin);
+    if (invoice) desk.hash = new URLSearchParams({invoice:JSON.stringify(invoice)});
+    else if (ship && ship.length <= 160) desk.hash = new URLSearchParams({ship});
+    $('desk').href = desk.href;
+    $('desk').hidden = false;
+    $('configStatus').textContent = 'Sign in to your payment service at ' + url.host + '.';
+  } catch {
+    $('configStatus').textContent = 'Customer payment links are unavailable. The site could not load its payment service settings.';
+  }
+})();
 </script></body></html>

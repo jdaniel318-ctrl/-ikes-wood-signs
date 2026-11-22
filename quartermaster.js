@@ -314,7 +314,7 @@
       const amount=g.BlackFlagQuartermaster.calculateTotals(saved.lines,saved.taxRate);
       const data={shipId:selected,reference:saved.number,subtotalCents:amount.subtotalCents,taxCents:amount.taxCents,sourceEnvironment:actor.environment==='production'?'production':'staging'};
       const url=new URL('fleet-payments.html',location.href);
-      url.hash=new URLSearchParams({invoice:JSON.stringify(data)});
+      url.hash=new URLSearchParams({invoice:JSON.stringify(data),businessName:saved.business.name});
       g.open(url.href,'_blank','noopener,noreferrer');return;
     }if(!allowed()||busy)return;if(b.id==='qmClearDocumentFilter'){
    $('qmDocumentSearch').value='';$('qmDocumentStatus').options[0].selected=true;

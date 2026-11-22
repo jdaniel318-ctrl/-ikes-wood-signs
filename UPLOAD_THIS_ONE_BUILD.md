@@ -1,9 +1,13 @@
-# Tally 8.8.20.152
+# Upload Waybill 8.8.20.153
 
-1. Extract Tally.zip. Upload the contents of its one folder to the existing Black Flag repository root over Clipper 8.8.20.151. Keep the other files. The Engine shows 8.8.20.152 · TALLY after deployment.
-2. The fleet database administrator enables numbering once with TALLY_INVOICE_NUMBERS.sql on the existing Black Flag Fleet Core project. The script checks the installed Trade Winds validator before installing the registry. The website upload alone cannot activate it.
-3. In Quotes & invoices, select the test ship and tap New invoice. On first use enter its assigned three-character code. A code such as 007 produces 007-00001 on the first reservation. VKT produces VKT-00001. Enter one code for the ship and use the same series across devices.
+Use `DarkSky8820153-Waybill-Upload.zip`, not the full backup or rollback.
+1. Extract the ZIP. Open its single folder. Upload ALL files inside to the existing repository ROOT; replace matching files and KEEP all other files. Commit the upload.
+2. After deployment open the Engine and confirm `8.8.20.153 · WAYBILL`. Do not clear Safari data, reset records or change permissions.
+3. Open a finalized invoice in Quotes & invoices and select Review in payment desk. Compare its number and total with the invoice preview.
 
-Numbers are reserved when an invoice draft is created. A discarded draft or a closed tab can leave a gap. Issued numbers stay assigned. An interrupted creation can be retried in the same tab. The serial grows to six digits after 99999. Existing documents keep their saved references.
+The payment desk shows the invoice number, subtotal, sales tax and total supplied by Quotes & invoices. Its split preview uses the invoice amounts and two adjustable example fees.
+The upload itself executes no database commands. Shared specialist components retain their own revision labels; this is intentional reuse, not a mixed upload. Exact SHA-256 checks still run before Engine scripts execute.
 
-Tally-Source.zip is a full software backup. Browser records and customer data require their own backups. Tally-Rollback.zip restores the previous frontend. Never restore old permissions or business data. Before testing a rollback, export any workspace containing short numbers and retain the numbering registry. Clipper cannot validate a backup or cloud workspace containing the new format. Reinstall Tally to work with those records.
+Full backup: application source ONLY; not Supabase, customer media or device drafts.
+Rollback: restore prior software files only. Never restore old permissions or business data. New root tooling files remain unused by the old app.
+No passkeys/Face ID or performance gain is claimed.

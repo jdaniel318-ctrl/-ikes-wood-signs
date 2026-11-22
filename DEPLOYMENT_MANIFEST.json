@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.20.152",
-  "version": "8.8.20.152",
-  "release_name": "Tally",
-  "releaseName": "Tally",
-  "release_seal": "tally-8820152",
+  "build": "8.8.20.153",
+  "version": "8.8.20.153",
+  "release_name": "Waybill",
+  "releaseName": "Waybill",
+  "release_seal": "waybill-8820153",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -163,8 +163,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "New invoices can use a registered three-character fleet code and a running serial. The first five digits expand as needed. Quote conversion, PDF, backup and the Fleet payments handoff use the saved invoice reference.",
-  "release_note": "New invoices can use a registered three-character fleet code and a running serial. The first five digits expand as needed. Quote conversion, PDF, backup and the Fleet payments handoff use the saved invoice reference.",
+  "release_focus": "The payment desk shows the invoice number, subtotal, sales tax and total supplied by Quotes & invoices. Its split preview uses the invoice amounts and two adjustable example fees.",
+  "release_note": "The payment desk shows the invoice number, subtotal, sales tax and total supplied by Quotes & invoices. Its split preview uses the invoice amounts and two adjustable example fees.",
   "tax_ledger_upgrade": {
     "schema": "dark-sky-fleet-tax-ledger-v1",
     "model": "TAX_LEDGER_MODEL.json",
@@ -286,8 +286,8 @@
     "algorithm": "SHA-256",
     "files": {
       "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": {
-        "sha256": "e5844b1a4cf013f2105919ae736e8476f7fca53ecf05d5b8f89fddddc9f2a5a7",
-        "build": "8.8.20.152",
+        "sha256": "6208abbca4ff1e20ace2cdcf91a34922610d8c7dd945b4f5908879152fb7c35d",
+        "build": "8.8.20.153",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -334,14 +334,14 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_COMMAND_MODEL.json": {
-        "sha256": "db047e024ef851eaa13cdb92246bd2c5577cb6899fac8aa15645f62b2b7ccf5a",
-        "build": "8.8.20.152",
+        "sha256": "c6d858a071ea7e8fb754453c989547460467ef40bd29fbdfda5fbae9b213d0ff",
+        "build": "8.8.20.153",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
       "FLEET_DOCTRINE_REGISTRY.json": {
-        "sha256": "01d3fa0cd7ce1343bd70b6a80db9691f34196a915cf1c7b7473e58d8f0b8d315",
-        "build": "8.8.20.152",
+        "sha256": "4851e45e760358e07c81331e7aa18a62393786d726de52431369e5f0744239c8",
+        "build": "8.8.20.153",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -400,8 +400,8 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "GOLDEN_VOYAGES.json": {
-        "sha256": "a02d5abed04dd41fff21ce2d977e02b74c9f285bc97d73d4b79d7a449c43e6b5",
-        "build": "8.8.20.152",
+        "sha256": "1e534f6bd54fef32fb567b9ee7fc6e77c39192c3d1e51fc560cc33af772f914e",
+        "build": "8.8.20.153",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -566,14 +566,14 @@
       "app.js": "696a903ed8652988a41e0ed0f816be89495e599c9d2892abf189c41c468d50a1",
       "captain.js": "75b89b0c68eba73b9a5e47ddfb1ab88329941da702db3a5e5ec6041295e91812",
       "simple_books.js": "ddd76dcf5e6c579f16918a9d3e645b0fc65d8a5b4d7c66df8896d8314eea325d",
-      "owner.html": "c2fcef16588ae9427a8b1b19c022fc5194cfa7bdec5137b0c6c9cc7e86a61f40",
-      "manifest.webmanifest": "12dee17e320042c3265e28b916ac4d330a75b724ca02b178cf726b2b0d03dd86",
+      "owner.html": "52e959970716d21adf7aedcdc42fff83c4271324c0dfc7a432269ac8ed5970ac",
+      "manifest.webmanifest": "d1120536296289f9265829e8a8b4c7112d676e6eb5e5dab116c49d4eb39b5fd8",
       "IKE_STYLE_FOUNDRY.json": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
-      "sw.js": "c17e6ed69c7efe57b4092937e3219bca10b3212667b9b59038aba295f6ef8157",
-      "FLEET_DOCTRINE_REGISTRY.json": "01d3fa0cd7ce1343bd70b6a80db9691f34196a915cf1c7b7473e58d8f0b8d315",
-      "GOLDEN_VOYAGES.json": "a02d5abed04dd41fff21ce2d977e02b74c9f285bc97d73d4b79d7a449c43e6b5",
-      "FLEET_COMMAND_MODEL.json": "db047e024ef851eaa13cdb92246bd2c5577cb6899fac8aa15645f62b2b7ccf5a",
-      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "e5844b1a4cf013f2105919ae736e8476f7fca53ecf05d5b8f89fddddc9f2a5a7",
+      "sw.js": "05853bdab09b054a38fd1b0160f7c839e1c8a954963afc5dd23d3a36248d21be",
+      "FLEET_DOCTRINE_REGISTRY.json": "4851e45e760358e07c81331e7aa18a62393786d726de52431369e5f0744239c8",
+      "GOLDEN_VOYAGES.json": "1e534f6bd54fef32fb567b9ee7fc6e77c39192c3d1e51fc560cc33af772f914e",
+      "FLEET_COMMAND_MODEL.json": "c6d858a071ea7e8fb754453c989547460467ef40bd29fbdfda5fbae9b213d0ff",
+      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "6208abbca4ff1e20ace2cdcf91a34922610d8c7dd945b4f5908879152fb7c35d",
       "input_hygiene.js": "e54a78fe75567db53c9682d4d039f53609fdcd0d43448f0534faec61def7edae",
       "business_deck.js": "63b1531524c46d73646a8265c7beabc1be430b9c613895a83c3e0f4bc696342f",
       "business_deck.css": "e28a49dcf16d35b3c7e0b4e69dd4892881cba564aeebc3e62e4b4eea90fca8d5",
@@ -589,7 +589,7 @@
       "quartermaster_core.js": "d5de7a8cfb6565ad40f7c4102866ef951e88177848819c3d606c789256d7d90b",
       "quartermaster_fonts.js": "69b2f7fbcf0d29731cf6feea6d3f7b57d7633fafc29703123a7213ea861c9df5",
       "quartermaster_pdf.js": "7e1c51fa7d7a4ae4fcd55a2330b15ff87c6b4ec0c9db548ff2b6a72658a453a1",
-      "quartermaster.js": "fcf96e6e970d1dcf1c760fb6aa44155bf2fe9a40cf5e85d2edc6c6991c224480",
+      "quartermaster.js": "11f69a1e28a83ee54ee7664d39ccf42cb86cbf164f4e04110773dd2812abe270",
       "quartermaster.css": "7873d13ead95debc796a0e51d8f6eaf529488ff66da21242a8bf1135c4732c8b",
       "carve_fonts.js": "8eff084fd386b9fe63cac51924de2cef24f3af3bfeee98572c2929a7adb8fcc4",
       "carve_core.js": "428acd25f8208c66a9681e744a57665d1d0db2abf11a34704b94591c69be61f3",
@@ -1084,7 +1084,7 @@
     "project_data_mutation": false,
     "field_failure_proof": "8.8.20.13 held on styles.css because packaged DEPLOYMENT_MANIFEST runtime hash did not match packaged styles.css bytes"
   },
-  "release": "Tally",
+  "release": "Waybill",
   "clearbearing_upgrade": {
     "build": "8.8.20.22",
     "baseline": "8.8.20.14 HashLock",

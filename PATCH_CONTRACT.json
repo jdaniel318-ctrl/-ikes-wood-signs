@@ -1,18 +1,18 @@
 {
   "schema": "blackflag-patch-contract-v1",
-  "target_build": "8.8.20.152",
-  "target_seal": "tally-8820152",
+  "target_build": "8.8.20.153",
+  "target_seal": "waybill-8820153",
   "supported_bases": [
     {
-      "build": "8.8.20.151",
-      "source_sha256": "2803e09f90710a8089f8fd6bdc3c5699e3998bf9e456384c2a24f1a18cd758f3",
-      "file_count": 1081
+      "build": "8.8.20.152",
+      "source_sha256": "120f2ee02f47733b25ee33267781ffc084850d4e730a4a526be7b498fbe2ed37",
+      "file_count": 1084
     }
   ],
   "requires_deletions": false,
   "max_upload_files": 85,
   "database_actions": "none",
-  "rule": "Upload every changed/new root file over complete 8.8.20.151. Keep everything else. This software archive executes no database commands.",
+  "rule": "Upload every changed/new root file over complete 8.8.20.152. Keep everything else. This software archive executes no database commands.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",

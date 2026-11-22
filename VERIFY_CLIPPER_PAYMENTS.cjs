@@ -58,6 +58,60 @@ async function main() {
   assert.equal(target.search, '');
   assert.equal(new URLSearchParams(target.hash.slice(1)).get('invoice'), invoice);
   assert.equal(handoff.draft.hidden, false);
+  // Exercise the actual button's handoff with an amount distinct from the standalone example.
+  const ui = read('quartermaster.js');
+  const start = ui.indexOf("if(b.id==='qmPaymentDesk'){");
+  const end = ui.indexOf('if(!allowed()||busy)return;', start);
+  assert.ok(start >= 0 && end > start);
+  const openPayment = new Function('b','allowed','busy','dirty','saveError','state','doc','selected','g','actor','location', ui.slice(start, end));
+  const saved = {id:'test-doc', status:'finalized', type:'invoice', number:'VKT-00001',
+    isSample:false, taxConfirmed:true, business:{name:'VoyageKeeper Recovery Test'},
+    lines:[{quantity:'1',unitPrice:'85.25'}], taxRate:'6'};
+  let url;
+  const globals = {BlackFlagQuartermaster:require('./quartermaster_core.js'), open:href => {url = new URL(href);}};
+  const open = () => openPayment({id:'qmPaymentDesk'}, () => true, false, false, false,
+    {documents:[saved]}, saved, 'ship-vkt', globals, {environment:'staging'}, {href:'https://fleet.example.org/index.html'});
+  saved.status = 'draft';
+  open();
+  assert.equal(url, undefined);
+  saved.status = 'finalized';
+  open();
+  assert.equal(url.pathname, '/fleet-payments.html');
+  const screen = await gateway(null, url.hash);
+  assert.equal(screen.desk.hidden, true);
+  assert.equal(screen.invoicePreview.hidden, false);
+  assert.equal(screen.invoiceNumber.textContent, 'VKT-00001');
+  assert.equal(screen.businessName.textContent, saved.business.name);
+  assert.equal(screen.invoiceSubtotal.textContent, '$85.25');
+  assert.equal(screen.invoiceTax.textContent, '$5.12');
+  assert.equal(screen.invoiceTotal.textContent, '$90.37');
+  assert.equal(screen.gross.textContent, '$90.37');
+  assert.equal(screen.income.textContent, '$4.26');
+  assert.equal(screen.net.textContent, '$83.11');
+  assert.equal(screen.exampleAmounts.hidden, true);
+  screen.rate.value = '10';
+  screen.processor.value = '0';
+  screen.example.oninput();
+  assert.equal(screen.net.textContent, '$81.84');
+  assert.equal(screen.invoiceTotal.textContent, '$90.37');
+  const connected = await gateway(config, url.hash);
+  const forwarded = new URL(connected.desk.href);
+  assert.equal(forwarded.search, '');
+  assert.equal(forwarded.hash.includes('businessName'), false);
+  const legacyRef = 'VKT-INV-2026-L3838D660222542109F25E519A2AE20D3-000001';
+  const legacyData = {...JSON.parse(invoice),reference:legacyRef,taxCents:0};
+  const asHash = payload => '#' + new URLSearchParams({invoice:JSON.stringify(payload)});
+  const legacy = await gateway(null, asHash(legacyData));
+  assert.equal(legacy.invoiceNumber.textContent, legacyRef);
+  assert.equal(legacy.businessName.hidden, true);
+  assert.equal(legacy.invoiceTax.textContent, '$0.00');
+  assert.equal(legacy.invoiceTotal.textContent, '$10.00');
+  assert.equal(values.invoicePreview.hidden, true);
+  for (const bad of ['#invoice=', '#invoice=%7B', asHash({...legacyData,taxCents:-1}), asHash({...legacyData,subtotalCents:'10000'})]) {
+    const blocked = await gateway(config, bad);
+    assert.ok(blocked.desk.hidden && blocked.invoicePreview.hidden && blocked.splitPanel.hidden);
+    assert.match(blocked.draft.textContent, /Reopen the saved invoice/);
+  }
   for (const invalid of [null, {serviceOrigin:'http://example.org'}, {serviceOrigin:'https://example.org/private'}]) {
     const failed = await gateway(invalid);
     assert.ok(failed.desk.hidden && !failed.desk.href && failed.configStatus.textContent);
