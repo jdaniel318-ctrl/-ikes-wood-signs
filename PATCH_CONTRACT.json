@@ -1,18 +1,18 @@
 {
   "schema": "blackflag-patch-contract-v1",
-  "target_build": "8.8.20.154",
-  "target_seal": "soundings-8820154",
+  "target_build": "8.8.20.155",
+  "target_seal": "pilothouse-8820155",
   "supported_bases": [
     {
-      "build": "8.8.20.153",
-      "source_sha256": "bf723ffb21be6d8e5cff6712c14c4fb9407c7db97e9fa924b4a411f2c56bbb0d",
-      "file_count": 1085
+      "build": "8.8.20.154",
+      "source_sha256": "7c4b323adce84653ac758771fca10591dda92b0e4f558e0542d7adcedb601c60",
+      "file_count": 1090
     }
   ],
   "requires_deletions": false,
   "max_upload_files": 85,
   "database_actions": "none",
-  "rule": "Upload every changed/new root file over complete 8.8.20.153. Keep everything else. This software archive executes no database commands.",
+  "rule": "Upload every changed/new root file over complete 8.8.20.154. Keep everything else. This software archive executes no database commands.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -50,13 +50,23 @@
       "migration": "SOUNDINGS_CAPTAIN_DOCUMENTS.sql",
       "sql_sha256": "1e4bc2926c1a4976209d11b65cdaff06f0b1d94ae3c75beeae452f17ee25bf83",
       "automatic_execution_by_upload": false,
-      "status": "manual_install_required",
+      "status": "retained_soundings_prerequisite",
       "requires": [
         "Trade Winds",
         "Tally",
         "Signalman",
         "active Captain appointment"
       ]
+    },
+    "captain_ship_assignments": {
+      "project": "sjgqqtnuttnkwsoebbqf",
+      "migration": "PILOTHOUSE_SHIP_TOOLS.sql",
+      "sql_sha256": "7697472ae35fb3b6fcfd81ff97ffbb17d7fceeab51e1289ab0aa25865d58c770",
+      "requires": [
+        "SOUNDINGS_CAPTAIN_DOCUMENTS.sql"
+      ],
+      "status": "packaged_for_activation",
+      "automatic_execution_by_upload": false
     }
   }
 }

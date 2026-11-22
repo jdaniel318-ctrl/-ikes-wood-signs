@@ -1,0 +1,12 @@
+{
+  "build": "8.8.20.155",
+  "scope": "Offline station, Admiral and invoice behavior checks, including simulated persistence and PDF generation. Deployment and native device checks are pending.",
+  "checks": [
+    "VERIFY_PILOTHOUSE_STATION.cjs",
+    "VERIFY_PILOTHOUSE_ADMIRAL.cjs",
+    "VERIFY_PILOTHOUSE_DOCUMENTS.cjs"
+  ],
+  "baseline": "8.8.20.154",
+  "baseline_sha256": "7c4b323adce84653ac758771fca10591dda92b0e4f558e0542d7adcedb601c60",
+  "migration_sha256": "7697472ae35fb3b6fcfd81ff97ffbb17d7fceeab51e1289ab0aa25865d58c770"
+}

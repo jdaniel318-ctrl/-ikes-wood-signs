@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.20.154",
-  "version": "8.8.20.154",
-  "release_name": "Soundings",
-  "releaseName": "Soundings",
-  "release_seal": "soundings-8820154",
+  "build": "8.8.20.155",
+  "version": "8.8.20.155",
+  "release_name": "Pilothouse",
+  "releaseName": "Pilothouse",
+  "release_seal": "pilothouse-8820155",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -163,8 +163,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "An appointed Captain can opt into private, ship-owned quote and invoice books in the Captain Station. Enter a flat job amount on the first screen, use the ship catalog for itemized work, and search or page through saved documents.",
-  "release_note": "An appointed Captain can opt into private, ship-owned quote and invoice books in the Captain Station. Enter a flat job amount on the first screen, use the ship catalog for itemized work, and search or page through saved documents.",
+  "release_focus": "Admirals assign Quotes & invoices by ship. Captains enter their branded station, start quotes and invoices directly, save and review flat jobs in one step, and prepare the finalized PDF.",
+  "release_note": "Admirals assign Quotes & invoices by ship. Captains enter their branded station, start quotes and invoices directly, save and review flat jobs in one step, and prepare the finalized PDF.",
   "tax_ledger_upgrade": {
     "schema": "dark-sky-fleet-tax-ledger-v1",
     "model": "TAX_LEDGER_MODEL.json",
@@ -286,8 +286,8 @@
     "algorithm": "SHA-256",
     "files": {
       "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": {
-        "sha256": "792afc8d72ce91572679fdd17da2f2a9e7f9dcb3dae4abef228d8355c2e6d92c",
-        "build": "8.8.20.154",
+        "sha256": "e9d45f9d301a85c7bf3a40f6e1aee05665bf3a5c76c46ef87f7813f098fc16c7",
+        "build": "8.8.20.155",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -334,14 +334,14 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_COMMAND_MODEL.json": {
-        "sha256": "c3aa44842be5fb6397f1304f42cab585dd30ca5be7154084872357797d7b8379",
-        "build": "8.8.20.154",
+        "sha256": "ab09cc19548b2628d8055d24c05f0a42f0586ff189fea37d4afb7be7567731b8",
+        "build": "8.8.20.155",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
       "FLEET_DOCTRINE_REGISTRY.json": {
-        "sha256": "c7d470e58d6cd7580ee3a40f9b083d9162e8ca348ca847b27fdd9db92121ce53",
-        "build": "8.8.20.154",
+        "sha256": "7e75a40ef5534a11859b677126d3e64593bef8c2bf018a47c2f11765892268fe",
+        "build": "8.8.20.155",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -400,8 +400,8 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "GOLDEN_VOYAGES.json": {
-        "sha256": "803b04f785b42efd25e60c7b26c1b9e1454c88bfd5ab2e91c0a9aae90c390923",
-        "build": "8.8.20.154",
+        "sha256": "3a15f6d048bb5c2a721356fe16abd2b1e6a96ae1aca0b88a5dee0b467f893d7e",
+        "build": "8.8.20.155",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -564,16 +564,16 @@
       "fleet_supabase.js": "f4b93e3db718daca7403d8f12077a961f57456f9a3f2a961dd0fca01cabe6757",
       "ike_style_registry.js": "6b348ebceb47e172e6676f46252b19c1c6bb7532baf76febfa8dd81760a76ab7",
       "app.js": "696a903ed8652988a41e0ed0f816be89495e599c9d2892abf189c41c468d50a1",
-      "captain.js": "75b89b0c68eba73b9a5e47ddfb1ab88329941da702db3a5e5ec6041295e91812",
+      "captain.js": "477c3b83a9570db9d1cf681f2cbec45d1069059e4a1a44d1605132de95cf3ccd",
       "simple_books.js": "ddd76dcf5e6c579f16918a9d3e645b0fc65d8a5b4d7c66df8896d8314eea325d",
-      "owner.html": "62ff12549fc54f4e5246e0f9a95a36904bcf572f47f337555a1d351cbe000592",
-      "manifest.webmanifest": "e78b7a335f137552c24e23671ea9805fef70f68932bbe5c1380bfe3e06db675a",
+      "owner.html": "d0938940113337dcfad230f0c6788a949e0cc40f34c061f5e5ed28a12fff6c90",
+      "manifest.webmanifest": "629f86e08d33adf12668a8bf1ec5799b7093483e9045217f8a595475714901ce",
       "IKE_STYLE_FOUNDRY.json": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
-      "sw.js": "0b9ce9dd76ce67285bbc394eb32e9eae786000f67afdafa05bf25c93d5c2472d",
-      "FLEET_DOCTRINE_REGISTRY.json": "c7d470e58d6cd7580ee3a40f9b083d9162e8ca348ca847b27fdd9db92121ce53",
-      "GOLDEN_VOYAGES.json": "803b04f785b42efd25e60c7b26c1b9e1454c88bfd5ab2e91c0a9aae90c390923",
-      "FLEET_COMMAND_MODEL.json": "c3aa44842be5fb6397f1304f42cab585dd30ca5be7154084872357797d7b8379",
-      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "792afc8d72ce91572679fdd17da2f2a9e7f9dcb3dae4abef228d8355c2e6d92c",
+      "sw.js": "680c7e6f490708a531e2596e0aa3ffb97c53c267d3861ac7cd7efaaa446f53a1",
+      "FLEET_DOCTRINE_REGISTRY.json": "7e75a40ef5534a11859b677126d3e64593bef8c2bf018a47c2f11765892268fe",
+      "GOLDEN_VOYAGES.json": "3a15f6d048bb5c2a721356fe16abd2b1e6a96ae1aca0b88a5dee0b467f893d7e",
+      "FLEET_COMMAND_MODEL.json": "ab09cc19548b2628d8055d24c05f0a42f0586ff189fea37d4afb7be7567731b8",
+      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "e9d45f9d301a85c7bf3a40f6e1aee05665bf3a5c76c46ef87f7813f098fc16c7",
       "input_hygiene.js": "e54a78fe75567db53c9682d4d039f53609fdcd0d43448f0534faec61def7edae",
       "business_deck.js": "63b1531524c46d73646a8265c7beabc1be430b9c613895a83c3e0f4bc696342f",
       "business_deck.css": "e28a49dcf16d35b3c7e0b4e69dd4892881cba564aeebc3e62e4b4eea90fca8d5",
@@ -589,8 +589,8 @@
       "quartermaster_core.js": "28c7a4ce873577a2b752e8256fa889a0a58334637f52ca550bdce096955f402b",
       "quartermaster_fonts.js": "69b2f7fbcf0d29731cf6feea6d3f7b57d7633fafc29703123a7213ea861c9df5",
       "quartermaster_pdf.js": "7e1c51fa7d7a4ae4fcd55a2330b15ff87c6b4ec0c9db548ff2b6a72658a453a1",
-      "quartermaster.js": "6db21e692cc84423dffee193d3fbd9afbb63bfdb48e78e8806eb081e9327445a",
-      "quartermaster.css": "7873d13ead95debc796a0e51d8f6eaf529488ff66da21242a8bf1135c4732c8b",
+      "quartermaster.js": "35143378101a4f4c24e2f3d1c85cda8e2f79e348b5f474aa008ae9043cadeb35",
+      "quartermaster.css": "4b07886177a26c7d581ab670c28b5827e676d291b1acf285fce084bd364c4961",
       "carve_fonts.js": "8eff084fd386b9fe63cac51924de2cef24f3af3bfeee98572c2929a7adb8fcc4",
       "carve_core.js": "428acd25f8208c66a9681e744a57665d1d0db2abf11a34704b94591c69be61f3",
       "carve_store.js": "95444741396e68749ecbf67dc15fd4f5f34d58a9f036621f41e6e2e276caa984",
@@ -1084,7 +1084,7 @@
     "project_data_mutation": false,
     "field_failure_proof": "8.8.20.13 held on styles.css because packaged DEPLOYMENT_MANIFEST runtime hash did not match packaged styles.css bytes"
   },
-  "release": "Soundings",
+  "release": "Pilothouse",
   "clearbearing_upgrade": {
     "build": "8.8.20.22",
     "baseline": "8.8.20.14 HashLock",
@@ -2056,10 +2056,12 @@
     "surface": "Appointed vessel Captain Station",
     "default": "off",
     "entry_module": "captain_documents.js",
-    "database_setup": "SOUNDINGS_CAPTAIN_DOCUMENTS.sql",
-    "database_rollback": "SOUNDINGS_DISABLE_CAPTAIN_DOCUMENTS.sql",
+    "database_setup": "PILOTHOUSE_SHIP_TOOLS.sql",
     "scope": "ship-owned, exact vessel",
     "public_editor": false,
-    "customer_delivery": "Captain shares a prepared PDF manually"
+    "customer_delivery": "Captain shares a prepared PDF manually",
+    "database_prerequisite": "SOUNDINGS_CAPTAIN_DOCUMENTS.sql",
+    "assignment_authority": "Verified Admiral for the selected fleet vessel",
+    "entry_sha256": "a80ed5f284445077beee7d209d9f0d584a87d88f8b039f2e1dc1b089326590ea"
   }
 }

@@ -15,54 +15,64 @@ function loadEditor(build){
  return modules;
 }
 export function mountCaptainDocuments(box,station){
- let receipt=null,working=false,closed=false,attempt=0;
+ let receipt=null,working=false,closed=false,requestId=0;
  const active=()=>!closed&&box.isConnected&&station.active()&&station.client.readSession()?.user?.id===station.userId;
  const valid=r=>r?.projectId===station.projectId&&r.vesselId===station.vesselId&&typeof r.enabled==='boolean'&&typeof r.eligible==='boolean'&&Number.isSafeInteger(r.version)&&r.version>=0;
- async function request(choice){
-  if(!active())throw Error('Reopen your Captain Station.');
-  const body={p_project_id:station.projectId};
-  if(choice!==undefined){body.p_enabled=choice;body.p_expected_version=receipt.version;}
-  const r=await station.client.rpc('vessel_captain_document_tool',body,'Ship document settings are unavailable.');
-  if(!active()||!valid(r))throw Error('The ship or appointment changed. Reopen the station.');
-  return r;
+ box.innerHTML=`<h2>Quotes &amp; invoices</h2>
+   <div class="captain-handoff-actions" data-actions hidden>
+     <button type="button" class="btn primary" data-intent="quote">New quote</button>
+     <button type="button" class="btn secondary" data-intent="invoice">New invoice</button>
+     <button type="button" class="btn ghost" data-intent="documents">Recent documents</button>
+   </div>
+   <p class="captain-quiet" role="status"></p>
+   <button type="button" class="btn ghost" data-check hidden>Retry availability check</button>`;
+ const actions=box.querySelector('[data-actions]'),check=box.querySelector('[data-check]'),status=box.querySelector('[role=status]');
+ const buttons=Array.from(actions.querySelectorAll('button'));
+ function paint(message=''){
+  if(!active())return;
+  actions.hidden=!(receipt?.eligible&&receipt.enabled);
+  check.hidden=!!receipt||working;
+  check.disabled=working;
+  buttons.forEach(button=>button.disabled=working);
+  status.textContent=message||(receipt?(actions.hidden?'Quotes and invoices haven’t been assigned to this ship.':''):'Document availability could not be confirmed.');
+  status.hidden=!status.textContent;
  }
  async function verify(){
+  if(!active())throw Error('Reopen your Captain Station.');
+  const id=++requestId;
   try{
-   const r=await request();
-   receipt=r;paint();
-   return r.enabled&&r.eligible;
+   const next=await station.client.rpc('vessel_captain_document_tool',{p_project_id:station.projectId},'Ship document settings are unavailable.');
+   if(id!==requestId||!active()||!valid(next))throw Error('The ship or appointment changed.');
+   receipt=next;
+   station.updateBrand?.(next);
+   paint();
+   return next.enabled&&next.eligible;
   }catch(error){
-   receipt=null;paint('Reopen the Captain Station to verify this ship’s access.');
+   if(id===requestId&&active()){receipt=null;paint();}
    throw error;
   }
  }
- box.innerHTML='<h2>Ship tools</h2><details><summary>Quotes &amp; invoices</summary><p>Prepare quotes and invoices in this ship’s private workspace. Share a finished PDF when you choose.</p><div class="captain-handoff-actions"><button type="button" class="btn primary" data-open hidden>Open quotes &amp; invoices</button><button type="button" class="btn secondary" data-toggle hidden></button><button type="button" class="btn ghost" data-check hidden>Check availability</button></div><p role="status"></p></details>';
- const details=box.querySelector('details'),open=box.querySelector('[data-open]'),toggle=box.querySelector('[data-toggle]'),check=box.querySelector('[data-check]'),status=box.querySelector('[role=status]');
- function paint(message){
-  open.hidden=!receipt?.enabled||!receipt?.eligible;toggle.hidden=!receipt||(!receipt.eligible&&!receipt.enabled);
-  toggle.textContent=receipt?.enabled?'Turn off for this ship':'Turn on for this ship';
-  check.hidden=!!receipt;open.disabled=toggle.disabled=check.disabled=working;
-  status.textContent=message||(receipt?.eligible?(receipt.enabled?'Enabled for this ship.':'Off for this ship.'):'Fleet Services access is required for this ship.');
- }
- async function settings(choice){
+ async function refresh(){
   if(working||!active())return;
-  working=true;const current=++attempt;paint('Checking this ship’s saved setting…');
-  try{const next=await request(choice);if(current===attempt&&active())receipt=next;}
-  catch(_){if(current===attempt)receipt=null;}
-  finally{if(current===attempt&&active()){working=false;paint(receipt?'':'Could not confirm the saved setting. Check availability to read it again.');}}
+  working=true;paint('Checking document availability…');
+  try{await verify();}catch{/* Offer a read-only retry. */}
+  finally{working=false;paint();}
  }
- details.ontoggle=()=>{if(details.open&&!receipt)void settings();};
- check.onclick=()=>settings();
- toggle.onclick=()=>{if(!receipt||working)return;if(receipt.enabled&&!confirm('Turn off Quotes & invoices for this ship? Its saved documents will be available when you turn it on again.'))return;void settings(!receipt.enabled);};
- open.onclick=async()=>{
-  if(working||!active())return;
-  working=true;paint('Opening this ship’s documents…');
+ async function launch(intent){
+  if(working||!active()||!receipt?.enabled||!receipt.eligible)return;
+  let message='';
+  working=true;paint('Opening documents…');
   try{
-   if(!await verify())throw Error('The tool is unavailable. Check the saved setting.');
+   if(!await verify())return;
    await loadEditor(station.build);
-   if(active())await window.BlackFlagQuartermasterUI.openForCaptain({...station,container:box,active,verify});
-  }catch(_){receipt=null;}
-  finally{if(active()){working=false;paint(receipt?'':'Could not open this workspace. Check availability to try again.');}}
- };
- return ()=>{closed=true;++attempt;window.BlackFlagQuartermasterUI?.closeCaptain?.(box);};
+   if(active()&&!await window.BlackFlagQuartermasterUI.openForCaptain({...station,container:box,active,verify,intent})){
+    message='Documents could not open. Try again.';
+   }
+  }catch{message=receipt?'Documents could not open. Try again.':'';}
+  finally{working=false;paint(message);}
+ }
+ buttons.forEach(button=>button.onclick=()=>launch(button.dataset.intent));
+ check.onclick=refresh;
+ void refresh();
+ return ()=>{closed=true;++requestId;window.BlackFlagQuartermasterUI?.closeCaptain?.(box);};
 }

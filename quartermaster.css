@@ -512,3 +512,11 @@
  #quartermasterWorkspace[data-qm-view="editor"] #qmSyncPanel .qm-sync-connected button{font-size:12px;padding:8px;min-height:44px}
  #quartermasterWorkspace[data-qm-view="editor"] #qmSyncPanel .qm-sync-connected p{margin:2px 0;font-size:12px}
 }
+
+@media screen and (max-width:600px){
+ #quartermasterWorkspace .qm-review table,#quartermasterWorkspace .qm-review tbody{display:block;width:100%;min-width:0}
+ #quartermasterWorkspace .qm-review thead{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+ #quartermasterWorkspace .qm-review tbody tr{display:block;padding:8px 0;border-top:1px solid var(--qm-line)}
+ #quartermasterWorkspace .qm-review td[data-label]{display:block;padding:3px 0 3px 7em;position:relative;min-height:1.5em;border:0;text-align:left;white-space:normal;overflow-wrap:anywhere}
+ #quartermasterWorkspace .qm-review td[data-label]::before{content:attr(data-label);position:absolute;left:0;font:600 11px/1.7 system-ui,sans-serif;color:var(--qm-muted)}
+}
