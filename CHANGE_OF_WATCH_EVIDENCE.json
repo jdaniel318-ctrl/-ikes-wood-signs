@@ -1,0 +1,18 @@
+{
+  "build": "8.8.20.158",
+  "base": "8.8.20.157",
+  "offline_suites_passed": 83,
+  "verified_by": "VERIFY_RELEASE_ALL.cjs",
+  "targeted_check": "VERIFY_CHANGE_OF_WATCH.cjs",
+  "scope": [
+    "Captain preparation shortcuts on this device and retained draft checkpoints",
+    "Exact-vessel handoff review using existing Admiral verification and server records",
+    "Scope, timestamps and optional symptom content in a Bootstrap work order",
+    "VoyageKeeper exercise station and distinct customer intake receipts",
+    "Fleetguard accepted operator role and owner-only rejection"
+  ],
+  "checks_used": "Synthetic role, record and UI fixtures. No live business data was read or changed.",
+  "browser_device_check": "pending",
+  "frontend_deployed": false,
+  "production_write": false
+}

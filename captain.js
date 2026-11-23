@@ -336,12 +336,14 @@ const admiralVesselLogos = new Map([
   function vesselRow(v, featured=false){
     const f=facts(v);
     const action=f.reported?'Read report':'View vessel';
+    const exercise=admiralVesselLogos.get(v.project_id)==='fleet-voyagekeeper.webp';
+    const followUp=held(f.life)?'Review the hold with the Captain':f.issues>0?'Ask the Captain for the issue outcome':!f.reported?'Request the first Watch report':f.stale?'Request an updated Watch report':'';
     const work=featured && f.summary ? f.summary : v.current_work;
     const stamp=f.reported?new Date(f.activity).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'}):'';
     return `<article class="bridge-row${featured?' bridge-lead':''}">
-      <div class="bridge-identity">${mark(v)}<div><h4>${safe(v.display_name)}</h4><small>${safe(words(v.operating_model))} · ${safe(controlLabel(v).toLowerCase())}</small></div></div>
+      <div class="bridge-identity">${mark(v)}<div><h4>${safe(v.display_name)}</h4><small>${exercise?'Exercise vessel · ':''}${safe(words(v.operating_model))} · ${safe(controlLabel(v).toLowerCase())}</small></div></div>
       <div class="bridge-work">${work?'<b>'+safe(work)+'</b>':''}${stamp?'<small>Reported '+safe(stamp)+'</small>':''}</div>
-      <div class="bridge-signals">${signals(f)}</div>
+      <div class="bridge-signals">${signals(f)}${featured && followUp?'<small>'+safe(followUp)+'</small>':''}</div>
       <button type="button" data-watch-vessel="${safe(v.project_id)}" aria-label="${action}: ${safe(v.display_name)}">${action} →</button>
     </article>`;
   }
@@ -651,7 +653,7 @@ const admiralVesselLogos = new Map([
     reportPlace = paging ? {id, top: reportPlace.top} : placeOf(row);
     leaveWatch();
     updateReportSteps(row);
-    const f=facts(v),program=v.mission_class==='admiral_program';$('watchOverviewBody').innerHTML=`<header>${mark(v)}<div><small>ADMIRAL OBSERVATION · EXACT PROJECT CONTEXT</small><h2 tabindex="-1">${safe(v.display_name)}</h2><p>${safe(v.project_id)}</p></div><em>READ ONLY</em></header><section class="fleet-vessel-context"><article><small>VESSEL LIFECYCLE</small><b>${safe(words(f.life).toUpperCase())}</b></article><article><small>OWNERSHIP STATUS</small><b>${safe(program?'SEPARATE PROGRAM':controlLabel(v))}</b></article><article><small>OWNER ACCOUNTS (NOT CAPTAINS)</small><b>${program?'Not applicable':Number(v.owner_auth_identity_count||0)}</b></article><article><small>SERVER SETTINGS</small><b>${program?'Not applicable':v.settings_present?'PRESENT':'MISSING'}</b></article><article><small>REPORT FRESHNESS</small><b>${safe(!f.reported?"NEVER REPORTED":f.stale?"STALE REPORT":"RECENT REPORT")}</b></article><article><small>OPERATING MODEL</small><b>${safe(words(v.operating_model).toUpperCase())}</b></article><article><small>LAST FLEET READ (NOT A NEW REPORT)</small><b>${safe(lastSync?new Date(lastSync).toLocaleString():"Not read")}</b></article><article><small>CURRENT WORK</small><b>${safe(f.work)}</b></article><article><small>CAPTAIN REPORT SAVED AT</small><b>${safe(f.activity?new Date(f.activity).toLocaleString():'Not reported')}</b></article></section>${f.summary?`<aside><b>Issue summary</b><span>${safe(f.summary)}</span></aside>`:''}<aside><b>Scoped observation established</b><span>Only ${safe(v.display_name)} (${safe(v.project_id)}) is in context. Source: ${safe(words(f.source))}. Captain appointment and ownership are separate. An unassigned owner does not cancel an accepted Captain appointment; owner authority still requires an exact-vessel owner membership. No modifying control is exposed.</span></aside>${program?'':`<section class="tb-command-access"><h3>Fleet Captain operating access</h3><p>Observation is available without a Captain appointment. Operating is a separate authority check, not an ownership transfer.</p><p class="tb-command-pending"><b>FLEET COMMAND OPERATIONS NOT ENABLED</b><br>For a help request on an unassigned vessel, open Fleet help in My Fleet and choose Open as acting Captain. This is not a backend-health warning or a publication status. An accepted, exact-vessel Captain uses their separate Captain Station; observation grants no operating permission.</p><button type="button" disabled>OPERATE AS FLEET CAPTAIN — NOT ENABLED</button><p>No appointment or membership will be created to bypass this boundary.</p></section>`}`;
+    const f=facts(v),program=v.mission_class==='admiral_program';$('watchOverviewBody').innerHTML=`<header>${mark(v)}<div><small>ADMIRAL OBSERVATION · EXACT PROJECT CONTEXT</small><h2 tabindex="-1">${safe(v.display_name)}</h2><p>${safe(v.project_id)}</p></div><em>READ ONLY</em></header><section class="fleet-vessel-context"><article><small>VESSEL LIFECYCLE</small><b>${safe(words(f.life).toUpperCase())}</b></article><article><small>OWNERSHIP STATUS</small><b>${safe(program?'SEPARATE PROGRAM':controlLabel(v))}</b></article><article><small>OWNER ACCOUNTS (NOT CAPTAINS)</small><b>${program?'Not applicable':Number(v.owner_auth_identity_count||0)}</b></article><article><small>SERVER SETTINGS</small><b>${program?'Not applicable':v.settings_present?'PRESENT':'MISSING'}</b></article><article><small>REPORT FRESHNESS</small><b>${safe(!f.reported?"NEVER REPORTED":f.stale?"STALE REPORT":"RECENT REPORT")}</b></article><article><small>OPERATING MODEL</small><b>${safe(words(v.operating_model).toUpperCase())}</b></article><article><small>LAST FLEET READ (NOT A NEW REPORT)</small><b>${safe(lastSync?new Date(lastSync).toLocaleString():"Not read")}</b></article><article><small>CURRENT WORK</small><b>${safe(f.work)}</b></article><article><small>CAPTAIN REPORT SAVED AT</small><b>${safe(f.activity?new Date(f.activity).toLocaleString():'Not reported')}</b></article></section>${f.summary?`<aside><b>Issue summary</b><span>${safe(f.summary)}</span></aside>`:''}<aside><b>Scoped observation established</b><span>Only ${safe(v.display_name)} (${safe(v.project_id)}) is in context. Source: ${safe(words(f.source))}. Captain appointment and ownership are separate. An unassigned owner does not cancel an accepted Captain appointment; owner authority still requires an exact-vessel owner membership. No modifying control is exposed.</span></aside>${program?'':`<section class="tb-command-access"><h3>Fleet Captain operating access</h3><p>Observation is available without a Captain appointment. Operating is a separate authority check, not an ownership transfer.</p><p class="tb-command-pending"><b>FLEET COMMAND OPERATIONS NOT ENABLED</b><br>For a help request on an unassigned vessel, open Fleet help in My Fleet and choose Open as acting Captain. This is not a backend-health warning or a publication status. An accepted, exact-vessel Captain uses their separate Captain Station; observation grants no operating permission.</p><button type="button" disabled>OPERATE AS FLEET CAPTAIN — NOT ENABLED</button><p>No appointment or membership will be created to bypass this boundary.</p><button type="button" class="bridge-handoff" id="watchReviewHandoff">Review Captain handoff in Build &amp; Govern</button></section>`}`;
     $('watchWorkspace').inert = true;
     const modal = $('watchOverview');
     modal.classList.remove('hidden');
@@ -690,6 +692,12 @@ const admiralVesselLogos = new Map([
     }
     return;
   }if(t.closest?.('#watchRefresh'))return load();if(t.closest?.('#watchSignOut')){watchAccount.reset();leaveWatch();await window.DarkSkySignOutAdmiral?.();if(shown($('bootstrapFleet')))showWatchSignIn('Admiral account signed out. Sign in to reopen My Fleet.');return;}const vessel=t.closest?.('[data-watch-vessel]');if(vessel)return overview(vessel.dataset.watchVessel);if(t.closest?.('#watchOverviewClose'))return backToWatch();
+    if(t.closest?.('#watchReviewHandoff') && shown($('watchOverview')) && lastSync){
+      const id=reportPlace?.id;
+      if(records.some(v=>v.project_id===id) && /^[a-zA-Z0-9_-]{1,128}$/.test(id)){
+        close();return window.DarkSkyFleetNavigator.navigate('admiral',{source:'engine',directTarget:'handoff:'+id});
+      }
+    }
     const nav=t.closest?.('[data-watch-view]'),metric=t.closest?.('[data-bridge-filter]');
     if((nav||metric) && shown($('watchWorkspace'))){
       if(metric){
@@ -928,6 +936,7 @@ const admiralVesselLogos = new Map([
 
   function secure() {
     authorized = false;
+    paintPreparationWatch();
     // Captain-only escape invariant: close every Captain subview before revealing Engine.
     ['admiralDeck','admiralGateOverlay','captainBlueprint','captainFleetChart','captainSpyglassPanel','captainObjectPanel','captainTestAccessGate','captainCommandWorkspace','captainQuarters','captainQuartersGate','captainGlobalExit'].forEach(hide);
     byId('captainQuarters')?.classList.remove('captain-entry-complete');
@@ -1999,6 +2008,13 @@ const admiralVesselLogos = new Map([
         const opener = deck.querySelector('[data-schedulejoe-open]');
         if (opener) window.DarkSkyOpenBootstrapSchedule?.(opener);
       }
+      delete deck.dataset.preparationTarget;
+      if(/^handoff:[a-zA-Z0-9_-]{1,128}$/.test(directTarget)){
+        deck.dataset.preparationTarget=directTarget.slice(8);
+        window.DarkSkyQuarterdeck?.prepareSelection?.();
+        setAdmiralLane('delegate',true);
+        window.DarkSkyQuarterdeck?.sync?.();
+      }
       if (directTarget === 'lantern-run') byId('lanternRunLaunch')?.click();
       if (directTarget === 'regatta') {
         setAdmiralLane('promote');
@@ -2482,6 +2498,7 @@ const admiralVesselLogos = new Map([
       (v.outposts||[]).forEach(o=>(o.attentionReasons||[]).forEach(r=>{if(r && !reasons.includes(r))reasons.push(r);}));
       if(Number(v.attentionOutposts)>0 || reasons.length) signalRows.push({v,reasons});
     });
+    paintPreparationWatch(fleet);
     const watch=byId('captainProWatchItems');
     if(watch) watch.innerHTML=signalRows.length?signalRows.slice(0,1).map(({v,reasons})=>`<button type="button" class="captain-pro-signal" data-captain-pro-vessel="${v.projectId}"><span><b>${v.name}</b><small>${reasons[0]||`${v.attentionOutposts} deployment signal${v.attentionOutposts===1?'':'s'} need review.`}</small></span><em>OPEN SIGNAL →</em></button>`).join(''):`<div class="captain-pro-empty">No active attention signals.</div>`;
     const decide=byId('captainProDecideItems');
@@ -2519,6 +2536,74 @@ const admiralVesselLogos = new Map([
     });
   }
 
+  // A preparation watch is a device-local set of shortcuts, never a vessel grant.
+  function preparationKey(id){return 'blackFlag:prepWatch:'+encodeURIComponent(id);}
+
+  function paintPreparationWatch(fleet){
+    const host=byId('prepWatchShips'),choices=byId('prepWatchChoices');
+    if(!host||!choices)return;
+    if(!authorized){
+      host.replaceChildren();choices.replaceChildren();delete host.dataset.rendered;delete choices.dataset.rendered;
+      byId('prepDraftButton').textContent='Open ship draft';byId('prepWatchStatus').textContent='';return;
+    }
+    const snapshot=fleet||fleetSnapshot();
+    const draft=window.DarkSkyVesselCommissioning?.preparationCheckpoint?.();
+    const draftButton=byId('prepDraftButton');
+    draftButton.textContent=draft?(draft.review?'Review result · '+draft.name:'Resume '+draft.name+' · step '+draft.stage+' of 7'):'Open ship draft';
+    const marked=[],available=[];
+    for(const vessel of snapshot){
+      if(!vessel.projectId||!vessel.name)continue;
+      const id=captainSafe(vessel.projectId),name=captainSafe(vessel.name);
+      let pinned=false;
+      try{pinned=localStorage.getItem(preparationKey(vessel.projectId))==='1';}catch(_){}
+      if(!pinned){
+        available.push('<button type="button" data-prep-action="add" data-project="'+id+'">Add '+name+'</button>');
+        continue;
+      }
+      const next=vessel.statusPresentation?.commissioning?.nextGate?.label;
+      const guidance=['bf-p-42be92cbac12','bf-p-fc2816b8254a4845'].includes(vessel.projectId)?'Exercise vessel · use sample work':next?'Local checklist · '+next:'Review ship setup';
+      marked.push('<article><div><strong>'+name+'</strong><small>'+captainSafe(guidance)+'</small></div>'+
+        '<div class="prep-watch-buttons"><button type="button" data-prep-action="open" data-project="'+id+'">Open ship setup</button>'+
+        '<button type="button" data-prep-action="handoff" data-project="'+id+'">Review handoff</button>'+
+        '<button type="button" class="prep-remove" aria-label="Remove '+name+' from this watch" data-prep-action="remove" data-project="'+id+'">Remove</button></div></article>');
+    }
+    const ships=marked.join('')||'<p>Choose a ship below or open a commissioning draft.</p>';
+    const menu=available.join('')||'<p>No other ship workstations on this device.</p>';
+    if(host.dataset.rendered!==ships){host.innerHTML=ships;host.dataset.rendered=ships;}
+    if(choices.dataset.rendered!==menu){choices.innerHTML=menu;choices.dataset.rendered=menu;}
+  }
+
+  async function preparationAction(button){
+    if(!authorized||byId('captainQuarters')?.classList.contains('hidden'))return;
+    const action=button.dataset.prepAction,status=byId('prepWatchStatus');
+    try{
+      if(action==='draft'){
+        if(!window.DarkSkyVesselCommissioning?.openPreparation)throw Error('Ship preparation is unavailable.');
+        await window.DarkSkyVesselCommissioning.openPreparation();return;
+      }
+      const vessel=fleetSnapshot().find(v=>v.projectId===button.dataset.project);
+      if(!vessel)throw Error('This ship is no longer in the workstation list. Reopen Captain Watch.');
+      if(action==='open'){await window.BlackFlagOpenCommandResult({type:'project',projectId:vessel.projectId});return;}
+      if(action==='handoff'){
+        if(!/^[a-zA-Z0-9_-]{1,128}$/.test(vessel.projectId))throw Error('Open this vessel from Build & Govern.');
+        await openAdmiralGate('captain','handoff:'+vessel.projectId);return;
+      }
+      if(action!=='add' && action!=='remove')return;
+      const key=preparationKey(vessel.projectId);
+      if(action==='add')localStorage.setItem(key,'1');else localStorage.removeItem(key);
+      paintPreparationWatch();
+      const added=action==='add';
+      status.textContent=added?vessel.name+' added to this device’s preparation watch.':vessel.name+' removed from this device’s preparation watch.';
+      const picker=byId('prepWatchPicker');
+      if(added){
+        picker.open=false;
+        const first=Array.from(byId('prepWatchShips').querySelectorAll('[data-prep-action="open"]')).find(b=>b.dataset.project===vessel.projectId);
+        first?.focus();
+      }else picker.querySelector('summary')?.focus();
+    }catch(error){status.textContent=action==='add'||action==='remove'?'This device could not save the shortcut.':String(error.message||'This route could not open.');}
+  }
+
+
   function ensureCaptainCommandMode(){
     const room=byId('captainQuarters');
     if(!room)return;
@@ -2533,7 +2618,13 @@ const admiralVesselLogos = new Map([
       surface=document.createElement('main');surface.id='captainProfessionalSurface';surface.className='captain-professional-surface';surface.setAttribute('aria-label','Captain professional command view');
       surface.innerHTML=`
         <header class="captain-pro-head"><div><small>PROFESSIONAL COMMAND</small><h2>Captain's Quarters</h2><p>Signal first. Decision second. Action third. Durable history last.</p></div><span>CAPTAIN AUTHORIZED</span></header>
-        <nav class="waypoint-assigned" aria-label="Appointed Captain Fleet help"><a href="owner.html?surface=vessel-captain" class="tb-assigned-entry">My assigned vessels →</a><span>Open Fleet help with your appointed Captain account. Choose a vessel to see its requests.</span></nav>
+        <section class="change-watch" aria-labelledby="preparationWatchTitle">
+          <header><div><small>FLEET CAPTAIN</small><h3 id="preparationWatchTitle">Ships I’m preparing</h3></div>
+          <button type="button" data-prep-action="draft" id="prepDraftButton">Open ship draft</button></header>
+          <div id="prepWatchShips"></div><details id="prepWatchPicker"><summary>Choose ships for this watch</summary><p>Keep shortcuts on this device while you prepare a ship for its Captain.</p><div id="prepWatchChoices"></div></details>
+          <p role="status" aria-live="polite" id="prepWatchStatus"></p>
+        </section>
+        <nav class="waypoint-assigned" aria-label="Appointed Captain Fleet help"><a href="owner.html?surface=vessel-captain" class="tb-assigned-entry">My assigned vessels →</a><span>Ships I operate with an accepted Captain appointment.</span></nav>
         <section class="captain-pro-topline">
           <article class="captain-pro-live"><small>LIVE FLEET INTELLIGENCE</small><div><span><b id="captainProVessels">0</b><em>VESSELS</em></span><span><b id="captainProSailing">0</b><em>SAILING</em></span><span><b id="captainProTrials">0</b><em>SEA TRIAL</em></span><span><b id="captainProSignals">0</b><em>SIGNALS</em></span><span><b id="captainProReadiness">NOT RUN</b><em>READINESS</em></span></div></article>
           <article class="captain-pro-readiness-card"><div><small>FLEET READINESS</small><strong id="captainProReadinessState">NOT RUN</strong><p id="captainProReadinessCopy">Run the same protected Fleet Readiness check available in Cinematic View.</p></div><div><button id="captainProRunReadiness" type="button">RUN FLEET READINESS</button><button id="captainProViewFindings" type="button" hidden>VIEW CURRENT FINDINGS</button></div></article>
@@ -2549,7 +2640,12 @@ const admiralVesselLogos = new Map([
         <details class="captain-support-drawer"><summary><span><b>ENGINEERING SYSTEMS</b><small>Signals, intelligence, readiness, construction and retained history</small></span><em>SYSTEMS AVAILABLE</em></summary><div><button type="button" data-captain-pro-route="watch"><b>All Signals</b><small>Full watch</small></button><button type="button" data-captain-pro-route="spyglass"><b>First Mate Analysis</b><small>Fleet intelligence</small></button><button type="button" data-captain-pro-route="fleet"><b>Fleet Map</b><small>Vessel posture</small></button><button type="button" data-captain-pro-route="log"><b>Captain's Log</b><small>Durable history</small></button><button type="button" data-captain-pro-route="readiness"><b>Fleet Readiness</b><small>Check fleet health</small></button><button type="button" data-captain-pro-route="workshop"><b>Workshop</b><small>Build and configure</small></button><button type="button" data-captain-pro-route="forge"><b>Visual Forge</b><small>Brand and experience</small></button><button type="button" data-captain-pro-route="blueprint"><b>Blueprint</b><small>Layouts and architecture</small></button><button type="button" data-captain-pro-route="admiral"><b>Admiral's Gate</b><small>Trial higher command</small></button></div></details>
         <div id="captainProfessionalStatus" class="captain-professional-status">Professional command is the operational truth. Cinematic View uses the same command model.</div>`;
       room.appendChild(surface);
+      window.addEventListener('storage',event=>{
+        if(authorized && !room.classList.contains('hidden') && (event.key===null||event.key?.startsWith('blackFlag:prepWatch:')))paintPreparationWatch();
+      });
       surface.addEventListener('click',e=>{
+        const prep=e.target.closest('[data-prep-action]');
+        if(prep){void preparationAction(prep);return;}
         if(e.target.closest('#captainProRunReadiness')){runProfessionalFleetReadiness();return;}
         if(e.target.closest('#captainProViewFindings')){openAdmiralGate('captain','findings');return;}
         const vesselBtn=e.target.closest('[data-captain-pro-vessel]');if(vesselBtn){recordCaptainOutcome('route','Signal route opened',vesselBtn.dataset.captainProVessel);const desk=ensureCaptainDeskIndex();const fleetBtn=desk?.querySelector('[data-cq-desk-route="fleet"]');if(fleetBtn)fleetBtn.click();requestAnimationFrame(()=>openSignalReport(vesselBtn.dataset.captainProVessel));return;}
@@ -2560,6 +2656,7 @@ const admiralVesselLogos = new Map([
         if(target)target.click();else{const status=byId('captainProfessionalStatus');if(status)status.textContent='That command station is not available on this hull.';}
       });
     }
+    paintPreparationWatch();
     room.dataset.defaultCommandMode='professional';
     room.dataset.commandMode='professional';
     const toggle=byId('captainCommandModeToggle');
@@ -5970,13 +6067,25 @@ if(window.DarkSkyOpenFleetWatchtower)window.DarkSkyOpenAdmiralFleet=window.DarkS
     const data=validateRecords(v,a),old=selected();
     vessels=data.vessels;appointments=data.appointments;evidenceReadAt=new Date().toISOString();ready=true;loadedSession=t.session;
     const select=$('harborVessel');select.innerHTML='<option value="">Choose a vessel</option>'+vessels.map(x=>`<option value="${safe(x.project_id)}">${safe(x.display_name)} · ${safe(x.lifecycle_state)}</option>`).join('');
-    if(vessels.some(v=>v.project_id===old))select.value=old;
+    const requested=deck.dataset.preparationTarget;
+    if(requested){
+      delete deck.dataset.preparationTarget;
+      select.value=vessels.some(v=>v.project_id===requested)?requested:'';
+      changeTab('history');
+      if(!select.value)message('This ship is absent from the verified delegation list. No vessel selected.','watch');
+    }else if(vessels.some(v=>v.project_id===old))select.value=old;
+    // A positive, current server receipt can retire a local shortcut. It grants no access.
+    for(const a of appointments){
+      if(a.status==='accepted' && a.accepted_at && a.candidate_user_id && !a.revoked_at && vessels.some(v=>v.project_id===a.project_id)){
+        try{localStorage.removeItem('blackFlag:prepWatch:'+encodeURIComponent(a.project_id));}catch(_){}
+      }
+    }
     backend('SERVER RECORDS LOADED');paintHistory();paintEvidence();paintRoute();return true;
   }
   async function load(){
     const t=token();if(!t)return;
     attemptedSession=t.session;invalidate();backend('READING FLEET CORE');message('Reading vessel and appointment records. No authority changes.');
-    try{await verified(t);if(await readRecords(t))message('Server records loaded. Preview first; no appointment or vessel state changed.','verified');}
+    try{await verified(t);if(await readRecords(t) && !($('harborVessel').value==='' && currentTab==='history'))message('Server records loaded. Preview first; no appointment or vessel state changed.','verified');}
     catch(e){if(current(t)){ready=false;backend('RECORDS UNAVAILABLE');paintHistory();message('Delegation records unavailable: '+e.message+' Use Refresh to retry; no command is replayed.','watch');}}
     finally{finish(t);}
   }
@@ -6125,11 +6234,12 @@ if(window.DarkSkyOpenFleetWatchtower)window.DarkSkyOpenAdmiralFleet=window.DarkS
     const nowVisible=visible(),lane=deck.dataset.admiralLane||'govern';
     deck.querySelectorAll('[data-admiral-lane]').forEach((b,i)=>{b.tabIndex=b.dataset.admiralLane===lane?0:-1;b.id=b.id||'qdLane-'+b.dataset.admiralLane;const p=deck.querySelector('[data-admiral-panel="'+b.dataset.admiralLane+'"]');if(p){p.id=p.id||'qdLanePanel-'+b.dataset.admiralLane;b.setAttribute('aria-controls',p.id);p.setAttribute('role','tabpanel');p.setAttribute('aria-labelledby',b.id);p.tabIndex=-1;}});
     if(lane!==previousLane){if(previousLane==='delegate'&&busy){operation++;busy=false;ready=false;loadedSession='';attemptedSession='';invalidate();}previousLane=lane;const d=$('quarterdeckContinuity');if(d)d.open=lane==='govern';}
+    if(!nowVisible||lane!=='delegate')delete deck.dataset.preparationTarget;
     if(wasVisible&&!nowVisible)conceal();wasVisible=nowVisible;
     if(active()&&attemptedSession!==sessionMark()&&!busy)load();
     state();
   }
-  window.DarkSkyQuarterdeck=Object.freeze({build:BUILD,mount,sync});
+  window.DarkSkyQuarterdeck=Object.freeze({build:BUILD,mount,sync,prepareSelection(){attemptedSession='';ready=false;invalidate();}});
   // Both entry points cover a late-created deck and a deck already present when this module executes.
   window.addEventListener('darksky:admiral-deck-ready',mount);
   window.addEventListener('darksky:admiral-lane-changed',sync);

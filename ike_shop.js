@@ -191,7 +191,7 @@
     const reviewed=await core().review(clone(s.request),fonts());valid();
     const request=await s.store.save(reviewed,s.request.revision);valid();saved(s,request);
     if(s.remember){await flushDraft(s).catch(()=>{});valid();}
-    const bundle=await core().buildPackage(clone(request),fonts());valid();s.bundle=bundle;s.bundleRequest=clone(request);await prepareHandoff(s,valid);valid();render(s);status(s,'Ready for Mail. Use the options below to send your complete file. Sending finishes in Mail.','success');s.pendingStep=4;
+    const bundle=await core().buildPackage(clone(request),fonts());valid();s.bundle=bundle;s.bundleRequest=clone(request);await prepareHandoff(s,valid);valid();render(s);status(s,'Ready to send. Attach the complete request and send it to Ike in Mail. The shop has not confirmed receipt.','success');s.pendingStep=4;
   }
   async function prepareHandoff(s,valid){
     s.handoff=null;s.shareReady=false;if(!canSend(s)||locked(s)||!s.bundle)return;

@@ -17543,3 +17543,21 @@ body #blackFlagEntryGate .bf-entry-shell {
 #watchWorkspace .watch-program-group>h4 {margin:0 0 .55rem;font-size:1.05rem;color:#f4e5bf}
 #watchWorkspace .bridge-gallery #watchLearningPrograms {display:contents}
 #watchWorkspace #watchOtherGroup[hidden] {display:none}
+
+/* Change of Watch — Captain preparation shortcuts */
+.change-watch{padding:16px;border:1px solid #355467;background:#102735;color:#edf4f4;border-radius:12px;margin:0 0 12px}
+.change-watch header,.change-watch article,.prep-watch-buttons,#prepWatchChoices{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.change-watch header,.change-watch article{justify-content:space-between}
+.change-watch h3{font-size:1.22rem;margin:3px 0 0;color:#fff}
+.change-watch small,.change-watch article strong{display:block}
+.change-watch small,.change-watch p{color:#c8d8dc;margin:5px 0}
+.change-watch article{padding:10px 0;border-bottom:1px solid #375564}
+.change-watch button,.change-watch summary,.bridge-handoff{min-height:44px;padding:8px 12px;cursor:pointer}
+.change-watch button,.bridge-handoff{font:inherit;font-weight:600;background:#163c4a;color:#f2f7fa;border:1px solid #699598;border-radius:7px}
+.change-watch header button{color:#172b31;background:#efd59b;border-color:#efd59b}
+.change-watch .prep-remove{background:transparent;border-color:#536e76}
+.change-watch summary{display:list-item;align-content:center;color:#c5e7df;font-weight:600}
+.change-watch button:focus-visible,.change-watch summary:focus-visible,.bridge-handoff:focus-visible{outline:3px solid #f2c779;outline-offset:2px}
+.change-watch details p{margin-bottom:8px}.change-watch #prepWatchStatus:empty{display:none}
+.bridge-signals>small{display:block}.bridge-handoff{margin:10px 0}
+@media(max-width:650px){.change-watch{padding:12px}.change-watch header,.change-watch article{align-items:start;flex-direction:column}.prep-watch-buttons{width:100%}.change-watch button{white-space:normal;overflow-wrap:anywhere}}

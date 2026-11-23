@@ -221,6 +221,33 @@
         }));
       }
       if (role !== 'admiral' && row.description) item.append(element('p',row.description));
+      if (role !== 'admiral' && row.project_id===projectId) {
+        const brief=element('details',null,'fh-editor');
+        brief.append(element('summary','Work order for Bootstrap'));
+        const include=element('input');include.type='checkbox';
+        const payload=element('textarea');payload.readOnly=true;payload.rows=6;
+        payload.setAttribute('aria-label','Work order text');
+        const refresh=()=>{
+          if(!current())return;
+          const lines=[projectName+' · '+projectId,'Request '+row.request_id+' · revision '+row.version,
+            'Screen: '+row.screen,'Build: '+(row.build||'Unrecorded'),'Status: '+titles[row.status]];
+          if(include.checked && row.description)lines.push('Reported issue: '+row.description);
+          payload.value=lines.join('\n');
+        };
+        include.addEventListener('change',refresh);
+        if(row.description)brief.append(field('Include the reported issue',include));
+        const copy=button('Copy work order',async()=>{
+          if(!current()||!item.isConnected)return;
+          refresh();
+          try{
+            await navigator.clipboard.writeText(payload.value);
+            if(current() && item.isConnected)listState.textContent='Work order copied for Bootstrap.';
+          }catch(_){
+            if(current() && item.isConnected){payload.focus();payload.select();listState.textContent='Work order selected. Use Copy on your device.';}
+          }
+        });
+        refresh();brief.append(payload,copy);item.append(brief);
+      }
       if (row.outcome) item.append(element('p','Verification note · '+row.outcome));
       if (role !== 'admiral' && row.has_attachment) {
         const view = button('View screenshot', async () => {

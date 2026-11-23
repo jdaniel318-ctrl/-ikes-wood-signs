@@ -1,15 +1,15 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.157",
-  "name": "Watchdesk",
-  "seal": "watchdesk-8820157",
-  "base": "8.8.20.156",
-  "base_sha256": "0db2a5ea67c524e70e4da0098645a26fe852334b10919af413a87cfe657447ed",
-  "base_files": 1098,
-  "prepared_at": "2026-11-22T21:33:23.416282+00:00",
-  "app_component_revision": "8.8.20.132",
+  "build": "8.8.20.158",
+  "name": "Change of Watch",
+  "seal": "change-of-watch-8820158",
+  "base": "8.8.20.157",
+  "base_sha256": "7f3410ee3d37543746f4b5fbb74eccc83468b51fbe15fecc02e17a9f9ed24ade",
+  "base_files": 1099,
+  "prepared_at": "2026-11-22T23:24:22.163623+00:00",
+  "app_component_revision": "8.8.20.158",
   "owner_helper_revision": "8.8.20.68",
-  "feature_notes": "The shared Captain Station shows the last Admiral Watch report and open issues at a glance. Fleet help, vessel access, encrypted recovery and account security open from compact controls.",
+  "feature_notes": "Captain Watch keeps a preparation list on this device and resumes a commissioning checkpoint. Exact-ship handoff review opens verified Admiral delegation. Captains can copy a published Watch issue for Bootstrap. VoyageKeeper is the exercise vessel.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -66,9 +66,9 @@
       "automatic_execution_by_upload": false
     }
   },
-  "install_step": "Upload the extracted files over Lightkeeper 8.8.20.156. This update requires no new SQL.",
-  "evidence_file": "WATCHDESK_EVIDENCE.json",
+  "install_step": "Install over the complete Watchdesk 8.8.20.157 release. Open Captain Watch and choose a ship to prepare.",
+  "evidence_file": "CHANGE_OF_WATCH_EVIDENCE.json",
   "preserve_project_readme": true,
   "install_backend_first": false,
-  "presentation_only": true
+  "presentation_only": false
 }

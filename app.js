@@ -131,7 +131,7 @@ const engineCodePads = (() => {
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
   // Component revision changes only when this module changes; installed release is loader-attested.
-  const APP_COMPONENT_REVISION='8.8.20.132';
+  const APP_COMPONENT_REVISION='8.8.20.158';
   const BUILD_VERSION=window.__darkSkyVerifiedRelease?.build;
   if(!BUILD_VERSION || BUILD_VERSION!==window.__darkSkyExpectedRelease?.build || window.__darkSkyVerifiedRelease?.seal!==window.__darkSkyExpectedRelease?.seal)throw new Error('Verified release context required before app execution.');
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
@@ -9204,6 +9204,39 @@ const engineCodePads = (() => {
 
 
   window.DarkSkyVesselCommissioning={
+    preparationCheckpoint(){
+      if(!engineSessionUnlocked)return null;
+      const draft=readCommissionDraft()||recoveryHintDraft();
+      if(!draft?.draftId)return null;
+      const stage=Math.max(1,Math.min(7,Number(draft._step)||1));
+      const receipt=draft._serverReceipt;
+      const result=draft._serverVoyageStatus==='commissioned'||receipt?.command_state==='verified_created';
+      const review=result||commissionReceiptNeedsReconciliation(receipt);
+      return {name:String(draft.name||'Untitled ship'),stage,review};
+    },
+    async openPreparation(){
+      if(!engineSessionUnlocked){$('engineRoomBtn')?.click();return;}
+      const route=await window.DarkSkyFleetNavigator.navigate('engine',{source:'captain-preparation'});
+      const navigation=engineWorkspaceNavigationToken();
+      const current=()=>route && engineSessionUnlocked && engineWorkspaceNavigationCurrent(navigation) && window.DarkSkyFleetNavigator.state().generation===route.generation
+        && window.DarkSkyFleetNavigator.state().target==='engine';
+      if(!current())return;
+      if(!readCommissionDraft()){
+        let saved;
+        try{saved=await getSetting(COMMISSION_DRAFT_DURABLE_KEY);}catch(_){}
+        if(!current())return;
+        if(saved?.draftId)writeCommissionDraftSafe(saved,{durable:false});
+        else if(!recoveryHintDraft()){
+          const row=await detectActiveCommissionVoyageForResume();
+          if(!current())return;
+          if(row?.draft?.draftId && row.voyage_id && row.draft_key===row.draft.draftId){
+            writeCommissionDraftSafe({...row.draft,_step:row.safe_stage,_serverVoyageId:row.voyage_id,
+              _serverVoyageStatus:row.status,_serverReceipt:row.receipt||null,_recovered:true},{durable:false});
+          }
+        }
+      }
+      if(current())openProjectCommissioning('captain');
+    },
     openAsEngine:()=>openProjectCommissioning('engine_admin'),
     openAsCaptain:()=>openProjectCommissioning('captain'),
     openAsAdmiral:()=>openProjectCommissioning('admiral'),

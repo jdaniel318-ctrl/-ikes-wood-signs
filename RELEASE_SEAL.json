@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.157",
-  "release": "Watchdesk",
-  "seal": "watchdesk-8820157",
+  "build": "8.8.20.158",
+  "release": "Change of Watch",
+  "seal": "change-of-watch-8820158",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Watchdesk",
-  "name": "Watchdesk",
-  "releaseName": "Watchdesk"
+  "release_name": "Change of Watch",
+  "name": "Change of Watch",
+  "releaseName": "Change of Watch"
 }

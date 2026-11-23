@@ -54,6 +54,11 @@ async function run(){
   const project='bf-p-fc2816b8254a4845';
   const f=fixture(project,[{id:'done',status:'Completed'},{id:'pending',status:'New'}],{has_report:true,reported_at:'2026-10-14T12:00:00Z',unresolved_issues:1});
   await pause();
+  assert.match(f.markup,/Exercise vessel/);
+  assert.match(f.get('captainIssueBrief').value,/Harbor Shop · bf-p-fc2816b8254a4845/);
+  const copied=[];f.ctx.navigator={clipboard:{writeText:async text=>copied.push(text)}};
+  await f.get('captainCopyIssueBrief').onclick();assert.equal(copied.length,1);
+  f.ctx.stationEpoch++;await f.get('captainCopyIssueBrief').onclick();assert.equal(copied.length,1);f.ctx.stationEpoch--;
   assert.match(f.markup,/1 open issue</);
   assert.match(f.markup,/>Update report</);
   assert.match(f.markup,/aria-labelledby="deskSupportHeading"/);

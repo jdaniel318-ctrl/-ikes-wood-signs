@@ -1,11 +1,11 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Current architecture — Watchdesk 8.8.20.157
+# Current architecture — Change of Watch 8.8.20.158
 
-Source of release identity: RELEASE_CONFIG.json. Installed page/manifest/seal/worker identity is generated together. APP_COMPONENT_REVISION is 8.8.20.132; owner helper revision is 8.8.20.68. Unchanged component bodies remain byte-identical across release-only changes.
+Source of release identity: RELEASE_CONFIG.json. Installed page/manifest/seal/worker identity is generated together. APP_COMPONENT_REVISION is 8.8.20.158; owner helper revision is 8.8.20.68. Unchanged component bodies remain byte-identical across release-only changes.
 
 The Engine still verifies every required body, current governance models, app component contract and worker identity before executing the same script sequence. App and Captain bind audit/display freshness to the verified installed release. This context never grants permissions. The owner page keeps explicit helper compatibility checks.
 
-The shared Captain Station shows the last Admiral Watch report and open issues at a glance. Fleet help, vessel access, encrypted recovery and account security open from compact controls.
+Captain Watch keeps a preparation list on this device and resumes a commissioning checkpoint. Exact-ship handoff review opens verified Admiral delegation. Captains can copy a published Watch issue for Bootstrap. VoyageKeeper is the exercise vessel.
 Backend prerequisites are recorded separately in PATCH_CONTRACT.json. Release preparation executes no database commands. Fleet core and Admiral programs remain distinct.
 
 ## Release commands
