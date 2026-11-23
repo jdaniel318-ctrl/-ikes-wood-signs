@@ -1,15 +1,15 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.158",
-  "name": "Change of Watch",
-  "seal": "change-of-watch-8820158",
-  "base": "8.8.20.157",
-  "base_sha256": "7f3410ee3d37543746f4b5fbb74eccc83468b51fbe15fecc02e17a9f9ed24ade",
-  "base_files": 1099,
-  "prepared_at": "2026-11-22T23:24:22.163623+00:00",
-  "app_component_revision": "8.8.20.158",
+  "build": "8.8.20.159",
+  "name": "Portstep",
+  "seal": "portstep-8820159",
+  "base": "8.8.20.158",
+  "base_sha256": "51534b149cab977598f743d92323897b76a36727d9bada96430c543999894e79",
+  "base_files": 1101,
+  "prepared_at": "2026-11-23T00:26:27.125605+00:00",
+  "app_component_revision": "8.8.20.159",
   "owner_helper_revision": "8.8.20.68",
-  "feature_notes": "Captain Watch keeps a preparation list on this device and resumes a commissioning checkpoint. Exact-ship handoff review opens verified Admiral delegation. Captains can copy a published Watch issue for Bootstrap. VoyageKeeper is the exercise vessel.",
+  "feature_notes": "Captain Watch opens the selected ship through the Engine navigator. Ship selection and setup controls have clearer touch targets.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -66,8 +66,8 @@
       "automatic_execution_by_upload": false
     }
   },
-  "install_step": "Install over the complete Watchdesk 8.8.20.157 release. Open Captain Watch and choose a ship to prepare.",
-  "evidence_file": "CHANGE_OF_WATCH_EVIDENCE.json",
+  "install_step": "Install over the complete Change of Watch 8.8.20.158 release. Open Captain Watch and select Open ship setup on the VoyageKeeper Recovery Test row.",
+  "evidence_file": "PORTSTEP_EVIDENCE.json",
   "preserve_project_readme": true,
   "install_backend_first": false,
   "presentation_only": false

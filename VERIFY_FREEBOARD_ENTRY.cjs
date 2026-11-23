@@ -120,7 +120,7 @@ test('locked and unavailable primary gates remain closed after discarding the co
 });
 test('secondary Engine gate clears before verification and reports verifier failure without opening',async()=>{
  const start=app.indexOf("    $('unlockEngineBtn').addEventListener('click',async()=>{"),end=app.indexOf('\n    });',start);assert.ok(start>=0&&end>start);
- const f=padFixture();const elements={enginePinInput:f.pad,enginePinError:{textContent:''},unlockEngineBtn:{addEventListener:(_,handler)=>elements.handler=handler}};
+ const f=padFixture();f.c.pendingCaptainCommandRoute=null;f.c.pendingCaptainDeploymentRoute=null;const elements={enginePinGate:{classList:classes()},enginePinInput:f.pad,enginePinError:{textContent:''},unlockEngineBtn:{addEventListener:(_,handler)=>elements.handler=handler}};
  f.c.$=id=>elements[id];f.c.window.BlackFlagAuth={verify:async code=>{assert.equal(code,'24');assert.equal(f.mask.textContent,'');throw Error('offline');}};
  vm.runInContext(app.slice(start,end+8),f.c);f.tap('2');f.tap('4');await elements.handler();
  assert.match(elements.enginePinError.textContent,/startup is incomplete/);

@@ -2621,7 +2621,7 @@ const admiralVesselLogos = new Map([
         <section class="change-watch" aria-labelledby="preparationWatchTitle">
           <header><div><small>FLEET CAPTAIN</small><h3 id="preparationWatchTitle">Ships I’m preparing</h3></div>
           <button type="button" data-prep-action="draft" id="prepDraftButton">Open ship draft</button></header>
-          <div id="prepWatchShips"></div><details id="prepWatchPicker"><summary>Choose ships for this watch</summary><p>Keep shortcuts on this device while you prepare a ship for its Captain.</p><div id="prepWatchChoices"></div></details>
+          <div id="prepWatchShips"></div><details id="prepWatchPicker"><summary>Add a ship to my watch</summary><p>Keep shortcuts on this device while you prepare a ship for its Captain.</p><div id="prepWatchChoices"></div></details>
           <p role="status" aria-live="polite" id="prepWatchStatus"></p>
         </section>
         <nav class="waypoint-assigned" aria-label="Appointed Captain Fleet help"><a href="owner.html?surface=vessel-captain" class="tb-assigned-entry">My assigned vessels →</a><span>Ships I operate with an accepted Captain appointment.</span></nav>

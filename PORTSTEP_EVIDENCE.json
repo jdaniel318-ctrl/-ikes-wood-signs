@@ -1,0 +1,31 @@
+{
+  "build": "8.8.20.159",
+  "base": "8.8.20.158",
+  "offline_suites_passed": 84,
+  "targeted_check": "VERIFY_PORTSTEP.cjs",
+  "scope": "Captain Watch to exact project through the shared command navigator; preparation control visibility.",
+  "comparison": {
+    "8.8.20.158": {
+      "ok": false,
+      "route": "captain",
+      "engineVisible": false,
+      "captainHidden": true,
+      "rendered": []
+    },
+    "8.8.20.159": {
+      "ok": true,
+      "route": "engine",
+      "engineVisible": true,
+      "captainHidden": true,
+      "rendered": [
+        [
+          "bf-p-fc2816b8254a4845",
+          "overview"
+        ]
+      ]
+    }
+  },
+  "environment": "Local application routing functions, simulated DOM, CSS visibility rule and sample ship. iPad Safari acceptance pending.",
+  "frontend_deployed": false,
+  "production_write": false
+}

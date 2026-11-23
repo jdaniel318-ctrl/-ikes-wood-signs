@@ -17554,9 +17554,12 @@ body #blackFlagEntryGate .bf-entry-shell {
 .change-watch article{padding:10px 0;border-bottom:1px solid #375564}
 .change-watch button,.change-watch summary,.bridge-handoff{min-height:44px;padding:8px 12px;cursor:pointer}
 .change-watch button,.bridge-handoff{font:inherit;font-weight:600;background:#163c4a;color:#f2f7fa;border:1px solid #699598;border-radius:7px}
-.change-watch header button{color:#172b31;background:#efd59b;border-color:#efd59b}
+.change-watch [data-prep-action="open"]{color:#172b31;background:#efd59b;border-color:#efd59b}
 .change-watch .prep-remove{background:transparent;border-color:#536e76}
-.change-watch summary{display:list-item;align-content:center;color:#c5e7df;font-weight:600}
+.change-watch summary{display:flex;align-items:center;gap:10px;width:fit-content;box-sizing:border-box;margin:10px 0 4px;border:1px solid #9ebcc5;border-radius:7px;background:#204956;color:#fff;font-weight:700;list-style:none}
+.change-watch summary::-webkit-details-marker{display:none}
+.change-watch summary::before{content:"+";font-size:1.2em;line-height:1}
+.change-watch details[open] summary::before{content:"−"}
 .change-watch button:focus-visible,.change-watch summary:focus-visible,.bridge-handoff:focus-visible{outline:3px solid #f2c779;outline-offset:2px}
 .change-watch details p{margin-bottom:8px}.change-watch #prepWatchStatus:empty{display:none}
 .bridge-signals>small{display:block}.bridge-handoff{margin:10px 0}

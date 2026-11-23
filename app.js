@@ -131,7 +131,7 @@ const engineCodePads = (() => {
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
   // Component revision changes only when this module changes; installed release is loader-attested.
-  const APP_COMPONENT_REVISION='8.8.20.158';
+  const APP_COMPONENT_REVISION='8.8.20.159';
   const BUILD_VERSION=window.__darkSkyVerifiedRelease?.build;
   if(!BUILD_VERSION || BUILD_VERSION!==window.__darkSkyExpectedRelease?.build || window.__darkSkyVerifiedRelease?.seal!==window.__darkSkyExpectedRelease?.seal)throw new Error('Verified release context required before app execution.');
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
@@ -10337,8 +10337,10 @@ const engineCodePads = (() => {
     const type=String(route?.type||'project');
     const targetId=String(route?.id||'');
     const openInsideEngine=async()=>{
-      closeCaptainSurfacesForEngineRoute();
-      await openEnginePanel();
+      // The navigator clears Captain's display rule before Engine rendering starts.
+      const crossing=window.DarkSkyFleetNavigator.navigate('engine',{source:'captain-command-result'});
+      const arrival=engineWorkspaceNavigationToken();
+      if(!await crossing||!engineWorkspaceNavigationCurrent(arrival))return {ok:false,canceled:true,projectId:p.id};
       const navigation=await openProjectEngineControl(p.id);
       if(!navigation||!engineWorkspaceNavigationCurrent(navigation))return {ok:false,canceled:true,projectId:p.id};
       if(type==='order'){
@@ -10351,14 +10353,22 @@ const engineCodePads = (() => {
       return {ok:true,projectId:p.id,type,id:targetId};
     };
     if(!engineSessionUnlocked){
-      pendingCaptainCommandRoute={...route,projectId:p.id};
-      closeCaptainSurfacesForEngineRoute();
       const gate=$('engineRoomBtn');
       if(!gate) throw new Error('Engine authorization gate is unavailable.');
+      pendingCaptainCommandRoute={...route,projectId:p.id};
       gate.click();
+      closeCaptainSurfacesForEngineRoute();
       return {ok:true,pendingAuthorization:true,projectId:p.id,type,id:targetId};
     }
-    return await openInsideEngine();
+    try{
+      return await openInsideEngine();
+    }catch(error){
+      if(engineSessionUnlocked && activeCommandRoute==='engine' && engineActiveProjectId===p.id){
+        closeEngineWorkspace($('projectEngineControl'));
+        seaworthyCommandFailure(p.name+' setup',new Error('Open Choose a vessel in the Engine and select '+p.name+'.'));
+      }
+      throw error;
+    }
   }
   window.BlackFlagOpenCommandResult=async route=>openCaptainCommandRoute(route||{});
   window.addEventListener('blackflag:open-command-result',e=>{openCaptainCommandRoute(e.detail||{}).catch(err=>{
@@ -18044,14 +18054,23 @@ The full order and approved media remain stored with this project.`;
       $('enginePinGate').classList.remove('hidden');
       setTimeout(()=>{if(pinLocked('engine'))showPinLock('engine','engineLockTimer','enginePinInput','unlockEngineBtn');else $('enginePinInput').focus()},50);
     });
-    $('cancelEngineBtn').addEventListener('click',()=>{engineCodePads.clear($('enginePinInput'));$('enginePinGate').classList.add('hidden');document.body.classList.remove('modal-open');});
+    $('cancelEngineBtn').addEventListener('click',()=>{
+      engineCodePads.clear($('enginePinInput'));
+      $('enginePinGate').classList.add('hidden');
+      document.body.classList.remove('modal-open');
+      if(pendingCaptainCommandRoute || pendingCaptainDeploymentRoute){
+        pendingCaptainCommandRoute=null;
+        pendingCaptainDeploymentRoute=null;
+        window.DarkSkyFleetNavigator.navigate('captain',{source:'engine-authorization-canceled'});
+      }
+    });
     engineCodePads.mount($('enginePinInput'), $('unlockEngineBtn'));
     $('unlockEngineBtn').addEventListener('click',async()=>{
       const result = await engineCodePads.verify($('enginePinInput'), entered =>
-        window.DarkSkyTestAccess?.isActive?.() === true
+        !pendingCaptainCommandRoute && !pendingCaptainDeploymentRoute && window.DarkSkyTestAccess?.isActive?.() === true
           ? {ok: true, code: 'test-access'}
           : window.BlackFlagAuth.verify(entered));
-      if (!result) return;
+      if (!result || $('enginePinGate').classList.contains('hidden')) return;
       if(!result.ok){
         if(result.code==='startup'){
         $('enginePinError').textContent='Black Flag startup is incomplete. Reload this build before entering the Engine PIN.';
@@ -18070,10 +18089,11 @@ The full order and approved media remain stored with this project.`;
         }
         return;
       }
+      if(result.code!=='test-access')window.BlackFlagAuth.unlock();
       engineCodePads.clear($('enginePinInput'));
       $('enginePinGate').classList.add('hidden');
       document.body.classList.remove('modal-open');
-      await openEnginePanel();
+      if(!pendingCaptainDeploymentRoute && !pendingCaptainCommandRoute)await openEnginePanel();
       if(pendingCaptainDeploymentRoute){
         const route=pendingCaptainDeploymentRoute;
         pendingCaptainDeploymentRoute=null;

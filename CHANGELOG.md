@@ -1,10 +1,10 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Change of Watch 8.8.20.158
+# Black Flag Portstep 8.8.20.159
 
 Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
-Baseline: 8.8.20.157. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Baseline: 8.8.20.158. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
 Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
-Captain Watch keeps a preparation list on this device and resumes a commissioning checkpoint. Exact-ship handoff review opens verified Admiral delegation. Captains can copy a published Watch issue for Bootstrap. VoyageKeeper is the exercise vessel.
+Captain Watch opens the selected ship through the Engine navigator. Ship selection and setup controls have clearer touch targets.
 Preparation does not deploy frontend or backend changes. See PATCH_CONTRACT.json for separately managed backend prerequisites.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 
