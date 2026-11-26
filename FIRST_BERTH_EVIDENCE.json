@@ -1,0 +1,9 @@
+{
+  "build": "8.8.20.162",
+  "source_base": "8.8.20.161",
+  "targeted_suite": "VERIFY_FIRST_BERTH.cjs",
+  "release_suites": 86,
+  "browser_observed": "Owner proposal, sample business personalization, pricing, handoff and print control in Chromium.",
+  "device_tests": "Physical iPad Safari and a signed-in owner/Captain trial are pending.",
+  "commercial_scope": "Proposal and self-reported field notes. No payment collection, signature, activation or outreach."
+}

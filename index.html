@@ -16,7 +16,7 @@
   </style>
   <script id="darkSkyFirstLightBootstrap">
     // Dark Sky 8.6.23 MEMORY MUSTER — canonical release identity.
-    const DARK_SKY_RELEASE = Object.freeze({build:'8.8.20.161',seal:'berthlight-8820161'});
+    const DARK_SKY_RELEASE = Object.freeze({build:'8.8.20.163',seal:'ratebook-8820163'});
     const DARK_SKY_EXPECTED_BUILD = DARK_SKY_RELEASE.build;
     const DARK_SKY_RELEASE_SEAL = DARK_SKY_RELEASE.seal;
     // 8.6.23 Storage Safe Harbor — three independent channels, no silent storage failures.
@@ -1495,7 +1495,7 @@ html:has(#lantern-harbor[open]) { overflow:hidden; }
       </header>
 
       <section id="clearDeckLaunchpad" class="clear-deck-launchpad waypoint-home" aria-labelledby="engineNextMoveTitle">
-        <header class="clear-deck-brief"><small id="engineReleaseLabel">8.8.20.161 • BERTHLIGHT</small><h3 id="engineNextMoveTitle">Fleet operations</h3></header>
+        <header class="clear-deck-brief"><small id="engineReleaseLabel">8.8.20.163 • RATEBOOK</small><h3 id="engineNextMoveTitle">Fleet operations</h3></header>
         <nav class="clear-deck-primary-actions pilotage-offices" aria-label="Fleet command offices">
           <button id="engineOperateVessels" type="button" class="clear-deck-action primary pilotage-vessels" data-clear-deck-command="projects" aria-controls="fleetCommissioningDock">
             <img src="./regatta-harbor.webp" alt="" decoding="async" class="pilotage-harbor">
@@ -1509,6 +1509,14 @@ html:has(#lantern-harbor[open]) { overflow:hidden; }
 
         <section class="waypoint-workspaces" aria-labelledby="engineWorkspacesTitle">
           <header><h4 id="engineWorkspacesTitle">Business tools</h4></header>
+          <details id="fleetLaunchPilot" class="berth-launch">
+            <summary><span><strong>Fleet launch pilot</strong><small>Rehearse a customer request and prepare an owner offer.</small></span></summary>
+            <div class="berth-launch-body"><div><h5>Choose a demonstration</h5><p>Open the vessel’s Test Center, then choose <b>Open private preview</b>.</p>
+              <div class="berth-actions"><button type="button" data-project-test-experience="bf-p-42be92cbac12" data-launch-rehearsal>VoyageKeeper rehearsal</button>
+              <button type="button" data-project-test-experience="bf-p-f92f87e8ec44">Legacy Plumbing</button><button type="button" data-project-test-experience="bor-north-richmond">Signal Restoration</button></div></div>
+              <div><h5>Prepare an owner offer</h5><p>For a named prospect, open Admiral Command, then <b>Contracts &amp; Services</b> and choose <b>Planned new ship</b>. Set the amounts in <b>Admiral fee controls</b>.</p><div class="berth-actions"><a href="./fleet-launch-offer.html" target="_blank" rel="noopener noreferrer">View suggested pricing</a><button type="button" data-command-open="admiral">Open Admiral Command</button></div></div>
+            </div>
+          </details>
           <div class="waypoint-workspace-grid pilotage-tools">
             <!-- HEADWAY_PLAN_LINK_START -->
             <article class="qm-engine-entry waypoint-workspace"><div><small class="waypoint-type">BUSINESS SUPPORT</small><strong>Quotes &amp; invoices</strong><p>Catalogs, quantities and saved documents for HouseHull and each business.</p><small id="qmEntryStatus" role="status" aria-live="polite"></small></div><button id="quartermasterEngineOpen" type="button">OPEN QUOTES &amp; INVOICES →</button></article>

@@ -17581,3 +17581,51 @@ body #enginePanel #projectEngineControl #closeProjectEngineControl{
 body #enginePanel #projectEngineControl #closeProjectEngineControl img{
   width:22px!important;height:22px!important;flex:none;
 }
+
+/* Fleet Launch Service and the VoyageKeeper customer rehearsal */
+#fleetLaunchPilot{background:#102e36;border:1px solid #466770;border-left:4px solid #d1af6d;border-radius:10px;margin:0 0 1rem;color:#f0f5f4}
+#fleetLaunchPilot summary,#cgLaunchPilot summary{display:list-item;cursor:pointer;min-height:48px;padding:.65rem 1rem;font-weight:700}
+#fleetLaunchPilot summary span{display:inline-flex;align-items:baseline;flex-wrap:wrap;gap:.25rem .9rem;vertical-align:middle}
+#fleetLaunchPilot summary small{font-size:.9rem;color:#bccece;font-weight:400}
+.berth-launch-body{border-top:1px solid #466770;display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;padding:1rem}
+#fleetLaunchPilot h5{margin:0;font-size:1.05rem;color:#f7f7ef}
+#fleetLaunchPilot p,.berth-worksheet p{margin:.35rem 0 .65rem;line-height:1.45}
+#fleetLaunchPilot p{color:#c2d6d5}
+.berth-actions{display:flex;flex-wrap:wrap;gap:.45rem;align-items:center}
+#fleetLaunchPilot .berth-actions :is(button,a),#cgLaunchPilot :is(button,a),a.berth-offer-link{color:#eff9fa;background:#1b454e;border:1px solid #698990;border-radius:.45rem;padding:.55rem .8rem;min-height:44px;display:inline-flex;align-items:center;text-decoration:none;font-size:.95rem;font-weight:650;width:auto;text-transform:none;letter-spacing:normal}
+#fleetLaunchPilot button[data-launch-rehearsal],#cgLaunchPilot #cgPilotOffer{background:#eed29c;border-color:#eed29c;color:#163237}
+#cgLaunchPilot:not([hidden]){background:#103039;border:1px solid #62848a;border-radius:.65rem;display:block;margin:.75rem 0}
+#cgLaunchPilot[hidden]{display:none!important}
+.berth-sheet-body{padding:.35rem 1rem 1rem}.berth-sheet-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;margin-bottom:.75rem}
+#cgLaunchPilot fieldset{margin:.75rem 0}#cgLaunchPilot #cgPilotProgress{color:#eddbad;margin-top:.75rem;font-weight:650}
+#fleetLaunchPilot :focus-visible,#cgLaunchPilot :focus-visible,.berth-customer :focus-visible{outline:3px solid #e6b85f;outline-offset:3px}
+#universalCustomerShell .berth-customer{background:#f6f4ec;color:#163739;min-height:100vh;padding-bottom:4.5rem}
+.berth-customer>header,.berth-customer>main,.berth-customer>.berth-offers{max-width:74rem;margin:0 auto}
+#universalCustomerShell .berth-customer>header{display:flex;align-items:center;justify-content:space-between;padding:1rem clamp(1rem,4vw,3rem);gap:1rem;background:#f6f4ec;color:#163739}
+.berth-customer>header div{display:flex;align-items:center;gap:.8rem}.berth-customer>header img{width:46px;height:46px;object-fit:cover;border-radius:50%}
+.berth-customer>header strong{font:600 clamp(1.05rem,2.5vw,1.45rem)/1.2 Georgia,serif}
+#universalCustomerShell .berth-customer .universal-settings-btn{width:44px;height:44px;background:#e4ebe6;color:#21494b;border-color:#8fa6a0}
+.berth-customer-hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:stretch;background:#08282e;border-radius:.75rem;overflow:hidden}
+.berth-customer-hero>div{padding:clamp(1.5rem,5vw,4.3rem);align-self:center}
+#universalCustomerShell .berth-customer-hero h1{margin:.45rem 0 1rem;color:#fff8e7;font:500 clamp(2.4rem,5.6vw,4.7rem)/1.02 Georgia,serif;letter-spacing:-.04em}
+#universalCustomerShell .berth-customer-hero p{color:#d3e3df;max-width:34ch;line-height:1.5;margin:.35rem 0}
+#universalCustomerShell .berth-customer-hero .berth-mode{color:#eed29c;font-size:.95rem;font-weight:650}
+.berth-customer-hero>img{width:100%;height:100%;min-height:15rem;object-fit:cover;object-position:68% 50%}
+#universalCustomerShell .berth-customer button#universalHelpNow{margin:1.25rem 0 0;border:0;border-radius:.4rem;background:#eed29c;color:#153135;width:auto;min-height:46px;padding:.6rem 1rem;box-shadow:none;text-transform:none;font:650 1rem/1.35 system-ui}
+.berth-offers{padding:.65rem 1rem}.berth-offers summary{padding:.7rem 0;cursor:pointer;font-weight:650}.berth-offers>div{display:flex;flex-wrap:wrap;gap:.5rem}
+#universalCustomerShell .berth-offers button{width:auto;min-height:44px;color:#1b3b3c;background:#fff;border:1px solid #9aada8;border-radius:.45rem;text-align:left;padding:.55rem .8rem}
+.berth-offers button span{display:block}
+body #experienceModeBanner.berth-mode-banner{position:fixed!important;top:auto!important;left:auto!important;right:.65rem!important;bottom:max(.65rem,env(safe-area-inset-bottom))!important;transform:none!important;width:max-content!important;max-width:calc(100vw - 1.3rem)!important}
+#experienceTestDeck #fleetRunChecks,#experienceTestDeck #closeExperienceTestDeck{width:auto!important;max-width:100%;min-height:44px;background:#153e48!important;color:#f1f6f3!important;border:1px solid #729198!important;border-radius:.5rem!important;padding:.55rem .85rem!important;box-shadow:none!important}
+@media(max-width:660px){.berth-launch-body,.berth-customer-hero{grid-template-columns:1fr}.berth-customer-hero{border-radius:0}.berth-customer-hero>img{min-height:0;height:clamp(7rem,34vw,12rem)}.berth-customer-hero>div{padding:1.5rem 1rem}.berth-offers{padding-bottom:2.5rem}}
+
+#cgLaunchFees{margin:.8rem 0;border:1px solid #5a8187;border-radius:.7rem;background:#102d37;color:#f2faf9}
+#cgLaunchFees[hidden],#cgFeeOffer[hidden]{display:none!important}
+#cgLaunchFees summary{cursor:pointer;padding:.7rem 1rem;font-weight:650}
+#cgLaunchFees>summary{color:#f4d28f}
+.ratebook-body{padding:.2rem 1rem .85rem}.ratebook-body h2{margin:.15rem 0}.ratebook-body p{margin:.4rem 0 .65rem}
+.ratebook-fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,10rem),1fr));gap:.65rem}
+.ratebook-fields label{font-weight:650}.ratebook-fields small{font-weight:400;color:#b6cfd2}.ratebook-fields input{display:block;width:100%;margin:.3rem 0;font-size:1rem}
+.ratebook-actions{display:flex;flex-wrap:wrap;gap:.5rem}
+#cgLaunchFees .ratebook-actions :is(button,a){width:auto;display:inline-flex;align-items:center;min-height:44px;padding:.5rem .8rem;background:#193f47;color:#f1f7f7;border:1px solid #77979b;border-radius:.45rem;text-decoration:none;font-size:1rem;font-weight:650;letter-spacing:normal;text-transform:none}
+#cgLaunchFees #cgFeeSave{background:#efd498;color:#142e30}#cgLaunchFees :focus-visible{outline:3px solid #f4c873;outline-offset:2px}#cgFeeBalance{font-weight:700}#cgLaunchFees details{border-top:1px solid #3c6066}

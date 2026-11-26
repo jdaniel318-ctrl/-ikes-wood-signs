@@ -6314,6 +6314,7 @@ if(window.DarkSkyOpenFleetWatchtower)window.DarkSkyOpenAdmiralFleet=window.DarkS
  function blank(){return Object.assign(Object.fromEntries(Object.keys(FIELDS).map(k=>[k,''])),{services:[],channels:[]});}
  function sanitize(x){if(!x||typeof x!=='object'||Array.isArray(x))throw Error('Invalid agreement fields.');const d=blank();for(const [k,n] of Object.entries(FIELDS)){if(x[k]!=null&&typeof x[k]!=='string')throw Error('Invalid '+k);d[k]=String(x[k]||'');if(d[k].length>n)throw Error(k+' exceeds the field limit.');}
  for(const [k,allow] of [['services',SERVICES],['channels',CHANNELS]]){const a=x[k]||[];if(!Array.isArray(a)||a.length>Object.keys(allow).length||a.some(v=>typeof v!=='string'||!Object.hasOwn(allow,v))||new Set(a).size!==a.length)throw Error('Invalid '+k);d[k]=a.slice().sort();}
+ if(x.launchFees!==undefined)d.launchFees=launchFeeTerms(x.launchFees);
  if(d.level&&!Object.hasOwn(LEVELS,d.level))throw Error('Invalid service level.');if(d.basis&&!['platform','all','custom'].includes(d.basis))throw Error('Invalid sales basis.');return d;}
  const projectOk=s=>typeof s==='string'&&/^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$/.test(s);
  function percent(v){if(!/^\d{1,3}(?:\.\d{1,2})?$/.test(v))throw Error('Enter a percentage from 0 to 100, using at most two decimal places.');const [a,b='']=v.split('.'),p=Number(a)*100+Number((b+'00').slice(0,2));if(p>10000)throw Error('Percentage cannot exceed 100.');return p;}
@@ -6334,7 +6335,8 @@ if(window.DarkSkyOpenFleetWatchtower)window.DarkSkyOpenAdmiralFleet=window.DarkS
  ['Schedule B — Services and duties',[
  ['Service arrangement',LEVELS[d.level]||'[TO SELECT]'],['Included services',d.services.map(k=>SERVICES[k]).join('; ')||'[TO SELECT]'],['Responsibilities / support permissions / exclusions',v(d.serviceLimits)],['Service hours and time zone',v(d.hours)],['Response target',v(d.response)],['Access boundary','Only the exact-vessel functions expressly agreed; separate server authorization required. No automatic banking, pricing, ownership or role-grant authority.']]],
  ['Schedule C — Fees and covered sales',[
- ['Negotiated percentage',d.percentage?d.percentage+'%':'[TO SELECT — blank is not 0%]'],['Covered channels',channels(d).map(k=>CHANNELS[k]).join('; ')||'[TO SELECT]'],['Proposed service start',v(d.startDate)+'; fees begin no earlier than commercial activation'],['Monthly statement delivery',v(d.statementDays)+' days after month end'],['Payment due',v(d.paymentDays)+' days after accurate statement delivery'],['Other fees / included paid features',d.extras||'No additional charge or duplicated feature fee is authorized.'],['Calculation rule','Collected eligible sales only; exclusions, attribution, credit treatment and rounding follow Sections 5 and 6. Payment method is not a sales channel. No automated withdrawal authorization.']]],
+ ...(d.launchFees?feeRows(d.launchFees):[]),
+ ['Negotiated percentage',d.percentage?d.percentage+'%':'[TO SELECT — blank is not 0%]'],['Covered channels',channels(d).map(k=>CHANNELS[k]).join('; ')||'[TO SELECT]'],['Proposed service start',v(d.startDate)+'; fees begin no earlier than commercial activation'],['Monthly statement delivery',v(d.statementDays)+' days after month end'],['Payment due',v(d.paymentDays)+' days after accurate statement delivery'],['Other fees / included paid features',d.extras||(d.launchFees?'The fixed launch and support fees are listed above.':'No additional charge or duplicated feature fee is authorized.')],['Calculation rule','Collected eligible sales only; exclusions, attribution, credit treatment and rounding follow Sections 5 and 6. Payment method is not a sales channel. No automated withdrawal authorization.']]],
  ['Schedule D — Risk, records and administration',[
  ['Governing law',v(d.law)],['Court venue',v(d.venue)],['Liability floor',d.liabilityFloor?'USD '+d.liabilityFloor:'[TO NEGOTIATE]'],['Insurance / coverage evidence',v(d.insurance)],['Data custody / actual subprocessors / retention / export and restore responsibility',v(d.dataPlan)],['Regulatory classification / filings / disclosures',v(d.classification)],['Term and ordinary exit','Month-to-month; either party may give 30 days written notice. Any different term requires an explicit signed amendment.'],['Counsel review','The review log is an internal reported record, not a legal certification. Resolve entity, partnership/franchise, tax/licensing, privacy, signature and liability questions before using the contract.']]]];}
  function html(r,h){const vals=schedule(r).map(([t,rows])=>'<section><h2>'+esc(t)+'</h2><table>'+rows.map(([k,v])=>'<tr><th>'+esc(k)+'</th><td>'+esc(v)+'</td></tr>').join('')+'</table></section>').join('');return '<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>'+esc(r.target.display_name)+' — Agreement draft</title><style>body{font:16px/1.48 Arial,sans-serif;max-width:860px;margin:32px auto;padding:0 24px;color:#152b32}h1{font-size:28px}h2{font-size:20px;margin-top:26px}h3{font-size:18px}p,td{overflow-wrap:anywhere}table{width:100%;border-collapse:collapse}th,td{text-align:left;vertical-align:top;border-bottom:1px solid #ccd5d9;padding:8px}th{width:34%}small{font-size:12px}section{break-inside:auto}.notice{border:2px solid #b08322;padding:14px;background:#fff9e5}header{border-bottom:3px solid #173c4a;padding-bottom:15px}.sign{break-inside:avoid;border:1px solid #aaa;padding:16px;margin:18px 0}@media print{body{margin:0;padding:0;font-size:10.5pt}h1{font-size:20pt}h2,h3{break-after:avoid}tr,.notice{break-inside:avoid}a{color:inherit} @page{size:letter;margin:.7in}}</style><header><small>BLACK FLAG · '+esc(BUILD)+' · '+esc(TEMPLATE.version)+'</small><h1>'+esc(TEMPLATE.template)+'</h1><h2>'+esc(r.target.display_name)+'</h2><p class="notice"><b>DRAFT FOR LEGAL REVIEW — NOT FOR SIGNATURE.</b> Resolve all blanks and obtain review of the actual parties, jurisdiction and services. This file is not a signed agreement, legal opinion, invoice or commissioning permission.</p><p>Agreement '+esc(r.agreementId)+' · Revision '+r.revision+' · Project '+esc(r.target.project_id)+'</p><small>Draft terms SHA-256: '+esc(h)+'<br>Fingerprint identifies terms including template, not a signature or proof of identity.</small></header>'+vals+TEMPLATE.clauses.map(c=>'<section><h2>'+esc(c.title)+'</h2>'+c.paragraphs.map(p=>'<p>'+esc(p)+'</p>').join('')+'</section>').join('')+
@@ -6370,20 +6372,257 @@ if(window.DarkSkyOpenFleetWatchtower)window.DarkSkyOpenAdmiralFleet=window.DarkS
  function currentMark(){try{const s=window.DarkSkyAdmiralSession?.status(),u=client().readSession()?.user;if(!s?.reusable||!s.startedAt||!u?.id)return '';return String(s.startedAt)+':'+u.id;}catch(_){return '';}}
  function allowed(){return openState&&!!mark&&currentMark()===mark&&deck?.isConnected&&!deck.classList.contains('hidden')&&deck.getAttribute('aria-hidden')!=='true';}
  function status(t,tone='info'){if($('cgStatus')){$('cgStatus').textContent=t;$('cgStatus').dataset.tone=tone;}}
- function controls(){if(!root)return;const lock=!allowed()||busy;root.setAttribute('aria-busy',String(busy));root.querySelectorAll('input,select,textarea,button').forEach(n=>{n.disabled=lock;});$('cgClose').disabled=false;for(const id of ['cgSave','cgExport','cgDraftHtml','cgLoad','cgImport'])if($(id))$(id).disabled=lock||!record;root.querySelectorAll('[data-cg-field],[data-cg-service],[data-cg-channel],[data-cg-example]').forEach(n=>{n.disabled=lock||!record;});$('cgSignedFile').disabled=lock||!record?.snapshot;$('cgCertificateFile').disabled=lock||!record?.snapshot;$('cgEvidenceRef').disabled=lock||!record?.snapshot;$('cgRecordEvidence').disabled=lock||!record?.snapshot;$('cgSendSignatures').disabled=true;$('cgCommission').disabled=true;$('cgActivateFee').disabled=true;}
+ function controls(){if(!root)return;const lock=!allowed()||busy;root.setAttribute('aria-busy',String(busy));root.querySelectorAll('input,select,textarea,button').forEach(n=>{n.disabled=lock;});$('cgClose').disabled=false;for(const id of ['cgSave','cgExport','cgDraftHtml','cgLoad','cgImport'])if($(id))$(id).disabled=lock||!record;root.querySelectorAll('[data-cg-field],[data-cg-service],[data-cg-channel],[data-cg-example]').forEach(n=>{n.disabled=lock||!record;});$('cgSignedFile').disabled=lock||!record?.snapshot;$('cgCertificateFile').disabled=lock||!record?.snapshot;$('cgEvidenceRef').disabled=lock||!record?.snapshot;$('cgRecordEvidence').disabled=lock||!record?.snapshot;$('cgSendSignatures').disabled=true;$('cgCommission').disabled=true;$('cgActivateFee').disabled=true;$('cgTabFeeLink').disabled=lock||!record;}
  function token(){if(!allowed()||busy)throw Error('Authenticate the Admiral and wait for the current task.');busy=true;controls();return {e:++epoch,m:mark,p:record?.target.project_id||''};}
  function valid(t){return !!t&&t.e===epoch&&t.m===mark&&allowed()&&(t.p===(record?.target.project_id||''));}
  async function verified(t){const ok=await client().verifyAdmiralAuthority();if(!ok){close(true);entryState('error','ADMIRAL-AUTHORITY-UNCONFIRMED');entryMessage('Contracts & Services closed because Admiral authority could not be verified. No task was continued.');throw Error('Admiral authority could not be rechecked. No task was continued.');}if(!valid(t))throw Error('The draft task was cancelled.');}
  async function withTask(fn){let t,timer;try{t=token();const work=(async()=>{await verified(t);if(valid(t))await fn(t);})();await Promise.race([work,new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('Draft task timed out. Saved state is unconfirmed; no automatic retry was made.')),12000);})]);}catch(e){if(!t||valid(t)){status(e.message,'warn');if(t&&/timed out/.test(e.message)){epoch++;busy=false;}}}finally{clearTimeout(timer);if(!t||t.e===epoch){busy=false;}controls();}}
  function revise(){if(!record)return;if(record.snapshot){record.history.push({revision:record.revision,termsHash:record.snapshot.termsHash,createdAt:record.snapshot.createdAt});record.snapshot=null;record.revision++;$('cgScope').textContent=record.target.display_name+' · '+record.target.project_id+' · DRAFT ONLY · Revision '+record.revision;}dirty=true;$('cgSignedFile').value='';$('cgCertificateFile').value='';updateReview();controls();}
  function newRecord(target){return {schema:'blackflag-agreement-working-v1',agreementId:crypto.randomUUID(),revision:1,target:scopeTarget(target),terms:blank(),history:[],evidence:[],snapshot:null,createdAt:new Date().toISOString()};}
+ const suggestedLaunchFees = Object.freeze({setup:'500.00', deposit:'250.00', monthly:'99.00'});
+ const launchFeeLabels = {setup:'One-time setup', deposit:'Deposit at agreement', monthly:'Monthly support'};
+ let ownerOfferUrl = '';
+
+ function launchFeeTerms(raw) {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) throw Error('Enter the three launch fees.');
+  const fees = {};
+  for (const [key, label] of Object.entries(launchFeeLabels)) {
+   const value = raw[key];
+   if (typeof value !== 'string' || !/^\d{1,10}(?:\.\d{1,2})?$/.test(value.trim())) {
+    throw Error(label+' needs a dollar amount with up to two decimals. Enter 0 to waive it.');
+   }
+   const n = cents(value.trim());
+   fees[key] = (n / 100n)+'.'+(n % 100n).toString().padStart(2,'0');
+  }
+  if (cents(fees.deposit) > cents(fees.setup)) throw Error('The deposit must be at most the one-time setup fee.');
+  return fees;
+ }
+ function feeRows(raw) {
+  const fees = launchFeeTerms(raw);
+  return [
+   ['One-time setup', amount(cents(fees.setup))],
+   ['Deposit at agreement', amount(cents(fees.deposit))],
+   ['Setup balance at accepted handoff', amount(cents(fees.setup)-cents(fees.deposit))],
+   ['Monthly support after handoff', amount(cents(fees.monthly))]
+  ];
+ }
+ function launchOfferDocument(name, raw) {
+  const fees = launchFeeTerms(raw);
+  const [setup, deposit, balance, monthly] = feeRows(fees).map(row => row[1]);
+  const who = name ? 'Pilot proposal for '+esc(name) : 'Suggested pricing example';
+  const next = cents(fees.deposit) === 0n ? 'No deposit is due.' : 'The '+deposit+' deposit is credited toward setup.';
+  const handoff = cents(fees.setup) === cents(fees.deposit) ? 'No setup balance is due at handoff.' : 'The remaining '+balance+' is due at accepted handoff.';
+  const support = cents(fees.monthly) === 0n ? 'Monthly support is included at no charge.' : 'Monthly support begins on the agreed date after handoff.';
+  return `<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="referrer" content="no-referrer"><title>Fleet Launch Service · Owner proposal</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#edf2f0;color:#122e31;font:16px/1.55 system-ui,sans-serif}main{width:min(100% - 2rem,52rem);margin:2rem auto;background:white;border:1px solid #ccd9d5;border-radius:14px;overflow:hidden}header,section,footer{padding:1.45rem 2rem}header{background:#103b40;color:#fff;border-bottom:4px solid #cba465;display:flex;justify-content:space-between;align-items:start;gap:1rem}header p{color:#f4d49d}h1,h2,p{margin:0}h1{font:500 clamp(2rem,6vw,3.5rem)/1.07 Georgia,serif;letter-spacing:-.035em;margin:.4rem 0}h2{font:600 1.4rem Georgia,serif;margin:0 0 .5rem}p+p{margin-top:.5rem}#recipient{overflow-wrap:anywhere}button{min-height:44px;flex:none;padding:.55rem .8rem;border:1px solid #8cb2ae;border-radius:7px;background:transparent;color:white;font:inherit;cursor:pointer}button:focus-visible{outline:3px solid #f4d49d;outline-offset:3px}section+section,footer{border-top:1px solid #d5e0de}dl{display:grid;grid-template-columns:repeat(2,1fr);background:#edf4f2;border-radius:8px;margin:.9rem 0;padding:1rem;gap:1rem}dt{font-size:.9rem}dd{font-size:1.8rem;font-weight:650;line-height:1.3;margin:0}footer{background:#f6f8f6}.brand{font-weight:650}.fine{font-size:.9rem;color:#456361}
+@media(max-width:540px){main{width:100%;margin:0;border:0;border-radius:0}header,section,footer{padding:1.1rem}header{flex-wrap:wrap}}
+@page{size:letter;margin:.6in}@media print{body{background:#fff;font-size:11pt}main{margin:0;width:100%;border:0}button{display:none}header,section,footer{padding:12pt 0}header{color:#123c40;background:white}header p{color:#405653}h1{font-size:31pt}section,footer{break-inside:avoid}dl{background:#fff;border:1px solid #cddbd7}}
+</style></head><body><main>
+<header><div><span class="brand">Black Flag</span><h1>Fleet Launch Service</h1><p id="recipient">${who}</p></div><button id="print" type="button">Print / save PDF</button></header>
+<section><h2>From a customer’s phone to your desk</h2><p>We set up a service request page in your business’s name. Customers describe the work, the operator you appoint as Captain receives the request, and you decide what to quote and when to schedule it.</p></section>
+<section><h2>${name?'Your pilot offer':'Example pilot fees'}</h2><dl><div><dt>One-time setup</dt><dd>${setup}</dd></div><div><dt>Monthly support</dt><dd>${monthly}</dd></div></dl>
+<p><b>Setup includes</b> one branded service request flow, routing to one designated Captain, a quote walkthrough, and handoff training.</p>
+<p><b>Support includes</b> help with that workflow and minor updates to service wording or branding. Additional sites, integrations, and custom builds are quoted separately.</p></section>
+<section><h2>What you’ll check before handoff</h2><p>Use your phone to send a sample request in a controlled trial. Your Captain locates that request in your business’s workspace, then prepares a sample quote for you to open. We record any corrections together.</p></section>
+<footer><h2>Starting the pilot</h2><p>${next} ${handoff} ${support}</p><p class="fine">${name?"Proposed terms in US dollars, subject to written agreement.":"The Admiral sets each business’s fees in its own written proposal."} You retain ownership of your business and brand.</p></footer></main>
+<script>document.getElementById('print').addEventListener('click',()=>window.print());</script></body></html>
+`;
+ }
+ function feePanel() {
+  return `<details class="ratebook" id="cgLaunchFees" hidden><summary>Admiral fee controls</summary><div class="ratebook-body">
+   <h2 id="cgFeeTitle">Fleet launch fees</h2><p>Set the amounts for this vessel. Enter 0 to waive a fee. The deposit counts toward setup.</p>
+   <div class="ratebook-fields">${Object.entries(launchFeeLabels).map(([k,v])=>`<label for="cgFee-${k}">${v} (USD)<input id="cgFee-${k}" data-launch-fee="${k}" type="text" inputmode="decimal" maxlength="13" autocomplete="off"><small>Suggested ${amount(cents(suggestedLaunchFees[k]))}</small></label>`).join('')}</div>
+   <p id="cgFeeBalance" aria-live="polite"></p><div class="ratebook-actions"><button id="cgFeeSave" type="button">Save offer fees</button><a id="cgFeeOffer" target="_blank" rel="noopener noreferrer" hidden>Open printable owner offer</a><button id="cgFeeLoad" type="button">Load vessel draft</button></div>
+   <p id="cgFeeStatus" role="status"></p>
+   <details><summary>Reuse pricing on this device</summary><p>Save these amounts as your starting rates. Apply them to another vessel when you choose.</p><div class="ratebook-actions"><button id="cgFeeSaveDefaults" type="button">Save as my rates</button><button id="cgFeeUseDefaults" type="button">Use my rates</button><button id="cgFeeSuggestions" type="button">Use suggested fees</button></div></details>
+  </div></details>`;
+ }
+ function clearOwnerOffer() {
+  const link = $('cgFeeOffer');
+  link.hidden = true;
+  link.removeAttribute('href');
+  if (ownerOfferUrl) URL.revokeObjectURL(ownerOfferUrl);
+  ownerOfferUrl = '';
+ }
+ function showSavedOffer() {
+  clearOwnerOffer();
+  if (!allowed() || !record?.terms?.launchFees) return;
+  const html = launchOfferDocument(record.target.display_name, record.terms.launchFees);
+  ownerOfferUrl = URL.createObjectURL(new Blob([html],{type:'text/html;charset=utf-8'}));
+  const link = $('cgFeeOffer');
+  link.href = ownerOfferUrl;
+  link.hidden = false;
+  $('cgFeeStatus').textContent = 'Saved on this device. The printable offer uses these amounts.';
+ }
+ function displayFeeBalance(raw) {
+  try {
+   $('cgFeeBalance').textContent = 'Due at handoff · '+feeRows(raw)[2][1];
+  } catch (e) {
+   $('cgFeeBalance').textContent = e.message;
+  }
+ }
+ function putFeeInputs(raw) {
+  for (const key of Object.keys(launchFeeLabels)) $('cgFee-'+key).value = raw[key];
+  displayFeeBalance(raw);
+ }
+ function fillFeeEditor() {
+  clearOwnerOffer();
+  $('cgLaunchFees').hidden = !record;
+  $('cgLaunchFees').open = !!record;
+  $('cgFeeTitle').textContent = record ? record.target.display_name+' · launch fees' : '';
+  $('cgFeeStatus').textContent = record ? 'Returning to this vessel? Load its saved draft first. Save offer fees to prepare the owner’s copy.' : '';
+  putFeeInputs(record?.terms?.launchFees || suggestedLaunchFees);
+ }
+ function inputFeeValues() {
+  return Object.fromEntries(Object.keys(launchFeeLabels).map(k=>[k,$('cgFee-'+k).value]));
+ }
+ function editLaunchFees(raw) {
+  if (!record || !allowed() || busy) return;
+  setDraftFees(raw);
+ }
+ function setDraftFees(raw) {
+  clearOwnerOffer();
+  record.terms.launchFees = {...raw};
+  revise();
+  displayFeeBalance(raw);
+  $('cgFeeStatus').textContent = 'Unsaved fees for '+record.target.display_name+'.';
+ }
+ async function saveOfferFees(t) {
+  if (!valid(t) || !record) return;
+  const fees = launchFeeTerms(inputFeeValues());
+  if (stable(record.terms.launchFees)!==stable(fees)) setDraftFees(fees);
+  putFeeInputs(fees);
+  await storeDraft(t);
+ }
+ async function personalRates(t, save) {
+  if (!valid(t) || !actor || !record) return;
+  const fees = save ? launchFeeTerms(inputFeeValues()) : null;
+  const key = 'admiral-launch-fees-v1:'+actor;
+  const h = await dbOpen();
+  if (!valid(t)) return;
+  const row = await new Promise((resolve,reject)=>{
+   const tx = h.transaction('drafts',save?'readwrite':'readonly');
+   const store = tx.objectStore('drafts');
+   if (save) store.put({id:key,fees});
+   const request = store.get(key);
+   tx.oncomplete = ()=>resolve(request.result);
+   tx.onerror = tx.onabort = ()=>reject(Error('Your starting rates could not be read or saved.'));
+  });
+  if (!valid(t)) return;
+  if (!row) throw Error('Save a set of starting rates on this device first.');
+  const confirmed = launchFeeTerms(row.fees);
+  if (save) {
+   if (stable(confirmed)!==stable(fees)) throw Error('Starting rates could not be confirmed.');
+   $('cgFeeStatus').textContent = 'Starting rates saved on this device. Use Save offer fees to apply them to this vessel.';
+  } else {
+   putFeeInputs(confirmed);
+   setDraftFees(confirmed);
+  }
+ }
+ function jumpToFees() {
+  if (!allowed() || busy || !record) return;
+  $('cgLaunchFees').open = true;
+  $('cgFee-setup').focus();
+ }
+ function bindFeeControls() {
+  $('cgFeeOffer').onclick=e=>{if(!allowed()||busy||!ownerOfferUrl)e.preventDefault();};
+  $('cgLaunchFees').addEventListener('input',e=>{
+   if (e.target.hasAttribute('data-launch-fee')) editLaunchFees(inputFeeValues());
+  });
+  const action = (id, fn) => {
+   $(id).onclick = ()=>withTask(async t=>{
+    try { await fn(t); }
+    catch (e) { if(valid(t)) $('cgFeeStatus').textContent=e.message; throw e; }
+   });
+  };
+  action('cgFeeSave', saveOfferFees);
+  action('cgFeeLoad', loadDraft);
+  action('cgFeeSaveDefaults', t=>personalRates(t,true));
+  action('cgFeeUseDefaults', t=>personalRates(t,false));
+  $('cgFeeSuggestions').onclick = ()=>{
+   if (!record || !allowed() || busy) return;
+   putFeeInputs(suggestedLaunchFees);
+   setDraftFees(suggestedLaunchFees);
+  };
+  $('cgPilotFees').onclick = jumpToFees;
+  $('cgTabFeeLink').onclick = jumpToFees;
+ }
+ const launchDemos={voyage:'VoyageKeeper rehearsal',legacy:'Legacy Plumbing',signal:'Signal Restoration'};
+ const launchResponses={unasked:'To discuss',considering:'Owner is considering',terms:'Owner requested written terms',declined:'Owner declined'};
+ const launchChecks={phone:'Owner submitted a marked sample on their phone',captain:'Appointed Captain found that sample in this vessel',quote:'Owner opened the sample quote'};
+ function eligiblePilot(target){
+  return !!target && (target.prospective || ['bf-p-42be92cbac12','bf-p-fc2816b8254a4845'].includes(target.project_id));
+ }
+ function readLaunchPilot(raw){
+  const defaults={demo:'voyage',response:'unasked',setupMinutes:'',supportMinutes:'',lesson:'',phone:false,captain:false,quote:false};
+  if(raw===undefined)return defaults;
+  if(!raw || typeof raw!=='object' || Array.isArray(raw))throw Error('Invalid pilot worksheet.');
+  const d={...defaults,...raw};
+  if(typeof d.demo!=='string'||typeof d.response!=='string')throw Error('Invalid pilot selection.');
+  if(!Object.hasOwn(launchDemos,d.demo)||!Object.hasOwn(launchResponses,d.response))throw Error('Unknown pilot selection.');
+  for(const key of ['setupMinutes','supportMinutes']){
+   if(typeof d[key]!=='string'||!/^(?:0|[1-9][0-9]{0,4})?$/.test(d[key]))throw Error('Use whole minutes from 0 to 99999.');
+  }
+  if(typeof d.lesson!=='string'||d.lesson.length>600)throw Error('Keep the fleet lesson to 600 characters.');
+  for(const key of Object.keys(launchChecks))if(typeof d[key]!=='boolean')throw Error('Invalid pilot handoff result.');
+  return Object.fromEntries(Object.keys(defaults).map(k=>[k,d[k]]));
+ }
+ function pilotPanel(){
+  const options=obj=>Object.entries(obj).map(([k,v])=>'<option value="'+k+'">'+v+'</option>').join('');
+  return `<details id="cgLaunchPilot" class="berth-worksheet" hidden><summary>Fleet Launch Service pilot</summary>
+   <div class="berth-sheet-body"><div class="berth-sheet-top"><div><h2>Owner offer</h2><p id="cgPilotIdentity"></p></div><button id="cgPilotFees" type="button">Set offer fees</button></div>
+   <div class="cg-grid"><label>Demo used<select data-launch-field="demo">${options(launchDemos)}</select></label><label>Owner response<select data-launch-field="response">${options(launchResponses)}</select></label></div>
+   <fieldset><legend>Observed in a controlled trial</legend>${Object.entries(launchChecks).map(([k,v])=>'<label class="cg-check"><input type="checkbox" data-launch-field="'+k+'">'+v+'</label>').join('')}</fieldset>
+   <div class="cg-grid"><label>Total setup minutes<input data-launch-field="setupMinutes" type="text" maxlength="5" inputmode="numeric" placeholder="e.g. 90"></label><label>Total support minutes<input data-launch-field="supportMinutes" type="text" maxlength="5" inputmode="numeric" placeholder="e.g. 15"></label></div>
+   <label>What should the next ship reuse or change?<textarea data-launch-field="lesson" maxlength="600" rows="2" placeholder="Describe the pattern using sample details."></textarea></label>
+   <p id="cgPilotProgress" aria-live="polite"></p>
+   <div class="berth-actions"><button type="button" id="cgPilotSave">Save device draft</button><button type="button" id="cgPilotLoad">Load device draft</button><button type="button" id="cgPilotLessons">Export fleet lesson</button></div>
+   <p>Private draft export includes the worksheet. The owner offer includes the business name and pilot terms. Review the amounts in Admiral fee controls before sharing the printable offer.</p></div></details>`;
+ }
+ function pilotProgress(p){
+  const count=Object.keys(launchChecks).filter(k=>p[k]).length;
+  return count+' of 3 handoff checks observed · '+(p.setupMinutes||'—')+' setup min · '+(p.supportMinutes||'—')+' support min';
+ }
+ function fillPilot(){
+  const panel=$('cgLaunchPilot'),ok=eligiblePilot(record?.target);
+  panel.hidden=!ok;panel.open=ok;
+  const p=readLaunchPilot(ok?record.launchPilot:undefined);
+  for(const node of panel.querySelectorAll('[data-launch-field]')){
+   const v=p[node.dataset.launchField];
+   if(node.type==='checkbox')node.checked=v;else node.value=v;
+  }
+  $('cgPilotIdentity').textContent=ok?(record.target.prospective?record.target.display_name+' · Proposed terms':'VoyageKeeper rehearsal · Use sample work'):'';
+  $('cgPilotProgress').textContent=ok?pilotProgress(p):'';
+ }
+ function editPilot(node){
+  if(!allowed()||busy||!eligiblePilot(record?.target))return;
+  const before=readLaunchPilot(record.launchPilot),key=node.dataset.launchField;
+  if(!Object.hasOwn(before,key))return;
+  try{
+   record.launchPilot=readLaunchPilot({...before,[key]:node.type==='checkbox'?node.checked:node.value});
+   dirty=true;$('cgPilotProgress').textContent=pilotProgress(record.launchPilot);
+  }catch(e){
+   node.value=before[key];status(e.message,'warn');
+  }
+ }
+ function exportPilotLesson(){
+  if(!eligiblePilot(record?.target))return;
+  const p=readLaunchPilot(record.launchPilot);
+  if(!p.lesson.trim())throw Error('Add the lesson you want another ship to use.');
+  download('Fleet-launch-lesson.txt',['Fleet Launch Service · field observation',pilotProgress(p),p.lesson.trim()].join('\n\n'),'text/plain;charset=utf-8');
+  status('Lesson prepared. Review the text before sharing it with another ship.');
+ }
  function field(k,label,type='text',extra=''){return '<label>'+label+'<input data-bf-trim="boundary" id="cg-'+k+'" data-cg-field="'+k+'" type="'+type+'" maxlength="'+FIELDS[k]+'" '+extra+' autocomplete="off"></label>';}
  function area(k,label,rows=3){return '<label>'+label+'<textarea data-bf-trim="boundary" id="cg-'+k+'" data-cg-field="'+k+'" maxlength="'+FIELDS[k]+'" rows="'+rows+'"></textarea></label>';}
  function form(){return `
  <div class="cg-shell"><header class="cg-head"><div><small>BLACK FLAG · VOYAGEKEEPER · ${BUILD}</small><h1 id="cgTitle" tabindex="-1">Commissioning agreements</h1><p id="cgIdentity">Admiral verification required</p></div><button id="cgClose" type="button">BACK TO COMMAND</button></header>
  <div class="cg-warning"><b>PRIVATE DRAFTING · NOT A SIGNATURE SERVICE</b><span>Drafts saved here are browser-local, not cloud-backed. Export your private draft file. No new fees or permissions are activated.</span></div>
  <div class="cg-target"><label>Exact vessel<select id="cgVessel"><option value="">Choose a vessel</option></select></label><div id="cgScope">No vessel selected.</div></div>
- <div id="cgPlanned" class="cg-grid" hidden><label>Planned vessel name<input data-bf-trim="boundary" id="cgPlanName" maxlength="180"></label><label>Proposed permanent key<input data-bf-trim="boundary" id="cgPlanKey" maxlength="63" autocapitalize="none" spellcheck="false" placeholder="new-vessel-key"></label><button id="cgPlanCreate" type="button">START PLANNED DRAFT</button><p>No registry entry or reserved identity is created.</p></div>
+ <div id="cgPlanned" class="cg-grid" hidden><label>Planned vessel name<input data-bf-trim="boundary" id="cgPlanName" maxlength="180"></label><label>Proposed permanent key<input data-bf-trim="boundary" id="cgPlanKey" maxlength="63" autocapitalize="none" spellcheck="false" placeholder="new-vessel-key"></label><button id="cgPlanCreate" type="button">START PLANNED DRAFT</button><p>To reopen a planned pilot, enter its original key, start the draft, then choose Load device draft.</p></div>
+ ${feePanel()}
+ ${pilotPanel()}
  <nav class="cg-tabs" role="tablist" aria-label="Agreement drafting steps">${stepNames.map((n,i)=>`<button id="cgTab${i}" type="button" role="tab" data-cg-step="${i}" aria-controls="cgPanel${i}" aria-selected="${i===0}" tabindex="${i===0?0:-1}">${i+1} · ${n}</button>`).join('')}</nav>
  <p id="cgNavigationStatus" class="cg-navigation-status" role="status" aria-live="polite" hidden></p>
  <section id="cgPanel0" class="cg-panel" role="tabpanel" aria-labelledby="cgTab0">
@@ -6391,7 +6630,7 @@ if(window.DarkSkyOpenFleetWatchtower)window.DarkSkyOpenAdmiralFleet=window.DarkS
  ${field('providerName','Black Flag service provider — legal name')}${field('businessName','Vessel business — legal name')}${field('providerSigner','Provider signer — name and title')}${field('businessSigner','Business signer — name and title')}${field('providerEmail','Provider notice email','email')}${field('businessEmail','Business notice email','email')}${field('captainName','Designated Captain — legal name')}${field('captainEmail','Captain account email','email')}</div>
  </section>
  <section id="cgPanel1" class="cg-panel" role="tabpanel" aria-labelledby="cgTab1" hidden><div class="cg-grid"><div><label>Service arrangement<select id="cg-level" data-cg-field="level"><option value="">Choose the negotiated arrangement</option>${Object.entries(LEVELS).map(([k,n])=>`<option value="${k}">${n}</option>`).join('')}</select></label><fieldset><legend>Included services — choose explicitly</legend>${Object.entries(SERVICES).map(([k,n])=>`<label class="cg-check"><input type="checkbox" data-cg-service="${k}">${n}</label>`).join('')}</fieldset></div><div>${area('serviceLimits','Duties, retained support functions, limits and exclusions',5)}${field('hours','Support hours and time zone')}${field('response','Response target / escalation contact')}</div></div><p class="cg-note">Selected duties are proposed contract terms, not server access. Regulated services, banking, ownership and role-grant authority are excluded unless separately reviewed.</p></section>
- <section id="cgPanel2" class="cg-panel" role="tabpanel" aria-labelledby="cgTab2" hidden><div class="cg-grid"><div>${field('percentage','Admiral-negotiated percentage (0% allowed)','text','inputmode="decimal" placeholder="No default rate"')}<label>Sales included<select id="cg-basis" data-cg-field="basis"><option value="">Choose the negotiated sales basis</option><option value="platform">Black Flag-facilitated sales only</option><option value="all">All eligible business sales</option><option value="custom">Selected sales channels</option></select></label><fieldset id="cgChannels" hidden><legend>Included channels</legend>${Object.entries(CHANNELS).map(([k,n])=>`<label class="cg-check"><input type="checkbox" data-cg-channel="${k}">${n}</label>`).join('')}</fieldset>${field('startDate','Proposed service start — no retroactive activation','date')}<div class="cg-grid">${field('paymentDays','Payment due (days)','text','inputmode="numeric"')}${field('statementDays','Statement delivery (days)','text','inputmode="numeric"')}</div>${area('extras','Other negotiated fees / features included',2)}</div>
+ <section id="cgPanel2" class="cg-panel" role="tabpanel" aria-labelledby="cgTab2" hidden><button type="button" id="cgTabFeeLink">Open Admiral fee controls</button><div class="cg-grid"><div>${field('percentage','Admiral-negotiated percentage (0% allowed)','text','inputmode="decimal" placeholder="No default rate"')}<label>Sales included<select id="cg-basis" data-cg-field="basis"><option value="">Choose the negotiated sales basis</option><option value="platform">Black Flag-facilitated sales only</option><option value="all">All eligible business sales</option><option value="custom">Selected sales channels</option></select></label><fieldset id="cgChannels" hidden><legend>Included channels</legend>${Object.entries(CHANNELS).map(([k,n])=>`<label class="cg-check"><input type="checkbox" data-cg-channel="${k}">${n}</label>`).join('')}</fieldset>${field('startDate','Proposed service start — no retroactive activation','date')}<div class="cg-grid">${field('paymentDays','Payment due (days)','text','inputmode="numeric"')}${field('statementDays','Statement delivery (days)','text','inputmode="numeric"')}</div>${area('extras','Other negotiated fees / features included',2)}</div>
  <div class="cg-example"><small>ILLUSTRATION ONLY · NOT AN INVOICE</small><h2>Preview a monthly calculation</h2><p>Enter collected sales after the contract exclusions. Payment method does not change the sales channel.</p><div class="cg-grid">${Object.entries(CHANNELS).map(([k,n])=>`<label>${n}<input data-cg-example="${k}" data-zero-select="1" inputmode="decimal" value="0" maxlength="15"></label>`).join('')}</div><div id="cgMath" role="status">Select a percentage and sales basis.</div><p>No real sales are read, charged, debited or marked paid. Missing sales and later refunds need reconciliation.</p></div></div></section>
  <section id="cgPanel3" class="cg-panel" role="tabpanel" aria-labelledby="cgTab3" hidden><div class="cg-grid"><div>${area('providerAddress','Provider postal notice address',2)}${area('businessAddress','Business postal notice address',2)}${field('law','Governing law — counsel to confirm')}${field('venue','Court venue — counsel to confirm')}${field('liabilityFloor','Negotiated liability floor, USD','text','inputmode="decimal"')}${area('insurance','Insurance / coverage decision',2)}</div><div>${area('dataPlan','Data custody, actual subprocessors, retention, exports and restore responsibility',4)}${area('classification','Regulatory classification / required filings / disclosures — counsel decision',3)}${field('reviewer','Legal reviewer — reported name (not verified)')}${field('reviewRef','Review reference — private record, not a credential')}${area('reviewNotes','Counsel decisions / unresolved issues',3)}</div></div><details><summary>Legal classification and signing checks</summary><p>Collaboration does not require forming a legal partnership. Actual conduct can create partnership or franchise obligations regardless of labels. Counsel should evaluate branding, operational assistance, revenue fees, licensing, liability, privacy and the actual jurisdictions before any outside offer or execution.</p><p>No platform checkbox verifies legal advice, consent, signer authority or an electronic signature. Both business representatives sign; the Captain acknowledges limited personal duties separately.</p></details></section>
  <section id="cgPanel4" class="cg-panel" role="tabpanel" aria-labelledby="cgTab4" hidden><div class="cg-grid"><div><h2>Review and document copies</h2><div id="cgReadiness"></div><button id="cgDraftHtml" type="button">EXPORT CONTRACT REVIEW COPY</button><p>Produces printable HTML containing all schedules, terms, blank signature blocks and legal-review notes. It is marked Draft for legal review, not for signature. Printing or exporting does not verify custody.</p><details><summary>Read the template terms</summary><div id="cgTerms"></div></details><button id="cgSendSignatures" disabled type="button">SEND FOR SIGNATURES — NOT CONNECTED</button></div>
@@ -6416,7 +6655,7 @@ if(window.DarkSkyOpenFleetWatchtower)window.DarkSkyOpenAdmiralFleet=window.DarkS
    return false;
   }
  }
- function fill(){const d=record?.terms||blank();for(const k of Object.keys(FIELDS)){const n=$('cg-'+k);if(n)n.value=d[k];}root.querySelectorAll('[data-cg-service]').forEach(n=>n.checked=d.services.includes(n.dataset.cgService));root.querySelectorAll('[data-cg-channel]').forEach(n=>n.checked=d.channels.includes(n.dataset.cgChannel));$('cgScope').textContent=record?`${record.target.display_name} · ${record.target.project_id} · ${record.target.prospective?'PLANNED ONLY':'DRAFT ONLY'} · Revision ${record.revision}`:'No vessel selected.';$('cgChannels').hidden=d.basis!=='custom';updateReview();math();controls();}
+ function fill(){fillFeeEditor();fillPilot();const d=record?.terms||blank();for(const k of Object.keys(FIELDS)){const n=$('cg-'+k);if(n)n.value=d[k];}root.querySelectorAll('[data-cg-service]').forEach(n=>n.checked=d.services.includes(n.dataset.cgService));root.querySelectorAll('[data-cg-channel]').forEach(n=>n.checked=d.channels.includes(n.dataset.cgChannel));$('cgScope').textContent=record?`${record.target.display_name} · ${record.target.project_id} · ${record.target.prospective?'PLANNED ONLY':'DRAFT ONLY'} · Revision ${record.revision}`:'No vessel selected.';$('cgChannels').hidden=d.basis!=='custom';updateReview();math();controls();}
  function math(){try{if(!record)throw Error('Choose a vessel, percentage and sales basis.');const v=Object.fromEntries([...root.querySelectorAll('[data-cg-example]')].map(n=>[n.dataset.cgExample,n.value]));const n=example(record.terms,v);$('cgMath').textContent='Eligible scenario sales: '+amount(n.base)+' · Illustrative fee: '+amount(n.fee);}
  catch(e){$('cgMath').textContent=e.message;}}
  function updateReview(){if(!$('cgReadiness'))return;if(!record){$('cgReadiness').textContent='Choose a vessel to prepare an agreement.';$('cgEvidence').textContent='No files recorded.';return;}
@@ -6427,22 +6666,27 @@ if(window.DarkSkyOpenFleetWatchtower)window.DarkSkyOpenAdmiralFleet=window.DarkS
  async function choose(){if(!allowed()||busy)return;const value=$('cgVessel').value;if(!discardQuestion()){$('cgVessel').value=record?.target.project_id||'';return;}record=null;dirty=false;epoch++;$('cgSignedFile').value='';$('cgCertificateFile').value='';$('cgEvidenceRef').value='';root.querySelectorAll('[data-cg-example]').forEach(n=>n.value='0');$('cgPlanned').hidden=value!=='__planned__';if(value&&value!=='__planned__'){const r=rows.find(x=>x.project_id===value);if(r)record=newRecord(r);}fill();status(record?'New private draft for '+record.target.display_name+'. Use Load device draft to recover an earlier version. No default percentage is selected.':'Select an existing vessel or define a planned vessel.');}
  function plan(){if(!allowed()||busy)return;const name=$('cgPlanName').value.trim(),key=$('cgPlanKey').value.trim().toLowerCase();try{if(rows.some(x=>x.project_id===key))throw Error('That key is already in this directory. Select its existing vessel instead.');record=newRecord({project_id:key,display_name:name,prospective:true});rows.push(record.target);const o=document.createElement('option');o.value=key;o.textContent=name+' · PLANNED';$('cgVessel').append(o);$('cgVessel').value=key;$('cgPlanned').hidden=true;dirty=true;fill();status('Planned draft only. The proposed key is not reserved and no server vessel was created.');}catch(e){status(e.message,'warn');}}
  async function dbOpen(){if(db)return db;db=await new Promise((resolve,reject)=>{const r=indexedDB.open(DB,1);r.onupgradeneeded=()=>{const s=r.result.createObjectStore('drafts',{keyPath:'id'});s.createIndex('scope','scope');};r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(Error('Device draft storage unavailable. Export your private draft instead.'));r.onblocked=()=>reject(Error('Device draft storage is busy. Export your private draft instead.'));});return db;}
- async function storeDraft(t){const h=await dbOpen();if(!valid(t))return;const copy=JSON.parse(JSON.stringify(record)),id=crypto.randomUUID(),at=new Date().toISOString(),scope=actor+'|'+record.target.project_id;
+ async function storeDraft(t){if(record?.terms?.launchFees)record.terms.launchFees=launchFeeTerms(record.terms.launchFees);const h=await dbOpen();if(!valid(t))return;const copy=JSON.parse(JSON.stringify(record)),id=crypto.randomUUID(),at=new Date().toISOString(),scope=actor+'|'+record.target.project_id;
  await new Promise((res,rej)=>{const tx=h.transaction('drafts','readwrite');tx.objectStore('drafts').add({id,scope,at,record:copy});tx.oncomplete=res;tx.onerror=()=>rej(Error('Draft save failed. Export instead; the earlier device copy was not replaced.'));tx.onabort=()=>rej(Error('Draft save interrupted. Export instead.'));});
- const read=await new Promise((res,rej)=>{const tx=h.transaction('drafts','readonly'),q=tx.objectStore('drafts').get(id);q.onsuccess=()=>res(q.result);q.onerror=()=>rej(Error('Draft readback unavailable. Keep an exported copy.'));});if(!read||stable(read.record)!==stable(copy))throw Error('Draft save could not be verified. Keep an exported copy.');if(valid(t)){dirty=false;status('DEVICE DRAFT READBACK VERIFIED · '+at+'. Browser-local only, not a cloud backup. Earlier saves retained.','saved');}}
- async function loadDraft(t){if(!record)throw Error('Select a vessel first.');if(!discardQuestion())return;const h=await dbOpen();if(!valid(t))return;const scope=actor+'|'+record.target.project_id,all=await new Promise((res,rej)=>{const tx=h.transaction('drafts','readonly'),q=tx.objectStore('drafts').index('scope').getAll(scope);q.onsuccess=()=>res(q.result);q.onerror=()=>rej(Error('Device draft could not be read.'));});if(!valid(t))return;if(!all.length)throw Error('No device draft for this Admiral and vessel. Import a private draft or start a new one.');const last=all.sort((a,b)=>a.at.localeCompare(b.at)).at(-1);validateRecord(last.record,record.target.project_id);record=last.record;record.terms=sanitize(record.terms);dirty=false;fill();status('Loaded device draft for '+record.target.display_name+'. Its review notes and file evidence remain unverified.');}
- function validateRecord(r,expected){if(!r||r.schema!=='blackflag-agreement-working-v1'||!scopeTarget(r.target)||r.target.project_id!==expected)throw Error('Draft belongs to a different vessel. Select that exact vessel before importing.');if(typeof r.agreementId!=='string'||!/^[a-f0-9-]{36}$/.test(r.agreementId)||!Number.isInteger(r.revision)||r.revision<1||r.revision>100000)throw Error('Invalid agreement identity/version.');sanitize(r.terms);if(!Array.isArray(r.history)||r.history.length>1000||!Array.isArray(r.evidence)||r.evidence.length>1000)throw Error('Invalid draft history.');}
+ const read=await new Promise((res,rej)=>{const tx=h.transaction('drafts','readonly'),q=tx.objectStore('drafts').get(id);q.onsuccess=()=>res(q.result);q.onerror=()=>rej(Error('Draft readback unavailable. Keep an exported copy.'));});if(!read||stable(read.record)!==stable(copy))throw Error('Draft save could not be verified. Keep an exported copy.');if(valid(t)){dirty=false;if(record.terms.launchFees)showSavedOffer();status('DEVICE DRAFT READBACK VERIFIED · '+at+'. Browser-local only, not a cloud backup. Earlier saves retained.','saved');}}
+ async function loadDraft(t){if(!record)throw Error('Select a vessel first.');if(!discardQuestion())return;const h=await dbOpen();if(!valid(t))return;const scope=actor+'|'+record.target.project_id,all=await new Promise((res,rej)=>{const tx=h.transaction('drafts','readonly'),q=tx.objectStore('drafts').index('scope').getAll(scope);q.onsuccess=()=>res(q.result);q.onerror=()=>rej(Error('Device draft could not be read.'));});if(!valid(t))return;const scoped=all.filter(row=>row.record?.target?.prospective===record.target.prospective);if(!scoped.length)throw Error('No device draft for this Admiral and vessel. Import a private draft or start a new one.');const last=scoped.sort((a,b)=>a.at.localeCompare(b.at)).at(-1);validateRecord(last.record,record.target.project_id);record=last.record;record.terms=sanitize(record.terms);dirty=false;fill();if(record.terms.launchFees)showSavedOffer();status('Loaded device draft for '+record.target.display_name+'. Its review notes and file evidence remain unverified.');}
+ function validateRecord(r,expected){if(!r||r.schema!=='blackflag-agreement-working-v1'||!scopeTarget(r.target)||r.target.project_id!==expected)throw Error('Draft belongs to a different vessel. Select that exact vessel before importing.');if(typeof r.agreementId!=='string'||!/^[a-f0-9-]{36}$/.test(r.agreementId)||!Number.isInteger(r.revision)||r.revision<1||r.revision>100000)throw Error('Invalid agreement identity/version.');sanitize(r.terms);if(r.launchPilot!==undefined){if(!eligiblePilot(r.target))throw Error('Invalid pilot scope.');readLaunchPilot(r.launchPilot);}if(!Array.isArray(r.history)||r.history.length>1000||!Array.isArray(r.evidence)||r.evidence.length>1000)throw Error('Invalid draft history.');}
  async function snapshot(t){if(!record)throw Error('Select a vessel first.');const payload=termPayload(record),termsHash=await hash(stable(payload));if(!valid(t))return null;record.snapshot={termsHash,createdAt:new Date().toISOString(),templateVersion:TEMPLATE.version};updateReview();controls();return {payload,termsHash};}
  function download(name,content,type){const blob=new Blob([content],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);}
  async function exportDraft(t,asHtml){const s=await snapshot(t);if(!s||!valid(t))return;const name='BlackFlag-'+record.target.project_id+'-Agreement-r'+record.revision+'-'+s.termsHash.slice(0,10);if(asHtml)download(name+'-LEGAL-REVIEW.html',html(record,s.termsHash),'text/html;charset=utf-8');else download(name+'-PRIVATE-DRAFT.json',JSON.stringify({schema:'blackflag-private-agreement-export-v1',status:'UNVERIFIED_DRAFT',exportedAt:new Date().toISOString(),authorAccount:client().readSession()?.user?.email||'',termsHash:s.termsHash,templateVersion:TEMPLATE.version,record},null,2),'application/json');status('Download prepared. Save it in private Files, not the public GitHub repository. A download request is not proof the file was saved.','info');}
  async function importDraft(t,file){if(!file) return;if(file.size>1200000)throw Error('Draft file exceeds 1.2 MB. No import made.');const data=JSON.parse(await file.text());if(!valid(t))return;if(data.schema!=='blackflag-private-agreement-export-v1'||data.templateVersion!==TEMPLATE.version)throw Error('Unsupported draft format or template. No import made.');validateRecord(data.record,record.target.project_id);const hashValue=await hash(stable(termPayload(data.record)));if(!valid(t))return;if(hashValue!==data.termsHash)throw Error('Draft fingerprint does not match its terms. No import made.');if(!discardQuestion())return;
  // Imported status, signer claims and artifact metadata do not confer trusted review/signature state.
- const r=data.record;record={schema:'blackflag-agreement-working-v1',agreementId:r.agreementId,revision:r.revision,target:scopeTarget(r.target),terms:sanitize(r.terms),history:[],evidence:[],snapshot:null,createdAt:typeof r.createdAt==='string'?r.createdAt:new Date().toISOString()};dirty=true;fill();status('Imported matching vessel terms as an UNVERIFIED DRAFT. External history/signature claims were not trusted. Save a device copy or export a fresh review snapshot.','warn');}
+ const r=data.record;const currentTarget=record.target;if(r.target.prospective!==currentTarget.prospective)throw Error('Planned and registered drafts belong to different scopes.');record={...(r.launchPilot===undefined?{}:{launchPilot:readLaunchPilot(r.launchPilot)}),schema:'blackflag-agreement-working-v1',agreementId:r.agreementId,revision:r.revision,target:scopeTarget(currentTarget),terms:sanitize(r.terms),history:[],evidence:[],snapshot:null,createdAt:typeof r.createdAt==='string'?r.createdAt:new Date().toISOString()};dirty=true;fill();status('Imported matching vessel terms as an UNVERIFIED DRAFT. External history/signature claims were not trusted. Save a device copy or export a fresh review snapshot.','warn');}
  async function pdfInfo(file){if(!file)return null;if(file.size>10*1024*1024||file.size<5)throw Error('Select a PDF between 5 bytes and 10 MB.');const bytes=await file.arrayBuffer();if(new TextDecoder().decode(bytes.slice(0,5))!=='%PDF-')throw Error('Selected file does not have a PDF header.');return {name:file.name.slice(0,200),bytes:file.size,sha256:await hash(bytes)};}
  async function evidence(t){if(!record?.snapshot)throw Error('Create a current draft snapshot first.');const file=$('cgSignedFile').files[0],cert=$('cgCertificateFile').files[0],ref=$('cgEvidenceRef').value.trim();if(!file||!ref)throw Error('Select the signed-document PDF and enter its external custody reference.');const termsHash=record.snapshot.termsHash,[f,c]=await Promise.all([pdfInfo(file),pdfInfo(cert)]);if(!valid(t)||record.snapshot?.termsHash!==termsHash)return;record.evidence.push({revision:record.revision,termsHash,file:f,certificate:c,reference:ref.slice(0,240),recordedAt:new Date().toISOString(),signaturesVerified:false,custodyVerified:false,source:'manual-file-selection'});dirty=true;$('cgSignedFile').value='';$('cgCertificateFile').value='';updateReview();status('File fingerprints recorded locally. Signatures, signer authority, document contents match and external custody are NOT verified. Save or export this receipt. Production remains held.','warn');}
  function render(){if(root)return;root=document.createElement('dialog');root.id='cgWorkspace';root.className='cg-workspace';root.hidden=true;root.setAttribute('role','dialog');root.setAttribute('aria-modal','true');root.setAttribute('aria-labelledby','cgTitle');root.innerHTML=form();document.body.append(root);$('cgTerms').innerHTML=TEMPLATE.clauses.map(c=>'<h3>'+esc(c.title)+'</h3>'+c.paragraphs.map(p=>'<p>'+esc(p)+'</p>').join('')).join('');
  $('cgClose').onclick=()=>close(false,'back-to-command');$('cgVessel').onchange=choose;$('cgPlanCreate').onclick=plan;$('cgPrev').onclick=()=>setStep(step-1,true);$('cgNext').onclick=()=>setStep(step+1,true);
  for(const [id,fn] of [['cgSave',storeDraft],['cgLoad',loadDraft],['cgExport',t=>exportDraft(t,false)],['cgDraftHtml',t=>exportDraft(t,true)],['cgRecordEvidence',evidence]])$(id).onclick=()=>withTask(fn);
+ bindFeeControls();
+ $('cgPilotSave').onclick=()=>withTask(storeDraft);
+ $('cgPilotLoad').onclick=()=>withTask(loadDraft);
+ $('cgPilotLessons').onclick=()=>withTask(exportPilotLesson);
+ $('cgLaunchPilot').addEventListener('input',e=>{if(e.target.hasAttribute('data-launch-field'))editPilot(e.target);});
  $('cgImport').onchange=()=>{const f=$('cgImport').files[0];withTask(t=>importDraft(t,f)).finally(()=>$('cgImport').value='');};
  root.addEventListener('click',e=>{const b=e.target instanceof Element?e.target.closest('button[data-cg-step]'):null;if(!b||!root.querySelector('.cg-tabs')?.contains(b))return;e.preventDefault();e.stopPropagation();if(!b.disabled&&!busy)setStep(Number(b.dataset.cgStep));});
  root.addEventListener('input',e=>{const n=e.target;if(!record||busy||!allowed())return;if(n.dataset.cgField){const k=n.dataset.cgField;if(!Object.hasOwn(FIELDS,k))return;record.terms[k]=n.value;revise();$('cgChannels').hidden=record.terms.basis!=='custom';math();}if(n.dataset.cgExample)math();});
@@ -6537,7 +6781,7 @@ if(window.DarkSkyOpenFleetWatchtower)window.DarkSkyOpenAdmiralFleet=window.DarkS
   if(!openState)return;
   if(!force&&!discardQuestion())return;
   const lastRequested=navigationReceipt.requested,hadUnsaved=dirty;
-  cancelNavigation();navigationMessage('');entryState('idle');epoch++;busy=false;openState=false;mark='';actor='';record=null;rows=[];dirty=false;if(root){if(root.open)root.close();root.hidden=true;root.querySelectorAll('input,textarea').forEach(n=>n.value='');$('cgVessel').innerHTML='<option value="">Choose a vessel</option>';$('cgReadiness').textContent='';$('cgEvidence').textContent='';$('cgIdentity').textContent='Admiral verification required';$('cgScope').textContent='No vessel selected.';$('cgStatus').textContent='';$('cgMath').textContent='Choose a vessel, percentage and sales basis.';$('cgPlanName').value='';$('cgPlanKey').value='';}if(deck)deck.inert=false;originFocus?.isConnected&&originFocus.focus?.({preventScroll:true});
+  cancelNavigation();navigationMessage('');entryState('idle');epoch++;busy=false;openState=false;mark='';actor='';record=null;rows=[];dirty=false;if(root){if(root.open)root.close();root.hidden=true;root.querySelectorAll('input,textarea').forEach(n=>n.value='');$('cgVessel').innerHTML='<option value="">Choose a vessel</option>';$('cgReadiness').textContent='';$('cgEvidence').textContent='';$('cgIdentity').textContent='Admiral verification required';$('cgScope').textContent='No vessel selected.';$('cgStatus').textContent='';$('cgMath').textContent='Choose a vessel, percentage and sales basis.';$('cgPlanName').value='';$('cgPlanKey').value='';fillFeeEditor();fillPilot();}if(deck)deck.inert=false;originFocus?.isConnected&&originFocus.focus?.({preventScroll:true});
   const exceptional={'native-close':'DRAFT-WORKSPACE-CLOSED','context-change':'DRAFT-CONTEXT-CHANGED','session-unavailable':'SESSION-ENDED'};
   if(exceptional[reason]){
    const code=exceptional[reason];entryState('error',code);navigationNote(lastRequested,step,code);

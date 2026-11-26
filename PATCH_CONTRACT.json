@@ -1,23 +1,18 @@
 {
   "schema": "blackflag-patch-contract-v1",
-  "target_build": "8.8.20.161",
-  "target_seal": "berthlight-8820161",
+  "target_build": "8.8.20.163",
+  "target_seal": "ratebook-8820163",
   "supported_bases": [
     {
-      "build": "8.8.20.159",
-      "source_sha256": "ef89279b75f2ef292ada4b3fba3eac39c688161ade600ceb2b533e5532e495c5",
-      "file_count": 1103
-    },
-    {
-      "build": "8.8.20.160",
-      "source_sha256": "f211d70f35e92cfff958cd4c2b9533280a64b5d5fc41487da80710843ed69a65",
-      "file_count": 1104
+      "build": "8.8.20.161",
+      "source_sha256": "89e170a232f8ddf9db169531ea514f6c1a3a4c68785bae22e14c4ace7ddc6574",
+      "file_count": 1106
     }
   ],
   "requires_deletions": false,
   "max_upload_files": 85,
   "database_actions": "none",
-  "rule": "Apply the complete cumulative patch to the full Portstep or Berthmark base. Retain other files. Rollback targets Portstep.",
+  "rule": "Upload every changed/new root file over complete 8.8.20.161. Keep everything else. This software archive executes no database commands.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",

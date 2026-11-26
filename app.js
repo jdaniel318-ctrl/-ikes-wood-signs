@@ -131,7 +131,7 @@ const engineCodePads = (() => {
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
   // Component revision changes only when this module changes; installed release is loader-attested.
-  const APP_COMPONENT_REVISION='8.8.20.161';
+  const APP_COMPONENT_REVISION='8.8.20.163';
   const BUILD_VERSION=window.__darkSkyVerifiedRelease?.build;
   if(!BUILD_VERSION || BUILD_VERSION!==window.__darkSkyExpectedRelease?.build || window.__darkSkyVerifiedRelease?.seal!==window.__darkSkyExpectedRelease?.seal)throw new Error('Verified release context required before app execution.');
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
@@ -5273,7 +5273,7 @@ const engineCodePads = (() => {
     scheduleEngineWorkspaceFrame(navigation,()=>{$('engineOperateVessels')?.focus({preventScroll:true});window.scrollTo({top:0,left:0,behavior:'instant'});});
   }
 
-  function ensureExperienceModeBanner(p,mode){let banner=document.getElementById('experienceModeBanner');if(!banner){banner=document.createElement('div');banner.id='experienceModeBanner';banner.className='experience-mode-banner';document.body.appendChild(banner);}const label=mode==='preview'?'PRIVATE PREVIEW • NO RECORDS':mode==='sea_trial'?'SEA TRIAL • TEST DATA':'LIVE CUSTOMER EXPERIENCE';const isBor=p?.id===BOR_PROJECT_ID;banner.classList.toggle('bor-test-banner',isBor&&mode!=='live');banner.innerHTML=`<span><b>${escapeHtml(isBor&&mode!=='live'?'DARK SKY • TEST':label)}</b><small>${escapeHtml(isBor&&mode!=='live'?'Private project preview':p.name)}</small></span><button type="button" id="returnExperienceTestDeck" class="secondary-btn">${mode==='live'?'RETURN TO ENGINE':isBor?'← TEST CENTER':'RETURN TO TEST CENTER'}</button>`;banner.classList.remove('hidden');}
+  function ensureExperienceModeBanner(p,mode){let banner=document.getElementById('experienceModeBanner');if(!banner){banner=document.createElement('div');banner.id='experienceModeBanner';banner.className='experience-mode-banner';document.body.appendChild(banner);}const label=mode==='preview'?'PRIVATE PREVIEW • NO RECORDS':mode==='sea_trial'?'SEA TRIAL • TEST DATA':'LIVE CUSTOMER EXPERIENCE';const isBor=p?.id===BOR_PROJECT_ID;banner.classList.toggle('berth-mode-banner',!!voyageKeeperRehearsal(p)&&mode!=='live');banner.classList.toggle('bor-test-banner',isBor&&mode!=='live');banner.innerHTML=`<span><b>${escapeHtml(isBor&&mode!=='live'?'DARK SKY • TEST':label)}</b><small>${escapeHtml(isBor&&mode!=='live'?'Private project preview':p.name)}</small></span><button type="button" id="returnExperienceTestDeck" class="secondary-btn">${mode==='live'?'RETURN TO ENGINE':isBor?'← TEST CENTER':'RETURN TO TEST CENTER'}</button>`;banner.classList.remove('hidden');}
 
   async function enterExperienceMode(p,mode){
     if(!p||!engineSessionUnlocked||!document.body.classList.contains('engine-mode')||document.body.classList.contains('boot-locked'))return false;
@@ -9723,6 +9723,7 @@ const engineCodePads = (() => {
             <label class="checkline"><input type="checkbox" data-cfield="founderPreview" ${d.founderPreview?'checked':''}> Begin with a private Founder Preview</label>
             <label class="checkline"><input type="checkbox" data-cfield="ownerApprovalRequired" checked disabled> Owner approval required before publication</label>
           </div>
+          <p><a class="berth-offer-link" href="./fleet-launch-offer.html" target="_blank" rel="noopener noreferrer">View suggested pilot pricing</a></p>
           <ol class="fleet-launch-phases" aria-label="Fleet Launch Service course">
             <li><b>01</b><span>Founder Preview</span></li><li><b>02</b><span>Owner Review</span></li><li><b>03</b><span>Prepare</span></li><li><b>04</b><span>Private Preview</span></li><li><b>05</b><span>Sea Trial</span></li><li><b>06</b><span>Owner Handoff</span></li><li><b>07</b><span>Launch</span></li>
           </ol>
@@ -11128,6 +11129,10 @@ const engineCodePads = (() => {
     return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${path}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
   }
 
+  function voyageKeeperRehearsal(p){
+    return p && ['bf-p-42be92cbac12','bf-p-fc2816b8254a4845'].includes(p.id);
+  }
+
   function renderUniversalCustomerShell(p){
     const shell=$('universalCustomerShell'); if(!shell||!p)return;
     const plumbingProject=String(p.businessType||p.businessIntake?.businessCategory||'').toLowerCase().includes('plumb');
@@ -11210,6 +11215,14 @@ const engineCodePads = (() => {
             <section class="contractor-bottom-cta"><div><small>READY WHEN YOU ARE</small><h2>Need a plumber in the Richmond area?</h2><p>${escapeHtml(landing.customerPromise||'Tell us what is happening and we will collect the right details for the next step.')}</p></div><button type="button" id="universalHelpNowBottom" class="contractor-primary-cta">${escapeHtml(requestCtaLabel)}</button></section>
             <footer class="contractor-footer"><div>${logoMarkup}<div><strong>${escapeHtml(p.name)}</strong><span>${escapeHtml(market)} • ${escapeHtml(hours)}</span></div></div><div><span>${escapeHtml(landing.phone||'')}</span><span>${escapeHtml(landing.email||'')}</span></div></footer>
           </main></div>`;
+      }else if(voyageKeeperRehearsal(p)){
+        const hasBanner=!!experienceTestReturnState;
+        const modeLabel=ctx.state==='deployed'?'Service desk':ctx.state==='sea_trial'?'Sea Trial · test data':ctx.state==='preview'?'Private preview · simulated request':'Private test';
+        const returnControl=ctx.state==='sea_trial'&&ctx.deploymentId&&!hasBanner?'<button type="button" id="universalReturnShipwright">Return to Shipwright</button>':'';
+        shell.innerHTML=`<div class="berth-customer"><header><div><img src="./fleet-voyagekeeper.webp" alt=""><strong>${escapeHtml(p.name)}</strong></div><div>${returnControl}<button type="button" class="universal-settings-btn" data-project-settings-launch aria-label="Open project settings">⚙</button></div></header>
+          <main class="berth-customer-hero"><div><p class="berth-mode">${hasBanner?'Service desk':modeLabel}</p><h1>Request a service visit</h1><p>Tell us what needs attention and when a visit would work for you.</p><button type="button" id="universalHelpNow">${contactLocked?'Start a test request':'Start a request'}</button></div>
+          <img src="./voyagekeeper-headland.webp" alt="A lighthouse overlooking the water at dusk"></main>
+          <details class="berth-offers"><summary>Choose a service</summary><div>${offers.map(x=>`<button type="button" data-universal-landing-offer="${escapeHtml(x.id)}"><strong>${escapeHtml(x.name)}</strong>${x.description?`<span>${escapeHtml(x.description)}</span>`:''}</button>`).join('')}</div></details></div>`;
       }else{
         shell.innerHTML=`<div class="universal-service-landing"><header class="universal-shell-header landing-header"><div class="universal-mark">${escapeHtml(initials)}</div><div class="universal-brand-copy"><small>${escapeHtml(universalCustomerStageLabel(p))}</small><h1>${escapeHtml(p.name)}</h1><p>${escapeHtml(description)}</p></div><div class="universal-header-actions"><button type="button" class="universal-settings-btn" data-project-settings-launch aria-label="Open project admin">⚙︎</button>${ctx.state==='sea_trial'&&ctx.deploymentId&&!experienceTestReturnState?'<button type="button" id="universalReturnShipwright" class="secondary-btn universal-return-shipwright">RETURN TO SHIPWRIGHT</button>':''}</div></header><main class="universal-landing-main">${previewBanner}${testContactSafety}<section class="universal-landing-hero"><div class="universal-landing-copy"><small>LOCAL SERVICE • READY TO HELP</small><h2>${escapeHtml(landing.headline||'How can we help?')}</h2><p>${escapeHtml(landing.supportingCopy||description)}</p><div class="universal-landing-actions"><button type="button" id="universalHelpNow" class="primary-btn universal-help-now">${escapeHtml(contactLocked?'START TEST REQUEST':(landing.primaryCta||'I NEED HELP NOW'))}</button><button type="button" id="universalViewServices" class="secondary-btn">${escapeHtml(landing.secondaryCta||'VIEW SERVICES')}</button></div></div><div class="universal-confidence-panel"><span>WHY CUSTOMERS CAN START HERE</span><strong>Clear request. Clear next step.</strong><p>Your information stays with ${escapeHtml(p.name)} and this project.</p></div></section>${trust.length?`<section class="universal-trust-row">${trust.map(x=>`<span>✓ ${escapeHtml(x)}</span>`).join('')}</section>`:''}<section class="universal-service-preview"><div class="universal-section-head"><small>SERVICES</small><h2>What can we help with?</h2><p>Choose a service now or use Help Now and we will guide you.</p></div><div class="universal-offer-grid landing-offers">${offers.map(x=>`<button type="button" class="universal-offer" data-universal-landing-offer="${escapeHtml(x.id)}"><strong>${escapeHtml(x.name)}</strong><span>${escapeHtml(x.description||'Request service')}</span></button>`).join('')}</div></section></main></div>`;
       }
@@ -15847,7 +15860,9 @@ The full order and approved media remain stored with this project.`;
         if(target.dataset.commandBusy==='1')return;
         const prior=target.textContent;target.dataset.commandBusy='1';target.disabled=true;target.textContent='OPENING…';
         try{
-          await openExperienceTestDeck(target.dataset.projectTestExperience);
+          let projectId=target.dataset.projectTestExperience;
+          if(target.hasAttribute('data-launch-rehearsal') && !projectById(projectId) && projectById('bf-p-fc2816b8254a4845'))projectId='bf-p-fc2816b8254a4845';
+          await openExperienceTestDeck(projectId);
           const deck=document.getElementById('experienceTestDeck');
           if(!deck||deck.classList.contains('hidden'))throw new Error('Experience Test Deck did not become visible.');
         }catch(err){

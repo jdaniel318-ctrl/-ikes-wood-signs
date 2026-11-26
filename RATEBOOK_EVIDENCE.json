@@ -1,0 +1,10 @@
+{
+  "build": "8.8.20.163",
+  "base": "8.8.20.161",
+  "includes": "First Berth 8.8.20.162",
+  "suite": "VERIFY_RATEBOOK.cjs",
+  "suite_count": 87,
+  "scope": "Admiral and vessel scope, pricing, reusable starting rates, readback, agreement fingerprint and owner offer. Device drafts support export.",
+  "browser_rehearsal": "In a local fixture with real IndexedDB, selected $675 setup, $175 deposit and $0 support, saved and opened the named offer with $500 at handoff, $175 credited and support waived.",
+  "device_acceptance": "Signed-in iPad and deployed site pending."
+}
