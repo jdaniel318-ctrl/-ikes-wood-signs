@@ -6418,7 +6418,25 @@ if(window.DarkSkyOpenFleetWatchtower)window.DarkSkyOpenAdmiralFleet=window.DarkS
 <style>
 *{box-sizing:border-box}body{margin:0;background:#edf2f0;color:#122e31;font:16px/1.55 system-ui,sans-serif}main{width:min(100% - 2rem,52rem);margin:2rem auto;background:white;border:1px solid #ccd9d5;border-radius:14px;overflow:hidden}header,section,footer{padding:1.45rem 2rem}header{background:#103b40;color:#fff;border-bottom:4px solid #cba465;display:flex;justify-content:space-between;align-items:start;gap:1rem}header p{color:#f4d49d}h1,h2,p{margin:0}h1{font:500 clamp(2rem,6vw,3.5rem)/1.07 Georgia,serif;letter-spacing:-.035em;margin:.4rem 0}h2{font:600 1.4rem Georgia,serif;margin:0 0 .5rem}p+p{margin-top:.5rem}#recipient{overflow-wrap:anywhere}button{min-height:44px;flex:none;padding:.55rem .8rem;border:1px solid #8cb2ae;border-radius:7px;background:transparent;color:white;font:inherit;cursor:pointer}button:focus-visible{outline:3px solid #f4d49d;outline-offset:3px}section+section,footer{border-top:1px solid #d5e0de}dl{display:grid;grid-template-columns:repeat(2,1fr);background:#edf4f2;border-radius:8px;margin:.9rem 0;padding:1rem;gap:1rem}dt{font-size:.9rem}dd{font-size:1.8rem;font-weight:650;line-height:1.3;margin:0}footer{background:#f6f8f6}.brand{font-weight:650}.fine{font-size:.9rem;color:#456361}
 @media(max-width:540px){main{width:100%;margin:0;border:0;border-radius:0}header,section,footer{padding:1.1rem}header{flex-wrap:wrap}}
-@page{size:letter;margin:.6in}@media print{body{background:#fff;font-size:11pt}main{margin:0;width:100%;border:0}button{display:none}header,section,footer{padding:12pt 0}header{color:#123c40;background:white}header p{color:#405653}h1{font-size:31pt}section,footer{break-inside:avoid}dl{background:#fff;border:1px solid #cddbd7}}
+@page { size: letter portrait; margin: .60in; }
+@media print {
+  html, body { width: auto; margin: 0; padding: 0; background: white; color: #163538; }
+  body { font: 12pt/1.42 Arial, sans-serif; -webkit-text-size-adjust: 100%; }
+  main { width: auto; max-width: none; margin: 0; border: 0; border-radius: 0; overflow: visible; }
+  header, section, footer { display: block; padding: 12pt 0; background: white; }
+  header { padding: 0 0 12pt; border-bottom: 2pt solid #ac8648; color: #153b3f; }
+  header p { color: #405653; }
+  h1 { font: 28pt/1.1 Georgia, serif; margin: 3pt 0; }
+  h2 { font: bold 15pt/1.18 Georgia, serif; margin: 0 0 4pt; break-after: avoid; }
+  p { margin: 0; }
+  p + p { margin-top: 4pt; }
+  #recipient { overflow-wrap: anywhere; word-break: break-word; }
+  dl { display: table; table-layout: fixed; width: 100%; margin: 4pt 0 6pt; padding: 0; border: 1pt solid #cddbd7; background: white; }
+  dl > div { display: table-cell; vertical-align: top; padding: 7pt 9pt; }
+  dt, .fine, .brand { font-size: 10pt; }
+  dd { font-size: 18pt; line-height: 1.18; }
+  button { display: none; }
+}
 </style></head><body><main>
 <header><div><span class="brand">Black Flag</span><h1>Fleet Launch Service</h1><p id="recipient">${who}</p></div><button id="print" type="button">Print / save PDF</button></header>
 <section><h2>From a customer’s phone to your desk</h2><p>We set up a service request page in your business’s name. Customers describe the work, the operator you appoint as Captain receives the request, and you decide what to quote and when to schedule it.</p></section>

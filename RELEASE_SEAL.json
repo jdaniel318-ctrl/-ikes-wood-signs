@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.163",
-  "release": "Ratebook",
-  "seal": "ratebook-8820163",
+  "build": "8.8.20.164",
+  "release": "Folio",
+  "seal": "folio-8820164",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Ratebook",
-  "name": "Ratebook",
-  "releaseName": "Ratebook"
+  "release_name": "Folio",
+  "name": "Folio",
+  "releaseName": "Folio"
 }

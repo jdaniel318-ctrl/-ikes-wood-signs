@@ -1,0 +1,36 @@
+{
+  "build": "8.8.20.164",
+  "base": "8.8.20.163",
+  "scope": "Print stylesheet for the exact-vessel offer and public example.",
+  "reported_on_ipad": "Build 8.8.20.163 printed the final terms on a second US Letter portrait page at 100%.",
+  "html_pdf_engine": "WeasyPrint 70",
+  "test_cases": [
+    {
+      "case": "VoyageKeeper-Offer",
+      "pages": 1,
+      "final_terms_bottom_pt": 584
+    },
+    {
+      "case": "Letter-Headers",
+      "pages": 1,
+      "final_terms_bottom_pt": 584
+    },
+    {
+      "case": "Extra-Margins",
+      "pages": 1,
+      "final_terms_bottom_pt": 602
+    },
+    {
+      "case": "Long-Name",
+      "pages": 1,
+      "final_terms_bottom_pt": 618
+    },
+    {
+      "case": "Suggested",
+      "pages": 1,
+      "final_terms_bottom_pt": 584
+    }
+  ],
+  "device_acceptance": "Deployed iPad Safari print at 100% pending.",
+  "offline_suites": 87
+}

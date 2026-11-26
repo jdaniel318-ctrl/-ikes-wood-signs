@@ -1,21 +1,21 @@
 {
   "schema": "blackflag-release-gate-v1",
-  "build": "8.8.20.163",
-  "release": "Ratebook",
+  "build": "8.8.20.164",
+  "release": "Folio",
   "pass": true,
-  "pass_scope": "87 offline suites plus a browser pricing rehearsal.",
+  "pass_scope": "87 offline suites and five paginated HTML-to-PDF cases.",
   "verification_status": "OFFLINE_SUITES_PASSED",
-  "evidence_file": "RATEBOOK_EVIDENCE.json",
+  "evidence_file": "FOLIO_PRINT_EVIDENCE.json",
   "native_safari_acceptance": "PENDING",
   "database_actions": "No production database actions.",
-  "backend_prerequisite": "Existing Admiral authority and agreement controls. No new backend prerequisite for proposal fees.",
+  "backend_prerequisite": "None for the owner proposal print change.",
   "customer_data_changes": false,
   "production_certification": false,
   "frontend_deployed": false,
-  "backup_restore": "Ratebook-Rollback.zip restores the Berthlight 8.8.20.161 software.",
+  "backup_restore": "Folio-Rollback.zip restores Ratebook 8.8.20.163 software.",
   "performance_improvement_claim": false,
   "offline_suite_count": 87,
   "native_compilation": "NOT_APPLICABLE_STATIC_WEB_APP",
   "offline_suites_passed": 87,
-  "scope": "User-initiated fleet launch proposals and scoped Admiral fee drafting."
+  "scope": "US Letter print layout for the vessel owner proposal and suggested pricing example."
 }

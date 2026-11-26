@@ -1,15 +1,15 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.163",
-  "name": "Ratebook",
-  "seal": "ratebook-8820163",
-  "base": "8.8.20.161",
-  "base_sha256": "89e170a232f8ddf9db169531ea514f6c1a3a4c68785bae22e14c4ace7ddc6574",
-  "base_files": 1106,
-  "prepared_at": "2026-11-26T03:59:32.424697+00:00",
+  "build": "8.8.20.164",
+  "name": "Folio",
+  "seal": "folio-8820164",
+  "base": "8.8.20.163",
+  "base_sha256": "6a7024807a7060d9a7ab36d582b29653d2341b2cad39b497f517d44bdd9cce46",
+  "base_files": 1111,
+  "prepared_at": "2026-11-26T04:28:53.488722+00:00",
   "app_component_revision": "8.8.20.163",
   "owner_helper_revision": "8.8.20.68",
-  "feature_notes": "First Berth pilot and VoyageKeeper improvements, with Admiral-set launch fees, personal starting rates and vessel-specific printable offers.",
+  "feature_notes": "Compact US Letter print layout for saved vessel proposals and the public launch offer example.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -66,8 +66,8 @@
       "automatic_execution_by_upload": false
     }
   },
-  "install_step": "Open Admiral Command, Contracts & Services, then select a vessel to see Admiral fee controls.",
-  "evidence_file": "RATEBOOK_EVIDENCE.json",
+  "install_step": "Load the saved VoyageKeeper draft and open a new printable owner offer.",
+  "evidence_file": "FOLIO_PRINT_EVIDENCE.json",
   "preserve_project_readme": true,
   "install_backend_first": false,
   "presentation_only": false
