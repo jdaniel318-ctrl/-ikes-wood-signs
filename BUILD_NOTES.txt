@@ -1,10 +1,10 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Folio 8.8.20.164
+# Black Flag Leaf 8.8.20.165
 
 Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
-Baseline: 8.8.20.163. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Baseline: 8.8.20.164. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
 Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
-Compact US Letter print layout for saved vessel proposals and the public launch offer example.
+Generate the owner proposal as a single US Letter PDF with the saved Admiral fees and complete final terms.
 Preparation does not deploy frontend or backend changes. See PATCH_CONTRACT.json for separately managed backend prerequisites.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 

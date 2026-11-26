@@ -1,15 +1,15 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.164",
-  "name": "Folio",
-  "seal": "folio-8820164",
-  "base": "8.8.20.163",
-  "base_sha256": "6a7024807a7060d9a7ab36d582b29653d2341b2cad39b497f517d44bdd9cce46",
-  "base_files": 1111,
-  "prepared_at": "2026-11-26T04:28:53.488722+00:00",
+  "build": "8.8.20.165",
+  "name": "Leaf",
+  "seal": "leaf-8820165",
+  "base": "8.8.20.164",
+  "base_sha256": "68d058b9e9ba90258a8fb2c553aa208522de5ef9a6bf3d8a1fe217585c3ac64c",
+  "base_files": 1112,
+  "prepared_at": "2026-11-26T04:54:47.125178+00:00",
   "app_component_revision": "8.8.20.163",
   "owner_helper_revision": "8.8.20.68",
-  "feature_notes": "Compact US Letter print layout for saved vessel proposals and the public launch offer example.",
+  "feature_notes": "Generate the owner proposal as a single US Letter PDF with the saved Admiral fees and complete final terms.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -66,8 +66,8 @@
       "automatic_execution_by_upload": false
     }
   },
-  "install_step": "Load the saved VoyageKeeper draft and open a new printable owner offer.",
-  "evidence_file": "FOLIO_PRINT_EVIDENCE.json",
+  "install_step": "Open the saved vessel offer and select Open one-page PDF.",
+  "evidence_file": "LEAF_PDF_EVIDENCE.json",
   "preserve_project_readme": true,
   "install_backend_first": false,
   "presentation_only": false

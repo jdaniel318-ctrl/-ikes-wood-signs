@@ -1,0 +1,64 @@
+{
+  "build": "8.8.20.165",
+  "base": "8.8.20.164",
+  "ipados_reproduction": "At 100% US Letter portrait, Folio left the closing written-agreement and ownership text on a second sheet.",
+  "fix": "Generate client-side one-page PDF bytes from the same offer copy and saved fees as the HTML. Use a native file link in the offer tab.",
+  "tested": [
+    {
+      "case": "International",
+      "pages": 1,
+      "page_size_points": [
+        612,
+        792
+      ],
+      "text_bottom_pt": 615
+    },
+    {
+      "case": "Long-Name",
+      "pages": 1,
+      "page_size_points": [
+        612,
+        792
+      ],
+      "text_bottom_pt": 692
+    },
+    {
+      "case": "Paid-Setup",
+      "pages": 1,
+      "page_size_points": [
+        612,
+        792
+      ],
+      "text_bottom_pt": 612
+    },
+    {
+      "case": "Suggested",
+      "pages": 1,
+      "page_size_points": [
+        612,
+        792
+      ],
+      "text_bottom_pt": 612
+    },
+    {
+      "case": "VoyageKeeper-Offer",
+      "pages": 1,
+      "page_size_points": [
+        612,
+        792
+      ],
+      "text_bottom_pt": 612
+    },
+    {
+      "case": "Waived",
+      "pages": 1,
+      "page_size_points": [
+        612,
+        792
+      ],
+      "text_bottom_pt": 612
+    }
+  ],
+  "device_acceptance": "Deployed iPad Safari PDF viewer and Share or Print check pending.",
+  "offline_suites": 87
+}

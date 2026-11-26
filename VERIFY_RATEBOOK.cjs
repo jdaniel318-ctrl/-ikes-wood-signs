@@ -32,6 +32,7 @@ function testDB() {
 }
 const t=vm.createContext({$:node,record:null,actor:actor1,allowed:()=>t.authed,busy:false,authed:true,
  valid:()=>t.authed,revise(){t.dirty=true},status(){},fill(){run('fillFeeEditor()')},discardQuestion:()=>true,
+ btoa,BlackFlagQuartermasterPDF:require('./quartermaster_pdf.js'),
  Blob,URL:{createObjectURL(doc){const id='blob:'+docs.size;docs.set(id,doc);return id;},revokeObjectURL(id){docs.delete(id)}},
  crypto:require('node:crypto').webcrypto,TextEncoder,dbOpen:async()=>testDB(),dirty:false,
  TEMPLATE:{version:'CG-1',clauses:[]},esc:s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')});

@@ -111,6 +111,111 @@
     const match = printProfileUuid.exec(creation.id);
     return match ? (match[1] === '8156' ? 'lighthouse' : 'wordmark') : '';
   }
+  function writeText(page,used,s,x,top,size,bold,color,align,max) {
+      if(!s)return; const f=fonts[bold?'bold':'regular'];
+      if(max && width(s,size,bold)>max)size*=max/width(s,size,bold);
+      if(align==='right')x-=width(s,size,bold);
+      let hex='';for(const c of s){const cp=c.codePointAt(0),gid=f.cmap[cp];used[bold?'bold':'regular'].set(gid,cp);hex+=gid.toString(16).padStart(4,'0');}
+      page.push('BT /'+(bold?'FB':'FR')+' '+size.toFixed(3)+' Tf '+color.join(' ')+' rg 1 0 0 1 '+x.toFixed(2)+' '+(H-top-size).toFixed(2)+' Tm <'+hex+'> Tj ET');
+    }
+
+  // The recipient can use the full character repertoire of the vessel editor.
+  // Render just that line with the device fonts if the bundled PDF font lacks glyphs.
+  function offerRecipientImage(value, maxWidth) {
+    const scale = 3, size = 12, leading = 15;
+    const canvas = document.createElement('canvas');
+    canvas.width = maxWidth * scale;
+    const ctx = canvas.getContext('2d');
+    ctx.font = size * scale + 'px sans-serif';
+    const lines = [];
+    let current = '';
+    const units = typeof Intl.Segmenter === 'function'
+      ? Array.from(new Intl.Segmenter(undefined, {granularity:'grapheme'}).segment(value), s => s.segment)
+      : Array.from(value);
+    for (const unit of units) {
+      if (current && ctx.measureText(current + unit).width > canvas.width - 4 * scale) {
+        lines.push(current);
+        current = '';
+      }
+      current += unit;
+    }
+    if (current) lines.push(current);
+    canvas.height = (lines.length * leading + 4) * scale;
+    ctx.scale(scale, scale);
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, maxWidth, canvas.height / scale);
+    ctx.fillStyle = '#214a4c';
+    ctx.font = size + 'px sans-serif';
+    lines.forEach((entry, i) => ctx.fillText(entry, 1, size + i * leading));
+    return {width:canvas.width, height:canvas.height, heightPt:canvas.height / scale,
+      jpg:canvas.toDataURL('image/jpeg', .96).split(',')[1]};
+  }
+
+  function renderLaunchOffer(offer) {
+    ready();
+    const page = [], used = {regular:new Map(), bold:new Map()};
+    const ink = [.07,.18,.20], teal = [.08,.27,.28], muted = [.25,.36,.37];
+    const padding = 44, span = W - 2 * padding;
+    let y = 33;
+    function line(value, x, top, size, bold = false, color = ink, max = span) {
+      writeText(page, used, value, x, top, size, bold, color, 'left', max);
+    }
+    function paragraph(value, size = 11, leading = 15, color = ink, bold = false) {
+      for (const entry of wrap(value, span, size, bold)) {
+        line(entry, padding, y, size, bold, color);
+        y += leading;
+      }
+    }
+    function heading(value) {
+      page.push('0.80 0.85 0.84 RG 0.6 w ' + padding + ' ' + (H-y) + ' m ' + (W-padding) + ' ' + (H-y) + ' l S');
+      y += 11;
+      paragraph(value, 15, 23, teal, true);
+    }
+    line(offer.brand, padding, y, 11, true, teal);
+    y += 18;
+    line(offer.title, padding, y, 29, true, teal);
+    y += 40;
+    const recipient = offer.recipient.replace(/\s+/gu, ' ').trim();
+    let recipientImage;
+    if (Array.from(recipient).every(c => fonts.regular.cmap[c.codePointAt(0)])) {
+      paragraph(recipient, 12, 16, muted);
+    } else {
+      recipientImage = offerRecipientImage(recipient, span);
+      const actual = recipient.split('').map(c => c.charCodeAt(0).toString(16).padStart(4, '0')).join('');
+      page.push('/Span << /ActualText <FEFF' + actual + '> >> BDC q ' + span + ' 0 0 ' +
+        recipientImage.heightPt + ' ' + padding + ' ' + (H-y-recipientImage.heightPt) + ' cm /Recipient Do Q EMC');
+      y += recipientImage.heightPt;
+    }
+    y += 8;
+    page.push('0.74 0.58 0.30 rg ' + padding + ' ' + (H-y-2) + ' ' + span + ' 2 re f');
+    y += 15;
+    paragraph(offer.introTitle, 15, 23, teal, true);
+    paragraph(offer.intro);
+    y += 15;
+    heading(offer.pricingTitle);
+    page.push('0.92 0.95 0.94 rg ' + padding + ' ' + (H-y-78) + ' ' + span + ' 78 re f');
+    const fees = [offer.rows[0],offer.rows[3],offer.rows[1],offer.rows[2]];
+    fees.forEach(([label, value], i) => {
+      const x = padding + 12 + (i%2)*span/2, top = y + 5 + Math.floor(i/2)*37;
+      line(label, x, top, 9, false, muted, span/2-24);
+      line(value, x, top+12, 15, true, teal, span/2-24);
+    });
+    y += 90;
+    paragraph(offer.setupLead + ' ' + offer.setupText);
+    y += 6;
+    paragraph(offer.supportLead + ' ' + offer.supportText);
+    y += 16;
+    heading(offer.trialTitle);
+    paragraph(offer.trial);
+    y += 16;
+    heading(offer.termsTitle);
+    paragraph(offer.terms);
+    y += 8;
+    paragraph(offer.fine, 10, 14, muted);
+    if (y > H-30) fail('owner offer exceeds the Letter page');
+    return encodePDF([page], used, false, recipientImage);
+  }
+
   function render(input, creation) {
     const d=validate(input), pages=[], used={regular:new Map(),bold:new Map()};let page, y, table=false, kind='';
     const branded = letterheadFor(input, creation), crest = branded === 'lighthouse';
@@ -120,11 +225,7 @@
     function rect(x,top,w,h,color){page.push(rgb(color)+' rg '+x+' '+(H-top-h)+' '+w+' '+h+' re f');}
     function rule(top){page.push(rgb(line)+' RG 0.5 w '+LEFT+' '+(H-top)+' m '+RIGHT+' '+(H-top)+' l S');}
     function text(s,x,top,size=8.5,bold=false,color=navy,align='left',max=0) {
-      if(!s)return; const f=fonts[bold?'bold':'regular'];
-      if(max && width(s,size,bold)>max)size*=max/width(s,size,bold);
-      if(align==='right')x-=width(s,size,bold);
-      let hex='';for(const c of s){const cp=c.codePointAt(0),gid=f.cmap[cp];used[bold?'bold':'regular'].set(gid,cp);hex+=gid.toString(16).padStart(4,'0');}
-      page.push('BT /'+(bold?'FB':'FR')+' '+size.toFixed(3)+' Tf '+rgb(color)+' rg 1 0 0 1 '+x.toFixed(2)+' '+(H-top-size).toFixed(2)+' Tm <'+hex+'> Tj ET');
+      writeText(page,used,s,x,top,size,bold,color,align,max);
     }
     function paragraph(s,x,top,max,size=8.2,bold=false,color=gray,leading=10.5){const lines=wrap(s,max,size,bold);lines.forEach((l,i)=>text(l,x,top+i*leading,size,bold,color));return lines.length*leading;}
     function flags(top){const label=[d.status==='draft'?'DRAFT':'',d.isSample?'SAMPLE - FOR REVIEW ONLY':''].filter(Boolean).join('  |  ');if(label){rect(LEFT,top,540,18,[1,0.96,0.86]);text(label,LEFT+8,top+4,8,true,[0.48,0.32,0.06]);return 24;}return 0;}
@@ -246,7 +347,7 @@
   function bytes(s){return new TextEncoder().encode(s);}
   function decode(s){if(typeof Buffer!=='undefined')return new Uint8Array(Buffer.from(s,'base64'));const b=atob(s),r=new Uint8Array(b.length);for(let i=0;i<b.length;i++)r[i]=b.charCodeAt(i);return r;}
   function join(parts){const r=new Uint8Array(parts.reduce((n,p)=>n+p.length,0));let n=0;for(const p of parts){r.set(p,n);n+=p.length;}return r;}
-  function encodePDF(pages,used,branded){
+  function encodePDF(pages,used,branded,recipientImage){
     const objects=[null],reserve=()=>{objects.push(null);return objects.length-1;},put=(n,s)=>objects[n]=typeof s==='string'?bytes(s):s;
     function stream(content,extra=''){return join([bytes('<< /Length '+content.length+' '+extra+' >>\nstream\n'),content,bytes('\nendstream')]);}
     const catalog=reserve(),tree=reserve(),fontRefs={};
@@ -266,6 +367,12 @@
       put(image,stream(decode(lighthouseJpeg),'/Type /XObject /Subtype /Image /Width 192 /Height 192 /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode'));
       artwork=' /XObject << /VKLighthouse '+image+' 0 R >>';
     }
+    if (recipientImage) {
+      const img = reserve();
+      put(img,stream(decode(recipientImage.jpg),'/Type /XObject /Subtype /Image /Width '+recipientImage.width+
+        ' /Height '+recipientImage.height+' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode'));
+      artwork = ' /XObject << /Recipient '+img+' 0 R >>';
+    }
     const refs=[];
     for(const page of pages){const p=reserve(),content=reserve();refs.push(p);put(content,stream(bytes(page.join('\n'))));put(p,'<< /Type /Page /Parent '+tree+' 0 R /MediaBox [0 0 612 792] /Resources << /Font << /FR '+fontRefs.regular+' 0 R /FB '+fontRefs.bold+' 0 R >>'+artwork+' >> /Contents '+content+' 0 R >>');}
     put(catalog,'<< /Type /Catalog /Pages '+tree+' 0 R >>');put(tree,'<< /Type /Pages /Count '+refs.length+' /Kids ['+refs.map(n=>n+' 0 R').join(' ')+'] >>');
@@ -274,5 +381,5 @@
     const trailer='xref\n0 '+objects.length+'\n0000000000 65535 f \n'+offsets.slice(1).map(n=>String(n).padStart(10,'0')+' 00000 n \n').join('')+'trailer\n<< /Size '+objects.length+' /Root '+catalog+' 0 R >>\nstartxref\n'+pos+'\n%%EOF\n';parts.push(bytes(trailer));return join(parts);
   }
   function filename(d){const type=d&&d.type==='quote'?'quote':'invoice';const n=d&&typeof d.number==='string'?d.number:'';const safeName=n.normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/[^A-Za-z0-9_-]+/g,'-').replace(/^-+|-+$/g,'').slice(0,150);return(safeName||type)+'.pdf';}
-  return Object.freeze({render,filename,creationOperationId,letterheadFor,initialize:function(){ready();return Promise.resolve();}});
+  return Object.freeze({render,renderLaunchOffer,filename,creationOperationId,letterheadFor,initialize:function(){ready();return Promise.resolve();}});
 });

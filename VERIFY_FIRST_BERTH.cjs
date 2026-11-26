@@ -59,9 +59,17 @@ assert.match(captain,/launchPilot:readLaunchPilot\(r.launchPilot\)/);
 
 const offer=read('fleet-launch-offer.html');
 const script=segment(offer,'<script>','</script>').slice(8);
-let printed=false;
-vm.runInNewContext(script,{URLSearchParams,document:{getElementById:node},location:{hash:'#for=Sam+%3CShop%3E'},window:{print(){printed=true;}}});
-assert.match(offer,/Suggested pricing example/);assert.doesNotMatch(offer,/URLSearchParams|location.hash/);node('print').click();assert.equal(printed,true);
+const encoded=offer.match(/<script type="application\/octet-stream" id="offer-pdf">([A-Za-z0-9+/=]+)<\/script>/)[1];
+node('offer-pdf').textContent=encoded;
+let offeredFile;
+vm.runInNewContext(script,{atob,Uint8Array,File:require('node:buffer').File,document:{getElementById:node},URL:{
+ createObjectURL(file){offeredFile=file;return 'blob:printable-example';}
+}});
+assert.match(offer,/Suggested pricing example/);assert.doesNotMatch(offer,/URLSearchParams|location.hash/);
+assert.equal(node('print').href,'blob:printable-example');assert.equal(offeredFile.type,'application/pdf');
+const fileContents=Buffer.from(encoded,'base64').toString('latin1');
+assert.match(fileContents,/^%PDF-1\.7/);assert.match(fileContents,/\/Type \/Pages \/Count 1 /);
+assert.match(fileContents,/\/MediaBox \[0 0 612 792\]/);assert.doesNotMatch(script,/window.print/);
 assert.match(offer,/\$500/);assert.match(offer,/\$99/);assert.match(offer,/\$250\.00 deposit is credited/);
 assert.doesNotMatch(script,/fetch\(|localStorage|sessionStorage|innerHTML/);
 const launch=segment(home,'<details id="fleetLaunchPilot"','</details>');

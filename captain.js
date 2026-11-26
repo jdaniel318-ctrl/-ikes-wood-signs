@@ -6409,22 +6409,40 @@ if(window.DarkSkyOpenFleetWatchtower)window.DarkSkyOpenAdmiralFleet=window.DarkS
  function launchOfferDocument(name, raw) {
   const fees = launchFeeTerms(raw);
   const [setup, deposit, balance, monthly] = feeRows(fees).map(row => row[1]);
-  const who = name ? 'Pilot proposal for '+esc(name) : 'Suggested pricing example';
+  const who = name ? 'Pilot proposal for '+name : 'Suggested pricing example';
   const next = cents(fees.deposit) === 0n ? 'No deposit is due.' : 'The '+deposit+' deposit is credited toward setup.';
   const handoff = cents(fees.setup) === cents(fees.deposit) ? 'No setup balance is due at handoff.' : 'The remaining '+balance+' is due at accepted handoff.';
   const support = cents(fees.monthly) === 0n ? 'Monthly support is included at no charge.' : 'Monthly support begins on the agreed date after handoff.';
+  const offer = {
+   brand:'Black Flag', title:'Fleet Launch Service', recipient:who,
+   introTitle:'From a customer’s phone to your desk',
+   intro:'We set up a service request page in your business’s name. Customers describe the work, the operator you appoint as Captain receives the request, and you decide what to quote and when to schedule it.',
+   pricingTitle:name ? 'Your pilot offer' : 'Example pilot fees', rows:feeRows(fees),
+   setupLead:'Setup includes', setupText:'one branded service request flow, routing to one designated Captain, a quote walkthrough, and handoff training.',
+   supportLead:'Support includes', supportText:'help with that workflow and minor updates to service wording or branding. Additional sites, integrations, and custom builds are quoted separately.',
+   trialTitle:'What you’ll check before handoff',
+   trial:'Use your phone to send a sample request in a controlled trial. Your Captain locates that request in your business’s workspace, then prepares a sample quote for you to open. We record any corrections together.',
+   termsTitle:'Starting the pilot', terms:next+' '+handoff+' '+support,
+   fine:(name ? 'Proposed terms in US dollars, subject to written agreement.' : 'The Admiral sets each business’s fees in its own written proposal.')+' You retain ownership of your business and brand.'
+  };
+  const pdfBytes = BlackFlagQuartermasterPDF.renderLaunchOffer(offer);
+  const chunks = [];
+  for (let i = 0; i < pdfBytes.length; i += 8192) {
+   chunks.push(String.fromCharCode(...pdfBytes.subarray(i, i+8192)));
+  }
+  const encodedPDF = btoa(chunks.join(''));
   return `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="referrer" content="no-referrer"><title>Fleet Launch Service · Owner proposal</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#edf2f0;color:#122e31;font:16px/1.55 system-ui,sans-serif}main{width:min(100% - 2rem,52rem);margin:2rem auto;background:white;border:1px solid #ccd9d5;border-radius:14px;overflow:hidden}header,section,footer{padding:1.45rem 2rem}header{background:#103b40;color:#fff;border-bottom:4px solid #cba465;display:flex;justify-content:space-between;align-items:start;gap:1rem}header p{color:#f4d49d}h1,h2,p{margin:0}h1{font:500 clamp(2rem,6vw,3.5rem)/1.07 Georgia,serif;letter-spacing:-.035em;margin:.4rem 0}h2{font:600 1.4rem Georgia,serif;margin:0 0 .5rem}p+p{margin-top:.5rem}#recipient{overflow-wrap:anywhere}button{min-height:44px;flex:none;padding:.55rem .8rem;border:1px solid #8cb2ae;border-radius:7px;background:transparent;color:white;font:inherit;cursor:pointer}button:focus-visible{outline:3px solid #f4d49d;outline-offset:3px}section+section,footer{border-top:1px solid #d5e0de}dl{display:grid;grid-template-columns:repeat(2,1fr);background:#edf4f2;border-radius:8px;margin:.9rem 0;padding:1rem;gap:1rem}dt{font-size:.9rem}dd{font-size:1.8rem;font-weight:650;line-height:1.3;margin:0}footer{background:#f6f8f6}.brand{font-weight:650}.fine{font-size:.9rem;color:#456361}
+*{box-sizing:border-box}body{margin:0;background:#edf2f0;color:#122e31;font:16px/1.55 system-ui,sans-serif}main{width:min(100% - 2rem,52rem);margin:2rem auto;background:white;border:1px solid #ccd9d5;border-radius:14px;overflow:hidden}header,section,footer{padding:1.45rem 2rem}header{background:#103b40;color:#fff;border-bottom:4px solid #cba465;display:flex;justify-content:space-between;align-items:start;gap:1rem}header p{color:#f4d49d}h1,h2,p{margin:0}h1{font:500 clamp(2rem,6vw,3.5rem)/1.07 Georgia,serif;letter-spacing:-.035em;margin:.4rem 0}h2{font:600 1.4rem Georgia,serif;margin:0 0 .5rem}p+p{margin-top:.5rem}#recipient{overflow-wrap:anywhere}.offer-pdf{display:inline-flex;align-items:center;text-decoration:none;min-height:44px;flex:none;padding:.55rem .8rem;border:1px solid #8cb2ae;border-radius:7px;background:transparent;color:white;font:inherit;cursor:pointer}.offer-pdf:focus-visible{outline:3px solid #f4d49d;outline-offset:3px}section+section,footer{border-top:1px solid #d5e0de}dl{display:grid;grid-template-columns:repeat(2,1fr);background:#edf4f2;border-radius:8px;margin:.9rem 0;padding:1rem;gap:1rem}dt{font-size:.9rem}dd{font-size:1.8rem;font-weight:650;line-height:1.3;margin:0}footer{background:#f6f8f6}.brand{font-weight:650}.fine{font-size:.9rem;color:#456361}
 @media(max-width:540px){main{width:100%;margin:0;border:0;border-radius:0}header,section,footer{padding:1.1rem}header{flex-wrap:wrap}}
 @page { size: letter portrait; margin: .60in; }
 @media print {
   html, body { width: auto; margin: 0; padding: 0; background: white; color: #163538; }
-  body { font: 12pt/1.42 Arial, sans-serif; -webkit-text-size-adjust: 100%; }
+  body { font: 11pt/1.28 Arial, sans-serif; -webkit-text-size-adjust: 100%; }
   main { width: auto; max-width: none; margin: 0; border: 0; border-radius: 0; overflow: visible; }
-  header, section, footer { display: block; padding: 12pt 0; background: white; }
-  header { padding: 0 0 12pt; border-bottom: 2pt solid #ac8648; color: #153b3f; }
+  header, section, footer { display: block; padding: 6pt 0; background: white; }
+  header { padding: 0 0 6pt; border-bottom: 2pt solid #ac8648; color: #153b3f; }
   header p { color: #405653; }
   h1 { font: 28pt/1.1 Georgia, serif; margin: 3pt 0; }
   h2 { font: bold 15pt/1.18 Georgia, serif; margin: 0 0 4pt; break-after: avoid; }
@@ -6435,17 +6453,22 @@ if(window.DarkSkyOpenFleetWatchtower)window.DarkSkyOpenAdmiralFleet=window.DarkS
   dl > div { display: table-cell; vertical-align: top; padding: 7pt 9pt; }
   dt, .fine, .brand { font-size: 10pt; }
   dd { font-size: 18pt; line-height: 1.18; }
-  button { display: none; }
+  .offer-pdf { display: none; }
 }
 </style></head><body><main>
-<header><div><span class="brand">Black Flag</span><h1>Fleet Launch Service</h1><p id="recipient">${who}</p></div><button id="print" type="button">Print / save PDF</button></header>
-<section><h2>From a customer’s phone to your desk</h2><p>We set up a service request page in your business’s name. Customers describe the work, the operator you appoint as Captain receives the request, and you decide what to quote and when to schedule it.</p></section>
-<section><h2>${name?'Your pilot offer':'Example pilot fees'}</h2><dl><div><dt>One-time setup</dt><dd>${setup}</dd></div><div><dt>Monthly support</dt><dd>${monthly}</dd></div></dl>
-<p><b>Setup includes</b> one branded service request flow, routing to one designated Captain, a quote walkthrough, and handoff training.</p>
-<p><b>Support includes</b> help with that workflow and minor updates to service wording or branding. Additional sites, integrations, and custom builds are quoted separately.</p></section>
-<section><h2>What you’ll check before handoff</h2><p>Use your phone to send a sample request in a controlled trial. Your Captain locates that request in your business’s workspace, then prepares a sample quote for you to open. We record any corrections together.</p></section>
-<footer><h2>Starting the pilot</h2><p>${next} ${handoff} ${support}</p><p class="fine">${name?"Proposed terms in US dollars, subject to written agreement.":"The Admiral sets each business’s fees in its own written proposal."} You retain ownership of your business and brand.</p></footer></main>
-<script>document.getElementById('print').addEventListener('click',()=>window.print());</script></body></html>
+<header><div><span class="brand">${offer.brand}</span><h1>${offer.title}</h1><p id="recipient">${esc(who)}</p></div><a class="offer-pdf" id="print">Open one-page PDF</a></header>
+<section><h2>${offer.introTitle}</h2><p>${offer.intro}</p></section>
+<section><h2>${offer.pricingTitle}</h2><dl><div><dt>One-time setup</dt><dd>${setup}</dd></div><div><dt>Monthly support</dt><dd>${monthly}</dd></div></dl>
+<p><b>${offer.setupLead}</b> ${offer.setupText}</p><p><b>${offer.supportLead}</b> ${offer.supportText}</p></section>
+<section><h2>${offer.trialTitle}</h2><p>${offer.trial}</p></section>
+<footer><h2>${offer.termsTitle}</h2><p>${offer.terms}</p><p class="fine">${offer.fine}</p></footer></main>
+<script type="application/octet-stream" id="offer-pdf">${encodedPDF}</script>
+<script>
+  const binary = atob(document.getElementById('offer-pdf').textContent.trim());
+  const pdf = Uint8Array.from(binary, character => character.charCodeAt(0));
+  const file = new File([pdf], 'Fleet-Launch-Offer.pdf', {type:'application/pdf'});
+  document.getElementById('print').href = URL.createObjectURL(file);
+</script></body></html>
 `;
  }
  function feePanel() {

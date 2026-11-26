@@ -1,21 +1,21 @@
 {
   "schema": "blackflag-release-gate-v1",
-  "build": "8.8.20.164",
-  "release": "Folio",
+  "build": "8.8.20.165",
+  "release": "Leaf",
   "pass": true,
-  "pass_scope": "87 offline suites and five paginated HTML-to-PDF cases.",
+  "pass_scope": "87 offline suites plus file structure, page bounds and full text checks for six offers.",
   "verification_status": "OFFLINE_SUITES_PASSED",
-  "evidence_file": "FOLIO_PRINT_EVIDENCE.json",
+  "evidence_file": "LEAF_PDF_EVIDENCE.json",
   "native_safari_acceptance": "PENDING",
   "database_actions": "No production database actions.",
-  "backend_prerequisite": "None for the owner proposal print change.",
+  "backend_prerequisite": "None for one-page owner proposals.",
   "customer_data_changes": false,
   "production_certification": false,
   "frontend_deployed": false,
-  "backup_restore": "Folio-Rollback.zip restores Ratebook 8.8.20.163 software.",
+  "backup_restore": "Leaf-Rollback.zip restores Folio 8.8.20.164 software.",
   "performance_improvement_claim": false,
   "offline_suite_count": 87,
   "native_compilation": "NOT_APPLICABLE_STATIC_WEB_APP",
   "offline_suites_passed": 87,
-  "scope": "US Letter print layout for the vessel owner proposal and suggested pricing example."
+  "scope": "Open the pre-paginated owner proposal as a PDF."
 }
