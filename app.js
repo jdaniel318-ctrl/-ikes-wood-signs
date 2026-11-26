@@ -131,7 +131,7 @@ const engineCodePads = (() => {
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
   // Component revision changes only when this module changes; installed release is loader-attested.
-  const APP_COMPONENT_REVISION='8.8.20.159';
+  const APP_COMPONENT_REVISION='8.8.20.161';
   const BUILD_VERSION=window.__darkSkyVerifiedRelease?.build;
   if(!BUILD_VERSION || BUILD_VERSION!==window.__darkSkyExpectedRelease?.build || window.__darkSkyVerifiedRelease?.seal!==window.__darkSkyExpectedRelease?.seal)throw new Error('Verified release context required before app execution.');
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
@@ -10336,10 +10336,16 @@ const engineCodePads = (() => {
     }
     const type=String(route?.type||'project');
     const targetId=String(route?.id||'');
+    let arrivalGeneration=null;
     const openInsideEngine=async()=>{
       // The navigator clears Captain's display rule before Engine rendering starts.
       const crossing=window.DarkSkyFleetNavigator.navigate('engine',{source:'captain-command-result'});
       const arrival=engineWorkspaceNavigationToken();
+      if(type==='project'){
+        $('shipArrivalName').textContent='Opening '+p.name+'…';
+        arrivalGeneration=String(arrival.routeGeneration);
+        document.body.dataset.shipArrival=arrivalGeneration;
+      }
       if(!await crossing||!engineWorkspaceNavigationCurrent(arrival))return {ok:false,canceled:true,projectId:p.id};
       const navigation=await openProjectEngineControl(p.id);
       if(!navigation||!engineWorkspaceNavigationCurrent(navigation))return {ok:false,canceled:true,projectId:p.id};
@@ -10368,6 +10374,8 @@ const engineCodePads = (() => {
         seaworthyCommandFailure(p.name+' setup',new Error('Open Choose a vessel in the Engine and select '+p.name+'.'));
       }
       throw error;
+    }finally{
+      if(document.body.dataset.shipArrival===arrivalGeneration)delete document.body.dataset.shipArrival;
     }
   }
   window.BlackFlagOpenCommandResult=async route=>openCaptainCommandRoute(route||{});
@@ -12509,6 +12517,7 @@ const engineCodePads = (() => {
     navigate(target,{source='unknown',directTarget=''}={}){
       target=String(target||'engine');
       const generation=++commandRouteGeneration;
+      delete document.body.dataset.shipArrival;
       if(target==='engine'){
         restoreEngineSurface(source,generation);
         return Promise.resolve(openEnginePanel()).then(()=>generation===commandRouteGeneration?recordCommandRoute('engine',source,generation):null).catch(err=>{
@@ -18046,6 +18055,7 @@ The full order and approved media remain stored with this project.`;
     });
     $('orderList').addEventListener('change',e=>{const s=e.target.closest('[data-order-status]');if(s)updateOrderStatus(s.dataset.orderStatus,s.value);});
 
+    $('shipArrivalBack')?.addEventListener('click',()=>window.DarkSkyReturnToEngine());
     if($('engineRoomBtn')) $('engineRoomBtn').addEventListener('click',async()=>{
       if(isTestAccessActive()){ await openEnginePanel(); return; }
       document.body.classList.add('modal-open');

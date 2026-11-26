@@ -17564,3 +17564,20 @@ body #blackFlagEntryGate .bf-entry-shell {
 .change-watch details p{margin-bottom:8px}.change-watch #prepWatchStatus:empty{display:none}
 .bridge-signals>small{display:block}.bridge-handoff{margin:10px 0}
 @media(max-width:650px){.change-watch{padding:12px}.change-watch header,.change-watch article{align-items:start;flex-direction:column}.prep-watch-buttons{width:100%}.change-watch button{white-space:normal;overflow-wrap:anywhere}}
+
+#shipArrival{display:none}
+body.engine-mode[data-command-surface="engine"][data-ship-arrival] #shipArrival{position:fixed;inset:0;z-index:2147483646;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px;text-align:center;background:#081b25;color:#f5f3e9}
+#shipArrivalName{font-size:clamp(1.3rem,3vw,2rem);font-weight:700;margin:0}
+#shipArrivalBack{min-height:44px;padding:8px 18px;border:1px solid #a0c3cb;border-radius:7px;background:#153a47;color:white}
+body.engine-mode[data-command-surface="engine"][data-ship-arrival] #enginePanel{visibility:hidden}
+#harborMasterStation{scroll-margin-block-start:12px}
+
+body #enginePanel #projectEngineControl #closeProjectEngineControl{
+  display:inline-flex!important;align-items:center;justify-content:center;gap:7px;
+  width:auto!important;min-width:0!important;max-width:100%;min-height:44px!important;
+  padding:6px 12px!important;border-radius:8px!important;background:#153541!important;
+  color:#f5f0dc!important;font:700 14px/1.2 system-ui,sans-serif!important;white-space:nowrap;
+}
+body #enginePanel #projectEngineControl #closeProjectEngineControl img{
+  width:22px!important;height:22px!important;flex:none;
+}

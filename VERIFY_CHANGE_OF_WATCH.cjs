@@ -40,10 +40,32 @@ const act=(action,id)=>context.preparationAction({dataset:{prepAction:action,pro
   const db=vm.createContext({deck,current:t=>updated&&t===token,selected:()=>'',validateRecords:(v,a)=>({vessels:v.records,appointments:a.records}),
     rpc:async n=>({records:n.includes('branding')?[{project_id:'bf-p-fc2816b8254a4845',display_name:'Exercise'}]:[receipt]}),
     $:()=>select,safe:String,changeTab(){},message(){},paintHistory(){},paintEvidence(){},paintRoute(){},backend(){},localStorage:context.localStorage});
-  vm.runInContext("let vessels,appointments,evidenceReadAt,ready,loadedSession;"+take(captain,'  async function readRecords(t){','  async function load(){'),db);
+  vm.runInContext("let vessels,appointments,evidenceReadAt,ready,loadedSession;"+take(captain,'  function verifiedVessels(response){','  async function load(){'),db);
   receipt.revoked_at='yesterday';await db.readRecords(token);assert.equal(store.size,1);assert.equal(select.value,'bf-p-fc2816b8254a4845');
+  deck.dataset.preparationTarget='bf-p-42be92cbac12';
+  await db.readRecords(token);
+  assert.equal(select.value,'bf-p-fc2816b8254a4845','legacy workstation opens the verified server vessel');
+  const defaultRpc=db.rpc;
+  db.rpc=async n=>n.includes('branding')?{records:[{project_id:'unrelated',display_name:'VoyageKeeper Recovery Test'}]}:{records:[]};
+  deck.dataset.preparationTarget='bf-p-42be92cbac12';await db.readRecords(token);
+  assert.equal(select.value,'','a matching name cannot substitute for a verified ID');
+  assert.equal(deck.dataset.preparationTarget,'bf-p-42be92cbac12');
+  db.rpc=async n=>n.includes('branding')?{records:[{project_id:'bf-p-42be92cbac12',display_name:'Exercise'},{project_id:'bf-p-fc2816b8254a4845',display_name:'Exercise'}]}:{records:[]};
+  await db.readRecords(token);assert.equal(select.value,'bf-p-42be92cbac12','exact verified ID wins');
+  db.rpc=defaultRpc;
   delete receipt.revoked_at;updated=false;assert.equal(await db.readRecords(token),false);assert.equal(store.size,1);
-  updated=true;deck.dataset.preparationTarget='not-in-registry';await db.readRecords(token);assert.equal(select.value,'');assert.equal(store.size,0);
+  updated=true;deck.dataset.preparationTarget='not-in-registry';await db.readRecords(token);assert.equal(select.value,'');assert.equal(store.size,1,'an unmatched handoff leaves the shortcut alone');
+  const rowsBox={innerHTML:'',replaceChildren(){this.innerHTML='';}},scopeBox={};
+  const history=vm.createContext({deck,rowsBox,ready:true,$:id=>id==='harborAppointmentRows'?rowsBox:scopeBox,
+    selected:()=>select.value,state(){},safe:String,date:String,appointments:[
+      {...receipt,vessel_name:'VoyageKeeper Recovery Test'},{...receipt,status:'revoked',vessel_name:'VoyageKeeper Recovery Test'},
+      {...receipt,project_id:'beccas-bloom-shop',vessel_name:'Becca'}]});
+  vm.runInContext(take(captain,'  function paintHistory(){','  function evidenceSnapshot(){'),history);
+  history.paintHistory();assert.equal(rowsBox.innerHTML,'','unresolved handoff must not expose all-vessel history');
+  deck.dataset.preparationTarget='bf-p-42be92cbac12';await db.readRecords(token);
+  history.paintHistory();assert.match(scopeBox.textContent,/^2 appointment/);assert.match(rowsBox.innerHTML,/ACCEPTED/);
+  assert.match(rowsBox.innerHTML,/REVOKED/);assert.doesNotMatch(rowsBox.innerHTML,/Becca/);
+  assert.equal(store.size,0,'a matching accepted receipt retires its shortcut');
   const facade=take(app,'    preparationCheckpoint(){','    openAsEngine:');
   let checkpoint={draftId:'draft',_step:3,name:'Ship C'};let opens=0;
   const ap=vm.createContext({engineSessionUnlocked:true,engineWorkspaceNavigationToken:()=>({}),engineWorkspaceNavigationCurrent:()=>true,readCommissionDraft:()=>checkpoint,recoveryHintDraft:()=>null,

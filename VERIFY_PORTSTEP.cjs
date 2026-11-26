@@ -79,9 +79,12 @@ async function run(){
   let finish;
   s.c.openEnginePanel=()=>new Promise(resolve=>{finish=resolve;});
   const late=go();
+  assert.ok(s.element('body').dataset.shipArrival);
+  assert.equal(s.element('shipArrivalName').textContent,'Opening VoyageKeeper Recovery Test…');
   await w.DarkSkyFleetNavigator.navigate('captain');
   finish();
   assert.equal((await late).canceled,true);
+  assert.equal(s.element('body').dataset.shipArrival,undefined);
   assert.equal(s.renders.length,count+1);
   const broken=scenario();
   await broken.window.DarkSkyFleetNavigator.navigate('captain');

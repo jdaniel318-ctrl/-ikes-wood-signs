@@ -16,7 +16,7 @@
   </style>
   <script id="darkSkyFirstLightBootstrap">
     // Dark Sky 8.6.23 MEMORY MUSTER — canonical release identity.
-    const DARK_SKY_RELEASE = Object.freeze({build:'8.8.20.159',seal:'portstep-8820159'});
+    const DARK_SKY_RELEASE = Object.freeze({build:'8.8.20.161',seal:'berthlight-8820161'});
     const DARK_SKY_EXPECTED_BUILD = DARK_SKY_RELEASE.build;
     const DARK_SKY_RELEASE_SEAL = DARK_SKY_RELEASE.seal;
     // 8.6.23 Storage Safe Harbor — three independent channels, no silent storage failures.
@@ -1444,6 +1444,7 @@ html:has(#lantern-harbor[open]) { overflow:hidden; }
       </div>
     </div>
 
+    <div id="shipArrival" aria-label="Opening ship setup"><p id="shipArrivalName" role="status"></p><button id="shipArrivalBack" type="button">Back to Engine</button></div>
     <section id="enginePanel" class="engine-panel hidden modern-engine-room black-flag-engine-shell">
       <header id="pirateCommandHero" class="pirate-command-hero" aria-label="Pirate Mode command header">
         <div class="pirate-command-crest" aria-hidden="true"><span>☠</span></div>
@@ -1494,7 +1495,7 @@ html:has(#lantern-harbor[open]) { overflow:hidden; }
       </header>
 
       <section id="clearDeckLaunchpad" class="clear-deck-launchpad waypoint-home" aria-labelledby="engineNextMoveTitle">
-        <header class="clear-deck-brief"><small id="engineReleaseLabel">8.8.20.159 • PORTSTEP</small><h3 id="engineNextMoveTitle">Fleet operations</h3></header>
+        <header class="clear-deck-brief"><small id="engineReleaseLabel">8.8.20.161 • BERTHLIGHT</small><h3 id="engineNextMoveTitle">Fleet operations</h3></header>
         <nav class="clear-deck-primary-actions pilotage-offices" aria-label="Fleet command offices">
           <button id="engineOperateVessels" type="button" class="clear-deck-action primary pilotage-vessels" data-clear-deck-command="projects" aria-controls="fleetCommissioningDock">
             <img src="./regatta-harbor.webp" alt="" decoding="async" class="pilotage-harbor">
@@ -1859,7 +1860,7 @@ html:has(#lantern-harbor[open]) { overflow:hidden; }
               <p id="pecSubtitle">Project-specific controls.</p>
             </div>
           </div>
-          <button id="closeProjectEngineControl" class="secondary-btn small workspace-back-btn black-flag-back-mark" aria-label="Back to Engine" title="Back to Engine" type="button"><img src="black_flag_platform_icon.png" alt="" aria-hidden="true" class="project-engine-back-logo"></button>
+          <button id="closeProjectEngineControl" class="secondary-btn small workspace-back-btn black-flag-back-mark" aria-label="Back to Engine" title="Back to Engine" type="button"><img src="black_flag_platform_icon.png" alt="" aria-hidden="true" class="project-engine-back-logo"><span>Back to Engine</span></button>
         </div>
 
         <nav class="project-tabs project-command-nav" id="projectTabs" aria-label="Project Control navigation">

@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.20.159';
-const RELEASE_SEAL='portstep-8820159';
+const RELEASE_BUILD='8.8.20.161';
+const RELEASE_SEAL='berthlight-8820161';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.

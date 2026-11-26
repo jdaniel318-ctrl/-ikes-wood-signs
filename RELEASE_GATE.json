@@ -1,21 +1,21 @@
 {
   "schema": "blackflag-release-gate-v1",
-  "build": "8.8.20.159",
-  "release": "Portstep",
+  "build": "8.8.20.161",
+  "release": "Berthlight",
   "pass": true,
   "pass_scope": "Listed offline release suites, including simulated Admiral assignments, station journeys, cloud-store contract and document PDF generation.",
   "verification_status": "OFFLINE_SUITES_PASSED",
-  "evidence_file": "PORTSTEP_EVIDENCE.json",
+  "evidence_file": "BERTHLIGHT_EVIDENCE.json",
   "native_safari_acceptance": "PENDING",
   "database_actions": "No production database actions.",
   "backend_prerequisite": "Uses existing Change of Watch services.",
   "customer_data_changes": false,
   "production_certification": false,
   "frontend_deployed": false,
-  "backup_restore": "Software rollback restores the Change of Watch client. Vessel records and local preparation shortcuts are separate.",
+  "backup_restore": "Berthlight-Rollback.zip restores the Portstep client software files.",
   "performance_improvement_claim": false,
-  "offline_suite_count": 84,
+  "offline_suite_count": 85,
   "native_compilation": "NOT_APPLICABLE_STATIC_WEB_APP",
-  "offline_suites_passed": 84,
-  "scope": "Exact-vessel setup from Captain Watch, presentation of watch controls and packaged offline suites."
+  "offline_suites_passed": 85,
+  "scope": "Direct ship setup and authenticated handoff review, including exact-scope refresh, cancellation and recovery."
 }

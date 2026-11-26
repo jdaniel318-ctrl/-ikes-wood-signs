@@ -1,0 +1,20 @@
+{
+  "build": "8.8.20.161",
+  "base": "8.8.20.159",
+  "additional_install_base": {
+    "build": "8.8.20.160",
+    "source_sha256": "f211d70f35e92cfff958cd4c2b9533280a64b5d5fc41487da80710843ed69a65",
+    "file_count": 1104
+  },
+  "targeted_suite": "VERIFY_BERTHLIGHT.cjs",
+  "offline_suites_passed": 85,
+  "coverage": [
+    "verified recovery alias; canonical project ID retained on refresh",
+    "no fleet-wide appointment query for unresolved handoff",
+    "no stale or wrong-ship response applied",
+    "separate second handoff and general Admiral history",
+    "visible Back to Engine label and retained navigation tests"
+  ],
+  "native_ipad_acceptance": "pending",
+  "published": false
+}

@@ -1,0 +1,13 @@
+{
+  "build": "8.8.20.160",
+  "base": "8.8.20.159",
+  "offline_suites_passed": 84,
+  "covered": [
+    "Exact authenticated ID takes precedence; documented recovery workstation resolves to the current authorized VoyageKeeper ID",
+    "Unrelated same-name record cannot be selected; unresolved handoff history is empty",
+    "Selected exercise vessel shows its accepted and revoked records only",
+    "Named ship-opening state appears during Engine crossing and clears on a superseding route"
+  ],
+  "physical_ipad_acceptance": "pending",
+  "production_changes": false
+}

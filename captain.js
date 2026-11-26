@@ -1430,6 +1430,7 @@ const admiralVesselLogos = new Map([
       const notice=byId('admiralDeckNotice');if(notice)notice.textContent='Admiral command ready. Run Fleet Readiness when a verified current report is required.';
     }
     requestAnimationFrame(()=>{
+      if(deck.dataset.admiralLane!=='govern')return;
       for(const el of [deck,deck.querySelector('.admiral-deck-grid'),deck.querySelector('.admiral-command-surface')]){try{if(el)el.scrollTop=0;}catch(_){}}
       try{window.scrollTo({top:0,left:0,behavior:'auto'});}catch(_){window.scrollTo(0,0);}
     });
@@ -2014,6 +2015,10 @@ const admiralVesselLogos = new Map([
         window.DarkSkyQuarterdeck?.prepareSelection?.();
         setAdmiralLane('delegate',true);
         window.DarkSkyQuarterdeck?.sync?.();
+        requestAnimationFrame(()=>{
+          if(deck.classList.contains('hidden') || deck.dataset.admiralLane!=='delegate')return;
+          byId('harborMasterStation')?.scrollIntoView({block:'start',behavior:'instant'});
+        });
       }
       if (directTarget === 'lantern-run') byId('lanternRunLaunch')?.click();
       if (directTarget === 'regatta') {
@@ -5981,7 +5986,13 @@ if(window.DarkSkyOpenFleetWatchtower)window.DarkSkyOpenAdmiralFleet=window.DarkS
   function date(v){if(!v)return 'Not recorded';const d=new Date(v);return Number.isFinite(d.getTime())?d.toLocaleString():'Invalid server date';}
   function paintHistory(){
     const rows=$('harborAppointmentRows');if(!rows)return;
-    const project=selected(),items=project?appointments.filter(a=>a.project_id===project):appointments;
+    const project=selected();
+    if(!project && (deck.dataset.preparationTarget || deck.dataset.reviewVessel)){
+      rows.replaceChildren();
+      if($('harborHistoryScope'))$('harborHistoryScope').textContent='Select a verified vessel to view its appointments.';
+      state();return;
+    }
+    const items=project?appointments.filter(a=>a.project_id===project):appointments;
     if($('harborHistoryScope'))$('harborHistoryScope').textContent=project?`${items.length} appointment record(s) for the selected vessel`:`${items.length} appointment record(s) across authorized vessels`;
     rows.innerHTML=!ready?'<p>Server records have not been loaded. Use Refresh after authentication.</p>':!items.length?'<p>No Captain appointments are recorded for this selection.</p>':items.map(a=>`<article class="qd-history-row"><div><small>${safe(a.status).toUpperCase()} · ${safe(a.project_id)}</small><h5>${safe(a.vessel_name)}</h5><p>${safe(a.candidate_email)}</p><span>Appointed ${safe(date(a.appointed_at))}${a.accepted_at?' · Accepted '+safe(date(a.accepted_at)):' · Expires '+safe(date(a.expires_at))}</span>${a.decision_note?'<p>'+safe(a.decision_note)+'</p>':''}</div>${['pending','accepted','suspended'].includes(a.status)?`<button type="button" data-harbor-revoke="${safe(a.appointment_id)}">REVIEW REVOCATION</button>`:''}</article>`).join('');
     state();
@@ -6044,6 +6055,9 @@ if(window.DarkSkyOpenFleetWatchtower)window.DarkSkyOpenAdmiralFleet=window.DarkS
     state();
   }
   function conceal(){
+    if(!deck)return;
+    delete deck.dataset.reviewVessel;
+    delete deck.dataset.preparationTarget;
     operation++;busy=false;ready=false;loadedSession='';attemptedSession='';evidenceReadAt='';vessels=[];appointments=[];
     for(const id of ['harborCaptainEmail','harborCaptainIntent','harborEvidenceRef'])if($(id))$(id).value='';
     if($('harborVessel'))$('harborVessel').innerHTML='<option value="">Choose a vessel</option>';
@@ -6054,26 +6068,46 @@ if(window.DarkSkyOpenFleetWatchtower)window.DarkSkyOpenAdmiralFleet=window.DarkS
   function finish(t){if(t?.id===operation){busy=false;state();}}
   async function verified(t){const ok=await window.DarkSkyAdmiralIdentityStatus?.();if(!ok||!current(t))throw new Error('Admiral authority could not be verified. The operation was not continued.');}
   async function rpc(name,body={}){return client().rpc(name,body,'Fleet Core could not complete this request.');}
-  function validateRecords(v,a){
-    if(!Array.isArray(v?.records)||!Array.isArray(a?.records))throw new Error('Fleet Core returned incomplete delegation records.');
-    const rows=v.records.filter(x=>x.mission_class!=='admiral_program');
+  function verifiedVessels(response){
+    if(!Array.isArray(response?.records))throw new Error('Fleet Core returned an incomplete vessel directory.');
+    const rows=response.records.filter(x=>x.mission_class!=='admiral_program');
     if(rows.some(x=>!x.project_id||typeof x.display_name!=='string')||new Set(rows.map(x=>x.project_id)).size!==rows.length)throw new Error('Vessel identity records could not be reconciled.');
-    if(a.records.some(x=>!x.appointment_id||!x.project_id||typeof x.status!=='string'))throw new Error('Appointment records could not be reconciled.');
-    return {vessels:rows,appointments:a.records};
+    return rows;
+  }
+  function handoffProjectId(roster,requested,initial){
+    if(roster.some(v=>v.project_id===requested))return requested;
+    // Only an incoming recovery-workstation link can resolve this historical ID.
+    const recoveryId='bf-p-fc2816b8254a4845';
+    if(initial && requested==='bf-p-42be92cbac12' && roster.some(v=>v.project_id===recoveryId))return recoveryId;
+    return '';
   }
   async function readRecords(t){
-    const [v,a]=await Promise.all([rpc('admiral_list_vessels_for_branding'),rpc('admiral_list_captain_appointments',{p_project_id:null})]);
-    if(!current(t))return false;
-    const data=validateRecords(v,a),old=selected();
-    vessels=data.vessels;appointments=data.appointments;evidenceReadAt=new Date().toISOString();ready=true;loadedSession=t.session;
-    const select=$('harborVessel');select.innerHTML='<option value="">Choose a vessel</option>'+vessels.map(x=>`<option value="${safe(x.project_id)}">${safe(x.display_name)} · ${safe(x.lifecycle_state)}</option>`).join('');
-    const requested=deck.dataset.preparationTarget;
+    const incoming=deck.dataset.preparationTarget;
+    const requested=incoming||deck.dataset.reviewVessel;
+    const old=selected();
+    let directory,history,scope='';
     if(requested){
+      directory=verifiedVessels(await rpc('admiral_list_vessels_for_branding'));
+      if(!current(t))return false;
+      scope=handoffProjectId(directory,requested,!!incoming);
+      history=scope?await rpc('admiral_list_captain_appointments',{p_project_id:scope}):{records:[]};
+    }else{
+      const [v,a]=await Promise.all([rpc('admiral_list_vessels_for_branding'),rpc('admiral_list_captain_appointments',{p_project_id:null})]);
+      if(!current(t))return false;
+      directory=verifiedVessels(v);history=a;
+    }
+    if(!current(t))return false;
+    if(!Array.isArray(history?.records)||history.records.some(a=>!a.appointment_id||!a.project_id||typeof a.status!=='string'||(scope && a.project_id!==scope)))throw new Error('Appointment records could not be reconciled with the requested vessel.');
+    vessels=directory;appointments=history.records;evidenceReadAt=new Date().toISOString();ready=true;loadedSession=t.session;
+    const select=$('harborVessel');select.innerHTML='<option value="">Choose a vessel</option>'+vessels.map(x=>`<option value="${safe(x.project_id)}">${safe(x.display_name)} · ${safe(x.lifecycle_state)}</option>`).join('');
+    select.value=requested?scope:(vessels.some(v=>v.project_id===old)?old:'');
+    if(incoming)changeTab('history');
+    if(scope){
+      deck.dataset.reviewVessel=scope;
       delete deck.dataset.preparationTarget;
-      select.value=vessels.some(v=>v.project_id===requested)?requested:'';
-      changeTab('history');
-      if(!select.value)message('This ship is absent from the verified delegation list. No vessel selected.','watch');
-    }else if(vessels.some(v=>v.project_id===old))select.value=old;
+    }else if(requested){
+      message('The selected vessel could not be verified in the current directory. Refresh or choose a vessel.','watch');
+    }
     // A positive, current server receipt can retire a local shortcut. It grants no access.
     for(const a of appointments){
       if(a.status==='accepted' && a.accepted_at && a.candidate_user_id && !a.revoked_at && vessels.some(v=>v.project_id===a.project_id)){
@@ -6084,7 +6118,10 @@ if(window.DarkSkyOpenFleetWatchtower)window.DarkSkyOpenAdmiralFleet=window.DarkS
   }
   async function load(){
     const t=token();if(!t)return;
-    attemptedSession=t.session;invalidate();backend('READING FLEET CORE');message('Reading vessel and appointment records. No authority changes.');
+    attemptedSession=t.session;
+    ready=false;appointments=[];evidenceReadAt='';
+    invalidate();paintHistory();paintEvidence();
+    backend('READING FLEET CORE');message('Refreshing the vessel directory and appointment history.');
     try{await verified(t);if(await readRecords(t) && !($('harborVessel').value==='' && currentTab==='history'))message('Server records loaded. Preview first; no appointment or vessel state changed.','verified');}
     catch(e){if(current(t)){ready=false;backend('RECORDS UNAVAILABLE');paintHistory();message('Delegation records unavailable: '+e.message+' Use Refresh to retry; no command is replayed.','watch');}}
     finally{finish(t);}
@@ -6198,7 +6235,15 @@ if(window.DarkSkyOpenFleetWatchtower)window.DarkSkyOpenAdmiralFleet=window.DarkS
         open.click();
         $('admiralEntitlementCapability')?.focus();
       };
-      $('harborVessel').onchange=()=>{invalidate();paintRoute();paintHistory();paintEvidence();message('Scope changed. Request a new preview for this vessel.');};
+      $('harborVessel').onchange=()=>{
+        if(deck.dataset.preparationTarget || deck.dataset.reviewVessel){
+          delete deck.dataset.preparationTarget;
+          if(selected())deck.dataset.reviewVessel=selected();else delete deck.dataset.reviewVessel;
+          ready=false;appointments=[];paintHistory();paintRoute();paintEvidence();
+          void load();return;
+        }
+        invalidate();paintRoute();paintHistory();paintEvidence();message('Scope changed. Request a new preview for this vessel.');
+      };
       for(const id of ['harborCaptainEmail','harborCaptainIntent'])$(id).oninput=()=>{appointmentPreview=null;paintAppointment();};
       $('harborEvidenceRef').oninput=()=>{departurePreview=null;$('harborDepartureAcknowledgment').checked=false;paintDeparture();};
       $('harborDepartureAcknowledgment').onchange=state;
@@ -6234,12 +6279,18 @@ if(window.DarkSkyOpenFleetWatchtower)window.DarkSkyOpenAdmiralFleet=window.DarkS
     const nowVisible=visible(),lane=deck.dataset.admiralLane||'govern';
     deck.querySelectorAll('[data-admiral-lane]').forEach((b,i)=>{b.tabIndex=b.dataset.admiralLane===lane?0:-1;b.id=b.id||'qdLane-'+b.dataset.admiralLane;const p=deck.querySelector('[data-admiral-panel="'+b.dataset.admiralLane+'"]');if(p){p.id=p.id||'qdLanePanel-'+b.dataset.admiralLane;b.setAttribute('aria-controls',p.id);p.setAttribute('role','tabpanel');p.setAttribute('aria-labelledby',b.id);p.tabIndex=-1;}});
     if(lane!==previousLane){if(previousLane==='delegate'&&busy){operation++;busy=false;ready=false;loadedSession='';attemptedSession='';invalidate();}previousLane=lane;const d=$('quarterdeckContinuity');if(d)d.open=lane==='govern';}
-    if(!nowVisible||lane!=='delegate')delete deck.dataset.preparationTarget;
-    if(wasVisible&&!nowVisible)conceal();wasVisible=nowVisible;
+    const leavingReview=lane!=='delegate' && (deck.dataset.reviewVessel || deck.dataset.preparationTarget);
+    if((wasVisible&&!nowVisible)||leavingReview)conceal();
+    wasVisible=nowVisible;
     if(active()&&attemptedSession!==sessionMark()&&!busy)load();
     state();
   }
-  window.DarkSkyQuarterdeck=Object.freeze({build:BUILD,mount,sync,prepareSelection(){attemptedSession='';ready=false;invalidate();}});
+  window.DarkSkyQuarterdeck=Object.freeze({build:BUILD,mount,sync,prepareSelection(){
+    operation++;busy=false;attemptedSession='';ready=false;appointments=[];
+    delete deck.dataset.reviewVessel;
+    if($('harborVessel'))$('harborVessel').value='';
+    invalidate();paintRoute();paintEvidence();changeTab('history');
+  }});
   // Both entry points cover a late-created deck and a deck already present when this module executes.
   window.addEventListener('darksky:admiral-deck-ready',mount);
   window.addEventListener('darksky:admiral-lane-changed',sync);

@@ -1,15 +1,15 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.159",
-  "name": "Portstep",
-  "seal": "portstep-8820159",
-  "base": "8.8.20.158",
-  "base_sha256": "51534b149cab977598f743d92323897b76a36727d9bada96430c543999894e79",
-  "base_files": 1101,
-  "prepared_at": "2026-11-23T00:26:27.125605+00:00",
-  "app_component_revision": "8.8.20.159",
+  "build": "8.8.20.161",
+  "name": "Berthlight",
+  "seal": "berthlight-8820161",
+  "base": "8.8.20.159",
+  "base_sha256": "ef89279b75f2ef292ada4b3fba3eac39c688161ade600ceb2b533e5532e495c5",
+  "base_files": 1103,
+  "prepared_at": "2026-11-26T02:51:14.507395+00:00",
+  "app_component_revision": "8.8.20.161",
   "owner_helper_revision": "8.8.20.68",
-  "feature_notes": "Captain Watch opens the selected ship through the Engine navigator. Ship selection and setup controls have clearer touch targets.",
+  "feature_notes": "Direct handoffs read appointments for the verified ship and keep that scope on refresh. Ship setup names its destination and has a labeled return control.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -66,8 +66,8 @@
       "automatic_execution_by_upload": false
     }
   },
-  "install_step": "Install over the complete Change of Watch 8.8.20.158 release. Open Captain Watch and select Open ship setup on the VoyageKeeper Recovery Test row.",
-  "evidence_file": "PORTSTEP_EVIDENCE.json",
+  "install_step": "Install the cumulative patch over Portstep 8.8.20.159 or Berthmark 8.8.20.160.",
+  "evidence_file": "BERTHLIGHT_EVIDENCE.json",
   "preserve_project_readme": true,
   "install_backend_first": false,
   "presentation_only": false

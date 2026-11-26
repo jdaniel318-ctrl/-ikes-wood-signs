@@ -1,10 +1,10 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Black Flag Portstep 8.8.20.159
+# Black Flag Berthlight 8.8.20.161
 
 Current instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.
-Baseline: 8.8.20.158. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
+Baseline: 8.8.20.159. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.
 Verification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.
-Captain Watch opens the selected ship through the Engine navigator. Ship selection and setup controls have clearer touch targets.
+Direct handoffs read appointments for the verified ship and keep that scope on refresh. Ship setup names its destination and has a labeled return control.
 Preparation does not deploy frontend or backend changes. See PATCH_CONTRACT.json for separately managed backend prerequisites.
 <!-- BLACKFLAG_CURRENT_RELEASE_END -->
 

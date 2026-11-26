@@ -1,0 +1,54 @@
+'use strict';
+const assert=require('node:assert/strict');
+const {readFileSync}=require('node:fs');
+const path=require('node:path');
+const vm=require('node:vm');
+const read=name=>readFileSync(path.join(__dirname,name),'utf8');
+const captain=read('captain.js');
+const start=captain.indexOf('  function verifiedVessels(response){');
+const end=captain.indexOf('  async function load(){',start);
+assert.ok(start>=0 && end>start);
+const legacy='bf-p-42be92cbac12',voyage='bf-p-fc2816b8254a4845',becca='beccas-bloom-shop';
+const vessel=(id,name)=>({project_id:id,display_name:name,lifecycle_state:'commissioning'});
+const appointment=(id,project,status)=>({appointment_id:id,project_id:project,status});
+const correct=vessel(voyage,'VoyageKeeper Recovery Test'),other=vessel(becca,"Becca's Bloom Shop");
+let roster=[correct,other], valid=true,tab='appoint',delayed=null;
+let history=[appointment('1',voyage,'accepted'),appointment('2',voyage,'revoked'),appointment('3',becca,'accepted')];
+const select={value:'',innerHTML:''};
+const deck={dataset:{preparationTarget:legacy}},calls=[];
+const c=vm.createContext({deck,current:()=>valid,selected:()=>select.value,$:()=>select,safe:String,
+ changeTab:value=>{tab=value;},message(){},backend(){},paintHistory(){},paintEvidence(){},paintRoute(){},
+ localStorage:{removeItem(){}},rpc:async(name,body)=>{
+   if(name==='admiral_list_vessels_for_branding')return {records:roster};
+   assert.equal(name,'admiral_list_captain_appointments');
+   calls.push(body.p_project_id);
+   if(delayed)return delayed;
+   return {records:history.filter(a=>!body.p_project_id || a.project_id===body.p_project_id)};
+ }});
+vm.runInContext('let vessels=[],appointments=[],evidenceReadAt,ready,loadedSession;'+captain.slice(start,end),c);
+const load=()=>c.readRecords({session:'test-admiral'});
+(async()=>{
+ await load();
+ assert.equal(select.value,voyage);assert.equal(tab,'history');assert.deepEqual(calls,[voyage]);
+ assert.equal(deck.dataset.reviewVessel,voyage);
+ tab='evidence';await load();assert.equal(tab,'evidence');
+ roster=[other,vessel(legacy,'VoyageKeeper Recovery Test')];
+ await load();assert.equal(select.value,'');assert.equal(deck.dataset.reviewVessel,voyage);
+ assert.deepEqual(calls,[voyage,voyage],'missing resolved ship cannot redirect to another ID or all-fleet history');
+ roster=[correct,other];await load();assert.equal(select.value,voyage);
+ assert.equal(vm.runInContext('appointments.length',c),2);
+ let resolve;delayed=new Promise(r=>{resolve=r;});
+ const late=load();await new Promise(r=>setImmediate(r));valid=false;
+ resolve({records:[appointment('old',voyage,'pending')]});assert.equal(await late,false);
+ assert.equal(vm.runInContext('appointments.length',c),2);
+ valid=true;delayed=Promise.resolve({records:[appointment('wrong',becca,'accepted')]});
+ await assert.rejects(load(),/requested vessel/);
+ assert.equal(vm.runInContext('appointments.length',c),2);
+ delayed=null;
+ delete deck.dataset.reviewVessel;deck.dataset.preparationTarget=becca;
+ await load();assert.equal(select.value,becca);assert.equal(vm.runInContext('appointments.length',c),1);assert.equal(calls.at(-1),becca);
+ delete deck.dataset.reviewVessel;select.value='';
+ await load();assert.equal(vm.runInContext('appointments.length',c),3);assert.equal(calls.at(-1),null);
+ assert.match(read('index.html'),/id="closeProjectEngineControl"[^>]*>[\s\S]*?<span>Back to Engine<\/span><\/button>/);
+ console.log('PASS scoped server queries, retained identity on refresh, restore after missing vessel, tab retention, stale read, mismatched response, second review, general Admiral history');
+})().catch(e=>{console.error(e);process.exitCode=1;});

@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.159",
-  "release": "Portstep",
-  "seal": "portstep-8820159",
+  "build": "8.8.20.161",
+  "release": "Berthlight",
+  "seal": "berthlight-8820161",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Portstep",
-  "name": "Portstep",
-  "releaseName": "Portstep"
+  "release_name": "Berthlight",
+  "name": "Berthlight",
+  "releaseName": "Berthlight"
 }
