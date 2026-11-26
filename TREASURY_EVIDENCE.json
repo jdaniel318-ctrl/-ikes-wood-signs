@@ -1,0 +1,21 @@
+{
+  "build": "8.8.20.166",
+  "base": "8.8.20.165",
+  "scope": "Saved offer terms, private billing gateway, VoyageKeeper payment rehearsal",
+  "hosted_stripe_sandbox": "Pending",
+  "device_acceptance": "Pending",
+  "live_processing": "Not activated",
+  "offline_fleet_suites": 88,
+  "private_service_tests_from_archive": 15,
+  "service_test_provider": "Simulated Stripe, real HTTP and SQLite",
+  "browser_rehearsal": {
+    "environment": "Chrome",
+    "setup_cents": 67500,
+    "deposit_cents": 17500,
+    "handoff_with_first_month_cents": 59900,
+    "second_month_cents": 9900,
+    "total_cents": 87300
+  },
+  "waived_support_rehearsal_total_cents": 67500,
+  "private_package_sha256": "bf9c2fbe53e338e658bb91c4f9495c69b08122efc9934bdcb367dfebaf20a2d2"
+}

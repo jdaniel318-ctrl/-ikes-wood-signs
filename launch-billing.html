@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer"><title>Owner billing · Black Flag</title>
+<style>
+:root{color-scheme:light;--ink:#15383b;--muted:#4e6969;--line:#cbd6cf;--gold:#a77a36}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{margin:0;background:#eef2ee;color:var(--ink);font:1rem/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{background:#103a3e;color:white;border-bottom:4px solid #bc985e}
+header>div,main{width:min(100% - 2rem,53rem);margin:auto}
+header>div{padding:1.25rem 0 1.5rem}h1,h2,p{margin:0}h1,h2{font-family:Georgia,serif;line-height:1.13}
+h1{font-size:clamp(2.1rem,5vw,3.3rem);margin:.42rem 0}h2{font-size:1.45rem}
+header small{color:#f3d59c;font-weight:700;letter-spacing:.11em}header p{color:#d9e5df}
+main{padding:1.2rem 0 3rem}section{background:#fffefb;border:1px solid var(--line);border-radius:12px;padding:clamp(1rem,3vw,1.6rem);margin-bottom:.9rem}
+section p{margin-top:.45rem}.subtle{color:var(--muted)}.mode{font-weight:650;color:#79561d}
+dl{margin:.8rem 0 0;display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line)}
+dl>div{padding:.65rem .75rem .65rem 0;border-bottom:1px solid var(--line)}dt{color:var(--muted);font-size:.92rem}dd{margin:0;font-size:1.32rem;font-weight:700;font-variant-numeric:tabular-nums}
+.actions{display:flex;align-items:center;gap:.65rem;flex-wrap:wrap;margin-top:.85rem}
+button,a.action,select{font:inherit;min-height:44px;border-radius:7px}button,a.action{display:inline-flex;align-items:center;text-decoration:none;font-weight:650;padding:.52rem .9rem;color:white;background:#145358;border:1px solid #145358;cursor:pointer}
+button.alt,a.alt{background:transparent;color:var(--ink);border-color:#92aba3}button:disabled{opacity:.6;cursor:wait}button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+select{background:white;color:var(--ink);border:1px solid #78958f;padding:.4rem;max-width:100%}
+.check{display:flex;align-items:flex-start;gap:.65rem;max-width:44rem;margin-top:.85rem}.check input{width:1.25rem;height:1.25rem;flex:none}
+ol{padding-left:1.45rem;margin-bottom:0}li{padding:.2rem 0}a{color:var(--ink)}.notice{color:#754519}.readout{font-variant-numeric:tabular-nums}#ship{overflow-wrap:anywhere}
+@media(max-width:360px){dl{grid-template-columns:1fr}}
+</style></head><body>
+<header><div><small>BLACK FLAG</small><h1>Fleet Launch Service</h1><p id="ship">Owner billing</p></div></header>
+<main>
+<section id="offer" hidden><h2>Your payment schedule</h2><p class="mode" id="mode"></p>
+<dl><div><dt>One-time setup</dt><dd id="setup"></dd></div><div><dt>Deposit credited to setup</dt><dd id="deposit"></dd></div><div><dt>Balance at accepted handoff</dt><dd id="balance"></dd></div><div><dt>Monthly support after handoff</dt><dd id="monthly"></dd></div></dl></section>
+<section id="deskSection" hidden><h2>Admiral payment desk</h2><p id="serviceState" role="status">Checking the service connection…</p><div class="actions"><a id="desk" class="action" hidden>Open secure payment desk</a></div></section>
+<section id="lab" hidden><h2>VoyageKeeper billing rehearsal</h2><p class="subtle">Try the owner’s checkout and a second billing month using sample payments on this device.</p>
+<div class="actions"><label for="scenario">Support rate</label><select id="scenario"><option value="saved">Saved offer</option><option value="paid">$99 monthly rehearsal</option></select><button id="begin">Start rehearsal</button></div></section>
+<section id="checkout" hidden><h2 id="stageTitle"></h2><p id="stageNote"></p><label class="check" id="consentRow" hidden><input type="checkbox" id="consent"><span id="consentText"></span></label><div class="actions"><button id="pay" hidden></button><button class="alt" id="refresh" hidden>Refresh status</button><a class="action alt" id="manage" hidden>Manage billing</a></div><p class="notice" id="message" role="status"></p></section>
+<section id="receipt" hidden><h2>Rehearsal receipts</h2><ol id="events"></ol><p class="readout" id="sum"></p><div class="actions"><button id="restart" class="alt">Return to scenarios</button></div></section>
+<p id="gatewayNote" role="status"></p></main>
+<script>
+'use strict';
+const id = name => document.getElementById(name);
+const money = cents => new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(cents/100);
+const exercise = 'bf-p-fc2816b8254a4845';
+const ownerView = location.pathname === '/launch-pay';
+const fragment = location.hash.slice(1);
+let saved, current, demo = false, stage = '', working = false, total = 0;
+function validTerms(value){
+ return value && typeof value.shipId==='string' && /^[a-zA-Z0-9_-]{1,100}$/.test(value.shipId) &&
+ typeof value.shipName==='string' && value.shipName.trim() && value.shipName.length<=180 &&
+ [value.setupCents,value.depositCents,value.monthlyCents].every(n=>Number.isSafeInteger(n)&&n>=0)
+ && value.depositCents<=value.setupCents;
+}
+function amounts(terms){
+ id('offer').hidden=false;
+ id('ship').textContent=terms.shipName;
+ id('setup').textContent=money(terms.setupCents);
+ id('deposit').textContent=money(terms.depositCents);
+ id('balance').textContent=money(terms.setupCents-terms.depositCents);
+ id('monthly').textContent=terms.monthlyCents?money(terms.monthlyCents):'Included · $0.00';
+}
+function showStage(key,title,note,button,consent=''){
+ const keepConsent=key===stage && id('consent').checked && id('consentText').textContent===consent;
+ stage=key; id('checkout').hidden=false; id('stageTitle').textContent=title; id('stageNote').textContent=note;
+ id('pay').textContent=button||'';id('pay').hidden=!button;
+ id('consentText').textContent=consent;id('consentRow').hidden=!consent;id('consent').checked=!!(consent&&keepConsent);
+ id('message').textContent='';id('refresh').hidden=demo;
+}
+function present(data){
+ current=data;amounts(data);
+ const balance=data.setupCents-data.depositCents, atHandoff=balance+data.monthlyCents;
+ if(['refunded','partially_refunded','disputed'].includes(data.depositStatus)||['refunded','partially_refunded','disputed'].includes(data.handoffStatus)||data.supportStatus==='disputed')
+   return showStage('refund','Payment adjustment','Black Flag has recorded a payment adjustment. Contact the Admiral to review the remaining terms.');
+ if(!['paid','waived'].includes(data.depositStatus)){
+  if(data.depositStatus==='processing')return showStage('pending','Deposit processing','Your payment is awaiting confirmation. You can return to this link to check the result.');
+  if(!['due','failed'].includes(data.depositStatus))return showStage('review','Deposit under review','The Admiral can review the payment status.');
+  return showStage('deposit','Pay your deposit',money(data.depositCents)+' is credited toward your setup. The remaining '+money(balance)+' is due at accepted handoff.',(demo?'Rehearse deposit · ':'Pay deposit · ')+money(data.depositCents));
+ }
+ if(data.handoffStatus==='locked')return showStage('locked','Deposit '+(data.depositCents?'received':'waived'),'Black Flag will release the handoff payment when your service is ready.',demo?'Simulate Admiral release':'');
+ if(['past_due','unpaid','paused'].includes(data.supportStatus))return showStage('past_due','Monthly payment needs attention','Use the billing email from Black Flag to update payment details or contact the Admiral.');
+ if(data.supportStatus==='canceled' && data.handoffStatus!=='failed')return showStage('ended','Monthly support ended','This subscription has ended.');
+ if(data.handoffStatus==='processing')return showStage('pending','Handoff payment processing','Payment confirmation will appear here.');
+ if(['ready','failed'].includes(data.handoffStatus) && data.supportStatus!=='active'){
+  const when=demo?'the simulated handoff':'checkout';
+  const note=data.monthlyCents?money(balance)+' setup balance plus '+money(data.monthlyCents)+' for your first month. Your next charge is one month after '+when+'.':'The remaining setup balance is '+money(balance)+'. Monthly support is included at no charge.';
+  const consent=data.monthlyCents?'I accept handoff and authorize Black Flag to collect '+money(data.monthlyCents)+' monthly starting today.':'I accept the handoff for this offer.';
+  return showStage('handoff','Accept handoff',note,atHandoff?(demo?'Rehearse payment · ':'Continue to payment · ')+money(atHandoff):'Accept handoff',consent);
+ }
+ if(data.supportStatus==='active' && ['paid','waived'].includes(data.handoffStatus)){
+  const date=data.nextChargeAt?new Date(data.nextChargeAt):null;
+  const timing=date&&!isNaN(+date)?' Next scheduled charge: '+date.toLocaleDateString(undefined,{dateStyle:'medium'})+'.':'';
+  return showStage(demo?'renew':'active','Monthly support is active','Your authorized rate is '+money(data.monthlyCents)+' per month.'+timing,demo?'Simulate second month':'');
+ }
+ if(['paid','waived'].includes(data.handoffStatus) && !data.monthlyCents)return showStage('complete','Setup complete','Monthly support is included. Your recurring amount is $0.00.');
+ return showStage('review','Payment status updating','Refresh to check the latest confirmed payment.');
+}
+function record(description,cents){const row=document.createElement('li');row.textContent=description+' · '+money(cents);id('events').append(row);total+=cents;id('sum').textContent='Total sample payments · '+money(total);}
+function startDemo(){
+ demo=true; total=0;stage='';id('events').replaceChildren();id('sum').textContent='';id('receipt').hidden=false;id('deskSection').hidden=true;id('lab').hidden=true;
+ id('mode').textContent='Rehearsal · simulated payments';
+ const data={...saved,monthlyCents:id('scenario').value==='paid'?9900:saved.monthlyCents,depositStatus:saved.depositCents?'due':'waived',handoffStatus:'locked',supportStatus:'pending'};
+ present(data);id('checkout').scrollIntoView({block:'nearest'});
+}
+function simulate(){
+ if(stage==='deposit'){record('Deposit',current.depositCents);current.depositStatus='paid';}
+ else if(stage==='locked'){current.handoffStatus='ready';}
+ else if(stage==='handoff'){record('Accepted handoff including first month',current.setupCents-current.depositCents+current.monthlyCents);current.handoffStatus='paid';current.supportStatus=current.monthlyCents?'active':'waived';}
+ else if(stage==='renew'){record('Second month of support',current.monthlyCents);return showStage('done','Second month recorded','The rehearsal collected the monthly rate once for this renewal.');}
+ present(current);
+}
+async function api(checkoutStage){
+ if(!/^[A-Za-z0-9_-]{43}$/.test(fragment))throw Error('Reopen the private billing link supplied by Black Flag.');
+ const base='/v1/launch-pay/'+fragment;
+ const options={credentials:'omit',cache:'no-store',redirect:'error',referrerPolicy:'no-referrer'};
+ if(checkoutStage){
+  const body={stage:checkoutStage};
+  if(checkoutStage==='handoff')body.acceptedTerms={setupCents:current.setupCents,depositCents:current.depositCents,monthlyCents:current.monthlyCents};
+  Object.assign(options,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+ }
+ const res=await fetch(base+(checkoutStage?'/checkout':''),options);
+ const data=await res.json();
+ if(!res.ok)throw Error(data.error||'The payment service could not complete the request.');
+ return data;
+}
+async function ownerStatus(){
+ const data=await api();if(!validTerms(data))throw Error('The service returned incomplete offer details.');
+ id('gatewayNote').textContent='';id('mode').textContent=data.mode==='test'?'Stripe test mode':'';
+ const login=id('manage');login.hidden=true;login.removeAttribute('href');
+ if(data.billingLoginUrl){const url=new URL(data.billingLoginUrl);if(url.origin==='https://billing.stripe.com'){login.href=url.href;login.hidden=false;}}
+ present(data);
+}
+async function act(){
+ if(working)return;
+ if(!id('consentRow').hidden && !id('consent').checked){id('message').textContent='Confirm the displayed terms to continue.';id('consent').focus();return;}
+ if(demo){simulate();return;}
+ working=true;id('pay').disabled=true;
+ try{
+  const {url}=await api(stage);const dest=new URL(url,location.origin);
+  if(dest.origin===location.origin && dest.pathname==='/launch-pay'){await ownerStatus();}
+  else if(dest.origin==='https://checkout.stripe.com'){location.assign(dest.href);}
+  else throw Error('The payment destination could not be verified. Contact Black Flag.');
+ }catch(e){id('message').textContent=e.message||'Checkout is unavailable. Refresh status before trying again.';}
+ finally{working=false;id('pay').disabled=false;}
+}
+async function gateway(){
+ const params=new URLSearchParams(fragment);
+ if(params.has('launch')){
+  try{saved=JSON.parse(params.get('launch'));if(!validTerms(saved))throw Error();}
+  catch{saved=null;id('gatewayNote').textContent='Reopen Online billing from a saved vessel offer.';return;}
+  amounts(saved);id('mode').textContent='Admiral’s saved offer';
+  id('lab').hidden=saved.shipId!==exercise;
+  if(saved.prospective){id('gatewayNote').textContent='This is a planned vessel. Select its registered vessel identity to issue a private billing link.';return;}
+ }
+ id('deskSection').hidden=false;
+ try{
+  const res=await fetch('./fleet-payments-service.json',{credentials:'omit',cache:'no-store',redirect:'error'});if(!res.ok)throw Error();
+  const conf=await res.json(),origin=new URL(conf.serviceOrigin);
+  if(origin.protocol!=='https:'||origin.username||origin.password||origin.pathname!=='/'||origin.search||origin.hash)throw Error();
+  const desk=new URL('/manage',origin.origin);desk.hash=saved?new URLSearchParams({launch:JSON.stringify(saved)}):'launchDesk=1';
+  id('desk').href=desk.href;id('desk').hidden=false;
+  id('serviceState').textContent=saved?'Review the saved amounts in the secure desk before issuing an owner billing link.':'Open the secure desk to review owner payments and monthly renewals.';
+ }catch{id('serviceState').textContent='The private payment desk is not connected here. Connect the Treasury payment service to issue an owner billing link.';}
+}
+id('pay').onclick=act;
+id('begin').onclick=startDemo;
+id('restart').onclick=()=>{demo=false;stage='';id('receipt').hidden=true;id('checkout').hidden=true;id('lab').hidden=false;id('deskSection').hidden=false;id('mode').textContent='Admiral’s saved offer';amounts(saved);id('begin').focus();};
+id('refresh').onclick=()=>ownerStatus().catch(e=>id('message').textContent=e.message);
+if(ownerView){ownerStatus().catch(e=>{showStage('unavailable','Offer unavailable','Refresh to try loading your private billing link again.');id('message').textContent=e.message;});}
+else{gateway().catch(()=>id('gatewayNote').textContent='Reopen Online billing from Admiral fee controls.');}
+</script></body></html>

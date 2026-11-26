@@ -52,6 +52,8 @@ function edit(fees){t.prices=fees;run('putFeeInputs(prices);editLaunchFees(price
  assert.equal(fs.readFileSync(path.join(__dirname,'fleet-launch-offer.html'),'utf8'),run("launchOfferDocument('',suggestedLaunchFees)"));
  edit(chosen);assert.match(node('cgFeeBalance').textContent,/800\.25/);
  await run('saveOfferFees({})');
+ const issuedLink=()=>JSON.parse(new URLSearchParams(new URL(node('cgBillingReview').href,'https://platform.invalid/').hash.slice(1)).get('launch'));
+ assert.deepEqual(issuedLink(),{shipId:'example-shop',shipName:'A & B <Shop>',setupCents:92550,depositCents:12525,monthlyCents:4995,prospective:true});
  let doc=await docs.get(node('cgFeeOffer').href).text();
  for(const val of ['A &amp; B &lt;Shop&gt;','$925.50','$125.25','$800.25','$49.95'])assert.ok(doc.includes(val),val);
  assert.doesNotMatch(doc,/\$500|\$250|\$99|example-shop|setupMinutes|launch-fee|<input/);
@@ -59,7 +61,7 @@ function edit(fees){t.prices=fees;run('putFeeInputs(prices);editLaunchFees(price
  assert.deepEqual(plain(run('termPayload(record).terms.launchFees')),chosen);
  const oldPayload=run('stable(termPayload(record))');
  await run('personalRates({},true)');
- edit({...chosen,deposit:'930'});assert.equal(node('cgFeeOffer').hidden,true);assert.equal(docs.size,0);
+ edit({...chosen,deposit:'930'});assert.equal(node('cgFeeOffer').hidden,true);assert.equal(docs.size,0);assert.equal(node('cgBillingReview').hidden,true);assert.equal(node('cgBillingReview').href,undefined);
  await assert.rejects(run('saveOfferFees({})'),/at most/);
  for(const bad of ['', '-1', '1.234', '5e2','Infinity','2,00','0x10']) {
   edit({...chosen,monthly:bad});
@@ -69,7 +71,7 @@ function edit(fees){t.prices=fees;run('putFeeInputs(prices);editLaunchFees(price
  await run('loadDraft({})');
  assert.equal(run('stable(termPayload(record))'),oldPayload);
  assert.equal(node('cgFeeOffer').hidden,false);
- select('second-vessel','Sea Glass');assert.equal(docs.size,0);
+ assert.equal(issuedLink().monthlyCents,4995);select('second-vessel','Sea Glass');assert.equal(docs.size,0);assert.equal(node('cgBillingReview').hidden,true);
  await run('personalRates({},false)');assert.equal(node('cgFee-monthly').value,'49.95');
  assert.equal(node('cgFeeOffer').hidden,true);
  edit({setup:'0',deposit:'0',monthly:'0'});await run('saveOfferFees({})');

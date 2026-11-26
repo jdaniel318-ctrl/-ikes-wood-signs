@@ -1,18 +1,18 @@
 {
   "schema": "blackflag-patch-contract-v1",
-  "target_build": "8.8.20.165",
-  "target_seal": "leaf-8820165",
+  "target_build": "8.8.20.166",
+  "target_seal": "treasury-8820166",
   "supported_bases": [
     {
-      "build": "8.8.20.164",
-      "source_sha256": "68d058b9e9ba90258a8fb2c553aa208522de5ef9a6bf3d8a1fe217585c3ac64c",
-      "file_count": 1112
+      "build": "8.8.20.165",
+      "source_sha256": "8e41269490dfab2c0e1f719401df1335ae62551a3dca18b504c0e82c037ba141",
+      "file_count": 1113
     }
   ],
   "requires_deletions": false,
   "max_upload_files": 85,
   "database_actions": "none",
-  "rule": "Upload every changed/new root file over complete 8.8.20.164. Keep everything else. This software archive executes no database commands.",
+  "rule": "Upload every changed/new root file over complete 8.8.20.165. Keep everything else. This software archive executes no database commands.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -67,6 +67,14 @@
       ],
       "status": "retained_pilothouse_prerequisite",
       "automatic_execution_by_upload": false
+    }
+  },
+  "private_services": {
+    "launch_billing": {
+      "service": "Treasury-Payments",
+      "status": "private_deployment_and_stripe_sandbox_acceptance_required",
+      "automatic_execution_by_upload": false,
+      "public_configuration": "fleet-payments-service.json"
     }
   }
 }

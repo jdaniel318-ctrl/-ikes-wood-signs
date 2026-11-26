@@ -79,6 +79,7 @@ def prepare(files,config):
  if 'base_git_tree' in config:
   contract['supported_bases'][0].update(source_format='git-tree-regular-v1',git_tree_sha1=config['base_git_tree'],git_commit=config['base_git_commit'])
  contract['backend_prerequisites']=config.get('backend_prerequisites',{})
+ if 'private_services' in config:contract['private_services']=config['private_services']
  out['PATCH_CONTRACT.json']=jb(contract)
  gate=get(out,'RELEASE_GATE.json');gate.update(build=build,release=name,**{'pass':False},verification_status='PREPARED_NOT_TESTED',native_safari_acceptance='PENDING',evidence_file=config.get('evidence_file','TRIMLINE_EVIDENCE.json'),production_certification=False);out['RELEASE_GATE.json']=jb(gate)
  current=f'''# Black Flag {name} {build}\n\nCurrent instructions: UPLOAD_THIS_ONE_BUILD.md. Current identity source: RELEASE_CONFIG.json.\nBaseline: {base}. Shared component revisions do not need to equal the installed release: the loader verifies exact approved bytes.\nVerification: `node VERIFY_RELEASE_ALL.cjs . ../release-check-evidence`. Preparation alone does not certify tests or production readiness.\n{feature_notes}\nPreparation does not deploy frontend or backend changes. See PATCH_CONTRACT.json for separately managed backend prerequisites.\n'''

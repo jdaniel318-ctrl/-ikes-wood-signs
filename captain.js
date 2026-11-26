@@ -6475,12 +6475,15 @@ if(window.DarkSkyOpenFleetWatchtower)window.DarkSkyOpenAdmiralFleet=window.DarkS
   return `<details class="ratebook" id="cgLaunchFees" hidden><summary>Admiral fee controls</summary><div class="ratebook-body">
    <h2 id="cgFeeTitle">Fleet launch fees</h2><p>Set the amounts for this vessel. Enter 0 to waive a fee. The deposit counts toward setup.</p>
    <div class="ratebook-fields">${Object.entries(launchFeeLabels).map(([k,v])=>`<label for="cgFee-${k}">${v} (USD)<input id="cgFee-${k}" data-launch-fee="${k}" type="text" inputmode="decimal" maxlength="13" autocomplete="off"><small>Suggested ${amount(cents(suggestedLaunchFees[k]))}</small></label>`).join('')}</div>
-   <p id="cgFeeBalance" aria-live="polite"></p><div class="ratebook-actions"><button id="cgFeeSave" type="button">Save offer fees</button><a id="cgFeeOffer" target="_blank" rel="noopener noreferrer" hidden>Open printable owner offer</a><button id="cgFeeLoad" type="button">Load vessel draft</button></div>
+   <p id="cgFeeBalance" aria-live="polite"></p><div class="ratebook-actions"><button id="cgFeeSave" type="button">Save offer fees</button><a id="cgFeeOffer" target="_blank" rel="noopener noreferrer" hidden>Open printable owner offer</a><a id="cgBillingReview" target="_blank" rel="noopener noreferrer" hidden>Online billing</a><button id="cgFeeLoad" type="button">Load vessel draft</button></div>
    <p id="cgFeeStatus" role="status"></p>
    <details><summary>Reuse pricing on this device</summary><p>Save these amounts as your starting rates. Apply them to another vessel when you choose.</p><div class="ratebook-actions"><button id="cgFeeSaveDefaults" type="button">Save as my rates</button><button id="cgFeeUseDefaults" type="button">Use my rates</button><button id="cgFeeSuggestions" type="button">Use suggested fees</button></div></details>
   </div></details>`;
  }
  function clearOwnerOffer() {
+  const billing = $('cgBillingReview');
+  billing.hidden = true;
+  billing.removeAttribute('href');
   const link = $('cgFeeOffer');
   link.hidden = true;
   link.removeAttribute('href');
@@ -6495,6 +6498,14 @@ if(window.DarkSkyOpenFleetWatchtower)window.DarkSkyOpenAdmiralFleet=window.DarkS
   const link = $('cgFeeOffer');
   link.href = ownerOfferUrl;
   link.hidden = false;
+  const target = record.target;
+  const fees = launchFeeTerms(record.terms.launchFees);
+  const billing = $('cgBillingReview');
+  const launch = { shipId: target.project_id, shipName: target.display_name,
+   setupCents: Number(cents(fees.setup)), depositCents: Number(cents(fees.deposit)),
+   monthlyCents: Number(cents(fees.monthly)), prospective: !!target.prospective };
+  billing.href = './launch-billing.html#launch='+encodeURIComponent(JSON.stringify(launch));
+  billing.hidden = false;
   $('cgFeeStatus').textContent = 'Saved on this device. The printable offer uses these amounts.';
  }
  function displayFeeBalance(raw) {
@@ -6568,6 +6579,7 @@ if(window.DarkSkyOpenFleetWatchtower)window.DarkSkyOpenAdmiralFleet=window.DarkS
   $('cgFee-setup').focus();
  }
  function bindFeeControls() {
+  $('cgBillingReview').onclick=e=>{if(!allowed()||busy||!ownerOfferUrl)e.preventDefault();};
   $('cgFeeOffer').onclick=e=>{if(!allowed()||busy||!ownerOfferUrl)e.preventDefault();};
   $('cgLaunchFees').addEventListener('input',e=>{
    if (e.target.hasAttribute('data-launch-fee')) editLaunchFees(inputFeeValues());

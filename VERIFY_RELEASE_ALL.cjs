@@ -8,7 +8,7 @@ const jobs=[['VERIFY_SOUNDINGS.cjs',[]],['VERIFY_TALLY_INVOICES.cjs',[]],['VERIF
 jobs.unshift(['VERIFY_SPINNAKER_REGATTA.cjs',[]],['VERIFY_SIGNALMAN_CORE.cjs',[]],['VERIFY_STREETWISE.cjs',[]],['VERIFY_FREEBOARD_FLOW.cjs',[]],['VERIFY_FREEBOARD_CUSTOMER.cjs',[]],['VERIFY_FREEBOARD_BOARD.cjs',[]],['VERIFY_FREEBOARD_ENTRY.cjs',[]],['VERIFY_LONGWATCH_IDLE.cjs',[]],['VERIFY_GLASSWAKE.cjs',[]],['VERIFY_TRUEBOUND_CORE.cjs',[]],['VERIFY_TRUEBOUND_UI.cjs',[]]);
 jobs.unshift(['VERIFY_TOPSIDE_OWNER.cjs',[]],['VERIFY_LIVERY_OWNER.cjs',[]],['VERIFY_PILOTAGE_DAILY_WORK.cjs',[]]);
 jobs.unshift(['VERIFY_PILOTHOUSE_STATION.cjs',[]],['VERIFY_PILOTHOUSE_ADMIRAL.cjs',[]],['VERIFY_PILOTHOUSE_DOCUMENTS.cjs',[]]);
-jobs.unshift(['VERIFY_RATEBOOK.cjs',[]],['VERIFY_FIRST_BERTH.cjs',[]],['VERIFY_BERTHLIGHT.cjs',[]],['VERIFY_PORTSTEP.cjs',[]],['VERIFY_CHANGE_OF_WATCH.cjs',[]],['VERIFY_FLEETGUARD.cjs',[]]);
+jobs.unshift(['VERIFY_TREASURY.cjs',[]],['VERIFY_RATEBOOK.cjs',[]],['VERIFY_FIRST_BERTH.cjs',[]],['VERIFY_BERTHLIGHT.cjs',[]],['VERIFY_PORTSTEP.cjs',[]],['VERIFY_CHANGE_OF_WATCH.cjs',[]],['VERIFY_FLEETGUARD.cjs',[]]);
 let failed=0;const results=[];
 for(const [name,args]of jobs){const r=spawnSync(process.execPath,[path.join(root,name),...args],{cwd:root,encoding:'utf8',timeout:120000});fs.writeFileSync(path.join(out,name+'.log'),(r.stdout||'')+(r.stderr||''));const pass=r.status===0;failed+=!pass;results.push({name,pass,exit_code:r.status,error:r.error?.message||null});console.log(pass?'PASS':'FAIL',name);}
 const py=process.env.PYTHON||'python3';
