@@ -1,18 +1,21 @@
 {
   "schema": "blackflag-patch-contract-v1",
-  "target_build": "8.8.20.166",
-  "target_seal": "treasury-8820166",
+  "target_build": "8.8.20.168",
+  "target_seal": "harborbill-8820168",
   "supported_bases": [
     {
-      "build": "8.8.20.165",
-      "source_sha256": "8e41269490dfab2c0e1f719401df1335ae62551a3dca18b504c0e82c037ba141",
-      "file_count": 1113
+      "build": "8.8.20.166",
+      "source_sha256": "5b16234249d0c4a37c6750a682d60946465f2aba28b40b40979326476fad7262",
+      "file_count": 1117,
+      "source_format": "git-tree-regular-v1",
+      "git_tree_sha1": "8f6b09562f04b97b07abb6a99732fbb45bcbfbb8",
+      "git_commit": "f30386d7855e6d771be11c07a2a283e4e17fe93e"
     }
   ],
   "requires_deletions": false,
   "max_upload_files": 85,
   "database_actions": "none",
-  "rule": "Upload every changed/new root file over complete 8.8.20.165. Keep everything else. This software archive executes no database commands.",
+  "rule": "Upload every changed/new root file over complete 8.8.20.166. Keep everything else. This software archive executes no database commands.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -67,6 +70,15 @@
       ],
       "status": "retained_pilothouse_prerequisite",
       "automatic_execution_by_upload": false
+    },
+    "vessel_billing": {
+      "migration": "VESSEL_SANDBOX_BILLING.sql",
+      "project": "sjgqqtnuttnkwsoebbqf",
+      "release_package": "Harborbill-Setup.zip",
+      "receiver": "treasury-stripe-sandbox",
+      "status": "packaged_for_activation",
+      "automatic_execution_by_upload": false,
+      "sql_sha256": "150f6558f53ed603e5e1469b99710db2a9c74720bdf746322489dedc8f92d5af"
     }
   },
   "private_services": {

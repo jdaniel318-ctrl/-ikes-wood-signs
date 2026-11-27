@@ -164,12 +164,13 @@
 .station-completed{margin-top:10px}.station-completed summary{cursor:pointer}.station-completed[open] summary{margin-bottom:8px}
 </style>
 <link rel="stylesheet" href="business_deck.css?v=livery-8820109" onerror="window.__workhorseDeckStylesFailed=true">
-<script id="blackFlagPageRelease">window.__blackFlagPageRelease=Object.freeze({build:'8.8.20.166',seal:'treasury-8820166',name:'Treasury'});</script>
+<script id="blackFlagPageRelease">window.__blackFlagPageRelease=Object.freeze({build:'8.8.20.168',seal:'harborbill-8820168',name:'Harborbill'});</script>
 <script src="input_hygiene.js?v=fairlead-882068"></script>
 <script src="service_address_fleet.js?v=streetwise-882096"></script>
 <script src="service_address.js?v=portolan-882098"></script>
 <script src="business_deck.js?v=livery-8820109"></script>
 <script src="fleet_supabase.js?v=signalman-882099"></script>
+<script src="vessel_billing.js?v=harborbill-1"></script>
 <link rel="stylesheet" href="fleet_help.css?v=signalman-882099">
 <script src="fleet_help.js?v=reliefwatch-8820105"></script>
 <script src="fleet_recovery_core.js?v=fairlead-882068"></script>
@@ -248,7 +249,7 @@
   <section id="portal" class="portal hidden">
     <div class="portal-wrap">
       <header class="portal-head">
-        <div class="bd-brand-heading"><div id="businessHeaderLogo" aria-hidden="true"></div><div><div class="eyebrow" id="ownerInstalledRelease">8.8.20.166 · QUARTERMASTER</div><h1 id="portalName" tabindex="-1">Business</h1><span class="owner-badge">● SECURE OWNER SESSION</span><div id="ownerScopeNote" class="owner-scope-note">Verified for this business only</div></div></div>
+        <div class="bd-brand-heading"><div id="businessHeaderLogo" aria-hidden="true"></div><div><div class="eyebrow" id="ownerInstalledRelease">8.8.20.168 · QUARTERMASTER</div><h1 id="portalName" tabindex="-1">Business</h1><span class="owner-badge">● SECURE OWNER SESSION</span><div id="ownerScopeNote" class="owner-scope-note">Verified for this business only</div></div></div>
         <div class="head-actions"><button id="returnEngine" class="btn ghost hidden">RETURN TO BLACK FLAG</button><a id="shipPayments" class="btn ghost" href="./fleet-payments.html" target="_blank" rel="noopener noreferrer">PAYMENTS ↗</a><button id="signOut" class="btn secondary">SIGN OUT</button></div>
       </header>
       <nav id="businessDeckNav" class="bd-owner-nav" aria-label="Business workspace"></nav>
@@ -998,14 +999,14 @@ function ownerReturnView(){
   const route=new URLSearchParams(location.search);
   return !engineTrialLaunch&&!route.has('surface')
     &&route.getAll('project').length===1&&route.get('project')===projectId
-    &&route.getAll('view').length===1&&route.get('view')==='fleet-help'
-    ?'fleet-help':'portal';
+    &&route.getAll('view').length===1&&['fleet-help','vessel-billing'].includes(route.get('view'))
+    ?route.get('view'):'portal';
 }
 function openVerifiedOwnerHome(){
   // Rendering the home replaces its URL, so capture the requested screen first.
   const destination=ownerReturnView();
   renderPortal(destination==='portal');
-  if(destination==='fleet-help')openOwnerView('fleet-help');
+  if(destination!=='portal')openOwnerView(destination);
 }
 function liveOwnerRedirect(){const u=new URL('./owner.html',location.href);u.searchParams.set('project',projectId);u.searchParams.set('view',ownerReturnView());if(source==='engine')u.searchParams.set('source','engine');return u.toString();}
 async function sendMagicLink(email){const redirect=liveOwnerRedirect();const r=await fetch(SUPABASE_URL+'/auth/v1/otp?redirect_to='+encodeURIComponent(redirect),{method:'POST',headers:supaHeaders(),body:JSON.stringify({email:String(email||'').trim(),create_user:false,gotrue_meta_security:{}})});if(!r.ok)throw new Error((await r.text())||('Supabase sign-in request failed '+r.status));return true;}
@@ -1098,7 +1099,7 @@ async function verify(login,password){const c=project?.ownerAccess?.credential;i
 function setNames(){const n=project?.name||publicOwnerNames.get(projectId)||'Business Owner Access';$('safeName').textContent=n;$('loginName').textContent=n;$('passwordSetupName').textContent=n;$('localRecoveryName').textContent=n;$('portalName').textContent=n;$('failureName').textContent=n;$('mProject').textContent=String(project?.projectCode||projectId||'BUSINESS').toUpperCase();}
 function ownerActive(){return project?.ownerAccess?.enabled!==false && project?.ownerAccess?.status==='active';}
 function bindEngineButtons(){for(const id of ['returnEngineFromLogin','returnEngine','failureEngine']){if(source==='engine')$(id)?.classList.remove('hidden');$(id)?.addEventListener('click',()=>location.replace(engineUrl()));}}
-function modules(){const caps=capabilities();const all=[['fleet-help','Get fleet help','Report a problem and follow its progress'],['watch','Fleet Report','Report current work and issues to the read-only Admiral watch'],['orders','Orders','Review customer orders'],['pricing','Pricing','Manage customer pricing rules'],['features','Features','Choose the business features customers can use'],['branding','Branding','Manage how customers see your business'],...(projectId==='ikes-wood-signs'?[['countercraft','Shop inbox','Customer requests, review and production'],['references','Lettering Styles','Review and manage production lettering styles']]:[]),['services','Fleet Services','See included and available Fleet capabilities'],['settings','Settings','Owner access and account controls']];return all.filter(([k])=>k==='fleet-help'?!!fleetHelpOwnerBinding():ownerProjectFromServer?['watch','services','settings','countercraft'].includes(k):['watch','features','services','settings','references','countercraft'].includes(k)||caps.has(k));}
+function modules(){const caps=capabilities();const all=[['vessel-billing','Vessel billing','Check your monthly service and invoice history'],['fleet-help','Get fleet help','Report a problem and follow its progress'],['watch','Fleet Report','Report current work and issues to the read-only Admiral watch'],['orders','Orders','Review customer orders'],['pricing','Pricing','Manage customer pricing rules'],['features','Features','Choose the business features customers can use'],['branding','Branding','Manage how customers see your business'],...(projectId==='ikes-wood-signs'?[['countercraft','Shop inbox','Customer requests, review and production'],['references','Lettering Styles','Review and manage production lettering styles']]:[]),['services','Fleet Services','See included and available Fleet capabilities'],['settings','Settings','Owner access and account controls']];return all.filter(([k])=>['vessel-billing','fleet-help'].includes(k)?!!fleetHelpOwnerBinding():ownerProjectFromServer?['watch','services','settings','countercraft'].includes(k):['watch','features','services','settings','references','countercraft'].includes(k)||caps.has(k));}
 async function fleetServiceCatalog(current=ownerViewGuard()){
   if(!current())return [];
   const proof=await verifySupabaseMembership();
@@ -1202,7 +1203,7 @@ function canReadOwnerDeck(){
   }
   return ok;
 }
-function renderBusinessNav(){const allowed=modules();const links=[['portal','Today'],...['countercraft','orders','pricing','references','fleet-help'].map(k=>allowed.find(m=>m[0]===k)).filter(Boolean)];$('businessDeckNav').innerHTML=links.map(([k,t])=>`<button type="button" data-owner-nav="${k}" aria-pressed="${k==='portal'}">${esc(t)}</button>`).join('');$('businessDeckNav').querySelectorAll('[data-owner-nav]').forEach(b=>b.onclick=()=>{if(!canReadOwnerDeck())return;b.dataset.ownerNav==='portal'?returnToBridgeHome(true):openOwnerView(b.dataset.ownerNav);});}
+function renderBusinessNav(){const allowed=modules();const links=[['portal','Today'],...['countercraft','orders','pricing','references','vessel-billing','fleet-help'].map(k=>allowed.find(m=>m[0]===k)).filter(Boolean)];$('businessDeckNav').innerHTML=links.map(([k,t])=>`<button type="button" data-owner-nav="${k}" aria-pressed="${k==='portal'}">${esc(t)}</button>`).join('');$('businessDeckNav').querySelectorAll('[data-owner-nav]').forEach(b=>b.onclick=()=>{if(!canReadOwnerDeck())return;b.dataset.ownerNav==='portal'?returnToBridgeHome(true):openOwnerView(b.dataset.ownerNav);});}
 function markBusinessNav(k){$('businessDeckNav')?.querySelectorAll('[data-owner-nav]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.ownerNav===k)));}
 function renderBusinessHome(){
   if(ownerProjectFromServer){
@@ -1304,6 +1305,16 @@ function estimatedSegments(text){const chars=[...String(text||'')].filter(ch=>!(
 async function renderWorkspace(k){
 const current=ownerViewGuard();
 if(!current())return;
+if(k==='vessel-billing'){
+ const binding=fleetHelpOwnerBinding();
+ if(!binding)return;
+ workspace('Vessel billing',project.name,'<div id="ownerVesselBilling"></div>');
+ window.BlackFlagVesselBilling.mount($('ownerVesselBilling'),{
+   projectId,current:()=>current() && fleetHelpOwnerBinding()===binding,
+   read:()=>ownerSupabase.rpc('owner_read_sandbox_billing',{p_project_id:projectId},'Sandbox receipts are unavailable.')
+ });
+ return;
+}
 if(k==='fleet-help'){
  const binding=fleetHelpOwnerBinding(),epoch=ownerViewEpoch;
  if(!binding)return;

@@ -1,0 +1,14 @@
+{
+  "build": "8.8.20.168",
+  "release": "Harborbill",
+  "base": "8.8.20.166",
+  "offline_checks": [
+    "Owner opens Vessel billing from the actual Owner Control Center, refreshes, reloads and returns to Overview (Chromium; 1024\u00d7768 and 390\u00d7844).",
+    "Full release integrity boot and worker in Chromium. Production Admiral panel tested with a fixture account-state boundary and PostgreSQL-derived results.",
+    "In-memory PostgreSQL: idempotent schema installation and bindings, verified history join, delayed/repeated callbacks, failure, payment recovery, cancellation, two distinct owners, denied scopes, active and revoked roles.",
+    "Eight isolated signed-webhook receiver tests. No network callbacks to Stripe in tests."
+  ],
+  "native_ipad_safari": "pending",
+  "hosted_activation": "pending",
+  "billing_or_clock_changes": false
+}

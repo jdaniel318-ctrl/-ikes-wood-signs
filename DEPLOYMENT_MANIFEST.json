@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.20.166",
-  "version": "8.8.20.166",
-  "release_name": "Treasury",
-  "releaseName": "Treasury",
-  "release_seal": "treasury-8820166",
+  "build": "8.8.20.168",
+  "version": "8.8.20.168",
+  "release_name": "Harborbill",
+  "releaseName": "Harborbill",
+  "release_seal": "harborbill-8820168",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -125,7 +125,8 @@
     "service_address_fleet.js",
     "fleet_help.js",
     "fleet_help.css",
-    "VALLEY_NOTES_PROGRAM.json"
+    "VALLEY_NOTES_PROGRAM.json",
+    "vessel_billing.js"
   ],
   "atomic_release_contract": {
     "manifest_runtime_agreement": "required-before-execution",
@@ -163,8 +164,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "Open online billing from saved Admiral offer fees. Rehearse deposit, accepted handoff and a second support month with VoyageKeeper.",
-  "release_note": "Open online billing from saved Admiral offer fees. Rehearse deposit, accepted handoff and a second support month with VoyageKeeper.",
+  "release_focus": "Owners with a verified vessel membership can read monthly terms and invoice receipts. Admiral Command shows assigned services and unassigned sandbox receipts under Govern.",
+  "release_note": "Owners with a verified vessel membership can read monthly terms and invoice receipts. Admiral Command shows assigned services and unassigned sandbox receipts under Govern.",
   "tax_ledger_upgrade": {
     "schema": "dark-sky-fleet-tax-ledger-v1",
     "model": "TAX_LEDGER_MODEL.json",
@@ -286,8 +287,8 @@
     "algorithm": "SHA-256",
     "files": {
       "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": {
-        "sha256": "5e715f1b7f86dd6b92869254ac32f71bdb20b4a4fcaad657321a1b6f7fcdb114",
-        "build": "8.8.20.166",
+        "sha256": "30cb8ba611ebd5e9d879338b3f05dc1a4fe74499a3fcace3d14cf5b58b2f7fb7",
+        "build": "8.8.20.168",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -334,14 +335,14 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_COMMAND_MODEL.json": {
-        "sha256": "98b7fff145cff72f3a39b9b0afc8e04edd47df3cfb14a673f9d54f4f0558fe01",
-        "build": "8.8.20.166",
+        "sha256": "8032ca1c26c60dbcaea66247daeb0372d131248afac353d8e1d0ebae0918c5ac",
+        "build": "8.8.20.168",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
       "FLEET_DOCTRINE_REGISTRY.json": {
-        "sha256": "7e5f4f6c5706b8d33bd21f1a5d2b2c9c2628d0095b8c1829ae9ca89c5eb56a64",
-        "build": "8.8.20.166",
+        "sha256": "6c06c8081f2655a41b419c54d35f9f648603e49f9e82e93e3596df224aaf2393",
+        "build": "8.8.20.168",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -400,8 +401,8 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "GOLDEN_VOYAGES.json": {
-        "sha256": "3f68c7e98711a04a04169f68f0fcaf0db606a92f0751cfb308b74973728cda1c",
-        "build": "8.8.20.166",
+        "sha256": "9149c2a6d9cd0f830293e1c586963310952693bc763d5feee67e170638171810",
+        "build": "8.8.20.168",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -564,16 +565,16 @@
       "fleet_supabase.js": "f4b93e3db718daca7403d8f12077a961f57456f9a3f2a961dd0fca01cabe6757",
       "ike_style_registry.js": "6b348ebceb47e172e6676f46252b19c1c6bb7532baf76febfa8dd81760a76ab7",
       "app.js": "7ed8237c23ff07194028dd0bfb87ef233beeb90de32af59bbd78956314f7ce65",
-      "captain.js": "e7b1e1bb5fd0b4ced0a15ded6ed4f1af2c6ee68b892478cb0db0077d40e6dffe",
+      "captain.js": "ec709e44ae0b413e7f4f05cbc67dab90dfd44fb3c06e6af9d8c8644d85c2e539",
       "simple_books.js": "ddd76dcf5e6c579f16918a9d3e645b0fc65d8a5b4d7c66df8896d8314eea325d",
-      "owner.html": "e1e7cfb03ec67fb38dbf210705dcf0b797aa55a426f37a91ce6c5ddcd823ef19",
-      "manifest.webmanifest": "478271398e6a7bdb226b695dc3c8bf3bf3b630acf6a5997c9352f69c35479bab",
+      "owner.html": "0239e7091f40a5c4a0675bbcd6eb1e501eca9ee79028653c20c35d1e3f14d520",
+      "manifest.webmanifest": "a3c447f6910caed2d90ac483b9698f1e069f1d8f6d354e8ff776b5be7041a8ff",
       "IKE_STYLE_FOUNDRY.json": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
-      "sw.js": "757fb2668f3a80701816bca0cb0af12b4f3e7cf14a2798f02fbad5b3c312ae2c",
-      "FLEET_DOCTRINE_REGISTRY.json": "7e5f4f6c5706b8d33bd21f1a5d2b2c9c2628d0095b8c1829ae9ca89c5eb56a64",
-      "GOLDEN_VOYAGES.json": "3f68c7e98711a04a04169f68f0fcaf0db606a92f0751cfb308b74973728cda1c",
-      "FLEET_COMMAND_MODEL.json": "98b7fff145cff72f3a39b9b0afc8e04edd47df3cfb14a673f9d54f4f0558fe01",
-      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "5e715f1b7f86dd6b92869254ac32f71bdb20b4a4fcaad657321a1b6f7fcdb114",
+      "sw.js": "ce84f472e60f845170dfa0e9dd68b8a92a63e621bb2fa9dee9a6c3d66fc56ee7",
+      "FLEET_DOCTRINE_REGISTRY.json": "6c06c8081f2655a41b419c54d35f9f648603e49f9e82e93e3596df224aaf2393",
+      "GOLDEN_VOYAGES.json": "9149c2a6d9cd0f830293e1c586963310952693bc763d5feee67e170638171810",
+      "FLEET_COMMAND_MODEL.json": "8032ca1c26c60dbcaea66247daeb0372d131248afac353d8e1d0ebae0918c5ac",
+      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "30cb8ba611ebd5e9d879338b3f05dc1a4fe74499a3fcace3d14cf5b58b2f7fb7",
       "input_hygiene.js": "e54a78fe75567db53c9682d4d039f53609fdcd0d43448f0534faec61def7edae",
       "business_deck.js": "63b1531524c46d73646a8265c7beabc1be430b9c613895a83c3e0f4bc696342f",
       "business_deck.css": "e28a49dcf16d35b3c7e0b4e69dd4892881cba564aeebc3e62e4b4eea90fca8d5",
@@ -649,7 +650,8 @@
       "service_address.js": "3debc50fadbcdba89531d39481820c266b62326f44264e65df1cedc7ccb81b29",
       "service_address_fleet.js": "d31da02362f3bb60a61589f0a5bbb22ea976ffb853434d52db75eb5d4dd2b585",
       "fleet_help.js": "698a3b742864beb2ff8414b77d6d6cb261014c89a21cb276217bd02b51505613",
-      "fleet_help.css": "c6fae5da4d413120a681aea48ebcb004e0a84dfcafa1c1438b778c8aa8247694"
+      "fleet_help.css": "c6fae5da4d413120a681aea48ebcb004e0a84dfcafa1c1438b778c8aa8247694",
+      "vessel_billing.js": "ef1c4352aa6acf73eaca7f47baead456499a64142cb371dfbf2f168a72b5e809"
     }
   },
   "watchbeacon_upgrade": {
@@ -1084,7 +1086,7 @@
     "project_data_mutation": false,
     "field_failure_proof": "8.8.20.13 held on styles.css because packaged DEPLOYMENT_MANIFEST runtime hash did not match packaged styles.css bytes"
   },
-  "release": "Treasury",
+  "release": "Harborbill",
   "clearbearing_upgrade": {
     "build": "8.8.20.22",
     "baseline": "8.8.20.14 HashLock",
