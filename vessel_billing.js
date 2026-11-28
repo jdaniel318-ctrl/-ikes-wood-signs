@@ -59,14 +59,22 @@
     div.append(el('strong',title),badge(invoice.event_type));
     const facts=[];
     if (invoice.subscription_state) facts.push('Subscription status: '+invoice.subscription_state.replaceAll('_',' '));
-    if (invoice.invoice_id) facts.push(money(invoice.event_type==='invoice.paid'?invoice.paid_minor:invoice.due_minor,invoice.currency));
+    if (invoice.invoice_id) {
+      const amount = money(invoice.event_type === 'invoice.paid' ? invoice.paid_minor : invoice.due_minor, invoice.currency);
+      if (admiral) {
+        const amountText = el('span', amount, 'vb-amount');
+        if (amount === 'Amount unavailable') amountText.classList.add('vb-missing');
+        div.append(amountText);
+      } else facts.push(amount);
+    }
     if (invoice.billing_reason==='subscription_cycle') facts.push('Renewal');
     if (invoice.billing_reason==='subscription_create') facts.push('First invoice');
     if (invoice.collection_method==='charge_automatically') facts.push('Automatic collection');
     if (invoice.recorded_at) facts.push('Receipt recorded '+date(invoice.recorded_at));
     div.append(el('small',facts.join(' · ')));
     if (admiral && /^in_[a-zA-Z0-9_]+$/.test(invoice.invoice_id||'')) {
-      const link=el('a','Open Stripe test invoice'); link.target='_blank'; link.rel='noopener noreferrer';
+      const link=el('a','View test invoice'); link.target='_blank'; link.rel='noopener noreferrer';
+      link.setAttribute('aria-label', 'View Stripe test invoice '+title);
       link.href='https://dashboard.stripe.com/test/invoices/'+encodeURIComponent(invoice.invoice_id);
       div.append(link);
     }
@@ -88,7 +96,7 @@
   }
   function mount(host, {read, current, admiral=false, projectId=null}) {
     style();
-    const ledger=el('div',null,'vb-ledger');
+    const ledger=el('div',null,admiral?'vb-ledger vb-admiral':'vb-ledger');
     const output=el('div'); output.setAttribute('aria-live','polite');
     const refresh=el('button','Refresh receipts'); refresh.type='button';
     ledger.append(output,refresh); host.replaceChildren(ledger);
@@ -105,14 +113,23 @@
         if (data?.mode!=='sandbox' || !Array.isArray(data.accounts) ||
             (admiral ? !Array.isArray(data.to_check) : data.project_id!==projectId || data.accounts.some(a=>a.project_id!==projectId))) throw Error();
         const content=document.createDocumentFragment();
-        content.append(el('h3',admiral?'Fleet billing · Sandbox':'Billing · Sandbox'));
-        if (!data.accounts.length) content.append(el('p',admiral?'No vessel has a linked sandbox subscription.':'This vessel has no linked sandbox subscription.'));
-        for (const item of data.accounts) content.append(account(item,admiral));
         if (admiral) {
-          const queue=el('section'); queue.append(el('h3','To Check ('+data.to_check.length+')'));
-          queue.append(el('p',data.to_check.length?'These receipts need a verified vessel and service assignment.':'Every available receipt has a vessel assignment.'));
-          for (const entry of data.to_check) queue.append(row(entry,true));
+          const queue = el('section');
+          queue.append(el('h3', 'Awaiting vessel assignment ('+data.to_check.length+')'));
+          queue.append(el('p', data.to_check.length
+            ? 'These sandbox receipts are waiting for a verified vessel and service.'
+            : 'All available receipts have a vessel assignment.'));
+          for (const entry of data.to_check) queue.append(row(entry, true));
           content.append(queue);
+          const linked = el('section');
+          linked.append(el('h3', 'Linked services ('+data.accounts.length+')'));
+          if (!data.accounts.length) linked.append(el('p','No vessel has a linked sandbox subscription.'));
+          for (const item of data.accounts) linked.append(account(item, true));
+          content.append(linked);
+        } else {
+          content.append(el('h3', 'Billing · Sandbox'));
+          if (!data.accounts.length) content.append(el('p', 'This vessel has no linked sandbox subscription.'));
+          for (const item of data.accounts) content.append(account(item, false));
         }
         output.replaceChildren(content);
       } catch {

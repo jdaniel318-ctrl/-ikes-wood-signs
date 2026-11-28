@@ -1,9 +1,9 @@
 {
-  "release": "Harborbill",
-  "name": "Harborbill",
-  "build": "8.8.20.168",
-  "seal": "harborbill-8820168",
-  "file_count": 1120,
+  "release": "Deckplan",
+  "name": "Deckplan",
+  "build": "8.8.20.169",
+  "seal": "deckplan-8820169",
+  "file_count": 1121,
   "files": [
     ".github/workflows/drydock-batch1.yml",
     "01-Review.pdf",
@@ -123,6 +123,7 @@
     "CURRENT_BASELINE.json",
     "CURRENT_SHIP_INVENTORY.md",
     "CURRICULUM_AND_SAFETY.md",
+    "DECKPLAN_EVIDENCE.json",
     "DEPLOYMENT_CREATION_RELIABILITY_AUDIT.md",
     "DEPLOYMENT_MANIFEST.json",
     "DEPLOYMENT_PERSISTENCE_AUDIT.md",

@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.168",
-  "release": "Harborbill",
-  "seal": "harborbill-8820168",
+  "build": "8.8.20.169",
+  "release": "Deckplan",
+  "seal": "deckplan-8820169",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Harborbill",
-  "name": "Harborbill",
-  "releaseName": "Harborbill"
+  "release_name": "Deckplan",
+  "name": "Deckplan",
+  "releaseName": "Deckplan"
 }

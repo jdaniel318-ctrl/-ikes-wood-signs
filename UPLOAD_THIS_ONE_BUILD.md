@@ -1,9 +1,13 @@
-# Harborbill 8.8.20.168
+# Upload Deckplan 8.8.20.169
 
-1. Open Harborbill-Setup.txt, copy its full text into the Fleet Core SQL Editor for project sjgqqtnuttnkwsoebbqf, and run it. This enables the read APIs and links the two existing test invoices to their verified subscription. Vessel assignment is separate.
-2. Extract Harborbill.zip. Upload all files inside its one folder to the root of the existing fleet repository over 8.8.20.166. Keep the other files and commit.
-3. Open Admiral Command → Professional → Govern → Vessel billing · Sandbox. Look under To Check for your renewal. A vessel owner opens Vessel billing from their authenticated Owner Control Center once a subscription has an authorized service assignment.
+The iPad download is named `Deckplan.zip`. The release builder names the same upload `DarkSky8820169-Deckplan-Upload.zip`.
+1. Extract the ZIP. Open its single folder. Upload ALL files inside to the existing repository ROOT; replace matching files and KEEP all other files. Commit the upload.
+2. After deployment open the Engine and confirm `8.8.20.169 · DECKPLAN`. Do not clear Safari data, reset records or change permissions.
+3. Open Build & Govern, then select Vessel billing in Govern. Inspect the sandbox receipts and return to Readiness.
 
-Harborbill-Setup.zip contains the private operator guide, receiver, read-only verification query and tests. Keep it with the operator. Harborbill-Source.zip contains the full website source. Harborbill-Rollback.zip restores the previous website files; leave existing vessel records in place.
+Admiral Govern opens to Readiness with full-size entries for Vessel billing and the Fleet ledger. Programs and Reports & recovery open from the top of the deck. Holds and watch items retain their evidence. Sandbox receipts show assignment, payment status and recorded amounts separately.
+The upload itself executes no database commands. Shared specialist components retain their own revision labels; this is intentional reuse, not a mixed upload. Exact SHA-256 checks still run before Engine scripts execute.
 
-Never restore old permissions or business data during a software rollback.
+Full backup: application source ONLY; not Supabase, customer media or device drafts.
+Rollback: restore prior software files only. Never restore old permissions or business data. New root tooling files remain unused by the old app.
+No passkeys/Face ID or performance gain is claimed.

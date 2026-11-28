@@ -17629,3 +17629,74 @@ body #experienceModeBanner.berth-mode-banner{position:fixed!important;top:auto!i
 .ratebook-actions{display:flex;flex-wrap:wrap;gap:.5rem}
 #cgLaunchFees .ratebook-actions :is(button,a){width:auto;display:inline-flex;align-items:center;min-height:44px;padding:.5rem .8rem;background:#193f47;color:#f1f7f7;border:1px solid #77979b;border-radius:.45rem;text-decoration:none;font-size:1rem;font-weight:650;letter-spacing:normal;text-transform:none}
 #cgLaunchFees #cgFeeSave{background:#efd498;color:#142e30}#cgLaunchFees :focus-visible{outline:3px solid #f4c873;outline-offset:2px}#cgFeeBalance{font-weight:700}#cgLaunchFees details{border-top:1px solid #3c6066}
+
+/* Admiral deck navigation and task panels */
+#admiralDeck .admiral-deck-tools {
+  margin: 10px 20px 0; display: grid; grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 8px; align-items: start;
+}
+#admiralDeck .admiral-deck-tools > details {
+  min-width: 0; border: 1px solid #41616a; border-radius: 10px; background: #0d2b32;
+}
+#admiralDeck .admiral-deck-tools > details[open] { grid-column: 1/-1; }
+#admiralDeck .admiral-deck-tools > details > summary,
+#admiralDeck .govern-watch-list > summary, #admiralDeck .admiral-finding > summary,
+#admiralDeck .keelguard-readiness-boundary summary {
+  min-height: 44px; box-sizing: border-box; padding: 12px 14px; cursor: pointer;
+  color: #e7e9df; font: 650 15px/1.4 system-ui,sans-serif;
+}
+#admiralDeck .admiral-deck-tools > details > summary::marker,
+#admiralDeck .admiral-finding > summary::marker { color: #d8bb79; }
+#admiralDeck .admiral-program-grid {
+  padding: 8px 12px 12px; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px;
+}
+#admiralDeck .admiral-program-grid > * { margin: 0; min-width: 0; width: auto; }
+#admiralDeck .admiral-deck-tools .admiral-continuity-card { display: block!important; border: 0; margin: 0; }
+#admiralDeck[data-mode="ceremonial"] #quarterdeckContinuity { display: none; }
+#admiralDeck #admiralGovernLane > h4 { margin: 2px 0 10px; font-size: 1.35rem; }
+#admiralDeck .govern-destinations { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; margin-bottom: 14px; }
+#admiralDeck .govern-destinations button {
+  width: 100%; min-height: 48px; padding: 9px 10px; border: 1px solid #688389; background: #0c2b33;
+  color: #e9ece4; border-radius: 8px; cursor: pointer; text-align: center; font: 650 16px/1.35 system-ui,sans-serif;
+}
+#admiralDeck .govern-destinations button[aria-pressed="true"] { background: #e6d09a; color: #102a2d; border-color: #e6d09a; }
+#admiralDeck .govern-destinations small { font: 600 13px/1.4 system-ui,sans-serif; margin-inline-start: 4px; }
+#admiralDeck .govern-readiness-status { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
+#admiralDeck .govern-readiness-status > div { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; }
+#admiralDeck #admiralDeckReadinessState { font: 750 18px/1.4 system-ui; color: #e9d499; }
+#admiralDeck #admiralDeckReadinessState[data-state="hold"] { color: #ffbaaa; }
+#admiralDeck #admiralDeckReadinessCopy { font: 400 15px/1.5 system-ui; color: #d1e0dc; }
+#admiralDeck #governReadiness[hidden], #admiralDeck #admiralVesselBilling[hidden] { display: none!important; }
+#admiralDeck #admiralReadinessFindings { display: grid; max-width: none; grid-template-columns: repeat(2,minmax(0,1fr)); align-items: start; gap: 8px; }
+#admiralDeck #admiralReadinessFindings > :not(.admiral-finding) { grid-column: 1/-1; }
+#admiralDeck #admiralReadinessFindings .admiral-finding { margin: 0; padding: 0; min-width: 0; }
+#admiralDeck #admiralReadinessFindings .admiral-finding.cleared { padding: 12px; }
+#admiralDeck .admiral-finding > summary { font-size: 16px; }
+#admiralDeck .admiral-finding .finding-level { display: inline; margin-right: 5px; font-size: 14px; color: #ffd4ab; }
+#admiralDeck .finding-evidence { padding: 2px 14px 14px; }
+#admiralDeck .finding-evidence p { font-size: 15px; line-height: 1.55; margin: 2px 0 8px; color: #e1e9e6; }
+#admiralDeck .govern-watch-list { border-block: 1px solid #42616a; }
+#admiralDeck .govern-watch-list .admiral-finding { margin: 6px 0!important; }
+#admiralDeck .keelguard-readiness-boundary { margin: 0; gap: 2px; padding: 10px 14px; }
+#admiralDeck .keelguard-readiness-boundary summary { padding: 12px 0; }
+#admiralDeck .admiral-deck-tools summary:focus-visible, #admiralGovernLane :is(button,summary,a):focus-visible { outline: 3px solid #efc96b; outline-offset: 2px; }
+#admiralDeck .vb-admiral { margin: 0; padding: clamp(14px,2vw,22px); }
+#admiralDeck .vb-admiral .vb-invoice { grid-template-columns: minmax(0,1fr) auto auto; gap: 2px 16px; padding: 8px 0; }
+#admiralDeck .vb-admiral .vb-invoice strong { grid-column: 1; grid-row: 1; }
+#admiralDeck .vb-admiral .vb-amount { grid-column: 2; grid-row: 1; font-weight: 700; }
+#admiralDeck .vb-admiral .vb-missing { color: #784c18; font-size: 14px; }
+#admiralDeck .vb-admiral .vb-pill { grid-column: 3; grid-row: 1; }
+#admiralDeck .vb-admiral .vb-invoice small { grid-column: 1/3; font-size: 14px; }
+#admiralDeck .vb-admiral .vb-invoice a { grid-column: 3; font-size: 14px; justify-self: end; }
+#admiralDeck .vb-admiral section + section { border-top: 1px solid #a9beb8!important; margin-top: 4px; }
+@media(max-width:700px) {
+  #admiralDeck .admiral-deck-tools { margin-inline: 12px; }
+  #admiralDeck .admiral-program-grid, #admiralDeck #admiralReadinessFindings { grid-template-columns: minmax(0,1fr); }
+  #admiralDeck .govern-destinations { gap: 5px; }
+  #admiralDeck .govern-destinations button { padding: 8px 4px; font-size: 14px; }
+  #admiralDeck .govern-destinations small { display: block; margin: 0; }
+  #admiralDeck .vb-admiral .vb-invoice { grid-template-columns: minmax(0,1fr) auto; gap: 2px 8px; }
+  #admiralDeck .vb-admiral .vb-amount { grid-column: 1; grid-row: 2; }
+  #admiralDeck .vb-admiral .vb-pill { grid-column: 2; }
+  #admiralDeck .vb-admiral .vb-invoice small, #admiralDeck .vb-admiral .vb-invoice a { grid-column: 1/-1; justify-self: start; }
+}

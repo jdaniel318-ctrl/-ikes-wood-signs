@@ -1,0 +1,32 @@
+{
+  "release": "Deckplan",
+  "build": "8.8.20.169",
+  "baseline": "Harborbill 8.8.20.168",
+  "offline_suites": 88,
+  "offline_suites_passed": 88,
+  "viewports": [
+    [
+      1024,
+      768
+    ],
+    [
+      768,
+      1024
+    ],
+    [
+      390,
+      844
+    ]
+  ],
+  "browser_scope": "Isolated deck fixture using the release markup, styles, readiness and billing code. Synthetic receipts and a simulated session.",
+  "verified": [
+    "Billing accessible on first screen",
+    "Folding and opening findings, watch evidence, history, program and report controls",
+    "Separate payment, vessel assignment and missing amount information",
+    "Read on opening billing and on manual refresh",
+    "Clearing billing on ended session and ignoring late responses after switching views",
+    "Receipts fit all three viewport widths"
+  ],
+  "hosted_deployment": false,
+  "physical_device_acceptance": "pending"
+}

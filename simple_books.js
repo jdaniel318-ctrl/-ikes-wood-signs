@@ -27,7 +27,7 @@ function bindAmountField(){const input=el('taxAmount');if(!input)return;input.se
 function enhanceLaunchButtons(){
  const captain=el('captainAuthorityLedgerOpen'),admiral=el('admiralAuthorityLedgerOpen');
  if(captain&&!captain.dataset.ledgerEnhanced){captain.dataset.ledgerEnhanced='true';captain.innerHTML='<span class="ledger-launch-icon" aria-hidden="true">▤</span><span><b>OPEN FLEET LEDGER</b><small>Simple books and durable authority history</small></span><i aria-hidden="true">→</i>';}
- if(admiral&&!admiral.dataset.ledgerEnhanced){admiral.dataset.ledgerEnhanced='true';admiral.innerHTML='<span class="ledger-launch-icon" aria-hidden="true">▤</span><span><b>OPEN FLEET LEDGER</b><small>Books, programs, and authority history</small></span><i aria-hidden="true">→</i>';}
+ if(admiral&&!admiral.closest('.govern-destinations')&&!admiral.dataset.ledgerEnhanced){admiral.dataset.ledgerEnhanced='true';admiral.innerHTML='<span class="ledger-launch-icon" aria-hidden="true">▤</span><span><b>OPEN FLEET LEDGER</b><small>Books, programs, and authority history</small></span><i aria-hidden="true">→</i>';}
 }
 
 function entities(){

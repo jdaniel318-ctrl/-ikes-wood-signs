@@ -1288,8 +1288,7 @@ const admiralVesselLogos = new Map([
     if(byId('admiralCeremonialSailing'))byId('admiralCeremonialSailing').textContent=String(sailing);
     if(byId('admiralCeremonialTrials'))byId('admiralCeremonialTrials').textContent=String(trials);
     const report=window.__lastAdmiralReadinessReport||null;
-    const changed=byId('admiralWhatChanged');
-    if(changed)changed.textContent=report?(report.criticalFailures?`${report.criticalFailures} governance hold${report.criticalFailures===1?'':'s'} require Admiral awareness.`:report.warnings?`${report.warnings} verified governance watch item${report.warnings===1?'':'s'} remain.`:'Runtime governance checks are clear; working-ship handoff remains unverified.'):'Governance posture awaits verified Fleet Readiness.';
+
   }
 
   const READINESS_TRUTH_KEY='bf.command.readiness.truth.v2';
@@ -1385,8 +1384,26 @@ const admiralVesselLogos = new Map([
         if(truth.runId!==report.runId||truth.updatedAt!==report.at||truth.build!==report.build||!truth.findings)throw new Error('Finding details and summary belong to different runs.');
         for(const c of checks){const meta=truth.findings[c.id];if(!meta||meta.id!==c.id||meta.state!==c.state||meta.label!==c.label||meta.detail!==c.detail)throw new Error('Finding detail does not match its report: '+c.id);}
         const storage=report.storageEvidence;
-        const boundary=`<section class="keelguard-readiness-boundary" role="status"><small>VOYAGEKEEPER · RUN ${esc(report.runId)}</small><b>${holdCount?'REPAIR HOLDS FIRST':watchCount?'CHECKS COMPLETE · WATCH ITEMS REMAIN':'CHECKS COMPLETE'}</b><p>${checks.length} checks · ${holdCount} holds · ${watchCount} watch items. Assessed ${esc(new Date(report.at).toLocaleString())} · Build ${esc(report.build)}.</p><p>Runtime checks and declared contracts; not verified working-ship commissioning or Captain handoff.</p><p><strong>Working-ship handoff: NOT VERIFIED by this report.</strong> Commissioning, appointed-Captain access, restore and cross-device proof remain separate.</p>${storage?.local==='degraded'?'<p class="keelguard-storage-warning"><strong>Legacy browser storage is degraded.</strong> Diagnostic fallback is not a durable ledger or cloud backup. No records were deleted; do not clear website data.</p>':''}</section>`;
-        findings.innerHTML=boundary+(current.length?current.map(c=>{const meta=truth.findings[c.id],a=findingAction(c.id);return `<article class="admiral-finding ${c.state==='fail'?'fail':'warn'}" data-finding-id="${esc(c.id)}"><b>${c.state==='warn'?'WATCH':'CURRENT FAILURE'} · ${esc(c.label)}</b><span>${esc(c.detail)}</span><small>FIRST DETECTED ${esc(meta.firstDetected?new Date(meta.firstDetected).toLocaleString():'THIS CHECK')}<br>LATEST CHECK ${esc(report.build)} • ${esc(meta.provenance||verificationProvenance(c))}</small><em>${c.level==='core'?'FLEET CONTRACT':'CHECK'} • ${c.state==='warn'?'WATCH':'OPEN'}</em><button type="button" data-readiness-action="${a[0]}" data-readiness-finding="${esc(c.id)}">${a[1]}</button></article>`;}).join(''):'<span class="clear">No current holds or watch items in this run. Production handoff is separately unverified.</span>');
+        const boundary = `<section class="keelguard-readiness-boundary" role="status">
+          <b>${checks.length} checks · ${holdCount} holds · ${watchCount} watch items</b>
+          <small>${esc(new Date(report.at).toLocaleString())} · Build ${esc(report.build)}</small>
+          <details><summary>Assessment details</summary><p>Run ${esc(report.runId)}</p><p>Working-ship handoff remains unverified. It requires separate commissioning, Captain access, restore and cross-device checks.</p></details>
+          ${storage?.local==='degraded'?'<p class="keelguard-storage-warning">Local browser storage is degraded. Keep website data intact and inspect storage evidence.</p>':''}
+        </section>`;
+        function findingCard(c) {
+          const meta = truth.findings[c.id];
+          const [action, label] = findingAction(c.id);
+          const level = c.state === 'fail' ? 'Hold' : 'Watch';
+          return `<details class="admiral-finding ${c.state === 'fail' ? 'fail' : 'warn'}" data-finding-id="${esc(c.id)}">
+            <summary><span class="finding-level">${level}</span> ${esc(c.label)}</summary>
+            <div class="finding-evidence"><p>${esc(c.detail)}</p><small>First detected ${esc(meta.firstDetected ? new Date(meta.firstDetected).toLocaleString() : 'this check')}<br>${esc(meta.provenance || verificationProvenance(c))} · ${esc(report.build)}</small>
+            <button type="button" data-readiness-action="${action}" data-readiness-finding="${esc(c.id)}">${label}</button></div></details>`;
+        }
+        const holds = current.filter(c => c.state === 'fail').map(findingCard).join('');
+        const watches = current.filter(c => c.state === 'warn').map(findingCard).join('');
+        findings.innerHTML = boundary + holds + (watches
+          ? `<details class="govern-watch-list"${holdCount ? '' : ' open'}><summary>Watch items (${watchCount})</summary>${watches}</details>`
+          : '');
         const ids=Array.from(findings.querySelectorAll('[data-finding-id]'),node=>node.dataset.findingId);
         if(ids.length!==current.length||ids.some((id,i)=>id!==current[i].id))throw new Error('Rendered finding cards do not match the current report.');
         admiralFindingsDisplay={state:'rendered',mode,runId:report.runId,runAt:report.at,holdCount,watchCount,renderedIds:ids};
@@ -1841,6 +1858,10 @@ const admiralVesselLogos = new Map([
           <div><b id="admiralSessionReceipt" role="status">Commissioned Admiral office · secure session required.</b><span id="admiralSessionTiming"></span><small>Secure session limits · rank retained · server-wide expiry not verified.</small></div>
           <div class="admiral-session-actions"><button id="admiralSessionLock" type="button">LOCK ADMIRAL</button><button id="admiralSessionEnd" type="button">END SESSION</button></div>
         </section>
+        <div class="admiral-deck-tools">
+          <details id="admiralPrograms" name="admiral-tools"><summary>Admiral programs</summary><div class="admiral-program-grid"></div></details>
+          <details id="quarterdeckContinuity" name="admiral-tools"><summary>Reports &amp; recovery</summary><section class="admiral-continuity-card"><div class="admiral-continuity-actions"><button id="admiralDeckRecovery" type="button"><b>Recovery Snapshot</b><small>Protect the fleet</small></button><button id="admiralDeckReport" type="button"><b>Readiness Report</b><small>Download evidence</small></button><button id="admiralDeckLog" type="button"><b>Admiral Log</b><small>Governance history</small></button><button id="admiralDeckForge" type="button"><b>Presentation Forge</b><small>Optional visual layer</small></button></div></section></details>
+        </div>
         <main class="admiral-command-surface" aria-label="Admiral cinematic command view">
           <nav class="admiral-command-rail" aria-label="Admiral governance controls">
             <div class="admiral-command-rail-title"><small>ADMIRAL COMMAND</small><strong>Govern the platform</strong><span>DUAL OFFICE • SERVER-GATED</span></div>
@@ -1873,7 +1894,6 @@ const admiralVesselLogos = new Map([
           <section class="admiral-command-notice" id="admiralCeremonialNotice" role="status" aria-live="polite">Ceremonial command surface active. Live controls remain separate from the artwork.</section>
         </main>
         <main class="admiral-deck-grid" aria-label="Admiral professional command view">
-          <section class="admiral-pro-topline"><article><small>COMMAND BRIEF</small><strong id="admiralWhatChanged">Fleet posture ready for review.</strong><p>Start with what changed. Open a lane only when you need to act.</p></article><article class="admiral-readiness-card"><small>FLEET READINESS</small><strong id="admiralDeckReadinessState">NOT RUN</strong><p id="admiralDeckReadinessCopy">Run the fleet checks before treating this deck as proven.</p><button id="admiralDeckRunReadiness" type="button">RUN FLEET READINESS</button></article></section>
           <section class="admiral-command-map" aria-label="Admiral command boundary"><article><small>OBSERVE</small><strong>Read across the fleet</strong><span>Authenticated and read-only by default</span></article><article><small>COMMAND</small><strong>One exact vessel</strong><span>Previewed, reasoned and authorized</span></article><article><small>RETAIN</small><strong>Durable evidence</strong><span>Audit, rollback and fleet learning</span></article></section>
           <nav class="admiral-lane-nav" id="admiralLaneNav" aria-label="Admiral command lanes" role="tablist">
             <button type="button" role="tab" data-admiral-lane="govern" aria-selected="true"><small>01</small><b>GOVERN</b><span>Posture & readiness</span></button>
@@ -1882,7 +1902,22 @@ const admiralVesselLogos = new Map([
             <button type="button" role="tab" data-admiral-lane="promote" aria-selected="false"><small>04</small><b>PROMOTE</b><span>Fleet learning</span></button>
           </nav>
           <section class="admiral-lane-workspace" aria-live="polite">
-            <article id="admiralGovernLane" data-admiral-panel="govern"><small>01 · GOVERN</small><h4>Fleet posture & readiness</h4><p>Current verified posture first. Cleared incidents remain retained history.</p><div class="admiral-lane-summary"><b>Dual-Office Authority Ledger</b><span>Navigate retained Captain evidence and server-attested Admiral orders without blending the two offices.</span></div><details id="admiralVesselBilling"><summary style="cursor:pointer;min-height:44px;padding:12px 0;font-weight:700">Vessel billing · Sandbox</summary><div id="admiralBillingReceipts"></div></details><button id="admiralAuthorityLedgerOpen" class="admiral-pro-button" type="button">OPEN AUTHORITY LEDGER</button><div id="admiralFindingTabs" class="admiral-finding-tabs" data-mode="current"><button type="button" data-finding-view="current" aria-pressed="true">CURRENT FINDINGS</button><button type="button" data-finding-view="history" aria-pressed="false">CLEARED HISTORY</button></div><div id="admiralReadinessFindings" class="admiral-readiness-findings"><span>Run Fleet Readiness to populate verified findings.</span></div></article>
+            <article id="admiralGovernLane" data-admiral-panel="govern">
+              <h4>Fleet oversight</h4>
+              <div class="govern-destinations" role="group" aria-label="Fleet oversight">
+                <button id="governReadinessButton" type="button" aria-pressed="true" aria-controls="governReadiness">Readiness</button>
+                <button id="governBillingButton" type="button" aria-pressed="false" aria-controls="admiralVesselBilling">Vessel billing <small>Sandbox</small></button>
+                <button id="admiralAuthorityLedgerOpen" type="button">Open fleet ledger</button>
+              </div>
+              <section id="governReadiness" aria-label="Readiness">
+                <div class="govern-readiness-status">
+                  <div><strong id="admiralDeckReadinessState">NOT RUN</strong><span id="admiralDeckReadinessCopy">Run Fleet Readiness for a current assessment.</span></div>
+                  <button id="admiralDeckRunReadiness" type="button">Run fleet readiness</button>
+                </div>
+                <div id="admiralFindingTabs" class="admiral-finding-tabs" data-mode="current"><button type="button" data-finding-view="current" aria-pressed="true">CURRENT FINDINGS</button><button type="button" data-finding-view="history" aria-pressed="false">CLEARED HISTORY</button></div><div id="admiralReadinessFindings" class="admiral-readiness-findings"><span>Run Fleet Readiness to populate verified findings.</span></div>
+              </section>
+              <section id="admiralVesselBilling" aria-labelledby="governBillingButton" hidden><div id="admiralBillingReceipts"></div></section>
+            </article>
             <article data-admiral-panel="standardize" hidden><small>02 · STANDARDIZE</small><h4>Doctrine & standards</h4><p>Fleet doctrine, service standards, commercial policy and governed exceptions.</p><div class="admiral-lane-summary"><b>Fleet Doctrine Registry</b><span>Active fleet rules remain versioned, traceable and separated from current incident posture.</span></div><button id="admiralDeckStandards" type="button">OPEN FLEET STANDARDS <em>FOUNDATION</em></button><section id="admiralDoctrineDetail" class="admiral-doctrine-detail hidden" aria-label="Fleet Doctrine Registry detail">
   <header><div><small>CURRENT ADMIRAL COURSE</small><h5 id="admiralDoctrineHeading">Fleet Doctrine Registry</h5><p id="admiralDoctrineSummary">Loading current doctrine…</p></div><button id="admiralDoctrineClose" type="button">CLOSE</button></header>
   <div class="admiral-doctrine-status" id="admiralDoctrineStatus"><span>REGISTRY</span><b>VERIFYING</b></div>
@@ -1898,13 +1933,12 @@ const admiralVesselLogos = new Map([
             <article data-admiral-panel="delegate" hidden><small>03 · DELEGATE</small><h4>Captain appointments</h4><p role="status">Delegation controls are initializing. No command has been issued.</p><button id="quarterdeckMountRetry" type="button">RETRY DELEGATION DISPLAY</button></article>
             <article data-admiral-panel="promote" hidden><small>04 · PROMOTE</small><h4>Promote fleet learning</h4><p>Foundry candidates, proven capability, shared service or new vessel.</p><div class="admiral-lane-summary"><b>Intelligence Dock + one learning pipeline</b><span>Cross-vessel patterns surface here before Observation → Lesson → Candidate → Foundry → Sea Trial → Proven.</span></div><button id="admiralDeckFoundry" type="button">OPEN THE FOUNDRY <em>FOUNDATION</em></button><div class="admiral-lane-summary admiral-service-governance"><b>Admiral Commissioning Orders</b><span>Create one durable Fleet Core vessel identity. The working name stays editable; the vessel ID, project key, and namespace do not.</span></div><button id="admiralCommissioningOpen" class="admiral-pro-button" type="button">OPEN COMMISSIONING ORDERS</button><section id="admiralCommissioningStation" class="admiral-entitlement-station admiral-course-station admiral-commissioning-station hidden" aria-label="Admiral Commissioning Orders"><header><div><small>SERVER-GOVERNED ADMIRAL SHIPYARD</small><h5>Commissioning Orders</h5><p>Name the working vessel, define its permanent keel, preview the boundary, then issue one deliberate order.</p></div><div class="admiral-entitlement-head-actions"><strong id="admiralCommissioningIdentityState">ADMIRAL IDENTITY REQUIRED</strong><button id="admiralCommissioningClose" class="admiral-pro-button" type="button">CLOSE</button></div></header><p class="admiral-identity-explainer"><b>Bootstrap Build is a working name.</b> It can be renamed later without changing the vessel UUID, project key, namespace, records, or lineage.</p><div id="admiralCommissioningAuth" class="admiral-identity-row"><label>Admiral email<input data-bf-trim="boundary" id="admiralCommissioningEmail" name="username" type="email" inputmode="email" autocapitalize="none" spellcheck="false" autocomplete="username" placeholder="Admiral email"></label><label>Password<input data-bf-trim="preserve" id="admiralCommissioningPassword" name="password" type="password" autocomplete="current-password" placeholder="Password"></label><button id="admiralCommissioningSignIn" class="admiral-pro-button is-primary" type="button">AUTHENTICATE ADMIRAL</button><button id="admiralCommissioningRecover" class="admiral-pro-button" type="button">RECOVER PASSWORD</button><button id="admiralCommissioningSignOut" class="admiral-pro-button hidden" type="button">SIGN OUT IDENTITY</button></div><div class="admiral-course-grid admiral-commissioning-grid"><section class="admiral-course-brief"><small>COMMISSIONING BRIEF</small><strong id="admiralCommissioningBrief">Authenticate to preview a new vessel.</strong><span>No vessel exists until the order is issued.</span></section><section class="admiral-course-compose"><div class="admiral-course-step"><small>1 · WORKING IDENTITY</small><label>Working name <span class="field-rule">EDITABLE AFTER COMMISSION</span><input data-bf-trim="boundary" id="admiralCommissioningName" type="text" maxlength="80" value="Bootstrap Build" placeholder="Working vessel name"></label><label>Mission summary<input data-bf-trim="boundary" id="admiralCommissioningSummary" type="text" maxlength="500" value="Construction scheduling and field coordination" placeholder="What this vessel is being built to do"></label></div><div class="admiral-course-step"><small>2 · PERMANENT KEEL</small><label>Project key <span class="field-rule">PERMANENT</span><input data-bf-trim="boundary" id="admiralCommissioningProject" type="text" maxlength="63" value="construction-scheduling-01" autocapitalize="none" spellcheck="false"></label><label>Namespace <span class="field-rule">PERMANENT</span><input data-bf-trim="boundary" id="admiralCommissioningNamespace" type="text" maxlength="63" value="construction-scheduling-01" autocapitalize="none" spellcheck="false"></label><label>Mission class<select id="admiralCommissioningClass"><option value="admiral_program">Admiral-level program</option><option value="fleet_service">Shared fleet service</option><option value="independent_business">Independent business</option></select></label></div><div class="admiral-course-step"><small>3 · BOUNDARY</small><div class="admiral-commissioning-boundary"><span><b>COMMISSIONING</b><small>NOT LIVE</small></span><span><b>UNASSIGNED</b><small>NO OWNER CREATED</small></span><span><b>NO FEATURES</b><small>COURSE ORDER LATER</small></span></div><label>Order intent<input data-bf-trim="boundary" id="admiralCommissioningIntent" type="text" maxlength="500" placeholder="Optional reason for the record"></label><button id="admiralCommissioningPreview" class="admiral-pro-button" type="button" disabled>PREVIEW COMMISSIONING ORDER</button></div></section><section class="admiral-course-preview" aria-live="polite"><header><div><small>IMPACT PREVIEW</small><strong id="admiralCommissioningPreviewState">AWAITING PREVIEW</strong><span id="admiralCommissioningPreviewDetail">No Fleet Core row will be written until the order is issued.</span></div></header><div id="admiralCommissioningPreviewItems" class="admiral-course-preview-items"><p>Authenticate the Admiral identity, then preview the permanent and editable fields.</p></div><button id="admiralCommissioningIssue" class="admiral-pro-button is-primary" type="button" disabled>ISSUE COMMISSIONING ORDER</button></section></div><div id="admiralCommissioningResult" class="admiral-entitlement-result" role="status" aria-live="polite">Authenticate the Admiral identity to begin.</div><section class="admiral-course-log"><header><div><small>DURABLE COMMISSIONING RECORD</small><strong>Recent vessel orders</strong></div><button id="admiralCommissioningLog" class="admiral-pro-button" type="button" disabled>OPEN FULL LOG</button></header><div id="admiralCommissioningLogRows" class="admiral-course-log-rows"><p>Authenticate to read the commissioning record.</p></div></section><div class="admiral-package-note"><b>Authority boundary</b><span>The commissioner does not become the owner. Commissioning creates no membership, no entitlement, and no live publication.</span></div></section></article>
           </section>
-          <section class="admiral-continuity-card"><div><h4>CONTINUITY &amp; EVIDENCE</h4><p>Recovery, reports, governance history and presentation remain available without competing with active command.</p></div><div class="admiral-continuity-actions"><button id="admiralDeckRecovery" type="button"><b>Recovery Snapshot</b><small>Protect the fleet</small></button><button id="admiralDeckReport" type="button"><b>Readiness Report</b><small>Download evidence</small></button><button id="admiralDeckLog" type="button"><b>Admiral Log</b><small>Governance history</small></button><button id="admiralDeckForge" type="button"><b>Presentation Forge</b><small>Optional visual layer</small></button></div></section>
           <section class="admiral-deck-note" id="admiralDeckNotice" role="status" aria-live="polite">Commissioned Admiral office active. Read-only by default; modifying commands remain exact-vessel, authenticated, reasoned, and audited.</section>
         </main>
       </div>`;
     document.body.appendChild(deck);
     // FUN is a separate Admiral program, never a Fleet Core vessel or game authority grant.
-    deck.querySelector('.admiral-session-strip')?.insertAdjacentHTML('afterend',`<section class="fleet-schedule-entry"><img src="bootstrap_build_icon.png" alt=""><div><b>ScheduleJoe</b><span>Bootstrap Build · Construction schedules</span></div><button type="button" data-schedulejoe-open>Open ScheduleJoe</button></section><section id="funProgramLaunchCard" aria-label="Admiral Programs"><div><small>ADMIRAL PROGRAMS · FUN · OUTSIDE FLEET CORE</small><b>Black Flag: Stormwake</b><p>Explore a 3D harbor, raise the bridge, and bring the chartmaker home. First Light and its lessons stay in the journal.</p></div><button id="funProgramLaunch" type="button">OPEN STORMWAKE →</button></section><section id="lanternRunCard" aria-label="Lantern Run arcade"><div><h3>Lantern Run</h3><p>Sail 36 mazes with Riptail, from Moonbeam Bay to the Homeward Light.</p></div><button id="lanternRunLaunch" type="button">PLAY LANTERN RUN →</button></section>`);
+    deck.querySelector('.admiral-program-grid').insertAdjacentHTML('beforeend',`<section class="fleet-schedule-entry"><img src="bootstrap_build_icon.png" alt=""><div><b>ScheduleJoe</b><span>Bootstrap Build · Construction schedules</span></div><button type="button" data-schedulejoe-open>Open ScheduleJoe</button></section><section id="funProgramLaunchCard" aria-label="Admiral Programs"><div><small>ADMIRAL PROGRAMS · FUN · OUTSIDE FLEET CORE</small><b>Black Flag: Stormwake</b><p>Explore a 3D harbor, raise the bridge, and bring the chartmaker home. First Light and its lessons stay in the journal.</p></div><button id="funProgramLaunch" type="button">OPEN STORMWAKE →</button></section><section id="lanternRunCard" aria-label="Lantern Run arcade"><div><h3>Lantern Run</h3><p>Sail 36 mazes with Riptail, from Moonbeam Bay to the Homeward Light.</p></div><button id="lanternRunLaunch" type="button">PLAY LANTERN RUN →</button></section>`);
     const promoteLane=deck.querySelector('[data-admiral-panel="promote"]');
     promoteLane?.insertAdjacentHTML('afterbegin',`<section class="admiral-passage-card" aria-label="Commissioned Admiral Office"><small>ADMIRAL KEEL</small><h5>Commissioned rank. Separate secure sessions.</h5><ol><li><b>1</b><span>The Admiral office is now an accepted Fleet role, distinct from Captain.</span></li><li><b>2</b><span>Session timeout, logout, or readiness WATCH never demotes the rank.</span></li><li><b>3</b><span>Every entry still requires passage PIN plus server-verified Admiral identity.</span></li><li><b>4</b><span>Only an explicit server authority revocation can remove the commissioned role.</span></li></ol><p>Readiness warnings remain obligations to harden the fleet. They do not turn the Admiral back into a Captain.</p></section>`);
     promoteLane?.insertAdjacentHTML('afterbegin', `
@@ -1916,7 +1950,7 @@ const admiralVesselLogos = new Map([
                 <button type="button" id="regattaHarborLink" disabled>Enter Sunset Harbor <span aria-hidden="true">→</span></button><p id="regattaStatus" role="status"></p>
               </div>
             </section>`);
-    deck.querySelector('.admiral-session-strip')?.insertAdjacentHTML('afterend',blackFlagTravelProgramCard('admiral'));
+    deck.querySelector('.admiral-program-grid').insertAdjacentHTML('afterbegin',blackFlagTravelProgramCard('admiral'));
     const regattaLink = byId('regattaHarborLink');
     mountRegatta(deck, regattaLink);
     loadUpperCommandVisual('admiral');
@@ -1999,6 +2033,9 @@ const admiralVesselLogos = new Map([
         const ascentMs=seenDeck?2500:3900;window.setTimeout(()=>deck.classList.remove('admiral-deck-ascent-first','admiral-deck-ascent-repeat'),ascentMs+120);
       }
       refreshAdmiralCeremonialSurface();
+      closeBilling();
+      byId('admiralPrograms').open = ['schedulejoe', 'lantern-run'].includes(directTarget);
+      byId('quarterdeckContinuity').open = false;
       primeAdmiralFirstPaint8658();
       regattaLink.disabled = false;
       byId('regattaStatus').textContent = '';
@@ -2038,7 +2075,7 @@ const admiralVesselLogos = new Map([
         window.setTimeout(()=>{
           const findings=byId('admiralReadinessFindings');
           const scroller=deck.querySelector('.admiral-deck-grid');
-          if(findings&&scroller){scroller.scrollTop=Math.max(0,findings.offsetTop-170);findings.setAttribute('tabindex','-1');findings.focus({preventScroll:true});}
+          if(findings&&scroller){scroller.scrollTop=Math.max(0,findings.offsetTop-170);findings.setAttribute('tabindex','-1');findings.focus({preventScroll:true});findings.scrollIntoView({block:'nearest'});}
         },120);
       }
       try{sessionStorage.setItem('darkSkyAdmiralTrialSeen','1');}catch(_){ }
@@ -2116,28 +2153,44 @@ const admiralVesselLogos = new Map([
     byId('admiralLaneNav')?.addEventListener('click',e=>{const btn=e.target.closest('[data-admiral-lane]');if(btn)setAdmiralLane(btn.dataset.admiralLane,true);});
     byId('admiralCeremonialDelegation').onclick=()=>{deck.dataset.mode='professional';const button=byId('admiralDeckModeBtn');button.textContent='CEREMONIAL MODE';button.setAttribute('aria-pressed','true');setAdmiralLane('delegate',true);};
     try{setAdmiralLane(sessionStorage.getItem('darkSkyAdmiralLane')||'govern');}catch(_){setAdmiralLane('govern');}
-    const billingPanel=byId('admiralVesselBilling');
+    const billingPanel = byId('admiralVesselBilling');
+    const readinessPanel = byId('governReadiness');
+    const billingButton = byId('governBillingButton');
+    const readinessButton = byId('governReadinessButton');
     let clearBilling;
-    function closeBilling(){clearBilling?.();clearBilling=null;billingPanel.open=false;}
-    billingPanel.addEventListener('toggle',()=>{
-      clearBilling?.();clearBilling=null;
-      if(!billingPanel.open)return;
-      const session=window.DarkSkyAdmiralSession?.status();
-      const actor=session?.startedAt;
-      const current=()=>billingPanel.open && billingPanel.getClientRects().length>0 &&
-        window.DarkSkyAdmiralSession?.status()?.reusable===true &&
-        window.DarkSkyAdmiralSession.status().startedAt===actor;
-      if(!actor || !current()){closeBilling();return;}
-      clearBilling=window.BlackFlagVesselBilling.mount(byId('admiralBillingReceipts'),{
-        admiral:true,current,read:()=>window.DarkSkyReadAdmiralBilling()
+    function selectBilling(selected) {
+      billingPanel.hidden = !selected;
+      readinessPanel.hidden = selected;
+      billingButton.setAttribute('aria-pressed', String(selected));
+      readinessButton.setAttribute('aria-pressed', String(!selected));
+    }
+    function closeBilling() {
+      clearBilling?.();
+      clearBilling = null;
+      selectBilling(false);
+    }
+    readinessButton.onclick = closeBilling;
+    billingButton.onclick = () => {
+      if (!billingPanel.hidden) return;
+      const session = window.DarkSkyAdmiralSession?.status();
+      if (!session?.reusable || !session.startedAt) return;
+      const startedAt = session.startedAt;
+      selectBilling(true);
+      const current = () => !billingPanel.hidden && billingPanel.getClientRects().length > 0 &&
+        window.DarkSkyAdmiralSession?.status()?.reusable === true &&
+        window.DarkSkyAdmiralSession.status().startedAt === startedAt;
+      if (!current()) { closeBilling(); return; }
+      clearBilling = window.BlackFlagVesselBilling.mount(byId('admiralBillingReceipts'), {
+        admiral: true, current, read: () => window.DarkSkyReadAdmiralBilling()
       });
-    });
-    window.addEventListener('darksky:admiral-session-ended',closeBilling);
-    window.addEventListener('darksky:admiral-session-unavailable',closeBilling);
-    window.addEventListener('pagehide',closeBilling);
-    for(const node of [deck,byId('admiralGovernLane')]){
-      new MutationObserver(()=>{if(billingPanel.open && !billingPanel.getClientRects().length)closeBilling();})
-        .observe(node,{attributes:true,attributeFilter:['class','hidden','aria-hidden','data-mode']});
+    };
+    window.addEventListener('darksky:admiral-session-ended', closeBilling);
+    window.addEventListener('darksky:admiral-session-unavailable', closeBilling);
+    window.addEventListener('pagehide', closeBilling);
+    for (const node of [deck, byId('admiralGovernLane')]) {
+      new MutationObserver(() => {
+        if (!billingPanel.hidden && !billingPanel.getClientRects().length) closeBilling();
+      }).observe(node, {attributes:true, attributeFilter:['class','hidden','aria-hidden','data-mode','data-admiral-lane']});
     }
     byId('admiralDeckRunReadiness').onclick=()=>runAdmiralDeckReadiness();
     byId('admiralCeremonialRunReadiness').onclick=()=>runAdmiralDeckReadiness();
@@ -6281,9 +6334,7 @@ if(window.DarkSkyOpenFleetWatchtower)window.DarkSkyOpenAdmiralFleet=window.DarkS
   }
   function compactChrome(){
     const actions=deck.querySelector('.admiral-deck-head-actions');
-    if(!$('quarterdeckReadiness')&&actions){const b=document.createElement('button');b.type='button';b.id='quarterdeckReadiness';b.title='View readiness in Govern';b.onclick=()=>deck.querySelector('[data-admiral-lane="govern"]')?.click();actions.prepend(b);}
-    const continuity=deck.querySelector('.admiral-continuity-card');
-    if(continuity&&!continuity.closest('details')){const d=document.createElement('details');d.id='quarterdeckContinuity';d.className='qd-continuity';const s=document.createElement('summary');s.textContent='Reports, recovery & tools';d.append(s);continuity.before(d);d.append(continuity);}
+    if(!$('quarterdeckReadiness')&&actions){const b=document.createElement('button');b.type='button';b.id='quarterdeckReadiness';b.title='View readiness in Govern';b.onclick=()=>{deck.querySelector('[data-admiral-lane="govern"]')?.click();$('governReadinessButton')?.click();$('governReadinessButton')?.scrollIntoView({block:'nearest'});};actions.prepend(b);}
     if(!$('quarterdeckSessionDetails')){
       const strip=$('admiralSessionStrip'),timing=$('admiralSessionTiming'),notice=strip?.querySelector('small');
       if(strip&&timing){const d=document.createElement('details');d.id='quarterdeckSessionDetails';d.className='qd-session-details';const s=document.createElement('summary'),receipt=$('admiralSessionReceipt');s.title='Show session times, limits and server-verification scope';d.append(s);timing.before(d);if(receipt)s.append(receipt);const label=document.createElement('span');label.className='qd-session-link';label.textContent='Session details';s.append(label);d.append(timing);if(notice)d.append(notice);}
@@ -6301,7 +6352,7 @@ if(window.DarkSkyOpenFleetWatchtower)window.DarkSkyOpenAdmiralFleet=window.DarkS
     if(!deck?.isConnected)return;
     const nowVisible=visible(),lane=deck.dataset.admiralLane||'govern';
     deck.querySelectorAll('[data-admiral-lane]').forEach((b,i)=>{b.tabIndex=b.dataset.admiralLane===lane?0:-1;b.id=b.id||'qdLane-'+b.dataset.admiralLane;const p=deck.querySelector('[data-admiral-panel="'+b.dataset.admiralLane+'"]');if(p){p.id=p.id||'qdLanePanel-'+b.dataset.admiralLane;b.setAttribute('aria-controls',p.id);p.setAttribute('role','tabpanel');p.setAttribute('aria-labelledby',b.id);p.tabIndex=-1;}});
-    if(lane!==previousLane){if(previousLane==='delegate'&&busy){operation++;busy=false;ready=false;loadedSession='';attemptedSession='';invalidate();}previousLane=lane;const d=$('quarterdeckContinuity');if(d)d.open=lane==='govern';}
+    if(lane!==previousLane){if(previousLane==='delegate'&&busy){operation++;busy=false;ready=false;loadedSession='';attemptedSession='';invalidate();}previousLane=lane;}
     const leavingReview=lane!=='delegate' && (deck.dataset.reviewVessel || deck.dataset.preparationTarget);
     if((wasVisible&&!nowVisible)||leavingReview)conceal();
     wasVisible=nowVisible;

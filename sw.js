@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.20.168';
-const RELEASE_SEAL='harborbill-8820168';
+const RELEASE_BUILD='8.8.20.169';
+const RELEASE_SEAL='deckplan-8820169';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.

@@ -1,15 +1,15 @@
 {
   "schema": "blackflag-release-config-v1",
-  "build": "8.8.20.168",
-  "name": "Harborbill",
-  "seal": "harborbill-8820168",
-  "base": "8.8.20.166",
-  "base_sha256": "5b16234249d0c4a37c6750a682d60946465f2aba28b40b40979326476fad7262",
-  "base_files": 1117,
-  "prepared_at": "2026-11-27T19:55:00+00:00",
+  "build": "8.8.20.169",
+  "name": "Deckplan",
+  "seal": "deckplan-8820169",
+  "base": "8.8.20.168",
+  "base_sha256": "e8e3df6e8f117a8d2bb362ce177d1d9870be0a03d203934ac071b98f78351a70",
+  "base_files": 1120,
+  "prepared_at": "2026-11-28T00:45:00+00:00",
   "app_component_revision": "8.8.20.163",
   "owner_helper_revision": "8.8.20.68",
-  "feature_notes": "Owners with a verified vessel membership can read monthly terms and invoice receipts. Admiral Command shows assigned services and unassigned sandbox receipts under Govern.",
+  "feature_notes": "Admiral Govern opens to Readiness with full-size entries for Vessel billing and the Fleet ledger. Programs and Reports & recovery open from the top of the deck. Holds and watch items retain their evidence. Sandbox receipts show assignment, payment status and recorded amounts separately.",
   "backend_prerequisite": {
     "project": "sjgqqtnuttnkwsoebbqf",
     "migration": "HARBORLIGHT_SESSION_HARDENING.sql",
@@ -75,8 +75,8 @@
       "sql_sha256": "150f6558f53ed603e5e1469b99710db2a9c74720bdf746322489dedc8f92d5af"
     }
   },
-  "install_step": "Open Admiral Command, choose Govern, then Vessel billing \u00b7 Sandbox. A verified project owner can open Vessel billing from their Owner Control Center.",
-  "evidence_file": "HARBORBILL_EVIDENCE.json",
+  "install_step": "Open Build & Govern, then select Vessel billing in Govern. Inspect the sandbox receipts and return to Readiness.",
+  "evidence_file": "DECKPLAN_EVIDENCE.json",
   "preserve_project_readme": true,
   "install_backend_first": false,
   "presentation_only": false,
@@ -87,7 +87,5 @@
       "automatic_execution_by_upload": false,
       "public_configuration": "fleet-payments-service.json"
     }
-  },
-  "base_git_tree": "8f6b09562f04b97b07abb6a99732fbb45bcbfbb8",
-  "base_git_commit": "f30386d7855e6d771be11c07a2a283e4e17fe93e"
+  }
 }

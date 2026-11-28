@@ -1,11 +1,11 @@
 <!-- BLACKFLAG_CURRENT_RELEASE_START -->
-# Current architecture — Harborbill 8.8.20.168
+# Current architecture — Deckplan 8.8.20.169
 
 Source of release identity: RELEASE_CONFIG.json. Installed page/manifest/seal/worker identity is generated together. APP_COMPONENT_REVISION is 8.8.20.163; owner helper revision is 8.8.20.68. Unchanged component bodies remain byte-identical across release-only changes.
 
 The Engine still verifies every required body, current governance models, app component contract and worker identity before executing the same script sequence. App and Captain bind audit/display freshness to the verified installed release. This context never grants permissions. The owner page keeps explicit helper compatibility checks.
 
-Owners with a verified vessel membership can read monthly terms and invoice receipts. Admiral Command shows assigned services and unassigned sandbox receipts under Govern.
+Admiral Govern opens to Readiness with full-size entries for Vessel billing and the Fleet ledger. Programs and Reports & recovery open from the top of the deck. Holds and watch items retain their evidence. Sandbox receipts show assignment, payment status and recorded amounts separately.
 Backend prerequisites are recorded separately in PATCH_CONTRACT.json. Release preparation executes no database commands. Fleet core and Admiral programs remain distinct.
 
 ## Release commands
